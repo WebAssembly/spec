@@ -126,14 +126,16 @@ $${rule: Instr_ok/drop}
 $${rule-prose: Instr_ok/select}
 .. todo::
  below is the official specification 
- Need more specific information. 
+
+ (5) - [Add "select" in front of "valtype" in the instruction name] 
 
  (*) - [Add "t* is present" condition for Either-Or branch.]
 
- (*) - [Add select infront of "valtype"]
+ (*) - [merge "numtype" - "vectype" branch to one line]
  
+ (*) - ["length should be 1" condition should be added in the "Either" branch]
 
- 
+ (*) - [Make more readable] 
 
 * If :math:`t^\ast` is present, then:
 
@@ -499,7 +501,7 @@ $${rule-prose: Instr_ok/struct.get}
 
  (3) - [add "structure type","field type", etc]
  
- (5) - ["y" is change to variable "i"]
+ (5) - ["y" is changed to variable "i"]
 
  (6)
 
@@ -538,7 +540,7 @@ $${rule-prose: Instr_ok/struct.set}
  
  (3) - [add "structure type","field type", etc]
 
- (5) - ["y" is change to variable "i"]
+ (5) - ["y" is changed to variable "i"]
 
  (6)
 
@@ -831,7 +833,7 @@ $${rule-prose: Instr_ok/array.len}
   
  (1)
 
- (*) - Do not need any description.
+ (*) - [Don't need any description.]
 
 * The the instruction is valid with type :math:`[(\REF~\NULL~\ARRAY)] \to [\I32]`.
 
@@ -858,8 +860,6 @@ $${rule-prose: Instr_ok/array.fill}
  (6)
 
  (8)
-
- (9)
 
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
@@ -1478,11 +1478,11 @@ $${rule-prose: Instr_ok/local.get}
 
 .. todo::
    
-   (1) - [Erase comma]
+   (1) - [Erase comma in the last line]
 
    (2)
 
-   (3) - ["t" to local type]
+   (3) - ["init t" to local type]
    
  below is the official specification 
 
@@ -1505,11 +1505,11 @@ $${rule-prose: Instr_ok/local.set}
 
 .. todo::
 
-   (1) - [Erase comma]
+   (1) - [Erase comma in the last line]
 
    (2)
 
-   (3) - ["t" to local type]
+   (3) - ["init t" to local type]
    
  below is the official specification 
 
@@ -1529,11 +1529,11 @@ $${rule: Instr_ok/local.set}
 $${rule-prose: Instr_ok/local.tee}
 
 .. todo::
-   (1) - [Erase ","]
+   (1) - [Erase "," in the last line]
 
    (2)
 
-   (3) - ["t" to local type]
+   (3) - ["init t" to local type]
    
    
  below is the official specification 
@@ -1556,7 +1556,7 @@ $${rule-prose: Instr_ok/global.get}
 .. todo::
    (L2) - ["mut ?" to "mut" in premise]
    
-   (1) - [Erase "," and "?"]
+   (1) - [Erase "," and "?" in the last line]
    
    (2)
 
@@ -1842,6 +1842,13 @@ $${rule-prose: Instr_ok/load}
  below is the official specification 
 
 
+ (L1) - [ instruction name is different to the name in the prose specification]
+
+ (2) 
+
+ (*) - [Semantics are right but it should be more easy to read]
+
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1860,8 +1867,14 @@ $${rule: Instr_ok/load-val}
 .. todo::
  below is the official specification 
 
+ (L1) - ["N" in the instruction is changed to "M", instruction name is different to the name in the prose specification]
 
- (*) -[change "M,sx" to "M_sx"]
+ (2) 
+
+ (5) - ["N" in the instruction is changed to "M"]
+
+ (*) - [Semantics are right but it should be more easy to read]
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1881,6 +1894,13 @@ $${rule-prose: Instr_ok/store}
 .. todo::
  below is the official specification 
 
+ (L1) - [ instruction name is different to the name in the prose specification]
+
+ (2) 
+
+ (*) - [Semantics are right but it should be more easy to read]
+
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1899,6 +1919,15 @@ $${rule: Instr_ok/store-val}
 .. todo::
  below is the official specification 
 
+ (L1) - ["N" in the instruction is changed to "M", instruction name is different to the name in the prose specification]
+
+ (2) 
+
+ (5) - ["N" in the instruction is changed to "M"]
+
+ (*) - [Semantics are right but it should be more easy to read]
+
+ (*) -[change "M,sx" to "M_sx"]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1917,6 +1946,11 @@ $${rule-prose: Instr_ok/vload}
 .. todo::
  below is the official specification 
 
+ (1)
+
+ (*) - [the name of the instruction "v128..load x(<- which should be erased) memarg" needs to be changed "v128.load x(<- which should be erased) memarg" erasing the extra dot "."]
+
+ (*) - ["Or" branches should have extra line to be more visible.]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1935,6 +1969,12 @@ $${rule: Instr_ok/vload-val}
 .. todo::
  below is the official specification 
 
+ (L1)  - ["N" and "M" are switched] 
+
+ (5) - ["N" and "M" are switched] 
+
+ (2)
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
@@ -1952,6 +1992,8 @@ $${rule: Instr_ok/vload-pack}
 .. todo::
  below is the official specification 
 
+ (2)
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1968,6 +2010,8 @@ $${rule: Instr_ok/vload-splat}
 
 .. todo::
  below is the official specification 
+
+ (2)
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1987,6 +2031,8 @@ $${rule-prose: Instr_ok/vload_lane}
  below is the official specification 
 
  (L1) - [change "i" to "laneidx"]
+
+ (2)
 
  (5) - [change "i" to "laneidx"]
 
@@ -2008,7 +2054,8 @@ $${rule: Instr_ok/vload_lane}
 $${rule-prose: Instr_ok/vstore}
 .. todo::
  below is the official specification 
- (1)
+
+ (2)
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -2028,6 +2075,8 @@ $${rule-prose: Instr_ok/vstore_lane}
  below is the official specification 
 
  (L1) - [change "i" to "laneidx"]
+
+ (2)
 
  (5) - [change "i" to "laneidx"]
 
@@ -2119,6 +2168,18 @@ $${rule-prose: Instr_ok/memory.copy}
 .. todo::
  below is the official specification 
 
+ (L2) - ["x","y" is changed to "x1","x2", change "mt" to "memtype", delete "y(x2)" ]
+
+ (2)
+
+ (3) - [change "mt" to "memtype"]
+
+ (5) - ["x","y" is changed to "x1","x2"]
+
+ (*) - [delete "y(x2)" in LaTeX and in prose]
+ 
+ (**) - [THE OFFICIAL SPECIFICTION IS ALSO WRONG COMPARED TO "https://webassembly.github.io/spec/core/valid/instructions.html"] 
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The memory :math:`C.\CMEMS[y]` must be defined in the context.
@@ -2136,6 +2197,12 @@ $${rule-prose: Instr_ok/memory.init}
 
 .. todo::
  below is the official specification 
+
+ (L1) - [change "mt" to "memtype"]
+
+ (2)
+
+ (3) - [change "mt" to "memtype"]
 
 
 
@@ -2278,6 +2345,12 @@ $${rule-prose: Instr_ok/try_table}
 
 .. todo::
    below is the official specification.
+
+   (L1) - [change "bt" to "blocktype", instruction name should be corrected]
+   
+   (5) - [change "bt" to "blocktype"]
+
+   (*)- [instruction name should be corrected,change notation for context]
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
@@ -2300,7 +2373,13 @@ $${rule-prose: Catch_ok}
 .. todo::
    below is the official specification
 
-   (*) - [ Make "Or" branches more visible to seperate "catch_all" and "catch_all_ref" cases]
+   (L2) - [change double "~" to expand Or Erase the double "~" sign if the below  prose specification is correct]
+
+   (2)
+
+   (*) - [ Make "Or" branches more visible to seperate some cases]
+
+   (*) - [As in (L2), "expand(C.tags[x])" should be deleted Or the official prose specification is wrong ]
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
@@ -2320,6 +2399,22 @@ $${rule: Catch_ok/catch}
 :math:`\CATCHREF~x~l`
 .....................
 
+.. todo::
+ below is the official specification 
+
+  (L2) - [change double "~" to expand Or Erase the double "~" sign if the below  prose specification is correct] 
+
+  (1) - [Erase un necessary symbols in the last line] 
+
+  (2) 
+
+  (*) - [Erase null in the last line] 
+
+  (*) - [As in (L2), "expand(C.tags[x])" should be deleted Or the official prose specification is wrong ]
+
+  (**) - ["R E F E X N" to "ref exn" IN THE OFFICIAL PROSE]
+
+
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
 * Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
@@ -2337,6 +2432,13 @@ $${rule: Catch_ok/catch_ref}
 
 :math:`\CATCHALL~l`
 ...................
+.. todo::
+   below is the official specification
+
+   (L2) - ["<=" should "="] 
+
+  (2) 
+
 
 
 
@@ -2351,6 +2453,16 @@ $${rule: Catch_ok/catch_all}
 
 :math:`\CATCHALLREF~l`
 ......................
+.. todo::
+   below is the official specification
+
+  (1) - [Erase un necessary symbols in the last line] 
+
+  (2) 
+
+  (*) - [Erase "null" in the last line] 
+
+  (**) - ["R E F E X N" to "ref exn" IN THE OFFICIAL PROSE]
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -2375,7 +2487,6 @@ $${rule-prose: Instr_ok/br}
 
   (2)
 
-  (3) - [add result type]
 
   (*) - [ change "t1*" to  "t1* t*" in the last statement]
 
@@ -2407,7 +2518,6 @@ $${rule-prose: Instr_ok/br_if}
  
  (2)
 
- (3) - [add result type]
 
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
@@ -2438,7 +2548,7 @@ $${rule-prose: Instr_ok/br_table}
 
  (5) - [change l' to "l_N"]
 
- (*) - [change the last line to "t1* t* i32 -> t2*" is valid]
+ (*) - [change the last line to "t1* t* i32 -> t2* is valid"]
 
 * The :ref:`label <syntax-label>` :math:`C.\CLABELS[l_N]` must be defined in the context.
 
@@ -2710,13 +2820,13 @@ $${rule-prose: Instr_ok/return_call}
 .. todo::
  below is the official specification 
  
- (L1) - [Do not need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
+ (L1) - [Don't need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
  
  (2)
  
  (6)
  
- (*) - [Do not need "t2`*" and validity of "t3* -> t4* " ]
+ (*) - [Don't need "t2`*" and validity of "t3* -> t4* " ]
  
 
 * The return type :math:`C.\CRETURN` must not be absent in the context.
@@ -2744,7 +2854,7 @@ $${rule-prose: Instr_ok/return_call_ref}
 .. todo::
  below is the official specification 
  
- (L1) - [Do not need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
+ (L1) - [Don't need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
  
  (1)
  
@@ -2752,7 +2862,7 @@ $${rule-prose: Instr_ok/return_call_ref}
  
  (6)
  
- (*) - [Do not need "t2`*" and validity of "t3* -> t4* " ]
+ (*) - [Don't need "t2`*" and validity of "t3* -> t4* " ]
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
@@ -2776,7 +2886,7 @@ $${rule-prose: Instr_ok/return_call_indirect}
 .. todo::
  below is the official specification 
 
- (L1) - [Do not need "t2`*" and "C |- t3* -> t4* : ok" in the premise, change "lim" to "limits"]
+ (L1) - [Don't need "t2`*" and "C |- t3* -> t4* : ok" in the premise, change "lim" to "limits"]
  
  (1)
  
@@ -2786,7 +2896,7 @@ $${rule-prose: Instr_ok/return_call_indirect}
 
  (6)
  
- (*) - [Do not need "t2`*" and validity of "t3* -> t4* " ]
+ (*) - [Don't need "t2`*" and validity of "t3* -> t4* " ]
 
 * The return type :math:`C.\CRETURN` must not be empty in the context.
 
@@ -2819,7 +2929,11 @@ $${rule-prose: Instr_ok/throw}
 .. todo::
    below is the official specification.
 
-   (L2) - [double ~ to expand]
+   (L2) - [change double "~" sign to expand or change to equal ("=") sign according to official spec.]
+
+   (2)
+
+   (*) - [Erase "expand" symbol according to official spec.]
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
 * Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
@@ -2843,7 +2957,12 @@ $${rule-prose: Instr_ok/throw_ref}
 .. todo::
    below is the official specification.
 
+   (L1) - [according to offcial spec, each "t1*" and "t2*" should be valid]
+
    (1)
+
+   (*) - [change validity of function type"t1* -> t2*" to validity of each of "t1*" and "t2*". ]
+
 * The instruction is valid with type :math:`[t_1^\ast~\EXNREF] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 $${rule: Instr_ok/throw_ref}
@@ -2868,6 +2987,8 @@ $${rule-prose: Instrs_ok}
 .. todo::
  below is the official specification
 
+ (*) - [Seperate "Or" branches for readability]
+
 * The empty instruction sequence is valid with type :math:`[] \to []`.
 $${rule: Instrs_ok/empty}
 
@@ -2878,7 +2999,15 @@ Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 .. todo::
  below is the official specification 
 
- (L2)
+ (L2) - [the result type should be "t1* -> t2* t3*", notation for Context C is different("C[.locals ...]" vs "C(with C.locals ...) ]
+
+ (1) - [Erase ","]
+ 
+ (4) - ["t3*" should be "t2* t3*"]
+ 
+ (*) - [Need more specific description, change notaion for context]
+
+ (**) - [RESULT TYPE OF OFFICIAL SPEC IS WRONG]
 
 * The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`.
 
@@ -2899,6 +3028,10 @@ Subsumption for :math:`\instr^\ast`
 
 .. todo::
  below is the official specification 
+
+ (L1) - [change "it'" to "instrtype"] 
+
+ (3) - [change "it'" to "instrtype"] 
 
 * The instruction sequence :math:`\instr^\ast` must be valid with some type :math:`\instrtype`.
 
@@ -2967,9 +3100,11 @@ $${rule-prose: Instr_const}
 .. todo::
  below is the official specification 
 
- (L1) - [instruction name should be "instr* end", erase "n" in the "array_new_fixed x n"] 
+ (L1) - [instruction name should be "instr* end const" in the first LaTeX formula, erase "n" in the "array_new_fixed x n"] 
  
  (*)  - [ Make "Or" more visible, simplify the case where 'instr' is 'gloabl.get x']
+
+ (*) - ["iN.binop" is unknown]
 
 * In a *constant* expression :math:`\instr^\ast~\END` all instructions in :math:`\instr^\ast` must be constant.
 
