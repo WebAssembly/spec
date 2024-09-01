@@ -2,10 +2,10 @@
 ;; Configurations
 ;;
 
-relation Step: config ~> config       hint(show "E") hint(macro "stepto")
-relation Step_pure: instr* ~> instr*  hint(show "E") hint(macro "stepto")
-relation Step_read: config ~> instr*  hint(show "E") hint(macro "stepto")
-relation Steps: config ~>* config     hint(show "E") hint(macro "steptostar")
+relation Step: config ~> config       hint(show "E") hint(macro "stepto") hint(tabular)
+relation Step_pure: instr* ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
+relation Step_read: config ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
+relation Steps: config ~>* config     hint(show "E") hint(macro "steptostar") hint(tabular)
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -26,7 +26,7 @@ rule Steps/trans:
 
 ;; Expressions
 
-relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar")
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar") hint(tabular)
 
 rule Eval_expr:
   z; instr*  ~>*  z'; val*

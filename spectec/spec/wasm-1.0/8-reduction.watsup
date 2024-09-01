@@ -2,10 +2,10 @@
 ;; Configurations
 ;;
 
-relation Step: config ~> config                 hint(show "E")
-relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
-relation Step_read: config ~> admininstr*       hint(show "E")
-relation Steps: config ~>* config               hint(show "E")
+relation Step: config ~> config                 hint(show "E") hint(tabular)
+relation Step_pure: admininstr* ~> admininstr*  hint(show "E") hint(tabular)
+relation Step_read: config ~> admininstr*       hint(show "E") hint(tabular)
+relation Steps: config ~>* config               hint(show "E") hint(tabular)
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -26,7 +26,7 @@ rule Steps/trans:
 
 ;; Expressions
 
-relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(tabular)
 
 rule Eval_expr:
   z; instr*  ~>*  z'; val*

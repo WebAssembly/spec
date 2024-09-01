@@ -6210,7 +6210,7 @@ relation Step_read: `%~>%`(config, instr*)
 ;; 8-reduction.watsup
 rec {
 
-;; 8-reduction.watsup:5.1-5.74
+;; 8-reduction.watsup:5.1-5.88
 relation Step: `%~>%`(config, config)
   ;; 8-reduction.watsup:10.1-12.34
   rule pure{z : state, instr* : instr*, instr'* : instr*}:
@@ -6365,7 +6365,7 @@ relation Step: `%~>%`(config, config)
 ;; 8-reduction.watsup
 rec {
 
-;; 8-reduction.watsup:8.1-8.78
+;; 8-reduction.watsup:8.1-8.92
 relation Steps: `%~>*%`(config, config)
   ;; 8-reduction.watsup:18.1-19.26
   rule refl{z : state, instr* : instr*}:
