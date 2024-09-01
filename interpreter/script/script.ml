@@ -44,8 +44,8 @@ and assertion' =
   | AssertMalformedCustom of definition * string
   | AssertInvalid of definition * string
   | AssertInvalidCustom of definition * string
-  | AssertUnlinkable of definition * string
-  | AssertUninstantiable of definition * string
+  | AssertUnlinkable of var option * string
+  | AssertUninstantiable of var option * string
   | AssertReturn of action * result list
   | AssertException of action
   | AssertTrap of action * string
@@ -54,6 +54,7 @@ and assertion' =
 type command = command' Source.phrase
 and command' =
   | Module of var option * definition
+  | Instance of var option * var option
   | Register of Ast.name * var option
   | Action of action
   | Assertion of assertion
