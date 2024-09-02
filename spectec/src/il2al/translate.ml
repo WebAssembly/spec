@@ -542,8 +542,14 @@ let extract_non_names =
   ) []
 
 let contains_diff target_ns e =
+  (* e contains free variables, one of which is not contained in target names (target_ns) *)
   let free_ns = free_expr e in
   not (IdSet.is_empty free_ns) && IdSet.disjoint free_ns target_ns
+
+let is_iter e =
+  match e.it with
+  | IterE _ -> true
+  | _ -> false
 
 let handle_partial_bindings lhs rhs ids =
   match lhs.it with
@@ -562,7 +568,8 @@ let handle_partial_bindings lhs rhs ids =
     ) in
     let walker = Al.Walk.walk_expr { Al.Walk.default_config with
       pre_expr;
-      stop_cond_expr = contains_diff target_ns;
+      (* ASSUMPTION: There is no partial binding for lhs IterE *)
+      stop_cond_expr = (fun e -> contains_diff target_ns e || is_iter e);
     } in
     let new_lhs = walker lhs in
     new_lhs, rhs, List.fold_left (fun il c -> [ ifI (c, il, []) ]) [] !conds
@@ -657,7 +664,7 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
     |> error lhs.at
     *)
     yetE "lhs" ~note:topT, yetE "rhs" ~note:topT
-    
+
 
 and handle_call_lhs lhs rhs free_ids =
 
@@ -710,13 +717,12 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Get IterE fields *)
 
-  let inner_lhs, iter_ids, iter =
+  let inner_lhs, iter, xes =
     match lhs.it with
-    | IterE (inner_lhs, (iter, xes)) ->
-      let iter_ids = List.map (fun (x, _) -> x) xes in
-      inner_lhs, iter_ids, iter
+    | IterE (inner_lhs, (iter, xes)) -> inner_lhs, iter, xes
     | _ -> assert (false);
   in
+  let iter_ids, _ = List.split xes in
 
   (* Helper functions *)
 
@@ -726,7 +732,7 @@ and handle_iter_lhs lhs rhs free_ids =
     |> IdSet.inter (IdSet.of_list iter_ids)
     |> IdSet.elements
   in
-  let walk_expr (walker: Walk.walker) (expr: expr): expr =
+  let walk_expr (_walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
       let iter', typ =
         match iter with
@@ -735,10 +741,10 @@ and handle_iter_lhs lhs rhs free_ids =
           List, Il.IterT (expr.note, Il.List) $ no_region
         | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
-      ignore (iter_ids_of expr);
-      IterE (expr, (iter', [])) $$ lhs.at % typ (* MYTODO *)
+      ignore (iter_ids_of expr); (* MYTODO *)
+      IterE (expr, (iter', xes)) $$ lhs.at % typ
     else
-      (Option.get walker.super).walk_expr walker expr
+      expr
   in
 
   (* Translate inner lhs *)
@@ -747,7 +753,7 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Iter injection *)
 
-  let walker = { Walk.base_walker with super = Some Walk.base_walker; walk_expr } in
+  let walker = { Walk.base_walker with walk_expr } in
   let instrs' = List.map (walker.walk_instr walker) instrs in
 
   (* Add ListN condition *)

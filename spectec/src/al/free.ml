@@ -2,15 +2,17 @@ open Ast
 open Util
 open Source
 
-(* TODO: Change list to set *)
 module IdSet = Set.Make (String)
 
 (* Expressions *)
 
 let (@) = IdSet.union
+let (-) = IdSet.diff
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:IdSet.empty)
 let free_list free_x xs = List.(fold_left IdSet.union IdSet.empty (map free_x xs))
-let free_pair free_x free_y (x, y) = free_x x @ free_y y
+
+
+let free_id = IdSet.singleton
 
 let rec free_expr expr =
   match expr.it with
@@ -22,7 +24,7 @@ let rec free_expr expr =
   | GetCurFrameE
   | YetE _ -> IdSet.empty
   | VarE id
-  | SubE (id, _) -> IdSet.singleton id
+  | SubE (id, _) -> free_id id
   | UnE (_, e)
   | LenE e
   | ArityE e
@@ -45,7 +47,12 @@ let rec free_expr expr =
   | ExtE (e1, ps, e2, _)
   | UpdE (e1, ps, e2) -> free_expr e1 @ free_list free_path ps @ free_expr e2
   | OptE e_opt -> free_opt free_expr e_opt
-  | IterE (e, ie) -> free_expr e @ free_iterexp ie
+  | IterE (e, ie) ->
+    (* We look for semantic free variables, not the syntactic free variables. *)
+    (* Therefore, in the expression `x*{x <- xs}`, xs is free, but x is not. *)
+    let free1 = free_expr e in
+    let bound, free2 = free_iterexp ie in
+    (free1 - bound) @ free2
   | MatchE (e1, e2) -> free_expr e1 @ free_expr e2
   | TopLabelE
   | TopFrameE
@@ -88,7 +95,10 @@ and free_arg arg =
 (* Iter exps *)
 
 and free_iterexp (iter, xes) =
-  free_iter iter @ free_list (free_pair IdSet.singleton free_expr) xes
+  let xs, es = List.split xes in
+  let bound = free_list free_id xs in
+  let free = free_iter iter @ free_list free_expr es in
+  bound, free
 
 
 (* Instructions *)
