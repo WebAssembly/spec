@@ -65,6 +65,9 @@ and free_iterexp ignore_listN (iter, xes) =
   | ListN (e, None) ->
     bound, if ignore_listN then free else union free (f e)
   | ListN (e, Some id) ->
+    (* Do not regard i* as free *)
+    let snd' = (fun (x, e) -> if Il.Eq.eq_id id x then None else Some e) in
+    let free = free_list f (List.filter_map snd' xes) in
     union bound (free_varid id), if ignore_listN then empty else union free (f e)
   | _ -> bound, free
 

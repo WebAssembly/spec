@@ -1048,7 +1048,7 @@ let un_unify (lhs, rhs, prems) =
   let new_lhs, new_prems = List.fold_left (fun (lhs, ps) p ->
     match p.it with
     | Il.LetPr (e1, ({ it = Il.VarE uvar; _} as u), _) when Il2il.is_unified_id uvar.it ->
-      let new_lhs = Il2il.transform_expr (fun e2 -> if Il.Eq.eq_exp e2 u then e1 else e2) lhs in
+      let new_lhs = Il_walk.transform_expr (fun e2 -> if Il.Eq.eq_exp e2 u then e1 else e2) lhs in
       new_lhs, ps
     | _ -> lhs, ps @ [ p ]
   ) (lhs, []) prems in

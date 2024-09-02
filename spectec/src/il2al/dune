@@ -9,5 +9,6 @@
     transpile
     free
     preprocess
+    il_walk
   )
 )

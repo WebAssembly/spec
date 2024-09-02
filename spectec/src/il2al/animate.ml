@@ -41,6 +41,52 @@ let is_assign env (tag, prem, _) =
   | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
+(* Rewrite iterexp of IterPr *)
+let rewrite (iter, xes) e =
+  let rewrite' e' =
+    match e' with
+    | VarE x ->
+      let e_opt = List.find_map (fun (x', el) ->
+        if Il.Eq.eq_id x x' then Some (IterE (e, (iter, [x', el]))) else None
+      ) xes in
+      (match e_opt with
+      | Some e_it -> e_it
+      | _ -> e')
+    | _ -> e'
+  in
+  Source.map rewrite' e
+let rec rewrite_iterexp' iterexp pr =
+  let new_ = Il_walk.transform_expr (rewrite iterexp) in
+  match pr with
+  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | IfPr e -> IfPr (new_ e)
+  | LetPr _ -> failwith "Unreachable"
+  | ElsePr -> ElsePr
+  | IterPr (pr, (iter, xes)) -> IterPr (rewrite_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
+and rewrite_iterexp iterexp pr = Source.map (rewrite_iterexp' iterexp) pr
+
+(* Recover iterexp of IterPr *)
+let recover (iter, xes) e =
+  match e.it with
+  | IterE ({it = VarE x; _} as inner_e, (iter', [x', el])) when Il.Eq.(eq_id x x' && eq_iter iter iter') ->
+    let e_opt = List.find_map (fun (x', el') ->
+      if Il.Eq.(eq_id x x' && eq_exp el el') then Some inner_e else None
+    ) xes in
+    (match e_opt with
+    | Some e_in -> e_in
+    | _ -> e)
+  | _ -> e
+let rec recover_iterexp' iterexp pr =
+  let new_ = Il_walk.transform_expr (recover iterexp) in
+  match pr with
+  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | IfPr e -> IfPr (new_ e)
+  | LetPr (e1, e2, ids) -> LetPr (new_ e1, new_ e2, ids)
+  | ElsePr -> ElsePr
+  | IterPr (pr, (iter, xes)) -> IterPr (recover_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
+and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
+
+
 (* iteratively select condition and assignment premises,
  * effectively sorting the premises as a result. *)
 let rec select_tight prems acc env fb =
@@ -181,9 +227,10 @@ let rec rows_of_prem vars len i p =
       Condition, p, [i];
       Assign frees, p, [i] @ List.filter_map (index_of len vars) (free_exp_list l)
     ]
-  | IterPr (p', iter) ->
-    let to_iter (tag, p', coverings) = tag, IterPr (p', iter) $ p.at, coverings in
-    List.map to_iter (rows_of_prem vars len i p')
+  | IterPr (p', iterexp) ->
+    let p_r = rewrite_iterexp iterexp p' in
+    let to_iter (tag, p, coverings) = tag, IterPr (recover_iterexp iterexp p, iterexp) $ p.at, coverings in
+    List.map to_iter (rows_of_prem vars len i p_r)
   | _ -> [ Condition, p, [i] ]
 
 let build_matrix prems known_vars =
