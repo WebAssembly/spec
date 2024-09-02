@@ -223,8 +223,12 @@ and string_of_args sep =
 (* Iter exps *)
 
 and string_of_iterexp (iter, xes) =
-  string_of_iter iter ^ "{" ^ String.concat ", "
-    (List.map (fun (id, e) -> id ^ " <- " ^ string_of_expr e) xes) ^ "}"
+  let suffix = "{"
+    ^ String.concat ", " (List.map (fun (id, e) -> id ^ " <- " ^ string_of_expr e) xes)
+  ^ "}"
+  in
+  ignore suffix;
+  string_of_iter iter
 
 (* Instructions *)
 
