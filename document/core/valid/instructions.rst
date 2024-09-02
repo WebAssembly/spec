@@ -1585,6 +1585,8 @@ $${rule-prose: Instr_ok/global.set}
    (2) Change Inequality condition to  existence condition
    
    (4) Wrong result type.
+
+   (8) Change “mut” to “var”
    
  below is the official specification 
 
@@ -2373,13 +2375,13 @@ $${rule-prose: Catch_ok}
 .. todo::
    below is the official specification
 
-   (L2) - [change double "~" to expand Or Erase the double "~" sign if the below  prose specification is correct]
+   (L2) - [change double "~" to expand]
 
    (2) Change Inequality condition to  existence condition
 
    (*) - [ Make "Or" branches more visible to seperate some cases]
 
-   (*) - [As in (L2), "expand(C.tags[x])" should be deleted Or the official prose specification is wrong ]
+   (**) - [THE OFFICIAL SPECIFICATION IS WRONG! It should have "expansion" in the tag type ]
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
@@ -2402,7 +2404,7 @@ $${rule: Catch_ok/catch}
 .. todo::
  below is the official specification 
 
-  (L2) - [change double "~" to expand Or Erase the double "~" sign if the below  prose specification is correct] 
+  (L2) - [change double "~" to expand ] 
 
   (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase un necessary symbols in the last line] 
 
@@ -2410,7 +2412,7 @@ $${rule: Catch_ok/catch}
 
   (*) - [Erase null in the last line] 
 
-  (*) - [As in (L2), "expand(C.tags[x])" should be deleted Or the official prose specification is wrong ]
+  (**) - [THE OFFICIAL SPECIFICATION IS WRONG! It should have "expansion" in the tag type ]
 
   (**) - ["R E F E X N" to "ref exn" IN THE OFFICIAL PROSE]
 
@@ -3100,11 +3102,9 @@ $${rule-prose: Instr_const}
 .. todo::
  below is the official specification 
 
- (L1) - [instruction name should be "instr* end const" in the first LaTeX formula, erase "n" in the "array_new_fixed x n"] 
+ (L1) - [instruction name should be "instr* end const" in the "instr* const" LaTeX formula, erase "n" in the "array_new_fixed x n",Unnecessary "iN \in i32 i64" in the premise of  "iN.binop"] 
  
  (*)  - [ Make "Or" more visible, simplify the case where 'instr' is 'gloabl.get x']
-
- (*) - ["iN.binop" is unknown]
 
 * In a *constant* expression :math:`\instr^\ast~\END` all instructions in :math:`\instr^\ast` must be constant.
 
