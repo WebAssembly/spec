@@ -343,10 +343,11 @@ and translate_path path =
   in
   translate_path' path
 
+and translate_xes xes =
+  List.map (fun (x, e) -> x.it, translate_exp e) xes
 (* Il.iterexp -> iterexp *)
 and translate_iterexp (iter, xes) =
-  let translate_xe (id, exp) = id.it, translate_exp exp in
-  translate_iter iter, List.map translate_xe xes
+  translate_iter iter, translate_xes xes
 
 let insert_assert exp =
   let at = exp.at in
@@ -970,7 +971,7 @@ let translate_rulepr id exp =
 
 let rec translate_iterpr pr (iter, xes) =
   let instrs = translate_prem pr in
-  let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) xes) in
+  let iter' = translate_iter iter in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let handle_iter_ty ty =
@@ -986,7 +987,6 @@ let rec translate_iterpr pr (iter, xes) =
 
     let lhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr lhs)) xes in
     let rhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr rhs)) xes in
-    let translate_xes = List.map (fun (x, e) -> x.it, translate_exp e) in
 
     (
       iterE (lhs, (lhs_iter, translate_xes lhs_xes)) ~at:lhs.at ~note:ty,
@@ -999,9 +999,8 @@ let rec translate_iterpr pr (iter, xes) =
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
     | IfI (cond, il1, il2) ->
-        let _cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
         let ty = handle_iter_ty cond.note in
-        [ ifI (iterE (cond, (iter', [])) ~at:cond.at ~note:ty, il1, il2) ~at:at ] (* MYTODO *)
+        [ ifI (iterE (cond, (iter', translate_xes xes)) ~at:cond.at ~note:ty, il1, il2) ~at:at ]
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr } in

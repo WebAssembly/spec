@@ -404,14 +404,13 @@ and render_expr' env expr =
   | Al.Ast.LenE e ->
     let se = render_expr env e in
     sprintf "the length of %s" se
-  (*
   | Al.Ast.IterE (e, (iter, xes)) when al_to_el_expr e = None ->
     let se = render_expr env e in
+    let ids = List.map fst xes in
     let ids = Al.Al_util.tupE (List.map (Al.Al_util.varE ~note:Al.Al_util.no_note) ids) ~note:Al.Al_util.no_note in
-    let loop = Al.Al_util.iterE (ids, [], iter) ~note:Al.Al_util.no_note in
+    let loop = Al.Al_util.iterE (ids, (iter, [])) ~note:Al.Al_util.no_note in
     let sloop = render_expr env loop in
     sprintf "for all %s, %s" sloop se
-  *) (* MYTODO *)
   | Al.Ast.ArityE e ->
     let se = render_expr env e in
     sprintf "the arity of %s" se

@@ -1029,8 +1029,7 @@ let remove_enter algo =
             popI e_frame ~at:instr.at
           ]
         | _ ->
-          let ty_vals = listT valT in
-          let e_tmp = iterE (varE ("val") ~note:valT, (List, [])) ~note:ty_vals in (* MYTODO *)
+          let e_tmp = iter_var "val" List valT in
           pushI e_frame ~at:instr.at :: il @
           (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
             popAllI e_tmp ~at:instr.at;

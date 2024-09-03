@@ -39,7 +39,7 @@ let iterPr (pr, (iter, vars)) =
 let is_null e = CmpE (EqOp, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
 let same_len e1 e2 = IfPr (CmpE (EqOp, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
-let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at
+(* let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at *)
 
 (* updates the types in the environment as we go under iteras *)
 let env_under_iter env ((_, vs) : iterexp) =
@@ -50,9 +50,9 @@ let iter_side_conditions _env ((iter, vs) : iterexp) : prem list =
   match iter, List.map snd vs with
   | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
   | (List|List1), (e::es) -> List.map (same_len e) es
-  | ListN (ne, None), es -> List.map (has_len ne) es
-  | ListN (_, Some _), _ -> []
-  | _, [] -> []
+  (* | ListN (ne, None), es -> List.map (has_len ne) es *)
+  | ListN _, _ -> []
+  | _ -> []
 
 (* Expr traversal *)
 let rec t_exp env e : prem list =
