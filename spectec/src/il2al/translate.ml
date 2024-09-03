@@ -911,9 +911,10 @@ let translate_rulepr id exp =
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
 
-let rec translate_iterpr pr (iter, ids) =
+let rec translate_iterpr pr (iter, xes) =
+  print_endline (Il.Print.string_of_prem pr);
   let instrs = translate_prem pr in
-  let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) ids) in
+  let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) xes) in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let handle_iter_ty ty =
@@ -924,13 +925,17 @@ let rec translate_iterpr pr (iter, ids) =
   in
 
   let distribute_iter lhs rhs =
-    let _lhs_ids = IdSet.elements (IdSet.inter (free_expr lhs) ids') in
-    let _rhs_ids = IdSet.elements (IdSet.inter (free_expr rhs) ids') in
     let ty = handle_iter_ty lhs.note in
     let ty' = handle_iter_ty rhs.note in
 
-    (* assert (List.length (lhs_ids @ rhs_ids) > 0); *)
-    iterE (lhs, (lhs_iter, [])) ~at:lhs.at ~note:ty, iterE (rhs, (iter', [])) ~at:rhs.at ~note:ty' (* MYTODO *)
+    let lhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr lhs)) xes in
+    let rhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr rhs)) xes in
+    let translate_xes = List.map (fun (x, e) -> x.it, translate_exp e) in
+
+    (
+      iterE (lhs, (lhs_iter, translate_xes lhs_xes)) ~at:lhs.at ~note:ty,
+      iterE (rhs, (iter', translate_xes rhs_xes)) ~at:rhs.at ~note:ty'
+    )
   in
 
   let post_instr i =
