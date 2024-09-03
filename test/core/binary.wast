@@ -118,7 +118,7 @@
     ;; Missing end marker here
     "\0a\04\01\02\00\0b"       ;; Code section: 1 function
   )
-  "illegal opcode"
+  "unexpected end of section or function"
 )
 
 ;; Local number is unsigned 32 bit
@@ -463,7 +463,7 @@
       "\02\04\01"                           ;; import section with single entry
       "\00"                                 ;; string length 0
       "\00"                                 ;; string length 0
-      "\04"                                 ;; malformed import kind
+      "\05"                                 ;; malformed import kind
   )
   "malformed import kind"
 )
@@ -473,7 +473,7 @@
       "\02\05\01"                           ;; import section with single entry
       "\00"                                 ;; string length 0
       "\00"                                 ;; string length 0
-      "\04"                                 ;; malformed import kind
+      "\05"                                 ;; malformed import kind
       "\00"                                 ;; dummy byte
   )
   "malformed import kind"

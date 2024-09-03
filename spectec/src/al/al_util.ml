@@ -23,17 +23,19 @@ let assertI ?(at = no) c = AssertI c |> mk_instr at
 let pushI ?(at = no) e = PushI e |> mk_instr at
 let popI ?(at = no) e = PopI e |> mk_instr at
 let popsI ?(at = no) e _ = PopI e |> mk_instr at (* TODO *)
-let popallI ?(at = no) e = PopAllI e |> mk_instr at
+let popAllI ?(at = no) e = PopAllI e |> mk_instr at
 let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
 let trapI ?(at = no) () = TrapI |> mk_instr at
+let throwI ?(at = no) e = ThrowI e |> mk_instr at
 let nopI ?(at = no) () = NopI |> mk_instr at
 let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
 let executeI ?(at = no) e = ExecuteI e |> mk_instr at
-let executeseqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
+let executeSeqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
 let performI ?(at = no) (id, el) = PerformI (id, el) |> mk_instr at
 let exitI ?(at = no) a = ExitI a |> mk_instr at
 let replaceI ?(at = no) (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr at
 let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
+let fieldWiseAppendI ?(at = no) (e1, e2) = FieldWiseAppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
 let yetI ?(at = no) s = YetI s |> mk_instr at
 
@@ -48,18 +50,17 @@ let accE ?(at = no) ~note (e, p) = AccE (e, p) |> mk_expr at note
 let updE ?(at = no) ~note (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at note
 let extE ?(at = no) ~note (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at note
 let strE ?(at = no) ~note r = StrE r |> mk_expr at note
+let compE ?(at = no) ~note (e1, e2) = CompE (e1, e2) |> mk_expr at note
 let catE ?(at = no) ~note (e1, e2) = CatE (e1, e2) |> mk_expr at note
 let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
 let lenE ?(at = no) ~note e = LenE e |> mk_expr at note
 let tupE ?(at = no) ~note el = TupE el |> mk_expr at note
-let caseE ?(at = no) ~note (a, el) = CaseE (a, el) |> mk_expr at note
-let caseE2 ?(at = no) ~note (op, el) = CaseE2 (op, el) |> mk_expr at note
+let caseE ?(at = no) ~note (op, el) = CaseE (op, el) |> mk_expr at note
 let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
 let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
 let iterE ?(at = no) ~note (e, ite) = IterE (e, ite) |> mk_expr at note
 let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
-let infixE ?(at = no) ~note (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at note
 let arityE ?(at = no) ~note e = ArityE e |> mk_expr at note
 let frameE ?(at = no) ~note (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
 let labelE ?(at = no) ~note (e1, e2) = LabelE (e1, e2) |> mk_expr at note
@@ -71,7 +72,7 @@ let contE ?(at = no) ~note e = ContE e |> mk_expr at note
 let chooseE ?(at = no) ~note e = ChooseE e |> mk_expr at note
 let isCaseOfE ?(at = no) ~note (e, a) = IsCaseOfE (e, a) |> mk_expr at note
 let isValidE ?(at = no) ~note e = IsValidE e |> mk_expr at note
-let contextKindE ?(at = no) ~note (a, e) = ContextKindE (a, e) |> mk_expr at note
+let contextKindE ?(at = no) ~note a = ContextKindE a |> mk_expr at note
 let isDefinedE ?(at = no) ~note e = IsDefinedE e |> mk_expr at note
 let matchE ?(at = no) ~note (e1, e2) = MatchE (e1, e2) |> mk_expr at note
 let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note
@@ -194,10 +195,13 @@ let unwrap_listv: value -> value growable_array = function
 let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
 
-let unwrap_seqv_to_list = function
+let unwrap_seqv_to_list: value -> value list = function
   | OptV opt -> Option.to_list opt
   | ListV arr -> Array.to_list !arr
   | v -> fail_value "unwrap_seqv_to_list" v
+let unwrap_seq_to_array: value -> value array = function
+  | OptV opt -> opt |> Option.to_list |> Array.of_list
+  | v -> unwrap_listv_to_array v
 
 let unwrap_textv: value -> string = function
   | TextV str -> str
@@ -251,6 +255,15 @@ let unwrap_framev: value -> value = function
   | v -> fail_value "unwrap_framev" v
 
 
+(* Mixop *)
+
+let get_atom op =
+  match List.find_opt (fun al -> List.length al <> 0) op with
+  | Some al -> Some(List.hd al)
+  | None -> None
+
+let name_of_mixop = Il.Mixop.name
+
 (* Il Types *)
 
 (* name for tuple type *)
@@ -266,6 +279,8 @@ let valT = varT "val" []
 let callframeT = varT "callframe" []
 let frameT = varT "frame" []
 let labelT = varT "label" []
+let handlerT = varT "handler" []
 let stateT = varT "state" []
 let instrT = varT "instr" []
 let admininstrT = varT "admininstr" []
+let funcT = varT "func" []

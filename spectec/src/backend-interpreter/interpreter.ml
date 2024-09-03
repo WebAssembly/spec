@@ -50,12 +50,16 @@ let transpose matrix =
       new_row :: new_rows in
   transpose' matrix
 
-let extract_exp a =
+let is_not_typarg a =
   match a.it with
-  | ExpA e -> Some e
-  | TypA _ -> None
-let extract_expargs = List.filter_map extract_exp
+  | TypA _ -> false
+  | _ -> true
+let remove_typargs = List.filter is_not_typarg
 
+let dispatch_fname f env =
+  match lookup_env_opt ("$" ^ f) env with
+  | Some (FnameV f') -> f'
+  | _ -> f
 
 let rec create_sub_env (iter, xes) env =
   let length_to_list l = List.init l al_of_int in
@@ -142,7 +146,7 @@ and check_type ty v expr =
   let vnn_types = [ "V128"; ] in
   let abs_heap_types = [
     "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
-    "NOFUNC"; "EXTERN"; "NOEXTERN"
+    "NOFUNC"; "EXN"; "NOEXN"; "EXTERN"; "NOEXTERN"
   ] in
   match v with
   (* addrref *)
@@ -228,25 +232,42 @@ and eval_expr env expr =
     eval_expr env e2 |> unwrap_listv_to_array |> Array.exists ((=) v1) |> boolV
   (* Function Call *)
   | CallE (fname, al) ->
-    let el = extract_expargs al in
-    let args = List.map (eval_expr env) el in
-    (match call_func fname args  with
+    let fname' = dispatch_fname fname env in
+    let el = remove_typargs al in
+    let args = List.map (eval_arg env) el in
+    (match call_func fname' args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
   | InvCallE (fname, _, al) ->
-    let el = extract_expargs al in
+    let fname' = dispatch_fname fname env in
+    let el = remove_typargs al in
     (* TODO: refactor numerics function name *)
-    let args = List.map (eval_expr env) el in
-    (match call_func ("inverse_of_"^fname) args  with
+    let args = List.map (eval_arg env) el in
+    (match call_func ("inverse_of_"^fname') args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
   (* Data Structure *)
   | ListE el -> List.map (eval_expr env) el |> listV_of_list
+  | CompE (e1, e2) ->
+    let s1 = eval_expr env e1 |> unwrap_strv in
+    let s2 = eval_expr env e2 |> unwrap_strv in
+    List.map
+    (fun (id, v) ->
+    let arr1 = match !v with
+    | ListV arr_ref -> arr_ref
+    | _ -> failwith (sprintf "`%s` is not a list" (string_of_value !v))
+    in
+    let arr2 = match Record.find id s2 with
+    | ListV arr_ref -> arr_ref
+    | v -> failwith (sprintf "`%s` is not a list" (string_of_value v))
+    in
+    (id, Array.append !arr1 !arr2 |> listV |> ref)
+    ) s1 |> strV
   | CatE (e1, e2) ->
-    let a1 = eval_expr env e1 |> unwrap_listv_to_array in
-    let a2 = eval_expr env e2 |> unwrap_listv_to_array in
+    let a1 = eval_expr env e1 |> unwrap_seq_to_array in
+    let a2 = eval_expr env e2 |> unwrap_seq_to_array in
     Array.append a1 a2 |> listV
   | LenE e ->
     eval_expr env e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> numV
@@ -276,7 +297,11 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE (tag, el) -> caseV (Print.string_of_atom tag, List.map (eval_expr env) el)
+  | CaseE (op, el) ->
+    (match (get_atom op) with
+    | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
+    | None -> fail_expr expr "inner mixop of caseE is empty"
+    )
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -304,6 +329,10 @@ and eval_expr env expr =
     let v2 = eval_expr env e2 in
     LabelV (v1, v2)
   | GetCurLabelE -> WasmContext.get_current_label ()
+  | GetCurContextE ->
+    (match WasmContext.get_top_context () with
+    | None -> fail_expr expr "cannot get the current context"
+    | Some ctxt -> ctxt)
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
@@ -338,7 +367,6 @@ and eval_expr env expr =
     | [], Opt -> optV None
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
-  | InfixE (e1, _, e2) -> TupV [ eval_expr env e1; eval_expr env e2 ]
   (* condition *)
   | TopFrameE ->
     let ctx = WasmContext.get_top_context () in
@@ -349,6 +377,13 @@ and eval_expr env expr =
     let ctx = WasmContext.get_top_context () in
     (match ctx with
     | Some (LabelV _) -> boolV true
+    | _ -> boolV false)
+  | ContextKindE a ->
+    let ctx = WasmContext.get_top_context () in
+    (match a.it, ctx with
+    | Atom "FRAME_", Some (FrameV _) -> boolV true
+    | Atom "LABEL_", Some (LabelV _) -> boolV true
+    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -376,11 +411,11 @@ and eval_expr env expr =
     | _ ->
       fail_expr expr "TODO: deferring validation to reference interpreter"
     )
-  | HasTypeE (e, s) ->
+  | HasTypeE (e, t) ->
     (* TODO: This shouldn't be hardcoded *)
     (* check type *)
     let v = eval_expr env e in
-    check_type s v expr
+    check_type (string_of_typ t) v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
@@ -394,6 +429,11 @@ and eval_expr env expr =
     boolV (List.length (WasmContext.get_value_stack ()) >= i)
   | _ -> fail_expr expr "cannot evaluate expr"
 
+and eval_arg env a =
+  match a.it with
+  | ExpA e -> eval_expr env e
+  | TypA _ -> assert false
+  | DefA id -> FnameV (dispatch_fname id env)
 
 (* Assignment *)
 
@@ -431,17 +471,19 @@ and assign lhs rhs env =
       in
       assign e v env
     ) env' xes
-  | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
-    env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
     when List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
-  | CaseE (lhs_tag, lhs_s), CaseV (rhs_tag, rhs_s)
-    when (Print.string_of_atom lhs_tag) = rhs_tag && List.length lhs_s = List.length rhs_s ->
-    List.fold_right2 assign lhs_s rhs_s env
+  | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
+    (match get_atom op with
+    | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
+      List.fold_right2 assign lhs_s rhs_s env
+    | _ -> fail_expr lhs
+      (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))
+    )
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
@@ -493,6 +535,11 @@ and assign_split lhs vs env =
     env |> assign ep prefix |> assign es suffix
   )
 
+and assign_param lhs rhs env =
+  match lhs.it with
+  | ExpA e -> assign e rhs env
+  | TypA _ -> assert false
+  | DefA id -> Env.add ("$" ^ id) rhs env
 
 (* Step *)
 
@@ -566,11 +613,12 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
   | PerformI (f, al) ->
-    let el = extract_expargs al in
-    let args = List.map (eval_expr env) el in
+    let el = remove_typargs al in
+    let args = List.map (eval_arg env) el in
     call_func f args |> ignore;
     ctx
   | TrapI -> raise Exception.Trap
+  | ThrowI _ -> raise Exception.Throw
   | NopI -> ctx
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->
@@ -625,6 +673,22 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
       |> fail_expr e2
     | _, v -> a := Array.append !a [|v|]
     );
+    ctx
+  | FieldWiseAppendI (e1, e2) ->
+    let s1 = eval_expr env e1 |> unwrap_strv in
+    let s2 = eval_expr env e2 |> unwrap_strv in
+    Record.iter
+    (fun (id, v) ->
+    let arr1 = match !v with
+    | ListV arr_ref -> arr_ref
+    | _ -> failwith (sprintf "`%s` is not a list" (string_of_value !v))
+    in
+    let arr2 = match Record.find id s2 with
+    | ListV arr_ref -> arr_ref
+    | v -> failwith (sprintf "`%s` is not a list" (string_of_value v))
+    in
+    arr1 := Array.append !arr1 !arr2
+    ) s1;
     ctx
   | _ -> failwith "cannot step instr"
 
@@ -700,8 +764,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let algo = lookup_algo name in
   let params = params_of_algo algo in
   let body = body_of_algo algo in
-
-  let params = params |> extract_expargs in
+  let params = params |> remove_typargs in
 
   if List.length args <> List.length params then (
     error
@@ -715,7 +778,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
 
   let env =
     Env.empty
-    |> List.fold_right2 assign params args
+    |> List.fold_right2 assign_param params args
   in
 
   AlContext.al (name, body, env)

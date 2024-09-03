@@ -13,10 +13,11 @@ type num = (I32.t, I64.t, F32.t, F64.t) op
 type vec = (V128.t) vecop
 
 type ref_ = ..
-type ref_ += NullRef of heap_type
 
 type value = Num of num | Vec of vec | Ref of ref_
 type t = value
+
+type ref_ += NullRef of heap_type
 
 
 (* Injection & projection *)
@@ -298,8 +299,10 @@ let string_of_vec = function
 let hex_string_of_vec = function
   | V128 v -> V128.to_hex_string v
 
-let string_of_ref' = ref (function NullRef t -> "null" | _ -> "ref")
-let string_of_ref r = !string_of_ref' r
+let string_of_ref' = ref (function _ -> "ref")
+let string_of_ref = function
+  | NullRef _ -> "null"
+  | r -> !string_of_ref' r
 
 let string_of_value = function
   | Num n -> string_of_num n

@@ -255,7 +255,7 @@ $${rule: Deftype_sub/refl Deftype_sub/super}
 .. note::
    Note that there is no explicit definition of type *equivalence*,
    since it coincides with syntactic equality,
-   as used in the premise of the fomer rule above.
+   as used in the premise of the former rule above.
 
 
 .. index:: limits
@@ -324,6 +324,19 @@ A :ref:`global type <syntax-globaltype>` ${globaltype: (mut1 valtype_1)} matches
 $${rule: {Globaltype_sub/*}}
 
 
+.. index:: tag type
+.. _match-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+A :ref:`tag type <syntax-tagtype>` ${tagtype: deftype_1} matches ${tagtype: deftype_2} if and only if:
+
+* :ref:`Defined type <syntax-deftype>` :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2` and vice versa.
+
+$${rule: {Tagtype_sub}}
+
+
 .. index:: external type, function type, table type, memory type, global type
 .. _match-externtype:
 
@@ -368,3 +381,13 @@ An :ref:`external type <syntax-externtype>` ${externtype: GLOBAL globaltype_1} m
 * Global type :math:`\globaltype_1` :ref:`matches <match-globaltype>` :math:`\globaltype_2`.
 
 $${rule: Externtype_sub/global}
+
+
+Tags
+....
+
+An :ref:`external type <syntax-externtype>` ${externtype: TAG tagtype_1} matches ${externtype: TAG tagtype_2} if and only if:
+
+* Tag type :math:`\tagtype_1` :ref:`matches <match-tagtype>` :math:`\tagtype_2`.
+
+$${rule: Externtype_sub/tag}

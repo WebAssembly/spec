@@ -23,12 +23,12 @@ let rec eq_expr e1 e2 =
   | ExtE (e11, pl1, e12, d1), ExtE (e21, pl2, e22, d2) ->
     eq_expr e11 e21 && eq_paths pl1 pl2 && eq_expr e12 e22 && d1 = d2
   | StrE r1, StrE r2 -> eq_expr_record r1 r2
+  | CompE (e11, e12), CompE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | CatE (e11, e12), CatE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | MemE (e11, e12), MemE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | LenE e1, LenE e2 -> eq_expr e1 e2
   | TupE el1, TupE el2 -> eq_exprs el1 el2
-  | CaseE (a1, el1), CaseE (a2, el2) -> El.Atom.eq a1 a2 && eq_exprs el1 el2
-  | CaseE2 (op1, el1), CaseE2 (op2, el2) -> Il.Mixop.eq op1 op2 && eq_exprs el1 el2
+  | CaseE (op1, el1), CaseE (op2, el2) -> Il.Mixop.eq op1 op2 && eq_exprs el1 el2
   | CallE (i1, al1), CallE (i2, al2) -> i1 = i2 && eq_args al1 al2
   | InvCallE (i1, nl1, al1), InvCallE (i2, nl2, al2) ->
     i1 = i2 && List.for_all2 (=) nl1 nl2 && eq_args al1 al2
@@ -36,8 +36,6 @@ let rec eq_expr e1 e2 =
     eq_expr e1 e2 && eq_iterexp ie1 ie2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
-  | InfixE (e11, a1, e12), InfixE (e21, a2, e22) ->
-    eq_expr e11 e21 && El.Atom.eq a1 a2 && eq_expr e12 e22
   | ArityE e1, ArityE e2 -> eq_expr e1 e2
   | FrameE (eo1, e1), FrameE (eo2, e2) ->
     eq_expr_opt eo1 eo2 && eq_expr e1 e2
@@ -51,15 +49,15 @@ let rec eq_expr e1 e2 =
   | ChooseE e1, ChooseE e2 -> eq_expr e1 e2
   | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) -> eq_expr e1 e2 && El.Atom.eq a1 a2
   | IsValidE e1, IsValidE e2 -> eq_expr e1 e2
-  | ContextKindE (a1, e1), ContextKindE (a2, e2) -> El.Atom.eq a1 a2 && eq_expr e1 e2
+  | ContextKindE a1, ContextKindE a2 -> El.Atom.eq a1 a2
   | IsDefinedE e1, IsDefinedE e2 -> eq_expr e1 e2
   | MatchE (e11, e12), MatchE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
-  | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && t1 = t2
+  | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && Il.Eq.eq_typ t1 t2
   | TopLabelE, TopLabelE
   | TopFrameE, TopFrameE -> true
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
-  | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && t1 = t2
+  | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2
   | YetE s1, YetE s2 -> s1 = s2
   | _ -> false
 
@@ -102,6 +100,7 @@ and eq_arg a1 a2 =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> eq_expr e1 e2
   | TypA typ1, TypA typ2 -> Il.Eq.eq_typ typ1 typ2
+  | DefA id1, DefA id2 -> id1 = id2
   | _ -> false
 
 and eq_args al1 al2 = eq_list eq_arg al1 al2
@@ -120,6 +119,7 @@ let rec eq_instr i1 i2 =
   | EnterI (e11, e12, il1), EnterI (e21, e22, il2) ->
     eq_expr e11 e21 && eq_expr e12 e22 && eq_instrs il1 il2
   | AssertI e1, AssertI e2
+  | ThrowI e1, ThrowI e2
   | PushI e1, PushI e2
   | PopI e1, PopI e2
   | PopAllI e1, PopAllI e2 -> eq_expr e1 e2
@@ -134,6 +134,7 @@ let rec eq_instr i1 i2 =
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     eq_expr e11 e21 && eq_path p1 p2 && eq_expr e12 e22
   | AppendI (e11, e12), AppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
+  | FieldWiseAppendI (e11, e12),FieldWiseAppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | OtherwiseI il1, OtherwiseI il2 -> eq_instrs il1 il2
   | YetI s1, YetI s2 -> s1 = s2
   | _ -> false

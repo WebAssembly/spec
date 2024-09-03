@@ -8,6 +8,7 @@ val lookup_algo : string -> algorithm
 
 type env = value Env.t
 val lookup_env : string -> env -> value
+val lookup_env_opt : string -> env -> value option
 
 module Store : sig
   val get : unit -> value

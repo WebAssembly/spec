@@ -19,9 +19,10 @@ ci: all
 EXE = exe-$(NAME)/main.exe
 SRCDIR = src
 OUTDIR = _build/default/src
+ROOTDIR = ..
+REFINTERPDIR = $(ROOTDIR)/interpreter
 CLONEDIR = src/backend-interpreter/reference-interpreter
 CLONERM = dune-project jslib
-ROOTDIR = ..
 
 .PHONY: exe
 
@@ -30,8 +31,9 @@ exe: $(CLONEDIR)
 	dune build $(SRCDIR)/$(EXE)
 	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
 
-$(CLONEDIR):
-	cp -R $(ROOTDIR)/interpreter $(CLONEDIR)
+$(CLONEDIR): $(shell find $(REFINTERPDIR) -type f)
+	rm -rf $(CLONEDIR)
+	cp -R $(REFINTERPDIR) $(CLONEDIR)
 	rm -r $(CLONERM:%=$@/%)
 	cp $@/../dune-ref-interp $@/dune
 

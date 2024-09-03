@@ -9,12 +9,13 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index, field index
+.. index:: index, type index, function index, table index, memory index, global index, tag index, element index, data index, local index, label index, field index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
    pair: binary format; memory index
    pair: binary format; global index
+   pair: binary format; tag index
    pair: binary format; element index
    pair: binary format; data index
    pair: binary format; local index
@@ -25,6 +26,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-tableidx:
 .. _binary-memidx:
 .. _binary-globalidx:
+.. _binary-tagidx:
 .. _binary-elemidx:
 .. _binary-dataidx:
 .. _binary-localidx:
@@ -39,7 +41,7 @@ Indices
 All basic :ref:`indices <syntax-index>` are encoded with their respective value.
 
 $${grammar: {
-  Btypeidx Bfuncidx Btableidx Bmemidx Bglobalidx Belemidx Bdataidx
+  Btypeidx Bfuncidx Btableidx Bmemidx Bglobalidx Btagidx Belemidx Bdataidx
   Blocalidx Blabelidx
 }}
 
@@ -93,6 +95,7 @@ Id  Section
 10  :ref:`code section <binary-codesec>`           
 11  :ref:`data section <binary-datasec>`           
 12  :ref:`data count section <binary-datacntsec>`
+13  :ref:`tag section <binary-tagsec>`
 ==  ===============================================
 
 .. note::
@@ -132,7 +135,7 @@ It decodes into the list of :ref:`recursive types <syntax-rectype>` of a :ref:`m
 $${grammar: {Btypesec Btype}}
 
 
-.. index:: ! import section, import, name, function type, table type, memory type, global type
+.. index:: ! import section, import, name, function type, table type, memory type, global type, tag type
    pair: binary format; import
    pair: section; import
 .. _binary-import:
@@ -157,7 +160,7 @@ Function Section
 ~~~~~~~~~~~~~~~~
 
 The *function section* has the id 3.
-It decodes into a list of :ref:`type indices <syntax-typeidx>` that classify the :ref:`functions <syntax-func>` of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`type indices <syntax-typeidx>` that classify the :ref:`functions <syntax-func>` defined by a :ref:`module <syntax-module>`.
 The bodies of the respective functions are encoded separately in the :ref:`code section <binary-codesec>`.
 
 $${grammar: {Bfuncsec}}
@@ -173,7 +176,7 @@ Table Section
 ~~~~~~~~~~~~~
 
 The *table section* has the id 4.
-It decodes into the list of :ref:`tables <syntax-table>` of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`tables <syntax-table>` defined by a :ref:`module <syntax-module>`.
 
 $${grammar: {Btablesec Btable}}
 
@@ -193,7 +196,7 @@ Memory Section
 ~~~~~~~~~~~~~~
 
 The *memory section* has the id 5.
-It decodes into the list of :ref:`memories <syntax-mem>` of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`memories <syntax-mem>` defined by a :ref:`module <syntax-module>`.
 
 $${grammar: {Bmemsec Bmem}}
 
@@ -208,12 +211,12 @@ Global Section
 ~~~~~~~~~~~~~~
 
 The *global section* has the id 6.
-It decodes into the list of :ref:`globals <syntax-global>` of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`globals <syntax-global>` defined by a :ref:`module <syntax-module>`.
 
 $${grammar: {Bglobalsec Bglobal}}
 
 
-.. index:: ! export section, export, name, index, function index, table index, memory index, global index
+.. index:: ! export section, export, name, index, function index, table index, memory index, tag index, global index
    pair: binary format; export
    pair: section; export
 .. _binary-export:
@@ -258,7 +261,7 @@ Element Section
 ~~~~~~~~~~~~~~~
 
 The *element section* has the id 9.
-It decodes into the list of :ref:`element segments <syntax-elem>` of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`element segments <syntax-elem>` defined by a :ref:`module <syntax-module>`.
 
 $${grammar: {Belemsec Belemkind Belem}}
 
@@ -285,7 +288,7 @@ Code Section
 
 The *code section* has the id 10.
 It decodes into the list of *code* entries that are pairs of lists of :ref:`locals <syntax-list>` and :ref:`expressions <syntax-expr>`.
-They represent the body of the :ref:`functions <syntax-func>` of a :ref:`module <syntax-module>`.
+They represent the body of the :ref:`functions <syntax-func>` defined by a :ref:`module <syntax-module>`.
 The types of the respective functions are encoded separately in the :ref:`function section <binary-funcsec>`.
 
 The encoding of each code entry consists of
@@ -325,7 +328,7 @@ Data Section
 ~~~~~~~~~~~~
 
 The *data section* has the id 11.
-It decodes into the list of :ref:`data segments <syntax-data>` of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`data segments <syntax-data>` defined by a :ref:`module <syntax-module>`.
 
 $${grammar: {Bdatasec Bdata}}
 
@@ -359,7 +362,22 @@ $${grammar: {Bdatacntsec Bdatacnt}}
    instead of deferring validation.
 
 
-.. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
+.. index:: ! tag section, tag, tag type, function type index, exception tag
+   pair: binary format; tag
+   pair: section; tag
+.. _binary-tag:
+.. _binary-tagsec:
+
+Tag Section
+~~~~~~~~~~~
+
+The *tag section* has the id 13.
+It decodes into the list of :ref:`tags <syntax-tag>` defined by a :ref:`module <syntax-module>`.
+
+$${grammar: {Btagsec Btag}}
+
+
+.. index:: module, section, type definition, function type, function, table, memory, tag, global, element, data, start function, import, export, context, version
    pair: binary format; module
 .. _binary-magic:
 .. _binary-version:

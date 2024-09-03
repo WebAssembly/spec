@@ -45,7 +45,6 @@ let rec extract_desc typ = match typ.it with
 
 
 let string_of_atom = El.Print.string_of_atom
-let string_of_mixop = Il.Print.string_of_mixop
 let string_of_typ = Il.Print.string_of_typ
 
 (* Operators *)
@@ -120,8 +119,10 @@ and string_of_expr expr =
         |> sprintf "%s_%s" id
     in
     sprintf "$%s^-1(%s)" id' (string_of_args ", " al)
-  | CatE (e1, e2) ->
+  | CompE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
+  | CatE (e1, e2) ->
+    sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
     sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
@@ -151,18 +152,29 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ({ it=El.Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
+  | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE (a, []) -> string_of_atom a
-  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
-  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
+  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
+  | ContextKindE a -> sprintf "the top of the stack is a %s" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
+  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelE -> "a label is now on the top of the stack"
   | TopFrameE -> "a frame is now on the top of the stack"
@@ -205,6 +217,7 @@ and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
   | TypA typ -> string_of_typ typ
+  | DefA id -> "$" ^ id
 
 and string_of_args sep =
   let string_of_list stringifier sep = function
@@ -266,6 +279,7 @@ let string_of_stack_prefix expr =
   | LabelE _
   | FrameE _
   | VarE ("F" | "L") -> ""
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | IterE _ -> "the values "
   | _ -> "the value "
 
@@ -280,39 +294,30 @@ let rec string_of_instr' depth instr =
 
   let open Al.Ast in
   match instr.it with
-  | IfI (e, il, []) ->
-    sprintf "%s If %s, then:%s" (make_index depth) (string_of_expr e)
-      (string_of_instrs' (depth + 1) il)
-  | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, []); _ } ]) ->
-    let if_index = make_index depth in
-    let else_if_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else if %s, then:%s"
-      if_index
-      (string_of_expr e)
-      (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
-      (string_of_expr inner_e)
-      (string_of_instrs' (depth + 1) inner_il1)
-  | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, inner_il2); _ } ]) ->
-    let if_index = make_index depth in
-    let else_if_index = make_index depth in
-    let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else if %s, then:%s\n%s Else:%s"
-      if_index
-      (string_of_expr e)
-      (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
-      (string_of_expr inner_e)
-      (string_of_instrs' (depth + 1) inner_il1)
-      (repeat indent depth ^ else_index)
-      (string_of_instrs' (depth + 1) inner_il2)
   | IfI (e, il1, il2) ->
     let if_index = make_index depth in
-    let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else:%s" if_index (string_of_expr e)
+    let if_prose = sprintf "%s If %s, then:%s" if_index (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_index)
-      (string_of_instrs' (depth + 1) il2)
+    in
+
+    let rec collect_clause il =
+      match il with
+      | [ {it = IfI (c, il1, il2); _} ] -> (Some c, il1) :: collect_clause il2
+      | _ -> [(None, il)]
+    in
+    let else_clauses = collect_clause il2 |> List.filter (fun (_, x) -> x <> []) in
+    let else_proses = List.map (fun (cond_opt, il)->
+      let else_index = make_index depth in
+      match cond_opt with
+      | None -> sprintf "%s Else:%s"
+        (repeat indent depth ^ else_index)
+        (string_of_instrs' (depth + 1) il)
+      | Some e ->  sprintf "%s Else if %s, then:%s"
+        (repeat indent depth ^ else_index) (string_of_expr e)
+        (string_of_instrs' (depth + 1) il)
+    ) else_clauses in
+
+    String.concat "\n" (if_prose :: else_proses)
   | OtherwiseI il ->
     sprintf "%s Otherwise:%s" (make_index depth)
       (string_of_instrs' (depth + 1) il)
@@ -337,6 +342,8 @@ let rec string_of_instr' depth instr =
     sprintf "%s Let %s be %s." (make_index depth) (string_of_expr e1)
       (string_of_expr e2)
   | TrapI -> sprintf "%s Trap." (make_index depth)
+  | ThrowI e ->
+    sprintf "%s Throw the exception %s as a result." (make_index depth) (string_of_expr e)
   | NopI -> sprintf "%s Do nothing." (make_index depth)
   | ReturnI None -> sprintf "%s Return." (make_index depth)
   | ReturnI (Some e) -> sprintf "%s Return %s." (make_index depth) (string_of_expr e)
@@ -356,6 +363,9 @@ let rec string_of_instr' depth instr =
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (make_index depth)
+      (string_of_expr e2) (string_of_expr e1)
+  | FieldWiseAppendI (e1, e2) ->
+    sprintf "%s Append %s to the %s, fieldwise." (make_index depth)
       (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 

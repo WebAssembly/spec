@@ -3,12 +3,15 @@
   (libraries middlend util il al)
   (modules
     animate
-    il2il
+    unify
     manual
     translate
     transpile
     free
     preprocess
     il_walk
+    encode
+    def
+    il2al_util
   )
 )

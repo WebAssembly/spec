@@ -13,6 +13,7 @@ sig
   val nub : ('a -> 'a -> bool) -> 'a list -> 'a list
   val filter_not : ('a -> bool) -> 'a list -> 'a list
   val flatten_opt : 'a option list -> 'a list option
+  val assoc_map : ('a -> 'b) -> ('k * 'a) list -> ('k * 'b) list
 end
 
 module Char :

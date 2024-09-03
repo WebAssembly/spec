@@ -67,6 +67,7 @@ let a2e a =
   match a.it with
   | Al.Ast.ExpA e -> e
   | Al.Ast.TypA _ -> error a.at "Caannot render inverse function with type argument"
+  | Al.Ast.DefA _ -> error a.at "Caannot render inverse function with def argument"
 
 let al_invcalle_to_al_bine e id nl al =
   let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
@@ -145,6 +146,8 @@ and al_to_el_arg arg =
   | Al.Ast.TypA _typ ->
     (* TODO: Require Il.Ast.typ to El.Ast.typ translation *)
     Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at)))
+  | Al.Ast.DefA id ->
+    Some (El.Ast.DefA (id $ no_region))
 
 and al_to_el_args args =
   List.fold_left
@@ -230,16 +233,14 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
-    | Al.Ast.InfixE (e1, op, e2) ->
-      let* ele1 = al_to_el_expr e1 in
-      let* ele2 = al_to_el_expr e2 in
-      Some (El.Ast.InfixE (ele1, op, ele2))
-    | Al.Ast.CaseE (a, el) ->
-      let ela = (El.Ast.AtomE a) $ no_region in
+    | Al.Ast.CaseE (op, el) ->
+      let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
-      let ele = El.Ast.SeqE ([ ela ] @ elel) in
-      if List.length elel = 0 then Some ele
-      else Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
+      (match elel with
+      | _::_ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      | [] -> Some ele
+      )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)
@@ -247,6 +248,23 @@ and al_to_el_expr expr =
     | _ -> None
   in
   Option.map (fun exp' -> exp' $ no_region) exp'
+
+and case_to_el_exprs al el =
+  match al with
+  | [] -> error no_region "empty mixop in a AL case expr"
+  | hd::tl ->
+    List.fold_left2 (fun acc a e -> a::Some(e)::acc) [ hd ] tl el
+    |> List.filter_map (fun x -> x)
+    |> List.rev
+
+and mixop_to_el_exprs op =
+  List.map
+    (fun al ->
+      match al with
+      | [ a ] -> Some((El.Ast.AtomE a) $ no_region)
+      | _ -> None
+    )
+  op
 
 and al_to_el_exprs exprs =
   List.fold_left
@@ -418,10 +436,9 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
-  | Al.Ast.ContextKindE (a, e) ->
+  | Al.Ast.ContextKindE a ->
     let sa = render_atom env a in
-    let se = render_expr env e in
-    sprintf "%s is %s" se sa
+    sprintf "the top of the stack is a %s" sa
   | Al.Ast.IsDefinedE e ->
     let se = render_expr env e in
     sprintf "%s is defined" se
@@ -431,7 +448,7 @@ and render_expr' env expr =
     sprintf "%s is of the case %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    sprintf "the type of %s is %s" se t
+    sprintf "the type of %s is %s" se (Il.Print.string_of_typ t)
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se
@@ -448,6 +465,8 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s matches %s" se1 se2
+  | Al.Ast.YetE s ->
+    sprintf "YetE: %s" s
   | _ ->
     let se = "`" ^ (Al.Print.string_of_expr expr) ^ "`" in
     if env.config.panic_on_error then (
@@ -547,6 +566,7 @@ let render_stack_prefix expr =
   | Al.Ast.FrameE _
   | Al.Ast.LabelE _
   | Al.Ast.VarE ("F" | "L") -> ""
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
 
@@ -636,6 +656,8 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
       (render_expr env e)
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
+  | Al.Ast.ThrowI e ->
+    sprintf "%s Throw the exception %s as a result." (render_order index depth) (render_expr env e)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
   | Al.Ast.ReturnI e_opt ->
     sprintf "%s Return%s." (render_order index depth)
@@ -657,6 +679,9 @@ let rec render_al_instr env algoname index depth instr =
       (render_expr env (Al.Al_util.accE (e1, p) ~note:Al.Al_util.no_note ~at:no_region)) (render_expr env e2)
   | Al.Ast.AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (render_order index depth)
+      (render_expr env e2) (render_expr env e1)
+  | Al.Ast.FieldWiseAppendI (e1, e2) ->
+    sprintf "%s Append %s to the %s, fieldwise" (render_order index depth)
       (render_expr env e2) (render_expr env e1)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 
@@ -680,8 +705,9 @@ let render_atom_title env name params =
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in
+  let op = [name] :: List.init (List.length params) (fun _ -> []) in
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
-  let expr = Al.Al_util.caseE (name, params) ~at:no_region ~note:Al.Al_util.no_note in
+  let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp

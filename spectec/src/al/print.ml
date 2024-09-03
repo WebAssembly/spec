@@ -74,6 +74,7 @@ and string_of_value =
   | StrV r -> string_of_record r
   | OptV (Some e) -> "?(" ^ string_of_value e ^ ")"
   | OptV None -> "?()"
+  | FnameV id -> "$" ^ id
 
 and string_of_values sep = string_of_list string_of_value sep
 
@@ -144,8 +145,10 @@ and string_of_expr expr =
         |> sprintf "%s_%s" id
     in
     sprintf "$%s^-1(%s)" id' (string_of_args ", " al)
-  | CatE (e1, e2) ->
+  | CompE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
+  | CatE (e1, e2) ->
+    sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
     sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
@@ -175,18 +178,29 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
+  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE (a, []) -> string_of_atom a
-  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
-  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
+  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE (a, e) -> sprintf "%s == %s" (string_of_expr e) (string_of_atom a)
+  | ContextKindE a -> sprintf "context_kind(%s)" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s != None" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) t
+  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "valid(%s)" (string_of_expr e)
   | TopLabelE -> "top_label()"
     (* TODO: "type(top()) == label"*)
@@ -222,6 +236,7 @@ and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
   | TypA typ -> string_of_typ typ
+  | DefA id -> "$" ^ id
 
 and string_of_args sep = string_of_list string_of_arg sep
 
@@ -317,6 +332,7 @@ let rec string_of_instr' depth instr =
     sprintf " Let %s = %s" (string_of_expr e1)
       (string_of_expr e2)
   | TrapI -> sprintf " Trap"
+  | ThrowI e -> sprintf " Throw %s" (string_of_expr e)
   | NopI -> sprintf " Nop"
   | ReturnI None -> sprintf " Return"
   | ReturnI (Some e) -> sprintf " Return %s" (string_of_expr e)
@@ -336,6 +352,9 @@ let rec string_of_instr' depth instr =
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
     sprintf " %s :+ %s"
+      (string_of_expr e2) (string_of_expr e1)
+  | FieldWiseAppendI (e1, e2) ->
+    sprintf " %s :⨁ %s"
       (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf " YetI: %s." s
 
@@ -386,6 +405,7 @@ let rec structured_string_of_value = function
   | StrV _r -> "StrV (TODO)"
   | OptV None -> "OptV"
   | OptV (Some e) -> "OptV (" ^ structured_string_of_value e ^ ")"
+  | FnameV id -> "FnameV (\"" ^ id ^ "\")"
 
 and structured_string_of_values vl = string_of_list structured_string_of_value ", " vl
 
@@ -432,6 +452,12 @@ and structured_string_of_expr expr =
     let nl = List.filter_map (fun x -> x) nl in
     sprintf "InvCallE (%s, [%s], [%s])"
       id (string_of_list string_of_int "" nl) (structured_string_of_args al)
+  | CompE (e1, e2) ->
+    "CompE ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
   | CatE (e1, e2) ->
     "CatE ("
     ^ structured_string_of_expr e1
@@ -486,7 +512,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
-  | SubE (id, t) -> "SubE (" ^ id ^ "," ^ t ^ ")"
+  | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
   | IterE (e, (iter, xes)) ->
     "IterE ("
     ^ structured_string_of_expr e
@@ -495,26 +521,16 @@ and structured_string_of_expr expr =
     ^ ", {"
     ^ string_of_list (fun (x, e) -> x ^ structured_string_of_expr e) ", " xes
     ^ "}))"
-  | InfixE (e1, a, e2) ->
-    "InfixE ("
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ string_of_atom a
-    ^ ", "
-    ^ structured_string_of_expr e2
-    ^ ")"
-  | CaseE (a, el) ->
-    "CaseE (" ^ string_of_atom a
-    ^ ", [" ^ structured_string_of_exprs el ^ "])"
-  | CaseE2 (op, el) ->
-    "CaseE2 (" ^ string_of_mixop op
+  | CaseE (op, el) ->
+    "CaseE (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
-  | ContextKindE (a, e) -> sprintf "ContextKindE (%s, %s)" (string_of_atom a) (structured_string_of_expr e)
+  | ContextKindE a -> sprintf "ContextKindE (%s)" (string_of_atom a)
   | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfE (e, a) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ string_of_atom a ^ ")"
-  | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
+  | HasTypeE (e, t) ->
+    sprintf "HasTypeE (%s, %s)" (structured_string_of_expr e) (string_of_typ t)
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"
@@ -551,6 +567,7 @@ and structured_string_of_arg arg =
   match arg.it with
   | ExpA e -> sprintf "ExpA (%s)" (structured_string_of_expr e)
   | TypA typ -> sprintf "TypA (%s)" (string_of_typ typ)
+  | DefA id -> sprintf "DefA (%s)" id
 
 and structured_string_of_args al = string_of_list structured_string_of_arg ", " al
 
@@ -588,6 +605,7 @@ let rec structured_string_of_instr' depth instr =
     ^ structured_string_of_expr e2
     ^ ")"
   | TrapI -> "TrapI"
+  | ThrowI e -> "ThrowI (" ^ structured_string_of_expr e ^ ")"
   | NopI -> "NopI"
   | ReturnI None -> "ReturnI"
   | ReturnI (Some e) -> "ReturnI (" ^ structured_string_of_expr e ^ ")"
@@ -613,6 +631,12 @@ let rec structured_string_of_instr' depth instr =
     ^ ")"
   | AppendI (e1, e2) ->
     "AppendI ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
+  | FieldWiseAppendI (e1, e2) ->
+    "FieldWiseAppendI ("
     ^ structured_string_of_expr e1
     ^ ", "
     ^ structured_string_of_expr e2

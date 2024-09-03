@@ -22,6 +22,7 @@ let rec free_expr expr =
   | GetCurLabelE
   | GetCurContextE
   | GetCurFrameE
+  | ContextKindE _
   | YetE _ -> IdSet.empty
   | VarE id
   | SubE (id, _) -> free_id id
@@ -31,9 +32,9 @@ let rec free_expr expr =
   | ContE e
   | ChooseE e -> free_expr e
   | BinE (_, e1, e2)
+  | CompE (e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)
-  | InfixE (e1, _, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) -> free_opt free_expr e_opt @ free_expr e
   | CallE (_, al)
@@ -41,7 +42,6 @@ let rec free_expr expr =
   | TupE el
   | ListE el
   | CaseE (_, el) -> free_list free_expr el
-  | CaseE2 (_, el) -> free_list free_expr el
   | StrE r -> free_list (fun (_, e) -> free_expr !e) r
   | AccE (e, p) -> free_expr e @ free_path p
   | ExtE (e1, ps, e2, _)
@@ -57,7 +57,6 @@ let rec free_expr expr =
   | TopLabelE
   | TopFrameE
   | TopValueE None -> IdSet.empty
-  | ContextKindE (_, e)
   | IsDefinedE e
   | IsCaseOfE (e, _)
   | HasTypeE (e, _)
@@ -89,7 +88,8 @@ and free_path path =
 and free_arg arg =
   match arg.it with
   | ExpA e -> free_expr e
-  | TypA _ -> IdSet.empty
+  | TypA _
+  | DefA _ -> IdSet.empty
 
 
 (* Iter exps *)
@@ -109,10 +109,10 @@ let rec free_instr instr =
   | OtherwiseI il -> free_list free_instr il
   | EitherI (il1, il2) -> free_list free_instr il1 @ free_list free_instr il2
   | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> IdSet.empty
-  | PushI e | PopI e | PopAllI e | ReturnI (Some e)
+  | ThrowI e | PushI e | PopI e | PopAllI e | ReturnI (Some e)
   | ExecuteI e | ExecuteSeqI e ->
     free_expr e
-  | LetI (e1, e2) | AppendI (e1, e2) -> free_expr e1 @ free_expr e2
+  | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) -> free_expr e1 @ free_expr e2
   | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ free_list free_instr il
   | AssertI e -> free_expr e
   | PerformI (_, al) -> free_list free_arg al

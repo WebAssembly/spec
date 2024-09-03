@@ -31,6 +31,8 @@ let error_struct source typ =
   error_valid "invalid struct type" source (Il.Print.string_of_typ typ)
 let error_tuple source typ =
   error_valid "invalid tuple type" source (Il.Print.string_of_typ typ)
+let error_case source typ =
+  error_valid "invalid case type" source (Il.Print.string_of_typ typ)
 
 
 let (let*) = Option.bind
@@ -43,7 +45,7 @@ module Set = Free.IdSet
 let bound_set: Set.t ref = ref Set.empty
 let add_bound_var id = bound_set := Set.add id !bound_set
 let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
-let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ -> ()
+let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ | DefA _ -> ()
 
 (* Type Env *)
 
@@ -61,7 +63,6 @@ let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match Env.find_opt_typ !env id with
   | Some (_, insts) ->
-
     let get_deftyp inst =
       let typ_of_arg arg =
         match (Eval.reduce_arg !env arg).it with
@@ -93,7 +94,7 @@ let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
   | StructT _ -> None
   | VariantT typcases
   when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
-    typcases |> List.map (fun (_, (_, typ, _), _) -> typ) |> unify_typs_opt
+    typcases |> List.map (fun (_mixop, (_bs, typ, _ps), _hs) -> typ) |> unify_typs_opt
   | _ -> None
 
 and unify_deftyps_opt : deftyp list -> typ option = function
@@ -248,6 +249,15 @@ let check_field source source_typ expr_record typfield =
   | Some (_, expr_ref) -> check_match source !expr_ref.note typ
   | None -> error_field source source_typ atom
 
+let check_struct source typ =
+  match typ.it with
+  | VarT (id, args) -> (
+    let deftyps = get_deftyps id args in
+    if not (List.exists (fun deftyp -> match deftyp.it with StructT _ -> true | _ -> false) deftyps) then
+      error_valid "not a struct" source ""
+  )
+  | _ -> error_valid "not a struct" source ""
+
 let check_tuple source exprs typ =
   match (ground_typ_of typ).it with
   | TupT etl when List.length exprs = List.length etl ->
@@ -282,31 +292,76 @@ let check_call source id args result_typ =
   | None -> error_valid "no function definition" source ""
 
 let check_inv_call source id indices args result_typ =
-  let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region
-  in
+  (* Get typs from result_typ *)
   let typs =
     match result_typ.it with
     | TupT l -> l |> List.split |> snd
     | _ -> [result_typ]
   in
+
+  (* Make arguments with typs *)
+  let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region in
   let free_args = List.map typ2arg typs in
-  let count_free_args = ref 0 in
-  let count_bound_args = ref 0 in
-  let idx2arg idx =
-    if Option.is_some idx then (
-      count_free_args := !count_free_args + 1;
-      List.nth free_args (!count_free_args - 1)
-    ) else (
-      count_bound_args := !count_bound_args + 1;
-      List.nth args (!count_bound_args - 1)
+
+  (* Merge free args and bound args *)
+  let merge_args args idx =
+    let free_args, bound_args, merged_args = args in
+    if Option.is_some idx then
+      let first_free_arg, new_free_args = Lib.List.split_hd free_args in
+      new_free_args, bound_args, merged_args @ [first_free_arg]
+    else
+      let first_bound_arg, new_bound_args = Lib.List.split_hd bound_args in
+      free_args, new_bound_args, merged_args @ [first_bound_arg]
+  in
+  let free_args', result_args, merged_args =
+    List.fold_left merge_args (free_args, args, []) indices
+  in
+  (* TODO: Use error function *)
+  assert (List.length free_args' = 0);
+
+  (* Set new result typ from the last elements of args *)
+  let new_result_typ =
+    match result_args with
+    | [arg] -> (
+      match arg.it with
+      | ExpA exp -> exp.note
+      | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
     )
+    | _ ->
+      let arg2typ arg = (
+        match arg.it with
+        | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
+        | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+      ) in
+      TupT (List.map arg2typ result_args) $ no_region
   in
-  let new_args = List.map idx2arg indices in
-  let new_result_typ = match (List.nth args !count_bound_args).it with
-    | ExpA exp -> exp.note
-    | a -> error_valid (Printf.sprintf "wrong free argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+  check_call source id merged_args new_result_typ
+
+let check_case source exprs typ =
+  match typ.it with
+  | TupT etl when List.length exprs = List.length etl ->
+    let f expr (_, typ) = check_match source expr.note typ in
+    List.iter2 f exprs etl
+  | _ -> error_case source typ
+
+let find_case source cases op =
+  match List.find_opt (fun (op', _, _) -> Il.Mixop.eq op' op) cases with
+  | Some (_op, x, _hints) -> x
+  | None -> error_valid "unknown case" source (string_of_mixop op)
+
+let get_typcases source typ =
+  let dt =
+    match typ.it with
+    | VarT (id, args) ->
+      (match get_deftyps id args with
+      | [ dt ] -> dt
+      | _ -> error_case source typ
+      )
+    | _ -> error_case source typ
   in
-  check_call source id new_args new_result_typ
+  match dt.it with
+  | VariantT tcs -> tcs
+  | _ -> error_case source typ
 
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
@@ -358,6 +413,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | StrE r ->
     let typfields = get_typfields expr.note in
     List.iter (check_field source expr.note r) typfields
+  | CompE (expr1, expr2) ->
+    check_struct source expr1.note; check_struct source expr2.note;
+    check_match source expr.note expr1.note; check_match source expr1.note expr2.note
   | CatE (expr1, expr2) ->
     check_list source expr1.note; check_list source expr2.note;
     check_match source expr.note expr1.note; check_match source expr1.note expr2.note
@@ -367,7 +425,10 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
-  | CaseE _ | CaseE2 _ -> () (* TODO *)
+  | CaseE (op, exprs) ->
+    let tcs = get_typcases source expr.note in
+    let _binds, typ, _prems = find_case source tcs op in
+    check_case source exprs typ
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
   | IterE (expr1, (iter, _xes)) -> (* TODO *)
@@ -384,17 +445,15 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       )
   | OptE expr_opt ->
     check_opt source expr.note;
-    (match expr_opt with
-    | Some expr' -> check_match source expr.note (iterT expr'.note Opt)
-    | None -> ()
-    )
-  | ListE [] -> check_list source expr.note
-  | ListE (h :: t) ->
+    Option.iter
+      (fun expr' -> check_match source expr.note (iterT expr'.note Opt))
+      expr_opt
+  | ListE l ->
     check_list source expr.note;
-    t
+    let elem_typ = unwrap_iter_typ expr.note in
+    l
     |> List.map note
-    |> List.iter (check_match source h.note)
-  | InfixE _ -> () (* TODO: `InfixE` will be merged into CaseE *)
+    |> List.iter (check_match source elem_typ)
   | ArityE expr1 ->
     check_num source expr.note; check_context source expr1.note
   | FrameE (expr_opt, expr1) ->
@@ -454,6 +513,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
+  | FieldWiseAppendI (expr1, expr2) -> check_struct source expr1.note; check_struct source expr2.note
   | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   | _ -> ()
   );

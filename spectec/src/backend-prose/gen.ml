@@ -1,4 +1,6 @@
 open Prose
+open Eq
+
 open Il
 open Al.Al_util
 open Il2al.Translate
@@ -134,7 +136,7 @@ let get_rel_kind def =
 
 let transpile_expr =
   Al.Walk.walk_expr { Al.Walk.default_config with
-    post_expr = Il2al.Transpile.simplify_record_concat
+    post_expr = fun expr -> expr |> Il2al.Transpile.simplify_record_concat |> Il2al.Transpile.reduce_comp
   }
 
 let exp_to_expr e = translate_exp e |> transpile_expr
@@ -150,12 +152,14 @@ let rec if_expr_to_instrs e =
   | Ast.BinE (Ast.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
   | Ast.BinE (Ast.OrOp, e1, e2) ->
-    let neg_cond = if_expr_to_instrs e1 in
-    let body = if_expr_to_instrs e2 in
-    [ match neg_cond with
+    let cond1 = if_expr_to_instrs e1 in
+    let cond2 = if_expr_to_instrs e2 in
+    [ match cond1 with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
-        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, body)
-      | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
+        (* ~P \/ Q is equivalent to P -> Q *)
+        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
+      | _ ->
+        EitherI [cond1; cond2] ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.MemE (e1, e2) ->
@@ -211,7 +215,7 @@ type vrule_group =
 
 (** Main translation for typing rules **)
 let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
-  let (winstr, t, prems, _tenv) = vrules |> List.hd in
+  let (winstr, t, _prems, _tenv) = vrules |> List.hd in
 
   (* anchor *)
   let anchor = rel_id.it ^ "/" ^ rule_name in
@@ -220,7 +224,14 @@ let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
   (* concl *)
   let concl = IsValidI (None, expr, [exp_to_expr t]) in
   (* prems *)
-  let prems = (List.concat_map prem_to_instrs prems) in
+  let prems =
+    vrules
+    |> List.map (fun (_, _, prems, _) -> prems)
+    |> List.map (List.concat_map prem_to_instrs)
+    |> (function
+        | [ instrs ] -> instrs
+        | instrss -> [ EitherI instrss ])
+  in
 
   (* Predicate *)
   Iff (anchor, expr, concl, prems)
@@ -278,7 +289,7 @@ let rec group_vrules = function
       let same_rules, diff_rules =
         List.partition (fun (_, rule) -> name_of_rule rule = rule_name) t in
       let same_rules = List.map snd same_rules in
-      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules)) in
+      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules |> Il2al.Unify.unify_rules)) in
       group :: group_vrules diff_rules
 
 (* TODO: The codes below are too repetitive. Should be factored. *)
@@ -309,7 +320,7 @@ let prose_of_valid_rules rel_id rules =
 
 let prose_of_valid_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 2. C |- instr : type **)
@@ -345,7 +356,7 @@ let prose_of_valid_with_rules rel_id rules =
 
 let prose_of_valid_with_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 4. C |- type <: type **)
@@ -374,7 +385,7 @@ let prose_of_match_rules rel_id rules =
 
 let prose_of_match_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 
@@ -404,7 +415,7 @@ let prose_of_const_rules rel_id rules =
 
 let prose_of_const_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 6. C |- e : e CONST **)
@@ -436,7 +447,7 @@ let prose_of_valid_with2_rules rel_id rules =
 
 let prose_of_valid_with2_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 8. Others **)
@@ -457,6 +468,46 @@ let prose_of_rel rel = match get_rel_kind rel with
   | OtherRel      -> proses_of_other_rel rel
 
 let prose_of_rels = List.concat_map prose_of_rel
+
+(** Postprocess of generated prose **)
+let unify_either instrs =
+  let f instr =
+    match instr with
+    | EitherI iss ->
+      let unified, bodies = List.fold_left (fun (commons, instrss) i ->
+        let pairs = List.map (List.partition (eq_instr i)) instrss in
+        let fsts = List.map fst pairs in
+        let snds = List.map snd pairs in
+        if List.for_all (fun l -> List.length l = 1) fsts then
+          i :: commons, snds
+        else
+          commons, instrss
+      ) ([], iss) (List.hd iss) in
+      let unified = List.rev unified in
+      unified @ [ EitherI bodies ]
+    | _ -> [instr]
+  in
+  let rec walk instrs = List.concat_map walk' instrs
+  and walk' instr =
+    f instr
+    |> List.map (function
+      | IfI (e, il) -> IfI (e, walk il)
+      | ForallI (vars, il) -> ForallI (vars, walk il)
+      | EitherI ill -> EitherI (List.map walk ill)
+      | i -> i
+    )
+  in
+  walk instrs
+
+let postprocess_prose defs =
+  List.map (fun def ->
+    match def with
+    | Iff (anchor, e, i, il) ->
+      let new_il = unify_either il in
+      Iff (anchor, e, i, new_il)
+    | Algo _ -> def
+  ) defs
+
 
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
@@ -485,6 +536,7 @@ let gen_prose el il al =
   let execution_prose = gen_execution_prose () in
 
   validation_prose @ execution_prose
+  |> postprocess_prose
 
 (** Main entry for generating stringified prose **)
 let gen_string cfg_latex cfg_prose el il al =

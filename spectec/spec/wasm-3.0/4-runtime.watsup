@@ -7,21 +7,19 @@ syntax funcaddr hint(desc "function address") = addr
 syntax globaladdr hint(desc "global address") = addr
 syntax tableaddr hint(desc "table address") = addr
 syntax memaddr hint(desc "memory address") = addr
+syntax tagaddr hint(desc "tag address") = addr
 syntax elemaddr hint(desc "elem address") = addr
 syntax dataaddr hint(desc "data address") = addr
 syntax hostaddr hint(desc "host address") = addr
 syntax structaddr hint(desc "structure address") = addr
 syntax arrayaddr hint(desc "array address") = addr
+syntax exnaddr hint(desc "exception address") = addr
+
+syntax externaddr hint(desc "external address") hint(macro "%" "XA%") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr | TAG tagaddr
 
 var a : addr
-var fa : funcaddr
-var ga : globaladdr
-var ta : tableaddr
-var ma : memaddr
-var ea : elemaddr
-var da : dataaddr
-var sa : structaddr
-var aa : arrayaddr
+var xa : externaddr
 
 
 ;;
@@ -39,6 +37,7 @@ syntax addrref hint(desc "address value") =
   | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %%) hint(macro "%ADDR")
   | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %%)  hint(macro "%ADDR")
   | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %%)   hint(macro "%ADDR")
+  | REF.EXN_ADDR exnaddr                 hint(show REF.EXN %%)    hint(macro "%ADDR")
   | REF.HOST_ADDR hostaddr               hint(show REF.HOST %%)   hint(macro "%ADDR")
   | REF.EXTERN addrref
 syntax ref hint(desc "reference value")  hint(macro "reff") =
@@ -48,19 +47,11 @@ syntax val hint(desc "value") =
   | num | vec | ref
 
 syntax result hint(desc "result") =
-  | _VALS val* | TRAP
+  | _VALS val* | _EXN (REF.EXN_ADDR exnaddr) THROW_REF | TRAP
 
 var r : ref
 var v : val
 var res : result
-
-
-;; External values
-
-syntax externval hint(desc "external value") hint(macro "%" "EV%") =
-  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
-
-var xv : externval
 
 
 ;;
@@ -80,12 +71,14 @@ syntax tableinst hint(desc "table instance") hint(macro "%" "TI%") =
   { TYPE tabletype, REFS ref* }
 syntax meminst hint(desc "memory instance") hint(macro "%" "MI%") =
   { TYPE memtype, BYTES byte* }
+syntax taginst hint(desc "tag instance") hint(macro "%" "HI%") =
+  { TYPE tagtype }
 syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
   { TYPE elemtype, REFS ref* }
 syntax datainst hint(desc "data instance") hint(macro "%" "DI%") =
   { BYTES byte* }
-syntax exportinst hint(desc "export instance") hint(macro "%" "EI%") =
-  { NAME name, VALUE externval }
+syntax exportinst hint(desc "export instance") hint(macro "%" "XI%") =
+  { NAME name, ADDR externaddr }
 
 syntax packval hint(desc "packed value") =
   | PACK packtype iN($psizenn(packtype))    hint(show %.PACK %)
@@ -95,6 +88,9 @@ syntax structinst hint(desc "structure instance") hint(macro "%" "SI%") =
   { TYPE deftype, FIELDS fieldval* }
 syntax arrayinst hint(desc "array instance") hint(macro "%" "AI%") =
   { TYPE deftype, FIELDS fieldval* }
+syntax exninst hint(desc "exception instance") hint(macro "%" "EI%") =
+  { TAG tagaddr, FIELDS val* }
+
 
 syntax moduleinst hint(desc "module instance") hint(macro "%" "MI%") =
   { TYPES deftype*,
@@ -102,6 +98,7 @@ syntax moduleinst hint(desc "module instance") hint(macro "%" "MI%") =
     GLOBALS globaladdr*,
     TABLES tableaddr*,
     MEMS memaddr*,
+    TAGS tagaddr*,
     ELEMS elemaddr*,
     DATAS dataaddr*,
     EXPORTS exportinst* }
@@ -111,6 +108,7 @@ var fi : funcinst
 var gi : globalinst
 var ti : tableinst
 var mi : meminst
+var hi : taginst
 var ei : eleminst
 var di : datainst
 var xi : exportinst
@@ -128,10 +126,12 @@ syntax store hint(desc "store") hint(macro "%" "S%") =
     GLOBALS globalinst*,
     TABLES tableinst*,
     MEMS meminst*,
+    TAGS taginst*,
     ELEMS eleminst*,
     DATAS datainst*,
     STRUCTS structinst*,
-    ARRAYS arrayinst* }
+    ARRAYS arrayinst*,
+    EXNS exninst* }
 
 syntax frame hint(desc "frame") hint(macro "%" "A%") =
   { LOCALS (val?)*, MODULE moduleinst }
@@ -151,6 +151,7 @@ var z : state
 syntax instr/admin hint(desc "administrative instruction") =
   | ...
   | addrref
-  | LABEL_ n `{instr*} instr*  hint(show LABEL_%#% %%)
-  | FRAME_ n `{frame} instr*   hint(show FRAME_%#% %%)
+  | LABEL_ n `{instr*} instr*   hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} instr*    hint(show FRAME_%#% %%)
+  | HANDLER_ n `{catch*} instr* hint(show HANDLER_%#% %%)
   | TRAP

@@ -16,6 +16,7 @@ Runtime Structure
 .. _syntax-ref.i31num:
 .. _syntax-ref.struct:
 .. _syntax-ref.array:
+.. _syntax-ref.exn:
 .. _syntax-ref.host:
 .. _syntax-ref.extern:
 .. _syntax-val:
@@ -36,6 +37,7 @@ They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-i
 *structure references*, pointing to a specific :ref:`structure address <syntax-structaddr>`,
 *array references*, pointing to a specific :ref:`array address <syntax-arrayaddr>`,
 *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
+*exception references*, pointing to a specific :ref:`exception address <syntax-exnaddr>`,
 or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` defined by the :ref:`embedder <embedder>`.
 Any of the aformentioned references can furthermore be wrapped up as an *external reference*.
 
@@ -59,7 +61,7 @@ Convention
 * The meta variable ${ref: r} ranges over reference values where clear from context.
 
 
-.. index:: ! result, value, trap
+.. index:: ! result, value, trap, exception, exception address
    pair: abstract syntax; result
 .. _syntax-result:
 
@@ -67,12 +69,12 @@ Results
 ~~~~~~~
 
 A *result* is the outcome of a computation.
-It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-trap>`.
+It is either a sequence of :ref:`values <syntax-val>`, an :ref:`exception <exec-throw_ref>`, or a :ref:`trap <syntax-trap>`.
 
 $${syntax: result}
 
 
-.. index:: ! store, type instance, function instance, table instance, memory instance, global instance, module, allocation, structure instance, array instance
+.. index:: ! store, type instance, function instance, table instance, memory instance, global instance, tag instance, module, allocation, structure instance, array instance, exception instance
    pair: abstract syntax; store
 .. _syntax-store:
 .. _store:
@@ -81,7 +83,19 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, :ref:`data segments <syntax-datainst>`, and :ref:`structures <syntax-structinst>` or :ref:`arrays <syntax-arrayinst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of
+:ref:`functions <syntax-funcinst>`,
+:ref:`tables <syntax-tableinst>`,
+:ref:`memories <syntax-meminst>`,
+:ref:`globals <syntax-globalinst>`,
+:ref:`tags <syntax-taginst>`,
+:ref:`element segments <syntax-eleminst>`,
+:ref:`data segments <syntax-datainst>`,
+and
+:ref:`structures <syntax-structinst>`,
+:ref:`arrays <syntax-arrayinst>` or
+:ref:`exceptions <syntax-exninst>`
+that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
 It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
@@ -90,7 +104,7 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
 $${syntax: store}
 
 .. [#gc]
-   In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
+   In practice, implementations may apply techniques like garbage collection or reference counting to remove objects from the store that are no longer referenced.
    However, such techniques are not semantically observable,
    and hence outside the scope of this specification.
 
@@ -101,32 +115,38 @@ Convention
 * The meta variable ${store: s} ranges over stores where clear from context.
 
 
-.. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, structure instance, array instance, embedder, host
+.. index:: ! address, store, function instance, table instance, memory instance, global instance, tag instance, element instance, data instance, structure instance, array instance, exception instance, embedder, host
    pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
    pair: abstract syntax; global address
+   pair: abstract syntax; tag address
    pair: abstract syntax; element address
    pair: abstract syntax; data address
    pair: abstract syntax; structure address
    pair: abstract syntax; array address
+   pair: abstract syntax; exception address
    pair: abstract syntax; host address
    pair: function; address
    pair: table; address
    pair: memory; address
    pair: global; address
+   pair: tag; address
    pair: element; address
    pair: data; address
    pair: structure; address
    pair: array; address
+   pair: exception; address
    pair: host; address
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
 .. _syntax-globaladdr:
+.. _syntax-tagaddr:
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
 .. _syntax-structaddr:
+.. _syntax-exnaddr:
 .. _syntax-arrayaddr:
 .. _syntax-hostaddr:
 .. _syntax-addr:
@@ -134,11 +154,22 @@ Convention
 Addresses
 ~~~~~~~~~
 
-:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, :ref:`data instances <syntax-datainst>` and :ref:`structure <syntax-structinst>` or :ref:`array instances <syntax-arrayinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`,
+:ref:`table instances <syntax-tableinst>`,
+:ref:`memory instances <syntax-meminst>`,
+:ref:`global instances <syntax-globalinst>`,
+:ref:`tag instances <syntax-taginst>`,
+:ref:`element instances <syntax-eleminst>`,
+:ref:`data instances <syntax-datainst>`
+and
+:ref:`structure <syntax-structinst>`,
+:ref:`array instances <syntax-arrayinst>` or
+:ref:`exception instances <syntax-exninst>`
+in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
-$${syntax: {addr funcaddr tableaddr memaddr globaladdr elemaddr dataaddr structaddr arrayaddr hostaddr}}
+$${syntax: {addr funcaddr tableaddr memaddr globaladdr tagaddr elemaddr dataaddr structaddr arrayaddr hostaddr}}
 
 An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
 even where this identity is not observable from within WebAssembly code itself
@@ -159,6 +190,7 @@ even where this identity is not observable from within WebAssembly code itself
 .. _free-tableaddr:
 .. _free-memaddr:
 .. _free-globaladdr:
+.. _free-tagaddr:
 .. _free-elemaddr:
 .. _free-dataaddr:
 .. _free-structaddr:
@@ -173,8 +205,28 @@ Conventions
 * The notation ${:$addr(A)} denotes the set of addresses from address space ${:addr} occurring free in ${:A}. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements.
 
 
+.. index:: ! external address, function address, table address, memory address, global address, tag address, store, function, table, memory, global, tag, instruction type
+   pair: abstract syntax; external address
+   pair: external; address
+.. _syntax-externaddr:
 
-.. index:: ! instance, function type, type instance, function instance, table instance, memory instance, global instance, element instance, data instance, export instance, table address, memory address, global address, element address, data address, index, name
+External Addresses
+~~~~~~~~~~~~~~~~~~
+
+An *external address* is the runtime :ref:`address <syntax-addr>` of an entity that can be imported or exported.
+It is an :ref:`address <syntax-addr>` denoting either a
+:ref:`function instance <syntax-funcinst>`,
+:ref:`global instances <syntax-globalinst>`,
+:ref:`table instance <syntax-tableinst>`,
+:ref:`memory instance <syntax-meminst>`, or
+:ref:`tag instances <syntax-taginst>`
+in the shared :ref:`store <syntax-store>`.
+
+$${syntax: externaddr}
+
+
+
+.. index:: ! instance, function type, type instance, function instance, table instance, memory instance, global instance, tag instance, element instance, data instance, export instance, table address, memory address, global address, tag address, element address, data address, index, name
    pair: abstract syntax; module instance
    pair: module; instance
 .. _syntax-moduleinst:
@@ -189,7 +241,12 @@ and collects runtime representations of all entities that are imported, defined,
 $${syntax: moduleinst}
 
 Each component references runtime instances corresponding to respective declarations from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
-:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
+:ref:`Function instances <syntax-funcinst>`,
+:ref:`table instances <syntax-tableinst>`,
+:ref:`memory instances <syntax-meminst>`,
+:ref:`global instances <syntax-globalinst>`, and
+:ref:`tag instances <syntax-taginst>`
+are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
 
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
 
@@ -278,6 +335,20 @@ The value of mutable globals can be mutated through :ref:`variable instructions 
 It is an invariant of the semantics that the value has a type :ref:`matching <match-valtype>` the :ref:`value type <syntax-valtype>` of ${:globaltype}.
 
 
+.. index:: ! tag instance, tag, exception tag, tag type
+   pair: abstract syntax; tag instance
+   pair: tag; instance
+.. _syntax-taginst:
+
+Tag Instances
+~~~~~~~~~~~~~
+
+A *tag instance* is the runtime representation of a :ref:`tag <syntax-tag>` definition.
+It records the :ref:`defined type <syntax-deftype>` of the tag.
+
+$${syntax: taginst}
+
+
 .. index:: ! element instance, element segment, embedder, element expression
    pair: abstract syntax; element instance
    pair: element; instance
@@ -306,7 +377,7 @@ It holds a list of :ref:`bytes <syntax-byte>`.
 $${syntax: datainst}
 
 
-.. index:: ! export instance, export, name, external value
+.. index:: ! export instance, export, name, external address
    pair: abstract syntax; export instance
    pair: export; instance
 .. _syntax-exportinst:
@@ -315,32 +386,18 @@ Export Instances
 ~~~~~~~~~~~~~~~~
 
 An *export instance* is the runtime representation of an :ref:`export <syntax-export>`.
-It defines the export's :ref:`name <syntax-name>` and the associated :ref:`external value <syntax-externval>`.
+It defines the export's :ref:`name <syntax-name>` and the associated :ref:`external address <syntax-externaddr>`.
 
 $${syntax: exportinst}
-
-
-.. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global, instruction type
-   pair: abstract syntax; external value
-   pair: external; value
-.. _syntax-externval:
-
-External Values
-~~~~~~~~~~~~~~~
-
-An *external value* is the runtime representation of an entity that can be imported or exported.
-It is an :ref:`address <syntax-addr>` denoting either a :ref:`function instance <syntax-funcinst>`, :ref:`table instance <syntax-tableinst>`, :ref:`memory instance <syntax-meminst>`, or :ref:`global instances <syntax-globalinst>` in the shared :ref:`store <syntax-store>`.
-
-$${syntax: externval}
 
 
 Conventions
 ...........
 
-The following auxiliary notation is defined for sequences of external values.
+The following auxiliary notation is defined for sequences of external addresses.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-$${definition: funcsxv tablesxv memsxv globalsxv}
+$${definition: funcsxa tablesxa memsxa globalsxa tagsxa}
 
 
 .. index:: ! structure instance, ! array instance, structure type, array type, defined type, ! field value, ! packed value
@@ -381,27 +438,46 @@ Conventions
   $${definition: unpackfield_}
 
 
-.. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, ! call frame, local, module instance
+.. index:: ! exception instance, tag, tag address, value
+   pair: abstract syntax; exception instance
+   pair: exception; instance
+.. _syntax-exninst:
+
+Exception Instances
+~~~~~~~~~~~~~~~~~~~
+
+An *exception instance* is the runtime representation of an :ref:`exception <exception>` produced by a ${:THROW} instruction.
+It holds the :ref:`address <syntax-tagaddr>` of the respective :ref:`tag <syntax-tag>` and the argument :ref:`values <syntax-val>`.
+
+$${syntax: exninst}
+
+
+.. index:: ! stack, ! frame, ! label, ! handler, instruction, store, activation, function, call, ! call frame, local, exception, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
+   pair: abstract syntax; handler
 .. _syntax-frame:
 .. _syntax-callframe:
 .. _syntax-label:
+.. _syntax-handler:
 .. _frame:
 .. _label:
+.. _handler:
 .. _stack:
 
 Stack
 ~~~~~
 
 Besides the :ref:`store <store>`, most :ref:`instructions <syntax-instr>` interact with an implicit *stack*.
-The stack contains three kinds of entries:
+The stack contains the following kinds of entries:
 
 * *Values*: the *operands* of instructions.
 
 * *Labels*: active :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
 
 * *Frames*: the *call frames* of active :ref:`function <syntax-func>` calls.
+
+* *Handlers*: active exception handlers.
 
 These entries can occur on the stack in any order during the execution of a program.
 Stack entries are described by abstract syntax as follows.
@@ -449,6 +525,19 @@ $${syntax: {callframe frame}}
 Locals may be uninitialized, in which case they are empty.
 Locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
+Exception Handlers
+..................
+
+Exception handlers are installed by |TRYTABLE| instructions and record the corresponding list of :ref:`catch clauses <syntax-catch>`:
+
+.. math::
+   \begin{array}{llllll}
+     \production{handler} & \handler &::=&
+       \HANDLER_n\{\catch^\ast\}
+   \end{array}
+
+The handlers on the stack are searched when an exception is :ref:`thrown <syntax-throw>`.
+
 
 .. _aux-blocktype:
 
@@ -459,12 +548,14 @@ Conventions
 
 * The meta variable ${:f} ranges over frame states where clear from context.
 
+* The meta variable :math:`H` ranges over exception handlers where clear from context.
+
 * The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`instruction type <syntax-instrtype>` that it denotes in the current frame:
 
   $${definition: blocktype_}
 
 
-.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment
+.. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment, tag, tag instance, tag address, exception, reftype, handler, caught, caught exception
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
 .. _syntax-instr-admin:
@@ -475,13 +566,13 @@ Administrative Instructions
 .. note::
    This section is only relevant for the :ref:`formal notation <exec-notation>`.
 
-In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-call>`, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
+In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-call>`, :ref:`exception handling <syntax-handler>`, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
 
 $${syntax: {instr/admin}}
 
 An :ref:`address reference <syntax-addrref>` represents an allocated :ref:`reference <syntax-ref>` value of respective form :ref:`"on the stack" <exec-notation>`.
 
-The ${:LABEL} and ${:FRAME} instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
+The ${:LABEL}, ${:FRAME}, and ${:HANDLER} instructions model :ref:`labels <syntax-label>`, :ref:`frames <syntax-frame>`, and active :ref:`exception handlers <syntax-handler>`, respectively, :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>`.
 
 The ${:TRAP} instruction represents the occurrence of a trap.
@@ -504,7 +595,7 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
    Validation guarantees that ${:n} matches the number ${:|val*|} of resulting values at this point.
 
 
-.. index:: ! configuration, !state, ! thread, store, frame, instruction, module instruction
+.. index:: ! configuration, ! state, ! thread, store, frame, instruction, module instruction
 .. _syntax-state:
 .. _syntax-thread:
 .. _syntax-config:
