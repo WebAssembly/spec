@@ -742,6 +742,27 @@ rule token = parse
       | "f32x4.replace_lane" -> VEC_REPLACE f32x4_replace_lane
       | "f64x2.replace_lane" -> VEC_REPLACE f64x2_replace_lane
 
+      | "i8x16.relaxed_swizzle" -> VEC_BINARY i8x16_relaxed_swizzle
+      | "i32x4.relaxed_trunc_f32x4_u" -> VEC_UNARY i32x4_relaxed_trunc_f32x4_u
+      | "i32x4.relaxed_trunc_f32x4_s" -> VEC_UNARY i32x4_relaxed_trunc_f32x4_s
+      | "i32x4.relaxed_trunc_f64x2_u_zero" -> VEC_UNARY i32x4_relaxed_trunc_f64x2_u_zero
+      | "i32x4.relaxed_trunc_f64x2_s_zero" -> VEC_UNARY i32x4_relaxed_trunc_f64x2_s_zero
+      | "f32x4.relaxed_madd" -> VEC_UNARY f32x4_relaxed_madd
+      | "f64x2.relaxed_madd" -> VEC_UNARY f64x2_relaxed_madd
+      | "f32x4.relaxed_nmadd" -> VEC_UNARY f32x4_relaxed_nmadd
+      | "f64x2.relaxed_nmadd" -> VEC_UNARY f64x2_relaxed_nmadd
+      | "i8x16.relaxed_laneselect" -> VEC_TERNARY i8x16_relaxed_laneselect
+      | "i16x8.relaxed_laneselect" -> VEC_TERNARY i16x8_relaxed_laneselect
+      | "i32x4.relaxed_laneselect" -> VEC_TERNARY i32x4_relaxed_laneselect
+      | "i64x2.relaxed_laneselect" -> VEC_TERNARY i64x2_relaxed_laneselect
+      | "f32x4.relaxed_min" -> VEC_UNARY f32x4_relaxed_min
+      | "f64x2.relaxed_min" -> VEC_UNARY f64x2_relaxed_min
+      | "f32x4.relaxed_max" -> VEC_UNARY f32x4_relaxed_max
+      | "f64x2.relaxed_max" -> VEC_UNARY f64x2_relaxed_max
+      | "i16x8.relaxed_q15mulr_s" -> VEC_BINARY i16x8_relaxed_q15mulr_s
+      | "i16x8.relaxed_dot_i8x16_i7x16_s" -> VEC_BINARY i16x8_relaxed_dot_i8x16_i7x16_s
+      | "i32x4.relaxed_dot_i8x16_i7x16_add_s" -> VEC_BINARY i32x4_relaxed_dot_i8x16_i7x16_add_s
+
       | "type" -> TYPE
       | "func" -> FUNC
       | "param" -> PARAM
@@ -779,6 +800,7 @@ rule token = parse
       | "assert_exhaustion" -> ASSERT_EXHAUSTION
       | "nan:canonical" -> NAN Script.CanonicalNan
       | "nan:arithmetic" -> NAN Script.ArithmeticNan
+      | "either" -> EITHER
       | "input" -> INPUT
       | "output" -> OUTPUT
 

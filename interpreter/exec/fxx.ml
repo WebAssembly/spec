@@ -43,6 +43,7 @@ sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
+  val fma : t -> t -> t -> t
   val sqrt : t -> t
   val min : t -> t -> t
   val max : t -> t -> t
@@ -137,6 +138,13 @@ struct
   let sub x y = binary x (-.) y
   let mul x y = binary x ( *.) y
   let div x y = binary x (/.) y
+
+  let fma x y z =
+    let xf = to_float x in
+    let yf = to_float y in
+    let zf = to_float z in
+    let t = Float.fma xf yf zf in
+    if t = t then of_float t else determine_binary_nan x y
 
   let sqrt  x = unary Stdlib.sqrt x
 

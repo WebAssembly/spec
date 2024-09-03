@@ -1,4 +1,4 @@
-.. index:: value, integer, floating-point, bit width, determinism, NaN
+.. index:: value, integer, floating-point, bit width, determinism, non-determinism, NaN
 .. _exec-op-partial:
 .. _exec-numeric:
 
@@ -1033,7 +1033,7 @@ where:
    \end{array}
 
 
-.. index:: NaN
+.. index:: NaN, determinism, non-determinism
 .. _aux-nans:
 
 NaN Propagation
@@ -1046,14 +1046,17 @@ then its sign is non-deterministic and the :ref:`payload <syntax-payload>` is co
 
 * Otherwise the payload is picked non-deterministically among all :ref:`arithmetic NaNs <arithmetic-nan>`; that is, its most significant bit is :math:`1` and all others are unspecified.
 
-This non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:
+* In the :ref:`deterministic profile <profile-deterministic>`, however, a positive canonical NaNs is reliably produced in the latter case.
+
+The non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:
 
 .. math::
-   \begin{array}{lll@{\qquad}l}
-   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \}
-     & (\iff \forall \NAN(n) \in z^\ast,~ n = \canon_N) \\
-   \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \}
-     & (\otherwise) \\
+   \begin{array}{llcl@{\qquad}l}
+   & \nans_N\{z^\ast\} &=& \{ + \NAN(\canon_N) \} \\
+   \exprofiles{\PROFDET} & \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \}
+     & (\iff \forall \,{\pm \NAN(n)} \in z^\ast,~ n = \canon_N) \\
+   \exprofiles{\PROFDET} & \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \}
+     & (\iff \exists \,{\pm \NAN(n)} \in z^\ast,~ n \neq \canon_N) \\
    \end{array}
 
 
@@ -1974,4 +1977,334 @@ Conversions
 .. math::
    \begin{array}{lll@{\qquad}l}
    \narrowu_{M,N}(i) &=& \satu_N(\signed_M(i))
+   \end{array}
+
+.. _relaxed-ops:
+
+Relaxed operations
+~~~~~~~~~~~~~~~~~~
+
+The result of *relaxed* operators are *host-dependent*, because the set of
+possible results may depend on properties of the host environment (such as
+hardware). Technically, each such operator produces a fixed-size *list of sets*
+of allowed values.  For each execution of the operator in the same environment,
+only values from the set at the same position in the list are returned, i.e.,
+each environment globally chooses a fixed projection for each operator.
+
+.. note::
+   Each operator can be thought of as a family of operations that is fixed to
+   one particular choice by the execution environment. The fixed operation
+   itself can still be non-deterministic or partial.
+
+
+.. _op-fma:
+
+:math:`\fma(z_1, z_2, z_3)`
+...........................
+
+The function :math:`\fma` is the same as *fusedMultiplyAdd* defined by |IEEE754|_ (Section 5.4.1).
+It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precision, rounding only once for the final result.
+
+* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N{z_1, z_2, z_3}`.
+
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other is an infinity, then return an element of :math:`\nans_N\{\}`.
+
+* Else if both :math:`z_1` or :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
+
+* Else if both :math:`z_1` or :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
+
+* Else if either :math:`z_1` or :math:`z_2` is an infinity and the other is a value of the same sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
+
+* Else if either :math:`z_1` or :math:`z_2` is an infinity and the other is a value of the opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
+
+* Else if both :math:`z_1` and :math:`z_2` are zeroes of the same sign and :math:`z_3` is a zero, then return positive zero.
+
+* Else if both :math:`z_1` and :math:`z_2` are zeroes of the opposite sign and :math:`z_3` is a positive zero, then return positive zero.
+
+* Else if both :math:`z_1` and :math:`z_2` are zeroes of the opposite sign and :math:`z_3` is a negative zero, then return negative zero.
+
+* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result ref:`rounded <aux-ieee>` to the nearest representable value.
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \fma_N(\pm \NAN(n), z_2, z_3) &=& \nans_N\{\pm \NAN(n), z_2, z_3\} \\
+   & \fma_N(z_1, \pm \NAN(n), z_3) &=& \nans_N\{\pm \NAN(n), z_1, z_3\} \\
+   & \fma_N(z_1, z_2, \pm \NAN(n)) &=& \nans_N\{\pm \NAN(n), z_1, z_2\} \\
+   & \fma_N(\pm \infty, \pm 0, z_3) &=& \nans_N\{\} \\
+   & \fma_N(\pm \infty, \mp 0, z_3) &=& \nans_N\{\} \\
+   & \fma_N(\pm \infty, \pm \infty, - \infty) &=& \nans_N\{\} \\
+   & \fma_N(\pm \infty, \mp \infty, + \infty) &=& \nans_N\{\} \\
+   & \fma_N(\pm q_1, \pm \infty, - \infty) &=& \nans_N\{\} \\
+   & \fma_N(\pm q_1, \mp \infty, + \infty) &=& \nans_N\{\} \\
+   & \fma_N(\pm \infty, \pm q_1, - \infty) &=& \nans_N\{\} \\
+   & \fma_N(\mp \infty, \pm q_1, + \infty) &=& \nans_N\{\} \\
+   & \fma_N(\pm 0, \pm 0, \mp 0) &=& + 0 \\
+   & \fma_N(\pm 0, \pm 0, \pm 0) &=& + 0 \\
+   & \fma_N(\pm 0, \mp 0, + 0) &=& + 0 \\
+   & \fma_N(\pm 0, \mp 0, - 0) &=& - 0 \\
+   & \fma_N(z_1, z_2, z_3) &=& \ieee_N(z_1 \cdot z_2 + z_3) \\
+   \end{array}
+
+
+.. _op-relaxed_madd:
+
+:math:`\relaxedmadd_N(z_1, z_2, z_3)`
+.....................................
+
+Relaxed multiply-add allows for fused or unfused results.
+
+* :math:`\EXPROFDET` Return either :math:`\fadd_N(\fmul_N(z_1, z_2), z_3)` or :math:`\fma_N(z_1, z_2, z_3)`
+
+* Return :math:`\fma_N(z_1, z_2, z_3)`
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedmadd_N(z_1, z_2, z_3) &=& [ \fadd_N(\fmul_N(z_1, z_2), z_3), \fma_N(z_1, z_2, z_3) ] \\
+   & \relaxedmadd_N(z_1, z_2, z_3) &=& \fma_N(z_1, z_2, z_3) \\
+   \end{array}
+
+
+.. _op-relaxed_nmadd:
+
+:math:`\relaxednmadd_N(z_1, z_2, z_3)`
+......................................
+
+Relaxed negative multiply-add allows for fused or unfused results.
+
+* Return :math:`\relaxedmadd(-z_1, z_2, z_3)`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \relaxednmadd_N(z_1, z_2, z_3) &=& \relaxedmadd_N(-z_1, z_2, z_3) \\
+   \end{array}
+
+
+.. _op-relaxed_swizzle_lane:
+
+:math:`\relaxedswizzlelane(i^n, j)`
+...................................
+
+* Let :math:`k` be the :ref:`signed interpretation <aux-signed>` of :math:`j`.
+
+* If :math:`j` is less than :math:`16`, return :math:`i[j]`.
+
+* If :math:`k` is less than :math:`0`, return :math:`0`.
+
+* :math:`\EXPROFDET` Otherwise, return either :math:`0` or :math:`i[j \mod n]`.
+
+* Otherwise, return :math:`0`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \relaxedswizzlelane(i^n, j) &=& i[j] & (\iff j < 16) \\
+   & \relaxedswizzlelane(i^n, j) &=& 0 & (\iff \signed_8(j) < 0) \\
+   \EXPROFDET & \relaxedswizzlelane(i^n, j) &=& [ 0, i[j \mod n] ] & (\otherwise) \\
+   & \relaxedswizzlelane(i^n, j) &=& 0 & (\otherwise) \\
+   \end{array}
+
+
+.. _op-relaxed_swizzle:
+
+:math:`\relaxedswizzle(a^n, s^n)`
+.................................
+
+Relaxed swizzle lane is deterministic if the signed interpretation of the index is less than 16 (including negative values).
+:math:`j` is a 8-bit int.
+
+* Return :math:`\X{rsl}_0 \dots \X{rsl}_{n-1}` where :math:`\X{rsl}_i = \relaxedswizzlelane(a^n, s^n[i])`
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \relaxedswizzle(a^n, s^n) &=& \X{rsl}_0 \dots \X{rsl}_{n-1} \\
+   & \qquad \where \X{rsl}_i &=& \relaxedswizzlelane(a^n, s^n[i])
+   \end{array}
+
+
+.. _op-relaxed_trunc:
+.. _op-relaxed_trunc_u:
+
+:math:`\relaxedtrunc^u_{M,N}(z)`
+................................
+
+Relaxed unsigned truncation converts floating point numbers to integers.
+The result for NaN's and out-of-range values is host-dependent.
+
+* :math:`\EXPROFDET` If :math:`z` is a NaN, return either :math:`0` or :math:`2^N-1` or :math:`2^N-2` or :math:`2^(N-1)`.
+
+* :math:`\EXPROFDET` Else if :math:`\trunc(z)` is positive and less than :math:`2^N`, return :math:`\truncu_{M,N}(z)`.
+
+* :math:`\EXPROFDET` Else return either :math:`\truncsatu_{M,N}(z)` or :math:`2^N-1` or :math:`2^N-2` or :math:`2^(N-1)`.
+
+* Return :math:`\truncsatu_{M,N}(z)`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm \NAN(n)) &=& [ 0, 2^{N}-1, 2^{N}-2, 2^{N-1}] \\
+   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm q) &=& \truncu_{M,N}(\pm q) & (\iff -1 < \trunc(\pm q) < 2^N) \\
+   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm p) &=& [ \truncsatu_{M,N}(\pm p), 2^{N}-1, 2^{N}-2, 2^{N-1}] & (\otherwise) \\
+   & \relaxedtrunc^u_{M,N}(z) &=& \truncsatu_{M,N}(z) & \\
+   \end{array}
+
+
+.. _op-relaxed_trunc_s:
+
+:math:`\relaxedtrunc^s_{M,N}(z)`
+................................
+
+Relaxed signed truncation converts floating point numbers to integers.
+The result for NaN's and out-of-range values is host-dependent.
+
+* :math:`\EXPROFDET` If :math:`z` is a NaN, return either :math:`0` or :math:`-2^{N-1}`.
+
+* :math:`\EXPROFDET` Else if :math:`\trunc(z)` is larger than :math:`-2^{N-1}-1` and less than :math:`2^{N-1}`, return :math:`\truncs_{M,N}(z)`.
+
+* :math:`\EXPROFDET` Else return either :math:`\truncsats_{M,N}(z)` or :math:`-2^{N-1}`.
+
+* Return :math:`\truncsats_{M,N}(z)`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedtrunc^s_{M,N}(\pm \NAN(n)) &=& [ 0, -2^{N-1} ] \\
+   \EXPROFDET & \relaxedtrunc^s_{M,N}(\pm q) &=& \truncs_{M,N}(\pm q) & (\iff -2^{N-1} - 1 < \trunc(\pm q) < 2^{N-1}) \\
+   \EXPROFDET & \relaxedtrunc^s_{M,N}(\pm p) &=& [ \truncsats_{M,N}(\pm p), -2^{N-1} ] & (\otherwise) \\
+   & \relaxedtrunc^s_{M,N}(z) &=& \truncsats_{M,N}(z) & \\
+   \end{array}
+
+
+.. _op-relaxed_lane:
+
+:math:`\relaxedlane_N(i_1, i_2, i_3)`
+.....................................
+
+* :math:`\EXPROFDET` If :math:`i_3` is :math:`2^N - 1`, return :math:`i_1`.
+
+* :math:`\EXPROFDET` Else if :math:`i_3` is :math:`0`, return :math:`i_2`.
+
+* :math:`\EXPROFDET` Otherwise return either :math:`\ibitselect_n(i_1, i_2, i_3)` or :math:`i_1` or :math:`i_2` or :math:`\F{top\_bit\_byteselect_N}(i_1, i_2, i_3)`.
+
+* Return :math:`\ibitselect_n(i_1, i_2, i_3)`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedlane_N(i_1, i_2, 2^N-1) &=& i_1 \\
+   \EXPROFDET & \relaxedlane_N(i_1, i_2, 0) &=& i_2 \\
+   \EXPROFDET & \relaxedlane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_2, i_3, \\
+    & & & \qquad \F{top\_bit\_byteselect}(i_1, i_2, i_3)] & (\otherwise) \\
+   & \relaxedlane_N(i_1, i_2, i_3) &=& \ibitselect_N(i_1, i_2, i_3) & (\otherwise) \\
+   \end{array}
+
+where:
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \F{top\_bit\_byteselect}_N(i_1, i_2, i_3) &=& tbb_0 ... tbb_{N/8 - 1} \\
+   & \F{tbb_j} &=& \F{byteselect}(\bytes_8(i_1)[j], \bytes_8(i_2)[j], \bytes_8(i_3)[j]) \\
+   & \F{byteselect}(a, b, 0~c^7) &=& a \\
+   & \F{byteselect}(a, b, c) &=& b \\
+   \end{array}
+
+
+.. _op-relaxed_lane_select:
+
+:math:`\relaxedlaneselect_B(a^n, b^n, c^n)`
+...........................................
+
+Relaxed lane selection is deterministic when all bits are set or unset in the
+mask. Otherwise depending on the host, either only the top bit is examined, or
+all bits are examined (i.e. it becomes a bit select), or the top bit of each
+byte in the lane is examined.
+
+* Return :math:`rll_0 \dots rll_{n-1}` where :math:`rll_i = \relaxedlane_B(a^n[i], b^n[i], c^n[i])`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \relaxedlaneselect_B(a^n, b^n, c^n) &=& rll_0 \dots rll_{n-1} \\
+   & \qquad \where rll_i &=& \relaxedlane_B(a^n[i], b^n[i], c^n[i]) \\
+   \end{array}
+
+
+.. _op-relaxed_min:
+
+:math:`\relaxedmin_N(z_1, z_2)`
+...............................
+
+Relaxed minimum differs from regular minimum when inputs are NaN's or zeroes with different signs.
+It allows for implementation to return the first or second input when either input is a NaN.
+
+* :math:`\EXPROFDET` If :math:`z_1` is a NaN, return either an element of :math:`\nans_N\{z_1, z_2\}`, :math:`\NAN(n)`, or :math:`z_2`
+
+* :math:`\EXPROFDET` If :math:`z_2` is a NaN, return either an element of :math:`\nans_N\{z_1, z_2\}`, :math:`\NAN(n)`, or :math:`z_1`
+
+* :math:`\EXPROFDET` If both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, return either :math:`+ 0` or :math:`- 0`.
+
+* Return :math:`\fmin_N(z_1, z_2)`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedmin_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
+   \EXPROFDET & \relaxedmin_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
+   \EXPROFDET & \relaxedmin_N(\pm 0, \mp 0) &=& [ -0, \pm 0, \mp 0, -0 ] \\
+   & \relaxedmin_N(z_1, z_2) &=& \fmin_N(z_1, z_2) & (\otherwise) \\
+   \end{array}
+
+
+.. _op-relaxed_max:
+
+:math:`\relaxedmax_N(z_1, z_2)`
+...............................
+
+Relaxed maximum differs from regular maximum when inputs are NaN's or zeroes with different signs.
+It allows for implementations to return the first or second input when either input is a NaN.
+
+* :math:`\EXPROFDET` If :math:`z_1` is a NaN, return either an element of :math:`\nans_N\{z_1, z_2\}`, :math:`\NAN(n)`, or :math:`z_2`
+
+* :math:`\EXPROFDET` If :math:`z_2` is a NaN, return either an element of :math:`\nans_N\{z_1, z_2\}`, :math:`\NAN(n)`, or :math:`z_1`
+
+* :math:`\EXPROFDET` If both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, return either :math:`+ 0` or :math:`- 0`.
+
+* Return :math:`\fmax_N(z_1, z_2)`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedmax_N(\pm \NAN(n), z_2) &=& [ \nans_N\{\pm \NAN(n), z_2\}, \NAN(n), z_2, z_2 ] \\
+   \EXPROFDET & \relaxedmax_N(z_1, \pm \NAN(n)) &=& [ \nans_N\{\pm \NAN(n), z_1\}, z_1, \NAN(n), z_1 ] \\
+   \EXPROFDET & \relaxedmax_N(\pm 0, \mp 0) &=& [ +0, \pm 0, \mp 0, +0 ] \\
+   & \relaxedmax_N(z_1, z_2) &=& \fmax_N(z_1, z_2) & (\otherwise) \\
+   \end{array}
+
+
+.. _op-relaxed_q15mulr_s:
+
+:math:`\relaxedq15mulrs_N(i_1, i_2)`
+....................................
+
+Relaxed Q15 multiply differs from regular Q15 multiply when the multiplication results overflows (i.e. when both inputs are -32768).
+It allows for implementations to either wrap around or saturate.
+
+* :math:`\EXPROFDET` If both :math:`z_1` and :math:`z_2` are :math:`-2^{N-1}`, return either :math:`2^{N-1} - 1` or :math:`-2^{N-1}`.
+
+* Return :math:`\iq15mulrsats(i_1, i_2)`
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxedq15mulrs_N(-2^{N-1}, -2^{N-1}) &=& [ 2^{N-1}-1, -2^{N-1}] & \\
+   & \relaxedq15mulrs_N(i_1, i_2) &=& \iq15mulrsats(i_1, i_2)
+   \end{array}
+
+
+.. _op-relaxed_dot_mul:
+
+:math:`\relaxeddotmul_{M,N}(i_1, i_2)`
+......................................
+
+Relaxed integer dot product differs from regular integer dot product when the elements of the input have their most significant bit set.
+
+* :math:`\EXPROFDET` Return either :math:`\imul_N(\signed_M(i_1), i_2), \imul_N(\signed_M(i_1), \signed_M(i_2))`.
+
+* Return :math:`\imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2))`.
+
+.. math::
+   \begin{array}{@{}llcll}
+   \EXPROFDET & \relaxeddotmul_{M,N}(i_1, i_2) &=& [ \imul_N(\signed_M(i_1), i_2), \imul_N(\signed_M(i_1), \signed_M(i_2)) ] \\
+   & \relaxeddotmul_{M,N}(i_1, i_2) &=& \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)) \\
    \end{array}

@@ -37,6 +37,7 @@ and result' =
   | NumResult of num_pat
   | VecResult of vec_pat
   | RefResult of ref_pat
+  | EitherResult of result list
 
 type assertion = assertion' Source.phrase
 and assertion' =
