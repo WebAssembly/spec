@@ -46,6 +46,8 @@ Each subsection consists of a
      \Bmodulenamesubsec^? \\ &&&
      \Bfuncnamesubsec^? \\ &&&
      \Blocalnamesubsec^? \\ &&&
+     \Btypenamesubsec^? \\ &&&
+     \Bfieldnamesubsec^? \\ &&&
      \Btagnamesubsec^? \\
    \production{name subsection} & \Bnamesubsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\B{B}
@@ -160,7 +162,7 @@ It consists of a :ref:`name map <binary-namemap>` assigning type names to :ref:`
 .. math::
    \begin{array}{llclll}
    \production{type name subsection} & \Btypenamesubsec &::=&
-     \Bnamesubsection_1(\Bnamemap) \\
+     \Bnamesubsection_4(\Bnamemap) \\
    \end{array}
 
 
@@ -176,7 +178,7 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning fi
 .. math::
    \begin{array}{llclll}
    \production{field name subsection} & \Bfieldnamesubsec &::=&
-     \Bnamesubsection_2(\Bindirectnamemap) \\
+     \Bnamesubsection_10(\Bindirectnamemap) \\
    \end{array}
 
 
