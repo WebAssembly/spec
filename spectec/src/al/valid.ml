@@ -73,10 +73,22 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
       in
 
       let InstD (_, inst_args, deftyp) = inst.it in
-      let args' = List.map typ_of_arg args in
-      let inst_args' = List.map typ_of_arg inst_args in
-      if List.for_all2 (Eval.sub_typ !env) args' inst_args' then
-        Some deftyp
+      let get_syntax_arg_name arg = 
+        match arg.it with
+        | Il.Ast.TypA { it=VarT (id, []); _ } -> Some id
+        | _ -> None
+      in
+      if List.for_all2 (fun arg inst_arg -> Option.is_some (get_syntax_arg_name inst_arg) || Eval.sub_typ !env (typ_of_arg arg) (typ_of_arg inst_arg)) args inst_args then
+        let subst_syntax_arg subst arg inst_arg =
+          let name = get_syntax_arg_name inst_arg in
+          if Option.is_some name then
+            let name = Option.get name in
+            Il.Subst.add_typid subst name (typ_of_arg arg)
+          else
+            subst
+        in
+        let subst = List.fold_left2 subst_syntax_arg Il.Subst.empty args inst_args in
+        Some (Il.Subst.subst_deftyp subst deftyp)
       else
         None
     in
