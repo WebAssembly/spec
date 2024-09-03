@@ -300,6 +300,40 @@ let check_call source id args result_typ =
       | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
       (* Add local variable typ *)
       | TypA typ1, TypP id -> env := Env.bind_var !env id (typ1, [])
+      | DefA aid, DefP (_, pparams, ptyp) ->
+        (match Env.find_opt_def !env (aid $ no_region) with
+        | Some (aparams, atyp, _) -> 
+          if not (Eval.sub_typ !env atyp ptyp) then
+            error_valid
+              "argument's return type is not a subtype of parameter's return type"
+              source
+              (Printf.sprintf "  %s !<: %s"
+                (Il.Print.string_of_typ atyp)
+                (Il.Print.string_of_typ ptyp)
+              );
+          List.iter2 (fun aparam pparam ->
+            (* TODO: only supports ExpP for param of arg/param now *)
+            let typ_of_param param =  match param.it with
+            | ExpP (_, typ) -> typ
+            | _ ->
+              error_valid "argument param is not an expression" source
+                (Il.Print.string_of_param aparam);
+            in
+
+            let aptyp = typ_of_param aparam in
+            let pptyp = typ_of_param pparam in
+
+            if not (Eval.sub_typ !env pptyp aptyp) then
+              error_valid
+                "parameter's parameter type is not a subtype of argument's return type"
+                source
+                (Printf.sprintf "  %s !<: %s"
+                  (Il.Print.string_of_typ pptyp)
+                  (Il.Print.string_of_typ aptyp)
+                );
+            ) aparams pparams;
+        | _ -> error_valid "no function definition" source aid
+        );
       | _ ->
         error_valid "argument type mismatch" source
           (Printf.sprintf "  %s =/= %s"
