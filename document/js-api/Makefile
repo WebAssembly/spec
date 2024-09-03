@@ -5,7 +5,7 @@ DOWNLOADDIR   = _download
 NAME          = WebAssembly
 DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
-DEADLINE      = $(shell python3 ../deadline.py)
+DEADLINE      = $(shell date -d "+30 days" +%Y-%m-%d 2>/dev/null || date -v +30d +%Y-%m-%d)
 
 .PHONY: all
 all:
