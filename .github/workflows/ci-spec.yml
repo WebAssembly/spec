@@ -79,17 +79,17 @@ jobs:
       - name: Create output directory
         run: mkdir _output && cp document/index.html _output/index.html
       - name: Download core spec artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: core-rendered
           path: _output/core
       - name: Download JS API spec artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: js-api-rendered
           path: _output/js-api
       - name: Download Web API spec artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: web-api-rendered
           path: _output/web-api
