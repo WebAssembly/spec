@@ -545,14 +545,15 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
         AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
-    | IterE ({ it = VarE name; _ }, (ListN (e', None), [name', _])) when name = name' -> (* MYTODO *)
-      let i = eval_expr env e' |> al_to_int in
+    | IterE ({ it = VarE name; _ }, (ListN (e_n, None), [name', e'])) when name = name' ->
+      let i = eval_expr env e_n |> al_to_int in
       let v =
         List.init i (fun _ -> WasmContext.pop_value ())
         |> List.rev
         |> listV_of_list
       in
-      AlContext.update_env name v ctx
+      let new_env = assign e' v env in
+      AlContext.set_env new_env ctx
     | _ ->
       let new_env = assign e (WasmContext.pop_value ()) env in
       AlContext.set_env new_env ctx
