@@ -75,12 +75,6 @@ let nanop f nan =
   | F64 _ -> F64 nan.it @@ nan.at
   | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
 
-let nat s loc =
-  try
-    let n = int_of_string s in
-    if n >= 0 then n else raise (Failure "")
-  with Failure _ -> error (at loc) "integer constant out of range"
-
 let nat32 s loc =
   try I32.of_string_u s with Failure _ -> error (at loc) "i32 constant out of range"
 
@@ -576,10 +570,10 @@ offset_opt :
 
 align :
   | ALIGN_EQ_NAT
-    { let n = nat $1 $sloc in
-      if not (Lib.Int.is_power_of_two n) then
+    { let n = nat64 $1 $sloc in
+      if not (Lib.Int64.is_power_of_two_unsigned n) then
         error (at $sloc) "alignment must be a power of two";
-      Some (Lib.Int.log2 n) }
+      Some (Int64.to_int (Lib.Int64.log2_unsigned n)) }
 
 align_opt :
   | /* empty */ { None }

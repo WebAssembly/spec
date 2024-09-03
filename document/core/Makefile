@@ -2,6 +2,7 @@
 #
 
 # You can set these variables from the command line.
+W3C_STATUS    = ED
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         = a4
@@ -9,7 +10,7 @@ BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
 NAME          = WebAssembly
-DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2017/WG-12-06.md
+DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
 
 # Internal variables.
@@ -154,7 +155,7 @@ bikeshed: $(GENERATED)
 	@echo
 	@echo =========================================================================
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
-	bikeshed spec $(STATUS) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
@@ -196,7 +197,7 @@ WD-echidna: WD-tar
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
 	@echo
-	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
 .PHONY: WD-echidna-CI
 WD-echidna-CI: WD-tar
@@ -210,7 +211,7 @@ WD-echidna-CI: WD-tar
 		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
 		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
 	@echo
-	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
 .PHONY: diff
 diff: bikeshed

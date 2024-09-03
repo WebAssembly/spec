@@ -368,9 +368,7 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
       check_pack sz (ty_size memop.ty) at;
       Pack.packed_size sz
   in
-  require (memop.align < 63) at
-    "alignment must not be larger than natural";
-  require (1 lsl memop.align <= size) at
+  require (1 lsl memop.align >= 1 && 1 lsl memop.align <= size) at
     "alignment must not be larger than natural";
   let MemoryT (_lim, it) = memory c (0l @@ at) in
   if it = I32IndexType then

@@ -442,7 +442,7 @@ let vec v = string_of_vec v.it
 let memop name x typ {ty; align; offset; _} sz =
   typ ty ^ "." ^ name ^ " " ^ var x ^
   (if offset = 0L then "" else " offset=" ^ nat64 offset) ^
-  (if 1 lsl align = sz then "" else " align=" ^ nat (1 lsl align))
+  (if 1 lsl align = sz then "" else " align=" ^ nat64 (Int64.shift_left 1L align))
 
 let loadop x op =
   match op.pack with

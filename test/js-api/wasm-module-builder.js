@@ -114,52 +114,36 @@ let kWasmFuncRef = -0x10;
 let kWasmAnyFunc = kWasmFuncRef;  // Alias named as in the JS API spec
 let kWasmExternRef = -0x11;
 let kWasmAnyRef = -0x12;
-<<<<<<< HEAD
 let kWasmEqRef = -0x13;
 let kWasmI31Ref = -0x14;
 let kWasmStructRef = -0x15;
 let kWasmArrayRef = -0x16;
-=======
 let kWasmExnRef = -0x17;
 let kWasmNullExnRef = -0x0c;
->>>>>>> exn/main
 
 // Use the positive-byte versions inside function bodies.
 let kLeb128Mask = 0x7f;
 let kFuncRefCode = kWasmFuncRef & kLeb128Mask;
 let kAnyFuncCode = kFuncRefCode;  // Alias named as in the JS API spec
 let kExternRefCode = kWasmExternRef & kLeb128Mask;
+let kExnRefCode = kWasmExnRef & kLeb128Mask;
 let kAnyRefCode = kWasmAnyRef & kLeb128Mask;
-<<<<<<< HEAD
 let kEqRefCode = kWasmEqRef & kLeb128Mask;
 let kI31RefCode = kWasmI31Ref & kLeb128Mask;
 let kNullExternRefCode = kWasmNullExternRef & kLeb128Mask;
 let kNullFuncRefCode = kWasmNullFuncRef & kLeb128Mask;
+let kNullExnRefCode = kWasmNullExnRef & kLeb128Mask;
 let kStructRefCode = kWasmStructRef & kLeb128Mask;
 let kArrayRefCode = kWasmArrayRef & kLeb128Mask;
-=======
-let kNullExternRefCode = kWasmNullExternRef & kLeb128Mask;
-let kNullFuncRefCode = kWasmNullFuncRef & kLeb128Mask;
-let kExnRefCode = kWasmExnRef & kLeb128Mask;
-let kNullExnRefCode = kWasmNullExnRef & kLeb128Mask;
->>>>>>> exn/main
 let kNullRefCode = kWasmNullRef & kLeb128Mask;
 
 let kWasmRefNull = 0x63;
 let kWasmRef = 0x64;
-<<<<<<< HEAD
-function wasmRefNullType(heap_type) {
-  return {opcode: kWasmRefNull, heap_type: heap_type};
-}
-function wasmRefType(heap_type) {
-  return {opcode: kWasmRef, heap_type: heap_type};
-=======
 function wasmRefNullType(heap_type, is_shared = false) {
   return {opcode: kWasmRefNull, heap_type: heap_type, is_shared: is_shared};
 }
 function wasmRefType(heap_type, is_shared = false) {
   return {opcode: kWasmRef, heap_type: heap_type, is_shared: is_shared};
->>>>>>> exn/main
 }
 
 let kExternalFunction = 0;
@@ -663,13 +647,10 @@ class Binary {
     }
   }
 
-<<<<<<< HEAD
   emit_heap_type(heap_type) {
     this.emit_bytes(wasmSignedLeb(heap_type, kMaxVarInt32Size));
   }
 
-=======
->>>>>>> exn/main
   emit_type(type) {
     if ((typeof type) == 'number') {
       this.emit_u8(type >= 0 ? type : type & kLeb128Mask);
@@ -680,14 +661,11 @@ class Binary {
     }
   }
 
-<<<<<<< HEAD
   emit_init_expr(expr) {
     this.emit_bytes(expr);
     this.emit_u8(kExprEnd);
   }
 
-=======
->>>>>>> exn/main
   emit_header() {
     this.emit_bytes([
       kWasmH0, kWasmH1, kWasmH2, kWasmH3, kWasmV0, kWasmV1, kWasmV2, kWasmV3
@@ -1123,7 +1101,6 @@ class WasmModuleBuilder {
     if (wasm.types.length > 0) {
       if (debug) print('emitting types @ ' + binary.length);
       binary.emit_section(kTypeSectionCode, section => {
-<<<<<<< HEAD
         let length_with_groups = wasm.types.length;
         for (let group of wasm.rec_groups) {
           length_with_groups -= group.size - 1;
@@ -1171,18 +1148,6 @@ class WasmModuleBuilder {
             for (let result of type.results) {
               section.emit_type(result);
             }
-=======
-        section.emit_u32v(wasm.types.length);
-        for (let type of wasm.types) {
-          section.emit_u8(kWasmFunctionTypeForm);
-          section.emit_u32v(type.params.length);
-          for (let param of type.params) {
-            section.emit_type(param);
-          }
-          section.emit_u32v(type.results.length);
-          for (let result of type.results) {
-            section.emit_type(result);
->>>>>>> exn/main
           }
         }
       });

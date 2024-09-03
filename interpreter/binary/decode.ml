@@ -319,7 +319,6 @@ let memop s =
   let has_var = Int32.logand flags 0x40l <> 0l in
   let x = if has_var then at var s else Source.(0l @@ no_region) in
   let align = Int32.(to_int (logand flags 0x3fl)) in
-  require (align < 32) s pos "malformed memop alignment";
   let offset = u64 s in
   x, align, offset
 
