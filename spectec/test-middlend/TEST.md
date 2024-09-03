@@ -3956,8 +3956,8 @@ relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
 ;; 6-typing.watsup
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 6-typing.watsup
-  rule _{C : context, typeidx* : typeidx*, comptype : comptype, x_0 : idx, x* : idx*, x'** : idx**, comptype'* : comptype*}:
-    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(()?{}), ($idx(typeidx) : typevar <: typeuse)*{typeidx : typeidx}, comptype), OK_oktypeidx(x_0))
+  rule _{C : context, x* : idx*, comptype : comptype, x_0 : idx, x'** : idx**, comptype'* : comptype*}:
+    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(()?{}), ($idx(x) : typevar <: typeuse)*{x : typeidx}, comptype), OK_oktypeidx(x_0))
     -- if (|x*{x : idx}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x : idx}
     -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(`FINAL%?`_fin(?()), ($idx(x') : typevar <: typeuse)*{x' : typeidx}, comptype')))*{comptype' : comptype, x : idx, x' : typeidx}
@@ -12266,8 +12266,8 @@ relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
 ;; 6-typing.watsup
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 6-typing.watsup
-  rule _{C : context, typeidx* : typeidx*, comptype : comptype, x_0 : idx, x* : idx*, x'** : idx**, comptype'* : comptype*}:
-    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(()?{}), ($idx(typeidx) : typevar <: typeuse)*{typeidx : typeidx}, comptype), OK_oktypeidx(x_0))
+  rule _{C : context, x* : idx*, comptype : comptype, x_0 : idx, x'** : idx**, comptype'* : comptype*}:
+    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(()?{}), ($idx(x) : typevar <: typeuse)*{x : typeidx}, comptype), OK_oktypeidx(x_0))
     -- if (|x*{x : idx}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x : idx}
     -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(`FINAL%?`_fin(?()), ($idx(x') : typevar <: typeuse)*{x' : typeidx}, comptype')))*{comptype' : comptype, x : idx, x' : typeidx}
@@ -20576,8 +20576,8 @@ relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
 ;; 6-typing.watsup
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 6-typing.watsup
-  rule _{C : context, typeidx* : typeidx*, comptype : comptype, x_0 : idx, x* : idx*, x'** : idx**, comptype'* : comptype*, w0 : ()?}:
-    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(w0), ($idx(typeidx) : typevar <: typeuse)*{typeidx : typeidx}, comptype), OK_oktypeidx(x_0))
+  rule _{C : context, x* : idx*, comptype : comptype, x_0 : idx, x'** : idx**, comptype'* : comptype*, w0 : ()?}:
+    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(w0), ($idx(x) : typevar <: typeuse)*{x : typeidx}, comptype), OK_oktypeidx(x_0))
     -- if (|x*{x : idx}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x : idx}
     -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(`FINAL%?`_fin(?()), ($idx(x') : typevar <: typeuse)*{x' : typeidx}, comptype')))*{comptype' : comptype, x : idx, x' : typeidx}
@@ -28897,8 +28897,8 @@ relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
 ;; 6-typing.watsup
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 6-typing.watsup
-  rule _{C : context, typeidx* : typeidx*, comptype : comptype, x_0 : idx, x* : idx*, x'** : idx**, comptype'* : comptype*, w0 : ()?}:
-    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(w0), ($idx(typeidx) : typevar <: typeuse)*{typeidx : typeidx}, comptype), OK_oktypeidx(x_0))
+  rule _{C : context, x* : idx*, comptype : comptype, x_0 : idx, x'** : idx**, comptype'* : comptype*, w0 : ()?}:
+    `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(w0), ($idx(x) : typevar <: typeuse)*{x : typeidx}, comptype), OK_oktypeidx(x_0))
     -- if (|comptype'*{comptype' : comptype}| = |x*{x : idx}|)
     -- if (|comptype'*{comptype' : comptype}| = |x'*{x' : idx}*{x' : idx}|)
     -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{x : idx}

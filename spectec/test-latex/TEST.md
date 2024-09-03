@@ -4682,7 +4682,7 @@ C \vdash {\mathit{comptype}} : \mathsf{ok}
 (C \vdash {\mathit{comptype}} \leq {\mathit{comptype}'})^\ast
 \end{array}
 }{
-C \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeidx}}^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(x_0)}
+C \vdash \mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(x_0)}
 } \, {[\textsc{\scriptsize K{-}sub}]}
 \qquad
 \end{array}
