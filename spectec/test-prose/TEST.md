@@ -12773,7 +12773,7 @@ watsup 0.4 generator
       * :math:`{\mathit{ft}}_1` matches :math:`{\mathit{ft}}_2`.
 
 
-* :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeidx}}^\ast}~{\mathit{comptype}})` is valid with type :math:`({\mathsf{ok}}{x_0})` if and only if:
+* :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit{comptype}})` is valid with type :math:`({\mathsf{ok}}{x_0})` if and only if:
 
 
    * :math:`{|{x^\ast}|}` must be equal to :math:`{|{{\mathit{comptype}'}^\ast}|}`.
@@ -22549,7 +22549,7 @@ Comptype_sub
     - the function type ft_1 matches the function type ft_2.
 
 Subtype_ok
-- the sub type (SUB (FINAL ()? ?) $idx(typeidx)* comptype) is valid with the oktypeidx (OK x_0) if and only if:
+- the sub type (SUB (FINAL ()? ?) $idx(x)* comptype) is valid with the oktypeidx (OK x_0) if and only if:
   - |x*| is |comptype'*|.
   - |x'**| is |comptype'*|.
   - For all x in x*,
