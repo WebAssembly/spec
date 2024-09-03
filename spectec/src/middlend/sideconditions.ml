@@ -50,7 +50,8 @@ let iter_side_conditions _env ((iter, vs) : iterexp) : prem list =
   match iter, List.map snd vs with
   | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
   | (List|List1), (e::es) -> List.map (same_len e) es
-  | ListN (ne, _), es -> List.map (has_len ne) es
+  | ListN (ne, None), es -> List.map (has_len ne) es
+  | ListN (_, Some _), _ -> []
   | _, [] -> []
 
 (* Expr traversal *)
