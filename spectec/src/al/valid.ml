@@ -562,6 +562,21 @@ let valid_algo (algo: algorithm) =
   |> print_string;
   print_endline ")";
 
+  (* TODO: Use local environment *)
+  (* Store global enviroment *)
+  let global_env = !env in
+
+  (* Add function argument to environment *)
+  (match Env.find_opt_def !env (Al_util.name_of_algo algo $ no_region) with
+  | Some (params, _, _) -> List.iter (fun param ->
+      (match param.it with
+      | DefP (id, params', typ') -> env := Env.bind_def !env id (params', typ', [])
+      | _ -> ()
+      )
+    ) params;
+  | _ -> ()
+  );
+
   init algo;
   let walker =
     { base_unit_walker with
@@ -570,7 +585,10 @@ let valid_algo (algo: algorithm) =
       walk_instr = valid_instr
     }
   in
-  walker.walk_algo walker algo
+  walker.walk_algo walker algo;
+
+  (* Reset global enviroment *)
+  env := global_env
 
 let valid (script: script) =
   List.iter valid_algo script
