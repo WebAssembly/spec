@@ -63,32 +63,41 @@ let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match Env.find_opt_typ !env id with
   | Some (_, insts) ->
+    let typ_of_arg arg =
+      match (Eval.reduce_arg !env arg).it with
+      | ExpA { it=SubE (_, typ, _); _ } -> typ
+      | ExpA { note; _ } -> note
+      | TypA typ -> typ
+      | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
+    in
+    let get_syntax_arg_name arg = 
+      match arg.it with
+      | Il.Ast.TypA { it=VarT (id, []); _ } -> Some id
+      | _ -> None
+    in
+    let subst_syntax_arg subst arg inst_arg =
+      let name = get_syntax_arg_name inst_arg in
+      if Option.is_some name then
+        let name = Option.get name in
+        Il.Subst.add_typid subst name (typ_of_arg arg)
+      else
+        subst
+    in
+    let subst_inst inst =
+      let InstD (binds, inst_args, deftyp) = inst.it in 
+      let subst = List.fold_left2 subst_syntax_arg Il.Subst.empty args inst_args in
+      let new_args = Il.Subst.subst_args subst inst_args in
+      let new_deftyp = Il.Subst.subst_deftyp subst deftyp in
+      { inst with it = InstD (binds, new_args, new_deftyp) }
+    in
+    let insts = List.map subst_inst insts in
     let get_deftyp inst =
-      let typ_of_arg arg =
-        match (Eval.reduce_arg !env arg).it with
-        | ExpA { it=SubE (_, typ, _); _ } -> typ
-        | ExpA { note; _ } -> note
-        | TypA typ -> typ
-        | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
-      in
-
       let InstD (_, inst_args, deftyp) = inst.it in
-      let get_syntax_arg_name arg = 
-        match arg.it with
-        | Il.Ast.TypA { it=VarT (id, []); _ } -> Some id
-        | _ -> None
+      let valid_arg arg inst_arg = 
+        Eval.sub_typ !env (typ_of_arg arg) (typ_of_arg inst_arg)
       in
-      if List.for_all2 (fun arg inst_arg -> Option.is_some (get_syntax_arg_name inst_arg) || Eval.sub_typ !env (typ_of_arg arg) (typ_of_arg inst_arg)) args inst_args then
-        let subst_syntax_arg subst arg inst_arg =
-          let name = get_syntax_arg_name inst_arg in
-          if Option.is_some name then
-            let name = Option.get name in
-            Il.Subst.add_typid subst name (typ_of_arg arg)
-          else
-            subst
-        in
-        let subst = List.fold_left2 subst_syntax_arg Il.Subst.empty args inst_args in
-        Some (Il.Subst.subst_deftyp subst deftyp)
+      if List.for_all2 valid_arg args inst_args then
+        Some deftyp
       else
         None
     in
@@ -268,9 +277,9 @@ let check_struct source typ =
   | VarT (id, args) -> (
     let deftyps = get_deftyps id args in
     if not (List.exists (fun deftyp -> match deftyp.it with StructT _ -> true | _ -> false) deftyps) then
-      error_valid "not a struct" source ""
+      error_valid "not a struct" source (Il.Print.string_of_typ typ)
   )
-  | _ -> error_valid "not a struct" source ""
+  | _ -> error_valid "not a struct" source (Il.Print.string_of_typ typ)
 
 let check_tuple source exprs typ =
   match (ground_typ_of typ).it with
@@ -339,13 +348,15 @@ let check_inv_call source id indices args result_typ =
     | [arg] -> (
       match arg.it with
       | ExpA exp -> exp.note
-      | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+      | a -> error_valid (Printf.sprintf "wrong result argument")
+        source (Print.string_of_arg (a $ no_region))
     )
     | _ ->
       let arg2typ arg = (
         match arg.it with
         | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
-        | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+        | a -> error_valid (Printf.sprintf "wrong result argument")
+          source (Print.string_of_arg (a $ no_region))
       ) in
       TupT (List.map arg2typ result_args) $ no_region
   in
