@@ -459,7 +459,7 @@ let rec translate_rhs exp =
     let walker = { Walk.base_walker with walk_expr } in
 
     let instrs = translate_rhs inner_exp in
-    List.map (walker.walk_instr walker) instrs
+    List.concat_map (walker.walk_instr walker) instrs
   (* Value *)
   | _ when is_wasm_value exp -> [ pushI {(translate_exp exp) with note = valT} ]
   (* Instr *)
@@ -603,11 +603,13 @@ let handle_partial_bindings lhs rhs ids =
         new_e
       )
     ) in
-    let walker = Al.Walk.walk_expr { Al.Walk.default_config with
-      pre_expr;
-      stop_cond_expr = contains_diff target_ns;
-    } in
-    let new_lhs = walker lhs in
+    let walk_expr walker expr = 
+      let stop_cond_expr = contains_diff target_ns in
+      let expr1 = pre_expr expr in
+      if stop_cond_expr expr1 then expr1 else Al.Walk.base_walker.walk_expr walker expr1
+    in
+    let walker = {Al.Walk.base_walker with walk_expr = walk_expr} in
+    let new_lhs = walker.walk_expr walker lhs in
     new_lhs, rhs, List.fold_left (fun il c -> [ ifI (c, il, []) ]) [] !conds
 
 let rec translate_bindings ids bindings =
@@ -779,7 +781,7 @@ and handle_iter_lhs lhs rhs free_ids =
   (* Iter injection *)
 
   let walker = { Walk.base_walker with super = Some Walk.base_walker; walk_expr } in
-  let instrs' = List.map (walker.walk_instr walker) instrs in
+  let instrs' = List.concat_map (walker.walk_instr walker) instrs in
 
   (* Add ListN condition *)
   match iter with
@@ -975,15 +977,19 @@ let rec translate_iterpr pr (iter, ids) =
   let post_instr i =
     let at = i.at in
     match i.it with
-    | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
+    | LetI (lhs, rhs) -> [letI (distribute_iter lhs rhs) ~at:at]
     | IfI (cond, il1, il2) ->
         let cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
         let ty = handle_iter_ty cond.note in
-        [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at ~note:ty, il1, il2) ~at:at ]
-    | _ -> [ i ]
+        [ifI (iterE (cond, cond_ids, iter') ~at:cond.at ~note:ty, il1, il2) ~at:at]
+    | _ -> [i]
   in
-  let walk_config = { Al.Walk.default_config with post_instr } in
-  Al.Walk.walk_instrs walk_config instrs
+  let walk_instr walker instr = 
+    let instr1 = Al.Walk.base_walker.walk_instr walker instr in
+    List.concat_map post_instr instr1
+  in
+  let walker = {Al.Walk.base_walker with walk_instr = walk_instr} in
+  List.concat_map (walker.walk_instr walker) instrs
 
 and translate_prem prem =
   let at = prem.at in
@@ -1039,18 +1045,25 @@ let translate_helper helper =
   let id, clauses, partial = helper.it in
   let name = id.it in
   let args = List.hd clauses |> args_of_clause in
+  let walk_expr walker expr = 
+    let expr1 = Transpile.remove_sub expr in
+    Al.Walk.base_walker.walk_expr walker expr1
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+  }
+  in
   let params =
     args
     |> translate_args
-    |> List.map
-      Walk.(walk_arg { default_config with pre_expr = Transpile.remove_sub })
+    |> List.map (walker.walk_arg walker)
   in
   let blocks = List.map (translate_helper_body name) clauses in
   let body =
     Transpile.merge_blocks blocks
     (* |> Transpile.insert_frame_binding *)
     |> Transpile.handle_frame params
-    |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
+    |> List.concat_map (walker.walk_instr walker)
     |> Transpile.enhance_readability
     |> (if partial = Partial then Fun.id else Transpile.ensure_return)
     |> Transpile.flatten_if in
@@ -1249,16 +1262,21 @@ and translate_rgroup (rule: rule_def) =
     |> List.map (fun e -> ExpA e $ e.at)
   in
   (* TODO: refactor transpiles *)
-  let al_params' =
-    List.map
-      Walk.(walk_arg { default_config with pre_expr = Transpile.remove_sub })
-      al_params
+  let walk_expr walker expr = 
+    let expr1 = Transpile.remove_sub expr in
+    Al.Walk.base_walker.walk_expr walker expr1
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+  }
+  in
+  let al_params' = List.map (walker.walk_arg walker) al_params
   in
   let body =
     instrs
     |> Transpile.insert_frame_binding
     |> Transpile.insert_nop
-    |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
+    |> List.concat_map (walker.walk_instr walker)
     |> Transpile.enhance_readability
     |> Transpile.infer_assert
     |> Transpile.flatten_if

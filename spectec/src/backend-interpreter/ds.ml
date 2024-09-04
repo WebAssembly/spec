@@ -341,14 +341,20 @@ let init algos =
   (* Initialize info_map *)
   let init_info algo =
     let algo_name = name_of_algo algo in
-    let config = {
-      Walk.default_config with pre_instr =
-        (fun i ->
-          let info = Info.make_info algo_name i in
-          Info.add i.note info;
-          [i])
-    } in
-    Walk.walk config algo
+    let pre_instr = (fun i ->
+      let info = Info.make_info algo_name i in
+      Info.add i.note info;
+      [i]) 
+    in
+    let walk_instr walker instr = 
+      let instr1 = pre_instr instr in
+      List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+    in
+    let walker = { Walk.base_walker with
+      walk_instr = walk_instr;
+    }
+    in
+    walker.walk_algo walker algo
   in
   List.map init_info algos |> ignore;
 
