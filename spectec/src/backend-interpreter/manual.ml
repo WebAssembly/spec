@@ -1,6 +1,7 @@
 open Al
 open Ast
 open Al_util
+open Ds
 
 module FuncMap = Map.Make (String)
 
@@ -102,6 +103,19 @@ let module_ok = function
     CaseV ("->", [ externtypes; externidxs ])
   | vs -> Numerics.error_values "$Module_ok" vs
 
+let externaddr_type = function
+  | [ CaseV (name, [ NumV z ]) ] ->
+    let addr = Z.to_int z in
+    let type_ =
+      name^"S"
+      |> Store.access
+      |> unwrap_listv_to_array
+      |> (fun arr -> Array.get arr addr)
+      |> strv_access "TYPE"
+    in
+    CaseV (name, [ type_ ])
+  | vs -> Numerics.error_values "$Externaddr_type" vs
+
 let val_type = function
   | [ vt ] ->
     let res =
@@ -117,6 +131,7 @@ let manual_map =
   |> FuncMap.add "Ref_type" ref_type
   |> FuncMap.add "Module_ok" module_ok
   |> FuncMap.add "Val_type" val_type
+  |> FuncMap.add "Externaddr_type" externaddr_type
 
 let mem name = FuncMap.mem name manual_map
 
