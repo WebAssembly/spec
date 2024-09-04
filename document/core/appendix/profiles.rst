@@ -11,7 +11,7 @@ A host platform can thereby decide to support the language only under a restrict
 Conventions
 ~~~~~~~~~~~
 
-A profile modification is specified by decorating selected rules in the main body of this specification with a *profile annotation* that defines them as "conditional" on the choice of profile.
+A profile modification is specified by decorating selected rules in the main body of this specification with a *profile annotation* that defines them as conditional on the choice of profile.
 
 For that purpose, every profile defines a *profile marker*, an alphanumeric short-hand like :math:`\profilename{ABC}`.
 A profile annotation of the form :math:`\exprofiles{\profile{ABC}~\profile{XYZ}}` on a rule indicates that this rule is *excluded* for either of the profiles whose marker is :math:`\profilename{ABC}` or :math:`\profilename{XYZ}`.
@@ -46,7 +46,7 @@ The overall effect is that the respective construct is no longer part of the lan
       &                           &|& \UNREACHABLE \\
       \end{array}
 
-   A rule may be annotated by multiple markers, which might be the case if a construct is in the intersection of multiple features.
+   A rule may be annotated by multiple markers, which could be the case if a construct is in the intersection of multiple features.
 
 
 Semantics Annotations
@@ -54,22 +54,22 @@ Semantics Annotations
 
 To restrict certain behaviours in a profile, individual :ref:`validation <valid>` or :ref:`reduction <exec>` rules or auxiliary definitions are annotated with an associated marker.
 
-This has the simple consequence that the respective rule is no longer applicable under the given profile.
+This has the consequence that the respective rule is no longer applicable under the given profile.
 
 .. note::
    For example, an "infinite" profile marked :math:`\profilename{INF}` could define that growing memory never fails:
 
    .. math::
 	   \begin{array}{llcl@{\qquad}l}
-	   & S; F; (\I32.\CONST~n)~\MEMORYGROW &\stepto& S'; F; (\I32.\CONST~\X{sz})
+	   & S; F; (\I32.\CONST~n)~\MEMORYGROW~x &\stepto& S'; F; (\I32.\CONST~\X{sz})
 	   \\&&&
 	     \begin{array}[t]{@{}r@{~}l@{}}
-	     (\iff & F.\AMODULE.\MIMEMS[0] = a \\
+	     (\iff & F.\AMODULE.\MIMEMS[x] = a \\
 	     \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
 	     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\[1ex]
 	     \end{array}
 	   \\[1ex]
-	   \exprofiles{\profile{INF}} & S; F; (\I32.\CONST~n)~\MEMORYGROW &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
+	   \exprofiles{\profile{INF}} & S; F; (\I32.\CONST~n)~\MEMORYGROW~x &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
 	   \end{array}
 
 
@@ -80,15 +80,15 @@ All profiles are defined such that the following properties are preserved:
 
 * All profiles represent syntactic and semantic subsets of the :ref:`full profile <profile-full>`, i.e., they do not *add* syntax or *alter* behaviour.
 
-* All profiles are mutually compatible, i.e., no two profiles subset semantic behaviour in inconsistent ways, and any intersection of profiles preserves the properties described here.
+* All profiles are mutually compatible, i.e., no two profiles subset semantic behaviour in inconsistent or ambiguous ways, and any intersection of profiles preserves the properties described here.
 
-* Profiles that restrict execution do not violate :ref:`soundness <soundness>`, i.e., all :ref:`configurations <syntax-config>` valid under that profile still have well-defined execution behaviour.
+* Profiles do not violate :ref:`soundness <soundness>`, i.e., all :ref:`configurations <syntax-config>` valid under that profile still have well-defined execution behaviour.
 
 .. note::
    Tools are generally expected to handle and produce code for the full profile by default.
    In particular, producers should not generate code that *depends* on specific profiles. Instead, all code should preserve correctness when executed under the full profile.
 
-   Moreover, profiles should be considered static and fixed for a given platform or ecosystem. Runtime conditioning on the "current" profile should especially be avoided.
+   Moreover, profiles should be considered static and fixed for a given platform or ecosystem. Runtime conditioning on the "current" profile is not intended and should be avoided.
 
 
 
@@ -122,6 +122,8 @@ The *deterministic* profile excludes all rules marked :math:`\exprofiles{\PROFDE
 It defines a sub-language that does not exhibit any incidental non-deterministic behaviour:
 
 * All :ref:`NaN <syntax-nan>` values :ref:`generated <aux-nans>` by :ref:`floating-point instructions <syntax-instr-numeric>` are canonical and positive.
+
+* All :ref:`relaxed vector instructions <syntax-instr-relaxed>` have a fixed behaviour that does not depend on the implementation.
 
 Even under this profile, the |MEMORYGROW| and |TABLEGROW| instructions technically remain :ref:`non-deterministic <exec-memory.grow>`, in order to be able to indicate resource exhaustion.
 
