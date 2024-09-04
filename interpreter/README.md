@@ -437,7 +437,7 @@ module:
   ...
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
-  ( module definition <name>? ... )          ;; = (module <name>? ...) (instance <name>? <name>?)
+  ( module definition <name>? binary ... )   ;; uninstantiated module
 
 instance:
   ( instance <name>? <name>? )               ;; instantiate latter module to former instance
@@ -548,7 +548,7 @@ cmd:
 
 module:
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
-  ( module definition <name>? binary ... )   ;; = (module <name>? binary ...) (instance <name>? <name>?)
+  ( module definition <name>? binary ... )   ;; uninstantiated module
 
 instance:
   ( instance <name>? <name>? )               ;; instantiate latter module to former instance
