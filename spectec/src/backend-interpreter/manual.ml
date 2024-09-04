@@ -62,10 +62,21 @@ let module_ok = function
     CaseV ("->", [listV_of_list []; listV_of_list []])
   | vs -> Numerics.error_values "$Module_ok" vs
 
+let val_type = function
+  | [ vt ] ->
+    let res =
+    vt
+    |> Construct.al_to_value
+    |> Reference_interpreter.Value.type_of_value
+    |> Construct.al_of_val_type in
+    res
+  | vs -> Numerics.error_values "$Val_type" vs
+
 let manual_map =
   FuncMap.empty
   |> FuncMap.add "Ref_type" ref_type
   |> FuncMap.add "Module_ok" module_ok
+  |> FuncMap.add "Val_type" val_type
 
 let mem name = FuncMap.mem name manual_map
 

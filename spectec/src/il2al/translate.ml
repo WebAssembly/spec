@@ -582,7 +582,15 @@ let extract_non_names =
     if contains_name e then acc, e
     else
       let fresh = get_lhs_name e in
-      [ e, fresh ] @ acc, fresh
+      let name = match fresh.it with
+        | VarE id -> id
+        | _ -> assert false
+      in
+      match e.it with
+      | IterE (_, _, iter) ->
+        let fresh' = IterE (fresh, [ name ], iter) $$ e.at % e.note in
+        [ e, fresh' ] @ acc, fresh'
+      | _ -> [ e, fresh ] @ acc, fresh
   ) []
 
 let contains_diff target_ns e =
@@ -1276,4 +1284,4 @@ let translate il =
     List.map translate_rgroup rules @ List.map translate_helper helpers
   in
   List.map Transpile.remove_state al
-  
+
