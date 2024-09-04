@@ -440,7 +440,7 @@ module:
   ( module definition <name>? binary ... )   ;; uninstantiated module
 
 instance:
-  ( instance <name>? <name>? )               ;; instantiate latter module to former instance
+  ( module instance <name>? <name>? )        ;; instantiate latter module to former instance
 
 action:
   ( invoke <name>? <string> <const>* )       ;; invoke function export
@@ -551,7 +551,7 @@ module:
   ( module definition <name>? binary ... )   ;; uninstantiated module
 
 instance:
-  ( instance <name>? <name>? )               ;; instantiate latter module to former instance
+  ( module instance <name>? <name>? )        ;; instantiate latter module to former instance
 
 action:
   ( invoke <name>? <string> <const>* )       ;; invoke function export
