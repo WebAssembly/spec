@@ -65,7 +65,7 @@ jobs:
       - name: Run Bikeshed
         run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: web-api-rendered
           path: document/web-api/index.html
