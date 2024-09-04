@@ -14,7 +14,7 @@ let expA e = ExpA e $ e.at
 let eval_expr =
   let ty_instrs = listT instrT in
   let ty_vals = listT valT in
-  let instrs = iterE (varE "instr" ~note:instrT, ["instr"], List) ~note:ty_instrs in
+  let instrs = iter_var "instr" List instrT in
   let result = varE "val" ~note:valT in
 
   (* Add function definition to AL environment *)
@@ -55,13 +55,10 @@ let return_instrs_of_invoke config =
   let _, frame, rhs = config in
   let vals, instrs = rhs in
   let arity = varE "k" ~note:natT in
-  let value = varE "val" ~note:valT in
+  let e_vals = iter_var "val" (ListN (arity, None)) valT in
   let ty = listT admininstrT in
-  let ty' = listnT valT (Il.Ast.VarE ("k" $ no_region) $$ no_region % natT) in
   let valtype = varT "valtype" [] in
-  let len_expr =
-    lenE (iterE (varE "t_2" ~note:valtype, ["t_2"], List) ~note:(iterT valtype List))~note:natT
-  in
+  let len_expr = lenE (iter_var "t_2" List valtype) ~note:natT in
   [
     letI (arity,  len_expr);
     enterI (
@@ -69,8 +66,6 @@ let return_instrs_of_invoke config =
       catE (instrs, listE [caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT] ~note:ty) ~note:ty,
       vals
     );
-    popI (iterE (value, ["val"], ListN (arity, None)) ~note:ty');
-    returnI (Some (iterE (value, ["val"], ListN (arity, None)) ~note:ty'))
+    popI e_vals;
+    returnI (Some e_vals)
   ]
-
-

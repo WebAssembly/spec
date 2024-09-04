@@ -124,7 +124,7 @@ let rec uncat e =
 
 let seq2exec e =
   match e.it with
-  | IterE (e', _, Opt) ->
+  | IterE (e', (Opt, _)) ->
     ifI (
       isDefinedE e ~at:e.at ~note:boolT,
       [executeI e' ~at:e.at],
@@ -346,7 +346,7 @@ let remove_dead_assignment il =
           let bindings = free_expr e11 @ free_expr e12 in
           let get_bounds_iters e =
             match e.it with
-            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+            | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
             | _ -> IdSet.empty
           in
           let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -801,7 +801,7 @@ let insert_frame_binding instrs =
       let bindings' = free_expr e11 @ free_expr e12 in
       let get_bounds_iters e =
         match e.it with
-        | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+        | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
         | _ -> IdSet.empty
       in
       let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -1029,8 +1029,7 @@ let remove_enter algo =
             popI e_frame ~at:instr.at
           ]
         | _ ->
-          let ty_vals = listT valT in
-          let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
+          let e_tmp = iter_var "val" List valT in
           pushI e_frame ~at:instr.at :: il @
           (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
             popAllI e_tmp ~at:instr.at;

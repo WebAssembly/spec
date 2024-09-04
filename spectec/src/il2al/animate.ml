@@ -22,6 +22,10 @@ let not_ f x = not (f x)
 
 let (--) xs ys = List.filter (fun x -> not (List.mem x ys)) xs
 
+let get_or_else v = function
+| Some v -> v
+| None -> v
+
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
 
@@ -43,6 +47,66 @@ let is_assign env (tag, prem, _) =
   match tag with
   | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
+
+(* Rewrite iterexp of IterPr *)
+let rewrite (iter, xes) e =
+  let rewrite' e' =
+    match e' with
+    | VarE x ->
+      List.find_map (fun (x', el) ->
+        if Il.Eq.eq_id x x' then Some (IterE (e, (iter, [x', el]))) else None
+      ) xes
+      |> get_or_else e'
+    | _ -> e'
+  in
+  Source.map rewrite' e
+let rewrite_id (_, xes) id =
+  List.find_map (fun (x, el) ->
+    match el.it with
+    | VarE id' when id = x.it -> Some id'.it
+    | _ -> None
+  ) xes
+  |> get_or_else id
+let rec rewrite_iterexp' iterexp pr =
+  let new_ = Il_walk.transform_expr (rewrite iterexp) in
+  match pr with
+  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | IfPr e -> IfPr (new_ e)
+  | LetPr (e1, e2, ids) ->
+    let new_ids = List.map (rewrite_id iterexp) ids in
+    LetPr (new_ e1, new_ e2, new_ids)
+  | ElsePr -> ElsePr
+  | IterPr (pr, (iter, xes)) -> IterPr (rewrite_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
+and rewrite_iterexp iterexp pr = Source.map (rewrite_iterexp' iterexp) pr
+
+(* Recover iterexp of IterPr *)
+let recover (iter, xes) e =
+  match e.it with
+  | IterE ({it = VarE x; _} as inner_e, (iter', [x', el])) when Il.Eq.(eq_id x x' && eq_iter iter iter') ->
+    List.find_map (fun (x', el') ->
+      if Il.Eq.(eq_id x x' && eq_exp el el') then Some inner_e else None
+    ) xes
+    |> get_or_else e
+  | _ -> e
+let recover_id (_, xes) id =
+  List.find_map (fun (x, el) ->
+    match el.it with
+    | VarE id' when id = id'.it -> Some x.it
+    | _ -> None
+  ) xes
+  |> get_or_else id
+let rec recover_iterexp' iterexp pr =
+  let new_ = Il_walk.transform_expr (recover iterexp) in
+  match pr with
+  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | IfPr e -> IfPr (new_ e)
+  | LetPr (e1, e2, ids) ->
+    let new_ids = List.map (recover_id iterexp) ids in
+    LetPr (new_ e1, new_ e2, new_ids)
+  | ElsePr -> ElsePr
+  | IterPr (pr, (iter, xes)) -> IterPr (recover_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
+and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
+
 
 (* is this assign premise encoded premise for pop? *)
 let is_pop env row =
@@ -220,9 +284,10 @@ let rec rows_of_prem vars len i p =
       Condition, p, [i];
       Assign frees, p, [i] @ List.filter_map (index_of len vars) (free_exp_list l)
     ]
-  | IterPr (p', iter) ->
-    let to_iter (tag, p', coverings) = tag, IterPr (p', iter) $ p.at, coverings in
-    List.map to_iter (rows_of_prem vars len i p')
+  | IterPr (p', iterexp) ->
+    let p_r = rewrite_iterexp iterexp p' in
+    let to_iter (tag, p, coverings) = tag, IterPr (recover_iterexp iterexp p, iterexp) $ p.at, coverings in
+    List.map to_iter (rows_of_prem vars len i p_r)
   | _ -> [ Condition, p, [i] ]
 
 let build_matrix prems known_vars =

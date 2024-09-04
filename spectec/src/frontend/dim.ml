@@ -56,20 +56,16 @@ let check_env (env : renv ref) : env =
 
 (* Collecting constraints *)
 
+let strip_index = function
+  | ListN (e, Some _) -> ListN (e, None)
+  | iter -> iter
+
 let check_typid _env _ctx _id = ()   (* Types are always global *)
 let check_gramid _env _ctx _id = ()  (* Grammars are always global *)
 
 let check_varid env ctx id =
-  let ctxs =
-    match Env.find_opt id.it !env with
-    | None -> [id.at, ctx]
-    | Some ctxs -> (id.at, ctx)::ctxs
-  in env := Env.add id.it ctxs !env
-
-
-let strip_index = function
-  | ListN (e, Some _) -> ListN (e, None)
-  | iter -> iter
+  let ctxs = Option.value (Env.find_opt id.it !env) ~default:[] in
+  env := Env.add id.it ((id.at, ctx)::ctxs) !env
 
 let rec check_iter env ctx iter =
   match iter with
@@ -305,15 +301,23 @@ let check_typdef t prems : env =
 open Il.Ast
 
 type env' = iter list Env.t
-type occur = (Il.Ast.typ * Il.Ast.iter list) Env.t
+type occur = (typ * iter list) Env.t
 
-let union = Env.union (fun _ (t1, ctx1) (t2, ctx2) ->
+let union = Env.union (fun _ (_, ctx1 as occ1) (_, ctx2 as occ2) ->
   (* For well-typed scripts, t1 == t2. *)
-  Some (if List.length ctx1 < List.length ctx2 then (t1, ctx1) else (t2, ctx2)))
+  Some (if List.length ctx1 < List.length ctx2 then occ1 else occ2))
 
 let strip_index = function
   | ListN (e, Some _) -> ListN (e, None)
   | iter -> iter
+
+let annot_varid' id' = function
+  | Opt -> id' ^ Il.Print.string_of_iter Opt
+  | _ -> id' ^ Il.Print.string_of_iter List
+
+let rec annot_varid id = function
+  | [] -> id
+  | iter::iters -> annot_varid (annot_varid' id.it iter $ id.at) iters
 
 let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
   match iter with
@@ -451,19 +455,25 @@ and annot_path env p : Il.Ast.path * occur =
       DotP (p1', atom), occur1
   in {p with it}, occur
 
-and annot_iterexp env occur1 (iter, bs) at : Il.Ast.iterexp * occur =
-  assert (bs = []);
+and annot_iterexp env occur1 (iter, xes) at : Il.Ast.iterexp * occur =
+  assert (xes = []);
   let iter', (occur2, occur3) = annot_iter env iter in
-  let occur1' =
-    Env.filter_map (fun _ (t, iters) ->
+  let occur1'_l =
+    List.filter_map (fun (x, (t, iters)) ->
       match iters with
       | [] -> None
-      | iter1::iters' ->
-        assert (Il.Eq.eq_iter (strip_index iter') iter1); Some (t, iters')
-    ) (union occur1 occur3)
+      | iter::iters' ->
+        assert (Il.Eq.eq_iter (strip_index iter') iter);
+        Some (x, (annot_varid' x iter, (IterT (t, iter) $ at, iters')))
+    ) (Env.bindings (union occur1 occur3))
   in
-  let bs' = List.map (fun (x, (t, _)) -> x $ at, t) (Env.bindings occur1') in
-  (iter', bs'), union occur1' occur2
+(* TODO(2, rossberg): this should be active
+  if occur1'_l = [] then
+    error at "iteration does not contain iterable variable";
+*)
+  let xes' =
+    List.map (fun (x, (x', (t, _))) -> x $ at, VarE (x' $ at) $$ at % t) occur1'_l in
+  (iter', xes'), union (Env.of_seq (List.to_seq (List.map snd occur1'_l))) occur2
 
 and annot_sym env g : Il.Ast.sym * occur =
   Il.Debug.(log_in "el.annot_sym" (fun _ -> il_sym g));

@@ -97,7 +97,7 @@ and expr' =
   | CaseE of mixop * expr list                    (* mixop `(` expr* `)` -- CaseE *)
   | CallE of id * arg list                        (* id `(` expr* `)` *)
   | InvCallE of id * int option list * arg list   (* id`_`int*`^-1(` expr* `)` *)
-  | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)
+  | IterE of expr * iterexp                       (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
   | ArityE of expr                                (* "the arity of expr" *)
@@ -136,6 +136,8 @@ and arg' =
   | ExpA of expr
   | TypA of typ
   | DefA of id
+
+and iterexp = iter * (id * expr) list
 
 (* Instructions *)
 

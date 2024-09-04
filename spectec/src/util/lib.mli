@@ -12,7 +12,7 @@ sig
   val last : 'a list -> 'a (* raises Failure *)
   val nub : ('a -> 'a -> bool) -> 'a list -> 'a list
   val filter_not : ('a -> bool) -> 'a list -> 'a list
-  val assoc_map : ('a -> 'b) -> ('k * 'a) list -> ('k * 'b) list
+  val flatten_opt : 'a option list -> 'a list option
 end
 
 module Char :

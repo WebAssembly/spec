@@ -12,10 +12,10 @@ ex)
 open Util
 open Source
 
+open Free
 open Il
 open Ast
 (* open Print *)
-open Free
 
 (* Helpers *)
 let error at msg = Error.error at "prose translation" msg
@@ -71,7 +71,7 @@ let rec drop_until' acc f xs =
 let drop_until = drop_until' []
 
 let free_ids e =
-  (free_exp e)
+  (free_exp false e)
   .varid
   |> Set.elements
 

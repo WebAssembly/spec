@@ -80,7 +80,12 @@ let bound_gramid id = if id.it = "_" then empty else free_gramid id
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> free_exp e + free_opt free_varid id_opt
+  | ListN (e, _) -> free_exp e
+
+and bound_iter iter =
+  match iter with
+  | Opt | List | List1 -> empty
+  | ListN (_, id_opt) -> free_opt bound_varid id_opt
 
 
 (* Types *)
@@ -130,7 +135,7 @@ and free_exp e =
   | StrE efs -> free_list free_expfield efs
   | CaseE (_, e1) | UncaseE (e1, _) -> free_exp e1
   | CallE (id, as1) -> free_defid id + free_args as1
-  | IterE (e1, iter) -> free_exp e1 + free_iterexp iter
+  | IterE (e1, iter) -> (free_exp e1 - bound_iterexp iter) + free_iterexp iter
   | SubE (e1, t1, t2) -> free_exp e1 + free_typ t1 + free_typ t2
 
 and free_expfield (_, e) = free_exp e
@@ -142,8 +147,11 @@ and free_path p =
   | SliceP (p1, e1, e2) -> free_path p1 + free_exp e1 + free_exp e2
   | DotP (p1, _atom) -> free_path p1
 
-and free_iterexp (iter, bs) =
-    free_iter iter + free_list (free_pair free_varid free_typ) bs
+and free_iterexp (iter, xes) =
+  free_iter iter + free_list (free_pair free_varid free_exp) xes
+
+and bound_iterexp (iter, xes) =
+  bound_iter iter + free_list bound_varid (List.map fst xes)
 
 
 (* Grammars *)
@@ -154,7 +162,7 @@ and free_sym g =
   | NatG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_list free_sym gs
   | RangeG (g1, g2) -> free_sym g1 + free_sym g2
-  | IterG (g1, iter) -> free_sym g1 + free_iterexp iter
+  | IterG (g1, iter) -> (free_sym g1 - bound_iterexp iter) + free_iterexp iter
   | AttrG (e, g1) -> free_exp e + free_sym g1
 
 
@@ -166,7 +174,7 @@ and free_prem prem =
   | IfPr e -> free_exp e
   | LetPr (e1, e2, _) -> free_exp e1 + free_exp e2
   | ElsePr -> empty
-  | IterPr (prem1, iter) -> free_prem prem1 + free_iterexp iter
+  | IterPr (prem1, iter) -> (free_prem prem1 - bound_iterexp iter) + free_iterexp iter
 
 and free_prems prems = free_list free_prem prems
 
@@ -182,7 +190,7 @@ and free_arg a =
 
 and free_bind b =
   match b.it with
-  | ExpB (_, t, _) -> free_typ t
+  | ExpB (_, t) -> free_typ t
   | TypB _ -> empty
   | DefB (_, ps, t) -> free_params ps + (free_typ t - bound_params ps)
   | GramB (_, ps, t) -> free_params ps + (free_typ t - bound_params ps)
@@ -196,7 +204,7 @@ and free_param p =
 
 and bound_bind b =
   match b.it with
-  | ExpB (id, _, _) -> bound_varid id
+  | ExpB (id, _) -> bound_varid id
   | TypB id -> bound_typid id
   | DefB (id, _, _) -> bound_defid id
   | GramB (id, _, _) -> bound_gramid id

@@ -21,7 +21,7 @@ rule Steps/refl:
 rule Steps/trans:
   z; admininstr*  ~>*  z''; admininstr''*
   -- Step: z; admininstr*  ~>  z'; admininstr'*
-  -- Steps: z'; admininstr'  ~>*  z''; admininstr''*
+  -- Steps: z'; admininstr'*  ~>*  z''; admininstr''*
 
 
 ;; Expressions

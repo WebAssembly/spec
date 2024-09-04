@@ -13,12 +13,21 @@ val add_typid : subst -> id -> typ -> subst
 val add_defid : subst -> id -> id -> subst
 val add_gramid : subst -> id -> sym -> subst
 
+val remove_varid : subst -> id -> subst
+val remove_typid : subst -> id -> subst
+val remove_defid : subst -> id -> subst
+val remove_gramid : subst -> id -> subst
+
+val find_varid : subst -> id -> exp
+val find_typid : subst -> id -> typ
+val find_defid : subst -> id -> id
+val find_gramid : subst -> id -> sym
+
 val mem_varid : subst -> id -> bool
 val mem_typid : subst -> id -> bool
 val mem_defid : subst -> id -> bool
 val mem_gramid : subst -> id -> bool
 
-val subst_iter : subst -> iter -> iter
 val subst_typ : subst -> typ -> typ
 val subst_exp : subst -> exp -> exp
 val subst_path : subst -> path -> path

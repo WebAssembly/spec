@@ -29,7 +29,7 @@ and numtyp =
 
 and typ = typ' phrase
 and typ' =
-  | VarT of id * arg list        (* varid( arg* ) *)
+  | VarT of id * arg list        (* typid( arg* ) *)
   | BoolT                        (* `bool` *)
   | NumT of numtyp               (* numtyp *)
   | TextT                        (* `text` *)
@@ -114,7 +114,7 @@ and path' =
   | SliceP of path * exp * exp   (* path `[` exp `:` exp `]` *)
   | DotP of path * atom          (* path `.` atom *)
 
-and iterexp = iter * (id * typ) list
+and iterexp = iter * (id * exp) list
 
 
 (* Grammars *)
@@ -143,7 +143,7 @@ and arg' =
 
 and bind = bind' phrase
 and bind' =
-  | ExpB of id * typ * iter list
+  | ExpB of id * typ
   | TypB of id
   | DefB of id * param list * typ
   | GramB of id * param list * typ

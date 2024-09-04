@@ -170,7 +170,8 @@ and t_iter env = function
   | ListN (e, id_opt) -> ListN (t_exp env e, id_opt)
   | i -> i
 
-and t_iterexp env (iter, vs) = (t_iter env iter, vs)
+and t_iterexp env (iter, vs) =
+  (t_iter env iter, List.map (fun (id, e) -> (id, t_exp env e)) vs)
 
 and t_path' env = function
   | RootP -> RootP
@@ -200,7 +201,7 @@ and t_arg' env = function
 and t_arg env x = { x with it = t_arg' env x.it }
 
 and t_bind' env = function
-  | ExpB (id, t, dim) -> ExpB (id, t_typ env t, dim)
+  | ExpB (id, t) -> ExpB (id, t_typ env t)
   | TypB id -> TypB id
   | DefB (id, ps, t) -> DefB (id, t_params env ps, t_typ env t)
   | GramB (id, ps, t) -> GramB (id, t_params env ps, t_typ env t)
@@ -332,10 +333,10 @@ let insert_injections env (def : def) : def list =
     let clauses = List.map (fun (a, (_binds, arg_typ, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
-        let binds = List.mapi (fun i (_, arg_typ_i) -> ExpB ("x" ^ string_of_int i $ no_region, arg_typ_i, []) $ no_region) ts in
+        let binds = List.mapi (fun i (_, arg_typ_i) -> ExpB ("x" ^ string_of_int i $ no_region, arg_typ_i) $ no_region) ts in
         let xes = List.map (fun bind ->
           match bind.it with
-          | ExpB (x, arg_typ_i, _) -> VarE x $$ no_region % arg_typ_i
+          | ExpB (x, arg_typ_i) -> VarE x $$ no_region % arg_typ_i
           | TypB _ | DefB _ | GramB _ -> assert false) binds
         in
         let xe = TupE xes $$ no_region % arg_typ in
@@ -345,7 +346,7 @@ let insert_injections env (def : def) : def list =
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
-        DefD ([ExpB (x, arg_typ, []) $ x.at],
+        DefD ([ExpB (x, arg_typ) $ x.at],
           [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
           CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
       ) cases_sub in

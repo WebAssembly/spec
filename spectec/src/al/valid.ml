@@ -159,9 +159,7 @@ and unify_typs_opt : typ list -> typ option = function
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
   | VarT (id, _) when Env.mem_var !env id ->
-    let typ', iters = Env.find_var !env id in
-    (* TODO: local var type contains iter *)
-    assert (iters = []);
+    let typ' = Env.find_var !env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
@@ -299,7 +297,7 @@ let check_call source id args result_typ =
       match arg.it, param.it with
       | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
       (* Add local variable typ *)
-      | TypA typ1, TypP id -> env := Env.bind_var !env id (typ1, [])
+      | TypA typ1, TypP id -> env := Env.bind_var !env id typ1
       | DefA aid, DefP (_, pparams, ptyp) ->
         (match Env.find_opt_def !env (aid $ no_region) with
         | Some (aparams, atyp, _) -> 
@@ -490,7 +488,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_case source exprs typ
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
-  | IterE (expr1, _, iter) ->
+  | IterE (expr1, (iter, _xes)) -> (* TODO *)
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
       (match iter with
       | Opt ->
