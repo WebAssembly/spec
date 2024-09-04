@@ -7,8 +7,8 @@ module FuncMap = Map.Make (String)
 
 let ref_type =
   (* TODO: some / none *)
-  let null = caseV ("NULL", [ optV (Some (listV [||])) ]) in
-  let nonull = caseV ("NULL", [ optV None ]) in
+  let null = some "NULL" in
+  let nonull = none "NULL" in
   let none = nullary "NONE" in
   let nofunc = nullary "NOFUNC" in
   let noexn = nullary "NOEXN" in
