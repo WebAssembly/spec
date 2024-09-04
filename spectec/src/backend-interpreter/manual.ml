@@ -52,14 +52,54 @@ let ref_type =
   | vs -> Numerics.error_values "$Ref_type" vs
 
 let module_ok = function
-  | [_module_] ->
-    (*
+  | [
+    CaseV (
+      "MODULE",
+      [
+        _types;
+        ListV imports;
+        _funcs;
+        _globals;
+        _tables;
+        _mems;
+        _tags;
+        _elems;
+        _datas;
+        _start_opt;
+        ListV exports;
+      ]
+    )
+  ] as vs ->
+
+    (* TODO: module validation
     module_
     |> Construct.al_to_module
     |> Reference_interpreter.Valid.check_module;
     *)
-    (* TODO: Moduletype *)
-    CaseV ("->", [listV_of_list []; listV_of_list []])
+
+    let get_externtype = function
+      | CaseV ("IMPORT", [ _name1; _name2; externtype ]) -> externtype
+      | _ -> Numerics.error_values "$Module_ok" vs
+    in
+    let get_externidx = function
+      | CaseV ("EXPORT", [ _name; externidx ]) -> externidx
+      | _ -> Numerics.error_values "$Module_ok" vs
+    in
+
+    let externtypes =
+      !imports
+      |> Array.to_list
+      |> List.map get_externtype
+      |> listV_of_list
+    in
+    let externidxs =
+      !exports
+      |> Array.to_list
+      |> List.map get_externidx
+      |> listV_of_list
+    in
+
+    CaseV ("->", [ externtypes; externidxs ])
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let val_type = function
