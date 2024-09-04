@@ -702,12 +702,9 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
   (* No argument is free *)
 
   else
-    (*
     Print.string_of_expr lhs
     |> sprintf "lhs expression %s doesn't contain free variable"
     |> error lhs.at
-    *)
-    yetE "lhs" ~note:topT, yetE "rhs" ~note:topT
 
 
 and handle_call_lhs lhs rhs free_ids =
@@ -740,16 +737,21 @@ and handle_call_lhs lhs rhs free_ids =
     in
 
     let base_typ, map_iters =  get_base_typ_and_iters lhs.note rhs.note in
-    (* TODO: Better name using type *)
     let var_name = typ_to_var_name base_typ in
     let var_expr = VarE var_name $$ no_region % base_typ in
-    let to_iter_expr =
+    let to_iter_expr e =
       List.fold_right
-        (fun iter e ->
+        (fun iter (e, ex) ->
+          let x, ex' =
+            match ex.it with
+            | VarE x -> x, {ex with it = VarE (x ^ Il.Print.string_of_iter iter)}
+            | _ -> assert false
+          in
           let iter_typ = Il.IterT (e.note, iter) $ no_region in
-          IterE (e, (translate_iter iter, [])) $$ e.at % iter_typ (* MYTODO *)
+          IterE (e, (translate_iter iter, [x, ex'])) $$ e.at % iter_typ, ex'
         )
-        map_iters
+        map_iters (e, var_expr)
+      |> fst
     in
 
     let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs var_expr free_ids in
@@ -770,12 +772,6 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Helper functions *)
 
-  let iter_ids_of (expr: expr): string list =
-    expr
-    |> free_expr
-    |> IdSet.inter (IdSet.of_list iter_ids)
-    |> IdSet.elements
-  in
   let walk_expr (_walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
       let iter', typ =
@@ -785,15 +781,27 @@ and handle_iter_lhs lhs rhs free_ids =
           List, Il.IterT (expr.note, Il.List) $ no_region
         | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
-      ignore (iter_ids_of expr); (* MYTODO *)
       IterE (expr, (iter', xes)) $$ lhs.at % typ
     else
       expr
   in
 
+  (* Rename free_ids to be used for inner_lhs *)
+
+  let free_ids' = free_ids |> List.map (fun id ->
+    let id_opt = xes |> List.find_map (fun (x, e) ->
+      match e.it with
+      | VarE id' when id = id' -> Some x
+      | _ -> None)
+    in
+    match id_opt with
+    | Some id -> id
+    | _ -> id
+  ) in
+
   (* Translate inner lhs *)
 
-  let instrs = handle_special_lhs inner_lhs rhs free_ids in
+  let instrs = handle_special_lhs inner_lhs rhs free_ids' in
 
   (* Iter injection *)
 
@@ -1015,7 +1023,7 @@ and translate_prem prem =
     init_lhs_id ();
     translate_letpr exp1 exp2 ids
   | Il.RulePr (id, _, exp) -> translate_rulepr id exp
-  | Il.IterPr (pr, exp) -> translate_iterpr pr exp
+  | Il.IterPr (pr, iterexp) -> translate_iterpr pr iterexp
 
 
 (* `premise list` -> `instr list` (return instructions) -> `instr list` *)
@@ -1294,4 +1302,3 @@ let translate il =
     List.map translate_rgroup rules @ List.map translate_helper helpers
   in
   List.map Transpile.remove_state al
-  
