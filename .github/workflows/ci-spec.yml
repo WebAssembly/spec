@@ -35,7 +35,7 @@ jobs:
       - name: Run Bikeshed
         run: cd document/core && make bikeshed
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: core-rendered
           path: document/core/_build/html
@@ -50,7 +50,7 @@ jobs:
       - name: Run Bikeshed
         run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: js-api-rendered
           path: document/js-api/index.html
@@ -65,7 +65,7 @@ jobs:
       - name: Run Bikeshed
         run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: web-api-rendered
           path: document/web-api/index.html
@@ -79,17 +79,17 @@ jobs:
       - name: Create output directory
         run: mkdir _output && cp document/index.html _output/index.html
       - name: Download core spec artifact
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: core-rendered
           path: _output/core
       - name: Download JS API spec artifact
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: js-api-rendered
           path: _output/js-api
       - name: Download Web API spec artifact
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
           name: web-api-rendered
           path: _output/web-api
