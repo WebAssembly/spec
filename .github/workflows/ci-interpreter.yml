@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 19.x
+          node-version: 20.x
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
