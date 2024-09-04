@@ -488,7 +488,7 @@ syntax C = {}
 
 relation Rok: C |- parent : OK
 relation Rsub: C |- parent <: parent
-relation Reval: parent; child ~> parent; child
+relation Reval: parent; child ~> parent; child hint(tabular)
 
 rule Rok: C |- AA : OK
 rule Rsub: C |- parent <: AA
@@ -496,7 +496,7 @@ rule Reval: parent; child ~> AA; BB
 
 relation Rok_macro: C |- parent : OK                  hint(macro "%ok")
 relation Rsub_macro: C |- parent <: parent            hint(macro "%sub")
-relation Reval_macro: parent; child ~> parent; child  hint(macro "%eval")
+relation Reval_macro: parent; child ~> parent; child  hint(macro "%eval") hint(tabular)
 
 rule Rok_macro: C |- AA : OK
 rule Rsub_macro: C |- parent <: AA
@@ -504,7 +504,7 @@ rule Reval_macro: parent; child ~> AA; BB
 
 relation Rok_nomacro: C |- parent : OK                  hint(macro none)
 relation Rsub_nomacro: C |- parent <: parent            hint(macro none)
-relation Reval_nomacro: parent; child ~> parent; child  hint(macro none)
+relation Reval_nomacro: parent; child ~> parent; child  hint(macro none) hint(tabular)
 
 rule Rok_nomacro: C |- AA : OK
 rule Rsub_nomacro: C |- parent <: AA

@@ -63,19 +63,40 @@ let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match Env.find_opt_typ !env id with
   | Some (_, insts) ->
+    let typ_of_arg arg =
+      match (Eval.reduce_arg !env arg).it with
+      | ExpA { it=SubE (_, typ, _); _ } -> typ
+      | ExpA { note; _ } -> note
+      | TypA typ -> typ
+      | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
+    in
+    let get_syntax_arg_name arg = 
+      match arg.it with
+      | Il.Ast.TypA { it=VarT (id, []); _ } -> Some id
+      | _ -> None
+    in
+    let subst_syntax_arg subst arg inst_arg =
+      let name = get_syntax_arg_name inst_arg in
+      if Option.is_some name then
+        let name = Option.get name in
+        Il.Subst.add_typid subst name (typ_of_arg arg)
+      else
+        subst
+    in
+    let subst_inst inst =
+      let InstD (binds, inst_args, deftyp) = inst.it in 
+      let subst = List.fold_left2 subst_syntax_arg Il.Subst.empty args inst_args in
+      let new_args = Il.Subst.subst_args subst inst_args in
+      let new_deftyp = Il.Subst.subst_deftyp subst deftyp in
+      { inst with it = InstD (binds, new_args, new_deftyp) }
+    in
+    let insts = List.map subst_inst insts in
     let get_deftyp inst =
-      let typ_of_arg arg =
-        match (Eval.reduce_arg !env arg).it with
-        | ExpA { it=SubE (_, typ, _); _ } -> typ
-        | ExpA { note; _ } -> note
-        | TypA typ -> typ
-        | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
-      in
-
       let InstD (_, inst_args, deftyp) = inst.it in
-      let args' = List.map typ_of_arg args in
-      let inst_args' = List.map typ_of_arg inst_args in
-      if List.for_all2 (Eval.sub_typ !env) args' inst_args' then
+      let valid_arg arg inst_arg = 
+        Eval.sub_typ !env (typ_of_arg arg) (typ_of_arg inst_arg)
+      in
+      if List.for_all2 valid_arg args inst_args then
         Some deftyp
       else
         None
@@ -254,9 +275,9 @@ let check_struct source typ =
   | VarT (id, args) -> (
     let deftyps = get_deftyps id args in
     if not (List.exists (fun deftyp -> match deftyp.it with StructT _ -> true | _ -> false) deftyps) then
-      error_valid "not a struct" source ""
+      error_valid "not a struct" source (Il.Print.string_of_typ typ)
   )
-  | _ -> error_valid "not a struct" source ""
+  | _ -> error_valid "not a struct" source (Il.Print.string_of_typ typ)
 
 let check_tuple source exprs typ =
   match (ground_typ_of typ).it with
@@ -277,6 +298,40 @@ let check_call source id args result_typ =
       | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
       (* Add local variable typ *)
       | TypA typ1, TypP id -> env := Env.bind_var !env id typ1
+      | DefA aid, DefP (_, pparams, ptyp) ->
+        (match Env.find_opt_def !env (aid $ no_region) with
+        | Some (aparams, atyp, _) -> 
+          if not (Eval.sub_typ !env atyp ptyp) then
+            error_valid
+              "argument's return type is not a subtype of parameter's return type"
+              source
+              (Printf.sprintf "  %s !<: %s"
+                (Il.Print.string_of_typ atyp)
+                (Il.Print.string_of_typ ptyp)
+              );
+          List.iter2 (fun aparam pparam ->
+            (* TODO: only supports ExpP for param of arg/param now *)
+            let typ_of_param param =  match param.it with
+            | ExpP (_, typ) -> typ
+            | _ ->
+              error_valid "argument param is not an expression" source
+                (Il.Print.string_of_param aparam);
+            in
+
+            let aptyp = typ_of_param aparam in
+            let pptyp = typ_of_param pparam in
+
+            if not (Eval.sub_typ !env pptyp aptyp) then
+              error_valid
+                "parameter's parameter type is not a subtype of argument's return type"
+                source
+                (Printf.sprintf "  %s !<: %s"
+                  (Il.Print.string_of_typ pptyp)
+                  (Il.Print.string_of_typ aptyp)
+                );
+            ) aparams pparams;
+        | _ -> error_valid "no function definition" source aid
+        );
       | _ ->
         error_valid "argument type mismatch" source
           (Printf.sprintf "  %s =/= %s"
@@ -325,13 +380,15 @@ let check_inv_call source id indices args result_typ =
     | [arg] -> (
       match arg.it with
       | ExpA exp -> exp.note
-      | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+      | a -> error_valid (Printf.sprintf "wrong result argument")
+        source (Print.string_of_arg (a $ no_region))
     )
     | _ ->
       let arg2typ arg = (
         match arg.it with
         | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
-        | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+        | a -> error_valid (Printf.sprintf "wrong result argument")
+          source (Print.string_of_arg (a $ no_region))
       ) in
       TupT (List.map arg2typ result_args) $ no_region
   in
@@ -537,6 +594,21 @@ let valid_algo (algo: algorithm) =
   |> print_string;
   print_endline ")";
 
+  (* TODO: Use local environment *)
+  (* Store global enviroment *)
+  let global_env = !env in
+
+  (* Add function argument to environment *)
+  (match Env.find_opt_def !env (Al_util.name_of_algo algo $ no_region) with
+  | Some (params, _, _) -> List.iter (fun param ->
+      (match param.it with
+      | DefP (id, params', typ') -> env := Env.bind_def !env id (params', typ', [])
+      | _ -> ()
+      )
+    ) params;
+  | _ -> ()
+  );
+
   init algo;
   let walker =
     { base_unit_walker with
@@ -545,7 +617,10 @@ let valid_algo (algo: algorithm) =
       walk_instr = valid_instr
     }
   in
-  walker.walk_algo walker algo
+  walker.walk_algo walker algo;
+
+  (* Reset global enviroment *)
+  env := global_env
 
 let valid (script: script) =
   List.iter valid_algo script

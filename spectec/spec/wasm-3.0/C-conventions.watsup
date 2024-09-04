@@ -52,7 +52,7 @@ rule NotationTypingInstrScheme/block:
 
 ;; Execution notation
 
-relation NotationReduct: ~> instr*
+relation NotationReduct: ~> instr* hint(tabular)
 
 rule NotationReduct/2:
   ~> (CONST F64 q_1) (CONST F64 q_4) (CONST F64 q_3) $($(BINOP F64 ADD)) $($(BINOP F64 MUL))
