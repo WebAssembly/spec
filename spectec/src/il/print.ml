@@ -217,8 +217,10 @@ and string_of_prem prem =
   | RulePr (id, mixop, e) ->
     string_of_id id ^ ": " ^ string_of_mixop mixop ^ string_of_exp_args e
   | IfPr e -> "if " ^ string_of_exp e
-  | LetPr (e1, e2, xs) ->
-    "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2 ^ " {" ^ (String.concat ", " xs) ^ "}"
+  | LetPr (e1, e2, ids) ->
+    let ids' = List.map (fun x -> x $ no_region) ids in
+    "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2 ^
+    " {" ^ (String.concat ", " (List.map string_of_id ids')) ^ "}"
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     string_of_prem prem' ^ string_of_iterexp iter

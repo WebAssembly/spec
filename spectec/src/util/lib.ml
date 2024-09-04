@@ -48,8 +48,6 @@ struct
       match flatten_opt xos with
       | Some xs -> Some (x::xs)
       | None -> None
-  
-  let assoc_map f = List.map (fun (k, v) -> (k, f v))
 end
 
 module Char =
