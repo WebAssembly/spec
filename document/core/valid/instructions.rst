@@ -1038,7 +1038,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
-.. _valid-relaxedlaneselect:
+.. _valid-relaxed_laneselect:
 
 :math:`\shape\K{.}\RELAXEDLANESELECT`
 .....................................

@@ -1740,24 +1740,26 @@ Most other vector instructions are defined in terms of numeric operators that ar
 :math:`\K{i8x16.}\RELAXEDSWIZZLE`
 .................................
 
+.. todo: align the implementation of swizzle and relaxed_swizzle
+
 1. Assert: due to :ref:`validation <valid-vbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(\relaxedswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))`.
+4. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(\irelaxedswizzle(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)))`.
 
 5. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i8x16}\K{.}\relaxedswizzle &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\irelaxedswizzle &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & c' = \lanes^{-1}_{i8x16}(\relaxedswizzle(\lanes_{i8x16}(c_1), \lanes_{i8x16}(c_2)))
+      (\iff & c' = \lanes^{-1}_{\I8X16}(\irelaxedswizzle(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)))
      \end{array}
    \end{array}
 
@@ -1971,12 +1973,12 @@ Most other vector instructions are defined in terms of numeric operators that ar
    \end{array}
 
 
-.. _exec-relaxedlaneselect:
+.. _exec-relaxed_laneselect:
 
 :math:`t\K{x}N\K{.}\RELAXEDLANESELECT`
 ......................................
 
-1. Assert: due to :ref:`validation <valid-relaxedlaneselect>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-relaxed_laneselect>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
 
@@ -1984,9 +1986,9 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`B` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
+5. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
-6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(\relaxedlaneselect_{B}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))`.
+6. Let :math:`c` be the result of computing :math:`\irelaxedlaneselect_{t\K{x}N}(c_1, c_2, c_3)`.
 
 7. Push the value :math:`\V128.\VCONST~c` to the stack.
 
@@ -1997,7 +1999,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff c = \lanes^{-1}_{t\K{x}N}(\relaxedlaneselect_{|t|}(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2), \lanes_{t\K{x}N}(c_3)))) \\
+     (\iff c = \irelaxedlaneselect_{t\K{x}N}(c_1, c_2, c_3)^\ast \\
      \end{array}
    \end{array}
 
@@ -2325,13 +2327,15 @@ where:
 :math:`\K{i16x8.}\RELAXEDDOT\K{\_i8x16\_i7x16\_s}`
 ..................................................
 
+.. todo: move more of this to numerics
+
 1. Assert: due to :ref:`validation <valid-relaxed_dot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
 5. Let :math:`j^8` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
 
@@ -2346,7 +2350,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^8 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
+     (\iff & (i_1~i_2)^8 = \irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
      \wedge & j^8 = \sats_{16}(i_1, i_2)^8 \\
      \wedge & c = \lanes^{-1}_{\I16X8}(j^8))
      \end{array}
@@ -2356,6 +2360,8 @@ where:
 :math:`\K{i32x4.}\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s}`
 .......................................................
 
+.. todo: move more of this to numerics
+
 1. Assert: due to :ref:`validation <valid-relaxed_dot>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
@@ -2364,7 +2370,7 @@ where:
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\relaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+5. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
 6. Let :math:`(j_1~j_2)^4` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
 
@@ -2385,7 +2391,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^8 = \relaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
+     (\iff & (i_1~i_2)^8 = \irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
      \wedge & (j_1~j_2)^4 = \sats_{16}(i_1 + i_2)^8 \\
      \wedge & j^4 = \iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4 \\
      \wedge & k^4 = \lanes_{\I32X4}(c_3) \\
