@@ -313,6 +313,7 @@ let try_def_anchor env src r sort space1 space2 find : bool =
       let env' = env.latex
         |> Backend_latex.Render.without_macros unmacrofied
         |> Backend_latex.Render.with_syntax_decoration decorated
+        |> Backend_latex.Render.with_grammar_decoration decorated
         |> Backend_latex.Render.with_rule_decoration decorated
       in
       r := Backend_latex.Render.render_defs env' defs

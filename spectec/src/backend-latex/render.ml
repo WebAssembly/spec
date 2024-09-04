@@ -132,6 +132,7 @@ type env =
     desc_typ : hints ref;
     desc_gram : hints ref;
     deco_typ : bool;
+    deco_gram : bool;
     deco_rule : bool;
     tab_rel : hints ref;
   }
@@ -155,6 +156,7 @@ let new_env config =
     desc_typ = ref Map.empty;
     desc_gram = ref Map.empty;
     deco_typ = false;
+    deco_gram = false;
     deco_rule = false;
     tab_rel = ref Map.empty;
   }
@@ -166,7 +168,9 @@ let env_with_config env config : env =
   {env with config}
 
 let with_syntax_decoration b env = {env with deco_typ = b}
+let with_grammar_decoration b env = {env with deco_gram = b}
 let with_rule_decoration b env = {env with deco_rule = b}
+
 let without_macros b env =
   if not b then env else
   env_with_config env {env.config with macros_for_ids = false}
@@ -1376,6 +1380,11 @@ let render_typdef env d =
     " &::=& " ^ render_typ env t
   | _ -> assert false
 
+let render_gramdeco env id =
+  match env.deco_gram, string_of_desc (Map.find_opt id.it !(env.desc_gram)) with
+  | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
+  | _ -> "& "
+
 let render_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, _t, gram, _hints) ->
@@ -1385,7 +1394,8 @@ let render_gramdef env d =
       then "&\\quad\\Rightarrow&\\quad"
       else "~\\Rightarrow~"
     in
-    "& " ^ render_apply render_gramid render_exp_as_sym
+    render_gramdeco env id1 ^
+    render_apply render_gramid render_exp_as_sym
       env env.show_gram env.macro_gram id1 args ^
       " &::=& " ^ render_gram arrow env gram
   | _ -> assert false
@@ -1403,7 +1413,6 @@ let render_ruledef env d =
     "}" ^
     render_rule_deco env " \\, " id1 id2 ""
   | _ -> failwith "render_ruledef"
-
 
 let render_ruledef_tabular env d =
   match d.it with
@@ -1442,18 +1451,29 @@ let rec render_defs env = function
     let sp = if env.config.display then "" else "@{~}" in
     match d.it with
     | TypD _ ->
+      (* Columns: decorator & lhs & ::=/| & rhs & premise *)
       let ds' = merge_typdefs ds in
       if List.length ds' > 1 && not env.config.display then
         error d.at "cannot render multiple syntax types in line";
-      let deco = if env.deco_typ then "l" ^ sp else "l@{}" in
-      "\\begin{array}{@{}" ^ deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
+(*
+      if env.deco_typ && not env.config.multicolumn then
+        error d.at "cannot render decorators without Latex multicolumn enabled";
+*)
+      let sp_deco = if env.deco_typ then sp else "@{}" in
+      "\\begin{array}{@{}l" ^ sp_deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_typdef env) ds' ^
       "\\end{array}"
     | GramD _ ->
+      (* Columns: decorator & lhs & ::=/| & rhs & premise *)
       let ds' = merge_gramdefs ds in
       if List.length ds' > 1 && not env.config.display then
         error d.at "cannot render multiple grammars in line";
-      "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}l@{}l@{}}\n" ^
+(*
+      if env.deco_gram && not env.config.multicolumn then
+        error d.at "cannot render decorators without Latex multicolumn enabled";
+*)
+      let sp_deco = if env.deco_gram then sp else "@{}" in
+      "\\begin{array}{@{}l" ^ sp_deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}l@{}l@{}}\n" ^
         render_sep_defs (render_gramdef env) ds' ^
       "\\end{array}"
     | RelD (_, t, _) ->
@@ -1461,15 +1481,24 @@ let rec render_defs env = function
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
     | RuleD (id1, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
-        "\\begin{array}{@{}l@{}r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
+        (* Columns: decorator & lhs & op & rhs & premise *)
+        let sp_deco = if env.deco_rule then sp else "@{}" in
+(*
+        if env.deco_rule && not env.config.multicolumn then
+          error d.at "cannot render decorators without Latex multicolumn enabled";
+*)
+        (if not env.config.multicolumn then "\\begin{array}{@{}c@{}}\n" else "") ^
+        "\\begin{array}{@{}l" ^ sp_deco ^ "r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
           render_sep_defs (render_ruledef_tabular env) ds ^
-        "\\end{array}"
+        "\\end{array}" ^
+        (if not env.config.multicolumn then "\n\\end{array}" else "")
       else
         "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
           render_sep_defs ~sep:"\n\\qquad\n" ~br:"\n\\\\[3ex]\\displaystyle\n"
             (render_ruledef env) ds ^
         "\\end{array}"
     | DefD _ ->
+      (* Columns: lhs & = & rhs & premise *)
       "\\begin{array}{@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_funcdef env) ds ^
       "\\end{array}"

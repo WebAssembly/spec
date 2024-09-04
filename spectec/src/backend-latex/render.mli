@@ -10,6 +10,7 @@ val env_with_config : env -> Config.t -> env
 val config : env -> Config.t
 
 val with_syntax_decoration : bool -> env -> env
+val with_grammar_decoration : bool -> env -> env
 val with_rule_decoration : bool -> env -> env
 val without_macros : bool -> env -> env
 
