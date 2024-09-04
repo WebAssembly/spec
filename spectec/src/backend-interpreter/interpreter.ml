@@ -31,6 +31,9 @@ let try_with_error fname at stringifier f step =
   | Exception.FreeVar msg
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
+let break_points = ref []
+let state = ref "s"
+
 
 (* Matrix operations *)
 
@@ -743,11 +746,13 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
 and try_step_wasm ctx v =
   try_with_error empty no_region structured_string_of_value (step_wasm ctx) v
 
-and step : AlContext.t -> AlContext.t = AlContext.(function
+and step : AlContext.t -> AlContext.t =
+  let open AlContext in
+  function
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr name ctx env instr
+    | [ instr ] when can_tail_call instr -> try_step_instr name ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
       try_step_instr name new_ctx env h
@@ -771,12 +776,44 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     )
   | Execute v :: ctx -> try_step_wasm ctx v
   | _ -> assert false
-)
 
 
 (* AL interpreter Entry *)
 
+and debugger ctx =
+
+  if !state = "s" || List.mem (AlContext.get_name ctx) !break_points then
+    let _ = print_string "$" in
+    match String.split_on_char ' ' (read_line ()) with
+    | ("b" | "break") :: t -> break_points := !break_points @ t; debugger ctx
+    | ("rm" | "remove") :: t ->
+      break_points := List.filter (fun e -> not (List.mem e t)) !break_points;
+      debugger ctx
+    | ("bp" | "list") :: _ ->
+      print_endline (String.concat " " !break_points);
+      debugger ctx
+    | ("c" | "continue") :: _ -> state := "c"
+    | ("s" | "step") :: _ -> state := "s"
+    | "al" :: _ ->
+      ctx
+      |> List.map AlContext.string_of_context
+      |> List.iter print_endline;
+      debugger ctx
+    | "wasm" :: _ -> WasmContext.string_of_context_stack () |> print_endline;
+    | "lookup" :: s :: _ ->
+      (match ctx with
+      | (Al (_, _, env) | Enter (_, _, env)) :: _ ->
+        lookup_env_opt s env
+        |> Option.map string_of_value
+        |> Option.iter print_endline
+      | _ -> ()
+      )
+    | _ -> ()
+
+
 and run (ctx: AlContext.t) : AlContext.t =
+  debugger ctx;
+
   if AlContext.is_reducible ctx then run (step ctx) else ctx
 
 and create_context (name: string) (args: value list) : AlContext.mode =
