@@ -33,6 +33,11 @@ let try_with_error fname at stringifier f step =
 
 let break_points = ref []
 let state = ref "s"
+let command_cnt = ref 0
+let try_command () =
+  let cnt = !command_cnt in
+  if cnt > 0 then command_cnt := cnt - 1;
+  !command_cnt = 0
 
 
 (* Matrix operations *)
@@ -782,33 +787,71 @@ and step : AlContext.t -> AlContext.t =
 
 and debugger ctx =
 
-  if !state = "s" || List.mem (AlContext.get_name ctx) !break_points then
+
+  let allow_command () =
+    match !state with
+    | "s" -> try_command ()
+    | "c" ->
+      (match ctx with
+      | AlContext.Al (name, il, _) :: _
+      | AlContext.Enter (name, il, _) :: _
+      when List.mem name !break_points ->
+        if name |> lookup_algo |> body_of_algo = il then
+          try_command ()
+        else
+          false
+      | _ -> false
+      )
+    | "q" -> false
+    | _ -> assert (false)
+  in
+
+  let rec do_debug () =
     let _ = print_string "$" in
     match String.split_on_char ' ' (read_line ()) with
-    | ("b" | "break") :: t -> break_points := !break_points @ t; debugger ctx
+    | ("b" | "break") :: t -> break_points := !break_points @ t; do_debug ()
     | ("rm" | "remove") :: t ->
       break_points := List.filter (fun e -> not (List.mem e t)) !break_points;
-      debugger ctx
+      do_debug ()
     | ("bp" | "list") :: _ ->
       print_endline (String.concat " " !break_points);
-      debugger ctx
-    | ("c" | "continue") :: _ -> state := "c"
-    | ("s" | "step") :: _ -> state := "s"
+      do_debug ()
+    | ("c" | "continue") :: t ->
+      state := "c";
+      (match t with
+      | n :: _ when Option.is_some (int_of_string_opt n) ->
+        command_cnt := int_of_string n
+      | _ -> ()
+      )
+    | ("s" | "step") :: t ->
+      state := "s";
+      (match t with
+      | n :: _ when Option.is_some (int_of_string_opt n) ->
+        command_cnt := int_of_string n
+      | _ -> ()
+      )
     | "al" :: _ ->
       ctx
       |> List.map AlContext.string_of_context
       |> List.iter print_endline;
-      debugger ctx
-    | "wasm" :: _ -> WasmContext.string_of_context_stack () |> print_endline;
+      do_debug ()
+    | "wasm" :: _ ->
+      WasmContext.string_of_context_stack () |> print_endline;
+      do_debug ()
     | "lookup" :: s :: _ ->
       (match ctx with
       | (Al (_, _, env) | Enter (_, _, env)) :: _ ->
         lookup_env_opt s env
         |> Option.map string_of_value
-        |> Option.iter print_endline
+        |> Option.iter print_endline;
+        do_debug ()
       | _ -> ()
       )
+    | ("q" | "quit") :: _ -> state := "q"
     | _ -> ()
+  in
+
+  if allow_command () then do_debug ()
 
 
 and run (ctx: AlContext.t) : AlContext.t =
