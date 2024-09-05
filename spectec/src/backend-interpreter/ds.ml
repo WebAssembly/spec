@@ -253,7 +253,7 @@ module WasmContext = struct
 
   let string_of_context ctx =
     let v, vs, vs_instr = ctx in
-    Printf.sprintf "(%s, %s, %s)"
+    Printf.sprintf "(%s; %s; %s)"
       (string_of_value v)
       (string_of_list string_of_value ", " vs)
       (string_of_list string_of_value ", " vs_instr)
