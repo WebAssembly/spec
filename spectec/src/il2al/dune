@@ -1,6 +1,6 @@
 (library
   (name il2al)
-  (libraries middlend util il al)
+  (libraries util il al)
   (modules
     animate
     unify
