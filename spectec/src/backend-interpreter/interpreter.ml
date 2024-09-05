@@ -769,7 +769,7 @@ and step (ctx: AlContext.t) : AlContext.t =
     | [] ->
       (match ctx with
       | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
-      | Enter (_, [], _) :: t when not !Debugger.debug -> Wasm 2 :: t
+      | Enter (_, [], _) :: t -> Wasm 2 :: t
       | ctx -> Wasm 1 :: ctx
       )
     | h :: t ->
