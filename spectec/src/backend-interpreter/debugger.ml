@@ -37,6 +37,7 @@ let help_msg =
   continue {number}?: continue steps until meet n break points
   al: print al context stack
   wasm: print wasm context stack
+  store {field} {index}: print a value in store
   lookup {variable name}: lookup the variable
   q
   quit: quit
@@ -110,6 +111,17 @@ let run ctx =
     | "wasm" :: _ ->
       WasmContext.string_of_context_stack () |> print_endline;
       do_debug ()
+    | "store" :: field :: n :: _ ->
+      (try
+        let idx = int_of_string n in
+        Store.access field
+        |> unwrap_listv
+        |> (!)
+        |> (fun arr -> Array.get arr idx)
+        |> string_of_value
+        |> print_endline;
+      with _ -> ());
+      do_debug ()
     | "lookup" :: s :: _ ->
       (match ctx with
       | (Al (_, _, env) | Enter (_, _, env)) :: _ ->
@@ -120,7 +132,8 @@ let run ctx =
       | _ -> ()
       )
     | ("q" | "quit") :: _ -> state := Quit
-    | _ -> ()
+    | [] -> ()
+    | _ -> do_debug ()
   in
 
   if !debug && allow_command () then do_debug ()
