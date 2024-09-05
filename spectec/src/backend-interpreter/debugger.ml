@@ -92,7 +92,7 @@ let run ctx =
         | _ -> ()
         )
       | _ ->
-        print_endline "[Warning] Not in AL context"
+        print_endline "[Warning] Not in AL context";
         do_debug ()
       )
     | ("c" | "continue") :: t ->
