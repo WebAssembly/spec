@@ -1509,6 +1509,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\X{it}] \to [t]`.
@@ -1516,6 +1518,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
@@ -1532,6 +1536,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\X{it}] \to [t]`.
@@ -1539,6 +1545,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
@@ -1553,6 +1561,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
 * Then the instruction is valid with type :math:`[\X{it}~t] \to []`.
@@ -1560,6 +1570,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
@@ -1574,6 +1586,10 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\X{it}~t] \to []`.
@@ -1581,6 +1597,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
@@ -1597,6 +1615,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
 
 * Then the instruction is valid with type :math:`[\X{it}] \to [\V128]`.
@@ -1604,6 +1624,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8 \cdot M
    }{
@@ -1620,6 +1642,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\X{it}] \to [\V128]`.
@@ -1627,6 +1651,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
@@ -1643,6 +1669,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * Then the instruction is valid with type :math:`[\X{it}] \to [\V128]`.
@@ -1650,6 +1678,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
@@ -1666,6 +1696,8 @@ Memory Instructions
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
 
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
@@ -1675,6 +1707,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
      \qquad
@@ -1692,6 +1726,9 @@ Memory Instructions
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Let :math:`\X{it}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{it}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
@@ -1701,6 +1738,8 @@ Memory Instructions
 .. math::
    \frac{
      C.\CMEMS[x] = \X{it}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{it}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
      \qquad

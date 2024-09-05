@@ -683,7 +683,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>` and :ref:`vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
@@ -692,7 +692,7 @@ In the case of loads, a sign extension mode |sx| is then required to select appr
 Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane.
 Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
-The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
+The static address offset is added to the dynamic address operand, yielding a 33-bit or 65-bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
 
