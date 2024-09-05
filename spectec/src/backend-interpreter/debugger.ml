@@ -32,7 +32,7 @@ let help_msg =
   s {number}?
   step {number}?: take n steps
   si {number}?
-  stepinstr {number}?: step n instructions in AL algorithm ...!
+  stepinstr {number}?: step n AL instructions
   c {number}?
   continue {number}?: continue steps until meet n break points
   al: print al context stack
@@ -91,7 +91,9 @@ let run ctx =
           command_cnt := int_of_string n
         | _ -> ()
         )
-      | _ -> do_debug ()
+      | _ ->
+        print_endline "[Warning] Not in AL context"
+        do_debug ()
       )
     | ("c" | "continue") :: t ->
       state := Continue;
