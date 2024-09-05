@@ -22139,7 +22139,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`, :math:`{\mathrm{Externaddr}}_{\mathit{type}}({\mathit{externaddr}})` is :math:`{\mathit{xt}}_{\mathsf{i}}`.
+#. Assert: Due to validation, :math:`{{\mathrm{Externaddr}}_{\mathit{type}}({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
@@ -22218,7 +22218,7 @@ watsup 0.4 generator
 
 #. Let :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` be :math:`{\mathit{functype}}_0`.
 
-#. Assert: Due to validation, for all :math:`{(t_1, {\mathit{val}})^\ast}`, :math:`{\mathrm{Val}}_{\mathit{type}}({\mathit{val}})` is :math:`t_1`.
+#. Assert: Due to validation, :math:`{{\mathrm{Val}}_{\mathit{type}}({\mathit{val}}, t_1)^\ast}`.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -27230,7 +27230,7 @@ instantiate z module externaddr*
 1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-4. Assert: Due to validation, ($Externaddr_type(externaddr) is xt_I)*.
+4. Assert: Due to validation, $Externaddr_type(externaddr, xt_I)*.
 5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 7. Assert: Due to validation, start is of the case START?.
@@ -27269,7 +27269,7 @@ invoke funcaddr val*
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 4. Let (t_1* -> t_2*) be functype_0.
-5. Assert: Due to validation, ($Val_type(val) is t_1)*.
+5. Assert: Due to validation, $Val_type(val, t_1)*.
 6. Let k be |t_2*|.
 7. Push the activation of f with arity k to the stack.
 8. Push the values val* to the stack.

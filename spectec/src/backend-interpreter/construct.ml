@@ -884,6 +884,14 @@ let al_to_data': value -> data_segment' = function
   | v -> error_value "data segment" v
 let al_to_data: value -> data_segment = al_to_phrase al_to_data'
 
+let al_to_extern_type = function
+  | CaseV ("FUNC", [typeuse]) -> ExternFuncT (al_to_def_type typeuse)
+  | CaseV ("GLOBAL", [globaltype]) -> ExternGlobalT (al_to_global_type globaltype)
+  | CaseV ("TABLE", [tabletype]) -> ExternTableT (al_to_table_type tabletype)
+  | CaseV ("MEM", [memtype]) -> ExternMemoryT (al_to_memory_type memtype)
+  | CaseV ("TAG", [typeuse]) -> ExternTagT (TagT (al_to_def_type typeuse))
+  | v -> error_value "extern_type" v
+
   (*
 
 let al_to_import_desc module_ idesc =

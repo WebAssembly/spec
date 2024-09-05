@@ -1,3 +1,4 @@
+open Reference_interpreter
 open Al
 open Ast
 open Al_util
@@ -15,7 +16,6 @@ let ref_type =
   let noextern = nullary "NOEXTERN" in
 
   let match_heap_type v1 v2 =
-    let open Reference_interpreter in
     let ht1 = Construct.al_to_heap_type v1 in
     let ht2 = Construct.al_to_heap_type v2 in
     Match.match_ref_type [] (Types.Null, ht1) (Types.Null, ht2)
@@ -104,26 +104,27 @@ let module_ok = function
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let externaddr_type = function
-  | [ CaseV (name, [ NumV z ]) ] ->
+  | [ CaseV (name, [ NumV z ]); t ] ->
     let addr = Z.to_int z in
-    let type_ =
-      name^"S"
-      |> Store.access
-      |> unwrap_listv_to_array
-      |> (fun arr -> Array.get arr addr)
-      |> strv_access "TYPE"
-    in
-    CaseV (name, [ type_ ])
+    name^"S"
+    |> Store.access
+    |> unwrap_listv_to_array
+    |> fun arr -> Array.get arr addr
+    |> strv_access "TYPE"
+    |> fun type_ -> CaseV (name, [type_])
+    |> Construct.al_to_extern_type
+    |> fun t' -> Match.match_extern_type [] t' (Construct.al_to_extern_type t)
+    |> boolV
   | vs -> Numerics.error_values "$Externaddr_type" vs
 
 let val_type = function
-  | [ vt ] ->
-    let res =
-    vt
+  | [ v; t ] ->
+    v
     |> Construct.al_to_value
-    |> Reference_interpreter.Value.type_of_value
-    |> Construct.al_of_val_type in
-    res
+    |> Value.type_of_value
+    |> fun t' ->
+      Match.match_val_type [] t' (Construct.al_to_val_type t)
+    |> boolV
   | vs -> Numerics.error_values "$Val_type" vs
 
 let manual_map =
