@@ -752,7 +752,9 @@ and step (ctx: AlContext.t) : AlContext.t =
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when can_tail_call instr -> try_step_instr name ctx env instr
+    | [ instr ]
+    when can_tail_call instr && not !Debugger.debug ->
+      try_step_instr name ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
       try_step_instr name new_ctx env h
@@ -766,8 +768,8 @@ and step (ctx: AlContext.t) : AlContext.t =
     (match il with
     | [] ->
       (match ctx with
-      | Wasm n :: t -> Wasm (n + 1) :: t
-      | Enter (_, [], _) :: t -> Wasm 2 :: t
+      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
+      | Enter (_, [], _) :: t when not !Debugger.debug -> Wasm 2 :: t
       | ctx -> Wasm 1 :: ctx
       )
     | h :: t ->
