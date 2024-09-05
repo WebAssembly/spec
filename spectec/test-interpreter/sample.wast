@@ -149,13 +149,13 @@
   (func (export "call_add_return_frame") (result i32)
     i32.const 1
     i32.const 2
-    call 3
+    call 4
   )
 
   (func (export "call_add_return_label") (result i32)
     i32.const 1
     i32.const 2
-    call 4
+    call 5
   )
 
   (func (export "block") (result i32)
