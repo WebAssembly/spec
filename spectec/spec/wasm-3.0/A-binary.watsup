@@ -160,8 +160,8 @@ grammar Bcomptype : comptype =
   | 0x60 t_1*:Bresulttype t_2*:Bresulttype => FUNC (t_1* -> t_2*)
 
 grammar Bsubtype : subtype =
-  | 0x4F x*:Blist(Btypeidx) ct:Bcomptype => SUB FINAL $idx(x)* ct
-  | 0x50 x*:Blist(Btypeidx) ct:Bcomptype => SUB $idx(x)* ct
+  | 0x4F x*:Blist(Btypeidx) ct:Bcomptype => SUB FINAL (_IDX x)* ct
+  | 0x50 x*:Blist(Btypeidx) ct:Bcomptype => SUB (_IDX x)* ct
   | ct:Bcomptype => SUB FINAL eps ct
 
 grammar Brectype : rectype =
@@ -189,11 +189,11 @@ grammar Btagtype : typeidx =
 
 
 grammar Bexterntype : externtype =
-  | 0x00 x:Btypeidx => FUNC $idx(x)
+  | 0x00 x:Btypeidx => FUNC (_IDX x)
   | 0x01 tt:Btabletype => TABLE tt
   | 0x02 mt:Bmemtype => MEM mt
   | 0x03 gt:Bglobaltype => GLOBAL gt
-  | 0x04 x:Btagtype => TAG $idx(x)
+  | 0x04 x:Btagtype => TAG (_IDX x)
 
 
 ;;
@@ -228,9 +228,9 @@ grammar Binstr/control : instr =
   | 0x0E l*:Blist(Blabelidx) l_n:Blabelidx => BR_TABLE l* l_n
   | 0x0F => RETURN
   | 0x10 x:Bfuncidx => CALL x
-  | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x $idx(y)
+  | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x (_IDX y)
   | 0x12 x:Bfuncidx => RETURN_CALL x
-  | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x $idx(y)
+  | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x (_IDX y)
   | 0x1F bt:Bblocktype c*:Blist(Bcatch) (in:Binstr)* 0x0B =>
       TRY_TABLE bt c* in*
   | ...
