@@ -1,5 +1,5 @@
 (library
   (name al)
   (libraries util zarith il)
-  (modules ast al_util print walk free eq valid)
+  (modules ast al_util print walk free eq valid eval)
 )
