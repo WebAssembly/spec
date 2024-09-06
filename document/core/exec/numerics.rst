@@ -2052,8 +2052,11 @@ where :math:`R` is a global parameter selecting one of the allowed outcomes:
 
 .. note::
    Each parameter can be thought of as inducing a family of operations
-   that is fixed to one particular choice by the execution environment.
+   that is fixed to one particular choice by an implementation.
    The fixed operation itself can still be non-deterministic or partial.
+
+   Implementations are expexted to either choose the behaviour that is the most efficient on the underlying hardware,
+   or the behaviour of the deterministic profile.
 
 
 .. _op-frelaxed_madd:
