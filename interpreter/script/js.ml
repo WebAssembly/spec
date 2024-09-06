@@ -165,7 +165,7 @@ function assert_return(action, ...expected) {
         // Note that JS can't reliably distinguish different NaN values,
         // so there's no good way to test that it's a canonical NaN.
         if (!Number.isNaN(actual[i])) {
-          throw new Error("Wasm return value NaN expected, got " + actual[i]);
+          throw new Error("Wasm NaN return value expected, got " + actual[i]);
         };
         return;
       case "ref.i31":
@@ -180,7 +180,7 @@ function assert_return(action, ...expected) {
         // For now, JS can't distinguish exported Wasm GC values,
         // so we only test for object.
         if (typeof actual[i] !== "object") {
-          throw new Error("Wasm function return value expected, got " + actual[i]);
+          throw new Error("Wasm object return value expected, got " + actual[i]);
         };
         return;
       case "ref.func":
