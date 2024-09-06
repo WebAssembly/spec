@@ -75,7 +75,19 @@ let try_omit c = match c.it with
 | Al.Ast.VarE "C" -> None
 | _ -> Some c
 
-(* End of helpers *)
+(* CASE (?(())) ~> CASE
+   CASE (?()) ~> () *)
+let recover_optional_singleton_constructor e =
+  match e.it with
+  | Al.Ast.CaseE ([[atom]; [{it = El.Atom.Quest; _}]], [{it = OptE opt; _ }]) ->
+    (
+      match opt with
+      | None   -> Al.Ast.CaseE ([[]], [])
+      | Some _ -> Al.Ast.CaseE ([[atom]], [])
+    ) |> (fun it -> {e with it})
+  | _ -> e
+
+(** End of helpers **)
 
 
 (** There are currently 7 supported shape of a validation relation.
@@ -135,7 +147,12 @@ let get_rel_kind def =
   | _ -> OtherRel
 
 let transpile_expr =
-  let post_expr = fun expr -> expr |> Il2al.Transpile.simplify_record_concat |> Il2al.Transpile.reduce_comp in
+  let (>>) f g x = x |> f |> g in
+  let post_expr =
+    Il2al.Transpile.simplify_record_concat
+    >> Il2al.Transpile.reduce_comp
+    >> recover_optional_singleton_constructor
+  in
   let walk_expr walker expr = 
     let expr1 = Al.Walk.base_walker.walk_expr walker expr in
     post_expr expr1

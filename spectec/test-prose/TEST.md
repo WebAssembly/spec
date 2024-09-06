@@ -277,7 +277,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~()~{}^?), t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
 
 
 * :math:`\mathsf{memory{.}size}` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}})` if and only if:
@@ -389,7 +389,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~\epsilon~{}^?), t)`.
+      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if and only if:
@@ -2965,7 +2965,7 @@ Instr_ok/global.get
 Instr_ok/global.set
 - the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is ((MUT ?(()) ?), t).
+  - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/memory.size
 - the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if and only if:
@@ -3029,7 +3029,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((MUT ?() ?), t).
+    - C.GLOBALS[x] is ((), t).
 
 Expr_const
 - the expression instr* is constant if and only if:
@@ -4619,7 +4619,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~()~{}^?), t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
 
 
 * :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}})` if and only if:
@@ -4915,7 +4915,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~\epsilon~{}^?), t)`.
+      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if and only if:
@@ -9886,7 +9886,7 @@ Instr_ok/global.get
 Instr_ok/global.set
 - the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is ((MUT ?(()) ?), t).
+  - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/table.get
 - the instr (TABLE.GET x) is valid with the function type ([I32] -> [rt]) if and only if:
@@ -10063,7 +10063,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((MUT ?() ?), t).
+    - C.GLOBALS[x] is ((), t).
 
 Expr_const
 - the expression instr* is constant if and only if:
@@ -12762,7 +12762,7 @@ watsup 0.4 generator
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`,
 
-      * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{sub}~(\mathsf{final}~\epsilon~{}^?)~{{x'}^\ast}~{\mathit{comptype}'})`.
+      * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
    * :math:`{\mathit{comptype}}` is valid.
 
@@ -12786,7 +12786,7 @@ watsup 0.4 generator
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`,
 
-      * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` must be equal to :math:`(\mathsf{sub}~(\mathsf{final}~\epsilon~{}^?)~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
+      * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` must be equal to :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
    * :math:`{\mathit{comptype}}` is valid.
 
@@ -13068,7 +13068,7 @@ watsup 0.4 generator
 
       * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
 
-      * :math:`{t^\ast}~(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+      * :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
 
       * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all}~l)`.
 
@@ -13076,7 +13076,7 @@ watsup 0.4 generator
 
       * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * :math:`(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
+      * :math:`(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 * :math:`\mathsf{nop}` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,\epsilon)`.
@@ -13180,7 +13180,7 @@ watsup 0.4 generator
    * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
 
 
-* :math:`(\mathsf{br\_on\_null}~l)` is valid with type :math:`({t^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,{t^\ast}~(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~{\mathit{ht}}))` if and only if:
+* :math:`(\mathsf{br\_on\_null}~l)` is valid with type :math:`({t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,{t^\ast}~(\mathsf{ref}~{\mathit{ht}}))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -13190,12 +13190,12 @@ watsup 0.4 generator
    * :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with type :math:`({t^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,{t^\ast})` if and only if:
+* :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with type :math:`({t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,{t^\ast})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}~(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~{\mathit{ht}})`.
+   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
 * :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`({t^\ast}~{\mathit{rt}}_1~{\rightarrow}_{\epsilon}\,{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2)` if and only if:
@@ -13238,7 +13238,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
 
 
-* :math:`(\mathsf{call\_ref}~x)` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+* :math:`(\mathsf{call\_ref}~x)` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13255,7 +13255,7 @@ watsup 0.4 generator
 
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{func})`.
+   * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
 
@@ -13282,7 +13282,7 @@ watsup 0.4 generator
    * :math:`({t_3^\ast}~{\rightarrow}_{\epsilon}\,{t_4^\ast})` is valid.
 
 
-* :math:`(\mathsf{return\_call\_ref}~x)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~{\rightarrow}_{\epsilon}\,{t_4^\ast})` if and only if:
+* :math:`(\mathsf{return\_call\_ref}~x)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~{\rightarrow}_{\epsilon}\,{t_4^\ast})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13305,7 +13305,7 @@ watsup 0.4 generator
 
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{func})`.
+   * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
 
@@ -13326,7 +13326,7 @@ watsup 0.4 generator
    * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
 
 
-* :math:`\mathsf{throw\_ref}` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{exn})~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+* :math:`\mathsf{throw\_ref}` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
 
 
    * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
@@ -13362,13 +13362,13 @@ watsup 0.4 generator
 * :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~{\rightarrow}_{\epsilon}\,{\mathit{nt}}_1)`.
 
 
-* :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~()~{}^?)~{\mathit{ht}}))` if and only if:
+* :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}))` if and only if:
 
 
    * :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~{\mathit{dt}}))` if and only if:
+* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~{\mathit{dt}}))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
@@ -13380,22 +13380,22 @@ watsup 0.4 generator
    * :math:`x` must be contained in :math:`C{.}\mathsf{refs}`.
 
 
-* :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{i{\scriptstyle 31}}))`.
+* :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~\mathsf{i{\scriptstyle 31}}))`.
 
 
-* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
-
-
-   * :math:`{\mathit{ht}}` is valid.
-
-
-* :math:`\mathsf{ref{.}as\_non\_null}` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~{\mathit{ht}}))` if and only if:
+* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
 
 
    * :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`\mathsf{ref{.}eq}` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{eq})~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{eq})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})`.
+* :math:`\mathsf{ref{.}as\_non\_null}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~{\mathit{ht}}))` if and only if:
+
+
+   * :math:`{\mathit{ht}}` is valid.
+
+
+* :math:`\mathsf{ref{.}eq}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})`.
 
 
 * :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with type :math:`({\mathit{rt}'}~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
@@ -13418,10 +13418,10 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
 
 
-* :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{i{\scriptstyle 31}})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})`.
 
 
-* :math:`(\mathsf{struct{.}new}~x)` is valid with type :math:`({{\mathrm{unpack}}({\mathit{zt}})^\ast}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{struct{.}new}~x)` is valid with type :math:`({{\mathrm{unpack}}({\mathit{zt}})^\ast}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13431,7 +13431,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
 
-* :math:`(\mathsf{struct{.}new\_default}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{struct{.}new\_default}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13447,7 +13447,7 @@ watsup 0.4 generator
       * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` must be equal to :math:`{\mathit{val}}`.
 
 
-* :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~{\rightarrow}_{\epsilon}\,{\mathrm{unpack}}({\mathit{zt}}))` if and only if:
+* :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~{\rightarrow}_{\epsilon}\,{\mathrm{unpack}}({\mathit{zt}}))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13461,7 +13461,7 @@ watsup 0.4 generator
    * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
-* :math:`(\mathsf{struct{.}set}~x~i)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~{\mathrm{unpack}}({\mathit{zt}})~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{struct{.}set}~x~i)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13470,10 +13470,10 @@ watsup 0.4 generator
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
-   * :math:`{{\mathit{yt}}^\ast}{}[i]` must be equal to :math:`((\mathsf{mut}~()~{}^?), {\mathit{zt}})`.
+   * :math:`{{\mathit{yt}}^\ast}{}[i]` must be equal to :math:`(\mathsf{mut}, {\mathit{zt}})`.
 
 
-* :math:`(\mathsf{array{.}new}~x)` is valid with type :math:`({\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{array{.}new}~x)` is valid with type :math:`({\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13481,7 +13481,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}new\_default}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{array{.}new\_default}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13491,7 +13491,7 @@ watsup 0.4 generator
    * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` must be equal to :math:`{\mathit{val}}`.
 
 
-* :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with type :math:`({{\mathrm{unpack}}({\mathit{zt}})^{n}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with type :math:`({{\mathrm{unpack}}({\mathit{zt}})^{n}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13499,7 +13499,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13511,7 +13511,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[y]` matches :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~x))` if and only if:
+* :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~x))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13531,7 +13531,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathrm{unpack}}({\mathit{zt}}))` if and only if:
+* :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathrm{unpack}}({\mathit{zt}}))` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13541,64 +13541,64 @@ watsup 0.4 generator
    * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
-* :math:`(\mathsf{array{.}set}~x)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{array{.}set}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-* :math:`\mathsf{array{.}len}` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{array})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
-
-
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}))`.
-
-
-* :math:`(\mathsf{array{.}fill}~x)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`\mathsf{array{.}len}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~\mathsf{array})~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{array{.}fill}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+
+
+* :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x_1`.
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x_2`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_1])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}_1))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_1])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`.
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_2])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`.
 
    * :math:`{\mathit{zt}}_2` matches :math:`{\mathit{zt}}_1`.
 
 
-* :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
    * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`y`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
    * :math:`C{.}\mathsf{elems}{}[y]` matches :math:`{\mathit{zt}}`.
 
 
-* :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with type :math:`((\mathsf{ref}~(\mathsf{null}~()~{}^?)~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
    * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`y`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
    * Either:
 
@@ -13731,7 +13731,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~()~{}^?), t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
 
 
 * :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathit{rt}})` if and only if:
@@ -14075,7 +14075,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~\epsilon~{}^?), t)`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(t)`.   * Or:
 
       * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
@@ -22565,7 +22565,7 @@ Subtype_ok
   - For all x in x*,
     - x is less than x_0.
   - For all comptype' in comptype'* and x in x* and x'* in x'**,
-    - $unrolldt(C.TYPES[x]) is (SUB (FINAL ?() ?) (_IDX x')* comptype').
+    - $unrolldt(C.TYPES[x]) is (SUB () (_IDX x')* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
@@ -22578,7 +22578,7 @@ Subtype_ok2
   - For all typeuse in typeuse*,
     - Yet: $before(typeuse, x, i)
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**,
-    - $unrollht(C, typeuse) is (SUB (FINAL ?() ?) typeuse'* comptype').
+    - $unrollht(C, typeuse) is (SUB () typeuse'* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
@@ -22744,13 +22744,13 @@ Catch_ok
     - catch_u0 is (CATCH_REF x l).
     - |C.TAGS| is greater than x.
     - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
-    - the value type sequence t* :: [(REF (NULL ?() ?) EXN)] matches the result type C.LABELS[l].
+    - the value type sequence t* :: [(REF () EXN)] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL l).
     - the value type sequence [] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL_REF l).
-    - the value type sequence [(REF (NULL ?() ?) EXN)] matches the result type C.LABELS[l].
+    - the value type sequence [(REF () EXN)] matches the result type C.LABELS[l].
 
 Instr_ok/nop
 - the instr NOP is valid with the instruction type ([] ->_ [] []).
@@ -22814,15 +22814,15 @@ Instr_ok/br_table
   - the instruction type (t_1* ->_ [] t_2*) is valid.
 
 Instr_ok/br_on_null
-- the instr (BR_ON_NULL l) is valid with the instruction type (t* :: [(REF (NULL ?(()) ?) ht)] ->_ [] t* :: [(REF (NULL ?() ?) ht)]) if and only if:
+- the instr (BR_ON_NULL l) is valid with the instruction type (t* :: [(REF NULL ht)] ->_ [] t* :: [(REF () ht)]) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the heap type ht is valid.
 
 Instr_ok/br_on_non_null
-- the instr (BR_ON_NON_NULL l) is valid with the instruction type (t* :: [(REF (NULL ?(()) ?) ht)] ->_ [] t*) if and only if:
+- the instr (BR_ON_NON_NULL l) is valid with the instruction type (t* :: [(REF NULL ht)] ->_ [] t*) if and only if:
   - |C.LABELS| is greater than l.
-  - C.LABELS[l] is t* :: [(REF (NULL ?() ?) ht)].
+  - C.LABELS[l] is t* :: [(REF () ht)].
 
 Instr_ok/br_on_cast
 - the instr (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type (t* :: [rt_1] ->_ [] t* :: [$diffrt(rt_1, rt_2)]) if and only if:
@@ -22848,7 +22848,7 @@ Instr_ok/call
   - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
 
 Instr_ok/call_ref
-- the instr (CALL_REF (_IDX x)) is valid with the instruction type (t_1* :: [(REF (NULL ?(()) ?) (_IDX x))] ->_ [] t_2*) if and only if:
+- the instr (CALL_REF (_IDX x)) is valid with the instruction type (t_1* :: [(REF NULL (_IDX x))] ->_ [] t_2*) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
 
@@ -22857,7 +22857,7 @@ Instr_ok/call_indirect
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, rt).
-  - the reference type rt matches the reference type (REF (NULL ?(()) ?) FUNC).
+  - the reference type rt matches the reference type (REF NULL FUNC).
   - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
 
 Instr_ok/return
@@ -22874,7 +22874,7 @@ Instr_ok/return_call
   - the instruction type (t_3* ->_ [] t_4*) is valid.
 
 Instr_ok/return_call_ref
-- the instr (RETURN_CALL_REF (_IDX x)) is valid with the instruction type (t_3* :: t_1* :: [(REF (NULL ?(()) ?) (_IDX x))] ->_ [] t_4*) if and only if:
+- the instr (RETURN_CALL_REF (_IDX x)) is valid with the instruction type (t_3* :: t_1* :: [(REF NULL (_IDX x))] ->_ [] t_4*) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
   - C.RETURN is ?(t'_2*).
@@ -22886,7 +22886,7 @@ Instr_ok/return_call_indirect
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, rt).
-  - the reference type rt matches the reference type (REF (NULL ?(()) ?) FUNC).
+  - the reference type rt matches the reference type (REF NULL FUNC).
   - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
   - C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
@@ -22899,7 +22899,7 @@ Instr_ok/throw
   - the instruction type (t_1* ->_ [] t_2*) is valid.
 
 Instr_ok/throw_ref
-- the instr THROW_REF is valid with the instruction type (t_1* :: [(REF (NULL ?(()) ?) EXN)] ->_ [] t_2*) if and only if:
+- the instr THROW_REF is valid with the instruction type (t_1* :: [(REF NULL EXN)] ->_ [] t_2*) if and only if:
   - the instruction type (t_1* ->_ [] t_2*) is valid.
 
 Instr_ok/try_table
@@ -22928,29 +22928,29 @@ Instr_ok/cvtop
 - the instr (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type ([nt_2] ->_ [] [nt_1]).
 
 Instr_ok/ref.null
-- the instr (REF.NULL ht) is valid with the instruction type ([] ->_ [] [(REF (NULL ?(()) ?) ht)]) if and only if:
+- the instr (REF.NULL ht) is valid with the instruction type ([] ->_ [] [(REF NULL ht)]) if and only if:
   - the heap type ht is valid.
 
 Instr_ok/ref.func
-- the instr (REF.FUNC x) is valid with the instruction type ([] ->_ [] [(REF (NULL ?() ?) dt)]) if and only if:
+- the instr (REF.FUNC x) is valid with the instruction type ([] ->_ [] [(REF () dt)]) if and only if:
   - |C.FUNCS| is greater than x.
   - |C.REFS| is greater than 0.
   - C.FUNCS[x] is dt.
   - x is contained in C.REFS.
 
 Instr_ok/ref.i31
-- the instr REF.I31 is valid with the instruction type ([I32] ->_ [] [(REF (NULL ?() ?) I31)]).
+- the instr REF.I31 is valid with the instruction type ([I32] ->_ [] [(REF () I31)]).
 
 Instr_ok/ref.is_null
-- the instr REF.IS_NULL is valid with the instruction type ([(REF (NULL ?(()) ?) ht)] ->_ [] [I32]) if and only if:
+- the instr REF.IS_NULL is valid with the instruction type ([(REF NULL ht)] ->_ [] [I32]) if and only if:
   - the heap type ht is valid.
 
 Instr_ok/ref.as_non_null
-- the instr REF.AS_NON_NULL is valid with the instruction type ([(REF (NULL ?(()) ?) ht)] ->_ [] [(REF (NULL ?() ?) ht)]) if and only if:
+- the instr REF.AS_NON_NULL is valid with the instruction type ([(REF NULL ht)] ->_ [] [(REF () ht)]) if and only if:
   - the heap type ht is valid.
 
 Instr_ok/ref.eq
-- the instr REF.EQ is valid with the instruction type ([(REF (NULL ?(()) ?) EQ), (REF (NULL ?(()) ?) EQ)] ->_ [] [I32]).
+- the instr REF.EQ is valid with the instruction type ([(REF NULL EQ), (REF NULL EQ)] ->_ [] [I32]).
 
 Instr_ok/ref.test
 - the instr (REF.TEST rt) is valid with the instruction type ([rt'] ->_ [] [I32]) if and only if:
@@ -22965,16 +22965,16 @@ Instr_ok/ref.cast
   - the reference type rt matches the reference type rt'.
 
 Instr_ok/i31.get
-- the instr (I31.GET sx) is valid with the instruction type ([(REF (NULL ?(()) ?) I31)] ->_ [] [I32]).
+- the instr (I31.GET sx) is valid with the instruction type ([(REF NULL I31)] ->_ [] [I32]).
 
 Instr_ok/struct.new
-- the instr (STRUCT.NEW x) is valid with the instruction type ($unpack(zt)* ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (STRUCT.NEW x) is valid with the instruction type ($unpack(zt)* ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
 
 Instr_ok/struct.new_default
-- the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type ([] ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type ([] ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
   - |zt*| is |val*|.
@@ -22983,7 +22983,7 @@ Instr_ok/struct.new_default
     - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/struct.get
-- the instr (STRUCT.GET sx? x i) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x))] ->_ [] [$unpack(zt)]) if and only if:
+- the instr (STRUCT.GET sx? x i) is valid with the instruction type ([(REF NULL (_IDX x))] ->_ [] [$unpack(zt)]) if and only if:
   - |C.TYPES| is greater than x.
   - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
@@ -22991,37 +22991,37 @@ Instr_ok/struct.get
   - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 
 Instr_ok/struct.set
-- the instr (STRUCT.SET x i) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x)), $unpack(zt)] ->_ [] []) if and only if:
+- the instr (STRUCT.SET x i) is valid with the instruction type ([(REF NULL (_IDX x)), $unpack(zt)] ->_ [] []) if and only if:
   - |C.TYPES| is greater than x.
   - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
-  - yt*[i] is ((MUT ?(()) ?), zt).
+  - yt*[i] is (MUT, zt).
 
 Instr_ok/array.new
-- the instr (ARRAY.NEW x) is valid with the instruction type ([$unpack(zt), I32] ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (ARRAY.NEW x) is valid with the instruction type ([$unpack(zt), I32] ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 Instr_ok/array.new_default
-- the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type ([I32] ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type ([I32] ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/array.new_fixed
-- the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type ($unpack(zt)^n ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type ($unpack(zt)^n ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 Instr_ok/array.new_elem
-- the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type ([I32, I32] ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type ([I32, I32] ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, rt)).
   - the reference type C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
-- the instr (ARRAY.NEW_DATA x y) is valid with the instruction type ([I32, I32] ->_ [] [(REF (NULL ?() ?) (_IDX x))]) if and only if:
+- the instr (ARRAY.NEW_DATA x y) is valid with the instruction type ([I32, I32] ->_ [] [(REF () (_IDX x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
@@ -23032,46 +23032,46 @@ Instr_ok/array.new_data
   - C.DATAS[y] is OK.
 
 Instr_ok/array.get
-- the instr (ARRAY.GET sx? x) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x)), I32] ->_ [] [$unpack(zt)]) if and only if:
+- the instr (ARRAY.GET sx? x) is valid with the instruction type ([(REF NULL (_IDX x)), I32] ->_ [] [$unpack(zt)]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 
 Instr_ok/array.set
-- the instr (ARRAY.SET x) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x)), I32, $unpack(zt)] ->_ [] []) if and only if:
+- the instr (ARRAY.SET x) is valid with the instruction type ([(REF NULL (_IDX x)), I32, $unpack(zt)] ->_ [] []) if and only if:
   - |C.TYPES| is greater than x.
-  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(()) ?), zt)).
+  - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.len
-- the instr ARRAY.LEN is valid with the instruction type ([(REF (NULL ?(()) ?) ARRAY)] ->_ [] [I32]) if and only if:
+- the instr ARRAY.LEN is valid with the instruction type ([(REF NULL ARRAY)] ->_ [] [I32]) if and only if:
   - |C.TYPES| is greater than x.
-  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(()) ?), zt)).
+  - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.fill
-- the instr (ARRAY.FILL x) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x)), I32, $unpack(zt), I32] ->_ [] []) if and only if:
+- the instr (ARRAY.FILL x) is valid with the instruction type ([(REF NULL (_IDX x)), I32, $unpack(zt), I32] ->_ [] []) if and only if:
   - |C.TYPES| is greater than x.
-  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(()) ?), zt)).
+  - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.copy
-- the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x_1)), I32, (REF (NULL ?(()) ?) (_IDX x_2)), I32, I32] ->_ [] []) if and only if:
+- the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type ([(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] ->_ [] []) if and only if:
   - |C.TYPES| is greater than x_1.
   - |C.TYPES| is greater than x_2.
-  - $expanddt(C.TYPES[x_1]) is (ARRAY ((MUT ?(()) ?), zt_1)).
+  - $expanddt(C.TYPES[x_1]) is (ARRAY (MUT, zt_1)).
   - $expanddt(C.TYPES[x_2]) is (ARRAY (mut, zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
-- the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x)), I32, I32, I32] ->_ [] []) if and only if:
+- the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type ([(REF NULL (_IDX x)), I32, I32, I32] ->_ [] []) if and only if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
-  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(()) ?), zt)).
+  - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
   - the element type C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
-- the instr (ARRAY.INIT_DATA x y) is valid with the instruction type ([(REF (NULL ?(()) ?) (_IDX x)), I32, I32, I32] ->_ [] []) if and only if:
+- the instr (ARRAY.INIT_DATA x y) is valid with the instruction type ([(REF NULL (_IDX x)), I32, I32, I32] ->_ [] []) if and only if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
-  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(()) ?), zt)).
+  - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
   - Either:
     - $unpack(zt) is numtype.
   - Or:
@@ -23173,7 +23173,7 @@ Instr_ok/global.get
 Instr_ok/global.set
 - the instr (GLOBAL.SET x) is valid with the instruction type ([t] ->_ [] []) if and only if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is ((MUT ?(()) ?), t).
+  - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/table.get
 - the instr (TABLE.GET x) is valid with the instruction type ([I32] ->_ [] [rt]) if and only if:
@@ -23383,7 +23383,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((MUT ?() ?), t).
+    - C.GLOBALS[x] is ((), t).
   - Or:
     - instr_u0 is (BINOP Inn binop).
     - |[I32, I64]| is greater than 0.
