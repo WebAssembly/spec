@@ -113,7 +113,7 @@ let rec reduce_exp env e : expr =
     | DotP atom ->
       let e1' = reduce_exp env e1 in
       (match e1'.it with
-      | StrE efs -> snd (List.find (fun (atomN, _) -> El.Atom.eq atomN atom) efs)
+      | StrE efs -> !(snd (List.find (fun (atomN, _) -> El.Atom.eq atomN atom) efs))
       | _ -> AccE (e1', DotP atom $ p.at) $> e
       )
     )
@@ -121,7 +121,7 @@ let rec reduce_exp env e : expr =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     reduce_path env e1' p
-      (fun e' p' -> if p'.it = RootP then e2' else UpdE (e', p', e2') $> e')
+      (fun e' ps -> if ps = [] then e2' else UpdE (e', ps, e2') $> e')
   | ExtE (_e1, _p, _e2, _dir) -> e
     (* TODO
     let e1' = reduce_exp env e1 in
@@ -145,7 +145,7 @@ let rec reduce_exp env e : expr =
     | StrE efs1, StrE efs2 ->
       let merge (atom1, e1) (atom2, e2) =
         assert (El.Atom.eq atom1 atom2);
-        (atom1, reduce_exp env (CompE (e1, e2) $> e1))
+        (atom1, ref (reduce_exp env (CompE (!e1, !e2) $> !e1)))
       in StrE (List.map2 merge efs1 efs2)
     | _ -> CompE (e1', e2')
     ) $> e
@@ -170,7 +170,7 @@ let rec reduce_exp env e : expr =
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    (match reduce_call id args' with
+    (match reduce_call env id args' with
     | None -> CallE (id, args') $> e
     | Some e -> e
     )
@@ -195,7 +195,7 @@ let rec reduce_exp env e : expr =
       | List | List1 ->
         let n = List.length (as_list_exp (List.hd es')) in
         if iter' = List || n >= 1 then
-          let en = NumE (Z.of_int n) $$ e.at % (NumT NatT $ e.at) in
+          let en = NumE (Z.of_int n) $$ e.at % (Il.Ast.NumT NatT $ e.at) in
           reduce_exp env (IterE (e1', (ListN (en, None), xes')) $> e)
         else
           IterE (e1', iterexp') $> e
@@ -209,7 +209,7 @@ let rec reduce_exp env e : expr =
             let s = List.fold_left2 Subst.add_varid Subst.empty ids esI' in
             let s' =
               Option.fold ido ~none:s ~some:(fun id ->
-                let en = NumE (Z.of_int i) $$ id.at % (NumT NatT $ id.at) in
+                let en = NumE (Z.of_int i) $$ id.at % (Il.Ast.NumT NatT $ id.at) in
                 Subst.add_varid s id en
               )
             in Subst.subst_exp s' e1'
@@ -230,8 +230,23 @@ let rec reduce_exp env e : expr =
     | OptE _, OptE None -> e1'.it
     | _ -> CatE (e1', e2')
     ) $> e
-  | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
+  | CaseE (op, es) -> CaseE (op, List.map (reduce_exp env) es) $> e
   | SubE _ -> e
+  | _ -> e
+
+and as_opt_exp e =
+  match e.it with
+  | OptE eo -> eo
+  | _ -> failwith "as_opt_exp"
+
+and as_list_exp e =
+    match e.it with
+    | ListE es -> es
+    | _ -> failwith "as_list_exp"
+
+(* and is_head_normal_exp e =
+  (* TODO *)
+  false *)
 
 and reduce_iter env = function
   | ListN (e, ido) -> ListN (reduce_exp env e, ido)
@@ -240,45 +255,46 @@ and reduce_iter env = function
 and reduce_iterexp env (iter, xes) =
   (reduce_iter env iter, List.map (fun (id, e) -> id, reduce_exp env e) xes)
 
-and reduce_expfield env (atom, e) : (atom * expr ref) = (atom, reduce_exp env e)
+and reduce_expfield env (atom, e) : (atom * expr ref) = (atom, ref (reduce_exp env !e))
 
 and reduce_path env e p f =
-  match p.it with
-  | RootP -> f e p
-  | IdxP (p1, e1) ->
-    let e1' = reduce_exp env e1 in
-    let f' e' p1' =
-      match e'.it, e1'.it with
-      | ListE es, NumE i when i < Z.of_int (List.length es) ->
-        ListE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $> e'
-      | _ ->
-        f e' (IdxP (p1', e1') $> p)
-    in
-    reduce_path env e p1 f'
-  | SliceP (p1, e1, e2) ->
-    let e1' = reduce_exp env e1 in
-    let e2' = reduce_exp env e2 in
-    let f' e' p1' =
-      match e'.it, e1'.it, e2'.it with
-      | ListE es, NumE i, NumE n when Z.(i + n) < Z.of_int (List.length es) ->
-        let e1' = ListE Lib.List.(take (Z.to_int i) es) $> e' in
-        let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
-        let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in
-        reduce_exp env (CatE (e1', CatE (f e2' p1', e3') $> e') $> e')
-      | _ ->
-        f e' (SliceP (p1', e1', e2') $> p)
-    in
-    reduce_path env e p1 f'
-  | DotP (p1, atom) ->
-    let f' e' p1' =
-      match e'.it with
-      | StrE efs ->
-        StrE (List.map (fun (atomI, eI) ->
-          if Eq.eq_atom atomI atom then (atomI, f eI p1') else (atomI, eI)) efs) $> e'
-      | _ ->
-        f e' (DotP (p1', atom) $> p)
-    in
-    reduce_path env e p1 f'
+  match Lib.List.split_last_opt p with
+  | None -> f e []
+  | Some (ps, p') -> match p'.it with
+    | IdxP e1 ->
+      let e1' = reduce_exp env e1 in
+      let f' e' p1' =
+        match e'.it, e1'.it with
+        | ListE es, NumE i when i < Z.of_int (List.length es) ->
+          ListE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $> e'
+        | _ ->
+          f e' (ps @ [IdxP (e1') $> p'])
+      in
+      reduce_path env e ps f'
+    | SliceP (e1, e2) ->
+      let e1' = reduce_exp env e1 in
+      let e2' = reduce_exp env e2 in
+      let f' e' p1' =
+        match e'.it, e1'.it, e2'.it with
+        | ListE es, NumE i, NumE n when Z.(i + n) < Z.of_int (List.length es) ->
+          let e1' = ListE Lib.List.(take (Z.to_int i) es) $> e' in
+          let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
+          let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in
+          reduce_exp env (CatE (e1', CatE (f e2' p1', e3') $> e') $> e')
+        | _ ->
+          f e' (ps @ [SliceP (e1', e2') $> p'])
+      in
+      reduce_path env e ps f'
+    | DotP atom ->
+      let f' e' p1' =
+        match e'.it with
+        | StrE efs ->
+          StrE (List.map (fun (atomI, eI) ->
+            if El.Atom.eq atomI atom then (atomI, ref (f !eI p1')) else (atomI, eI)) efs) $> e'
+        | _ ->
+          f e' (ps @ [DotP (atom) $> p'])
+      in
+      reduce_path env e ps f'
 
 and reduce_arg env a : arg =
   Debug_log.(log "al.reduce_arg"
@@ -289,33 +305,36 @@ and reduce_arg env a : arg =
   | ExpA e -> ExpA (reduce_exp env e) $ a.at
   | TypA _t -> a  (* types are reduced on demand *)
   | DefA _id -> a
-  | GramA _g -> a
+  (* | GramA _g -> a *)
 
-and reduce_call id args : expr option =
-  let func_finder = function FuncA (fname, _, _) -> fname = id | RuleA _ -> false in
-  match List.find func_finder !Lang.al with
+and reduce_call env id args : expr option =
+  let func_finder = fun al -> match al.it with | FuncA (fname, _, _) -> fname = id | RuleA _ -> false in
+  match (List.find func_finder !Lang.al).it with
   | FuncA (_, param, il) ->
     (* let env = param -> args *)
     reduce_instrs env il
   | _ -> assert (false)
 
-and reduce_instrs env : instr -> expr option = function
+and reduce_instrs env : instr list -> expr option = function
   | [] -> None
-  | Return expr_opt :: _ -> Option.map (reduce_exp env) expr_opt
-  | LetI (expr1, expr2) :: t ->
-    (* new_env = env + (expr1 -> expr2) *)
-    reduce_instrs new_env t
-  | IfI (expr, il1, il2) :: t ->
-    (* TODO: consider iter *)
-    (match reduce_exp env expr with
-    | BoolE true -> reduce_instrs env (il1@t)
-    | BoolE false -> reduce_instrs env (il2@t)
-    | _ -> None
+  | instr :: t ->
+    (match instr.it with
+    | ReturnI expr_opt -> Option.map (reduce_exp env) expr_opt
+    | LetI (expr1, expr2) ->
+      (* new_env = env + (expr1 -> expr2) *)
+      reduce_instrs new_env t
+    | IfI (expr, il1, il2) ->
+      (* TODO: consider iter *)
+      (match (reduce_exp env expr).it with
+      | BoolE true -> reduce_instrs env (il1@t)
+      | BoolE false -> reduce_instrs env (il2@t)
+      | _ -> None
+      )
+    (* Can have side effect *)
+    | EitherI _ | PerformI _ | ReplaceI _ | AppendI _ | FieldWiseAppendI _ -> None
+    (* Invalid instruction in FuncA *)
+    | EnterI _  | PushI _ | PopI _ | PopAllI _ | TrapI | ThrowI _
+    | ExecuteI _ | ExecuteSeqI _ | ExitI _ | OtherwiseI _ | YetI _ -> assert (false)
+    (* Nop *)
+    | (AssertI _ | NopI) -> reduce_instrs env t
     )
-  (* Can have side effect *)
-  | EitherI _ | PerformI _ | ReplaceI _ | AppendI _ | FieldWiseAppendI _ -> None
-  (* Invalid instruction in FuncA *)
-  | (EnterI _  | PushI _ | PopI _ | PopAllI _ | TrapI | ThrowI _ |
-    ExecuteI _ | ExecuteSeqI _ | ExitI _ | OtherwiseI _ | YetI _) :: _ -> assert (false)
-  (* Nop *)
-  | (AssertI _ | NopI) :: t -> reduce_instrs env t
