@@ -5,6 +5,22 @@ open Source
 
 let ($>) it e = {e with it}
 
+let as_opt_exp e =
+  match e.it with
+  | OptE eo -> eo
+  | _ -> failwith "as_opt_exp"
+
+let as_list_exp e =
+    match e.it with
+    | ListE es -> es
+    | _ -> failwith "as_list_exp"
+    
+let is_head_normal_exp e =
+  match e.it with
+  | BoolE _ | NumE _ | UnE (MinusOp, {it = NumE _; _}) | SubE _
+  | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _-> true
+  | _ -> false
+    
 let rec is_normal_exp e =
   match e.it with
   | BoolE _ | NumE _ | UnE (MinusOp, {it = NumE _; _}) | SubE _ -> true
@@ -233,20 +249,6 @@ let rec reduce_exp env e : expr =
   | CaseE (op, es) -> CaseE (op, List.map (reduce_exp env) es) $> e
   | SubE _ -> e
   | _ -> e
-
-and as_opt_exp e =
-  match e.it with
-  | OptE eo -> eo
-  | _ -> failwith "as_opt_exp"
-
-and as_list_exp e =
-    match e.it with
-    | ListE es -> es
-    | _ -> failwith "as_list_exp"
-
-(* and is_head_normal_exp e =
-  (* TODO *)
-  false *)
 
 and reduce_iter env = function
   | ListN (e, ido) -> ListN (reduce_exp env e, ido)
