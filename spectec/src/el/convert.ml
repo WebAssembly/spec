@@ -108,10 +108,21 @@ module Set = Set.Make(String)
 let rec pat_of_typ' s t : exp option =
   let (let*) = Option.bind in
   match t.it with
-  | VarT (id, _args) when not (Set.mem id.it !s) ->
-    (* Suppress duplicates. *)
-    s := Set.add id.it !s;
-    Some (VarE (id, []) $ t.at)
+  | VarT (id, _args) ->
+    if Set.mem id.it !s then None else
+    (
+      (* Suppress duplicates. *)
+      s := Set.add id.it !s;
+      Some (VarE (id, []) $ t.at)
+    )
+  | BoolT | NumT _ | TextT ->
+    let id = varid_of_typ t in
+    if Set.mem id.it !s then None else
+    (
+      (* Suppress duplicates. *)
+      s := Set.add id.it !s;
+      Some (VarE (id, []) $ t.at)
+    )
   | ParenT t1 ->
     let* e1 = pat_of_typ' s t1 in
     Some (ParenE (e1, `Insig) $ t.at)

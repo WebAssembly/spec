@@ -112,6 +112,14 @@ let new_env () =
       |> Map.add "text" (no_region, TextT $ no_region);
     vars = Map.empty;
     typs = Map.empty;
+(*
+      |> Map.add "bool" (no_region, ([], Defined (BoolT $ no_region, Il.BoolT $ no_region)))
+      |> Map.add "nat" (no_region, ([], Defined (NumT NatT $ no_region, Il.(NumT NatT) $ no_region)))
+      |> Map.add "int" (no_region, ([], Defined (NumT IntT $ no_region, Il.(NumT IntT) $ no_region)))
+      |> Map.add "rat" (no_region, ([], Defined (NumT RatT $ no_region, Il.(NumT RatT) $ no_region)))
+      |> Map.add "real" (no_region, ([], Defined (NumT RealT $ no_region, Il.(NumT RealT) $ no_region)))
+      |> Map.add "text" (no_region, ([], Defined (TextT $ no_region, Il.TextT $ no_region)));
+*)
     rels = Map.empty;
     defs = Map.empty;
     grams = Map.empty;
@@ -617,6 +625,7 @@ and elab_typ env t : Il.typ =
   match t.it with
   | VarT (id, as_) ->
     let id' = strip_var_suffix id in
+    if id'.it <> id.it && as_ = [] then elab_typ env (Convert.typ_of_varid id') else
     let ps, _ = find "syntax type" env.typs id' in
     let as', _s = elab_args `Rhs env as_ ps t.at in
     Il.VarT (id', as') $ t.at
@@ -710,7 +719,7 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
   let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typfield tf) (union det (bound_env env))) in
   if free <> Free.empty then
-    error at ("type case contains indeterminate variable(s) `" ^
+    error at ("type field contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
   let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
@@ -734,8 +743,13 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typcase tc) (union det (bound_env env))) in
   if free <> Free.empty then
+(Printf.printf "[typcase] t = %s\n%!" (Print.string_of_typ t);
+  List.iteri (fun i e -> Printf.printf "[typcase] t%d = %s\n%!" i (Print.string_of_typ e)) ts;
+  List.iteri (fun i e -> Printf.printf "[typcase] t%d' = %s\n%!" i (Il.Print.string_of_typ e)) ts';
+  List.iteri (fun i e -> Printf.printf "[typcase] e%d = %s\n%!" i (Print.string_of_exp e)) es;
     error at ("type case contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
+);
   let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
@@ -802,11 +816,16 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
   match t.it with
   | VarT (id, as_) ->
     let id' = strip_var_suffix id in
-    (match find "syntax type" env.typs id' with
-    | _, Transp -> error_id id "invalid forward reference to syntax type"
-    | ps, _ ->
-      let as', _s = elab_args `Rhs env as_ ps t.at in
-      [[]; []], [Il.VarT (id', as') $ t.at], [t]
+    (match (Convert.typ_of_varid id').it with
+    | VarT _ ->
+      (match find "syntax type" env.typs id' with
+      | _, Transp -> error_id id "invalid forward reference to syntax type"
+      | ps, _ ->
+        let as', _s = elab_args `Rhs env as_ ps t.at in
+        [[]; []], [Il.VarT (id', as') $ t.at], [t]
+      )
+    | t' ->
+      [[]; []], [elab_typ env (t' $ id.at)], [t]
     )
   | AtomT atom ->
     [[elab_atom atom tid]], [], []
@@ -1710,7 +1729,7 @@ and make_binds_iter_arg env free dims : Il.bind list ref * (module Iter.Arg) =
         )
 
       let visit_varid id =
-        if Free.(Set.mem id.it !left.varid) then (
+        if Free.(Set.mem id.it !left.varid) && Dim.Env.mem id.it dims then (
           let t =
             try find "variable" env.vars id with Error _ ->
               find "variable" env.gvars (strip_var_suffix id)
@@ -1782,8 +1801,14 @@ and elab_arg in_lhs env a p s : Il.arg list * Subst.subst =
     [Il.ExpA e' $ a.at], Subst.add_varid s id e
   | TypA ({it = VarT (id', []); _} as t), TypP id when in_lhs = `Lhs ->
     let id'' = strip_var_suffix id' in
+    let is_prim =
+      match (Convert.typ_of_varid id'').it with
+      | VarT _ -> false
+      | _ -> true
+    in
     env.typs <- bind "syntax type" env.typs id'' ([], Opaque);
-    env.gvars <- bind "variable" env.gvars (strip_var_sub id'') (VarT (id'', []) $ id''.at);
+    if not is_prim then
+      env.gvars <- bind "variable" env.gvars (strip_var_sub id'') (VarT (id'', []) $ id''.at);
     [Il.TypA (Il.VarT (id'', []) $ t.at) $ a.at], Subst.add_typid s id t
   | TypA t, TypP _ when in_lhs = `Lhs ->
     error t.at "misplaced syntax type"

@@ -1253,7 +1253,7 @@ syntax instr =
   | `IF%%ELSE%`{blocktype : blocktype, `instr*` : instr*}(blocktype : blocktype, instr*{instr <- `instr*`} : instr*, instr*)
   | BR{labelidx : labelidx}(labelidx : labelidx)
   | BR_IF{labelidx : labelidx}(labelidx : labelidx)
-  | BR_TABLE{labelidx : labelidx}(labelidx*{} : labelidx*, labelidx)
+  | BR_TABLE{`labelidx*` : labelidx*}(labelidx*{labelidx <- `labelidx*`} : labelidx*, labelidx)
   | BR_ON_NULL{labelidx : labelidx}(labelidx : labelidx)
   | BR_ON_NON_NULL{labelidx : labelidx}(labelidx : labelidx)
   | BR_ON_CAST{labelidx : labelidx, reftype : reftype}(labelidx : labelidx, reftype : reftype, reftype)
@@ -1527,7 +1527,7 @@ def $diffrt(reftype : reftype, reftype : reftype) : reftype
 ;; 2-syntax-aux.watsup
 syntax typevar =
   | _IDX{typeidx : typeidx}(typeidx : typeidx)
-  | REC(nat)
+  | REC{nat : nat}(nat : nat)
 
 ;; 2-syntax-aux.watsup
 syntax free =
@@ -3698,7 +3698,7 @@ syntax oktypeidx =
 
 ;; 6-typing.watsup
 syntax oktypeidxnat =
-  | OK{typeidx : typeidx}(typeidx : typeidx, nat)
+  | OK{typeidx : typeidx, nat : nat}(typeidx : typeidx, nat : nat)
 
 ;; 6-typing.watsup
 relation Packtype_ok: `%|-%:OK`(context, packtype)
