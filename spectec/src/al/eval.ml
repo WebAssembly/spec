@@ -299,7 +299,7 @@ and reduce_call id args : expr option =
     reduce_instrs env il
   | _ -> assert (false)
 
-and reduce_instrs (env: ...) : instr -> expr option = function
+and reduce_instrs env : instr -> expr option = function
   | [] -> None
   | Return expr_opt :: _ -> Option.map (reduce_exp env) expr_opt
   | LetI (expr1, expr2) :: t ->

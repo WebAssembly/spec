@@ -5,7 +5,6 @@ open Ast
 open Al_util
 open Print
 open Walk
-open Ds
 
 
 module Atom = El.Atom

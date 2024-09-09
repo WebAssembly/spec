@@ -1,1 +1,3 @@
-let al = ref []
+open Ast
+
+let al: script ref = ref []
