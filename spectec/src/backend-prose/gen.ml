@@ -87,6 +87,17 @@ let recover_optional_singleton_constructor e =
     ) |> (fun it -> {e with it})
   | _ -> e
 
+(* l ->_ [] r  ~>  l -> r *)
+let remove_empty_arrow_sub e =
+  match e.it with
+  | Al.Ast.CaseE (
+      [[]; [{it = El.Atom.ArrowSub; _} as arrow]; []; []],
+      [lhs; {it = ListE []; _}; rhs]
+    ) ->
+    let it = Al.Ast.CaseE ([[];[{arrow with it = El.Atom.Arrow}];[]], [lhs; rhs]) in
+    {e with it}
+  | _ -> e
+
 (** End of helpers **)
 
 
@@ -152,6 +163,7 @@ let transpile_expr =
     Il2al.Transpile.simplify_record_concat
     >> Il2al.Transpile.reduce_comp
     >> recover_optional_singleton_constructor
+    >> remove_empty_arrow_sub
   in
   let walk_expr walker expr = 
     let expr1 = Al.Walk.base_walker.walk_expr walker expr in
