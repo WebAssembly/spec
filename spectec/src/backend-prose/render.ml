@@ -237,9 +237,10 @@ and al_to_el_expr expr =
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
-      (match elel with
-      | _::_ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
-      | [] -> Some ele
+      (match elal, elel with
+      | None :: _, _
+      | _, [] -> Some ele
+      | _ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
       )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in

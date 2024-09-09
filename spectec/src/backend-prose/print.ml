@@ -159,8 +159,9 @@ and string_of_expr expr =
   | CaseE ([[ atom ]], []) -> string_of_atom atom
   | CaseE (op, el) ->
     let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    let st, fn = if List.hd op' = "" then "", "" else "(", ")" in
     (match op' with
-    | [] -> "()"
+    | [] -> st ^ fn
     | hd::tl ->
       let res =
         List.fold_left2 (
@@ -169,7 +170,7 @@ and string_of_expr expr =
             let acc' = if acc = "" then "" else acc ^ " " in
             acc' ^ string_of_expr e ^ a'
         ) hd tl el in
-      "(" ^ res ^ ")"
+      st ^ res ^ fn
     )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"

@@ -25,7 +25,7 @@ watsup 0.4 generator
    * :math:`m` must be less than or equal to :math:`k`.
 
 
-* :math:`({t_1^\ast}~\rightarrow~{t_2^?})` is valid.
+* :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
 
 
 * :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
@@ -125,47 +125,39 @@ watsup 0.4 generator
       * :math:`{\mathit{mt}}_1` matches :math:`{\mathit{mt}}_2`.
 
 
-* :math:`\mathsf{nop}` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)`.
+* :math:`\mathsf{nop}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-* :math:`\mathsf{unreachable}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+* :math:`\mathsf{unreachable}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`\mathsf{drop}` is valid with type :math:`(t~\rightarrow~\epsilon)`.
+* :math:`\mathsf{drop}` is valid with type :math:`t~\rightarrow~\epsilon`.
 
 
-* :math:`\mathsf{select}` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)`.
+* :math:`\mathsf{select}` is valid with type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
 
 
-* :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with type :math:`(\epsilon~\rightarrow~{t^?})` if:
+* :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`(\epsilon~\rightarrow~{t^?})`.
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
-* :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is valid with type :math:`(\epsilon~\rightarrow~{t^?})` if:
+* :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is valid with type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} \epsilon]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)`.
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} \epsilon]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-* :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?})` if:
+* :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`(\epsilon~\rightarrow~{t^?})`.
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`(\epsilon~\rightarrow~{t^?})`.
-
-
-* :math:`(\mathsf{br}~l)` is valid with type :math:`({t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast})` if:
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^?}`.
-
-
-* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`({t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?})` if:
+* :math:`(\mathsf{br}~l)` is valid with type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -173,7 +165,15 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^?}`.
 
 
-* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`({t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^?}`.
+
+
+* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`{l'}`.
@@ -189,44 +189,44 @@ watsup 0.4 generator
       * :math:`{t^?}` must be equal to :math:`C{.}\mathsf{labels}{}[l]`.
 
 
-* :math:`(\mathsf{call}~x)` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^?})` if:
+* :math:`(\mathsf{call}~x)` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^?})`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
-* :math:`(\mathsf{call\_indirect}~x)` is valid with type :math:`({t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?})` if:
+* :math:`(\mathsf{call\_indirect}~x)` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^?})`.
+   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
-* :math:`\mathsf{return}` is valid with type :math:`({t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast})` if:
+* :math:`\mathsf{return}` is valid with type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`C{.}\mathsf{return}` must be equal to :math:`{t^?}`.
 
 
-* :math:`(t{.}\mathsf{const}~c_t)` is valid with type :math:`(\epsilon~\rightarrow~t)`.
+* :math:`(t{.}\mathsf{const}~c_t)` is valid with type :math:`\epsilon~\rightarrow~t`.
 
 
-* :math:`(t {.} {\mathit{unop}}_t)` is valid with type :math:`(t~\rightarrow~t)`.
+* :math:`(t {.} {\mathit{unop}}_t)` is valid with type :math:`t~\rightarrow~t`.
 
 
-* :math:`(t {.} {\mathit{binop}}_t)` is valid with type :math:`(t~t~\rightarrow~t)`.
+* :math:`(t {.} {\mathit{binop}}_t)` is valid with type :math:`t~t~\rightarrow~t`.
 
 
-* :math:`(t {.} {\mathit{testop}}_t)` is valid with type :math:`(t~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`(t {.} {\mathit{testop}}_t)` is valid with type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`(t {.} {\mathit{relop}}_t)` is valid with type :math:`(t~t~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`(t {.} {\mathit{relop}}_t)` is valid with type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)` if:
+* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
@@ -240,7 +240,7 @@ watsup 0.4 generator
       * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{cvtop}}`.
 
 
-* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if:
+* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -248,7 +248,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
 
 
-* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`(t~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -256,7 +256,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
 
 
-* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`(t~\rightarrow~t)` if:
+* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`t~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -264,7 +264,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
 
 
-* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if:
+* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
@@ -272,7 +272,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathit{mut}}, t)`.
 
 
-* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`(t~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
@@ -280,7 +280,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
 
 
-* :math:`\mathsf{memory{.}size}` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`\mathsf{memory{.}size}` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -288,7 +288,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}grow}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`\mathsf{memory{.}grow}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -296,7 +296,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}})` if:
+* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -318,7 +318,7 @@ watsup 0.4 generator
       * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon)` if:
+* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -338,7 +338,7 @@ watsup 0.4 generator
       * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if:
+* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -357,9 +357,9 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t_3^\ast}`.
 
-      * :math:`{\mathit{instr}}_1` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`{\mathit{instr}}_1` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`({t_2^\ast}~\rightarrow~{t_3^\ast})`.   * Or:
+      * :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
 
@@ -367,13 +367,13 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t^\ast}~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t^?}` if:
 
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`(\epsilon~\rightarrow~{t^?})`.
+   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
@@ -406,12 +406,12 @@ watsup 0.4 generator
    * :math:`{\mathit{ft}}` is valid.
 
 
-* :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^?})` if:
+* :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^?})`.
+   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
    * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, :math:`{\mathit{expr}}` is valid with type :math:`{t_2^?}`.
 
@@ -479,7 +479,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`(\epsilon~\rightarrow~\epsilon)`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with type :math:`{\mathit{xt}}` if:
@@ -1005,7 +1005,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
 
-#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
 #. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
 
@@ -2746,7 +2746,7 @@ watsup 0.4 generator
 
 #. Push the activation of :math:`f` to the stack.
 
-#. Let :math:`({t_1^{n}}~\rightarrow~{t_2^\ast})` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
+#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
 #. Pop the activation of :math:`f` from the stack.
 
@@ -2795,7 +2795,7 @@ Limits_ok
   - m is less than or equal to k.
 
 Functype_ok
-- the function type (t_1* -> t_2?) is valid.
+- the function type t_1* -> t_2? is valid.
 
 Globaltype_ok
 - the global type ((MUT ()? ?), t) is valid.
@@ -2862,42 +2862,42 @@ Externtype_sub
     - the memory type mt_1 matches the memory type mt_2.
 
 Instr_ok/nop
-- the instr NOP is valid with the function type ([] -> []).
+- the instr NOP is valid with the function type [] -> [].
 
 Instr_ok/unreachable
-- the instr UNREACHABLE is valid with the function type (t_1* -> t_2*).
+- the instr UNREACHABLE is valid with the function type t_1* -> t_2*.
 
 Instr_ok/drop
-- the instr DROP is valid with the function type ([t] -> []).
+- the instr DROP is valid with the function type [t] -> [].
 
 Instr_ok/select
-- the instr SELECT is valid with the function type ([t, t, I32] -> [t]).
+- the instr SELECT is valid with the function type [t, t, I32] -> [t].
 
 Instr_ok/block
-- the instr (BLOCK t? instr*) is valid with the function type ([] -> t?) if:
-  - Under the context C with .LABELS prepended by [t?], the instr sequence instr* is valid with the function type ([] -> t?).
+- the instr (BLOCK t? instr*) is valid with the function type [] -> t? if:
+  - Under the context C with .LABELS prepended by [t?], the instr sequence instr* is valid with the function type [] -> t?.
 
 Instr_ok/loop
-- the instr (LOOP t? instr*) is valid with the function type ([] -> t?) if:
-  - Under the context C with .LABELS prepended by [?()], the instr sequence instr* is valid with the function type ([] -> []).
+- the instr (LOOP t? instr*) is valid with the function type [] -> t? if:
+  - Under the context C with .LABELS prepended by [?()], the instr sequence instr* is valid with the function type [] -> [].
 
 Instr_ok/if
-- the instr (IF t? instr_1* ELSE instr_2*) is valid with the function type ([I32] -> t?) if:
-  - Under the context C with .LABELS prepended by [t?], the instr sequence instr_1* is valid with the function type ([] -> t?).
-  - Under the context C with .LABELS prepended by [t?], the instr sequence instr_2* is valid with the function type ([] -> t?).
+- the instr (IF t? instr_1* ELSE instr_2*) is valid with the function type [I32] -> t? if:
+  - Under the context C with .LABELS prepended by [t?], the instr sequence instr_1* is valid with the function type [] -> t?.
+  - Under the context C with .LABELS prepended by [t?], the instr sequence instr_2* is valid with the function type [] -> t?.
 
 Instr_ok/br
-- the instr (BR l) is valid with the function type (t_1* :: t? -> t_2*) if:
+- the instr (BR l) is valid with the function type t_1* :: t? -> t_2* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t?.
 
 Instr_ok/br_if
-- the instr (BR_IF l) is valid with the function type (t? :: [I32] -> t?) if:
+- the instr (BR_IF l) is valid with the function type t? :: [I32] -> t? if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t?.
 
 Instr_ok/br_table
-- the instr (BR_TABLE l* l') is valid with the function type (t_1* :: t? -> t_2*) if:
+- the instr (BR_TABLE l* l') is valid with the function type t_1* :: t? -> t_2* if:
   - |C.LABELS| is greater than l'.
   - For all l in l*,
     - |C.LABELS| is greater than l.
@@ -2906,36 +2906,36 @@ Instr_ok/br_table
     - t? is C.LABELS[l].
 
 Instr_ok/call
-- the instr (CALL x) is valid with the function type (t_1* -> t_2?) if:
+- the instr (CALL x) is valid with the function type t_1* -> t_2? if:
   - |C.FUNCS| is greater than x.
-  - C.FUNCS[x] is (t_1* -> t_2?).
+  - C.FUNCS[x] is t_1* -> t_2?.
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x) is valid with the function type (t_1* :: [I32] -> t_2?) if:
+- the instr (CALL_INDIRECT x) is valid with the function type t_1* :: [I32] -> t_2? if:
   - |C.TYPES| is greater than x.
-  - C.TYPES[x] is (t_1* -> t_2?).
+  - C.TYPES[x] is t_1* -> t_2?.
 
 Instr_ok/return
-- the instr RETURN is valid with the function type (t_1* :: t? -> t_2*) if:
+- the instr RETURN is valid with the function type t_1* :: t? -> t_2* if:
   - C.RETURN is ?(t?).
 
 Instr_ok/const
-- the instr (t.CONST c_t) is valid with the function type ([] -> [t]).
+- the instr (t.CONST c_t) is valid with the function type [] -> [t].
 
 Instr_ok/unop
-- the instr (UNOP t unop_t) is valid with the function type ([t] -> [t]).
+- the instr (UNOP t unop_t) is valid with the function type [t] -> [t].
 
 Instr_ok/binop
-- the instr (BINOP t binop_t) is valid with the function type ([t, t] -> [t]).
+- the instr (BINOP t binop_t) is valid with the function type [t, t] -> [t].
 
 Instr_ok/testop
-- the instr (TESTOP t testop_t) is valid with the function type ([t] -> [I32]).
+- the instr (TESTOP t testop_t) is valid with the function type [t] -> [I32].
 
 Instr_ok/relop
-- the instr (RELOP t relop_t) is valid with the function type ([t, t] -> [I32]).
+- the instr (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type ([nt_2] -> [nt_1]) if:
+- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
     - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
@@ -2943,42 +2943,42 @@ Instr_ok/cvtop
     - cvtop_u0 is cvtop.
 
 Instr_ok/local.get
-- the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if:
+- the instr (LOCAL.GET x) is valid with the function type [] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.set
-- the instr (LOCAL.SET x) is valid with the function type ([t] -> []) if:
+- the instr (LOCAL.SET x) is valid with the function type [t] -> [] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.tee
-- the instr (LOCAL.TEE x) is valid with the function type ([t] -> [t]) if:
+- the instr (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/global.get
-- the instr (GLOBAL.GET x) is valid with the function type ([] -> [t]) if:
+- the instr (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
 Instr_ok/global.set
-- the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if:
+- the instr (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/memory.size
-- the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if:
+- the instr MEMORY.SIZE is valid with the function type [] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
-- the instr MEMORY.GROW is valid with the function type ([I32] -> [I32]) if:
+- the instr MEMORY.GROW is valid with the function type [I32] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/load
-- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type ([I32] -> [nt]) if:
+- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
   - |C.MEMS| is greater than 0.
   - ((n? is ?()) is equivalent to (sx? is ?())).
   - C.MEMS[0] is mt.
@@ -2990,7 +2990,7 @@ Instr_ok/load
     - nt is Inn.
 
 Instr_ok/store
-- the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if:
+- the instr (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
@@ -3001,7 +3001,7 @@ Instr_ok/store
     - nt is Inn.
 
 Instrs_ok
-- the instr sequence instr_u0* is valid with the function type (valtype_u1* -> valtype_u2*) if:
+- the instr sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
   - Either:
     - instr_u0* is [].
     - valtype_u1* is [].
@@ -3010,17 +3010,17 @@ Instrs_ok
     - instr_u0* is [instr_1] :: instr_2*.
     - valtype_u1* is t_1*.
     - valtype_u2* is t_3*.
-    - the instr instr_1 is valid with the function type (t_1* -> t_2*).
-    - the instr sequence instr_2* is valid with the function type (t_2* -> t_3*).
+    - the instr instr_1 is valid with the function type t_1* -> t_2*.
+    - the instr sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
     - instr_u0* is instr*.
     - valtype_u1* is t* :: t_1*.
     - valtype_u2* is t* :: t_2*.
-    - the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+    - the instr sequence instr* is valid with the function type t_1* -> t_2*.
 
 Expr_ok
 - the expression instr* is valid with the result type t? if:
-  - the instr sequence instr* is valid with the function type ([] -> t?).
+  - the instr sequence instr* is valid with the function type [] -> t?.
 
 Instr_const
 - the instr instr_u0 is constant if:
@@ -3029,7 +3029,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((), t).
+    - C.GLOBALS[x] is (, t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -3041,9 +3041,9 @@ Type_ok
   - the function type ft is valid.
 
 Func_ok
-- the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2?) if:
+- the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2? if:
   - |C.TYPES| is greater than x.
-  - C.TYPES[x] is (t_1* -> t_2?).
+  - C.TYPES[x] is t_1* -> t_2?.
   - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2?] with .RETURN appended by ?(t_2?), the expression expr is valid with the result type t_2?.
 
 Global_ok
@@ -3083,7 +3083,7 @@ Data_ok
 Start_ok
 - the start function (START x) is valid if:
   - |C.FUNCS| is greater than x.
-  - C.FUNCS[x] is ([] -> []).
+  - C.FUNCS[x] is [] -> [].
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
@@ -3341,7 +3341,7 @@ Step_read/call_indirect x
 Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func; } be $funcinst(z)[a].
 4. Assert: Due to validation, there are at least k values on the top of the stack.
 5. Pop the values val^k from the stack.
 6. Assert: Due to validation, func is of the case FUNC.
@@ -4171,7 +4171,7 @@ instantiate z module externaddr*
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
 2. Push the activation of f to the stack.
-3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
+3. Let t_1^n -> t_2* be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
 6. Push the activation of f with arity k to the stack.
@@ -4207,7 +4207,7 @@ watsup 0.4 generator
    * :math:`m` must be less than or equal to :math:`k`.
 
 
-* :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
+* :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
@@ -4219,7 +4219,7 @@ watsup 0.4 generator
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{32}} - 1`.
 
 
-* :math:`({\mathit{limits}}~\mathsf{page})` is valid if:
+* :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
 
 
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
@@ -4291,7 +4291,7 @@ watsup 0.4 generator
    * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
 
 
-* :math:`({\mathit{lim}}_1~\mathsf{page})` matches :math:`({\mathit{lim}}_2~\mathsf{page})` if:
+* :math:`{\mathit{lim}}_1~\mathsf{page}` matches :math:`{\mathit{lim}}_2~\mathsf{page}` if:
 
 
    * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
@@ -4329,7 +4329,7 @@ watsup 0.4 generator
       * :math:`{\mathit{mt}}_1` matches :math:`{\mathit{mt}}_2`.
 
 
-* :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if:
+* :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -4350,19 +4350,19 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`\mathsf{nop}` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)`.
+* :math:`\mathsf{nop}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-* :math:`\mathsf{unreachable}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+* :math:`\mathsf{unreachable}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`\mathsf{drop}` is valid with type :math:`(t~\rightarrow~\epsilon)`.
+* :math:`\mathsf{drop}` is valid with type :math:`t~\rightarrow~\epsilon`.
 
 
-* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)` if:
+* :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * Either:
@@ -4384,41 +4384,33 @@ watsup 0.4 generator
          * :math:`{t'}` must be equal to :math:`{\mathit{vectype}}`.
 
 
-* :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
-* :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+* :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`({t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast})` if:
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+* :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{br}~l)` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
-
-
-* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`({t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast})` if:
+* :math:`(\mathsf{br}~l)` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -4426,7 +4418,15 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
 
 
-* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
+
+
+* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`,
@@ -4442,15 +4442,15 @@ watsup 0.4 generator
    * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
-* :math:`(\mathsf{call}~x)` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{call}~x)` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`({t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -4459,31 +4459,31 @@ watsup 0.4 generator
 
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, \mathsf{funcref})`.
 
-   * :math:`C{.}\mathsf{types}{}[y]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`C{.}\mathsf{types}{}[y]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`\mathsf{return}` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`\mathsf{return}` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`C{.}\mathsf{return}` must be equal to :math:`{t^\ast}`.
 
 
-* :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`(\epsilon~\rightarrow~{\mathit{nt}})`.
+* :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~\rightarrow~{\mathit{nt}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)` if:
+* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
@@ -4497,10 +4497,10 @@ watsup 0.4 generator
       * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{cvtop}}`.
 
 
-* :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with type :math:`(\epsilon~\rightarrow~{\mathit{rt}})`.
+* :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{funcref})` if:
+* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
@@ -4508,46 +4508,46 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{ft}}`.
 
 
-* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`({\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * For all :math:`i` in :math:`{i^\ast}`,
@@ -4555,50 +4555,34 @@ watsup 0.4 generator
       * :math:`i` must be less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with type :math:`({\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}}))` if:
-
-
-   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
-
-
-* :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
 
 
    * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-* :math:`(\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if:
+* :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+* :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`(t~\rightarrow~\epsilon)` if:
-
-
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
-
-
-* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`(t~\rightarrow~t)` if:
+* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -4606,7 +4590,23 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
 
 
-* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if:
+* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
+
+
+   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+
+
+* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`t~\rightarrow~t` if:
+
+
+   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+
+
+* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
@@ -4614,7 +4614,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathit{mut}}, t)`.
 
 
-* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`(t~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
@@ -4622,7 +4622,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
 
 
-* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}})` if:
+* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -4630,7 +4630,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -4638,7 +4638,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -4646,7 +4646,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`({\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -4654,7 +4654,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -4662,7 +4662,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
@@ -4674,7 +4674,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x_2]` must be equal to :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
@@ -4686,7 +4686,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[x_2]` must be equal to :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{elem{.}drop}~x)` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{elem{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`x`.
@@ -4694,7 +4694,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[x]` must be equal to :math:`{\mathit{rt}}`.
 
 
-* :math:`\mathsf{memory{.}size}` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`\mathsf{memory{.}size}` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4702,7 +4702,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}grow}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`\mathsf{memory{.}grow}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4710,7 +4710,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}fill}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`\mathsf{memory{.}fill}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4718,7 +4718,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}copy}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`\mathsf{memory{.}copy}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4726,7 +4726,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}init}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{memory{.}init}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4738,7 +4738,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`(\mathsf{data{.}drop}~x)` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{data{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`x`.
@@ -4746,7 +4746,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}})` if:
+* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4768,7 +4768,7 @@ watsup 0.4 generator
       * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon)` if:
+* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4788,7 +4788,7 @@ watsup 0.4 generator
       * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4812,7 +4812,7 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
 
 
-* :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4824,7 +4824,7 @@ watsup 0.4 generator
    * :math:`{\mathit{laneidx}}` must be less than :math:`128 / n`.
 
 
-* :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4834,7 +4834,7 @@ watsup 0.4 generator
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
-* :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
@@ -4846,7 +4846,7 @@ watsup 0.4 generator
    * :math:`{\mathit{laneidx}}` must be less than :math:`128 / n`.
 
 
-* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if:
+* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -4865,9 +4865,9 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t_3^\ast}`.
 
-      * :math:`{\mathit{instr}}_1` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`{\mathit{instr}}_1` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`({t_2^\ast}~\rightarrow~{t_3^\ast})`.   * Or:
+      * :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
 
@@ -4875,7 +4875,7 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{{t'}_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * :math:`{{t'}_1^\ast}` matches :math:`{t_1^\ast}`.
 
@@ -4887,13 +4887,13 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t^\ast}~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t^\ast}` if:
 
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`(\epsilon~\rightarrow~{t^\ast})`.
+   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
@@ -4932,12 +4932,12 @@ watsup 0.4 generator
    * :math:`{\mathit{ft}}` is valid.
 
 
-* :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{\mathit{expr}}` is valid with type :math:`{t_2^\ast}`.
 
@@ -5031,7 +5031,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`(\epsilon~\rightarrow~\epsilon)`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with type :math:`{\mathit{xt}}` if:
@@ -5581,15 +5581,15 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}) {.} \mathsf{all\_true}`
-.................................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N} {.} \mathsf{all\_true}`
+...............................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c)`.
 
 #. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
 
@@ -5617,8 +5617,8 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}) {.} {\mathit{vshiftop}}`
-..................................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N} {.} {\mathit{vshiftop}}`
+................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
@@ -5629,30 +5629,30 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)`.
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1)`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{{\mathit{vshiftop}}}{\mathsf{\_}}~({{\mathsf{i}}{n}}{\mathsf{x}}{N})}{({c'}, n)}^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{\mathit{vshiftop}}}{\mathsf{\_}}~{{\mathsf{i}}{n}}{\mathsf{x}}{N}}{({c'}, n)}^\ast})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{bitmask}`
-.............................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}{.}\mathsf{bitmask}`
+...........................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c)`.
 
 #. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
 
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{M}){.}\mathsf{swizzle}`
-.............................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{M}{.}\mathsf{swizzle}`
+...........................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -5663,21 +5663,21 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_1)~{0^{256 - M}}`.
 
-#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_2)`.
+#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_2)`.
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{shuffle}~{i^\ast}`
-......................................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}{.}\mathsf{shuffle}~{i^\ast}`
+....................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -5690,17 +5690,17 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_2)`.
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1)~{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_2)`.
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{splat}`
-...........................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}{.}\mathsf{splat}`
+.........................................................
 
 
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -5709,13 +5709,13 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{N}){.}\mathsf{extract\_lane}}{{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~i`
-..............................................................................................................................................................................
+:math:`{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{N}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~i`
+............................................................................................................................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -5726,9 +5726,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{N})}(c_1)|}`, then:
+   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
-      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{N})}(c_1){}[i]`.
+      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1){}[i]`.
 
       #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
 
@@ -5740,15 +5740,15 @@ watsup 0.4 generator
 
       1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{N})}(c_1)|}`, then:
+      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
-         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{N})}(c_1){}[i])}`.
+         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1){}[i])}`.
 
          #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
 
 
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{replace\_lane}~i`
-.....................................................................
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}{.}\mathsf{replace\_lane}~i`
+...................................................................
 
 
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -5761,7 +5761,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_2)])`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_2)])`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -5796,8 +5796,8 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}){.}\mathsf{narrow}}{\mathsf{\_}}{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}{\mathsf{\_}}{{\mathit{sx}}}`
-.......................................................................................................................................................
+:math:`{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}{.}\mathsf{narrow}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1}}{\mathsf{\_}}{{\mathit{sx}}}`
+...................................................................................................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -5808,21 +5808,21 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}(c_1)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1}}(c_1)`.
 
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}(c_2)`.
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1}}(c_2)`.
 
 #. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
 
 #. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2})}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}) {.} {({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}})}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}}`
-...............................................................................................................................................................................................................................................................................................................................................................................................................................................
+:math:`{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}} {.} {{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}}`
+...........................................................................................................................................................................................................................................................................................................................................................................................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -5839,13 +5839,13 @@ watsup 0.4 generator
 
    #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
 
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M})}(c_1)`.
+      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}(c_1)`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+      #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({{\mathit{cj}}^\ast})^\ast}`.
+         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -5863,13 +5863,13 @@ watsup 0.4 generator
 
       1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+      #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}`.
+         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -5889,13 +5889,13 @@ watsup 0.4 generator
 
          #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is defined, then:
 
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
+            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
 
-            #. If :math:`{|{{{\mathrm{invlanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+            #. If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
 
-               a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}`.
+               a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
                #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -5921,7 +5921,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`({t_1^{k}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+#. Let :math:`{t_1^{k}}~\rightarrow~{t_2^{n}}` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
 
 #. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
 
@@ -5938,7 +5938,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`({t_1^{k}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+#. Let :math:`{t_1^{k}}~\rightarrow~{t_2^{n}}` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
 
 #. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
 
@@ -5999,7 +5999,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
 
-#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
 #. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
 
@@ -6321,7 +6321,7 @@ watsup 0.4 generator
 
          a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
+         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6341,7 +6341,7 @@ watsup 0.4 generator
 
          #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({j^{M}})`.
+         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6386,7 +6386,7 @@ watsup 0.4 generator
 
    #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_1){}[{}[j] = k])`.
+   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])`.
 
    #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6730,9 +6730,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
-   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c)|}`, then:
+   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`, then:
 
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c){}[j])`.
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c){}[j])`.
 
       #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
 
@@ -7015,8 +7015,8 @@ watsup 0.4 generator
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
 
-:math:`{\mathrm{lanetype}}(({{\mathsf{i}}{n}}{\mathsf{x}}{N}))`
-...............................................................
+:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
+.............................................................
 
 
 1. Return :math:`{\mathsf{i}}{n}`.
@@ -7079,15 +7079,15 @@ watsup 0.4 generator
 #. Return :math:`{+0}`.
 
 
-:math:`{\mathrm{dim}}(({{\mathsf{i}}{n}}{\mathsf{x}}{N}))`
-..........................................................
+:math:`{\mathrm{dim}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
+........................................................
 
 
 1. Return :math:`N`.
 
 
-:math:`{|({{\mathsf{i}}{n}}{\mathsf{x}}{N})|}`
-..............................................
+:math:`{|{{\mathsf{i}}{n}}{\mathsf{x}}{N}|}`
+............................................
 
 
 1. Return :math:`{|{\mathsf{i}}{n}|} \cdot N`.
@@ -7121,8 +7121,8 @@ watsup 0.4 generator
 #. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 
-:math:`{\mathrm{unpack}}(({{\mathsf{i}}{n}}{\mathsf{x}}{N}))`
-.............................................................
+:math:`{\mathrm{unpack}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
+...........................................................
 
 
 1. Return :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
@@ -7958,17 +7958,17 @@ watsup 0.4 generator
 1. Return :math:`{{\mathrm{ibitselect}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_3)`.
 
 
-:math:`{{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M})}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)}`
-............................................................................................................................................................................................
+:math:`{{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)}`
+..........................................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -7976,9 +7976,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -7986,9 +7986,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -7996,11 +7996,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8008,11 +8008,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8020,11 +8020,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8032,11 +8032,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8044,11 +8044,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8056,11 +8056,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8070,28 +8070,28 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+#. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
 #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fnearest}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 
-:math:`{{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M})}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
-..........................................................................................................................................................................................................................................
+:math:`{{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
+........................................................................................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8099,11 +8099,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8115,11 +8115,11 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{imin}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imin}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8127,11 +8127,11 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{imax}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imax}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8139,11 +8139,11 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8151,11 +8151,11 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8163,23 +8163,11 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
-
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
-
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
-
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8187,11 +8175,23 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+
+   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8199,13 +8199,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8213,13 +8213,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8227,13 +8227,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8241,13 +8241,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8255,13 +8255,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8269,13 +8269,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8283,13 +8283,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8299,32 +8299,32 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+#. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-#. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+#. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fpmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}^\ast})^\ast}`.
+#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 
-:math:`{{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M})}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
-..........................................................................................................................................................................................................................................
+:math:`{{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
+........................................................................................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8332,13 +8332,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8350,13 +8350,13 @@ watsup 0.4 generator
 
       1) Let :math:`(\mathsf{lt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8364,13 +8364,13 @@ watsup 0.4 generator
 
       1) Let :math:`(\mathsf{gt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8378,13 +8378,13 @@ watsup 0.4 generator
 
       1) Let :math:`(\mathsf{le}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8392,13 +8392,13 @@ watsup 0.4 generator
 
       1) Let :math:`(\mathsf{ge}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8406,15 +8406,15 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8422,15 +8422,15 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8438,15 +8438,15 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8454,15 +8454,15 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8470,15 +8470,15 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -8488,21 +8488,21 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+#. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-#. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+#. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
 #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fge}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-#. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+#. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
 #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}}{\mathsf{x}}{M_1}), ({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, {\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}})`
-..........................................................................................................................................................................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, {\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}})`
+......................................................................................................................................................................................................................................................................................................
 
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
@@ -8590,50 +8590,50 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 
-:math:`{{\mathrm{vextunop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}((\mathsf{extadd\_pairwise}~{\mathit{sx}}), c_1)`
-..................................................................................................................................................................
+:math:`{{\mathrm{vextunop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}((\mathsf{extadd\_pairwise}~{\mathit{sx}}), c_1)`
+..............................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}(c_1)`.
+1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
 
 #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\mathrm{concat}}({{\mathit{cj}}_1~{\mathit{cj}}_2^\ast})` :math:`=` :math:`{{{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1})}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
 #. Return :math:`c`.
 
 
-:math:`{{\mathrm{vextbinop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}, c_1, c_2)`
-.................................................................................................................................................................................
+:math:`{{\mathrm{vextbinop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}, c_1, c_2)`
+.............................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extmul}`, then:
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}(c_1){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
+   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}(c_2){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
+   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
 
-   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1})}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
+   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
 
    #. Return :math:`c`.
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}` is .
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}(c_1)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
 
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}(c_2)`.
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2)`.
 
 #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\mathrm{concat}}({{\mathit{cj}}_1~{\mathit{cj}}_2^\ast})` :math:`=` :math:`{{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1})}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
 #. Return :math:`c`.
 
 
-:math:`{{{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}~({{\mathsf{i}}{n}}{\mathsf{x}}{M})}{({\mathit{lane}}, n)}`
-...................................................................................................................................
+:math:`{{{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}~{{\mathsf{i}}{n}}{\mathsf{x}}{M}}{({\mathit{lane}}, n)}`
+.................................................................................................................................
 
 
 1. If :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
@@ -9003,13 +9003,13 @@ watsup 0.4 generator
 ...............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -9020,7 +9020,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\epsilon`, then:
 
-   a. Return :math:`(\epsilon~\rightarrow~\epsilon)`.
+   a. Return :math:`\epsilon~\rightarrow~\epsilon`.
 
 #. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case , then:
 
@@ -9030,7 +9030,7 @@ watsup 0.4 generator
 
       1) Let :math:`t` be :math:`{\mathit{valtype}}_0`.
 
-      #) Return :math:`(\epsilon~\rightarrow~t)`.
+      #) Return :math:`\epsilon~\rightarrow~t`.
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case .
 
@@ -9225,11 +9225,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(((i, j)~\mathsf{page}))`
-...................................................
+:math:`{\mathrm{allocmem}}((i, j)~\mathsf{page})`
+.................................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j)~\mathsf{page},\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -9552,7 +9552,7 @@ watsup 0.4 generator
 
 #. Push the activation of :math:`f` to the stack.
 
-#. Let :math:`({t_1^{n}}~\rightarrow~{t_2^\ast})` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
+#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
 #. Pop the activation of :math:`f` from the stack.
 
@@ -9601,7 +9601,7 @@ Limits_ok
   - m is less than or equal to k.
 
 Functype_ok
-- the function type (t_1* -> t_2*) is valid.
+- the function type t_1* -> t_2* is valid.
 
 Globaltype_ok
 - the global type ((MUT ()? ?), t) is valid.
@@ -9611,7 +9611,7 @@ Tabletype_ok
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
 
 Memtype_ok
-- the memory type (limits PAGE) is valid if:
+- the memory type limits PAGE is valid if:
   - the limits limits is valid with the nat (2 ^ 16).
 
 Externtype_ok
@@ -9658,7 +9658,7 @@ Tabletype_sub
   - the limits lim_1 matches the limits lim_2.
 
 Memtype_sub
-- the memory type (lim_1 PAGE) matches the memory type (lim_2 PAGE) if:
+- the memory type lim_1 PAGE matches the memory type lim_2 PAGE if:
   - the limits lim_1 matches the limits lim_2.
 
 Externtype_sub
@@ -9681,7 +9681,7 @@ Externtype_sub
     - the memory type mt_1 matches the memory type mt_2.
 
 Blocktype_ok
-- the block type blocktype_u0 is valid with the function type (valtype_u1* -> valtype_u2*) if:
+- the block type blocktype_u0 is valid with the function type valtype_u1* -> valtype_u2* if:
   - Either:
     - blocktype_u0 is (_RESULT valtype?).
     - valtype_u1* is [].
@@ -9691,19 +9691,19 @@ Blocktype_ok
     - valtype_u1* is t_1*.
     - valtype_u2* is t_2*.
     - |C.TYPES| is greater than typeidx.
-    - C.TYPES[typeidx] is (t_1* -> t_2*).
+    - C.TYPES[typeidx] is t_1* -> t_2*.
 
 Instr_ok/nop
-- the instr NOP is valid with the function type ([] -> []).
+- the instr NOP is valid with the function type [] -> [].
 
 Instr_ok/unreachable
-- the instr UNREACHABLE is valid with the function type (t_1* -> t_2*).
+- the instr UNREACHABLE is valid with the function type t_1* -> t_2*.
 
 Instr_ok/drop
-- the instr DROP is valid with the function type ([t] -> []).
+- the instr DROP is valid with the function type [t] -> [].
 
 Instr_ok/select
-- the instr (SELECT() valtype_u0? ?) is valid with the function type ([t, t, I32] -> [t]) if:
+- the instr (SELECT() valtype_u0? ?) is valid with the function type [t, t, I32] -> [t] if:
   - Either:
     - valtype_u0? is ?([t]).
   - Or:
@@ -9715,33 +9715,33 @@ Instr_ok/select
       - t' is vectype.
 
 Instr_ok/block
-- the instr (BLOCK bt instr*) is valid with the function type (t_1* -> t_2*) if:
-  - the block type bt is valid with the function type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+- the instr (BLOCK bt instr*) is valid with the function type t_1* -> t_2* if:
+  - the block type bt is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type t_1* -> t_2*.
 
 Instr_ok/loop
-- the instr (LOOP bt instr*) is valid with the function type (t_1* -> t_2*) if:
-  - the block type bt is valid with the function type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+- the instr (LOOP bt instr*) is valid with the function type t_1* -> t_2* if:
+  - the block type bt is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the function type t_1* -> t_2*.
 
 Instr_ok/if
-- the instr (IF bt instr_1* ELSE instr_2*) is valid with the function type (t_1* :: [I32] -> t_2*) if:
-  - the block type bt is valid with the function type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the function type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the function type (t_1* -> t_2*).
+- the instr (IF bt instr_1* ELSE instr_2*) is valid with the function type t_1* :: [I32] -> t_2* if:
+  - the block type bt is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the function type t_1* -> t_2*.
 
 Instr_ok/br
-- the instr (BR l) is valid with the function type (t_1* :: t* -> t_2*) if:
+- the instr (BR l) is valid with the function type t_1* :: t* -> t_2* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_if
-- the instr (BR_IF l) is valid with the function type (t* :: [I32] -> t*) if:
+- the instr (BR_IF l) is valid with the function type t* :: [I32] -> t* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
-- the instr (BR_TABLE l* l') is valid with the function type (t_1* :: t* -> t_2*) if:
+- the instr (BR_TABLE l* l') is valid with the function type t_1* :: t* -> t_2* if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
   - |C.LABELS| is greater than l'.
@@ -9750,38 +9750,38 @@ Instr_ok/br_table
   - the value type sequence t* matches the result type C.LABELS[l'].
 
 Instr_ok/call
-- the instr (CALL x) is valid with the function type (t_1* -> t_2*) if:
+- the instr (CALL x) is valid with the function type t_1* -> t_2* if:
   - |C.FUNCS| is greater than x.
-  - C.FUNCS[x] is (t_1* -> t_2*).
+  - C.FUNCS[x] is t_1* -> t_2*.
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x y) is valid with the function type (t_1* :: [I32] -> t_2*) if:
+- the instr (CALL_INDIRECT x y) is valid with the function type t_1* :: [I32] -> t_2* if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, FUNCREF).
-  - C.TYPES[y] is (t_1* -> t_2*).
+  - C.TYPES[y] is t_1* -> t_2*.
 
 Instr_ok/return
-- the instr RETURN is valid with the function type (t_1* :: t* -> t_2*) if:
+- the instr RETURN is valid with the function type t_1* :: t* -> t_2* if:
   - C.RETURN is ?(t*).
 
 Instr_ok/const
-- the instr (nt.CONST c_nt) is valid with the function type ([] -> [nt]).
+- the instr (nt.CONST c_nt) is valid with the function type [] -> [nt].
 
 Instr_ok/unop
-- the instr (UNOP nt unop_nt) is valid with the function type ([nt] -> [nt]).
+- the instr (UNOP nt unop_nt) is valid with the function type [nt] -> [nt].
 
 Instr_ok/binop
-- the instr (BINOP nt binop_nt) is valid with the function type ([nt, nt] -> [nt]).
+- the instr (BINOP nt binop_nt) is valid with the function type [nt, nt] -> [nt].
 
 Instr_ok/testop
-- the instr (TESTOP nt testop_nt) is valid with the function type ([nt] -> [I32]).
+- the instr (TESTOP nt testop_nt) is valid with the function type [nt] -> [I32].
 
 Instr_ok/relop
-- the instr (RELOP nt relop_nt) is valid with the function type ([nt, nt] -> [I32]).
+- the instr (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type ([nt_2] -> [nt_1]) if:
+- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
     - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
@@ -9789,183 +9789,183 @@ Instr_ok/cvtop
     - cvtop_u0 is cvtop.
 
 Instr_ok/ref.null
-- the instr (REF.NULL rt) is valid with the function type ([] -> [rt]).
+- the instr (REF.NULL rt) is valid with the function type [] -> [rt].
 
 Instr_ok/ref.func
-- the instr (REF.FUNC x) is valid with the function type ([] -> [FUNCREF]) if:
+- the instr (REF.FUNC x) is valid with the function type [] -> [FUNCREF] if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is ft.
 
 Instr_ok/ref.is_null
-- the instr REF.IS_NULL is valid with the function type ([rt] -> [I32]).
+- the instr REF.IS_NULL is valid with the function type [rt] -> [I32].
 
 Instr_ok/vconst
-- the instr (V128.CONST c) is valid with the function type ([] -> [V128]).
+- the instr (V128.CONST c) is valid with the function type [] -> [V128].
 
 Instr_ok/vvunop
-- the instr (VVUNOP V128 vvunop) is valid with the function type ([V128] -> [V128]).
+- the instr (VVUNOP V128 vvunop) is valid with the function type [V128] -> [V128].
 
 Instr_ok/vvbinop
-- the instr (VVBINOP V128 vvbinop) is valid with the function type ([V128, V128] -> [V128]).
+- the instr (VVBINOP V128 vvbinop) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vvternop
-- the instr (VVTERNOP V128 vvternop) is valid with the function type ([V128, V128, V128] -> [V128]).
+- the instr (VVTERNOP V128 vvternop) is valid with the function type [V128, V128, V128] -> [V128].
 
 Instr_ok/vvtestop
-- the instr (VVTESTOP V128 vvtestop) is valid with the function type ([V128] -> [I32]).
+- the instr (VVTESTOP V128 vvtestop) is valid with the function type [V128] -> [I32].
 
 Instr_ok/vunop
-- the instr (VUNOP sh vunop_sh) is valid with the function type ([V128] -> [V128]).
+- the instr (VUNOP sh vunop_sh) is valid with the function type [V128] -> [V128].
 
 Instr_ok/vbinop
-- the instr (VBINOP sh vbinop_sh) is valid with the function type ([V128, V128] -> [V128]).
+- the instr (VBINOP sh vbinop_sh) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vtestop
-- the instr (VTESTOP sh vtestop_sh) is valid with the function type ([V128] -> [I32]).
+- the instr (VTESTOP sh vtestop_sh) is valid with the function type [V128] -> [I32].
 
 Instr_ok/vrelop
-- the instr (VRELOP sh vrelop_sh) is valid with the function type ([V128, V128] -> [V128]).
+- the instr (VRELOP sh vrelop_sh) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vshiftop
-- the instr (VSHIFTOP sh vshiftop_sh) is valid with the function type ([V128, I32] -> [V128]).
+- the instr (VSHIFTOP sh vshiftop_sh) is valid with the function type [V128, I32] -> [V128].
 
 Instr_ok/vbitmask
-- the instr (VBITMASK sh) is valid with the function type ([V128] -> [I32]).
+- the instr (VBITMASK sh) is valid with the function type [V128] -> [I32].
 
 Instr_ok/vswizzle
-- the instr (VSWIZZLE sh) is valid with the function type ([V128, V128] -> [V128]).
+- the instr (VSWIZZLE sh) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vshuffle
-- the instr (VSHUFFLE sh i*) is valid with the function type ([V128, V128] -> [V128]) if:
+- the instr (VSHUFFLE sh i*) is valid with the function type [V128, V128] -> [V128] if:
   - For all i in i*,
     - i is less than (2 · $dim(sh)).
 
 Instr_ok/vsplat
-- the instr (VSPLAT sh) is valid with the function type ([$shunpack(sh)] -> [V128]).
+- the instr (VSPLAT sh) is valid with the function type [$shunpack(sh)] -> [V128].
 
 Instr_ok/vextract_lane
-- the instr (VEXTRACT_LANE sh sx? i) is valid with the function type ([V128] -> [$shunpack(sh)]) if:
+- the instr (VEXTRACT_LANE sh sx? i) is valid with the function type [V128] -> [$shunpack(sh)] if:
   - i is less than $dim(sh).
 
 Instr_ok/vreplace_lane
-- the instr (VREPLACE_LANE sh i) is valid with the function type ([V128, $shunpack(sh)] -> [V128]) if:
+- the instr (VREPLACE_LANE sh i) is valid with the function type [V128, $shunpack(sh)] -> [V128] if:
   - i is less than $dim(sh).
 
 Instr_ok/vextunop
-- the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type ([V128] -> [V128]).
+- the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type [V128] -> [V128].
 
 Instr_ok/vextbinop
-- the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the function type ([V128, V128] -> [V128]).
+- the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vnarrow
-- the instr (VNARROW sh_1 sh_2 sx) is valid with the function type ([V128, V128] -> [V128]).
+- the instr (VNARROW sh_1 sh_2 sx) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vcvtop
-- the instr (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with the function type ([V128] -> [V128]).
+- the instr (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with the function type [V128] -> [V128].
 
 Instr_ok/local.get
-- the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if:
+- the instr (LOCAL.GET x) is valid with the function type [] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.set
-- the instr (LOCAL.SET x) is valid with the function type ([t] -> []) if:
+- the instr (LOCAL.SET x) is valid with the function type [t] -> [] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.tee
-- the instr (LOCAL.TEE x) is valid with the function type ([t] -> [t]) if:
+- the instr (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/global.get
-- the instr (GLOBAL.GET x) is valid with the function type ([] -> [t]) if:
+- the instr (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
 Instr_ok/global.set
-- the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if:
+- the instr (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/table.get
-- the instr (TABLE.GET x) is valid with the function type ([I32] -> [rt]) if:
+- the instr (TABLE.GET x) is valid with the function type [I32] -> [rt] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.set
-- the instr (TABLE.SET x) is valid with the function type ([I32, rt] -> []) if:
+- the instr (TABLE.SET x) is valid with the function type [I32, rt] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.size
-- the instr (TABLE.SIZE x) is valid with the function type ([] -> [I32]) if:
+- the instr (TABLE.SIZE x) is valid with the function type [] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.grow
-- the instr (TABLE.GROW x) is valid with the function type ([rt, I32] -> [I32]) if:
+- the instr (TABLE.GROW x) is valid with the function type [rt, I32] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.fill
-- the instr (TABLE.FILL x) is valid with the function type ([I32, rt, I32] -> []) if:
+- the instr (TABLE.FILL x) is valid with the function type [I32, rt, I32] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.copy
-- the instr (TABLE.COPY x_1 x_2) is valid with the function type ([I32, I32, I32] -> []) if:
+- the instr (TABLE.COPY x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
   - C.TABLES[x_1] is (lim_1, rt).
   - C.TABLES[x_2] is (lim_2, rt).
 
 Instr_ok/table.init
-- the instr (TABLE.INIT x_1 x_2) is valid with the function type ([I32, I32, I32] -> []) if:
+- the instr (TABLE.INIT x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
   - |C.ELEMS| is greater than x_2.
   - C.TABLES[x_1] is (lim, rt).
   - C.ELEMS[x_2] is rt.
 
 Instr_ok/elem.drop
-- the instr (ELEM.DROP x) is valid with the function type ([] -> []) if:
+- the instr (ELEM.DROP x) is valid with the function type [] -> [] if:
   - |C.ELEMS| is greater than x.
   - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
-- the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if:
+- the instr MEMORY.SIZE is valid with the function type [] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
-- the instr MEMORY.GROW is valid with the function type ([I32] -> [I32]) if:
+- the instr MEMORY.GROW is valid with the function type [I32] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.fill
-- the instr MEMORY.FILL is valid with the function type ([I32, I32, I32] -> []) if:
+- the instr MEMORY.FILL is valid with the function type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.copy
-- the instr MEMORY.COPY is valid with the function type ([I32, I32, I32] -> []) if:
+- the instr MEMORY.COPY is valid with the function type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.init
-- the instr (MEMORY.INIT x) is valid with the function type ([I32, I32, I32] -> []) if:
+- the instr (MEMORY.INIT x) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than 0.
   - |C.DATAS| is greater than x.
   - C.MEMS[0] is mt.
   - C.DATAS[x] is OK.
 
 Instr_ok/data.drop
-- the instr (DATA.DROP x) is valid with the function type ([] -> []) if:
+- the instr (DATA.DROP x) is valid with the function type [] -> [] if:
   - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type ([I32] -> [nt]) if:
+- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
   - |C.MEMS| is greater than 0.
   - ((n? is ?()) is equivalent to (sx? is ?())).
   - C.MEMS[0] is mt.
@@ -9977,7 +9977,7 @@ Instr_ok/load
     - nt is Inn.
 
 Instr_ok/store
-- the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if:
+- the instr (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
@@ -9988,7 +9988,7 @@ Instr_ok/store
     - nt is Inn.
 
 Instr_ok/vload
-- the instr (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type ([I32] -> [V128]) if:
+- the instr (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type [I32] -> [V128] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - Either:
@@ -10002,27 +10002,27 @@ Instr_ok/vload
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
-- the instr (VLOAD_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> [V128]) if:
+- the instr (VLOAD_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [V128] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
 Instr_ok/vstore
-- the instr (VSTORE V128 memarg) is valid with the function type ([I32, V128] -> []) if:
+- the instr (VSTORE V128 memarg) is valid with the function type [I32, V128] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
 
 Instr_ok/vstore_lane
-- the instr (VSTORE_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> []) if:
+- the instr (VSTORE_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
 Instrs_ok
-- the instr sequence instr_u0* is valid with the function type (valtype_u1* -> valtype_u2*) if:
+- the instr sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
   - Either:
     - instr_u0* is [].
     - valtype_u1* is [].
@@ -10031,24 +10031,24 @@ Instrs_ok
     - instr_u0* is [instr_1] :: instr_2*.
     - valtype_u1* is t_1*.
     - valtype_u2* is t_3*.
-    - the instr instr_1 is valid with the function type (t_1* -> t_2*).
-    - the instr sequence instr_2* is valid with the function type (t_2* -> t_3*).
+    - the instr instr_1 is valid with the function type t_1* -> t_2*.
+    - the instr sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
     - instr_u0* is instr*.
     - valtype_u1* is t'_1*.
     - valtype_u2* is t'_2*.
-    - the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+    - the instr sequence instr* is valid with the function type t_1* -> t_2*.
     - the value type sequence t'_1* matches the value type sequence t_1*.
     - the value type sequence t_2* matches the value type sequence t'_2*.
   - Or:
     - instr_u0* is instr*.
     - valtype_u1* is t* :: t_1*.
     - valtype_u2* is t* :: t_2*.
-    - the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+    - the instr sequence instr* is valid with the function type t_1* -> t_2*.
 
 Expr_ok
 - the expression instr* is valid with the value type sequence t* if:
-  - the instr sequence instr* is valid with the function type ([] -> t*).
+  - the instr sequence instr* is valid with the function type [] -> t*.
 
 Instr_const
 - the instr instr_u0 is constant if:
@@ -10063,7 +10063,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((), t).
+    - C.GLOBALS[x] is (, t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -10075,9 +10075,9 @@ Type_ok
   - the function type ft is valid.
 
 Func_ok
-- the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2*) if:
+- the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2* if:
   - |C.TYPES| is greater than x.
-  - C.TYPES[x] is (t_1* -> t_2*).
+  - C.TYPES[x] is t_1* -> t_2*.
   - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
 Global_ok
@@ -10133,7 +10133,7 @@ Data_ok
 Start_ok
 - the start function (START x) is valid if:
   - |C.FUNCS| is greater than x.
-  - C.FUNCS[x] is ([] -> []).
+  - C.FUNCS[x] is [] -> [].
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
@@ -10403,10 +10403,10 @@ Step_pure/vbinop sh vbinop
 6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
 7. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vtestop (Jnn X N) ALL_TRUE
+Step_pure/vtestop Jnn X N ALL_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X N), c).
+3. Let ci_1* be $lanes_(Jnn X N, c).
 4. If (ci_1 is not 0)*, then:
   a. Push the value (I32.CONST 1) to the stack.
 5. Else:
@@ -10420,75 +10420,75 @@ Step_pure/vrelop sh vrelop
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vshiftop (Jnn X N) vshiftop
+Step_pure/vshiftop Jnn X N vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X N), c_1).
-6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
+5. Let c'* be $lanes_(Jnn X N, c_1).
+6. Let c be $invlanes_(Jnn X N, $vshiftop_(Jnn X N, vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vbitmask (Jnn X N)
+Step_pure/vbitmask Jnn X N
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X N), c).
+3. Let ci_1* be $lanes_(Jnn X N, c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
-Step_pure/vswizzle (Pnn X M)
+Step_pure/vswizzle Pnn X M
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
-6. Let ci* be $lanes_((Pnn X M), c_2).
+5. Let c'* be $lanes_(Pnn X M, c_1) :: 0^(256 - M).
+6. Let ci* be $lanes_(Pnn X M, c_2).
 7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
 8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+9. Let c be $invlanes_(Pnn X M, c'*[ci*[k]]^(k<M)).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vshuffle (Pnn X N) i*
+Step_pure/vshuffle Pnn X N i*
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<N).
-6. Let c'* be $lanes_((Pnn X N), c_1) :: $lanes_((Pnn X N), c_2).
+6. Let c'* be $lanes_(Pnn X N, c_1) :: $lanes_(Pnn X N, c_2).
 7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
-8. Let c be $invlanes_((Pnn X N), c'*[i*[k]]^(k<N)).
+8. Let c be $invlanes_(Pnn X N, c'*[i*[k]]^(k<N)).
 9. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vsplat (Lnn X N)
+Step_pure/vsplat Lnn X N
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
-4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
+4. Let c be $invlanes_(Lnn X N, $packnum_(Lnn, c_1)^N).
 5. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vextract_lane (lanetype_u0 X N) sx_u1? i
+Step_pure/vextract_lane lanetype_u0 X N sx_u1? i
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
-  b. If (i < |$lanes_((nt X N), c_1)|), then:
-    1) Let c_2 be $lanes_((nt X N), c_1)[i].
+  b. If (i < |$lanes_(nt X N, c_1)|), then:
+    1) Let c_2 be $lanes_(nt X N, c_1)[i].
     2) Push the value (nt.CONST c_2) to the stack.
 4. If the type of lanetype_u0 is packtype, then:
   a. Let pt be lanetype_u0.
   b. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
-    2) If (i < |$lanes_((pt X N), c_1)|), then:
-      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X N), c_1)[i]).
+    2) If (i < |$lanes_(pt X N, c_1)|), then:
+      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i]).
       b) Push the value (I32.CONST c_2) to the stack.
 
-Step_pure/vreplace_lane (Lnn X N) i
+Step_pure/vreplace_lane Lnn X N i
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
 4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
+6. Let c be $invlanes_(Lnn X N, $lanes_(Lnn X N, c_1) with [i] replaced by $packnum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_1 sh_2 vextunop
@@ -10505,19 +10505,19 @@ Step_pure/vextbinop sh_1 sh_2 vextbinop
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vnarrow (Jnn_2 X N_2) (Jnn_1 X N_1) sx
+Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
+5. Let ci_1* be $lanes_(Jnn_1 X N_1, c_1).
+6. Let ci_2* be $lanes_(Jnn_1 X N_1, c_2).
 7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
 8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* :: cj_2*).
+9. Let c be $invlanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_u5?
+Step_pure/vcvtop lanetype_u3 X n_u0 lanetype_u4 X n_u1 vcvtop half_u2? zero_u5?
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half_u2? is not defined and zero_u5? is not defined), then:
@@ -10525,10 +10525,10 @@ Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_
   b. Let Lnn_2 be lanetype_u3.
   c. Let M be n_u1.
   d. If (n_u0 is M), then:
-    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
+    1) Let ci* be $lanes_(Lnn_1 X M, c_1).
+    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*).
+    3) If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
 4. If zero_u5? is not defined, then:
   a. Let Lnn_1 be lanetype_u4.
@@ -10537,10 +10537,10 @@ Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_
   d. Let M_2 be n_u0.
   e. If half_u2? is defined, then:
     1) Let ?(half) be half_u2?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half(half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+    2) Let ci* be $lanes_(Lnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2].
+    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
+    4) If (|$invlanes_(Lnn_2 X M_2, cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_(Lnn_2 X M_2, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
 5. If half_u2? is not defined, then:
   a. Let M_1 be n_u1.
@@ -10550,10 +10550,10 @@ Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_
     2) If the type of lanetype_u3 is numtype, then:
       a) Let nt_2 be lanetype_u3.
       b) If zero_u5? is defined, then:
-        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
-          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
+        1. Let ci* be $lanes_(nt_1 X M_1, c_1).
+        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
+        3. If (|$invlanes_(nt_2 X M_2, cj*)*| > 0), then:
+          a. Let c be an element of $invlanes_(nt_2 X M_2, cj*)*.
           b. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
@@ -10565,7 +10565,7 @@ Step_pure/local.tee x
 
 Step_read/block bt instr*
 1. Let z be the current state.
-2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+2. Let t_1^k -> t_2^n be $blocktype(z, bt).
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop the values val^k from the stack.
 5. Let L be the label_n{[]}.
@@ -10573,7 +10573,7 @@ Step_read/block bt instr*
 
 Step_read/loop bt instr*
 1. Let z be the current state.
-2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+2. Let t_1^k -> t_2^n be $blocktype(z, bt).
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop the values val^k from the stack.
 5. Let L be the label_k{[(LOOP bt instr*)]}.
@@ -10602,7 +10602,7 @@ Step_read/call_indirect x y
 Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func; } be $funcinst(z)[a].
 4. Assert: Due to validation, there are at least k values on the top of the stack.
 5. Pop the values val^k from the stack.
 6. Assert: Due to validation, func is of the case FUNC.
@@ -10758,7 +10758,7 @@ Step_read/vload V128 vloadop_u0? ao
     3) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
     4) If the type of $lsize^-1((M · 2)) is Jnn, then:
       a) Let Jnn be $lsize^-1((M · 2)).
-      b) Let c be $invlanes_((Jnn X N), $extend__(M, $lsize(Jnn), sx, j)^N).
+      b) Let c be $invlanes_(Jnn X N, $extend__(M, $lsize(Jnn), sx, j)^N).
       c) Push the value (V128.CONST c) to the stack.
   c. If vloadop_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be vloadop_0.
@@ -10768,7 +10768,7 @@ Step_read/vload V128 vloadop_u0? ao
     4) If the type of $lsize^-1(N) is Jnn, then:
       a) Let Jnn be $lsize^-1(N).
       b) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_((Jnn X M), j^M).
+      c) Let c be $invlanes_(Jnn X M, j^M).
       d) Push the value (V128.CONST c) to the stack.
   d. If vloadop_0 is of the case ZERO, then:
     1) Let (ZERO N) be vloadop_0.
@@ -10790,7 +10790,7 @@ Step_read/vload_lane V128 N ao j
 8. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
   b. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
+  c. Let c be $invlanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
   d. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size
@@ -10956,8 +10956,8 @@ Step/vstore_lane V128 N ao j
 7. Let M be (128 / N).
 8. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
-  b. If (j < |$lanes_((Jnn X M), c)|), then:
-    1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
+  b. If (j < |$lanes_(Jnn X M, c)|), then:
+    1) Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
     2) Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow
@@ -11088,7 +11088,7 @@ lsize lanetype_u0
 3. Let packtype be lanetype_u0.
 4. Return $psize(packtype).
 
-lanetype (Lnn X N)
+lanetype Lnn X N
 1. Return Lnn.
 
 sizenn nt
@@ -11116,10 +11116,10 @@ zero numtype_u0
 3. Let Fnn be numtype_u0.
 4. Return $fzero($size(Fnn)).
 
-dim (Lnn X N)
+dim Lnn X N
 1. Return N.
 
-shsize (Lnn X N)
+shsize Lnn X N
 1. Return ($lsize(Lnn) · N).
 
 concat_bytes byte_u0*
@@ -11135,7 +11135,7 @@ unpack lanetype_u0
 2. Assert: Due to validation, the type of lanetype_u0 is packtype.
 3. Return I32.
 
-shunpack (Lnn X N)
+shunpack Lnn X N
 1. Return $unpack(Lnn).
 
 funcsxt externtype_u0*
@@ -11540,277 +11540,277 @@ vvbinop_ V128 vvbinop_u0 v128_1 v128_2
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return $ibitselect_($size(V128), v128_1, v128_2, v128_3).
 
-vunop_ (lanetype_u1 X M) vunop__u0 v128_1
+vunop_ lanetype_u1 X M vunop__u0 v128_1
 1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let v128 be $invlanes_(Jnn X M, $iabs_($lsizenn(Jnn), lane_1)*).
   d. Return [v128].
 2. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let v128 be $invlanes_(Jnn X M, $ineg_($lsizenn(Jnn), lane_1)*).
   d. Return [v128].
 3. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let v128 be $invlanes_(Jnn X M, $ipopcnt_($lsizenn(Jnn), lane_1)*).
   d. Return [v128].
 4. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
   c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 5. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
   c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 6. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
   c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 7. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
   c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 8. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
   c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 9. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
   c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 10. Assert: Due to validation, (vunop__u0 is NEAREST).
 11. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 12. Let Fnn be lanetype_u1.
-13. Let lane_1* be $lanes_((Fnn X M), v128_1).
+13. Let lane_1* be $lanes_(Fnn X M, v128_1).
 14. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
-15. Let v128* be $invlanes_((Fnn X M), lane*)*.
+15. Let v128* be $invlanes_(Fnn X M, lane*)*.
 16. Return v128*.
 
-vbinop_ (lanetype_u1 X M) vbinop__u0 v128_1 v128_2
+vbinop_ lanetype_u1 X M vbinop__u0 v128_1 v128_2
 1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
+  d. Let v128 be $invlanes_(Jnn X M, $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 2. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
+  d. Let v128 be $invlanes_(Jnn X M, $isub_($lsizenn(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 3. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
   b. If vbinop__u0 is of the case MIN, then:
     1) Let (MIN sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
+    4) Let v128 be $invlanes_(Jnn X M, $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   c. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
+    4) Let v128 be $invlanes_(Jnn X M, $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   d. If vbinop__u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
+    4) Let v128 be $invlanes_(Jnn X M, $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   e. If vbinop__u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
+    4) Let v128 be $invlanes_(Jnn X M, $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
 4. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
+  d. Let v128 be $invlanes_(Jnn X M, $imul_($lsizenn(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
+  d. Let v128 be $invlanes_(Jnn X M, $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
   e. Return [v128].
 6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
+  d. Let v128 be $invlanes_(Jnn X M, $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
   e. Return [v128].
 7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 8. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 9. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 10. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 11. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 12. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 13. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Let v128* be $invlanes_(Fnn X M, lane*)*.
   f. Return v128*.
 14. Assert: Due to validation, (vbinop__u0 is PMAX).
 15. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 16. Let Fnn be lanetype_u1.
-17. Let lane_1* be $lanes_((Fnn X M), v128_1).
-18. Let lane_2* be $lanes_((Fnn X M), v128_2).
+17. Let lane_1* be $lanes_(Fnn X M, v128_1).
+18. Let lane_2* be $lanes_(Fnn X M, v128_2).
 19. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
-20. Let v128* be $invlanes_((Fnn X M), lane*)*.
+20. Let v128* be $invlanes_(Fnn X M, lane*)*.
 21. Return v128*.
 
-vrelop_ (lanetype_u1 X M) vrelop__u0 v128_1 v128_2
+vrelop_ lanetype_u1 X M vrelop__u0 v128_1 v128_2
 1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
   d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
+  e. Let v128 be $invlanes_(Jnn X M, lane_3*).
   f. Return v128.
 2. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Jnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Jnn X M, v128_2).
   d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
+  e. Let v128 be $invlanes_(Jnn X M, lane_3*).
   f. Return v128.
 3. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
   b. If vrelop__u0 is of the case LT, then:
     1) Let (LT sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
   c. If vrelop__u0 is of the case GT, then:
     1) Let (GT sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
   d. If vrelop__u0 is of the case LE, then:
     1) Let (LE sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
   e. If vrelop__u0 is of the case GE, then:
     1) Let (GE sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    2) Let lane_1* be $lanes_(Jnn X M, v128_1).
+    3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
 4. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Let v128 be $invlanes_(Inn X M, lane_3*).
   g. Return v128.
 5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Let v128 be $invlanes_(Inn X M, lane_3*).
   g. Return v128.
 6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Let v128 be $invlanes_(Inn X M, lane_3*).
   g. Return v128.
 7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Let v128 be $invlanes_(Inn X M, lane_3*).
   g. Return v128.
 8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  b. Let lane_1* be $lanes_(Fnn X M, v128_1).
+  c. Let lane_2* be $lanes_(Fnn X M, v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Let v128 be $invlanes_(Inn X M, lane_3*).
   g. Return v128.
 9. Assert: Due to validation, (vrelop__u0 is GE).
 10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 11. Let Fnn be lanetype_u1.
-12. Let lane_1* be $lanes_((Fnn X M), v128_1).
-13. Let lane_2* be $lanes_((Fnn X M), v128_2).
+12. Let lane_1* be $lanes_(Fnn X M, v128_1).
+13. Let lane_2* be $lanes_(Fnn X M, v128_2).
 14. Let Inn be $isize^-1($size(Fnn)).
 15. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X M), lane_3*).
+16. Let v128 be $invlanes_(Inn X M, lane_3*).
 17. Return v128.
 
-vcvtop__ (lanetype_u2 X M_1) (lanetype_u0 X M_2) vcvtop_u1 lane__u4
+vcvtop__ lanetype_u2 X M_1 lanetype_u0 X M_2 vcvtop_u1 lane__u4
 1. If the type of lanetype_u2 is Jnn, then:
   a. Let Jnn_1 be lanetype_u2.
   b. If the type of lanetype_u0 is Jnn, then:
@@ -11854,27 +11854,27 @@ vcvtop__ (lanetype_u2 X M_1) (lanetype_u0 X M_2) vcvtop_u1 lane__u4
 11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
 12. Return fN_2*.
 
-vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
+vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_(Inn_2 X M_2, c_1).
 2. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
-3. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+3. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop__ (Inn_1 X M_1) (Inn_2 X M_2) vextbinop__u0 c_1 c_2
+vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop__u0 c_1 c_2
 1. If vextbinop__u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx hf) be vextbinop__u0.
-  b. Let ci_1* be $lanes_((Inn_2 X M_2), c_1)[$half(hf, 0, M_1) : M_1].
-  c. Let ci_2* be $lanes_((Inn_2 X M_2), c_2)[$half(hf, 0, M_1) : M_1].
-  d. Let c be $invlanes_((Inn_1 X M_1), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
+  b. Let ci_1* be $lanes_(Inn_2 X M_2, c_1)[$half(hf, 0, M_1) : M_1].
+  c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(hf, 0, M_1) : M_1].
+  d. Let c be $invlanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextbinop__u0 is (DOTS)).
-3. Let ci_1* be $lanes_((Inn_2 X M_2), c_1).
-4. Let ci_2* be $lanes_((Inn_2 X M_2), c_2).
+3. Let ci_1* be $lanes_(Inn_2 X M_2, c_1).
+4. Let ci_2* be $lanes_(Inn_2 X M_2, c_2).
 5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
-6. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+6. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 7. Return c.
 
-vshiftop_ (Jnn X M) vshiftop__u0 lane n
+vshiftop_ Jnn X M vshiftop__u0 lane n
 1. If (vshiftop__u0 is SHL), then:
   a. Return $ishl_($lsizenn(Jnn), lane, n).
 2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
@@ -12042,20 +12042,20 @@ growtable ti n r
   b. Return ti'.
 
 growmemory mi n
-1. Let { TYPE: ((i, j) PAGE); BYTES: b*; } be mi.
+1. Let { TYPE: (i, j) PAGE; BYTES: b*; } be mi.
 2. Let i' be ((|b*| / (64 · $Ki())) + n).
 3. If (i' ≤ j), then:
-  a. Let mi' be { TYPE: ((i', j) PAGE); BYTES: b* :: 0^(n · (64 · $Ki())); }.
+  a. Let mi' be { TYPE: (i', j) PAGE; BYTES: b* :: 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
 blocktype z blocktype_u1
 1. If (blocktype_u1 is (_RESULT ?())), then:
-  a. Return ([] -> []).
+  a. Return [] -> [].
 2. If blocktype_u1 is of the case _RESULT, then:
   a. Let (_RESULT valtype_0) be blocktype_u1.
   b. If valtype_0 is defined, then:
     1) Let ?(t) be valtype_0.
-    2) Return ([] -> [t]).
+    2) Return [] -> [t].
 3. Assert: Due to validation, blocktype_u1 is of the case _IDX.
 4. Let (_IDX x) be blocktype_u1.
 5. Return $type(z, x).
@@ -12148,8 +12148,8 @@ alloctables tabletype_u0*
 4. Let ta'* be $alloctables(tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem ((i, j) PAGE)
-1. Let mi be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem (i, j) PAGE
+1. Let mi be { TYPE: (i, j) PAGE; BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -12305,7 +12305,7 @@ instantiate z module externaddr*
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Push the activation of f to the stack.
-3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
+3. Let t_1^n -> t_2* be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
 6. Push the activation of f with arity k to the stack.
@@ -12397,7 +12397,7 @@ watsup 0.4 generator
       * :math:`t` is valid.
 
 
-* :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})` is valid if:
+* :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
 
 
    * :math:`{|{\mathit{x*}}|}` must be equal to :math:`{|{\mathit{lct*}}|}`.
@@ -12440,7 +12440,7 @@ watsup 0.4 generator
    * :math:`{\mathit{storagetype}}` is valid.
 
 
-* :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid if:
+* :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid if:
 
 
    * :math:`{t_1^\ast}` is valid.
@@ -12703,7 +12703,7 @@ watsup 0.4 generator
       * :math:`t_1` matches :math:`t_2`.
 
 
-* :math:`({t_{11}^\ast}~\rightarrow~{t_{12}^\ast})` matches :math:`({t_{21}^\ast}~\rightarrow~{t_{22}^\ast})` if:
+* :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` matches :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
 
 
    * :math:`{t_{21}^\ast}` matches :math:`{t_{11}^\ast}`.
@@ -12861,7 +12861,7 @@ watsup 0.4 generator
    * :math:`{\mathit{reftype}}` is valid.
 
 
-* :math:`({\mathit{limits}}~\mathsf{page})` is valid if:
+* :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
 
 
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
@@ -12905,7 +12905,7 @@ watsup 0.4 generator
       * :math:`{\mathit{tagtype}}` is valid.
 
 
-* :math:`({t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast})` matches :math:`({t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast})` if:
+* :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` matches :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
 
 
    * :math:`{|{\mathit{x*}}|}` must be equal to :math:`{|{\mathit{t*}}|}`.
@@ -12963,7 +12963,7 @@ watsup 0.4 generator
    * :math:`{\mathit{reftype}}_2` matches :math:`{\mathit{reftype}}_1`.
 
 
-* :math:`({\mathit{limits}}_1~\mathsf{page})` matches :math:`({\mathit{limits}}_2~\mathsf{page})` if:
+* :math:`{\mathit{limits}}_1~\mathsf{page}` matches :math:`{\mathit{limits}}_2~\mathsf{page}` if:
 
 
    * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
@@ -13015,7 +13015,7 @@ watsup 0.4 generator
       * :math:`{\mathit{tagtype}}_1` matches :math:`{\mathit{tagtype}}_2`.
 
 
-* :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if:
+* :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -13040,7 +13040,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
@@ -13054,7 +13054,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
       * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -13064,7 +13064,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
       * :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
 
@@ -13077,22 +13077,22 @@ watsup 0.4 generator
       * :math:`(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
 
-* :math:`\mathsf{nop}` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)`.
+* :math:`\mathsf{nop}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-* :math:`\mathsf{unreachable}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`\mathsf{unreachable}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
+   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-* :math:`\mathsf{drop}` is valid with type :math:`(t~\rightarrow~\epsilon)` if:
+* :math:`\mathsf{drop}` is valid with type :math:`t~\rightarrow~\epsilon` if:
 
 
    * :math:`t` is valid.
 
 
-* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)` if:
+* :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * :math:`t` is valid.
@@ -13116,51 +13116,51 @@ watsup 0.4 generator
          * :math:`{t'}` must be equal to :math:`{\mathit{vectype}}`.
 
 
-* :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})`.
-
-
-* :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})`.
+* :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`({t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast})` if:
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast})`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast})`.
+* :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{br}~l)` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
-
-   * :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
-
-
-* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`({t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast})` if:
+* :math:`(\mathsf{br}~l)` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
 
    * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
 
+   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
-* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+
+* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
+
+
+* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`,
@@ -13175,10 +13175,10 @@ watsup 0.4 generator
 
    * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-   * :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
+   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-* :math:`(\mathsf{br\_on\_null}~l)` is valid with type :math:`({t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}}))` if:
+* :math:`(\mathsf{br\_on\_null}~l)` is valid with type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -13188,7 +13188,7 @@ watsup 0.4 generator
    * :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with type :math:`({t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast})` if:
+* :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -13196,7 +13196,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
-* :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`({t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2)` if:
+* :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -13212,7 +13212,7 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`({t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2)` if:
+* :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
 
    * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
@@ -13228,23 +13228,23 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{call}~x)` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{call}~x)` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-* :math:`(\mathsf{call\_ref}~x)` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{call\_ref}~x)` is valid with type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`({t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13255,46 +13255,46 @@ watsup 0.4 generator
 
    * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-* :math:`\mathsf{return}` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`\mathsf{return}` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`C{.}\mathsf{return}` must be equal to :math:`{t^\ast}`.
 
-   * :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
+   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-* :math:`(\mathsf{return\_call}~x)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast})` if:
+* :math:`(\mathsf{return\_call}~x)` is valid with type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * :math:`C{.}\mathsf{return}` must be equal to :math:`{{t'}_2^\ast}`.
 
    * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
 
-   * :math:`({t_3^\ast}~\rightarrow~{t_4^\ast})` is valid.
+   * :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
 
-* :math:`(\mathsf{return\_call\_ref}~x)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast})` if:
+* :math:`(\mathsf{return\_call\_ref}~x)` is valid with type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * :math:`C{.}\mathsf{return}` must be equal to :math:`{{t'}_2^\ast}`.
 
    * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
 
-   * :math:`({t_3^\ast}~\rightarrow~{t_4^\ast})` is valid.
+   * :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
 
-* :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_4^\ast})` if:
+* :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with type :math:`{t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_4^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13305,68 +13305,68 @@ watsup 0.4 generator
 
    * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * :math:`C{.}\mathsf{return}` must be equal to :math:`{{t'}_2^\ast}`.
 
    * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
 
-   * :math:`({t_3^\ast}~\rightarrow~{t_4^\ast})` is valid.
+   * :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
 
-* :math:`(\mathsf{throw}~x)` is valid with type :math:`({t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast})` if:
+* :math:`(\mathsf{throw}~x)` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-   * :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
-
-
-* :math:`\mathsf{throw\_ref}` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast})` if:
+   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-   * :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` is valid.
+* :math:`\mathsf{throw\_ref}` is valid with type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if:
+   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+* :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})`.
+
+   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
    * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
 
       * :math:`{\mathit{catch}}` is valid.
 
 
-* :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`(\epsilon~\rightarrow~{\mathit{nt}})`.
+* :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~\rightarrow~{\mathit{nt}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)`.
+* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
-* :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with type :math:`(\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}))` if:
+* :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})` if:
 
 
    * :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`(\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}}))` if:
+* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
 
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
@@ -13378,25 +13378,25 @@ watsup 0.4 generator
    * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
 
-* :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}}))`.
+* :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
 
 
-* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
-
-
-   * :math:`{\mathit{ht}}` is valid.
-
-
-* :math:`\mathsf{ref{.}as\_non\_null}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~{\mathit{ht}}))` if:
+* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`\mathsf{ref{.}eq}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`\mathsf{ref{.}as\_non\_null}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
-* :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with type :math:`({\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+   * :math:`{\mathit{ht}}` is valid.
+
+
+* :math:`\mathsf{ref{.}eq}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+
+
+* :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with type :math:`{\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{\mathit{rt}}` is valid.
@@ -13406,7 +13406,7 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
 
 
-* :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with type :math:`({\mathit{rt}'}~\rightarrow~{\mathit{rt}})` if:
+* :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with type :math:`{\mathit{rt}'}~\rightarrow~{\mathit{rt}}` if:
 
 
    * :math:`{\mathit{rt}}` is valid.
@@ -13416,10 +13416,10 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
 
 
-* :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`(\mathsf{struct{.}new}~x)` is valid with type :math:`({{\mathrm{unpack}}({\mathit{zt}})^\ast}~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{struct{.}new}~x)` is valid with type :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13429,7 +13429,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
 
-* :math:`(\mathsf{struct{.}new\_default}~x)` is valid with type :math:`(\epsilon~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{struct{.}new\_default}~x)` is valid with type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13445,7 +13445,7 @@ watsup 0.4 generator
       * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` must be equal to :math:`{\mathit{val}}`.
 
 
-* :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}}))` if:
+* :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13459,7 +13459,7 @@ watsup 0.4 generator
    * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` is equivalent to :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
-* :math:`(\mathsf{struct{.}set}~x~i)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{struct{.}set}~x~i)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13471,7 +13471,7 @@ watsup 0.4 generator
    * :math:`{{\mathit{yt}}^\ast}{}[i]` must be equal to :math:`(\mathsf{mut}, {\mathit{zt}})`.
 
 
-* :math:`(\mathsf{array{.}new}~x)` is valid with type :math:`({\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{array{.}new}~x)` is valid with type :math:`{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13479,7 +13479,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}new\_default}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{array{.}new\_default}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13489,7 +13489,7 @@ watsup 0.4 generator
    * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` must be equal to :math:`{\mathit{val}}`.
 
 
-* :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with type :math:`({{\mathrm{unpack}}({\mathit{zt}})^{n}}~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with type :math:`{{\mathrm{unpack}}({\mathit{zt}})^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13497,7 +13497,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13509,7 +13509,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[y]` matches :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x))` if:
+* :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13529,7 +13529,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathrm{unpack}}({\mathit{zt}}))` if:
+* :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13539,7 +13539,7 @@ watsup 0.4 generator
    * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` is equivalent to :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
-* :math:`(\mathsf{array{.}set}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{array{.}set}~x)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13547,7 +13547,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-* :math:`\mathsf{array{.}len}` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`\mathsf{array{.}len}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13555,7 +13555,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}fill}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{array{.}fill}~x)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13563,7 +13563,7 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-* :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x_1`.
@@ -13577,7 +13577,7 @@ watsup 0.4 generator
    * :math:`{\mathit{zt}}_2` matches :math:`{\mathit{zt}}_1`.
 
 
-* :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13589,7 +13589,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[y]` matches :math:`{\mathit{zt}}`.
 
 
-* :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
@@ -13609,55 +13609,55 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`\mathsf{extern{.}convert\_any}` is valid with type :math:`((\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern}))` if:
+* :math:`\mathsf{extern{.}convert\_any}` is valid with type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
 
 
    * :math:`{\mathsf{null}}{{{}_{1}^?}}` must be equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
-* :math:`\mathsf{any{.}convert\_extern}` is valid with type :math:`((\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any}))` if:
+* :math:`\mathsf{any{.}convert\_extern}` is valid with type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
 
 
    * :math:`{\mathsf{null}}{{{}_{1}^?}}` must be equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * For all :math:`i` in :math:`{i^\ast}`,
@@ -13665,34 +13665,34 @@ watsup 0.4 generator
       * :math:`i` must be less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with type :math:`({\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}}))` if:
-
-
-   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
-
-
-* :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
 
 
    * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is valid with type :math:`(\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})`.
+* :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if:
+* :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+
+
+* :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+
+
+* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -13700,7 +13700,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`(\mathsf{set}, t)`.
 
 
-* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`(t~{\rightarrow}_{x}\,\epsilon)` if:
+* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -13708,7 +13708,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`({\mathit{init}}, t)`.
 
 
-* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`(t~{\rightarrow}_{x}\,t)` if:
+* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`t~{\rightarrow}_{x}\,t` if:
 
 
    * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
@@ -13716,7 +13716,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`({\mathit{init}}, t)`.
 
 
-* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if:
+* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
 
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
@@ -13724,7 +13724,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathsf{mut}^?}, t)`.
 
 
-* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`(t~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
@@ -13732,7 +13732,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
 
 
-* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}})` if:
+* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13740,7 +13740,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13748,7 +13748,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13756,7 +13756,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`({\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13764,7 +13764,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13772,7 +13772,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
@@ -13786,7 +13786,7 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
 
 
-* :math:`(\mathsf{table{.}init}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{table{.}init}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
@@ -13800,7 +13800,7 @@ watsup 0.4 generator
    * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
 
 
-* :math:`(\mathsf{elem{.}drop}~x)` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{elem{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`x`.
@@ -13808,7 +13808,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[x]` must be equal to :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{memory{.}size}~x)` is valid with type :math:`(\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`(\mathsf{memory{.}size}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13816,7 +13816,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}grow}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}})` if:
+* :math:`(\mathsf{memory{.}grow}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13824,7 +13824,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}fill}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{memory{.}fill}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13832,7 +13832,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x_1`.
@@ -13844,7 +13844,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[x_2]` must be equal to :math:`{\mathit{mt}}_2`.
 
 
-* :math:`(\mathsf{memory{.}init}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{memory{.}init}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13856,7 +13856,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`(\mathsf{data{.}drop}~x)` is valid with type :math:`(\epsilon~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{data{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`x`.
@@ -13864,7 +13864,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}})` if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13892,7 +13892,7 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon)` if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13920,7 +13920,7 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13948,7 +13948,7 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13960,7 +13960,7 @@ watsup 0.4 generator
    * :math:`i` must be less than :math:`128 / N`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon)` if:
+* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13970,7 +13970,7 @@ watsup 0.4 generator
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon)` if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13989,13 +13989,13 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`(\epsilon~\rightarrow~\epsilon)`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
    * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`({t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast})`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
       * :math:`{|{\mathit{t*}}|}` must be equal to :math:`{|{\mathit{init*}}|}`.
 
@@ -14005,13 +14005,13 @@ watsup 0.4 generator
 
          * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x_1`.
 
-      * :math:`{\mathit{instr}}_1` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast})`.
+      * :math:`{\mathit{instr}}_1` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
       * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`,
 
          * :math:`C{.}\mathsf{locals}{}[x_1]` must be equal to :math:`({\mathit{init}}, t)`.
 
-      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`({t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast})`.   * Or:
+      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
 
@@ -14025,9 +14025,9 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`({t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast})`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})`.
+      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
       * :math:`{t^\ast}` is valid.
 
@@ -14035,7 +14035,7 @@ watsup 0.4 generator
 * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t^\ast}` if:
 
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`(\epsilon~\rightarrow~{t^\ast})`.
+   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
@@ -14127,7 +14127,7 @@ watsup 0.4 generator
 
    * :math:`{|{\mathit{local*}}|}` must be equal to :math:`{|{\mathit{lct*}}|}`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`,
 
@@ -14243,7 +14243,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~(\epsilon~\rightarrow~\epsilon))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
 
 
 * :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with type :math:`{\mathit{xt}}` if:
@@ -14346,7 +14346,7 @@ watsup 0.4 generator
       * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}}^\ast}`.
 
 
-* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}(({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}))` if:
+* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` if:
 
 
    * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` must be equal to :math:`{|{\mathit{import*}}|}`.
@@ -14413,7 +14413,7 @@ watsup 0.4 generator
 
    * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}))`.
+   * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
 
    * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
@@ -14426,7 +14426,7 @@ watsup 0.4 generator
    * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
 
-* :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast})` if:
+* :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
 
 
    * Either:
@@ -14455,9 +14455,9 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` must be equal to :math:`{t_2^\ast}`.
 
-      * :math:`{\mathit{blocktype}}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * :math:`{\mathit{blocktype}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 :math:`\mathsf{unreachable}`
@@ -15125,7 +15125,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)`.
 
 #. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
 
@@ -15165,9 +15165,9 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)`.
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1)`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathit{vshiftop}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{({c'}, n)}^\ast})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{\mathit{vshiftop}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}}{({c'}, n)}^\ast})}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15180,7 +15180,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)`.
 
 #. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{N}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
 
@@ -15199,15 +15199,15 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1)~{0^{256 - M}}`.
 
-#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
+#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_2)`.
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15226,11 +15226,11 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1)~{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_2)`.
 
 #. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<M}})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<M}})}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15245,7 +15245,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15262,9 +15262,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{M})}(c_1)|}`, then:
+   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
-      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{M})}(c_1){}[i]`.
+      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1){}[i]`.
 
       #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
 
@@ -15276,9 +15276,9 @@ watsup 0.4 generator
 
       1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{M})}(c_1)|}`, then:
+      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
-         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{M})}(c_1){}[i])}`.
+         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1){}[i])}`.
 
          #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
 
@@ -15297,7 +15297,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_2)])}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_2)])}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15344,15 +15344,15 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_2)`.
 
 #. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
 
 #. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15375,13 +15375,13 @@ watsup 0.4 generator
 
    #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
 
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M})}(c_1)`.
+      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(c_1)`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+      #) If :math:`{|{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15399,13 +15399,13 @@ watsup 0.4 generator
 
       1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
 
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+      #) If :math:`{|{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15425,13 +15425,13 @@ watsup 0.4 generator
 
          #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is defined, then:
 
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
+            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
 
-            #. If :math:`{|{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+            #. If :math:`{|{{{{{\mathrm{lanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
 
-               a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+               a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
 
                #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -15457,7 +15457,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+#. Let :math:`{t_1^{m}}~\rightarrow~{t_2^{n}}` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
 
 #. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
 
@@ -15474,7 +15474,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+#. Let :math:`{t_1^{m}}~\rightarrow~{t_2^{n}}` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
 
 #. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
 
@@ -15582,7 +15582,7 @@ watsup 0.4 generator
 
          #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
 
-         #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+         #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
          #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -15676,7 +15676,7 @@ watsup 0.4 generator
 
             #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
 
-            #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+            #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
             #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -15912,7 +15912,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+#. Let :math:`{t_1^{m}}~\rightarrow~{t_2^{n}}` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
 
 #. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
 
@@ -16814,7 +16814,7 @@ watsup 0.4 generator
 
          a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{K})}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
+         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -16834,7 +16834,7 @@ watsup 0.4 generator
 
          #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({j^{M}})}`.
+         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -16879,7 +16879,7 @@ watsup 0.4 generator
 
    #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1){}[{}[j] = k])}`.
+   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])}`.
 
    #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -17064,7 +17064,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
 
-#. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
+#. Let :math:`{t^{n}}~\rightarrow~{\mathit{valtype}}_1` be :math:`{\mathit{functype}}_0`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
 
@@ -17380,9 +17380,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
-   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)|}`, then:
+   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`, then:
 
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c){}[j])`.
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c){}[j])`.
 
       #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
 
@@ -17821,8 +17821,8 @@ watsup 0.4 generator
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
 
-:math:`{\mathrm{lanetype}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
-...............................................................
+:math:`{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
+.............................................................
 
 
 1. Return :math:`{\mathsf{i}}{N}`.
@@ -17892,15 +17892,15 @@ watsup 0.4 generator
 #. Return :math:`{+0}`.
 
 
-:math:`{\mathrm{dim}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
-..........................................................
+:math:`{\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
+........................................................
 
 
 1. Return :math:`N`.
 
 
-:math:`{|({{\mathsf{i}}{N}}{\mathsf{x}}{N})|}`
-..............................................
+:math:`{|{{\mathsf{i}}{N}}{\mathsf{x}}{N}|}`
+............................................
 
 
 1. Return :math:`{|{\mathsf{i}}{N}|} \cdot N`.
@@ -18056,8 +18056,8 @@ watsup 0.4 generator
 #. Return :math:`({\mathit{vectype}}{.}\mathsf{const}~c)`.
 
 
-:math:`{\mathrm{unpack}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
-.............................................................
+:math:`{\mathrm{unpack}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
+...........................................................
 
 
 1. Return :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
@@ -18373,8 +18373,8 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{storagetype}}({\mathit{storagetype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{functype}}(({\mathit{resulttype}}_1~\rightarrow~{\mathit{resulttype}}_2))`
-..........................................................................................................
+:math:`{\mathrm{free}}_{\mathit{functype}}({\mathit{resulttype}}_1~\rightarrow~{\mathit{resulttype}}_2)`
+........................................................................................................
 
 
 1. Return `$free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)`.
@@ -18438,8 +18438,8 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{memtype}}(({\mathit{limits}}~\mathsf{page}))`
-.............................................................................
+:math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{limits}}~\mathsf{page})`
+...........................................................................
 
 
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
@@ -18488,8 +18488,8 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{moduletype}}(({{\mathit{externtype}}_1^\ast}~\rightarrow~{{\mathit{externtype}}_2^\ast}))`
-..........................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{moduletype}}({{\mathit{externtype}}_1^\ast}~\rightarrow~{{\mathit{externtype}}_2^\ast})`
+........................................................................................................................
 
 
 1. Return `$free_list($free_externtype(externtype_1)*{externtype_1 <- externtype_1*}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 <- externtype_2*})`.
@@ -18512,8 +18512,8 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{shape}}(({{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}}))`
-.............................................................................................
+:math:`{\mathrm{free}}_{\mathit{shape}}({{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}})`
+...........................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{lanetype}}({\mathit{lanetype}})`.
@@ -18565,7 +18565,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{select}`, then:
 
-   a. Let :math:`({({{\mathit{valtype}}^\ast})^?}~{}^?)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`{({{\mathit{valtype}}^\ast})^?}~{}^?` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
 
@@ -19452,11 +19452,11 @@ watsup 0.4 generator
 1. Return :math:`({{\mathit{qt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} {.} i)`.
 
 
-:math:`{({t_1^\ast}~\rightarrow~{t_2^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-.................................................................................................
+:math:`{{t_1^\ast}~\rightarrow~{t_2^\ast}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+...............................................................................................
 
 
-1. Return :math:`({{t_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~\rightarrow~{{t_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
+1. Return :math:`{{t_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~\rightarrow~{{t_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}`.
 
 
 :math:`{({\mathsf{mut}^?}, t)}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -19473,11 +19473,11 @@ watsup 0.4 generator
 1. Return :math:`({\mathit{lim}}, {{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({\mathit{lim}}~\mathsf{page})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-............................................................................................
+:math:`{{\mathit{lim}}~\mathsf{page}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+..........................................................................................
 
 
-1. Return :math:`({\mathit{lim}}~\mathsf{page})`.
+1. Return :math:`{\mathit{lim}}~\mathsf{page}`.
 
 
 :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -19509,11 +19509,11 @@ watsup 0.4 generator
 #. Return :math:`(\mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({{\mathit{xt}}_1^\ast}~\rightarrow~{{\mathit{xt}}_2^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-.........................................................................................................................
+:math:`{{{\mathit{xt}}_1^\ast}~\rightarrow~{{\mathit{xt}}_2^\ast}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+.......................................................................................................................
 
 
-1. Return :math:`({{{\mathit{xt}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~\rightarrow~{{{\mathit{xt}}_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
+1. Return :math:`{{{\mathit{xt}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~\rightarrow~{{{\mathit{xt}}_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}`.
 
 
 :math:`{t}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
@@ -20566,85 +20566,85 @@ watsup 0.4 generator
 1. Return :math:`{{\mathrm{ibitselect}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_3)`.
 
 
-:math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1)`
-...............................................................................................
+:math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{vN}}_1)`
+.............................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
 #. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
 
-#. Return :math:`{{{{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}^\ast}`.
+#. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
 
-:math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1)`
-...............................................................................................
+:math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{vN}}_1)`
+.............................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
 #. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
 
-#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+#. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M})}({\mathit{vN}}_1)}`
-..............................................................................................................................................................
+:math:`{{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M}}({\mathit{vN}}_1)}`
+............................................................................................................................................................
 
 
 1. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iabs}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iabs}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ineg}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ineg}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ipopcnt}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ipopcnt}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fabs}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fabs}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fneg}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fneg}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fsqrt}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsqrt}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fceil}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fceil}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{ffloor}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ffloor}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{ftrunc}}, {\mathit{vN}}_1)`.
+   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ftrunc}}, {\mathit{vN}}_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
@@ -20652,69 +20652,69 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fnearest}}, {\mathit{vN}}_1)`.
+#. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fnearest}}, {\mathit{vN}}_1)`.
 
 
-:math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
-.................................................................................................................
+:math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
+...............................................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_2)`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_2)`.
 
 #. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast}`.
 
-#. Return :math:`{{{{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}^\ast}`.
+#. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
 
-:math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
-.................................................................................................................
+:math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
+...............................................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_2)`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_2)`.
 
 #. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast}`.
 
-#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+#. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
-..................................................................................................................................
+:math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
+................................................................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_2)`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_2)`.
 
 #. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)^\ast}`.
 
-#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+#. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M})}({\mathit{vN}}_1, {\mathit{vN}}_2)}`
-................................................................................................................................................................................
+:math:`{{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M}}({\mathit{vN}}_1, {\mathit{vN}}_2)}`
+..............................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{isub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{imul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
@@ -20724,79 +20724,79 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iadd}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{sub\_sat}`, then:
 
       1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{isub}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{min}`, then:
 
       1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{imin}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imin}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{max}`, then:
 
       1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{imax}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imax}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iavgr}}, \mathsf{u}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iavgr}}, \mathsf{u}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fsub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fdiv}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fdiv}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fpmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmax}`.
 
@@ -20804,16 +20804,16 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fpmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+#. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 
-:math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
-.................................................................................................................
+:math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
+...............................................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_2)`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_2)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`{|{\mathsf{f}}{N}|}` is Inn.
 
@@ -20821,50 +20821,50 @@ watsup 0.4 generator
 
 #. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}^\ast}`.
 
-#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+#. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
-.................................................................................................................
+:math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
+...............................................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_2)`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_2)`.
 
 #. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}^\ast}`.
 
-#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+#. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathrm{ivrelopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
-..................................................................................................................................
+:math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
+................................................................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_2)`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathit{vN}}_2)`.
 
 #. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2))}^\ast}`.
 
-#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+#. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M})}({\mathit{vN}}_1, {\mathit{vN}}_2)}`
-................................................................................................................................................................................
+:math:`{{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{x}}{M}}({\mathit{vN}}_1, {\mathit{vN}}_2)}`
+..............................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ieq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ieq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ine}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ine}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
@@ -20874,55 +20874,55 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ilt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ilt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
 
       1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{igt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{igt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
 
       1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ile}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ile}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
 
       1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ige}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ige}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{feq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{feq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fne}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fne}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{flt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{flt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fgt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fgt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fle}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fle}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
@@ -20930,11 +20930,11 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fge}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+#. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fge}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{M_1}), ({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}, {\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}})`
-..........................................................................................................................................................................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}, {\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}})`
+......................................................................................................................................................................................................................................................................................................
 
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Jnn, then:
@@ -21022,50 +21022,50 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 
-:math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}})}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_1)}`
-.................................................................................................................................................................
+:math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}})}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(c_1)}`
+.............................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
 #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` :math:`=` :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})}`.
 
 #. Return :math:`c`.
 
 
-:math:`{{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_1, c_2)}`
-.........................................................................................................................................................................
+:math:`{{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(c_1, c_2)}`
+.....................................................................................................................................................................
 
 
 1. If :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extmul}`, then:
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})}`.
+   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})}`.
 
    #. Return :math:`c`.
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is .
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_2)`.
 
 #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})}`.
 
 #. Return :math:`c`.
 
 
-:math:`{{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{({\mathit{lane}}, n)}`
-..........................................................................................................................
+:math:`{{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}}{({\mathit{lane}}, n)}`
+........................................................................................................................
 
 
 1. If :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
@@ -21625,13 +21625,13 @@ watsup 0.4 generator
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
 
 #. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n` is less than or equal to :math:`j`, then:
 
    a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{meminst}'}`.
 
@@ -21654,7 +21654,7 @@ watsup 0.4 generator
 
 #. Let :math:`{t^?}` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`(\epsilon~\rightarrow~{t^?})`.
+#. Return :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})}`
@@ -21798,11 +21798,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(((i, j)~\mathsf{page}))`
-...................................................
+:math:`{\mathrm{allocmem}}((i, j)~\mathsf{page})`
+.................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j)~\mathsf{page},\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -22138,7 +22138,7 @@ watsup 0.4 generator
 ..................................................................................
 
 
-1. Let :math:`({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` be :math:`{\mathrm{Module}}_{\mathit{ok}}({\mathit{module}})`.
+1. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{Module}}_{\mathit{ok}}({\mathit{module}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
@@ -22221,7 +22221,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
 
-#. Let :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` be :math:`{\mathit{functype}}_0`.
+#. Let :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` be :math:`{\mathit{functype}}_0`.
 
 #. Assert: Due to validation, :math:`{{\mathrm{Val}}_{\mathit{type}}({\mathit{val}}, t_1)^\ast}`.
 
@@ -22341,7 +22341,7 @@ Resulttype_ok
     - the value type t is valid.
 
 Instrtype_ok
-- the instruction type (t_1* ->_ x* t_2*) is valid if:
+- the instruction type t_1* ->_ x* t_2* is valid if:
   - |x*| is |lct*|.
   - For all x in x*,
     - |C.LOCALS| is greater than x.
@@ -22367,7 +22367,7 @@ Fieldtype_ok
   - the storage type storagetype is valid.
 
 Functype_ok
-- the function type (t_1* -> t_2*) is valid if:
+- the function type t_1* -> t_2* is valid if:
   - the value type sequence t_1* is valid.
   - the value type sequence t_2* is valid.
 
@@ -22530,7 +22530,7 @@ Resulttype_sub
     - the value type t_1 matches the value type t_2.
 
 Functype_sub
-- the function type (t_11* -> t_12*) matches the function type (t_21* -> t_22*) if:
+- the function type t_11* -> t_12* matches the function type t_21* -> t_22* if:
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
 
@@ -22561,7 +22561,7 @@ Subtype_ok
   - For all x in x*,
     - x is less than x_0.
   - For all comptype' in comptype'* and x in x* and x'* in x'**,
-    - $unrolldt(C.TYPES[x]) is (SUB () (_IDX x')* comptype').
+    - $unrolldt(C.TYPES[x]) is (SUB  (_IDX x')* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
@@ -22574,7 +22574,7 @@ Subtype_ok2
   - For all typeuse in typeuse*,
     - $before(typeuse, x, i) is true.
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**,
-    - $unrollht(C, typeuse) is (SUB () typeuse'* comptype').
+    - $unrollht(C, typeuse) is (SUB  typeuse'* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
@@ -22621,7 +22621,7 @@ Tabletype_ok
   - the reference type reftype is valid.
 
 Memtype_ok
-- the memory type (limits PAGE) is valid if:
+- the memory type limits PAGE is valid if:
   - the limits limits is valid with the nat (2 ^ 16).
 
 Tagtype_ok
@@ -22649,7 +22649,7 @@ Externtype_ok
     - the memory type tagtype is valid.
 
 Instrtype_sub
-- the instruction type (t_11* ->_ x_1* t_12*) matches the instruction type (t_21* ->_ x_2* t_22*) if:
+- the instruction type t_11* ->_ x_1* t_12* matches the instruction type t_21* ->_ x_2* t_22* if:
   - |x*| is |t*|.
   - For all x in x*,
     - |C.LOCALS| is greater than x.
@@ -22682,7 +22682,7 @@ Tabletype_sub
   - the reference type reftype_2 matches the reference type reftype_1.
 
 Memtype_sub
-- the memory type (limits_1 PAGE) matches the memory type (limits_2 PAGE) if:
+- the memory type limits_1 PAGE matches the memory type limits_2 PAGE if:
   - the limits limits_1 matches the limits limits_2.
 
 Tagtype_sub
@@ -22714,7 +22714,7 @@ Externtype_sub
     - the memory type tagtype_1 matches the memory type tagtype_2.
 
 Blocktype_ok
-- the block type blocktype_u0 is valid with the instruction type (valtype_u1* -> valtype_u2*) if:
+- the block type blocktype_u0 is valid with the instruction type valtype_u1* -> valtype_u2* if:
   - Either:
     - blocktype_u0 is (_RESULT valtype?).
     - valtype_u1* is [].
@@ -22726,7 +22726,7 @@ Blocktype_ok
     - valtype_u1* is t_1*.
     - valtype_u2* is t_2*.
     - |C.TYPES| is greater than typeidx.
-    - $expanddt(C.TYPES[typeidx]) is (FUNC (t_1* -> t_2*)).
+    - $expanddt(C.TYPES[typeidx]) is (FUNC t_1* -> t_2*).
 
 Catch_ok
 - the catch clause catch_u0 is valid if:
@@ -22734,33 +22734,33 @@ Catch_ok
   - Either:
     - catch_u0 is (CATCH x l).
     - |C.TAGS| is greater than x.
-    - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
+    - $expanddt(C.TAGS[x]) is (FUNC t* -> []).
     - the value type sequence t* matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_REF x l).
     - |C.TAGS| is greater than x.
-    - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
-    - the value type sequence t* :: [(REF () EXN)] matches the result type C.LABELS[l].
+    - $expanddt(C.TAGS[x]) is (FUNC t* -> []).
+    - the value type sequence t* :: [(REF  EXN)] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL l).
     - the value type sequence [] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL_REF l).
-    - the value type sequence [(REF () EXN)] matches the result type C.LABELS[l].
+    - the value type sequence [(REF  EXN)] matches the result type C.LABELS[l].
 
 Instr_ok/nop
-- the instr NOP is valid with the instruction type ([] -> []).
+- the instr NOP is valid with the instruction type [] -> [].
 
 Instr_ok/unreachable
-- the instr UNREACHABLE is valid with the instruction type (t_1* -> t_2*) if:
-  - the instruction type (t_1* -> t_2*) is valid.
+- the instr UNREACHABLE is valid with the instruction type t_1* -> t_2* if:
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/drop
-- the instr DROP is valid with the instruction type ([t] -> []) if:
+- the instr DROP is valid with the instruction type [t] -> [] if:
   - the value type t is valid.
 
 Instr_ok/select
-- the instr (SELECT() valtype_u0? ?) is valid with the instruction type ([t, t, I32] -> [t]) if:
+- the instr (SELECT() valtype_u0? ?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - Either:
     - valtype_u0? is ?([t]).
@@ -22773,55 +22773,55 @@ Instr_ok/select
       - t' is vectype.
 
 Instr_ok/block
-- the instr (BLOCK bt instr*) is valid with the instruction type (t_1* -> t_2*) if:
-  - the block type bt is valid with the instruction type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
+- the instr (BLOCK bt instr*) is valid with the instruction type t_1* -> t_2* if:
+  - the block type bt is valid with the instruction type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
 
 Instr_ok/loop
-- the instr (LOOP bt instr*) is valid with the instruction type (t_1* -> t_2*) if:
-  - the block type bt is valid with the instruction type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
+- the instr (LOOP bt instr*) is valid with the instruction type t_1* -> t_2* if:
+  - the block type bt is valid with the instruction type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
 
 Instr_ok/if
-- the instr (IF bt instr_1* ELSE instr_2*) is valid with the instruction type (t_1* :: [I32] -> t_2*) if:
-  - the block type bt is valid with the instruction type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the instruction type (t_1* ->_ x_1* t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the instruction type (t_1* ->_ x_2* t_2*).
+- the instr (IF bt instr_1* ELSE instr_2*) is valid with the instruction type t_1* :: [I32] -> t_2* if:
+  - the block type bt is valid with the instruction type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the instruction type t_1* ->_ x_1* t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the instruction type t_1* ->_ x_2* t_2*.
 
 Instr_ok/br
-- the instr (BR l) is valid with the instruction type (t_1* :: t* -> t_2*) if:
+- the instr (BR l) is valid with the instruction type t_1* :: t* -> t_2* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
-  - the instruction type (t_1* -> t_2*) is valid.
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_if
-- the instr (BR_IF l) is valid with the instruction type (t* :: [I32] -> t*) if:
+- the instr (BR_IF l) is valid with the instruction type t* :: [I32] -> t* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
-- the instr (BR_TABLE l* l') is valid with the instruction type (t_1* :: t* -> t_2*) if:
+- the instr (BR_TABLE l* l') is valid with the instruction type t_1* :: t* -> t_2* if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
   - |C.LABELS| is greater than l'.
   - For all l in l*,
     - the value type sequence t* matches the result type C.LABELS[l].
   - the value type sequence t* matches the result type C.LABELS[l'].
-  - the instruction type (t_1* -> t_2*) is valid.
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_on_null
-- the instr (BR_ON_NULL l) is valid with the instruction type (t* :: [(REF NULL ht)] -> t* :: [(REF () ht)]) if:
+- the instr (BR_ON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* :: [(REF  ht)] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the heap type ht is valid.
 
 Instr_ok/br_on_non_null
-- the instr (BR_ON_NON_NULL l) is valid with the instruction type (t* :: [(REF NULL ht)] -> t*) if:
+- the instr (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* if:
   - |C.LABELS| is greater than l.
-  - C.LABELS[l] is t* :: [(REF () ht)].
+  - C.LABELS[l] is t* :: [(REF  ht)].
 
 Instr_ok/br_on_cast
-- the instr (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type (t* :: [rt_1] -> t* :: [$diffrt(rt_1, rt_2)]) if:
+- the instr (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [$diffrt(rt_1, rt_2)] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
@@ -22830,7 +22830,7 @@ Instr_ok/br_on_cast
   - the reference type rt_2 matches the reference type rt.
 
 Instr_ok/br_on_cast_fail
-- the instr (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type (t* :: [rt_1] -> t* :: [rt_2]) if:
+- the instr (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
@@ -22839,138 +22839,138 @@ Instr_ok/br_on_cast_fail
   - the reference type $diffrt(rt_1, rt_2) matches the reference type rt.
 
 Instr_ok/call
-- the instr (CALL x) is valid with the instruction type (t_1* -> t_2*) if:
+- the instr (CALL x) is valid with the instruction type t_1* -> t_2* if:
   - |C.FUNCS| is greater than x.
-  - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.FUNCS[x]) is (FUNC t_1* -> t_2*).
 
 Instr_ok/call_ref
-- the instr (CALL_REF (_IDX x)) is valid with the instruction type (t_1* :: [(REF NULL (_IDX x))] -> t_2*) if:
+- the instr (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF NULL (_IDX x))] -> t_2* if:
   - |C.TYPES| is greater than x.
-  - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.TYPES[x]) is (FUNC t_1* -> t_2*).
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x (_IDX y)) is valid with the instruction type (t_1* :: [I32] -> t_2*) if:
+- the instr (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [I32] -> t_2* if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
-  - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.TYPES[y]) is (FUNC t_1* -> t_2*).
 
 Instr_ok/return
-- the instr RETURN is valid with the instruction type (t_1* :: t* -> t_2*) if:
+- the instr RETURN is valid with the instruction type t_1* :: t* -> t_2* if:
   - C.RETURN is ?(t*).
-  - the instruction type (t_1* -> t_2*) is valid.
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/return_call
-- the instr (RETURN_CALL x) is valid with the instruction type (t_3* :: t_1* -> t_4*) if:
+- the instr (RETURN_CALL x) is valid with the instruction type t_3* :: t_1* -> t_4* if:
   - |C.FUNCS| is greater than x.
-  - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.FUNCS[x]) is (FUNC t_1* -> t_2*).
   - C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
-  - the instruction type (t_3* -> t_4*) is valid.
+  - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_ref
-- the instr (RETURN_CALL_REF (_IDX x)) is valid with the instruction type (t_3* :: t_1* :: [(REF NULL (_IDX x))] -> t_4*) if:
+- the instr (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF NULL (_IDX x))] -> t_4* if:
   - |C.TYPES| is greater than x.
-  - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.TYPES[x]) is (FUNC t_1* -> t_2*).
   - C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
-  - the instruction type (t_3* -> t_4*) is valid.
+  - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_indirect
-- the instr (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type (t_3* :: t_1* :: [I32] -> t_4*) if:
+- the instr (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [I32] -> t_4* if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
-  - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.TYPES[y]) is (FUNC t_1* -> t_2*).
   - C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
-  - the instruction type (t_3* -> t_4*) is valid.
+  - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/throw
-- the instr (THROW x) is valid with the instruction type (t_1* :: t* -> t_2*) if:
+- the instr (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
   - |C.TAGS| is greater than x.
-  - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
-  - the instruction type (t_1* -> t_2*) is valid.
+  - $expanddt(C.TAGS[x]) is (FUNC t* -> []).
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/throw_ref
-- the instr THROW_REF is valid with the instruction type (t_1* :: [(REF NULL EXN)] -> t_2*) if:
-  - the instruction type (t_1* -> t_2*) is valid.
+- the instr THROW_REF is valid with the instruction type t_1* :: [(REF NULL EXN)] -> t_2* if:
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/try_table
-- the instr (TRY_TABLE bt catch* instr*) is valid with the instruction type (t_1* -> t_2*) if:
-  - the block type bt is valid with the instruction type (t_1* -> t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
+- the instr (TRY_TABLE bt catch* instr*) is valid with the instruction type t_1* -> t_2* if:
+  - the block type bt is valid with the instruction type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
   - For all catch in catch*,
     - the catch clause catch is valid.
 
 Instr_ok/const
-- the instr (nt.CONST c_nt) is valid with the instruction type ([] -> [nt]).
+- the instr (nt.CONST c_nt) is valid with the instruction type [] -> [nt].
 
 Instr_ok/unop
-- the instr (UNOP nt unop_nt) is valid with the instruction type ([nt] -> [nt]).
+- the instr (UNOP nt unop_nt) is valid with the instruction type [nt] -> [nt].
 
 Instr_ok/binop
-- the instr (BINOP nt binop_nt) is valid with the instruction type ([nt, nt] -> [nt]).
+- the instr (BINOP nt binop_nt) is valid with the instruction type [nt, nt] -> [nt].
 
 Instr_ok/testop
-- the instr (TESTOP nt testop_nt) is valid with the instruction type ([nt] -> [I32]).
+- the instr (TESTOP nt testop_nt) is valid with the instruction type [nt] -> [I32].
 
 Instr_ok/relop
-- the instr (RELOP nt relop_nt) is valid with the instruction type ([nt, nt] -> [I32]).
+- the instr (RELOP nt relop_nt) is valid with the instruction type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type ([nt_2] -> [nt_1]).
+- the instr (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type [nt_2] -> [nt_1].
 
 Instr_ok/ref.null
-- the instr (REF.NULL ht) is valid with the instruction type ([] -> [(REF NULL ht)]) if:
+- the instr (REF.NULL ht) is valid with the instruction type [] -> [(REF NULL ht)] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.func
-- the instr (REF.FUNC x) is valid with the instruction type ([] -> [(REF () dt)]) if:
+- the instr (REF.FUNC x) is valid with the instruction type [] -> [(REF  dt)] if:
   - |C.FUNCS| is greater than x.
   - |C.REFS| is greater than 0.
   - C.FUNCS[x] is dt.
   - x is contained in C.REFS.
 
 Instr_ok/ref.i31
-- the instr REF.I31 is valid with the instruction type ([I32] -> [(REF () I31)]).
+- the instr REF.I31 is valid with the instruction type [I32] -> [(REF  I31)].
 
 Instr_ok/ref.is_null
-- the instr REF.IS_NULL is valid with the instruction type ([(REF NULL ht)] -> [I32]) if:
+- the instr REF.IS_NULL is valid with the instruction type [(REF NULL ht)] -> [I32] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.as_non_null
-- the instr REF.AS_NON_NULL is valid with the instruction type ([(REF NULL ht)] -> [(REF () ht)]) if:
+- the instr REF.AS_NON_NULL is valid with the instruction type [(REF NULL ht)] -> [(REF  ht)] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.eq
-- the instr REF.EQ is valid with the instruction type ([(REF NULL EQ), (REF NULL EQ)] -> [I32]).
+- the instr REF.EQ is valid with the instruction type [(REF NULL EQ), (REF NULL EQ)] -> [I32].
 
 Instr_ok/ref.test
-- the instr (REF.TEST rt) is valid with the instruction type ([rt'] -> [I32]) if:
+- the instr (REF.TEST rt) is valid with the instruction type [rt'] -> [I32] if:
   - the reference type rt is valid.
   - the reference type rt' is valid.
   - the reference type rt matches the reference type rt'.
 
 Instr_ok/ref.cast
-- the instr (REF.CAST rt) is valid with the instruction type ([rt'] -> [rt]) if:
+- the instr (REF.CAST rt) is valid with the instruction type [rt'] -> [rt] if:
   - the reference type rt is valid.
   - the reference type rt' is valid.
   - the reference type rt matches the reference type rt'.
 
 Instr_ok/i31.get
-- the instr (I31.GET sx) is valid with the instruction type ([(REF NULL I31)] -> [I32]).
+- the instr (I31.GET sx) is valid with the instruction type [(REF NULL I31)] -> [I32].
 
 Instr_ok/struct.new
-- the instr (STRUCT.NEW x) is valid with the instruction type ($unpack(zt)* -> [(REF () (_IDX x))]) if:
+- the instr (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
 
 Instr_ok/struct.new_default
-- the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type ([] -> [(REF () (_IDX x))]) if:
+- the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
   - |zt*| is |val*|.
@@ -22979,7 +22979,7 @@ Instr_ok/struct.new_default
     - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/struct.get
-- the instr (STRUCT.GET sx? x i) is valid with the instruction type ([(REF NULL (_IDX x))] -> [$unpack(zt)]) if:
+- the instr (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
   - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
@@ -22987,37 +22987,37 @@ Instr_ok/struct.get
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/struct.set
-- the instr (STRUCT.SET x i) is valid with the instruction type ([(REF NULL (_IDX x)), $unpack(zt)] -> []) if:
+- the instr (STRUCT.SET x i) is valid with the instruction type [(REF NULL (_IDX x)), $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
   - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
   - yt*[i] is (MUT, zt).
 
 Instr_ok/array.new
-- the instr (ARRAY.NEW x) is valid with the instruction type ([$unpack(zt), I32] -> [(REF () (_IDX x))]) if:
+- the instr (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 Instr_ok/array.new_default
-- the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type ([I32] -> [(REF () (_IDX x))]) if:
+- the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/array.new_fixed
-- the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type ($unpack(zt)^n -> [(REF () (_IDX x))]) if:
+- the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 Instr_ok/array.new_elem
-- the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type ([I32, I32] -> [(REF () (_IDX x))]) if:
+- the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, rt)).
   - the reference type C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
-- the instr (ARRAY.NEW_DATA x y) is valid with the instruction type ([I32, I32] -> [(REF () (_IDX x))]) if:
+- the instr (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
@@ -23028,28 +23028,28 @@ Instr_ok/array.new_data
   - C.DATAS[y] is OK.
 
 Instr_ok/array.get
-- the instr (ARRAY.GET sx? x) is valid with the instruction type ([(REF NULL (_IDX x)), I32] -> [$unpack(zt)]) if:
+- the instr (ARRAY.GET sx? x) is valid with the instruction type [(REF NULL (_IDX x)), I32] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/array.set
-- the instr (ARRAY.SET x) is valid with the instruction type ([(REF NULL (_IDX x)), I32, $unpack(zt)] -> []) if:
+- the instr (ARRAY.SET x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.len
-- the instr ARRAY.LEN is valid with the instruction type ([(REF NULL ARRAY)] -> [I32]) if:
+- the instr ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.fill
-- the instr (ARRAY.FILL x) is valid with the instruction type ([(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> []) if:
+- the instr (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.copy
-- the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type ([(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> []) if:
+- the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> [] if:
   - |C.TYPES| is greater than x_1.
   - |C.TYPES| is greater than x_2.
   - $expanddt(C.TYPES[x_1]) is (ARRAY (MUT, zt_1)).
@@ -23057,14 +23057,14 @@ Instr_ok/array.copy
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
-- the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type ([(REF NULL (_IDX x)), I32, I32, I32] -> []) if:
+- the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
   - the element type C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
-- the instr (ARRAY.INIT_DATA x y) is valid with the instruction type ([(REF NULL (_IDX x)), I32, I32, I32] -> []) if:
+- the instr (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
@@ -23075,129 +23075,129 @@ Instr_ok/array.init_data
   - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
-- the instr EXTERN.CONVERT_ANY is valid with the instruction type ([(REF nul1 ANY)] -> [(REF nul2 EXTERN)]) if:
+- the instr EXTERN.CONVERT_ANY is valid with the instruction type [(REF nul1 ANY)] -> [(REF nul2 EXTERN)] if:
   - nul1 is nul2.
 
 Instr_ok/any.convert_extern
-- the instr ANY.CONVERT_EXTERN is valid with the instruction type ([(REF nul1 EXTERN)] -> [(REF nul2 ANY)]) if:
+- the instr ANY.CONVERT_EXTERN is valid with the instruction type [(REF nul1 EXTERN)] -> [(REF nul2 ANY)] if:
   - nul1 is nul2.
 
 Instr_ok/vconst
-- the instr (V128.CONST c) is valid with the instruction type ([] -> [V128]).
+- the instr (V128.CONST c) is valid with the instruction type [] -> [V128].
 
 Instr_ok/vvunop
-- the instr (VVUNOP V128 vvunop) is valid with the instruction type ([V128] -> [V128]).
+- the instr (VVUNOP V128 vvunop) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/vvbinop
-- the instr (VVBINOP V128 vvbinop) is valid with the instruction type ([V128, V128] -> [V128]).
+- the instr (VVBINOP V128 vvbinop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vvternop
-- the instr (VVTERNOP V128 vvternop) is valid with the instruction type ([V128, V128, V128] -> [V128]).
+- the instr (VVTERNOP V128 vvternop) is valid with the instruction type [V128, V128, V128] -> [V128].
 
 Instr_ok/vvtestop
-- the instr (VVTESTOP V128 vvtestop) is valid with the instruction type ([V128] -> [I32]).
+- the instr (VVTESTOP V128 vvtestop) is valid with the instruction type [V128] -> [I32].
 
 Instr_ok/vunop
-- the instr (VUNOP sh vunop) is valid with the instruction type ([V128] -> [V128]).
+- the instr (VUNOP sh vunop) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/vbinop
-- the instr (VBINOP sh vbinop) is valid with the instruction type ([V128, V128] -> [V128]).
+- the instr (VBINOP sh vbinop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vtestop
-- the instr (VTESTOP sh vtestop) is valid with the instruction type ([V128] -> [I32]).
+- the instr (VTESTOP sh vtestop) is valid with the instruction type [V128] -> [I32].
 
 Instr_ok/vrelop
-- the instr (VRELOP sh vrelop) is valid with the instruction type ([V128, V128] -> [V128]).
+- the instr (VRELOP sh vrelop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vshiftop
-- the instr (VSHIFTOP sh vshiftop) is valid with the instruction type ([V128, I32] -> [V128]).
+- the instr (VSHIFTOP sh vshiftop) is valid with the instruction type [V128, I32] -> [V128].
 
 Instr_ok/vbitmask
-- the instr (VBITMASK sh) is valid with the instruction type ([V128] -> [I32]).
+- the instr (VBITMASK sh) is valid with the instruction type [V128] -> [I32].
 
 Instr_ok/vswizzle
-- the instr (VSWIZZLE sh) is valid with the instruction type ([V128, V128] -> [V128]).
+- the instr (VSWIZZLE sh) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vshuffle
-- the instr (VSHUFFLE sh i*) is valid with the instruction type ([V128, V128] -> [V128]) if:
+- the instr (VSHUFFLE sh i*) is valid with the instruction type [V128, V128] -> [V128] if:
   - For all i in i*,
     - i is less than (2 · $dim(sh)).
 
 Instr_ok/vsplat
-- the instr (VSPLAT sh) is valid with the instruction type ([$unpackshape(sh)] -> [V128]).
+- the instr (VSPLAT sh) is valid with the instruction type [$unpackshape(sh)] -> [V128].
 
 Instr_ok/vextract_lane
-- the instr (VEXTRACT_LANE sh sx? i) is valid with the instruction type ([V128] -> [$unpackshape(sh)]) if:
+- the instr (VEXTRACT_LANE sh sx? i) is valid with the instruction type [V128] -> [$unpackshape(sh)] if:
   - i is less than $dim(sh).
 
 Instr_ok/vreplace_lane
-- the instr (VREPLACE_LANE sh i) is valid with the instruction type ([V128, $unpackshape(sh)] -> [V128]) if:
+- the instr (VREPLACE_LANE sh i) is valid with the instruction type [V128, $unpackshape(sh)] -> [V128] if:
   - i is less than $dim(sh).
 
 Instr_ok/vextunop
-- the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type ([V128] -> [V128]).
+- the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/vextbinop
-- the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the instruction type ([V128, V128] -> [V128]).
+- the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vnarrow
-- the instr (VNARROW sh_1 sh_2 sx) is valid with the instruction type ([V128, V128] -> [V128]).
+- the instr (VNARROW sh_1 sh_2 sx) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vcvtop
-- the instr (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with the instruction type ([V128] -> [V128]).
+- the instr (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/local.get
-- the instr (LOCAL.GET x) is valid with the instruction type ([] -> [t]) if:
+- the instr (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (SET, t).
 
 Instr_ok/local.set
-- the instr (LOCAL.SET x) is valid with the instruction type ([t] ->_ [x] []) if:
+- the instr (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (init, t).
 
 Instr_ok/local.tee
-- the instr (LOCAL.TEE x) is valid with the instruction type ([t] ->_ [x] [t]) if:
+- the instr (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (init, t).
 
 Instr_ok/global.get
-- the instr (GLOBAL.GET x) is valid with the instruction type ([] -> [t]) if:
+- the instr (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
 Instr_ok/global.set
-- the instr (GLOBAL.SET x) is valid with the instruction type ([t] -> []) if:
+- the instr (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/table.get
-- the instr (TABLE.GET x) is valid with the instruction type ([I32] -> [rt]) if:
+- the instr (TABLE.GET x) is valid with the instruction type [I32] -> [rt] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.set
-- the instr (TABLE.SET x) is valid with the instruction type ([I32, rt] -> []) if:
+- the instr (TABLE.SET x) is valid with the instruction type [I32, rt] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.size
-- the instr (TABLE.SIZE x) is valid with the instruction type ([] -> [I32]) if:
+- the instr (TABLE.SIZE x) is valid with the instruction type [] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.grow
-- the instr (TABLE.GROW x) is valid with the instruction type ([rt, I32] -> [I32]) if:
+- the instr (TABLE.GROW x) is valid with the instruction type [rt, I32] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.fill
-- the instr (TABLE.FILL x) is valid with the instruction type ([I32, rt, I32] -> []) if:
+- the instr (TABLE.FILL x) is valid with the instruction type [I32, rt, I32] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.copy
-- the instr (TABLE.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] -> []) if:
+- the instr (TABLE.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
   - C.TABLES[x_1] is (lim_1, rt_1).
@@ -23205,7 +23205,7 @@ Instr_ok/table.copy
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/table.init
-- the instr (TABLE.INIT x y) is valid with the instruction type ([I32, I32, I32] -> []) if:
+- the instr (TABLE.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x.
   - |C.ELEMS| is greater than y.
   - C.TABLES[x] is (lim, rt_1).
@@ -23213,46 +23213,46 @@ Instr_ok/table.init
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/elem.drop
-- the instr (ELEM.DROP x) is valid with the instruction type ([] -> []) if:
+- the instr (ELEM.DROP x) is valid with the instruction type [] -> [] if:
   - |C.ELEMS| is greater than x.
   - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
-- the instr (MEMORY.SIZE x) is valid with the instruction type ([] -> [I32]) if:
+- the instr (MEMORY.SIZE x) is valid with the instruction type [] -> [I32] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
 Instr_ok/memory.grow
-- the instr (MEMORY.GROW x) is valid with the instruction type ([I32] -> [I32]) if:
+- the instr (MEMORY.GROW x) is valid with the instruction type [I32] -> [I32] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
 Instr_ok/memory.fill
-- the instr (MEMORY.FILL x) is valid with the instruction type ([I32, I32, I32] -> []) if:
+- the instr (MEMORY.FILL x) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
 Instr_ok/memory.copy
-- the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] -> []) if:
+- the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than x_1.
   - |C.MEMS| is greater than x_2.
   - C.MEMS[x_1] is mt_1.
   - C.MEMS[x_2] is mt_2.
 
 Instr_ok/memory.init
-- the instr (MEMORY.INIT x y) is valid with the instruction type ([I32, I32, I32] -> []) if:
+- the instr (MEMORY.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than x.
   - |C.DATAS| is greater than y.
   - C.MEMS[x] is mt.
   - C.DATAS[y] is OK.
 
 Instr_ok/data.drop
-- the instr (DATA.DROP x) is valid with the instruction type ([] -> []) if:
+- the instr (DATA.DROP x) is valid with the instruction type [] -> [] if:
   - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type ([I32] -> [valtype_u3]) if:
+- the instr (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type [I32] -> [valtype_u3] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
@@ -23267,7 +23267,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type ([I32, valtype_u2] -> []) if:
+- the instr (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type [I32, valtype_u2] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
@@ -23282,7 +23282,7 @@ Instr_ok/store
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instr (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type ([I32] -> [V128]) if:
+- the instr (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type [I32] -> [V128] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
@@ -23299,20 +23299,20 @@ Instr_ok/vload
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload_lane
-- the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] -> [V128]) if:
+- the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [V128] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
 Instr_ok/vstore
-- the instr (VSTORE V128 x memarg) is valid with the instruction type ([I32, V128] -> []) if:
+- the instr (VSTORE V128 x memarg) is valid with the instruction type [I32, V128] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vstore_lane
-- the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] -> []) if:
+- the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
@@ -23322,18 +23322,18 @@ Instrs_ok
 - the instr sequence instr_u0* is valid with the instruction type instrtype_u4 if:
   - Either:
     - instr_u0* is [].
-    - instrtype_u4 is ([] -> []).
+    - instrtype_u4 is [] -> [].
   - Or:
     - instr_u0* is [instr_1] :: instr_2*.
-    - instrtype_u4 is (t_1* ->_ x_1* :: x_2* t_3*).
+    - instrtype_u4 is t_1* ->_ x_1* :: x_2* t_3*.
     - |t*| is |init*|.
     - |x_1*| is |init*|.
     - For all x_1 in x_1*,
       - |C.LOCALS| is greater than x_1.
-    - the instr instr_1 is valid with the instruction type (t_1* ->_ x_1* t_2*).
+    - the instr instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - For all init in init* and t in t* and x_1 in x_1*,
       - C.LOCALS[x_1] is (init, t).
-    - Under the context $with_locals(C, x_1*, (SET, t)*), the instr sequence instr_2* is valid with the instruction type (t_2* ->_ x_2* t_3*).
+    - Under the context $with_locals(C, x_1*, (SET, t)*), the instr sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr_u0* is instr*.
     - instrtype_u4 is it'.
@@ -23342,13 +23342,13 @@ Instrs_ok
     - the instruction type it' is valid.
   - Or:
     - instr_u0* is instr*.
-    - instrtype_u4 is (t* :: t_1* ->_ x* t* :: t_2*).
-    - the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
+    - instrtype_u4 is t* :: t_1* ->_ x* t* :: t_2*.
+    - the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
     - the value type sequence t* is valid.
 
 Expr_ok
 - the expression instr* is valid with the value type sequence t* if:
-  - the instr sequence instr* is valid with the instruction type ([] -> t*).
+  - the instr sequence instr* is valid with the instruction type [] -> t*.
 
 Instr_const
 - the instr instr_u0 is constant if:
@@ -23379,7 +23379,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((), t).
+    - C.GLOBALS[x] is (, t).
   - Or:
     - instr_u0 is (BINOP Inn binop).
     - |[I32, I64]| is greater than 0.
@@ -23411,7 +23411,7 @@ Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
   - |C.TYPES| is greater than x.
   - |local*| is |lct*|.
-  - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
+  - $expanddt(C.TYPES[x]) is (FUNC t_1* -> t_2*).
   - For all lct in lct* and local in local*,
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
@@ -23479,7 +23479,7 @@ Data_ok
 Start_ok
 - the start function (START x) is valid if:
   - |C.FUNCS| is greater than x.
-  - $expanddt(C.FUNCS[x]) is (FUNC ([] -> [])).
+  - $expanddt(C.FUNCS[x]) is (FUNC [] -> []).
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
@@ -23540,7 +23540,7 @@ Types_ok
     - Under the context C with .TYPES appended by dt_1*, the type definition sequence type* is valid with the defined type sequence dt*.
 
 Module_ok
-- the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type $clos_moduletype(C, (xt_I* -> xt_E*)) if:
+- the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type $clos_moduletype(C, xt_I* -> xt_E*) if:
   - |xt_I*| is |import*|.
   - |tt*| is |table*|.
   - |mt*| is |mem*|.
@@ -23573,7 +23573,7 @@ Module_ok
   - $disjoint_(name, nm*) is true.
   - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I* :: gt*; TABLES: tt_I* :: tt*; MEMS: mt_I* :: mt*; TAGS: at_I* :: at*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
+  - x* is $funcidx_nonfuncs(global* table* mem* elem* data*).
   - dt_I* is $funcsxt(xt_I*).
   - gt_I* is $globalsxt(xt_I*).
   - tt_I* is $tablesxt(xt_I*).
@@ -23581,7 +23581,7 @@ Module_ok
   - at_I* is $tagsxt(xt_I*).
 
 NotationTypingInstrScheme
-- the instr sequence [instr_u0] is valid with the function type (valtype_u1* -> valtype_u3*) if:
+- the instr sequence [instr_u0] is valid with the function type valtype_u1* -> valtype_u3* if:
   - Either:
     - instr_u0 is (BINOP I32 ADD).
     - valtype_u1* is [I32, I32].
@@ -23596,8 +23596,8 @@ NotationTypingInstrScheme
     - instr_u0 is (BLOCK blocktype instr*).
     - valtype_u1* is t_1*.
     - valtype_u3* is t_2*.
-    - the block type blocktype is valid with the instruction type (t_1* -> t_2*).
-    - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+    - the block type blocktype is valid with the instruction type t_1* -> t_2*.
+    - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type t_1* -> t_2*.
 
 Step_pure/unreachable
 1. Trap.
@@ -23909,10 +23909,10 @@ Step_pure/vbinop sh vbinop
 6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
 7. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vtestop (Jnn X M) ALL_TRUE
+Step_pure/vtestop Jnn X M ALL_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
+3. Let ci_1* be $lanes_(Jnn X M, c).
 4. If (ci_1 is not 0)*, then:
   a. Push the value (I32.CONST 1) to the stack.
 5. Else:
@@ -23926,75 +23926,75 @@ Step_pure/vrelop sh vrelop
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vshiftop (Jnn X M) vshiftop
+Step_pure/vshiftop Jnn X M vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X M), c_1).
-6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
+5. Let c'* be $lanes_(Jnn X M, c_1).
+6. Let c be $invlanes_(Jnn X M, $vshiftop_(Jnn X M, vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vbitmask (Jnn X M)
+Step_pure/vbitmask Jnn X M
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
+3. Let ci_1* be $lanes_(Jnn X M, c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
-Step_pure/vswizzle (Pnn X M)
+Step_pure/vswizzle Pnn X M
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
-6. Let ci* be $lanes_((Pnn X M), c_2).
+5. Let c'* be $lanes_(Pnn X M, c_1) :: 0^(256 - M).
+6. Let ci* be $lanes_(Pnn X M, c_2).
 7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
 8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+9. Let c be $invlanes_(Pnn X M, c'*[ci*[k]]^(k<M)).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vshuffle (Pnn X M) i*
+Step_pure/vshuffle Pnn X M i*
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<M).
-6. Let c'* be $lanes_((Pnn X M), c_1) :: $lanes_((Pnn X M), c_2).
+6. Let c'* be $lanes_(Pnn X M, c_1) :: $lanes_(Pnn X M, c_2).
 7. Assert: Due to validation, (i*[k] < |c'*|)^(k<M).
-8. Let c be $invlanes_((Pnn X M), c'*[i*[k]]^(k<M)).
+8. Let c be $invlanes_(Pnn X M, c'*[i*[k]]^(k<M)).
 9. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vsplat (Lnn X M)
+Step_pure/vsplat Lnn X M
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
-4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
+4. Let c be $invlanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M).
 5. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vextract_lane (lanetype_u0 X M) sx_u1? i
+Step_pure/vextract_lane lanetype_u0 X M sx_u1? i
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
-  b. If (i < |$lanes_((nt X M), c_1)|), then:
-    1) Let c_2 be $lanes_((nt X M), c_1)[i].
+  b. If (i < |$lanes_(nt X M, c_1)|), then:
+    1) Let c_2 be $lanes_(nt X M, c_1)[i].
     2) Push the value (nt.CONST c_2) to the stack.
 4. If the type of lanetype_u0 is packtype, then:
   a. Let pt be lanetype_u0.
   b. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
-    2) If (i < |$lanes_((pt X M), c_1)|), then:
-      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X M), c_1)[i]).
+    2) If (i < |$lanes_(pt X M, c_1)|), then:
+      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_(pt X M, c_1)[i]).
       b) Push the value (I32.CONST c_2) to the stack.
 
-Step_pure/vreplace_lane (Lnn X M) i
+Step_pure/vreplace_lane Lnn X M i
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
 4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
+6. Let c be $invlanes_(Lnn X M, $lanes_(Lnn X M, c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_2 sh_1 vextunop
@@ -24011,19 +24011,19 @@ Step_pure/vextbinop sh_2 sh_1 vextbinop
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
+Step_pure/vnarrow Jnn_2 X M_2 Jnn_1 X M_1 sx
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
+5. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1).
+6. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2).
 7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
 8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* :: cj_2*).
+9. Let c be $invlanes_(Jnn_2 X M_2, cj_1* :: cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zero___u13?
+Step_pure/vcvtop lanetype_u5 X n_u0 lanetype_u6 X n_u1 vcvtop half___u4? zero___u13?
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half___u4? is not defined and zero___u13? is not defined), then:
@@ -24031,10 +24031,10 @@ Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zer
   b. Let Lnn_2 be lanetype_u5.
   c. Let M be n_u1.
   d. If (n_u0 is M), then:
-    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
+    1) Let ci* be $lanes_(Lnn_1 X M, c_1).
+    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*).
+    3) If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
 4. If zero___u13? is not defined, then:
   a. Let Lnn_1 be lanetype_u6.
@@ -24043,10 +24043,10 @@ Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zer
   d. Let M_2 be n_u0.
   e. If half___u4? is defined, then:
     1) Let ?(half) be half___u4?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+    2) Let ci* be $lanes_(Lnn_1 X M_1, c_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2].
+    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
+    4) If (|$invlanes_(Lnn_2 X M_2, cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_(Lnn_2 X M_2, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
 5. If half___u4? is not defined, then:
   a. Let M_1 be n_u1.
@@ -24056,10 +24056,10 @@ Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zer
     2) If the type of lanetype_u5 is numtype, then:
       a) Let nt_2 be lanetype_u5.
       b) If zero___u13? is defined, then:
-        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
-          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
+        1. Let ci* be $lanes_(nt_1 X M_1, c_1).
+        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
+        3. If (|$invlanes_(nt_2 X M_2, cj*)*| > 0), then:
+          a. Let c be an element of $invlanes_(nt_2 X M_2, cj*)*.
           b. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
@@ -24071,7 +24071,7 @@ Step_pure/local.tee x
 
 Step_read/block bt instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+2. Let t_1^m -> t_2^n be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let L be the label_n{[]}.
@@ -24079,7 +24079,7 @@ Step_read/block bt instr*
 
 Step_read/loop bt instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+2. Let t_1^m -> t_2^n be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let L be the label_m{[(LOOP bt instr*)]}.
@@ -24131,7 +24131,7 @@ Step_read/call_ref yy
       a) Let (LOCAL t)* be local_0*.
       b) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
       c) Let (FUNC functype_0) be $expanddt(fi.TYPE).
-      d) Let (t_1^n -> t_2^m) be functype_0.
+      d) Let t_1^n -> t_2^m be functype_0.
       e) Assert: Due to validation, there are at least n values on the top of the stack.
       f) Pop the values val^n from the stack.
       g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
@@ -24176,7 +24176,7 @@ Step_read/return_call_ref yy
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
       b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
-      c) Let (t_1^n -> t_2^m) be functype_0.
+      c) Let t_1^n -> t_2^m be functype_0.
       d) Assert: Due to validation, there are at least n values on the top of the stack.
       e) Pop the values val^n from the stack.
       f) Pop all values val'* from the top of the stack.
@@ -24291,7 +24291,7 @@ Step_read/throw_ref
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+2. Let t_1^m -> t_2^n be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let H be (HANDLER_ n { catch* }).
@@ -24729,7 +24729,7 @@ Step_read/vload V128 vloadop__u0? x ao
     3) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
     4) If the type of $lsizenn^-1((M · 2)) is Jnn, then:
       a) Let Jnn be $lsizenn^-1((M · 2)).
-      b) Let c be $invlanes_((Jnn X K), $extend__(M, $lsizenn(Jnn), sx, j)^K).
+      b) Let c be $invlanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K).
       c) Push the value (V128.CONST c) to the stack.
   c. If vloadop__0 is of the case SPLAT, then:
     1) Let (SPLAT N) be vloadop__0.
@@ -24739,7 +24739,7 @@ Step_read/vload V128 vloadop__u0? x ao
     4) If the type of $lsize^-1(N) is Jnn, then:
       a) Let Jnn be $lsize^-1(N).
       b) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_((Jnn X M), j^M).
+      c) Let c be $invlanes_(Jnn X M, j^M).
       d) Push the value (V128.CONST c) to the stack.
   d. If vloadop__0 is of the case ZERO, then:
     1) Let (ZERO N) be vloadop__0.
@@ -24761,7 +24761,7 @@ Step_read/vload_lane V128 N x ao j
 8. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
   b. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
+  c. Let c be $invlanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
   d. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size x
@@ -24851,7 +24851,7 @@ Step/throw x
 3. Let a be |$exninst(z)|.
 4. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
 5. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
-6. Let (t^n -> valtype_1) be functype_0.
+6. Let t^n -> valtype_1 be functype_0.
 7. Assert: Due to validation, (valtype_1 is []).
 8. Assert: Due to validation, there are at least n values on the top of the stack.
 9. Pop the values val^n from the stack.
@@ -25003,8 +25003,8 @@ Step/vstore_lane V128 N x ao j
 7. Let M be (128 / N).
 8. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
-  b. If (j < |$lanes_((Jnn X M), c)|), then:
-    1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
+  b. If (j < |$lanes_(Jnn X M, c)|), then:
+    1) Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
     2) Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow x
@@ -25205,7 +25205,7 @@ zsize storagetype_u0
 4. Let packtype be storagetype_u0.
 5. Return $psize(packtype).
 
-lanetype (Lnn X N)
+lanetype Lnn X N
 1. Return Lnn.
 
 sizenn nt
@@ -25236,10 +25236,10 @@ zero numtype_u0
 3. Let Fnn be numtype_u0.
 4. Return $fzero($size(Fnn)).
 
-dim (Lnn X N)
+dim Lnn X N
 1. Return N.
 
-shsize (Lnn X N)
+shsize Lnn X N
 1. Return ($lsize(Lnn) · N).
 
 IN N_u0
@@ -25312,7 +25312,7 @@ const consttype_u0 c
 3. Let vectype be consttype_u0.
 4. Return (vectype.CONST c).
 
-unpackshape (Lnn X N)
+unpackshape Lnn X N
 1. Return $lunpack(Lnn).
 
 diffrt (REF nul1 ht_1) (REF (NULL _u0? ?) ht_2)
@@ -25456,7 +25456,7 @@ free_storagetype storagetype_u0
 free_fieldtype (mut, storagetype)
 1. Return $free_storagetype(storagetype).
 
-free_functype (resulttype_1 -> resulttype_2)
+free_functype resulttype_1 -> resulttype_2
 1. Return $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2).
 
 free_structtype fieldtype*
@@ -25485,7 +25485,7 @@ free_globaltype (mut, valtype)
 free_tabletype (limits, reftype)
 1. Return $free_reftype(reftype).
 
-free_memtype (limits PAGE)
+free_memtype limits PAGE
 1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 
 free_elemtype reftype
@@ -25508,7 +25508,7 @@ free_externtype externtype_u0
 5. Let (MEM memtype) be externtype_u0.
 6. Return $free_memtype(memtype).
 
-free_moduletype (externtype_1* -> externtype_2*)
+free_moduletype externtype_1* -> externtype_2*
 1. Return $free_list($free_externtype(externtype_1)*) ++ $free_list($free_externtype(externtype_2)*).
 
 free_blocktype blocktype_u0
@@ -25519,7 +25519,7 @@ free_blocktype blocktype_u0
 3. Let (_IDX funcidx) be blocktype_u0.
 4. Return $free_funcidx(funcidx).
 
-free_shape (lanetype X dim)
+free_shape lanetype X dim
 1. Return $free_lanetype(lanetype).
 
 shift_labelidxs labelidx_u0*
@@ -25971,8 +25971,8 @@ subst_rectype (REC st*) tv* tu*
 subst_deftype (DEF qt i) tv* tu*
 1. Return (DEF $subst_rectype(qt, tv*, tu*) i).
 
-subst_functype (t_1* -> t_2*) tv* tu*
-1. Return ($subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*).
+subst_functype t_1* -> t_2* tv* tu*
+1. Return $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*.
 
 subst_globaltype (mut, t) tv* tu*
 1. Return (mut, $subst_valtype(t, tv*, tu*)).
@@ -25980,8 +25980,8 @@ subst_globaltype (mut, t) tv* tu*
 subst_tabletype (lim, rt) tv* tu*
 1. Return (lim, $subst_reftype(rt, tv*, tu*)).
 
-subst_memtype (lim PAGE) tv* tu*
-1. Return (lim PAGE).
+subst_memtype lim PAGE tv* tu*
+1. Return lim PAGE.
 
 subst_externtype externtype_u0 tv* tu*
 1. If externtype_u0 is of the case FUNC, then:
@@ -25997,8 +25997,8 @@ subst_externtype externtype_u0 tv* tu*
 5. Let (MEM mt) be externtype_u0.
 6. Return (MEM $subst_memtype(mt, tv*, tu*)).
 
-subst_moduletype (xt_1* -> xt_2*) tv* tu*
-1. Return ($subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*).
+subst_moduletype xt_1* -> xt_2* tv* tu*
+1. Return $subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*.
 
 subst_all_valtype t tu^n
 1. Return $subst_valtype(t, (_IDX i)^(i<n), tu^n).
@@ -26479,7 +26479,7 @@ invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-half__ (lanetype_u1 X M_1) (lanetype_u2 X M_2) half___u0 i j
+half__ lanetype_u1 X M_1 lanetype_u2 X M_2 half___u0 i j
 1. If ((half___u0 is LOW) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
   a. Return i.
 2. If ((half___u0 is HIGH) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
@@ -26504,185 +26504,185 @@ vvbinop_ V128 vvbinop_u0 v128_1 v128_2
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return [$ibitselect_($vsize(V128), v128_1, v128_2, v128_3)].
 
-fvunop_ (Fnn X M) $f_ vN_1
-1. Let c_1* be $lanes_((Fnn X M), vN_1).
+fvunop_ Fnn X M $f_ vN_1
+1. Let c_1* be $lanes_(Fnn X M, vN_1).
 2. Let c** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1)*).
-3. Return $invlanes_((Fnn X M), c*)*.
+3. Return $invlanes_(Fnn X M, c*)*.
 
-ivunop_ (Jnn X M) $f_ vN_1
-1. Let c_1* be $lanes_((Jnn X M), vN_1).
+ivunop_ Jnn X M $f_ vN_1
+1. Let c_1* be $lanes_(Jnn X M, vN_1).
 2. Let c* be $f_($lsizenn(Jnn), c_1)*.
-3. Return [$invlanes_((Jnn X M), c*)].
+3. Return [$invlanes_(Jnn X M, c*)].
 
-vunop_ (lanetype_u1 X M) vunop__u0 vN_1
+vunop_ lanetype_u1 X M vunop__u0 vN_1
 1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivunop_((Jnn X M), $iabs_, vN_1).
+  b. Return $ivunop_(Jnn X M, $iabs_, vN_1).
 2. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivunop_((Jnn X M), $ineg_, vN_1).
+  b. Return $ivunop_(Jnn X M, $ineg_, vN_1).
 3. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivunop_((Jnn X M), $ipopcnt_, vN_1).
+  b. Return $ivunop_(Jnn X M, $ipopcnt_, vN_1).
 4. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fabs_, vN_1).
+  b. Return $fvunop_(Fnn X M, $fabs_, vN_1).
 5. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fneg_, vN_1).
+  b. Return $fvunop_(Fnn X M, $fneg_, vN_1).
 6. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fsqrt_, vN_1).
+  b. Return $fvunop_(Fnn X M, $fsqrt_, vN_1).
 7. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fceil_, vN_1).
+  b. Return $fvunop_(Fnn X M, $fceil_, vN_1).
 8. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $ffloor_, vN_1).
+  b. Return $fvunop_(Fnn X M, $ffloor_, vN_1).
 9. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $ftrunc_, vN_1).
+  b. Return $fvunop_(Fnn X M, $ftrunc_, vN_1).
 10. Assert: Due to validation, (vunop__u0 is NEAREST).
 11. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 12. Let Fnn be lanetype_u1.
-13. Return $fvunop_((Fnn X M), $fnearest_, vN_1).
+13. Return $fvunop_(Fnn X M, $fnearest_, vN_1).
 
-fvbinop_ (Fnn X M) $f_ vN_1 vN_2
-1. Let c_1* be $lanes_((Fnn X M), vN_1).
-2. Let c_2* be $lanes_((Fnn X M), vN_2).
+fvbinop_ Fnn X M $f_ vN_1 vN_2
+1. Let c_1* be $lanes_(Fnn X M, vN_1).
+2. Let c_2* be $lanes_(Fnn X M, vN_2).
 3. Let c** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2)*).
-4. Return $invlanes_((Fnn X M), c*)*.
+4. Return $invlanes_(Fnn X M, c*)*.
 
-ivbinop_ (Jnn X M) $f_ vN_1 vN_2
-1. Let c_1* be $lanes_((Jnn X M), vN_1).
-2. Let c_2* be $lanes_((Jnn X M), vN_2).
+ivbinop_ Jnn X M $f_ vN_1 vN_2
+1. Let c_1* be $lanes_(Jnn X M, vN_1).
+2. Let c_2* be $lanes_(Jnn X M, vN_2).
 3. Let c* be $f_($lsizenn(Jnn), c_1, c_2)*.
-4. Return [$invlanes_((Jnn X M), c*)].
+4. Return [$invlanes_(Jnn X M, c*)].
 
-ivbinopsx_ (Jnn X M) $f_ sx vN_1 vN_2
-1. Let c_1* be $lanes_((Jnn X M), vN_1).
-2. Let c_2* be $lanes_((Jnn X M), vN_2).
+ivbinopsx_ Jnn X M $f_ sx vN_1 vN_2
+1. Let c_1* be $lanes_(Jnn X M, vN_1).
+2. Let c_2* be $lanes_(Jnn X M, vN_2).
 3. Let c* be $f_($lsizenn(Jnn), sx, c_1, c_2)*.
-4. Return [$invlanes_((Jnn X M), c*)].
+4. Return [$invlanes_(Jnn X M, c*)].
 
-vbinop_ (lanetype_u1 X M) vbinop__u0 vN_1 vN_2
+vbinop_ lanetype_u1 X M vbinop__u0 vN_1 vN_2
 1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivbinop_((Jnn X M), $iadd_, vN_1, vN_2).
+  b. Return $ivbinop_(Jnn X M, $iadd_, vN_1, vN_2).
 2. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivbinop_((Jnn X M), $isub_, vN_1, vN_2).
+  b. Return $ivbinop_(Jnn X M, $isub_, vN_1, vN_2).
 3. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivbinop_((Jnn X M), $imul_, vN_1, vN_2).
+  b. Return $ivbinop_(Jnn X M, $imul_, vN_1, vN_2).
 4. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
   b. If vbinop__u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop__u0.
-    2) Return $ivbinopsx_((Jnn X M), $iadd_sat_, sx, vN_1, vN_2).
+    2) Return $ivbinopsx_(Jnn X M, $iadd_sat_, sx, vN_1, vN_2).
   c. If vbinop__u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop__u0.
-    2) Return $ivbinopsx_((Jnn X M), $isub_sat_, sx, vN_1, vN_2).
+    2) Return $ivbinopsx_(Jnn X M, $isub_sat_, sx, vN_1, vN_2).
   d. If vbinop__u0 is of the case MIN, then:
     1) Let (MIN sx) be vbinop__u0.
-    2) Return $ivbinopsx_((Jnn X M), $imin_, sx, vN_1, vN_2).
+    2) Return $ivbinopsx_(Jnn X M, $imin_, sx, vN_1, vN_2).
   e. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
-    2) Return $ivbinopsx_((Jnn X M), $imax_, sx, vN_1, vN_2).
+    2) Return $ivbinopsx_(Jnn X M, $imax_, sx, vN_1, vN_2).
 5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivbinopsx_((Jnn X M), $iavgr_, U, vN_1, vN_2).
+  b. Return $ivbinopsx_(Jnn X M, $iavgr_, U, vN_1, vN_2).
 6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivbinopsx_((Jnn X M), $iq15mulr_sat_, S, vN_1, vN_2).
+  b. Return $ivbinopsx_(Jnn X M, $iq15mulr_sat_, S, vN_1, vN_2).
 7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fadd_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fadd_, vN_1, vN_2).
 8. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fsub_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fsub_, vN_1, vN_2).
 9. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fmul_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fmul_, vN_1, vN_2).
 10. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fdiv_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fdiv_, vN_1, vN_2).
 11. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fmin_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fmin_, vN_1, vN_2).
 12. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fmax_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fmax_, vN_1, vN_2).
 13. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fpmin_, vN_1, vN_2).
+  b. Return $fvbinop_(Fnn X M, $fpmin_, vN_1, vN_2).
 14. Assert: Due to validation, (vbinop__u0 is PMAX).
 15. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 16. Let Fnn be lanetype_u1.
-17. Return $fvbinop_((Fnn X M), $fpmax_, vN_1, vN_2).
+17. Return $fvbinop_(Fnn X M, $fpmax_, vN_1, vN_2).
 
-fvrelop_ (Fnn X M) $f_ vN_1 vN_2
-1. Let c_1* be $lanes_((Fnn X M), vN_1).
-2. Let c_2* be $lanes_((Fnn X M), vN_2).
+fvrelop_ Fnn X M $f_ vN_1 vN_2
+1. Let c_1* be $lanes_(Fnn X M, vN_1).
+2. Let c_2* be $lanes_(Fnn X M, vN_2).
 3. Assert: Due to validation, the type of $size^-1($size(Fnn)) is Inn.
 4. Let Inn be $size^-1($size(Fnn)).
 5. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
-6. Return $invlanes_((Inn X M), c*).
+6. Return $invlanes_(Inn X M, c*).
 
-ivrelop_ (Jnn X M) $f_ vN_1 vN_2
-1. Let c_1* be $lanes_((Jnn X M), vN_1).
-2. Let c_2* be $lanes_((Jnn X M), vN_2).
+ivrelop_ Jnn X M $f_ vN_1 vN_2
+1. Let c_1* be $lanes_(Jnn X M, vN_1).
+2. Let c_2* be $lanes_(Jnn X M, vN_2).
 3. Let c* be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), c_1, c_2))*.
-4. Return $invlanes_((Jnn X M), c*).
+4. Return $invlanes_(Jnn X M, c*).
 
-ivrelopsx_ (Jnn X M) $f_ sx vN_1 vN_2
-1. Let c_1* be $lanes_((Jnn X M), vN_1).
-2. Let c_2* be $lanes_((Jnn X M), vN_2).
+ivrelopsx_ Jnn X M $f_ sx vN_1 vN_2
+1. Let c_1* be $lanes_(Jnn X M, vN_1).
+2. Let c_2* be $lanes_(Jnn X M, vN_2).
 3. Let c* be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), sx, c_1, c_2))*.
-4. Return $invlanes_((Jnn X M), c*).
+4. Return $invlanes_(Jnn X M, c*).
 
-vrelop_ (lanetype_u1 X M) vrelop__u0 vN_1 vN_2
+vrelop_ lanetype_u1 X M vrelop__u0 vN_1 vN_2
 1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivrelop_((Jnn X M), $ieq_, vN_1, vN_2).
+  b. Return $ivrelop_(Jnn X M, $ieq_, vN_1, vN_2).
 2. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivrelop_((Jnn X M), $ine_, vN_1, vN_2).
+  b. Return $ivrelop_(Jnn X M, $ine_, vN_1, vN_2).
 3. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
   b. If vrelop__u0 is of the case LT, then:
     1) Let (LT sx) be vrelop__u0.
-    2) Return $ivrelopsx_((Jnn X M), $ilt_, sx, vN_1, vN_2).
+    2) Return $ivrelopsx_(Jnn X M, $ilt_, sx, vN_1, vN_2).
   c. If vrelop__u0 is of the case GT, then:
     1) Let (GT sx) be vrelop__u0.
-    2) Return $ivrelopsx_((Jnn X M), $igt_, sx, vN_1, vN_2).
+    2) Return $ivrelopsx_(Jnn X M, $igt_, sx, vN_1, vN_2).
   d. If vrelop__u0 is of the case LE, then:
     1) Let (LE sx) be vrelop__u0.
-    2) Return $ivrelopsx_((Jnn X M), $ile_, sx, vN_1, vN_2).
+    2) Return $ivrelopsx_(Jnn X M, $ile_, sx, vN_1, vN_2).
   e. If vrelop__u0 is of the case GE, then:
     1) Let (GE sx) be vrelop__u0.
-    2) Return $ivrelopsx_((Jnn X M), $ige_, sx, vN_1, vN_2).
+    2) Return $ivrelopsx_(Jnn X M, $ige_, sx, vN_1, vN_2).
 4. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $feq_, vN_1, vN_2).
+  b. Return $fvrelop_(Fnn X M, $feq_, vN_1, vN_2).
 5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $fne_, vN_1, vN_2).
+  b. Return $fvrelop_(Fnn X M, $fne_, vN_1, vN_2).
 6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $flt_, vN_1, vN_2).
+  b. Return $fvrelop_(Fnn X M, $flt_, vN_1, vN_2).
 7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $fgt_, vN_1, vN_2).
+  b. Return $fvrelop_(Fnn X M, $fgt_, vN_1, vN_2).
 8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $fle_, vN_1, vN_2).
+  b. Return $fvrelop_(Fnn X M, $fle_, vN_1, vN_2).
 9. Assert: Due to validation, (vrelop__u0 is GE).
 10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 11. Let Fnn be lanetype_u1.
-12. Return $fvrelop_((Fnn X M), $fge_, vN_1, vN_2).
+12. Return $fvrelop_(Fnn X M, $fge_, vN_1, vN_2).
 
-vcvtop__ (lanetype_u3 X M_1) (lanetype_u0 X M_2) vcvtop___u2 lane__u5
+vcvtop__ lanetype_u3 X M_1 lanetype_u0 X M_2 vcvtop___u2 lane__u5
 1. If the type of lanetype_u3 is Jnn, then:
   a. Let Jnn_1 be lanetype_u3.
   b. If the type of lanetype_u0 is Jnn, then:
@@ -26726,27 +26726,27 @@ vcvtop__ (lanetype_u3 X M_1) (lanetype_u0 X M_2) vcvtop___u2 lane__u5
 11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
 12. Return fN_2*.
 
-vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
+vextunop__ Jnn_1 X M_1 Jnn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_(Jnn_1 X M_1, c_1).
 2. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*).
-3. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
+3. Let c be $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) vextbinop___u0 c_1 c_2
+vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop___u0 c_1 c_2
 1. If vextbinop___u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx half) be vextbinop___u0.
-  b. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
-  c. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
-  d. Let c be $invlanes_((Jnn_2 X M_2), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
+  b. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1)[$half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2) : M_2].
+  c. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2)[$half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2) : M_2].
+  d. Let c be $invlanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextbinop___u0 is (DOTS)).
-3. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-4. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
+3. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1).
+4. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2).
 5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2))*).
-6. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
+6. Let c be $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
 7. Return c.
 
-vshiftop_ (Jnn X M) vshiftop__u0 lane n
+vshiftop_ Jnn X M vshiftop__u0 lane n
 1. If (vshiftop__u0 is SHL), then:
   a. Return $ishl_($lsizenn(Jnn), lane, n).
 2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
@@ -27000,10 +27000,10 @@ growtable tableinst n r
   c. Return tableinst'.
 
 growmem meminst n
-1. Let { TYPE: ((i, j) PAGE); BYTES: b*; } be meminst.
+1. Let { TYPE: (i, j) PAGE; BYTES: b*; } be meminst.
 2. If (((|b*| / (64 · $Ki())) + n) ≤ j), then:
   a. Let i' be ((|b*| / (64 · $Ki())) + n).
-  b. Let meminst' be { TYPE: ((i', j) PAGE); BYTES: b* :: 0^(n · (64 · $Ki())); }.
+  b. Let meminst' be { TYPE: (i', j) PAGE; BYTES: b* :: 0^(n · (64 · $Ki())); }.
   c. Return meminst'.
 
 blocktype_ z blocktype_u0
@@ -27014,7 +27014,7 @@ blocktype_ z blocktype_u0
   d. Return ft.
 2. Assert: Due to validation, blocktype_u0 is of the case _RESULT.
 3. Let (_RESULT t?) be blocktype_u0.
-4. Return ([] -> t?).
+4. Return [] -> t?.
 
 alloctypes type_u0*
 1. If (type_u0* is []), then:
@@ -27083,8 +27083,8 @@ alloctables tabletype_u0* ref_u1*
 7. Let ta'* be $alloctables(tabletype'*, ref'*).
 8. Return [ta] :: ta'*.
 
-allocmem ((i, j) PAGE)
-1. Let meminst be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem (i, j) PAGE
+1. Let meminst be { TYPE: (i, j) PAGE; BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append meminst to the s.MEMS.
 4. Return a.
@@ -27245,7 +27245,7 @@ evalglobals z globaltype_u0* expr_u1*
 12. Return [val] :: val'*.
 
 instantiate z module externaddr*
-1. Let (xt_I* -> xt_E*) be $Module_ok(module).
+1. Let xt_I* -> xt_E* be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
 4. Assert: Due to validation, $Externaddr_type(externaddr, xt_I)*.
@@ -27286,7 +27286,7 @@ invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
-4. Let (t_1* -> t_2*) be functype_0.
+4. Let t_1* -> t_2* be functype_0.
 5. Assert: Due to validation, $Val_type(val, t_1)*.
 6. Let k be |t_2*|.
 7. Push the activation of f with arity k to the stack.
