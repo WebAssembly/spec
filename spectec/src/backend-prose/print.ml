@@ -476,7 +476,7 @@ let string_of_def = function
     (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ drop_last concl_str
-    ^ " if and only if:\n"
+    ^ " if:\n"
     ^ string_of_list indented_string_of_instr "" "\n" "\n" prems
 | Algo algo -> string_of_algorithm algo
 

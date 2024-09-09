@@ -729,7 +729,7 @@ let render_iff env concl prems =
       let sconcl = render_prose_instr env 0 concl in
       let sconcl = String.sub sconcl 0 (String.length sconcl - 1) in
       let sprems = render_prose_instrs env 1 prems in
-      sprintf "%s if and only if:\n%s" sconcl sprems
+      sprintf "%s if:\n%s" sconcl sprems
 
 let render_rule env name params instrs =
   let title = render_atom_title env name params in
