@@ -170,10 +170,7 @@ let rec reduce_exp env e : expr =
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    let _ps, _t, clauses = Env.find_def env id in
-    (* Allow for uninterpreted functions *)
-    if not !assume_coherent_matches && clauses = [] then CallE (id, args') $> e else
-    (match reduce_exp_call env id args' e.at clauses with
+    (match reduce_call id args' with
     | None -> CallE (id, args') $> e
     | Some e -> e
     )
@@ -284,7 +281,7 @@ and reduce_path env e p f =
     reduce_path env e p1 f'
 
 and reduce_arg env a : arg =
-  Debug_log.(log "al.reduce_exp"
+  Debug_log.(log "al.reduce_arg"
     (fun _ -> fmt "%s" (string_of_arg a))
     (fun a' -> fmt "%s" (string_of_arg a'))
   ) @@ fun _ ->
@@ -294,24 +291,31 @@ and reduce_arg env a : arg =
   | DefA _id -> a
   | GramA _g -> a
 
-and reduce_exp_call env id args at = function
-  | [] ->
-    if !assume_coherent_matches then None else
-    Error.error at "validation"
-      ("undefined call to partial function `$" ^ id.it ^ "`")
-  | {it = DefD (_binds, args', e, prems); _}::clauses' ->
-    Debug_log.(log "al.reduce_exp"
-      (fun _ -> fmt "$%s(%s) =: $%s(%s)" id.it (string_of_args args) id.it (string_of_args args'))
-      (function None -> "-" | Some e' -> fmt "%s" (il_exp e'))
-    ) @@ fun _ ->
-    assert (List.for_all (fun a -> Eq.eq_arg a (reduce_arg env a)) args);
-    match match_list match_arg env Subst.empty args args' with
-    | exception Irred ->
-      if not !assume_coherent_matches then None else
-      reduce_exp_call env id args at clauses'
-    | None -> reduce_exp_call env id args at clauses'
-    | Some s ->
-      match reduce_prems env Subst.(subst_list subst_prem s prems) with
-      | None -> None
-      | Some false -> reduce_exp_call env id args at clauses'
-      | Some true -> Some (reduce_exp env (Subst.subst_exp s e))
+and reduce_call id args : expr option =
+  let func_finder = function FuncA (fname, _, _) -> fname = id | RuleA _ -> false in
+  match List.find func_finder !Lang.al with
+  | FuncA (_, param, il) ->
+    (* let env = param -> args *)
+    reduce_instrs env il
+  | _ -> assert (false)
+
+and reduce_instrs (env: ...) : instr -> expr option = function
+  | [] -> None
+  | Return expr_opt :: _ -> Option.map (reduce_exp env) expr_opt
+  | LetI (expr1, expr2) :: t ->
+    (* new_env = env + (expr1 -> expr2) *)
+    reduce_instrs new_env t
+  | IfI (expr, il1, il2) :: t ->
+    (* TODO: consider iter *)
+    (match reduce_exp env expr with
+    | BoolE true -> reduce_instrs env (il1@t)
+    | BoolE false -> reduce_instrs env (il2@t)
+    | _ -> None
+    )
+  (* Can have side effect *)
+  | EitherI _ | PerformI _ | ReplaceI _ | AppendI _ | FieldWiseAppendI _ -> None
+  (* Invalid instruction in FuncA *)
+  | (EnterI _  | PushI _ | PopI _ | PopAllI _ | TrapI | ThrowI _ |
+    ExecuteI _ | ExecuteSeqI _ | ExitI _ | OtherwiseI _ | YetI _) :: _ -> assert (false)
+  (* Nop *)
+  | (AssertI _ | NopI) :: t -> reduce_instrs env t

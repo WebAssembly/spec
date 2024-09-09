@@ -5,6 +5,7 @@ open Ast
 open Al_util
 open Print
 open Walk
+open Ds
 
 
 module Atom = El.Atom
@@ -623,4 +624,5 @@ let valid_algo (algo: algorithm) =
   env := global_env
 
 let valid (script: script) =
+  Lang.al := script;
   List.iter valid_algo script
