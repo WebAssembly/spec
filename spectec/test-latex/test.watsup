@@ -509,3 +509,50 @@ relation Reval_nomacro: parent; child ~> parent; child  hint(macro none) hint(ta
 rule Rok_nomacro: C |- AA : OK
 rule Rsub_nomacro: C |- parent <: AA
 rule Reval_nomacro: parent; child ~> AA; BB
+
+
+;;
+;; Layout
+;;
+
+;; Syntax
+
+syntax argh = ARGH
+syntax borg = BORG
+syntax curb = CURB
+syntax dork = DORK
+syntax eerk = EERK
+
+
+syntax dotstypex = argh | DX1 | ...
+syntax dotstypey =
+  argh | DY1 | ...
+syntax dotstypex = ... | borg | DX2 | ...
+syntax dotstypesep = borg
+syntax dotstypex = ...
+  | curb | DX3
+  | DX4 | DX5
+  | DX6 | ...
+syntax dotstypey =
+  | ...
+  | borg | DY2
+  | DY3 | DY4
+  | ...
+syntax dotstypex = ... | dork | DX7
+syntax dotstypey =
+  | ...
+  | dork
+  | DY5
+
+
+syntax casetype = LA nat argh
+    -- if nat = 0
+    -- if argh =/= ARGH
+  | LB borg curb
+  | LC dork_1 dork_2 -- if dork_1 =/= dork_2
+  | LD argh nat
+    -- if nat > 0 -- if argh =/= ARGH
+  | LE nat_1 nat_2
+    -- if nat_1 <= nat_2
+  | LFA borg | LFB borg | LFC borg
+;;  | LGA borg -- if borg = borg | LGB borg   ;; TODO(3, rossberg): what should this produce?
