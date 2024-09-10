@@ -1,14 +1,25 @@
 open Ast
 open Print
+open Walk
 open Util
 open Source
 
-module Subst = Map.Make(String)
+module Subst = struct
+  include Map.Make(String)
+
+  let subst_exp s e =
+    let subst_exp' walker e =
+      match e.it with
+      | VarE id when mem id s -> find id s
+      | _ -> base_walker.walk_expr walker e
+    in
+    let walker = {base_walker with walk_expr = subst_exp'} in
+    walker.walk_expr walker e
+end
 
 let rec get_subst lhs rhs s =
   match lhs.it, rhs.it with
-  | VarE id, _ ->
-    Subst.add id rhs s
+  | VarE id, _ -> Subst.add id rhs s
   | UnE (op1, e1), UnE (op2, e2) when op1 = op2 -> get_subst e1 e2 s
   | OptE (Some e1), OptE (Some e2) | FrameE (None, e1), FrameE (None, e2) ->
     get_subst e1 e2 s
@@ -23,7 +34,7 @@ let rec get_subst lhs rhs s =
     List.fold_right2 get_subst el1 el2 s
   | StrE r1, StrE r2 ->
     List.fold_left (fun acc (k, e) -> get_subst !e (Record.find k r2) acc) s r1
-  (* TODO: | IterE (e, (iter, xes)) -> s *)
+  | IterE _, _ -> (* TODO *) s
   | _, _ when Eq.eq_expr lhs rhs -> s
   | _ -> assert (false)
 
@@ -219,7 +230,6 @@ let rec reduce_exp env e : expr =
     | None -> CallE (id, args') $> e
     | Some e -> e
     )
-  (* TODO 
   | IterE (e1, iterexp) ->
     let e1' = reduce_exp env e1 in
     let (iter', xes') as iterexp' = reduce_iterexp env iterexp in
@@ -234,7 +244,7 @@ let rec reduce_exp env e : expr =
           OptE None $> e
         else if List.for_all Option.is_some eos' then
           let es1' = List.map Option.get eos' in
-          let s = List.fold_left2 Subst.add_varid Subst.empty ids es1' in
+          let s = List.fold_right2 Subst.add ids es1' Subst.empty in
           reduce_exp env (Subst.subst_exp s e1')
         else
           IterE (e1', iterexp') $> e
@@ -252,11 +262,11 @@ let rec reduce_exp env e : expr =
         if List.for_all ((=) n) ns then
           (TupE (List.init n (fun i ->
             let esI' = List.map (fun es -> List.nth es i) ess' in
-            let s = List.fold_left2 Subst.add_varid Subst.empty ids esI' in
+            let s = List.fold_right2 Subst.add ids esI' Subst.empty in
             let s' =
               Option.fold ido ~none:s ~some:(fun id ->
-                let en = NumE (Z.of_int i) $$ id.at % (Il.Ast.NumT NatT $ id.at) in
-                Subst.add_varid s id en
+                let en = NumE (Z.of_int i) $$ no_region % (Il.Ast.NumT NatT $ no_region) in
+                Subst.add id en s
               )
             in Subst.subst_exp s' e1'
           )) $> e) |> reduce_exp env
@@ -265,7 +275,6 @@ let rec reduce_exp env e : expr =
       | ListN _ ->
         IterE (e1', iterexp') $> e
       )
-  *)
   | OptE eo -> OptE (Option.map (reduce_exp env) eo) $> e
   | ListE es -> ListE (List.map (reduce_exp env) es) $> e
   | CatE (e1, e2) ->
