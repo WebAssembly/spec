@@ -5,10 +5,11 @@ open Ast
 open Al_util
 open Print
 open Walk
+open Free
 
 
 module Atom = El.Atom
-module Eval = Il.Eval
+module IlEval = Il.Eval
 
 (* Error *)
 
@@ -37,15 +38,24 @@ let error_case source typ =
 
 let (let*) = Option.bind
 
+module Env = struct
+  include Map.Make(String)
 
-(* Bound Set *)
+  type t = expr option Map.Make(String).t
 
-module Set = Free.IdSet
-
-let bound_set: Set.t ref = ref Set.empty
-let add_bound_var id = bound_set := Set.add id !bound_set
-let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
-let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ | DefA _ -> ()
+  (* TODO: pass env *)
+  let env: t ref = ref empty
+  let add_bound_var id = env := add id None !env
+  let add_bound_vars expr = IdSet.iter add_bound_var (free_expr expr)
+  let add_bound_param arg =
+    match arg.it with ExpA e -> add_bound_vars e | TypA _ | DefA _ -> ()
+  let add_subst lhs rhs =
+    let open Eval in
+    env :=
+      get_subst lhs rhs Subst.empty
+      |> Subst.map Option.some
+      |> merge (fun _ _ _ -> (* TODO *) assert (false)) !env
+end
 
 (* Type Env *)
 
@@ -64,7 +74,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match IlEnv.find_opt_typ !il_env id with
   | Some (_, insts) ->
     let typ_of_arg arg =
-      match (Eval.reduce_arg !il_env arg).it with
+      match (IlEval.reduce_arg !il_env arg).it with
       | ExpA { it=SubE (_, typ, _); _ } -> typ
       | ExpA { note; _ } -> note
       | TypA typ -> typ
@@ -94,7 +104,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
     let get_deftyp inst =
       let InstD (_, inst_args, deftyp) = inst.it in
       let valid_arg arg inst_arg = 
-        Eval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
+        IlEval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
       in
       if List.for_all2 valid_arg args inst_args then
         Some deftyp
@@ -182,7 +192,7 @@ let rec sub_typ typ1 typ2 =
   match typ1'.it, typ2'.it with
   | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
   | NumT _, NumT _ -> true
-  | _, _ -> Eval.sub_typ !il_env typ1' typ2'
+  | _, _ -> IlEval.sub_typ !il_env typ1' typ2'
 
 let rec matches typ1 typ2 =
   match (ground_typ_of typ1).it, (ground_typ_of typ2).it with
@@ -301,7 +311,7 @@ let check_call source id args result_typ =
       | DefA aid, DefP (_, pparams, ptyp) ->
         (match IlEnv.find_opt_def !il_env (aid $ no_region) with
         | Some (aparams, atyp, _) -> 
-          if not (Eval.sub_typ !il_env atyp ptyp) then
+          if not (IlEval.sub_typ !il_env atyp ptyp) then
             error_valid
               "argument's return type is not a subtype of parameter's return type"
               source
@@ -321,7 +331,7 @@ let check_call source id args result_typ =
             let aptyp = typ_of_param aparam in
             let pptyp = typ_of_param pparam in
 
-            if not (Eval.sub_typ !il_env pptyp aptyp) then
+            if not (IlEval.sub_typ !il_env pptyp aptyp) then
               error_valid
                 "parameter's parameter type is not a subtype of argument's return type"
                 source
@@ -443,7 +453,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   let source = string_of_expr expr $ expr.at in
   (match expr.it with
   | VarE id ->
-    if not (Set.mem id !bound_set) then error expr.at ("free identifier " ^ id)
+    if not (Env.mem id !Env.env) then error expr.at ("free identifier " ^ id)
   | NumE _ -> check_num source expr.note;
   | UnE (NotOp, expr') ->
     check_bool source expr.note; check_bool source expr'.note
@@ -493,8 +503,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       (match iter with
       | Opt ->
         check_match source expr.note (iterT expr1.note Opt);
-      | ListN (expr2, id_opt) ->
-        Option.iter add_bound_var id_opt;
+      | ListN (expr2, _) ->
         check_match source expr.note (iterT expr1.note List);
         check_num source expr2.note
       | _ ->
@@ -557,15 +566,15 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
       error_mismatch source (get_base_typ expr.note) (varT "val")
-  | PopI expr | PopAllI expr -> add_bound_vars expr;
+  | PopI expr | PopAllI expr -> Env.add_bound_vars expr;
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
       error_mismatch source (get_base_typ expr.note) (varT "val")
   | LetI (expr1, expr2) ->
-    add_bound_vars expr1; check_match source expr1.note expr2.note
-    | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
+    Env.add_subst expr1 expr2; check_match source expr1.note expr2.note
+  | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
   | PerformI (id, args) -> check_call source id args (TupT [] $ no_region)
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
@@ -579,8 +588,8 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
 let init algo =
   let params = Al_util.params_of_algo algo in
 
-  bound_set := Set.singleton "s";
-  List.iter add_bound_param params
+  Env.add_bound_var "s";
+  List.iter Env.add_bound_param params
 
 
 let valid_algo (algo: algorithm) =
