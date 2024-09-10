@@ -338,7 +338,7 @@ let al_to_float_cvtop : value list -> FloatOp.cvtop = function
     | _ -> error_values "convert" l)
   | [ CaseV ("F64", []); CaseV ("F32", []); CaseV ("PROMOTE", []) ] -> FloatOp.PromoteF32
   | [ CaseV ("F32", []); CaseV ("F64", []); CaseV ("DEMOTE", []) ] -> FloatOp.DemoteF64
-  | [ _; _; CaseV ("REINTERPRET", []); OptV None ] -> FloatOp.ReinterpretInt
+  | [ _; _; CaseV ("REINTERPRET", []) ] -> FloatOp.ReinterpretInt
   | l -> error_values "float cvtop" l
 let al_to_cvtop: value list -> cvtop = function
   | CaseV ("I32", []) :: _ as op -> I32 (al_to_int_cvtop op)
@@ -668,7 +668,7 @@ let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
   | v -> error_value "vloadop'" v
 
 let al_to_vloadop: value list -> idx * vec_loadop = function
-  | _v128 :: vl -> al_to_vmemop (al_to_opt al_to_vloadop') vl
+  | _v128 :: memop :: idx :: vl -> al_to_vmemop (al_to_opt al_to_vloadop') (idx :: memop :: vl)
   | vs -> error_value "vloadop" (TupV vs)
 
 let al_to_vstoreop = function
@@ -676,9 +676,9 @@ let al_to_vstoreop = function
   | vs -> error_value "vstoreop" (TupV vs)
 
 let al_to_vlaneop: value list -> idx * vec_laneop * int = function
-  | _v128 :: vl ->
+  | _v128 :: ps :: idx :: vl ->
     let h, t = Util.Lib.List.split_last vl in
-    let idx, op = al_to_vmemop al_to_pack_size h in
+    let idx, op = al_to_vmemop al_to_pack_size (idx :: ps ::h) in
     idx, op, al_to_int t
   | vs -> error_value "vlaneop" (TupV vs)
 
@@ -812,7 +812,7 @@ and al_to_instr': value -> Ast.instr' = function
     ArrayInitElem (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("ANY.CONVERT_EXTERN", []) -> ExternConvert Internalize
   | CaseV ("EXTERN.CONVERT_ANY", []) -> ExternConvert Externalize
-  | v -> error_value "instrunction" v
+  | v -> error_value "instruction" v
 
 let al_to_const: value -> const = al_to_list al_to_instr |> al_to_phrase
 
@@ -1730,7 +1730,6 @@ let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 let al_of_storeop = al_of_opt al_of_pack_size |> al_of_memop
 
 let al_of_vloadop idx vloadop =
-
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_int vloadop.align)
