@@ -55,6 +55,7 @@ module Env = struct
       get_subst lhs rhs Subst.empty
       |> Subst.map Option.some
       |> merge (fun _ _ _ -> (* TODO *) assert (false)) !env
+  let add id expr = env := add id (Some expr) !env
 end
 
 (* Type Env *)
@@ -498,8 +499,10 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_case source exprs typ
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
-  | IterE (expr1, (iter, _xes)) -> (* TODO *)
+  | IterE (expr1, (iter, xes)) -> (* TODO *)
+    let global_env = !Env.env in
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
+      List.iter (fun (id, e) -> Env.add id e) xes;
       (match iter with
       | Opt ->
         check_match source expr.note (iterT expr1.note Opt);
@@ -508,7 +511,8 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
         check_num source expr2.note
       | _ ->
         check_match source expr.note (iterT expr1.note List);
-      )
+      );
+    Env.env := global_env
   | OptE expr_opt ->
     check_opt source expr.note;
     Option.iter
