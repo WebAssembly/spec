@@ -78,7 +78,7 @@ Parametric Instructions
 $${rule-prose: Instr_ok/nop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 * The instruction is valid with type :math:`[] \to []`.
 
 $${rule: Instr_ok/nop}
@@ -91,7 +91,7 @@ $${rule: Instr_ok/nop}
 $${rule-prose: Instr_ok/unreachable}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -108,8 +108,8 @@ $${rule: Instr_ok/unreachable}
 $${rule-prose: Instr_ok/drop}
 
 .. todo::
-   
- below is the official specification 
+
+ below is the official specification
 
 * The instruction is valid with type :math:`[t] \to []`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t`.
 
@@ -125,17 +125,17 @@ $${rule: Instr_ok/drop}
 ..........................
 $${rule-prose: Instr_ok/select}
 .. todo::
- below is the official specification 
+ below is the official specification
 
- (5) Different name in prose specification - [Add "select" in front of "valtype" in the instruction name] 
+ (5) Different name in prose specification - [Add "select" in front of "valtype" in the instruction name]
 
  (*) - [Add "t* is present" condition for Either-Or branch.]
 
  (*) - [merge "numtype" - "vectype" branch to one line]
- 
+
  (*) - ["length should be 1" condition should be added in the "Either" branch]
 
- (*) - [Make more readable] 
+ (*) - [Make more readable]
 
 * If :math:`t^\ast` is present, then:
 
@@ -170,7 +170,7 @@ Numeric Instructions
 $${rule-prose: Instr_ok/const}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[] \to [t]`.
 
@@ -184,7 +184,7 @@ $${rule: Instr_ok/const}
 $${rule-prose: Instr_ok/unop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[t] \to [t]`.
 
@@ -198,7 +198,7 @@ $${rule: Instr_ok/unop}
 $${rule-prose: Instr_ok/binop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[t~t] \to [t]`.
 
@@ -212,7 +212,7 @@ $${rule: Instr_ok/binop}
 $${rule-prose: Instr_ok/testop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[t] \to [\I32]`.
 
@@ -226,7 +226,7 @@ $${rule: Instr_ok/testop}
 $${rule-prose: Instr_ok/relop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[t~t] \to [\I32]`.
 
@@ -240,9 +240,9 @@ $${rule: Instr_ok/relop}
 $${rule-prose: Instr_ok/cvtop}
 
 .. todo::
-(*) indices are switched making hard to understand.  
+  (*) indices are switched.
 
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[t_1] \to [t_2]`.
 
@@ -267,7 +267,7 @@ $${rule-prose: Instr_ok/ref.null}
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
    (3) Need to add more specific type - [ht to heap type]
- below is the official specification 
+ below is the official specification
 
 * The :ref:`heap type <syntax-heaptype>` :math:`\X{ht}` must be :ref:`valid <valid-heaptype>`.
 
@@ -288,7 +288,7 @@ $${rule-prose: Instr_ok/ref.func}
    (3) Need to add more specific type - [dt to defined type, x to function index.]
 
    (4) Wrong result type. - [need to erase null in the range type]
- below is the official specification 
+ below is the official specification
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
@@ -311,7 +311,7 @@ $${rule-prose: Instr_ok/ref.is_null}
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
    (3) Need to add more specific type - [ht to heap type]
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [\I32]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
 
@@ -330,7 +330,7 @@ $${rule-prose: Instr_ok/ref.as_non_null}
    (3) Need to add more specific type - [ht to heap type]
 
    (4) Wrong result type. - [need to erase "null" in the range(2nd type) type.]
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
 
@@ -345,7 +345,7 @@ $${rule-prose: Instr_ok/ref.eq}
 
 .. todo::
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\EQT) (\REF~\NULL~\EQT)] \to [\I32]`.
 
@@ -359,9 +359,9 @@ $${rule: Instr_ok/ref.eq}
 $${rule-prose: Instr_ok/ref.test}
 
 .. todo::
-   
+
    (3) Need to add more specific type - [rt to reference type]
- below is the official specification 
+ below is the official specification
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
@@ -380,9 +380,9 @@ $${rule: Instr_ok/ref.test}
 $${rule-prose: Instr_ok/ref.cast}
 
 .. todo::
-   
+
    (3) Need to add more specific type - [rt to reference type]
- below is the official specification 
+ below is the official specification
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
@@ -405,8 +405,8 @@ Aggregate Reference Instructions
 ....................
 $${rule-prose: Instr_ok/struct.new}
 
-.. todo::     
-   below is the official specification 
+.. todo::
+   below is the official specification
 
    (L2) - [unpack(zt)* to [(unpack(zt))*], "mut ?" to "mut" in the premise, "double ~" to "expand" ]
 
@@ -416,8 +416,8 @@ $${rule-prose: Instr_ok/struct.new}
 
    (3) Need to add more specific type - [add "structure type","field type", etc]
 
-   (4) Wrong result type. - [unpack(zt)* to [(unpack(zt))*], erase "null" in the range type] 
-   
+   (4) Wrong result type. - [unpack(zt)* to [(unpack(zt))*], erase "null" in the range type]
+
    (6) Change “expand()” to expansion
 
    (*) - Need more specific description.
@@ -447,16 +447,16 @@ $${rule: Instr_ok/struct.new}
 $${rule-prose: Instr_ok/struct.new_default}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand", change defaultable notation in the premise. ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
  (4) Wrong result type. - [Erase "null" in the range type]
- 
+
  (6) Change “expand()” to expansion
 
  (7) Different notation for “defaultable”
@@ -491,8 +491,8 @@ $${rule: Instr_ok/struct.new_default}
 $${rule-prose: Instr_ok/struct.get}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L2) - ["mut ?" to "mut" in the premise, name of the variables are changed.]
 
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
@@ -500,12 +500,12 @@ $${rule-prose: Instr_ok/struct.get}
  (2) Change Inequality condition to  existence condition
 
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (5) Different name in prose specification - ["y" is changed to variable "i"]
 
  (6) Change “expand()” to expansion
 
- (*) - It has some different variable names. 
+ (*) - It has some different variable names.
 
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
@@ -530,14 +530,14 @@ $${rule: Instr_ok/struct.get}
 $${rule-prose: Instr_ok/struct.set}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - [name of the variables are changed, "mut" to "var" in the premise, "double ~" to "expand"]
 
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
  (5) Different name in prose specification - ["y" is changed to variable "i"]
@@ -569,7 +569,7 @@ $${rule: Instr_ok/struct.set}
 $${rule-prose: Instr_ok/array.new}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["double ~" to expand, "mut ?" to "mut"]
 
@@ -579,8 +579,8 @@ $${rule-prose: Instr_ok/array.new}
 
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
- (4) Wrong result type. - [Erase "null" in the range type] 
- 
+ (4) Wrong result type. - [Erase "null" in the range type]
+
  (6) Change “expand()” to expansion
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -602,7 +602,7 @@ $${rule: Instr_ok/array.new}
 $${rule-prose: Instr_ok/array.new_default}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand", change defaultable notation in the premise ]
 
@@ -613,7 +613,7 @@ $${rule-prose: Instr_ok/array.new_default}
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
  (4) Wrong result type. - [Erase "null" in the range type]
- 
+
  (6) Change “expand()” to expansion
 
  (7) Different notation for “defaultable”
@@ -641,7 +641,7 @@ $${rule: Instr_ok/array.new_default}
 $${rule-prose: Instr_ok/array.new_fixed}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - [ "mut ?" to "mut" in the premise, "double ~" to "expand" ]
 
@@ -652,7 +652,7 @@ $${rule-prose: Instr_ok/array.new_fixed}
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
  (4) Wrong result type. - [Erase "null" in the range type]
- 
+
  (6) Change “expand()” to expansion
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
@@ -675,18 +675,18 @@ $${rule: Instr_ok/array.new_fixed}
 $${rule-prose: Instr_ok/array.new_elem}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand" ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
  (2) Change Inequality condition to  existence condition
 
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (4) Wrong result type. - [Erase "null" in the range type]
- 
+
  (6) Change “expand()” to expansion
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
@@ -715,18 +715,18 @@ $${rule: Instr_ok/array.new_elem}
 $${rule-prose: Instr_ok/array.new_data}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - [ "mut ?" to "mut" in the premise, "double ~" to "expand" ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (4) Wrong result type. - [Erase "null" in the range type]
- 
+
  (6) Change “expand()” to expansion
 
  (*) merge the "Either-Or" statement.
@@ -757,16 +757,16 @@ $${rule: Instr_ok/array.new_data}
 $${rule-prose: Instr_ok/array.get}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand" ]
 
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (6) Change “expand()” to expansion
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
@@ -791,16 +791,16 @@ $${rule: Instr_ok/array.get}
 $${rule-prose: Instr_ok/array.set}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
-  
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (6) Change “expand()” to expansion
 
  (8) Change “mut” to “var”
@@ -827,10 +827,10 @@ $${rule: Instr_ok/array.set}
 $${rule-prose: Instr_ok/array.len}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - [Erase the premise.]
-  
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
  (*) - [Don't need any description.]
@@ -847,14 +847,14 @@ $${rule: Instr_ok/array.len}
 $${rule-prose: Instr_ok/array.fill}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
   (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
  (6) Change “expand()” to expansion
@@ -884,18 +884,18 @@ $${rule: Instr_ok/array.fill}
 $${rule-prose: Instr_ok/array.copy}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut" to "var" for x_1 ,"mut ?" to "mut" for x_2,  "double ~" to "expand", x_1 to x amd x_2 to y ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (6) Change “expand()” to expansion
- 
+
  (8) Change “mut” to “var” - [for x_1]
 
  (*) - [variables have different name]
@@ -931,15 +931,15 @@ $${rule-prose: Instr_ok/array.init_elem}
  below is the official specification
 
  (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
 
  (6) Change “expand()” to expansion
- 
+
  (8) Change “mut” to “var”
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
@@ -970,18 +970,18 @@ $${rule: Instr_ok/array.init_elem}
 $${rule-prose: Instr_ok/array.init_data}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (3) Need to add more specific type - [add "structure type","field type", etc]
- 
+
  (6) Change “expand()” to expansion
- 
+
  (8) Change “mut” to “var”
 
  (*) merge the "Either-Or" statement.
@@ -1019,7 +1019,7 @@ $${rule-prose: Instr_ok/ref.i31}
 
 .. todo::
    (4) Wrong result type. - [Erase "null" in the range type]
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\I32] \to [(\REF~\I31)]`.
 
@@ -1034,7 +1034,7 @@ $${rule-prose: Instr_ok/i31.get}
 
 .. todo::
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\I31)] \to [\I32]`.
 
@@ -1073,7 +1073,7 @@ $${rule-prose: Instr_ok/extern.convert_any}
 
 
 .. todo::
- (*) below is the official specification 
+ (*) below is the official specification
 
  (L2) - [Need to discrimintate two "null" with "null_1" and "null_2", Add "null_1 ? = null_2 ?" condition in the premise]
 
@@ -1113,7 +1113,7 @@ $${definition: unpackshape}
 $${rule-prose: Instr_ok/vconst}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[] \to [\V128]`.
 
@@ -1127,7 +1127,7 @@ $${rule: Instr_ok/vconst}
 $${rule-prose: Instr_ok/vvunop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -1140,7 +1140,7 @@ $${rule: Instr_ok/vvunop}
 ..........................
 $${rule-prose: Instr_ok/vvbinop}
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 $${rule: Instr_ok/vvbinop}
@@ -1152,7 +1152,7 @@ $${rule: Instr_ok/vvbinop}
 $${rule-prose: Instr_ok/vvternop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
 
@@ -1166,7 +1166,7 @@ $${rule: Instr_ok/vvternop}
 $${rule-prose: Instr_ok/vvtestop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
@@ -1182,12 +1182,12 @@ $${rule: Instr_ok/vvtestop}
 $${rule-prose: Instr_ok/vunop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "sh" to "shape"]
 
  (5) Different name in prose specification - [change "sh" to "shape"]
-   
+
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -1201,7 +1201,7 @@ $${rule: Instr_ok/vunop}
 $${rule-prose: Instr_ok/vbinop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "sh" to "shape"]
 
@@ -1219,7 +1219,7 @@ $${rule: Instr_ok/vbinop}
 $${rule-prose: Instr_ok/vtestop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "sh" to "shape"]
 
@@ -1238,7 +1238,7 @@ $${rule: Instr_ok/vtestop}
 $${rule-prose: Instr_ok/vrelop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "sh" to "shape"]
 
@@ -1256,7 +1256,7 @@ $${rule: Instr_ok/vrelop}
 $${rule-prose: Instr_ok/vshiftop}
 
 .. todo::
-  below is the official specification 
+  below is the official specification
 
  (L1) - [change "sh" to "ishape"]
 
@@ -1274,7 +1274,7 @@ $${rule: Instr_ok/vshiftop}
 $${rule-prose: Instr_ok/vbitmask}
 
 .. todo::
-  below is the official specification 
+  below is the official specification
 
  (L1) - [change "sh" to "ishape"]
 
@@ -1292,7 +1292,7 @@ $${rule: Instr_ok/vbitmask}
 $${rule-prose: Instr_ok/vswizzle}
 
 .. todo::
-  below is the official specification 
+  below is the official specification
 
  (L1) - [change "sh" to "i8x16"]
 
@@ -1311,11 +1311,11 @@ $${rule-prose: Instr_ok/vshuffle}
 
 .. todo::
    (L2) - [change "i" to "laneidx", change "*" to 16, change "2 * dim(sh)" to 32, change "sh" to i8x16]
-   
+
    (5) Different name in prose specification - [change "i" to "laneidx", change "*" to 16, change "sh" to i8x16]
 
    (*) - [change "2 * dim(sh)" to 32]
- below is the official specification 
+ below is the official specification
 
 * For all :math:`\laneidx_i`, in :math:`\laneidx^{16}`, :math:`\laneidx_i` must be smaller than :math:`32`.
 
@@ -1336,7 +1336,7 @@ $${rule-prose: Instr_ok/vsplat}
 
    (5) Different name in prose specification - [change "sh" to "shape"]
 
- below is the official specification 
+ below is the official specification
 
 * Let :math:`t` be :math:`\unpackshape(\shape)`.
 
@@ -1356,7 +1356,7 @@ $${rule-prose: Instr_ok/vextract_lane}
 
    (5) Different name in prose specification - [change "sh" to "shape"]
 
- below is the official specification 
+ below is the official specification
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
@@ -1378,7 +1378,7 @@ $${rule-prose: Instr_ok/vreplace_lane}
 
    (5) Different name in prose specification - [change "sh" to "shape"]
 
- below is the official specification 
+ below is the official specification
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
@@ -1398,10 +1398,10 @@ $${rule-prose: Instr_ok/vextunop}
 .. todo::
 
    (L2) - [change "sh1.vextunop_sh2" to "ishape1_extadd_pairwise_ishape 2 _sx"]
-   
+
    (5) Different name in prose specification - [change "sh1.vextunop_sh2" to "ishape1_extadd_pairwise_ishape 2 _sx"]
- 
- below is the official specification 
+
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -1416,10 +1416,10 @@ $${rule-prose: Instr_ok/vextbinop}
 
 .. todo::
  (L2) - [change "sh1.vextbinop_sh2" to "ishape1.extmul_half _ishape2_sx"]
-   
+
  (5) Different name in prose specification - [change "sh1.vextbinop_sh2" to "ishape1.extmul_half _ishape2_sx"]
 
-below is the official specification 
+below is the official specification
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -1434,10 +1434,10 @@ $${rule-prose: Instr_ok/vnarrow}
 
 .. todo::
  (L1) - [change "sh1" to "ishpae1" and "sh2" to "ishape2"]
-   
+
  (5) Different name in prose specification - [change "sh1" to "ishpae1" and "sh2" to "ishape2"]
 
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -1452,10 +1452,10 @@ $${rule-prose: Instr_ok/vcvtop}
 
 .. todo::
  (L1) - [change "sh1.vcvtop_zero?_sh2_half ?" to "shape.vcvtop_half ?_shape_sx?_zero?"]
-   
+
  (5) Different name in prose specification - [change "sh1.vcvtop_zero?_sh2_half ?" to "shape.vcvtop_half ?_shape_sx?_zero?"]
 
- below is the official specification 
+ below is the official specification
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -1477,14 +1477,14 @@ Variable Instructions
 $${rule-prose: Instr_ok/local.get}
 
 .. todo::
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase comma in the last line]
 
    (2) Change Inequality condition to  existence condition
 
    (3) Need to add more specific type - ["init t" to local type]
-   
- below is the official specification 
+
+ below is the official specification
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
@@ -1510,8 +1510,8 @@ $${rule-prose: Instr_ok/local.set}
    (2) Change Inequality condition to  existence condition
 
    (3) Need to add more specific type - ["init t" to local type]
-   
- below is the official specification 
+
+ below is the official specification
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
@@ -1534,9 +1534,9 @@ $${rule-prose: Instr_ok/local.tee}
    (2) Change Inequality condition to  existence condition
 
    (3) Need to add more specific type - ["init t" to local type]
-   
-   
- below is the official specification 
+
+
+ below is the official specification
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
@@ -1555,12 +1555,12 @@ $${rule-prose: Instr_ok/global.get}
 
 .. todo::
    (L2) - ["mut ?" to "mut" in premise]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase "," and "?" in the last line]
-   
+
    (2) Change Inequality condition to  existence condition
 
- below is the official specification 
+ below is the official specification
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
@@ -1579,16 +1579,16 @@ $${rule-prose: Instr_ok/global.set}
 
 .. todo::
    (L2) - ["mut" to "var"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (4) Wrong result type.
 
    (8) Change “mut” to “var”
-   
- below is the official specification 
+
+ below is the official specification
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
@@ -1617,16 +1617,16 @@ $${rule-prose: Instr_ok/table.get}
 
 .. todo::
    (L1) - [change "lim" to "limits"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (3) Need to add more specific type - ["limits t" to "table type"]
-   
+
    (5) Different name in prose specification - [change "lim" to "limits"]
-   
- below is the official specification 
+
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1645,16 +1645,16 @@ $${rule-prose: Instr_ok/table.set}
 
 .. todo::
    (L1) - [change "lim" to "limits"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (3) Need to add more specific type - ["limits t" to "table type"]
-   
+
    (5) Different name in prose specification - [change "lim" to "limits"]
-   
- below is the official specification 
+
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1673,11 +1673,11 @@ $${rule-prose: Instr_ok/table.size}
 
 .. todo::
    (L2) - [change "lim rt" to "table type"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (*) - [Erase last statement]
- below is the official specification 
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1694,16 +1694,16 @@ $${rule-prose: Instr_ok/table.grow}
 
 .. todo::
    (L1) - [change "lim" to "limits"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (3) Need to add more specific type - ["limits t" to "table type"]
-   
+
    (5) Different name in prose specification - [change "lim" to "limits"]
-   
- below is the official specification 
+
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1722,16 +1722,16 @@ $${rule-prose: Instr_ok/table.fill}
 
 .. todo::
     (L1) - [change "lim" to "limits"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (3) Need to add more specific type - ["limits t" to "table type"]
-   
+
    (5) Different name in prose specification - [change "lim" to "limits"]
 
- below is the official specification 
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1750,15 +1750,15 @@ $${rule-prose: Instr_ok/table.copy}
 
 .. todo::
    (L1) - [change "lim" to "limits", change "x_1" to "x", "x_2" to "y"]
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (3) Need to add more specific type - ["limits t" to "table type", "t" to "reference type"]
-   
+
    (5) Different name in prose specification - [change "lim" to "limits", change "x_1" to "x", "x_2" to "y"]
- below is the official specification 
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1782,15 +1782,15 @@ $${rule: Instr_ok/table.copy}
 $${rule-prose: Instr_ok/table.init}
 
 .. todo::
-   
+
    (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-   
+
    (2) Change Inequality condition to  existence condition
-   
+
    (3) Need to add more specific type - ["limits t" to "table type", "t" to "reference type"]
-   
+
    (5) Different name in prose specification - [change "lim" to "limits"]
- below is the official specification 
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1814,9 +1814,9 @@ $${rule: Instr_ok/table.init}
 $${rule-prose: Instr_ok/elem.drop}
 
 .. todo::
-   
+
    (2) Change Inequality condition to  existence condition
- below is the official specification 
+ below is the official specification
 
 * The element segment :math:`C.\CELEMS[x]` must be defined in the context.
 
@@ -1841,12 +1841,12 @@ Memory Instructions
 $${rule-prose: Instr_ok/load}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
 
  (L1) - [ instruction name is different to the name in the prose specification]
 
- (2) Change Inequality condition to  existence condition 
+ (2) Change Inequality condition to  existence condition
 
  (*) - [Semantics are right but it should be more easy to read]
 
@@ -1867,11 +1867,11 @@ $${rule: Instr_ok/load-val}
 .........................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - ["N" in the instruction is changed to "M", instruction name is different to the name in the prose specification]
 
- (2) Change Inequality condition to  existence condition 
+ (2) Change Inequality condition to  existence condition
 
  (5) Different name in prose specification - ["N" in the instruction is changed to "M"]
 
@@ -1894,11 +1894,11 @@ $${rule: Instr_ok/load-pack}
 $${rule-prose: Instr_ok/store}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [ instruction name is different to the name in the prose specification]
 
- (2) Change Inequality condition to  existence condition 
+ (2) Change Inequality condition to  existence condition
 
  (*) - [Semantics are right but it should be more easy to read]
 
@@ -1919,11 +1919,11 @@ $${rule: Instr_ok/store-val}
 .................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - ["N" in the instruction is changed to "M", instruction name is different to the name in the prose specification]
 
- (2) Change Inequality condition to  existence condition 
+ (2) Change Inequality condition to  existence condition
 
  (5) Different name in prose specification - ["N" in the instruction is changed to "M"]
 
@@ -1946,7 +1946,7 @@ $${rule: Instr_ok/store-pack}
 .....................................
 $${rule-prose: Instr_ok/vload}
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
 
@@ -1969,11 +1969,11 @@ $${rule: Instr_ok/vload-val}
 ..............................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
- (L1)  - ["N" and "M" are switched] 
+ (L1)  - ["N" and "M" are switched]
 
- (5) Different name in prose specification - ["N" and "M" are switched] 
+ (5) Different name in prose specification - ["N" and "M" are switched]
 
  (2) Change Inequality condition to  existence condition
 
@@ -1992,7 +1992,7 @@ $${rule: Instr_ok/vload-pack}
 ..............................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (2) Change Inequality condition to  existence condition
 
@@ -2011,7 +2011,7 @@ $${rule: Instr_ok/vload-splat}
 .............................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (2) Change Inequality condition to  existence condition
 
@@ -2030,7 +2030,7 @@ $${rule: Instr_ok/vload-zero}
 ......................................................
 $${rule-prose: Instr_ok/vload_lane}
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "i" to "laneidx"]
 
@@ -2055,7 +2055,7 @@ $${rule: Instr_ok/vload_lane}
 .................................
 $${rule-prose: Instr_ok/vstore}
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (2) Change Inequality condition to  existence condition
 
@@ -2074,7 +2074,7 @@ $${rule: Instr_ok/vstore}
 .......................................................
 $${rule-prose: Instr_ok/vstore_lane}
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "i" to "laneidx"]
 
@@ -2100,7 +2100,7 @@ $${rule: Instr_ok/vstore_lane}
 $${rule-prose: Instr_ok/memory.size}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "mt" to "memtype"]
 
@@ -2122,7 +2122,7 @@ $${rule: Instr_ok/memory.size}
 $${rule-prose: Instr_ok/memory.grow}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "mt" to "memtype"]
 
@@ -2145,7 +2145,7 @@ $${rule: Instr_ok/memory.grow}
 $${rule-prose: Instr_ok/memory.fill}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "mt" to "memtype"]
 
@@ -2168,7 +2168,7 @@ $${rule: Instr_ok/memory.fill}
 $${rule-prose: Instr_ok/memory.copy}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - ["x","y" is changed to "x1","x2", change "mt" to "memtype", delete "y(x2)" ]
 
@@ -2179,8 +2179,8 @@ $${rule-prose: Instr_ok/memory.copy}
  (5) Different name in prose specification - ["x","y" is changed to "x1","x2"]
 
  (*) - [delete "y(x2)" in LaTeX and in prose]
- 
- (**) - [THE OFFICIAL SPECIFICTION IS ALSO WRONG COMPARED TO "https://webassembly.github.io/spec/core/valid/instructions.html"] 
+
+ (**) - [THE OFFICIAL SPECIFICTION IS ALSO WRONG COMPARED TO "https://webassembly.github.io/spec/core/valid/instructions.html"]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -2198,7 +2198,7 @@ $${rule: Instr_ok/memory.copy}
 $${rule-prose: Instr_ok/memory.init}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [change "mt" to "memtype"]
 
@@ -2224,7 +2224,7 @@ $${rule: Instr_ok/memory.init}
 $${rule-prose: Instr_ok/data.drop}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (2) Change Inequality condition to  existence condition
 
@@ -2254,8 +2254,8 @@ $${rule-prose: Instr_ok/block}
 
 .. todo::
  below is the official specification
- 
- (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise] 
+
+ (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise]
 
  (3) Need to add more specific type - [change "bt" to block type, add instruction type, etc]
 
@@ -2285,9 +2285,9 @@ $${rule: Instr_ok/block}
 $${rule-prose: Instr_ok/loop}
 
 .. todo::
- below is the official specification 
- 
- (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise] 
+ below is the official specification
+
+ (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise]
 
  (3) Need to add more specific type - [change "bt" to block type, add instruction type, etc]
 
@@ -2313,9 +2313,9 @@ $${rule: Instr_ok/loop}
 $${rule-prose: Instr_ok/if}
 
 .. todo::
- below is the official specification 
-  
- (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise] 
+ below is the official specification
+
+ (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise]
 
  (3) Need to add more specific type - [change "bt" to block type, add instruction type, etc]
 
@@ -2349,7 +2349,7 @@ $${rule-prose: Instr_ok/try_table}
    below is the official specification.
 
    (L1) - [change "bt" to "blocktype", instruction name should be corrected]
-   
+
    (5) Different name in prose specification - [change "bt" to "blocktype"]
 
    (*)- [instruction name should be corrected,change notation for context]
@@ -2402,15 +2402,15 @@ $${rule: Catch_ok/catch}
 .....................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
-  (L2) - [change double "~" to expand ] 
+  (L2) - [change double "~" to expand ]
 
-  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase un necessary symbols in the last line] 
+  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase un necessary symbols in the last line]
 
-  (2) Change Inequality condition to  existence condition 
+  (2) Change Inequality condition to  existence condition
 
-  (*) - [Erase null in the last line] 
+  (*) - [Erase null in the last line]
 
   (**) - [THE OFFICIAL SPECIFICATION IS WRONG! It should have "expansion" in the tag type ]
 
@@ -2437,9 +2437,9 @@ $${rule: Catch_ok/catch_ref}
 .. todo::
    below is the official specification
 
-   (L2) - ["<=" should "="] 
+   (L2) - ["<=" should "="]
 
-  (2) Change Inequality condition to  existence condition 
+  (2) Change Inequality condition to  existence condition
 
 
 
@@ -2458,11 +2458,11 @@ $${rule: Catch_ok/catch_all}
 .. todo::
    below is the official specification
 
-  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase un necessary symbols in the last line] 
+  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase un necessary symbols in the last line]
 
-  (2) Change Inequality condition to  existence condition 
+  (2) Change Inequality condition to  existence condition
 
-  (*) - [Erase "null" in the last line] 
+  (*) - [Erase "null" in the last line]
 
   (**) - ["R E F E X N" to "ref exn" IN THE OFFICIAL PROSE]
 
@@ -2483,8 +2483,8 @@ $${rule: Catch_ok/catch_all_ref}
 $${rule-prose: Instr_ok/br}
 
 .. todo::
- below is the official specification 
-  
+ below is the official specification
+
   (L2) - [ change "t1*" to  "t1* t*" in the premise]
 
   (2) Change Inequality condition to  existence condition
@@ -2492,7 +2492,7 @@ $${rule-prose: Instr_ok/br}
 
   (*) - [ change "t1*" to  "t1* t*" in the last statement]
 
- 
+
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -2517,7 +2517,7 @@ $${rule-prose: Instr_ok/br_if}
 
 .. todo::
  below is the official specification
- 
+
  (2) Change Inequality condition to  existence condition
 
 
@@ -2538,14 +2538,14 @@ $${rule: Instr_ok/br_if}
 $${rule-prose: Instr_ok/br_table}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) -[change l` to "l_N", every arrow type in the function type must be "t1* t* i32 -> t2*"]
 
  (2) Change Inequality condition to  existence condition
 
  (3) Need to add more specific type - [add label, value type, etc]
- 
+
  (4) Wrong result type. - [the result type should be "t1* t* i32 -> t2*"]
 
  (5) Different name in prose specification - [change l' to "l_N"]
@@ -2583,14 +2583,14 @@ $${rule: Instr_ok/br_table}
 $${rule-prose: Instr_ok/br_on_null}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
 
  (3) Need to add more specific type - [change "ht" to heap type]
- 
+
  (4) Wrong result type. [erase null in the range type]
 
 
@@ -2610,10 +2610,10 @@ $${rule: Instr_ok/br_on_null}
 $${rule-prose: Instr_ok/br_on_non_null}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
 
  (*) - Need more specific description.
@@ -2640,8 +2640,8 @@ $${rule: Instr_ok/br_on_non_null}
 $${rule-prose: Instr_ok/br_on_cast}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (2) Change Inequality condition to  existence condition
 
  (3) Need to add more specific type - [add reference type]
@@ -2674,8 +2674,8 @@ $${rule: Instr_ok/br_on_cast}
 $${rule-prose: Instr_ok/br_on_cast_fail}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (2) Change Inequality condition to  existence condition
 
  (3) Need to add more specific type - [add reference type]
@@ -2708,10 +2708,10 @@ $${rule: Instr_ok/br_on_cast_fail}
 $${rule-prose: Instr_ok/call}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L2) - [change "double ~" to expand]
- 
+
  (2) Change Inequality condition to  existence condition
 
  (6) Change “expand()” to expansion
@@ -2732,10 +2732,10 @@ $${rule: Instr_ok/call}
 $${rule-prose: Instr_ok/call_ref}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L2) - [change "double ~" to expand]
- 
+
  (2) Change Inequality condition to  existence condition
 
  (6) Change “expand()” to expansion
@@ -2756,16 +2756,16 @@ $${rule: Instr_ok/call_ref}
 $${rule-prose: Instr_ok/call_indirect}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L2) - [change "lim" to "limits" ,change "double ~" to expand]
- 
- (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. 
- 
+
+ (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
+
  (2) Change Inequality condition to  existence condition
- 
+
  (5) Different name in prose specification - [change "lim" to "limits"]
- 
+
  (6) Change “expand()” to expansion
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
@@ -2790,8 +2790,8 @@ $${rule: Instr_ok/call_indirect}
 $${rule-prose: Instr_ok/return}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L2) - [change "t1* -> t2*" to "t1* t* -> t2*"]
 
  (*) - [change "t1* -> t2*" to "t1* t* -> t2*"]
@@ -2820,16 +2820,16 @@ $${rule: Instr_ok/return}
 $${rule-prose: Instr_ok/return_call}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L1) - [Don't need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (6) Change “expand()” to expansion
- 
+
  (*) - [Don't need "t2`*" and validity of "t3* -> t4* " ]
- 
+
 
 * The return type :math:`C.\CRETURN` must not be absent in the context.
 
@@ -2854,16 +2854,16 @@ $${rule: Instr_ok/return_call}
 $${rule-prose: Instr_ok/return_call_ref}
 
 .. todo::
- below is the official specification 
- 
+ below is the official specification
+
  (L1) - [Don't need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (6) Change “expand()” to expansion
- 
+
  (*) - [Don't need "t2`*" and validity of "t3* -> t4* " ]
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
@@ -2886,18 +2886,18 @@ $${rule: Instr_ok/return_call_ref}
 $${rule-prose: Instr_ok/return_call_indirect}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L1) - [Don't need "t2`*" and "C |- t3* -> t4* : ok" in the premise, change "lim" to "limits"]
- 
+
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
- 
+
  (2) Change Inequality condition to  existence condition
- 
+
  (5) Different name in prose specification - [change "lim" to "limits"]
 
  (6) Change “expand()” to expansion
- 
+
  (*) - [Don't need "t2`*" and validity of "t3* -> t4* " ]
 
 * The return type :math:`C.\CRETURN` must not be empty in the context.
@@ -2999,14 +2999,14 @@ Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 .............................................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
  (L2) - [the result type should be "t1* -> t2* t3*", notation for Context C is different("C[.locals ...]" vs "C(with C.locals ...) ]
 
  (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol. - [Erase ","]
- 
+
  (4) Wrong result type. - ["t3*" should be "t2* t3*"]
- 
+
  (*) - [Need more specific description, change notaion for context]
 
  (**) - [RESULT TYPE OF OFFICIAL SPEC IS WRONG]
@@ -3029,11 +3029,11 @@ Subsumption for :math:`\instr^\ast`
 ...................................
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
- (L1) - [change "it'" to "instrtype"] 
+ (L1) - [change "it'" to "instrtype"]
 
- (3) Need to add more specific type - [change "it'" to "instrtype"] 
+ (3) Need to add more specific type - [change "it'" to "instrtype"]
 
 * The instruction sequence :math:`\instr^\ast` must be valid with some type :math:`\instrtype`.
 
@@ -3081,8 +3081,8 @@ $${rule-prose: Expr_ok}
 .. todo::
  below is the official specification
 
- (L1) - [instruction name should be "instr* end"] 
- 
+ (L1) - [instruction name should be "instr* end"]
+
 
 * The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
 
@@ -3100,10 +3100,10 @@ $${rule-prose: Expr_const}
 $${rule-prose: Instr_const}
 
 .. todo::
- below is the official specification 
+ below is the official specification
 
- (L1) - [instruction name should be "instr* end const" in the "instr* const" LaTeX formula, erase "n" in the "array_new_fixed x n",Unnecessary "iN \in i32 i64" in the premise of  "iN.binop"] 
- 
+ (L1) - [instruction name should be "instr* end const" in the "instr* const" LaTeX formula, erase "n" in the "array_new_fixed x n",Unnecessary "iN \in i32 i64" in the premise of  "iN.binop"]
+
  (*)  - [ Make "Or" more visible, simplify the case where 'instr' is 'gloabl.get x']
 
 * In a *constant* expression :math:`\instr^\ast~\END` all instructions in :math:`\instr^\ast` must be constant.
