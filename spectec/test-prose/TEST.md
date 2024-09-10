@@ -20,9 +20,9 @@ watsup 0.4 generator
 * The limits :math:`(n, m)` is valid with the nat :math:`k` if:
 
 
-   * :math:`n` is less than or equal to :math:`m`.
+  * :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` is less than or equal to :math:`k`.
+  * :math:`m` is less than or equal to :math:`k`.
 
 
 * The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
@@ -34,47 +34,47 @@ watsup 0.4 generator
 * The table type :math:`{\mathit{limits}}` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
+  * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
 
 
 * The memory type :math:`{\mathit{limits}}` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
+  * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * The function type :math:`{\mathit{functype}}` is valid.
+    * The function type :math:`{\mathit{functype}}` is valid.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.
-   * Or:
+    * The global type :math:`{\mathit{globaltype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.
-   * Or:
+    * The table type :math:`{\mathit{tabletype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.
+    * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
 * The limits :math:`(n_{11}, n_{12})` matches the limits :math:`(n_{21}, n_{22})` if:
 
 
-   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+  * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
+  * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
 * The function type :math:`{\mathit{ft}}` matches the function type :math:`{\mathit{ft}}`.
@@ -86,47 +86,47 @@ watsup 0.4 generator
 * The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{lim}}_2` if:
 
 
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
+  * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
 * The memory type :math:`{\mathit{lim}}_1` matches the memory type :math:`{\mathit{lim}}_2` if:
 
 
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
+  * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+    * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
-   * Or:
+    * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
-      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
-   * Or:
+    * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
-      * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
+    * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
 
 
 * The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
@@ -144,75 +144,75 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 * The instruction :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} \epsilon]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} \epsilon]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * The instruction :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 * The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
 
 
 * The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
 
 
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
-   * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-   * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+    * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[l]`.
+    * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 * The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
 * The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`C{.}\mathsf{return}` is :math:`{t^?}`.
+  * :math:`C{.}\mathsf{return}` is :math:`{t^?}`.
 
 
 * The instruction :math:`(t{.}\mathsf{const}~c_t)` is valid with the function type :math:`\epsilon~\rightarrow~t`.
@@ -233,384 +233,384 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
+    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
-      * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
+    * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
+    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
 
 
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
 
 
 * The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
+    * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
+    * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_3^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_3^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
-   * Or:
+    * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t^\ast}~{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t^\ast}~{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t^\ast}~{t_2^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^?}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(t{.}\mathsf{const}~c)`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(t{.}\mathsf{const}~c)`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
 
 
-   * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
+  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
 
-      * :math:`{\mathit{instr}}` is const.
+    * :math:`{\mathit{instr}}` is const.
 
 
 * The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
 
 
-   * The function type :math:`{\mathit{ft}}` is valid.
+  * The function type :math:`{\mathit{ft}}` is valid.
 
 
 * The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^?}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^?}`.
 
 
 * The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is valid.
+  * The global type :math:`{\mathit{gt}}` is valid.
 
-   * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
+  * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`t`.
+  * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`t`.
 
-   * :math:`{\mathit{expr}}` is const.
+  * :math:`{\mathit{expr}}` is const.
 
 
 * The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
 
 
-   * The table type :math:`{\mathit{tt}}` is valid.
+  * The table type :math:`{\mathit{tt}}` is valid.
 
 
 * The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
 
 
-   * The memory type :math:`{\mathit{mt}}` is valid.
+  * The memory type :math:`{\mathit{mt}}` is valid.
 
 
 * The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{tables}{}[0]` is :math:`{\mathit{lim}}`.
+  * :math:`C{.}\mathsf{tables}{}[0]` is :math:`{\mathit{lim}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`\mathsf{i{\scriptstyle 32}}`.
+  * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+  * :math:`{\mathit{expr}}` is const.
 
-   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{ft*}}|}`.
+  * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-   * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{lim}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{lim}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`\mathsf{i{\scriptstyle 32}}`.
+  * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+  * :math:`{\mathit{expr}}` is const.
 
 
 * The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external type :math:`{\mathit{xt}}` is valid.
+  * The external type :math:`{\mathit{xt}}` is valid.
 
 
 * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
 
-      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+  * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
 * The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
 
 
-   * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
+  * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
 
-   * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
+  * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
 
-      * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+    * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
 
-   * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
+  * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
-   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
+  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
-   * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
+  * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
 
-   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
+  * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+    * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
 
-   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
+  * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
-      * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
+    * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
 
-   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
+  * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
+  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
 
-      * The table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+    * The table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
+  * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
-   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
+  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
-      * The memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+    * The memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
-   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`,
+  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`,
 
-      * The table segment :math:`{\mathit{elem}}` is valid.
+    * The table segment :math:`{\mathit{elem}}` is valid.
 
-   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
+  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
 
-      * The memory segment :math:`{\mathit{data}}` is valid.
+    * The memory segment :math:`{\mathit{data}}` is valid.
 
-   * If :math:`{\mathit{start}}` is defined,
+  * If :math:`{\mathit{start}}` is defined,
 
-      * The start function :math:`{\mathit{start}}` is valid.
+    * The start function :math:`{\mathit{start}}` is valid.
 
-   * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
+  * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
+  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
 
-      * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
+    * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
 
-   * :math:`{|{{\mathit{tt}}^\ast}|}` is less than or equal to :math:`1`.
+  * :math:`{|{{\mathit{tt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
+  * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+  * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+  * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{{\mathit{ift}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{ift}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{igt}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{igt}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{itt}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{itt}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{imt}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{imt}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
 
 
 :math:`\mathsf{unreachable}`
@@ -656,11 +656,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Push the value :math:`{\mathit{val}}_1` to the stack.
+  a. Push the value :math:`{\mathit{val}}_1` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{val}}_2` to the stack.
+  a. Push the value :math:`{\mathit{val}}_2` to the stack.
 
 
 :math:`\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
@@ -673,11 +673,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_1^\ast})`.
+  a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_1^\ast})`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_2^\ast})`.
+  a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_2^\ast})`.
 
 
 :math:`\mathsf{label}`
@@ -711,31 +711,31 @@ watsup 0.4 generator
 
 #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+  a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+  #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current label from the stack.
+  #. Pop the current label from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+  #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
 #. Else:
 
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
 
-      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+    1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
 
-      #) Pop the current label from the stack.
+    #) Pop the current label from the stack.
 
-      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+    #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{br}~l)`.
+    #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_if}~l`
@@ -748,11 +748,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+  a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 #. Else:
 
-   a. Do nothing.
+  a. Do nothing.
 
 
 :math:`\mathsf{br\_table}~{l^\ast}~{l'}`
@@ -765,11 +765,11 @@ watsup 0.4 generator
 
 #. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
+  a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
+  a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
 
 
 :math:`\mathsf{frame}`
@@ -801,33 +801,33 @@ watsup 0.4 generator
 
 #. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`F` be the current frame.
+  #. Let :math:`F` be the current frame.
 
-   #. Let :math:`n` be the arity of :math:`F`.
+  #. Let :math:`n` be the arity of :math:`F`.
 
-   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+  #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+  #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current frame from the stack.
+  #. Pop the current frame from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
 #. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current label from the stack.
+  #. Pop the current label from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`\mathsf{return}`.
+  #. Execute the instruction :math:`\mathsf{return}`.
 
 
 :math:`t {.} {\mathit{unop}}`
@@ -840,7 +840,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{t}}{(c_1)}`.
 
@@ -861,7 +861,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}`.
 
@@ -908,7 +908,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}`.
 
@@ -938,17 +938,17 @@ watsup 0.4 generator
 
 #. If :math:`{t^?}` is not defined, then:
 
-   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+  a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
 
-   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+  #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 #. Let :math:`n` be :math:`1`.
 
 #. If :math:`{t^?}` is not :math:`\epsilon`, then:
 
-   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+  a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
 
-   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+  #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
@@ -983,21 +983,21 @@ watsup 0.4 generator
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]` is not defined, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`a` be :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]`.
 
 #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`z{.}\mathsf{types}{}[x]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Execute the instruction :math:`(\mathsf{call}~a)`.
 
@@ -1065,39 +1065,39 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
 
-   a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{t}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8]`.
+  #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{t}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8]`.
 
-   #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+  a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+    1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+    1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
 
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
+    #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
-      #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+    #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
 :math:`\mathsf{memory{.}size}`
@@ -1155,29 +1155,29 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
+  a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
+  #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+    1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
+    #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+    #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{memory{.}grow}`
@@ -1192,15 +1192,15 @@ watsup 0.4 generator
 
 #. Either:
 
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
+  a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
+  #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`{\mathrm{Ki}}`
@@ -1216,11 +1216,11 @@ watsup 0.4 generator
 
 1. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`0`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Assert: Due to validation, :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`.
 
@@ -1239,7 +1239,7 @@ watsup 0.4 generator
 
 1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Let :math:`n~{{n'}^\ast}` be :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -1252,7 +1252,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is :math:`1`.
 
@@ -1267,7 +1267,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
@@ -1280,7 +1280,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -1293,7 +1293,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`23`.
+  a. Return :math:`23`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -1306,7 +1306,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`8`.
+  a. Return :math:`8`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -1354,19 +1354,19 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`32`.
+  a. Return :math:`32`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-   a. Return :math:`64`.
+  a. Return :math:`64`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
 
-   a. Return :math:`32`.
+  a. Return :math:`32`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}`, then:
 
-   a. Return :math:`64`.
+  a. Return :math:`64`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
@@ -1375,15 +1375,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{ft}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{ft}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -1396,15 +1396,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -1417,15 +1417,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -1438,15 +1438,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -1466,7 +1466,7 @@ watsup 0.4 generator
 
 1. If :math:`0` is less than or equal to :math:`{2^{N - 1}}`, then:
 
-   a. Return :math:`i`.
+  a. Return :math:`i`.
 
 #. Assert: Due to validation, :math:`{2^{N - 1}}` is less than or equal to :math:`i`.
 
@@ -1490,75 +1490,75 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{iclz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{iclz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ictz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{ictz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fabs}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fabs}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fneg}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fneg}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fceil}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fceil}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
@@ -1577,187 +1577,187 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iadd}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{iadd}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{isub}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{isub}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
 
-      1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{idiv}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rem}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rem}`, then:
 
-      1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iand}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{iand}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ior}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ior}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ixor}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ixor}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
 
-      1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{irotl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{irotl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{irotr}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{irotr}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fadd}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fadd}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fsub}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fsub}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmul}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmul}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmin}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmin}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmax}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmax}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
 
@@ -1785,105 +1785,105 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ieq}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ieq}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{igt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ile}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ige}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{feq}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{feq}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fne}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fne}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{flt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{flt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fgt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fgt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fle}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fle}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
@@ -1904,79 +1904,79 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-   a. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
+  #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
 
-      1) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+    1) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-      #) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
+    #) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{wrap}`, then:
 
-   a. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+    1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc}`, then:
 
-         a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+      a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Return :math:`{{{{\mathrm{trunc}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})}`.
+      #) Return :math:`{{{{\mathrm{trunc}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})}`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{promote}`, then:
 
-   a. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{demote}`, then:
 
-   a. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{fN}})`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{convert}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+      a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathsf{i}}{n}|}, {|{\mathsf{f}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
+      #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathsf{i}}{n}|}, {|{\mathsf{f}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{reinterpret}`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`, then:
+    #) If :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`, then:
 
-         a) Return :math:`{{\mathrm{reinterpret}}}_{{\mathsf{i}}{n}, {\mathsf{f}}{n}}({\mathit{iN}})`.
+      a) Return :math:`{{\mathrm{reinterpret}}}_{{\mathsf{i}}{n}, {\mathsf{f}}{n}}({\mathit{iN}})`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
 
@@ -2017,15 +2017,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
+  a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-   a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
+  a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
 
-   a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
+  a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}`.
 
@@ -2038,15 +2038,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2059,15 +2059,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2080,15 +2080,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2101,15 +2101,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2296,9 +2296,9 @@ watsup 0.4 generator
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
+  a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
 
-   #. Return :math:`{\mathit{ti}'}`.
+  #. Return :math:`{\mathit{ti}'}`.
 
 
 :math:`{\mathrm{growmemory}}({\mathit{mi}}, n)`
@@ -2311,9 +2311,9 @@ watsup 0.4 generator
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+  a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
-   #. Return :math:`{\mathit{mi}'}`.
+  #. Return :math:`{\mathit{mi}'}`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
@@ -2322,15 +2322,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2343,15 +2343,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2364,15 +2364,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2385,15 +2385,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2423,7 +2423,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2453,23 +2453,23 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   #. Return :math:`\epsilon`.
+  #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+  a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+  #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
-   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
+  #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
 :math:`{\mathrm{alloctable}}((i, j))`
@@ -2491,7 +2491,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2521,7 +2521,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -2538,21 +2538,21 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
@@ -2630,7 +2630,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return.
+  a. Return.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -2653,7 +2653,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return.
+  a. Return.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -2736,7 +2736,7 @@ watsup 0.4 generator
 
 #. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
 
-   a. Execute the instruction :math:`(\mathsf{call}~{x'})`.
+  a. Execute the instruction :math:`(\mathsf{call}~{x'})`.
 
 #. Pop the activation of :math:`f` with arity :math:`0` from the stack.
 
@@ -4206,9 +4206,9 @@ watsup 0.4 generator
 * The limits :math:`(n, m)` is valid with the nat :math:`k` if:
 
 
-   * :math:`n` is less than or equal to :math:`m`.
+  * :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` is less than or equal to :math:`k`.
+  * :math:`m` is less than or equal to :math:`k`.
 
 
 * The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
@@ -4220,69 +4220,69 @@ watsup 0.4 generator
 * The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
+  * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
 
 
 * The memory type :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
+  * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * The function type :math:`{\mathit{functype}}` is valid.
+    * The function type :math:`{\mathit{functype}}` is valid.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.
-   * Or:
+    * The global type :math:`{\mathit{globaltype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.
-   * Or:
+    * The table type :math:`{\mathit{tabletype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.
+    * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
 * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`t` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
 
 * The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
 
 
-   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
+  * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
 
-   * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
+  * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
 
-      * The value type :math:`t_1` matches the value type :math:`t_2`.
+    * The value type :math:`t_1` matches the value type :math:`t_2`.
 
 
 * The limits :math:`(n_{11}, n_{12})` matches the limits :math:`(n_{21}, n_{22})` if:
 
 
-   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+  * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
+  * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
 * The function type :math:`{\mathit{ft}}` matches the function type :math:`{\mathit{ft}}`.
@@ -4294,71 +4294,71 @@ watsup 0.4 generator
 * The table type :math:`({\mathit{lim}}_1, {\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2, {\mathit{rt}})` if:
 
 
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
+  * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
 * The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` matches the memory type :math:`{\mathit{lim}}_2~\mathsf{page}` if:
 
 
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
+  * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+    * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
-   * Or:
+    * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
-      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
-   * Or:
+    * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
-      * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
+    * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
 
 
 * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{{\mathit{valtype}}^?}`.
+    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{{\mathit{valtype}}^?}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
+    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
@@ -4373,107 +4373,107 @@ watsup 0.4 generator
 * The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * The value type :math:`t` matches the value type :math:`{t'}`.
+    * The value type :math:`t` matches the value type :math:`{t'}`.
 
-      * Either:
+    * Either:
 
-         * :math:`{t'}` is :math:`{\mathit{numtype}}`.
+      * :math:`{t'}` is :math:`{\mathit{numtype}}`.
 
-      * Or:
+    * Or:
 
-         * :math:`{t'}` is :math:`{\mathit{vectype}}`.
+      * :math:`{t'}` is :math:`{\mathit{vectype}}`.
 
 
 * The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+    * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`,
 
-      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
-   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
 * The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, \mathsf{funcref})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, \mathsf{funcref})`.
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{types}{}[y]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * :math:`C{.}\mathsf{types}{}[y]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`C{.}\mathsf{return}` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{return}` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
@@ -4494,15 +4494,15 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
+    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
-      * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
+    * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
+    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
 
 
 * The instruction :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
@@ -4511,9 +4511,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
 * The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the function type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
@@ -4558,9 +4558,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * For all :math:`i` in :math:`{i^\ast}`,
+  * For all :math:`i` in :math:`{i^\ast}`,
 
-      * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
+    * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the function type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -4569,13 +4569,13 @@ watsup 0.4 generator
 * The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
 
 
-   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+  * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+  * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -4593,586 +4593,586 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
 
 
 * The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}})`.
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x_2`.
+  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{elems}{}[x_2]` is :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[x_2]` is :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
+    * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
+    * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-   * If :math:`n` is defined,
+  * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
+    * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+    * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
-   * Or:
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+  * Or:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+    * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 * The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+  * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
 * The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 * The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+  * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_3^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_3^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
-   * Or:
+    * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{{t'}_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{{t'}_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{t'}_2^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{t'}_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
+    * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
-   * Or:
+    * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t^\ast}~{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t^\ast}~{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t^\ast}~{t_2^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
 
 
-   * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
+  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
 
-      * :math:`{\mathit{instr}}` is const.
+    * :math:`{\mathit{instr}}` is const.
 
 
 * The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
 
 
-   * The function type :math:`{\mathit{ft}}` is valid.
+  * The function type :math:`{\mathit{ft}}` is valid.
 
 
 * The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
 
 * The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is valid.
+  * The global type :math:`{\mathit{gt}}` is valid.
 
-   * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
+  * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
+  * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
-   * :math:`{\mathit{expr}}` is const.
+  * :math:`{\mathit{expr}}` is const.
 
 
 * The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
 
 
-   * The table type :math:`{\mathit{tt}}` is valid.
+  * The table type :math:`{\mathit{tt}}` is valid.
 
 
 * The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
 
 
-   * The memory type :math:`{\mathit{mt}}` is valid.
+  * The memory type :math:`{\mathit{mt}}` is valid.
 
 
 * The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the reference type :math:`{\mathit{rt}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+    * :math:`{\mathit{expr}}` is const.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
-   * Or:
+    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+  * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
+    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
 
 * The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the reference type :math:`{\mathit{rt}}` if:
 
 
-   * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
+  * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+    * :math:`{\mathit{expr}}` is const.
 
-   * The elemmode :math:`{\mathit{elemmode}}` is valid with the reference type :math:`{\mathit{rt}}`.
+  * The elemmode :math:`{\mathit{elemmode}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
 
 * The datamode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~0~{\mathit{expr}})`.
+    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-      * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+    * :math:`{\mathit{expr}}` is const.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid if:
 
 
-   * The datamode :math:`{\mathit{datamode}}` is valid.
+  * The datamode :math:`{\mathit{datamode}}` is valid.
 
 
 * The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external type :math:`{\mathit{xt}}` is valid.
+  * The external type :math:`{\mathit{xt}}` is valid.
 
 
 * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
 
-      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+  * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
 * The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
 
 
-   * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
+  * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
 
-   * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
+  * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
 
-      * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+    * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
 
-   * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
+  * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
-   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
+  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
-   * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
+  * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
 
-   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
+  * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+    * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
 
-   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
+  * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
+  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+    * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
+  * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
-   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
+  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+    * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
-   * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
+  * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
 
-   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
+  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is valid with the reference type :math:`{\mathit{rt}}`.
+    * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
-   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
+  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
+    * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
 
-   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
+  * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
-      * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
+    * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
 
-   * If :math:`{\mathit{start}}` is defined,
+  * If :math:`{\mathit{start}}` is defined,
 
-      * The start function :math:`{\mathit{start}}` is valid.
+    * The start function :math:`{\mathit{start}}` is valid.
 
-   * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
+  * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
+  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
 
-      * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
+    * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
 
-   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
+  * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+  * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+  * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{{\mathit{ift}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{ift}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{igt}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{igt}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{itt}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{itt}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{imt}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+  * :math:`{{\mathit{imt}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
 
 
 :math:`\mathsf{unreachable}`
@@ -5218,11 +5218,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Push the value :math:`{\mathit{val}}_1` to the stack.
+  a. Push the value :math:`{\mathit{val}}_1` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{val}}_2` to the stack.
+  a. Push the value :math:`{\mathit{val}}_2` to the stack.
 
 
 :math:`\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
@@ -5235,11 +5235,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
+  a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
+  a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
 
 
 :math:`\mathsf{label}`
@@ -5273,31 +5273,31 @@ watsup 0.4 generator
 
 #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+  a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+  #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current label from the stack.
+  #. Pop the current label from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+  #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
 #. Else:
 
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
 
-      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+    1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
 
-      #) Pop the current label from the stack.
+    #) Pop the current label from the stack.
 
-      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+    #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{br}~l)`.
+    #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_if}~l`
@@ -5310,11 +5310,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+  a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 #. Else:
 
-   a. Do nothing.
+  a. Do nothing.
 
 
 :math:`\mathsf{br\_table}~{l^\ast}~{l'}`
@@ -5327,11 +5327,11 @@ watsup 0.4 generator
 
 #. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
+  a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
+  a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
 
 
 :math:`\mathsf{frame}`
@@ -5363,33 +5363,33 @@ watsup 0.4 generator
 
 #. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`F` be the current frame.
+  #. Let :math:`F` be the current frame.
 
-   #. Let :math:`n` be the arity of :math:`F`.
+  #. Let :math:`n` be the arity of :math:`F`.
 
-   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+  #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+  #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current frame from the stack.
+  #. Pop the current frame from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
 #. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current label from the stack.
+  #. Pop the current label from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`\mathsf{return}`.
+  #. Execute the instruction :math:`\mathsf{return}`.
 
 
 :math:`{\mathit{nt}} {.} {\mathit{unop}}`
@@ -5402,7 +5402,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
 
@@ -5423,7 +5423,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
 
@@ -5470,7 +5470,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}`.
 
@@ -5487,11 +5487,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
 :math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
@@ -5568,7 +5568,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}`.
 
@@ -5589,7 +5589,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}`.
 
@@ -5608,11 +5608,11 @@ watsup 0.4 generator
 
 #. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
 :math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
@@ -5739,27 +5739,27 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
+  #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
-      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1){}[i]`.
+    1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1){}[i]`.
 
-      #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
+    #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
 
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+    1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
+    #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
-         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1){}[i])}`.
+      a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1){}[i])}`.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
 
 
 :math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}{.}\mathsf{replace\_lane}~i`
@@ -5846,73 +5846,73 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
 
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}(c_1)`.
+    1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}(c_1)`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+    #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+    #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
+      a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 #. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
+    1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+    #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+    #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+    #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
+      a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
-   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is numtype, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is numtype, then:
 
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is numtype, then:
+    #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is numtype, then:
 
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+      a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is defined, then:
+      #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is defined, then:
 
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
+        1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
+        #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
 
-            #. If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+        #. If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
 
-               a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
+          a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
-               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+          #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{local{.}tee}~x`
@@ -5987,21 +5987,21 @@ watsup 0.4 generator
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` is not of the case :math:`\mathsf{ref{.}func\_addr}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`(\mathsf{ref{.}func\_addr}~a)` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]`.
 
 #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`z{.}\mathsf{types}{}[y]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Execute the instruction :math:`(\mathsf{call}~a)`.
 
@@ -6080,7 +6080,7 @@ watsup 0.4 generator
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Push the value :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` to the stack.
 
@@ -6116,27 +6116,27 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
 
 
 :math:`\mathsf{table{.}copy}~x~y`
@@ -6159,49 +6159,49 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. If :math:`j` is less than or equal to :math:`i`, then:
+  a. If :math:`j` is less than or equal to :math:`i`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Else:
+  #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
 
 
 :math:`\mathsf{table{.}init}~x~y`
@@ -6224,31 +6224,31 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
+  #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
 :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
@@ -6263,39 +6263,39 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
+  #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
 
-   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+  a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+    1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+    1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
 
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
+    #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
-      #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+    #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
 :math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{\mathit{ao}}`
@@ -6310,69 +6310,69 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+  a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 #. Else:
 
-   a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+  a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
-   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{shape}`, then:
+  #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{shape}`, then:
 
-      1) Let :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})` be :math:`{\mathit{vloadop}}_0`.
+    1) Let :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})` be :math:`{\mathit{vloadop}}_0`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`{j^{N}}` be the result for which for all :math:`{(k)^{k<N}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+    #) Let :math:`{j^{N}}` be the result for which for all :math:`{(k)^{k<N}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
 
-      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`M \cdot 2` is Jnn, then:
+    #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`M \cdot 2` is Jnn, then:
 
-         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
+      a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
+      #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{splat}`, then:
+  #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{splat}`, then:
 
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop}}_0`.
+    1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop}}_0`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`M` be :math:`128 / N`.
+    #) Let :math:`M` be :math:`128 / N`.
 
-      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+    #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
 
-         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
-
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{zero}`, then:
-
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop}}_0`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
+      a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
       #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-      #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
+      #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+  #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{zero}`, then:
+
+    1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop}}_0`.
+
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+      a) Trap.
+
+    #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+    #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
+
+    #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
@@ -6391,19 +6391,19 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`M` be :math:`128 / N`.
 
 #. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+  a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
-   #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+  #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])`.
+  #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])`.
 
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{memory{.}size}`
@@ -6437,27 +6437,27 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+  #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`\mathsf{memory{.}fill}`.
+  #. Execute the instruction :math:`\mathsf{memory{.}fill}`.
 
 
 :math:`\mathsf{memory{.}copy}`
@@ -6480,49 +6480,49 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. If :math:`j` is less than or equal to :math:`i`, then:
+  a. If :math:`j` is less than or equal to :math:`i`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
 
-      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+    #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Else:
+  #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
 
-      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+    #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`\mathsf{memory{.}copy}`.
+  #. Execute the instruction :math:`\mathsf{memory{.}copy}`.
 
 
 :math:`\mathsf{memory{.}init}~x`
@@ -6545,31 +6545,31 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}{}[i])` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}{}[i])` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+  #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{memory{.}init}~x)`.
+  #. Execute the instruction :math:`(\mathsf{memory{.}init}~x)`.
 
 
 :math:`\mathsf{local{.}set}~x`
@@ -6614,7 +6614,7 @@ watsup 0.4 generator
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
 
@@ -6635,15 +6635,15 @@ watsup 0.4 generator
 
 #. Either:
 
-   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
+  a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
+  #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`\mathsf{elem{.}drop}~x`
@@ -6673,29 +6673,29 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+  a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+  #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+    1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
+    #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+    #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{ao}}`
@@ -6714,7 +6714,7 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
 
@@ -6737,19 +6737,19 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`M` be :math:`128 / N`.
 
 #. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+  a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
-   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`, then:
+  #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`, then:
 
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c){}[j])`.
+    1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c){}[j])`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
+    #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{memory{.}grow}`
@@ -6764,15 +6764,15 @@ watsup 0.4 generator
 
 #. Either:
 
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
+  a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
+  #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`\mathsf{data{.}drop}~x`
@@ -6797,11 +6797,11 @@ watsup 0.4 generator
 
 1. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`0`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Assert: Due to validation, :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`.
 
@@ -6820,7 +6820,7 @@ watsup 0.4 generator
 
 1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Let :math:`n~{{n'}^\ast}` be :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -6833,7 +6833,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is :math:`1`.
 
@@ -6848,7 +6848,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
@@ -6861,7 +6861,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -6874,7 +6874,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -6887,7 +6887,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -6900,7 +6900,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -6913,7 +6913,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`23`.
+  a. Return :math:`23`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -6926,7 +6926,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`8`.
+  a. Return :math:`8`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -6974,23 +6974,23 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`32`.
+  a. Return :math:`32`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-   a. Return :math:`64`.
+  a. Return :math:`64`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
 
-   a. Return :math:`32`.
+  a. Return :math:`32`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}`, then:
 
-   a. Return :math:`64`.
+  a. Return :math:`64`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{v{\scriptstyle 128}}`, then:
 
-   a. Return :math:`128`.
+  a. Return :math:`128`.
 
 
 :math:`{|{\mathsf{i}}{n}|}`
@@ -7006,7 +7006,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{packtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 8}}`, then:
 
-   a. Return :math:`8`.
+  a. Return :math:`8`.
 
 #. Assert: Due to validation, :math:`{\mathit{packtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 16}}`.
 
@@ -7019,9 +7019,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{|{\mathit{numtype}}|}`.
+  #. Return :math:`{|{\mathit{numtype}}|}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -7085,7 +7085,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
 
@@ -7114,7 +7114,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7127,9 +7127,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathit{numtype}}`.
+  #. Return :math:`{\mathit{numtype}}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -7149,15 +7149,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{ft}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{ft}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7170,15 +7170,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7191,15 +7191,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7212,15 +7212,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7233,15 +7233,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}init}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}init}~x)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{memory{.}init}~x)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`x`.
+  #. Return :math:`x`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{data{.}drop}`, then:
 
-   a. Let :math:`(\mathsf{data{.}drop}~x)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{data{.}drop}~x)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`x`.
+  #. Return :math:`x`.
 
 #. Return :math:`\epsilon`.
 
@@ -7252,7 +7252,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{instr}}~{{\mathit{instr}'}^\ast}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7279,7 +7279,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -7299,7 +7299,7 @@ watsup 0.4 generator
 
 1. If :math:`0` is less than or equal to :math:`{2^{N - 1}}`, then:
 
-   a. Return :math:`i`.
+  a. Return :math:`i`.
 
 #. Assert: Due to validation, :math:`{2^{N - 1}}` is less than or equal to :math:`i`.
 
@@ -7323,87 +7323,87 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`.
+  #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`.
 
-   #. Let :math:`(\mathsf{extend}~M)` be :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`(\mathsf{extend}~M)` be :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
+  #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
@@ -7422,187 +7422,187 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
 
-      1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rem}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rem}`, then:
 
-      1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
 
-      1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
 
@@ -7630,105 +7630,105 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
@@ -7749,109 +7749,109 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
 #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{wrap}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
+    #) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc}`, then:
 
-         a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
 
-         a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{convert}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
 #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{promote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+    #) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
 #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+    #) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{|{{\mathsf{i}}{n}}_1|}` is :math:`{|{{\mathsf{f}}{n}}_2|}`, then:
+    #) If :math:`{|{{\mathsf{i}}{n}}_1|}` is :math:`{|{{\mathsf{f}}{n}}_2|}`, then:
 
-         a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{n}}_1, {{\mathsf{f}}{n}}_2}({\mathit{iN}}_1)`.
+      a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{n}}_1, {{\mathsf{f}}{n}}_2}({\mathit{iN}}_1)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
@@ -7892,7 +7892,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Return :math:`c`.
+  a. Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -7907,7 +7907,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Return :math:`c`.
+  a. Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -7931,7 +7931,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}`, then:
 
-   a. Return :math:`i`.
+  a. Return :math:`i`.
 
 #. Assert: Due to validation, :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{high}`.
 
@@ -7951,15 +7951,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}`, then:
 
-   a. Return :math:`{{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  a. Return :math:`{{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{andnot}`, then:
 
-   a. Return :math:`{{\mathrm{iandnot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  a. Return :math:`{{\mathrm{iandnot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}`, then:
 
-   a. Return :math:`{{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  a. Return :math:`{{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}`.
 
@@ -7979,105 +7979,105 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
@@ -8100,213 +8100,213 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{min}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{min}`, then:
 
-      1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imin}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imin}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{max}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{max}`, then:
 
-      1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imax}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imax}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{add\_sat}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{add\_sat}`, then:
 
-      1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{sub\_sat}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{sub\_sat}`, then:
 
-      1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
-
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
-
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
-
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+  #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+  #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
-   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
+  #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmax}`.
 
@@ -8331,171 +8331,171 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`(\mathsf{lt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`(\mathsf{lt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+    #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`(\mathsf{gt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`(\mathsf{gt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+    #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
 
-      1) Let :math:`(\mathsf{le}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`(\mathsf{le}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+    #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`(\mathsf{ge}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`(\mathsf{ge}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+    #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+    #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+    #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+    #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+    #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
+  #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
+  #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
+  #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
+  #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+  #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
+  #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathsf{f}}{n}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+  #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+  #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+  #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
@@ -8522,71 +8522,71 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Jnn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Jnn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{extend}`, then:
+    #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-         #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-         #) Return :math:`{\mathit{iN}}_2`.
+      #) Return :math:`{\mathit{iN}}_2`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{convert}`, then:
+    #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-         #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-         #) Return :math:`{\mathit{fN}}_2`.
+      #) Return :math:`{\mathit{fN}}_2`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
+    #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
 
-         a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-         #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+      #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-         #) Return :math:`{{\mathit{iN}}_2^?}`.
+      #) Return :math:`{{\mathit{iN}}_2^?}`.
 
 #. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+    #) Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-      #) Return :math:`{{\mathit{fN}}_2^\ast}`.
+    #) Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`.
 
@@ -8624,15 +8624,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extmul}`, then:
 
-   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
+  #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
+  #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
 
-   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
+  #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
 
-   #. Return :math:`c`.
+  #. Return :math:`c`.
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop\_u{\kern-0.1em\scriptstyle 0}}}` is .
 
@@ -8653,7 +8653,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
 
-   a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
+  a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`.
 
@@ -8668,27 +8668,27 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
+  a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-   a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
+  a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
 
-   a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
+  a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}`, then:
 
-   a. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
+  a. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{v{\scriptstyle 128}}`, then:
 
-   a. Return :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~0)`.
+  a. Return :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~0)`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{funcref}`, then:
 
-   a. Return :math:`(\mathsf{ref{.}null}~\mathsf{funcref})`.
+  a. Return :math:`(\mathsf{ref{.}null}~\mathsf{funcref})`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{externref}`.
 
@@ -8701,15 +8701,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -8722,15 +8722,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -8743,15 +8743,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -8764,15 +8764,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
+  #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9009,9 +9009,9 @@ watsup 0.4 generator
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+  a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
-   #. Return :math:`{\mathit{ti}'}`.
+  #. Return :math:`{\mathit{ti}'}`.
 
 
 :math:`{\mathrm{growmemory}}({\mathit{mi}}, n)`
@@ -9024,9 +9024,9 @@ watsup 0.4 generator
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+  a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
-   #. Return :math:`{\mathit{mi}'}`.
+  #. Return :math:`{\mathit{mi}'}`.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -9035,17 +9035,17 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon~\rightarrow~\epsilon`.
+  a. Return :math:`\epsilon~\rightarrow~\epsilon`.
 
 #. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case , then:
 
-   a. Let :math:`{\mathit{valtype}}_0` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathit{valtype}}_0` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{valtype}}_0` is defined, then:
+  #. If :math:`{\mathit{valtype}}_0` is defined, then:
 
-      1) Let :math:`t` be :math:`{\mathit{valtype}}_0`.
+    1) Let :math:`t` be :math:`{\mathit{valtype}}_0`.
 
-      #) Return :math:`\epsilon~\rightarrow~t`.
+    #) Return :math:`\epsilon~\rightarrow~t`.
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case .
 
@@ -9060,15 +9060,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9081,15 +9081,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9102,15 +9102,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9123,15 +9123,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
+  #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9161,7 +9161,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9191,23 +9191,23 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   #. Return :math:`\epsilon`.
+  #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+  a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+  #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
-   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
+  #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
 :math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}))`
@@ -9229,7 +9229,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9259,7 +9259,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9289,7 +9289,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -9325,7 +9325,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -9342,21 +9342,21 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
@@ -9454,11 +9454,11 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`, then:
 
-   a. Return :math:`(\mathsf{elem{.}drop}~i)`.
+  a. Return :math:`(\mathsf{elem{.}drop}~i)`.
 
 #. Assert: Due to validation, :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`.
 
@@ -9475,7 +9475,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`.
 
@@ -9552,7 +9552,7 @@ watsup 0.4 generator
 
 #. If :math:`{(\mathsf{call}~x)^?}` is defined, then:
 
-   a. Execute the instruction :math:`(\mathsf{call}~x)`.
+  a. Execute the instruction :math:`(\mathsf{call}~x)`.
 
 #. Pop the activation of :math:`f` with arity :math:`0` from the stack.
 
@@ -12356,80 +12356,80 @@ watsup 0.4 generator
 * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{absheaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{absheaptype}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
-      * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
+    * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
 
-      * :math:`C{.}\mathsf{recs}{}[i]` is :math:`{\mathit{st}}`.
+    * :math:`C{.}\mathsf{recs}{}[i]` is :math:`{\mathit{st}}`.
 
 
 * The reference type :math:`(\mathsf{ref}~(\mathsf{null}~{()^?}~{}^?)~{\mathit{heaptype}})` is valid if:
 
 
-   * The heap type :math:`{\mathit{heaptype}}` is valid.
+  * The heap type :math:`{\mathit{heaptype}}` is valid.
 
 
 * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{numtype}}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{numtype}}`.
 
-      * The number type :math:`{\mathit{numtype}}` is valid.
+    * The number type :math:`{\mathit{numtype}}` is valid.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}`.
 
-      * The vector type :math:`{\mathit{vectype}}` is valid.
-   * Or:
+    * The vector type :math:`{\mathit{vectype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}`.
 
-      * The reference type :math:`{\mathit{reftype}}` is valid.
-   * Or:
+    * The reference type :math:`{\mathit{reftype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
 
 * The value type sequence :math:`{t^\ast}` is valid if:
 
 
-   * For all :math:`t` in :math:`{t^\ast}`,
+  * For all :math:`t` in :math:`{t^\ast}`,
 
-      * The value type :math:`t` is valid.
+    * The value type :math:`t` is valid.
 
 
 * The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
 
 
-   * The value type sequence :math:`{t_1^\ast}` is valid.
+  * The value type sequence :math:`{t_1^\ast}` is valid.
 
-   * The value type sequence :math:`{t_2^\ast}` is valid.
+  * The value type sequence :math:`{t_2^\ast}` is valid.
 
-   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{lct*}}|}`.
+  * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
-   * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
+    * :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
 
 
 * The packed type :math:`{\mathit{packtype}}` is valid.
@@ -12438,54 +12438,54 @@ watsup 0.4 generator
 * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{valtype}}`.
+    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{valtype}}`.
 
-      * The value type :math:`{\mathit{valtype}}` is valid.
+    * The value type :math:`{\mathit{valtype}}` is valid.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
+    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
 
-      * The packed type :math:`{\mathit{packtype}}` is valid.
+    * The packed type :math:`{\mathit{packtype}}` is valid.
 
 
 * The field type :math:`((\mathsf{mut}~{()^?}~{}^?), {\mathit{storagetype}})` is valid if:
 
 
-   * The storage type :math:`{\mathit{storagetype}}` is valid.
+  * The storage type :math:`{\mathit{storagetype}}` is valid.
 
 
 * The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid if:
 
 
-   * The value type sequence :math:`{t_1^\ast}` is valid.
+  * The value type sequence :math:`{t_1^\ast}` is valid.
 
-   * The value type sequence :math:`{t_2^\ast}` is valid.
+  * The value type sequence :math:`{t_2^\ast}` is valid.
 
 
 * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
-      * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`,
-
-         * The field type :math:`{\mathit{fieldtype}}` is valid.
-
-   * Or:
-
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+    * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`,
 
       * The field type :math:`{\mathit{fieldtype}}` is valid.
-   * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+  * Or:
 
-      * The function type :math:`{\mathit{functype}}` is valid.
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+
+    * The field type :math:`{\mathit{fieldtype}}` is valid.
+  * Or:
+
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+    * The function type :math:`{\mathit{functype}}` is valid.
 
 
 * The packed type :math:`{\mathit{packtype}}` matches the packed type :math:`{\mathit{packtype}}`.
@@ -12497,160 +12497,160 @@ watsup 0.4 generator
 * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+    * :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+    * :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
-      * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
+    * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
 
-      * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the heap type :math:`{\mathit{deftype}}_2`.
+    * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the heap type :math:`{\mathit{deftype}}_2`.
 
 
 * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}_1`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}_1`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}_2`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}_2`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` is valid.
+    * The heap type :math:`{\mathit{heaptype}'}` is valid.
 
-      * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
+    * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
-   * Or:
+    * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{any}`.
-   * Or:
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{any}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 31}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 31}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
-   * Or:
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{struct}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{struct}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
-   * Or:
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{array}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{array}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
-   * Or:
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
-   * Or:
+    * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
-   * Or:
+    * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{func}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{func}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
-   * Or:
+    * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}_1`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}_1`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{deftype}}_2`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{deftype}}_2`.
 
-      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
-   * Or:
+    * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
-   * Or:
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{typeidx}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
-   * Or:
+    * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
-      * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
+    * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
 
-      * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
+    * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
 
-      * :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
-   * Or:
+    * :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{none}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{none}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
-   * Or:
+    * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nofunc}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nofunc}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
-   * Or:
+    * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{noextern}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{noextern}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
-   * Or:
+    * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
+  * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
+    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
 
 * The reference type :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)~{\mathit{ht}}_1)` matches the reference type :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?)~{\mathit{ht}}_2)` if:
 
 
-   * The heap type :math:`{\mathit{ht}}_1` matches the heap type :math:`{\mathit{ht}}_2`.
+  * The heap type :math:`{\mathit{ht}}_1` matches the heap type :math:`{\mathit{ht}}_2`.
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`{()^?}`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`{()^?}`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
 
 
 * The vector type :math:`{\mathit{vectype}}` matches the vector type :math:`{\mathit{vectype}}`.
@@ -12659,467 +12659,467 @@ watsup 0.4 generator
 * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{numtype}}_1`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{numtype}}_1`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{numtype}}_2`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{numtype}}_2`.
 
-      * The number type :math:`{\mathit{numtype}}_1` matches the number type :math:`{\mathit{numtype}}_2`.
+    * The number type :math:`{\mathit{numtype}}_1` matches the number type :math:`{\mathit{numtype}}_2`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}_1`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}_1`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{vectype}}_2`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{vectype}}_2`.
 
-      * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.
-   * Or:
+    * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}_1`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}_1`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{reftype}}_2`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{reftype}}_2`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
-   * Or:
+    * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{valtype}}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{valtype}}`.
 
 
 * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{valtype}}_1`.
+    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{valtype}}_1`.
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{valtype}}_2`.
+    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{valtype}}_2`.
 
-      * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+    * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}_1`.
+    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}_1`.
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{packtype}}_2`.
+    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{packtype}}_2`.
 
-      * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
+    * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
 
 
 * The field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{zt}}_1)` matches the field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{zt}}_2)` if:
 
 
-   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
+  * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
 
-      * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+    * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
 
 * The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
 
 
-   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
+  * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
 
-   * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
+  * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
 
-      * The value type :math:`t_1` matches the value type :math:`t_2`.
+    * The value type :math:`t_1` matches the value type :math:`t_2`.
 
 
 * The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` matches the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
 
 
-   * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
+  * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
 
-   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
+  * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
 
 
 * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
-      * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
+    * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
 
-      * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`,
-
-         * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
-
-   * Or:
-
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
-
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+    * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`,
 
       * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
-   * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+  * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
 
-      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+
+    * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
+  * Or:
+
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+
+    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+
+    * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
 
 * The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit{comptype}})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x_0})` if:
 
 
-   * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
+  * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
 
-   * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`x` is less than :math:`x_0`.
+    * :math:`x` is less than :math:`x_0`.
 
-   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
+  * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-   * :math:`{|{\mathit{x'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
+  * :math:`{|{\mathit{x'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-   * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`,
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`,
 
-      * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
+    * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
-   * The composite type :math:`{\mathit{comptype}}` is valid.
+  * The composite type :math:`{\mathit{comptype}}` is valid.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
 
-      * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+    * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
 * The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
-   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
+  * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`,
+  * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`,
 
-      * :math:`{\mathit{typeuse}} \prec x, i` is true.
+    * :math:`{\mathit{typeuse}} \prec x, i` is true.
 
-   * :math:`{|{\mathit{typeuse*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
+  * :math:`{|{\mathit{typeuse*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-   * :math:`{|{\mathit{typeuse'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
+  * :math:`{|{\mathit{typeuse'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`,
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`,
 
-      * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
+    * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
-   * The composite type :math:`{\mathit{comptype}}` is valid.
+  * The composite type :math:`{\mathit{comptype}}` is valid.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
 
-      * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+    * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
 * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})`.
+    * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
+    * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x + 1})`.
-   * Or:
+    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x + 1})`.
+  * Or:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{subtype}}^\ast}`.
+    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{subtype}}^\ast}`.
 
-      * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, 0)})`.
+    * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
 * The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
+  * The recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
-   * :math:`{\mathit{rectype}}` is :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
+  * :math:`{\mathit{rectype}}` is :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
-   * :math:`i` is less than :math:`n`.
+  * :math:`i` is less than :math:`n`.
 
 
 * The limits :math:`(n, m)` is valid with the nat :math:`k` if:
 
 
-   * :math:`n` is less than or equal to :math:`m`.
+  * :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` is less than or equal to :math:`k`.
+  * :math:`m` is less than or equal to :math:`k`.
 
 
 * The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid if:
 
 
-   * The value type :math:`t` is valid.
+  * The value type :math:`t` is valid.
 
 
 * The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
+  * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
 
-   * The reference type :math:`{\mathit{reftype}}` is valid.
+  * The reference type :math:`{\mathit{reftype}}` is valid.
 
 
 * The memory type :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
+  * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
 
 
 * The memory type :math:`{\mathit{deftype}}` is valid if:
 
 
-   * The defined type :math:`{\mathit{deftype}}` is valid.
+  * The defined type :math:`{\mathit{deftype}}` is valid.
 
-   * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+  * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{deftype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{deftype}})`.
 
-      * The defined type :math:`{\mathit{deftype}}` is valid.
+    * The defined type :math:`{\mathit{deftype}}` is valid.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+    * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.
-   * Or:
+    * The global type :math:`{\mathit{globaltype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.
-   * Or:
+    * The table type :math:`{\mathit{tabletype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.
-   * Or:
+    * The memory type :math:`{\mathit{memtype}}` is valid.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
-      * The memory type :math:`{\mathit{tagtype}}` is valid.
+    * The memory type :math:`{\mathit{tagtype}}` is valid.
 
 
 * The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` matches the instruction type :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
 
 
-   * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
+  * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
 
-   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
+  * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
 
-   * :math:`{x^\ast}` is :math:`{x_2^\ast} \setminus {x_1^\ast}`.
+  * :math:`{x^\ast}` is :math:`{x_2^\ast} \setminus {x_1^\ast}`.
 
-   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{t*}}|}`.
+  * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{t*}}|}`.
 
-   * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
+    * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
 
 
 * The limits :math:`(n_1, m_1)` matches the limits :math:`(n_2, m_2)` if:
 
 
-   * :math:`n_1` is greater than or equal to :math:`n_2`.
+  * :math:`n_1` is greater than or equal to :math:`n_2`.
 
-   * :math:`m_1` is less than or equal to :math:`m_2`.
+  * :math:`m_1` is less than or equal to :math:`m_2`.
 
 
 * The global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{valtype}}_1)` matches the global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{valtype}}_2)` if:
 
 
-   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+  * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
 
-      * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
+    * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
 
 
 * The table type :math:`({\mathit{limits}}_1, {\mathit{reftype}}_1)` matches the table type :math:`({\mathit{limits}}_2, {\mathit{reftype}}_2)` if:
 
 
-   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
+  * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
 
-   * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
+  * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
 
-   * The reference type :math:`{\mathit{reftype}}_2` matches the reference type :math:`{\mathit{reftype}}_1`.
+  * The reference type :math:`{\mathit{reftype}}_2` matches the reference type :math:`{\mathit{reftype}}_1`.
 
 
 * The memory type :math:`{\mathit{limits}}_1~\mathsf{page}` matches the memory type :math:`{\mathit{limits}}_2~\mathsf{page}` if:
 
 
-   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
+  * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
 
 
 * The memory type :math:`{\mathit{deftype}}_1` matches the memory type :math:`{\mathit{deftype}}_2` if:
 
 
-   * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+  * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
 
-   * The defined type :math:`{\mathit{deftype}}_2` matches the defined type :math:`{\mathit{deftype}}_1`.
+  * The defined type :math:`{\mathit{deftype}}_2` matches the defined type :math:`{\mathit{deftype}}_1`.
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
-      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+    * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
-      * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.
-   * Or:
+    * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
-      * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.
-   * Or:
+    * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
-      * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.
-   * Or:
+    * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.
+  * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
-      * The memory type :math:`{\mathit{tagtype}}_1` matches the memory type :math:`{\mathit{tagtype}}_2`.
+    * The memory type :math:`{\mathit{tagtype}}_1` matches the memory type :math:`{\mathit{tagtype}}_2`.
 
 
 * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the instruction type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{{\mathit{valtype}}^?}`.
+    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{{\mathit{valtype}}^?}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
 
-      * If :math:`{\mathit{valtype}}` is defined,
+    * If :math:`{\mathit{valtype}}` is defined,
 
-         * The value type :math:`{\mathit{valtype}}` is valid.
+      * The value type :math:`{\mathit{valtype}}` is valid.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
+    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch}~x~l)`.
+    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch}~x~l)`.
 
-      * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+    * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_ref}~x~l)`.
+    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_ref}~x~l)`.
 
-      * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+    * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
-   * Or:
+    * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+  * Or:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all}~l)`.
+    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all}~l)`.
 
-      * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
-   * Or:
+    * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+  * Or:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all\_ref}~l)`.
+    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 * The instruction :math:`\mathsf{nop}` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon`.
@@ -13128,263 +13128,263 @@ watsup 0.4 generator
 * The instruction :math:`\mathsf{unreachable}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * The instruction :math:`\mathsf{drop}` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The value type :math:`t` is valid.
+  * The value type :math:`t` is valid.
 
 
 * The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?})` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The value type :math:`t` is valid.
+  * The value type :math:`t` is valid.
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * The value type :math:`t` matches the value type :math:`{t'}`.
+    * The value type :math:`t` matches the value type :math:`{t'}`.
 
-      * Either:
+    * Either:
 
-         * :math:`{t'}` is :math:`{\mathit{numtype}}`.
+      * :math:`{t'}` is :math:`{\mathit{numtype}}`.
 
-      * Or:
+    * Or:
 
-         * :math:`{t'}` is :math:`{\mathit{vectype}}`.
+      * :math:`{t'}` is :math:`{\mathit{vectype}}`.
 
 
 * The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br}~l)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{br\_if}~l)` is valid with the instruction type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+    * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`,
 
-      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
-   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{br\_on\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
+  * The heap type :math:`{\mathit{ht}}` is valid.
 
 
 * The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
 * The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
 
-   * The reference type :math:`{\mathit{rt}}_1` is valid.
+  * The reference type :math:`{\mathit{rt}}_1` is valid.
 
-   * The reference type :math:`{\mathit{rt}}_2` is valid.
+  * The reference type :math:`{\mathit{rt}}_2` is valid.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
 
-   * The reference type :math:`{\mathit{rt}}_1` is valid.
+  * The reference type :math:`{\mathit{rt}}_1` is valid.
 
-   * The reference type :math:`{\mathit{rt}}_2` is valid.
+  * The reference type :math:`{\mathit{rt}}_2` is valid.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
-   * The reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
+  * The reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 * The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
+  * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 * The instruction :math:`\mathsf{return}` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`C{.}\mathsf{return}` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{return}` is :math:`{t^\ast}`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
+  * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+  * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
 
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
+  * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{return\_call\_ref}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
+  * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+  * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
 
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
+  * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_4^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
+  * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
+  * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+  * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
 
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
+  * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{throw}~x)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * The instruction :math:`\mathsf{throw\_ref}` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast}` if:
 
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 * The instruction :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-   * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
+  * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
 
-      * The catch clause :math:`{\mathit{catch}}` is valid.
+    * The catch clause :math:`{\mathit{catch}}` is valid.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the instruction type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
@@ -13408,19 +13408,19 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})` if:
 
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
+  * The heap type :math:`{\mathit{ht}}` is valid.
 
 
 * The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
 
-   * :math:`{|C{.}\mathsf{refs}|}` is greater than :math:`0`.
+  * :math:`{|C{.}\mathsf{refs}|}` is greater than :math:`0`.
 
-   * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
+  * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
 
 * The instruction :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
@@ -13429,13 +13429,13 @@ watsup 0.4 generator
 * The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
+  * The heap type :math:`{\mathit{ht}}` is valid.
 
 
 * The instruction :math:`\mathsf{ref{.}as\_non\_null}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
+  * The heap type :math:`{\mathit{ht}}` is valid.
 
 
 * The instruction :math:`\mathsf{ref{.}eq}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
@@ -13444,21 +13444,21 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with the instruction type :math:`{\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The reference type :math:`{\mathit{rt}}` is valid.
+  * The reference type :math:`{\mathit{rt}}` is valid.
 
-   * The reference type :math:`{\mathit{rt}'}` is valid.
+  * The reference type :math:`{\mathit{rt}'}` is valid.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+  * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
 
 * The instruction :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with the instruction type :math:`{\mathit{rt}'}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * The reference type :math:`{\mathit{rt}}` is valid.
+  * The reference type :math:`{\mathit{rt}}` is valid.
 
-   * The reference type :math:`{\mathit{rt}'}` is valid.
+  * The reference type :math:`{\mathit{rt}'}` is valid.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+  * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
 
 * The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
@@ -13467,199 +13467,199 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction type :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
 
 * The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
-   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
+  * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
 
-   * For all :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}` and :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`,
+  * For all :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}` and :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`,
 
-      * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
+    * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
 
 * The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
-   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
+  * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-   * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
+  * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
 
-   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+  * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 * The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
-   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
+  * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-   * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`(\mathsf{mut}, {\mathit{zt}})`.
+  * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`(\mathsf{mut}, {\mathit{zt}})`.
 
 
 * The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
 * The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-   * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
+  * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
 
 * The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the instruction type :math:`{{\mathrm{unpack}}({\mathit{zt}})^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
 * The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{rt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{rt}}))`.
 
-   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
-   * The reference type :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
+  * The reference type :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
+    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
+    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
 
-   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+  * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 * The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
 * The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
 * The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
 * The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_1`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_1`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_1])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_1])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`.
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_2`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_2`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_2])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_2])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`.
 
-   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+  * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
 
 * The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
-   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
-   * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
 
 
 * The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
+    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
+    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
 
-   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`\mathsf{extern{.}convert\_any}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+  * :math:`{\mathsf{null}}{{{}_{1}^?}}` is :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 * The instruction :math:`\mathsf{any{.}convert\_extern}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+  * :math:`{\mathsf{null}}{{{}_{1}^?}}` is :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 * The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -13701,9 +13701,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * For all :math:`i` in :math:`{i^\ast}`,
+  * For all :math:`i` in :math:`{i^\ast}`,
 
-      * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
+    * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -13712,13 +13712,13 @@ watsup 0.4 generator
 * The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
 
 
-   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+  * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+  * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -13736,790 +13736,790 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
 
 
 * The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}}_1)`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}}_1)`.
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}}_2)`.
+  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}}_2)`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
 
 * The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}}_1)`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}}_1)`.
 
-   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{elems}{}[y]` is :math:`{\mathit{rt}}_2`.
+  * :math:`C{.}\mathsf{elems}{}[y]` is :math:`{\mathit{rt}}_2`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
 
 * The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}grow}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_1`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_1`.
 
-   * :math:`C{.}\mathsf{mems}{}[x_1]` is :math:`{\mathit{mt}}_1`.
+  * :math:`C{.}\mathsf{mems}{}[x_1]` is :math:`{\mathit{mt}}_1`.
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_2`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{mems}{}[x_2]` is :math:`{\mathit{mt}}_2`.
+  * :math:`C{.}\mathsf{mems}{}[x_2]` is :math:`{\mathit{mt}}_2`.
 
 
 * The instruction :math:`(\mathsf{memory{.}init}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
+  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
+    * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathit{nt}}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
+    * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`(M, {\mathit{sx}})`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`(M, {\mathit{sx}})`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathsf{i}}{N}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 * The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
+    * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`{\mathit{nt}}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
+    * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`M`.
+    * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`M`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`{\mathsf{i}}{N}`.
+    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 * The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
-   * Or:
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+  * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
-   * Or:
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+  * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 * The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
-   * :math:`i` is less than :math:`128 / N`.
+  * :math:`i` is less than :math:`128 / N`.
 
 
 * The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 * The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
-   * :math:`i` is less than :math:`128 / N`.
+  * :math:`i` is less than :math:`128 / N`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`\epsilon~\rightarrow~\epsilon`.
+    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`\epsilon~\rightarrow~\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+    * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-      * :math:`{|{\mathit{t*}}|}` is :math:`{|{\mathit{init*}}|}`.
+    * :math:`{|{\mathit{t*}}|}` is :math:`{|{\mathit{init*}}|}`.
 
-      * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is :math:`{|{\mathit{init*}}|}`.
+    * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is :math:`{|{\mathit{init*}}|}`.
 
-      * For all :math:`x_1` in :math:`{x_1^\ast}`,
+    * For all :math:`x_1` in :math:`{x_1^\ast}`,
 
-         * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x_1`.
+      * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x_1`.
 
-      * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`,
+    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`,
 
-         * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}, t)`.
+      * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}, t)`.
 
-      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
-   * Or:
+    * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{\mathit{it}'}`.
+    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{\mathit{it}'}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
 
-      * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
+    * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
 
-      * The instruction type :math:`{\mathit{it}'}` is valid.
-   * Or:
+    * The instruction type :math:`{\mathit{it}'}` is valid.
+  * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
+    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-      * The value type sequence :math:`{t^\ast}` is valid.
+    * The value type sequence :math:`{t^\ast}` is valid.
 
 
 * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.
-   * Or:
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
-   * Or:
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
-      * :math:`{|\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}|}` is greater than :math:`0`.
+    * :math:`{|\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}|}` is greater than :math:`0`.
 
-      * :math:`{\mathsf{i}}{N}` is contained in :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}`.
+    * :math:`{\mathsf{i}}{N}` is contained in :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}`.
 
-      * :math:`{|\mathsf{add}~\mathsf{sub}~\mathsf{mul}|}` is greater than :math:`0`.
+    * :math:`{|\mathsf{add}~\mathsf{sub}~\mathsf{mul}|}` is greater than :math:`0`.
 
-      * :math:`{\mathit{binop}}` is contained in :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}`.
+    * :math:`{\mathit{binop}}` is contained in :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
 
 
-   * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
+  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
 
-      * :math:`{\mathit{instr}}` is const.
+    * :math:`{\mathit{instr}}` is const.
 
 
 * The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is :math:`x`.
 
-   * :math:`{{\mathit{dt}}^\ast}` is :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
+  * :math:`{{\mathit{dt}}^\ast}` is :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
+  * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
 
 * The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}, t)` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{set}`.
+    * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{set}`.
 
-      * :math:`{{\mathrm{default}}}_{t}` is not :math:`\epsilon`.
+    * :math:`{{\mathrm{default}}}_{t}` is not :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{unset}`.
+    * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{unset}`.
 
-      * :math:`{{\mathrm{default}}}_{t}` is :math:`\epsilon`.
+    * :math:`{{\mathrm{default}}}_{t}` is :math:`\epsilon`.
 
 
 * The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`{|{\mathit{local*}}|}` is :math:`{|{\mathit{lct*}}|}`.
+  * :math:`{|{\mathit{local*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
-   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`,
+  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`,
 
-      * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
+    * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
 
 * The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{globaltype}}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is valid.
+  * The global type :math:`{\mathit{gt}}` is valid.
 
-   * :math:`{\mathit{globaltype}}` is :math:`({\mathsf{mut}^?}, t)`.
+  * :math:`{\mathit{globaltype}}` is :math:`({\mathsf{mut}^?}, t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
+  * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
-   * :math:`{\mathit{expr}}` is const.
+  * :math:`{\mathit{expr}}` is const.
 
 
 * The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid with the table type :math:`{\mathit{tabletype}}` if:
 
 
-   * The table type :math:`{\mathit{tt}}` is valid.
+  * The table type :math:`{\mathit{tt}}` is valid.
 
-   * :math:`{\mathit{tabletype}}` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`{\mathit{tabletype}}` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
+  * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+  * :math:`{\mathit{expr}}` is const.
 
 
 * The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with the memory type :math:`{\mathit{memtype}}` if:
 
 
-   * The memory type :math:`{\mathit{memtype}}` is valid.
+  * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
 * The tag :math:`(\mathsf{tag}~x)` is valid with the memory type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 * The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the element type :math:`{\mathit{rt}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}'})`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}'})`.
 
-      * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+    * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+    * :math:`{\mathit{expr}}` is const.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
-   * Or:
+    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+  * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
+    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
 
 * The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
 
 
-   * The reference type :math:`{\mathit{elemtype}}` is valid.
+  * The reference type :math:`{\mathit{elemtype}}` is valid.
 
-   * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
+  * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{elemtype}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{elemtype}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+    * :math:`{\mathit{expr}}` is const.
 
-   * The elemmode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
+  * The elemmode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
 
 * The datamode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the data type :math:`\mathsf{ok}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+    * :math:`{\mathit{expr}}` is const.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
 
 
-   * The datamode :math:`{\mathit{datamode}}` is valid with the data type :math:`\mathsf{ok}`.
+  * The datamode :math:`{\mathit{datamode}}` is valid with the data type :math:`\mathsf{ok}`.
 
 
 * The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
+  * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external type :math:`{\mathit{xt}}` is valid.
+  * The external type :math:`{\mathit{xt}}` is valid.
 
 
 * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{dt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{dt}})`.
 
-      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
-   * Or:
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~x)`.
+    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{at}})`.
+    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{at}})`.
 
-      * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tags}{}[x]` is :math:`{\mathit{at}}`.
+    * :math:`C{.}\mathsf{tags}{}[x]` is :math:`{\mathit{at}}`.
 
 
 * The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+  * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
 * The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
+    * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
 
-      * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
+    * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
-      * The global :math:`{\mathit{global}}_1` is valid with the global type :math:`{\mathit{gt}}_1`.
+    * The global :math:`{\mathit{global}}_1` is valid with the global type :math:`{\mathit{gt}}_1`.
 
-      * Under the context :math:`C{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {\mathit{gt}}_1]`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+    * Under the context :math:`C{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {\mathit{gt}}_1]`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
 
 * The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   * Or:
+  * Or:
 
-      * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
+    * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
 
-      * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
+    * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
-      * The type definition :math:`{\mathit{type}}_1` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
+    * The type definition :math:`{\mathit{type}}_1` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
-      * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
+    * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
 
 
 * The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with the module type :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` if:
 
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
+  * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
-   * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` is :math:`{|{\mathit{import*}}|}`.
+  * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
-   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`,
+  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
-   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+  * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
-   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
+  * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
+  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+    * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
+  * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
-   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
+  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+    * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
-   * :math:`{|{\mathit{tag*}}|}` is :math:`{|{\mathit{at*}}|}`.
+  * :math:`{|{\mathit{tag*}}|}` is :math:`{|{\mathit{at*}}|}`.
 
-   * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
+  * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
 
-      * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the memory type :math:`{\mathit{at}}`.
+    * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the memory type :math:`{\mathit{at}}`.
 
-   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{dt*}}|}`.
+  * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{dt*}}|}`.
 
-   * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
+  * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
-      * The function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
+    * The function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
 
-   * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
+  * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
 
-   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
+  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
 
-      * The table segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
+    * The table segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
 
-   * :math:`{|{\mathit{ok*}}|}` is :math:`{|{\mathit{data*}}|}`.
+  * :math:`{|{\mathit{ok*}}|}` is :math:`{|{\mathit{data*}}|}`.
 
-   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`,
+  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`,
 
-      * The memory segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
+    * The memory segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
 
-   * If :math:`{\mathit{start}}` is defined,
+  * If :math:`{\mathit{start}}` is defined,
 
-      * The start function :math:`{\mathit{start}}` is valid.
+    * The start function :math:`{\mathit{start}}` is valid.
 
-   * :math:`{|{\mathit{nm*}}|}` is :math:`{|{\mathit{export*}}|}`.
+  * :math:`{|{\mathit{nm*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-   * :math:`{|{\mathit{xt}}_{\mathsf{e*}}|}` is :math:`{|{\mathit{export*}}|}`.
+  * :math:`{|{\mathit{xt}}_{\mathsf{e*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`,
+  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`,
 
-      * The export :math:`{\mathit{export}}` is valid with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
+    * The export :math:`{\mathit{export}}` is valid with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
-   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
+  * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
 
-   * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+  * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+  * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{x^\ast}` is :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
+  * :math:`{x^\ast}` is :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
 
-   * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+  * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{gt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+  * :math:`{{\mathit{gt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+  * :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+  * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+  * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
 
 * The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
 
 
-   * Either:
+  * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`\mathsf{i{\scriptstyle 32}}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * Or:
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`t`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`t`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
-   * Or:
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
+  * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
+    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`{t_2^\ast}`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`{t_2^\ast}`.
 
-      * The block type :math:`{\mathit{blocktype}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The block type :math:`{\mathit{blocktype}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 :math:`\mathsf{unreachable}`
@@ -14565,11 +14565,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Push the value :math:`{\mathit{val}}_1` to the stack.
+  a. Push the value :math:`{\mathit{val}}_1` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{val}}_2` to the stack.
+  a. Push the value :math:`{\mathit{val}}_2` to the stack.
 
 
 :math:`\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
@@ -14582,11 +14582,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
+  a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
+  a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
 
 
 :math:`\mathsf{label}`
@@ -14610,51 +14610,51 @@ watsup 0.4 generator
 
 #. If the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`L` be the current label.
+  #. Let :math:`L` be the current label.
 
-   #. Let :math:`n` be the arity of :math:`L`.
+  #. Let :math:`n` be the arity of :math:`L`.
 
-   #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
+  #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
-   #. If :math:`l` is :math:`0`, then:
+  #. If :math:`l` is :math:`0`, then:
 
-      1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+    1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+    #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-      #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+    #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-      #) Pop the current label from the stack.
+    #) Pop the current label from the stack.
 
-      #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+    #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-      #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+    #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-   #. Else:
+  #. Else:
 
-      1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+    1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-      #) If :math:`l` is greater than :math:`0`, then:
+    #) If :math:`l` is greater than :math:`0`, then:
 
-         a) Pop the current label from the stack.
+      a) Pop the current label from the stack.
 
-         #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
+      #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
 
 #. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Exit from :math:`\mathsf{handler}`.
+  #. Exit from :math:`\mathsf{handler}`.
 
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+  #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_if}~l`
@@ -14667,11 +14667,11 @@ watsup 0.4 generator
 
 #. If :math:`c` is not :math:`0`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+  a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 #. Else:
 
-   a. Do nothing.
+  a. Do nothing.
 
 
 :math:`\mathsf{br\_table}~{l^\ast}~{l'}`
@@ -14684,11 +14684,11 @@ watsup 0.4 generator
 
 #. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
+  a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
+  a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
 
 
 :math:`\mathsf{br\_on\_null}~l`
@@ -14701,11 +14701,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{val}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+  a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{val}}` to the stack.
+  a. Push the value :math:`{\mathit{val}}` to the stack.
 
 
 :math:`\mathsf{br\_on\_non\_null}~l`
@@ -14718,13 +14718,13 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{val}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{val}}` to the stack.
+  a. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+  #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{call\_indirect}~x~y`
@@ -14778,47 +14778,47 @@ watsup 0.4 generator
 
 #. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`F` be the current frame.
+  #. Let :math:`F` be the current frame.
 
-   #. Let :math:`n` be the arity of :math:`F`.
+  #. Let :math:`n` be the arity of :math:`F`.
 
-   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+  #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+  #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current frame from the stack.
+  #. Pop the current frame from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
 #. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current label from the stack.
+  #. Pop the current label from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`\mathsf{return}`.
+  #. Execute the instruction :math:`\mathsf{return}`.
 
 #. Else:
 
-   a. If the top of the stack is a :math:`\mathsf{handler}`, then:
+  a. If the top of the stack is a :math:`\mathsf{handler}`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+    1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+    #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-      #) Exit from :math:`\mathsf{handler}`.
+    #) Exit from :math:`\mathsf{handler}`.
 
-      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+    #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      #) Execute the instruction :math:`\mathsf{return}`.
+    #) Execute the instruction :math:`\mathsf{return}`.
 
 
 :math:`\mathsf{handler}`
@@ -14844,7 +14844,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}`.
 
@@ -14865,7 +14865,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
 
@@ -14912,7 +14912,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}`.
 
@@ -14940,11 +14940,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
 :math:`\mathsf{ref{.}as\_non\_null}`
@@ -14957,7 +14957,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
@@ -14976,25 +14976,25 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. If :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
+  a. If :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
-   #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+  #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
-   #. Else:
+  #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
 :math:`{\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}}`
@@ -15007,13 +15007,13 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{31, 32}^{{\mathit{sx}}}}}{(i)})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{31, 32}^{{\mathit{sx}}}}}{(i)})` to the stack.
 
 
 :math:`\mathsf{array{.}new}~x`
@@ -15043,13 +15043,13 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
+  a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
 
 #. If the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is addrref, then:
 
-   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
+  #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
 
 
 :math:`\mathsf{any{.}convert\_extern}`
@@ -15062,13 +15062,13 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
+  a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}extern}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Push the value :math:`{\mathit{addrref}}` to the stack.
+  #. Push the value :math:`{\mathit{addrref}}` to the stack.
 
 
 :math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
@@ -15151,7 +15151,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}`.
 
@@ -15172,7 +15172,7 @@ watsup 0.4 generator
 
 #. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
 
@@ -15191,11 +15191,11 @@ watsup 0.4 generator
 
 #. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
 :math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
@@ -15322,27 +15322,27 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
+  #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
-      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1){}[i]`.
+    1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1){}[i]`.
 
-      #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
+    #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
 
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+    1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
+    #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
-         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1){}[i])}`.
+      a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1){}[i])}`.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
 
 
 :math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{replace\_lane}~i`
@@ -15429,73 +15429,73 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
+  a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
 
-   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
 
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(c_1)`.
+    1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(c_1)`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+    #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+    #) If :math:`{|{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+      a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
 
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 #. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
+  a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
 
-   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
+    1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
 
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+    #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+    #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+    #) If :math:`{|{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
 
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+      a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
 
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined, then:
 
-   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}` is numtype, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}` is numtype, then:
 
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
+    1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
 
-      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}` is numtype, then:
+    #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}` is numtype, then:
 
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
+      a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
 
-         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is defined, then:
+      #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is defined, then:
 
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
+        1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
+        #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
 
-            #. If :math:`{|{{{{{\mathrm{lanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+        #. If :math:`{|{{{{{\mathrm{lanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
 
-               a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+          a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
 
-               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+          #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{local{.}tee}~x`
@@ -15563,11 +15563,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{rt}}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+  a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
@@ -15586,11 +15586,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{rt}}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+  a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{call}~x`
@@ -15622,43 +15622,43 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+  #. If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-      1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+    1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
-      #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is of the case :math:`\mathsf{func}`.
+    #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is of the case :math:`\mathsf{func}`.
 
-      #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
+    #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
-      #) If for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
+    #) If for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
 
-         a) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+      a) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
-         #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+      #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
-         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
+      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
 
-         #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
+      #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
-         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-         #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
+      #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-         #) Let :math:`F` be the activation of :math:`f` with arity :math:`m`.
+      #) Let :math:`F` be the activation of :math:`f` with arity :math:`m`.
 
-         #) Push :math:`F` to the stack.
+      #) Push :math:`F` to the stack.
 
-         #) Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`\epsilon`.
+      #) Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`\epsilon`.
 
-         #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+      #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -15688,71 +15688,71 @@ watsup 0.4 generator
 
 #. If the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current label from the stack.
+  #. Pop the current label from the stack.
 
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+  #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
 
 #. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+  #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Exit from :math:`\mathsf{handler}`.
+  #. Exit from :math:`\mathsf{handler}`.
 
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+  #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+  #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
 
 #. Else:
 
-   a. If the top of the stack is a :math:`\mathsf{frame}`, then:
+  a. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+    1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      #) Assert: Due to validation, a value is on the top of the stack.
+    #) Assert: Due to validation, a value is on the top of the stack.
 
-      #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+    #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
-      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+    #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+    #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-         a) Pop the current frame from the stack.
+      a) Pop the current frame from the stack.
 
-         #) Trap.
+      #) Trap.
 
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
+    #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
 
-         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+      #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+        1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
-            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+        #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
 
-            #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
+        #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
-            #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+        #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-            #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+        #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-            #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+        #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-            #. Pop the current frame from the stack.
+        #. Pop the current frame from the stack.
 
-            #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+        #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+        #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
-            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+        #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
 
 :math:`\mathsf{throw\_ref}`
@@ -15767,205 +15767,205 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
 #. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
 
-   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+  a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
 
-      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+    #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+    #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+#. Else:
+
+  a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+  #. If the top of the stack is a :math:`\mathsf{label}`, then:
+
+    1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+    #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+      a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+      #) Pop the current label from the stack.
 
       #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
       #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-#. Else:
+  #. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+    1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. If the top of the stack is a :math:`\mathsf{label}`, then:
+    #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+      a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+      #) Pop the current frame from the stack.
+
+      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+  #. Else:
+
+    1) If not the top of the stack is a :math:`\mathsf{handler}`, then:
+
+      a) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
+
+    #) Else:
+
+      a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current context.
 
       #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
 
-         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+        1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Pop the current label from the stack.
+        #. If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+          a. Exit from :math:`\mathsf{handler}`.
 
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+          #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-   #. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
+          #. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+        #. Else if :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
 
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+          a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+          #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
 
-         #) Pop the current frame from the stack.
+            1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
 
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+            #) Exit from :math:`\mathsf{handler}`.
 
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+            #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-   #. Else:
+          #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
 
-      1) If not the top of the stack is a :math:`\mathsf{handler}`, then:
+            1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
 
-         a) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
+            #) Exit from :math:`\mathsf{handler}`.
 
-      #) Else:
+            #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-         a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+            #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-         #) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current context.
+          #. Else:
 
-         #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+            1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-            1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+            #) Exit from :math:`\mathsf{handler}`.
 
-            #. If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+            #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-               a. Exit from :math:`\mathsf{handler}`.
+            #) Push the handler :math:`H` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+            #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-               #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+            #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-            #. Else if :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+        #. Else:
 
-               a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+          a. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
 
-               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+          #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                  1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+          #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
 
-                  #) Exit from :math:`\mathsf{handler}`.
+            1) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
 
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+            #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
 
-               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+              a) Exit from :math:`\mathsf{handler}`.
 
-                  1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+              #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-                  #) Exit from :math:`\mathsf{handler}`.
+              #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+            #) Else:
 
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+              a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-               #. Else:
+              #) Exit from :math:`\mathsf{handler}`.
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                  #) Exit from :math:`\mathsf{handler}`.
+              #) Push the handler :math:`H` to the stack.
 
-                  #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                  #) Push the handler :math:`H` to the stack.
+              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+          #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
 
-                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+            1) Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
 
-            #. Else:
+            #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
 
-               a. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+              a) Exit from :math:`\mathsf{handler}`.
 
-               #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+              #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
+              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                  1) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
+              #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+            #) Else:
 
-                     a) Exit from :math:`\mathsf{handler}`.
+              a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+              #) Exit from :math:`\mathsf{handler}`.
 
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                  #) Else:
+              #) Push the handler :math:`H` to the stack.
 
-                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                     #) Exit from :math:`\mathsf{handler}`.
+              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+          #. Else:
 
-                     #) Push the handler :math:`H` to the stack.
+            1) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
 
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+              a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
 
-                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+              #) Exit from :math:`\mathsf{handler}`.
 
-               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
+              #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-                  1) Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
+            #) Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
 
-                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+              a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
 
-                     a) Exit from :math:`\mathsf{handler}`.
+              #) Exit from :math:`\mathsf{handler}`.
 
-                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+              #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+            #) Else:
 
-                  #) Else:
+              a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+              #) Exit from :math:`\mathsf{handler}`.
 
-                     #) Exit from :math:`\mathsf{handler}`.
+              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+              #) Push the handler :math:`H` to the stack.
 
-                     #) Push the handler :math:`H` to the stack.
+              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-               #. Else:
-
-                  1) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
-
-                     a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                  #) Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
-
-                     a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                  #) Else:
-
-                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                     #) Push the handler :math:`H` to the stack.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -16023,11 +16023,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{rt}'}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
 :math:`\mathsf{ref{.}cast}~{\mathit{rt}}`
@@ -16044,7 +16044,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{rt}'}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
@@ -16084,23 +16084,23 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}struct}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i` is less than :math:`{|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{structs}|}`, then:
+  #. If :math:`i` is less than :math:`{|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{structs}|}`, then:
 
-      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
+    1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-      #) Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+    #) Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+    #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-      #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+    #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
-         a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
+      a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
 
 :math:`\mathsf{array{.}new\_default}~x`
@@ -16144,7 +16144,7 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Assert: Due to validation, :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]|}` is :math:`n`.
 
@@ -16177,7 +16177,7 @@ watsup 0.4 generator
 
 #. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Assert: Due to validation, the length of :math:`({\mathit{fresh}}_1)` for which :math:`{\bigoplus}\, {\mathit{fresh}}_1` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]` is :math:`n`.
 
@@ -16206,25 +16206,25 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. If :math:`i` is less than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
+  #. If :math:`i` is less than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
 
-      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+    1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
 
-      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+    #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+    #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-      #) Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
+    #) Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
 
 :math:`\mathsf{array{.}len}`
@@ -16239,15 +16239,15 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
+  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|})` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|})` to the stack.
 
 
 :math:`\mathsf{array{.}fill}~x`
@@ -16274,43 +16274,43 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+  #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
 
-      1) Do nothing.
+    1) Do nothing.
 
-   #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. If :math:`n` is :math:`0`, then:
+  #. If :math:`n` is :math:`0`, then:
 
-      1) Do nothing.
+    1) Do nothing.
 
-   #. Else:
+  #. Else:
 
-      1) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+    1) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Push the value :math:`{\mathit{val}}` to the stack.
+    #) Push the value :math:`{\mathit{val}}` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+    #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+    #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-      #) Push the value :math:`{\mathit{val}}` to the stack.
+    #) Push the value :math:`{\mathit{val}}` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}fill}~x)`.
+    #) Execute the instruction :math:`(\mathsf{array{.}fill}~x)`.
 
 
 :math:`\mathsf{array{.}copy}~x_1~x_2`
@@ -16341,105 +16341,105 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is ref, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+  #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
+    1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+    #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
 
-         a) Do nothing.
+      a) Do nothing.
 
-      #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
+    #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) If :math:`n` is :math:`0`, then:
+    #) If :math:`n` is :math:`0`, then:
 
-         a) Do nothing.
+      a) Do nothing.
 
-      #) Else if :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+    #) Else if :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
 
-         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+      a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
-         #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+      #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-         #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+      #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
 
-         #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+      #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+      #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-      #) Else:
+    #) Else:
 
-         a) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+      a) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
 
-            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+        1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-            #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+        #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
-            #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+        #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+        #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+        #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+        #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+        #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+        #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
 
-            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+        #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+        #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+        #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+        #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+        #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+        #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-            #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+        #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-   #. Else if :math:`n` is not :math:`0`, then:
+  #. Else if :math:`n` is not :math:`0`, then:
 
-      1) Do nothing.
+    1) Do nothing.
 
 
 :math:`\mathsf{array{.}init\_elem}~x~y`
@@ -16466,45 +16466,45 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+  #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. If :math:`n` is :math:`0`, then:
+  #. If :math:`n` is :math:`0`, then:
 
-      1) Do nothing.
+    1) Do nothing.
 
-   #. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+  #. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-      1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
+    1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+    #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Push the value :math:`{\mathit{ref}}` to the stack.
+    #) Push the value :math:`{\mathit{ref}}` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+    #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+    #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}init\_elem}~x~y)`.
+    #) Execute the instruction :math:`(\mathsf{array{.}init\_elem}~x~y)`.
 
 
 :math:`\mathsf{array{.}init\_data}~x~y`
@@ -16531,55 +16531,55 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
+  #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
 
-      1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+    1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+    #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-      #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) If :math:`n` is :math:`0`, then:
+    #) If :math:`n` is :math:`0`, then:
 
-         a) Do nothing.
+      a) Do nothing.
 
-      #) Else:
+    #) Else:
 
-         a) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
+      a) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-         #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
+      #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
+      #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
 
-   #. Else if :math:`n` is :math:`0`, then:
+  #. Else if :math:`n` is :math:`0`, then:
 
-      1) Do nothing.
+    1) Do nothing.
 
 
 :math:`\mathsf{local{.}get}~x`
@@ -16618,7 +16618,7 @@ watsup 0.4 generator
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Push the value :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` to the stack.
 
@@ -16654,27 +16654,27 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
 
 
 :math:`\mathsf{table{.}copy}~x~y`
@@ -16697,49 +16697,49 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. If :math:`j` is less than or equal to :math:`i`, then:
+  a. If :math:`j` is less than or equal to :math:`i`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Else:
+  #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+    #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
 
 
 :math:`\mathsf{table{.}init}~x~y`
@@ -16762,31 +16762,31 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
+  #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
+  #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
 :math:`{{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{ao}}`
@@ -16801,39 +16801,39 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
+  #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
 
-   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+  a. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
+    1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
+    1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
+    #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
-      #) Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+    #) Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
 :math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
@@ -16848,69 +16848,69 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+  a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 #. Else:
 
-   a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}`.
+  a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{shape}`, then:
+  #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{shape}`, then:
 
-      1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+    1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`{j^{K}}` be the result for which for all :math:`{(k)^{k<K}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+    #) Let :math:`{j^{K}}` be the result for which for all :math:`{(k)^{k<K}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
 
-      #) If the type of :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is Jnn, then:
+    #) If the type of :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is Jnn, then:
 
-         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
+      a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{splat}`, then:
+  #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{splat}`, then:
 
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+    1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-      #) Let :math:`M` be :math:`128 / N`.
+    #) Let :math:`M` be :math:`128 / N`.
 
-      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+    #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
 
-         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
-
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{zero}`, then:
-
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
+      a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
       #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-      #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+  #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{zero}`, then:
+
+    1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+      a) Trap.
+
+    #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+    #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
+
+    #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j`
@@ -16929,19 +16929,19 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`M` be :math:`{|\mathsf{v{\scriptstyle 128}}|} / N`.
 
 #. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+  a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
-   #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+  #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])}`.
+  #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])}`.
 
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+  #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{memory{.}size}~x`
@@ -16975,27 +16975,27 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
+  #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`{\mathit{val}}` to the stack.
+  #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{memory{.}fill}~x)`.
+  #. Execute the instruction :math:`(\mathsf{memory{.}fill}~x)`.
 
 
 :math:`\mathsf{memory{.}copy}~x_1~x_2`
@@ -17018,49 +17018,49 @@ watsup 0.4 generator
 
 #. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_2]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else:
 
-   a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
+  a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
 
-   #. Else:
+  #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+    1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+    #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)`.
+  #. Execute the instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)`.
 
 
 :math:`\mathsf{memory{.}init}~x~y`
@@ -17083,31 +17083,31 @@ watsup 0.4 generator
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`n` is :math:`0`, then:
 
-   a. Do nothing.
+  a. Do nothing.
 
 #. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i])` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i])` to the stack.
 
-   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
+  #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
+  #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
 
 
 :math:`\mathsf{throw}~x`
@@ -17182,21 +17182,21 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}struct}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
+  #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-   #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+  #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+  #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-   #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+  #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
-      1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
+    1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
 
 
 :math:`\mathsf{array{.}new\_fixed}~x~n`
@@ -17244,23 +17244,23 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+  #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
 
-   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+  #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-   #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+  #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-   #. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
+  #. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
 
 
 :math:`\mathsf{local{.}set}~x`
@@ -17305,7 +17305,7 @@ watsup 0.4 generator
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
 
@@ -17326,15 +17326,15 @@ watsup 0.4 generator
 
 #. Either:
 
-   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
+  a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
+  #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`\mathsf{elem{.}drop}~x`
@@ -17362,35 +17362,35 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}`, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+  a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-      1) Trap.
+    1) Trap.
 
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+  #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+    1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+    #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+  a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+    1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-         a) Trap.
+      a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+  #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+    1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
+    #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+    #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}`
@@ -17409,7 +17409,7 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
 
@@ -17432,19 +17432,19 @@ watsup 0.4 generator
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
-   a. Trap.
+  a. Trap.
 
 #. Let :math:`M` be :math:`128 / N`.
 
 #. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+  a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
-   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`, then:
+  #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`, then:
 
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c){}[j])`.
+    1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c){}[j])`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
+    #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{memory{.}grow}~x`
@@ -17459,15 +17459,15 @@ watsup 0.4 generator
 
 #. Either:
 
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
+  a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
+  #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+  a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`\mathsf{data{.}drop}~x`
@@ -17492,11 +17492,11 @@ watsup 0.4 generator
 
 1. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`0`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Assert: Due to validation, :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`.
 
@@ -17515,7 +17515,7 @@ watsup 0.4 generator
 
 1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Let :math:`n~{{n'}^\ast}` be :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17528,7 +17528,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is :math:`1`.
 
@@ -17543,7 +17543,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
@@ -17556,7 +17556,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17569,7 +17569,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{w^{n}}~{({{w'}^{n}})^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17582,7 +17582,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return true.
+  a. Return true.
 
 #. Let :math:`w~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17595,13 +17595,13 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`w`.
+  a. Return :math:`w`.
 
 #. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`w` is :math:`w_1`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Return :math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}(w, {{w'}^\ast})`.
 
@@ -17612,7 +17612,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17625,7 +17625,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17638,7 +17638,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17651,7 +17651,7 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17664,7 +17664,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`23`.
+  a. Return :math:`23`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -17677,7 +17677,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`8`.
+  a. Return :math:`8`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -17806,15 +17806,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`32`.
+  a. Return :math:`32`.
 
 #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-   a. Return :math:`64`.
+  a. Return :math:`64`.
 
 #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
 
-   a. Return :math:`32`.
+  a. Return :math:`32`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}`.
 
@@ -17834,7 +17834,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{packtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 8}}`, then:
 
-   a. Return :math:`8`.
+  a. Return :math:`8`.
 
 #. Assert: Due to validation, :math:`{\mathit{packtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 16}}`.
 
@@ -17847,9 +17847,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{|{\mathit{numtype}}|}`.
+  #. Return :math:`{|{\mathit{numtype}}|}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -17864,15 +17864,15 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{|{\mathit{numtype}}|}`.
+  #. Return :math:`{|{\mathit{numtype}}|}`.
 
 #. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is vectype, then:
 
-   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{|{\mathit{vectype}}|}`.
+  #. Return :math:`{|{\mathit{vectype}}|}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -17943,7 +17943,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. Return :math:`0`.
+  a. Return :math:`0`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
 
@@ -17972,7 +17972,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+  a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -17985,7 +17985,7 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
+  a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -17998,15 +17998,15 @@ watsup 0.4 generator
 
 1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`8`, then:
 
-   a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
+  a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
 
 #. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`16`, then:
 
-   a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
+  a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
 
 #. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`32`, then:
 
-   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+  a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 #. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`64`.
 
@@ -18019,9 +18019,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathit{numtype}}`.
+  #. Return :math:`{\mathit{numtype}}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -18034,9 +18034,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype, then:
 
-   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathit{valtype}}`.
+  #. Return :math:`{\mathit{valtype}}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -18049,13 +18049,13 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathit{numtype}}`.
+  #. Return :math:`{\mathit{numtype}}`.
 
 #. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
 
-   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+  a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 
 :math:`{\mathrm{unpack}}({\mathit{vectype}})`
@@ -18071,19 +18071,19 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is consttype, then:
 
-   a. Let :math:`{\mathit{consttype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{consttype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathit{consttype}}`.
+  #. Return :math:`{\mathit{consttype}}`.
 
 #. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
 
-   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+  a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 #. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is lanetype, then:
 
-   a. Let :math:`{\mathit{lanetype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{lanetype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
+  #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
 
 
 :math:`{\mathrm{sx}}({\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
@@ -18092,7 +18092,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is consttype, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -18105,9 +18105,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`({\mathit{numtype}}{.}\mathsf{const}~c)`.
+  #. Return :math:`({\mathit{numtype}}{.}\mathsf{const}~c)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is vectype.
 
@@ -18129,7 +18129,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`, then:
 
-   a. Return :math:`(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~{\mathit{ht}}_1)`.
+  a. Return :math:`(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~{\mathit{ht}}_1)`.
 
 #. Assert: Due to validation, :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined.
 
@@ -18142,7 +18142,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. Let :math:`{\mathit{free}}` be :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
@@ -18155,7 +18155,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. Let :math:`{\mathit{free}}~{{\mathit{free}'}^\ast}` be :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -18231,21 +18231,21 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{funcidx}})` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{func}~{\mathit{funcidx}})` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{globalidx}})` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global}~{\mathit{globalidx}})` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tableidx}})` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table}~{\mathit{tableidx}})` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
@@ -18274,9 +18274,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -18298,9 +18298,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is vectype.
 
@@ -18336,13 +18336,13 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case , then:
 
-   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rec}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is deftype.
 
@@ -18357,9 +18357,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is absheaptype, then:
 
-   a. Let :math:`{\mathit{absheaptype}}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{absheaptype}}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{absheaptype}}({\mathit{absheaptype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{absheaptype}}({\mathit{absheaptype}})`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is typeuse.
 
@@ -18381,21 +18381,21 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is vectype, then:
 
-   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is reftype, then:
 
-   a. Let :math:`{\mathit{reftype}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{reftype}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
@@ -18415,9 +18415,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype, then:
 
-   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -18460,15 +18460,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{struct}`, then:
 
-   a. Let :math:`(\mathsf{struct}~{\mathit{structtype}})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{struct}~{\mathit{structtype}})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{structtype}}({\mathit{structtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{structtype}}({\mathit{structtype}})`.
 
 #. If :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array}`, then:
 
-   a. Let :math:`(\mathsf{array}~{\mathit{arraytype}})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array}~{\mathit{arraytype}})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{arraytype}}({\mathit{arraytype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{arraytype}}({\mathit{arraytype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`.
 
@@ -18525,21 +18525,21 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
 #. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global}~{\mathit{globaltype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}})`.
 
 #. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tabletype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table}~{\mathit{tabletype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
@@ -18561,9 +18561,9 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case , then:
 
-   a. Let :math:`{{\mathit{valtype}}^?}` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{{\mathit{valtype}}^?}` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case .
 
@@ -18585,13 +18585,13 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{labelidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`n_0~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`n_0` is :math:`0`, then:
 
-   a. Return :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast})`.
+  a. Return :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast})`.
 
 #. Let :math:`{\mathit{labelidx}}~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -18613,567 +18613,567 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nop}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{unreachable}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{drop}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{select}`, then:
 
-   a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{block}`, then:
 
-   a. Let :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
+  #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{loop}`, then:
 
-   a. Let :math:`(\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
+  #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{if}`, then:
 
-   a. Let :math:`(\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 <- instr_1*}) ++ $free_block(instr_2*{instr_2 <- instr_2*})`.
+  #. Return `$free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 <- instr_1*}) ++ $free_block(instr_2*{instr_2 <- instr_2*})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br}`, then:
 
-   a. Let :math:`(\mathsf{br}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_if}`, then:
 
-   a. Let :math:`(\mathsf{br\_if}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br\_if}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_table}`, then:
 
-   a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)`.
+  #. Return `$free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_null}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br\_on\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_non\_null}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_non\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br\_on\_non\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_cast}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
+  #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_cast\_fail}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
+  #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call}`, then:
 
-   a. Let :math:`(\mathsf{call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call\_ref}`, then:
 
-   a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call\_indirect}`, then:
 
-   a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
+  #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{return}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{return\_call}`, then:
 
-   a. Let :math:`(\mathsf{return\_call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{return\_call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{return\_call\_ref}`, then:
 
-   a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{return\_call\_indirect}`, then:
 
-   a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
+  #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{const}`, then:
 
-   a. Let :math:`({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{unop}`, then:
 
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{unop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{numtype}} {.} {\mathit{unop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{binop}`, then:
 
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{binop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{numtype}} {.} {\mathit{binop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{testop}`, then:
 
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{testop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{numtype}} {.} {\mathit{testop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{relop}`, then:
 
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{relop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{numtype}} {.} {\mathit{relop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{cvtop}`, then:
 
-   a. Let :math:`({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_numtype(numtype_1) ++ $free_numtype(numtype_2)`.
+  #. Return `$free_numtype(numtype_1) ++ $free_numtype(numtype_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vconst}`, then:
 
-   a. Let :math:`({\mathit{vectype}}{.}\mathsf{const}~{\mathit{veclit}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{vectype}}{.}\mathsf{const}~{\mathit{veclit}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vvunop}`, then:
 
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvunop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvunop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vvbinop}`, then:
 
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvbinop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvbinop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vvternop}`, then:
 
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvternop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvternop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vvtestop}`, then:
 
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvtestop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvtestop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vunop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vunop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}} {.} {\mathit{vunop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vbinop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vbinop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}} {.} {\mathit{vbinop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vtestop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vtestop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}} {.} {\mathit{vtestop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vrelop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vrelop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}} {.} {\mathit{vrelop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vshiftop}`, then:
 
-   a. Let :math:`({\mathit{ishape}} {.} {\mathit{vshiftop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{ishape}} {.} {\mathit{vshiftop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vbitmask}`, then:
 
-   a. Let :math:`({\mathit{ishape}}{.}\mathsf{bitmask})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{ishape}}{.}\mathsf{bitmask})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vswizzle}`, then:
 
-   a. Let :math:`({\mathit{ishape}}{.}\mathsf{swizzle})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{ishape}}{.}\mathsf{swizzle})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vshuffle}`, then:
 
-   a. Let :math:`({\mathit{ishape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{ishape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextunop}`, then:
 
-   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+  #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextbinop}`, then:
 
-   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+  #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vnarrow}`, then:
 
-   a. Let :math:`({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+  #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vcvtop}`, then:
 
-   a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_shape(shape_1) ++ $free_shape(shape_2)`.
+  #. Return `$free_shape(shape_1) ++ $free_shape(shape_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vsplat}`, then:
 
-   a. Let :math:`({\mathit{shape}}{.}\mathsf{splat})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}}{.}\mathsf{splat})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextract\_lane}`, then:
 
-   a. Let :math:`({{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vreplace\_lane}`, then:
 
-   a. Let :math:`({\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}null}~{\mathit{heaptype}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}null}~{\mathit{heaptype}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}is\_null}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}as\_non\_null}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}eq}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}test}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}test}~{\mathit{reftype}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}test}~{\mathit{reftype}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}cast}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}cast}~{\mathit{reftype}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}cast}~{\mathit{reftype}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}func}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{ref{.}func}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{i{\scriptstyle 31}{.}get}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{struct{.}new}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{struct{.}new\_default}`, then:
 
-   a. Let :math:`(\mathsf{struct{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{struct{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{struct{.}get}`, then:
 
-   a. Let :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{struct{.}set}`, then:
 
-   a. Let :math:`(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}new}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_default}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_fixed}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_fixed}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}new\_fixed}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_data}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}new\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
+  #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_elem}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}new\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
+  #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}get}`, then:
 
-   a. Let :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}set}`, then:
 
-   a. Let :math:`(\mathsf{array{.}set}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}set}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{array{.}len}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}fill}`, then:
 
-   a. Let :math:`(\mathsf{array{.}fill}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}fill}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}copy}`, then:
 
-   a. Let :math:`(\mathsf{array{.}copy}~{\mathit{typeidx}}_1~{\mathit{typeidx}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}copy}~{\mathit{typeidx}}_1~{\mathit{typeidx}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)`.
+  #. Return `$free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}init\_data}`, then:
 
-   a. Let :math:`(\mathsf{array{.}init\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}init\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
+  #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}init\_elem}`, then:
 
-   a. Let :math:`(\mathsf{array{.}init\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array{.}init\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
+  #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{local{.}get}`, then:
 
-   a. Let :math:`(\mathsf{local{.}get}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{local{.}get}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{local{.}set}`, then:
 
-   a. Let :math:`(\mathsf{local{.}set}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{local{.}set}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{local{.}tee}`, then:
 
-   a. Let :math:`(\mathsf{local{.}tee}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{local{.}tee}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global{.}get}`, then:
 
-   a. Let :math:`(\mathsf{global{.}get}~{\mathit{globalidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global{.}get}~{\mathit{globalidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global{.}set}`, then:
 
-   a. Let :math:`(\mathsf{global{.}set}~{\mathit{globalidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global{.}set}~{\mathit{globalidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}get}`, then:
 
-   a. Let :math:`(\mathsf{table{.}get}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}get}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}set}`, then:
 
-   a. Let :math:`(\mathsf{table{.}set}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}set}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}size}`, then:
 
-   a. Let :math:`(\mathsf{table{.}size}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}size}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}grow}`, then:
 
-   a. Let :math:`(\mathsf{table{.}grow}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}grow}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}fill}`, then:
 
-   a. Let :math:`(\mathsf{table{.}fill}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}fill}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}copy}`, then:
 
-   a. Let :math:`(\mathsf{table{.}copy}~{\mathit{tableidx}}_1~{\mathit{tableidx}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}copy}~{\mathit{tableidx}}_1~{\mathit{tableidx}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)`.
+  #. Return `$free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}init}`, then:
 
-   a. Let :math:`(\mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_tableidx(tableidx) ++ $free_elemidx(elemidx)`.
+  #. Return `$free_tableidx(tableidx) ++ $free_elemidx(elemidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{elem{.}drop}`, then:
 
-   a. Let :math:`(\mathsf{elem{.}drop}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{elem{.}drop}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{load}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{\mathit{loadop\_{\scriptstyle 0}}}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{\mathit{loadop\_{\scriptstyle 0}}}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is defined, then:
+  #. If :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is defined, then:
 
-      1) Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
+    1) Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{store}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
+  #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vload}`, then:
 
-   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+  #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vload\_lane}`, then:
 
-   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+  #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vstore}`, then:
 
-   a. Let :math:`({\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+  #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vstore\_lane}`, then:
 
-   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+  #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}size}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}size}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{memory{.}size}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}grow}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}grow}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{memory{.}grow}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}fill}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}fill}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{memory{.}fill}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
+  #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}copy}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}copy}~{\mathit{memidx}}_1~{\mathit{memidx}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{memory{.}copy}~{\mathit{memidx}}_1~{\mathit{memidx}}_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_memidx(memidx_1) ++ $free_memidx(memidx_2)`.
+  #. Return `$free_memidx(memidx_1) ++ $free_memidx(memidx_2)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}init}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_memidx(memidx) ++ $free_dataidx(dataidx)`.
+  #. Return `$free_memidx(memidx) ++ $free_dataidx(dataidx)`.
 
 #. Assert: Due to validation, :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{data{.}drop}`.
 
@@ -19244,13 +19244,13 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`, then:
 
-   a. Let :math:`(\mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}})` be :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}})` be :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_tableidx(tableidx) ++ $free_expr(expr)`.
+  #. Return `$free_tableidx(tableidx) ++ $free_expr(expr)`.
 
 #. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+  a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
@@ -19263,9 +19263,9 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`, then:
 
-   a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return `$free_memidx(memidx) ++ $free_expr(expr)`.
+  #. Return `$free_memidx(memidx) ++ $free_expr(expr)`.
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
@@ -19334,7 +19334,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`{\mathit{tv}}`.
+  a. Return :math:`{\mathit{tv}}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -19346,7 +19346,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{tv}}` is :math:`{\mathit{tv}}_1`, then:
 
-   a. Return :math:`{\mathit{tu}}_1`.
+  a. Return :math:`{\mathit{tu}}_1`.
 
 #. Return :math:`{{\mathit{tv}}}{{}[ {{\mathit{tv}'}^\ast} := {{\mathit{tu}'}^\ast} ]}`.
 
@@ -19378,9 +19378,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is typevar, then:
 
-   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is deftype.
 
@@ -19395,15 +19395,15 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is typevar, then:
 
-   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. If the type of :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is deftype, then:
 
-   a. Let :math:`{\mathit{dt}}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{dt}}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. Let :math:`{\mathit{ht}}` be :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
@@ -19423,21 +19423,21 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{{\mathit{nt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{{\mathit{nt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is vectype, then:
 
-   a. Let :math:`{\mathit{vt}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{vt}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{{\mathit{vt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{{\mathit{vt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is reftype, then:
 
-   a. Let :math:`{\mathit{rt}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathit{rt}}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
@@ -19450,9 +19450,9 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype, then:
 
-   a. Let :math:`t` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`t` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+  #. Return :math:`{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -19474,15 +19474,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{struct}`, then:
 
-   a. Let :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`(\mathsf{struct}~{{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
+  #. Return :math:`(\mathsf{struct}~{{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
 
 #. If :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array}`, then:
 
-   a. Let :math:`(\mathsf{array}~{\mathit{yt}})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{array}~{\mathit{yt}})` be :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`(\mathsf{array}~{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+  #. Return :math:`(\mathsf{array}~{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 #. Assert: Due to validation, :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`.
 
@@ -19546,21 +19546,21 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`(\mathsf{func}~{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+  #. Return :math:`(\mathsf{func}~{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 #. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`(\mathsf{global}~{{\mathit{gt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+  #. Return :math:`(\mathsf{global}~{{\mathit{gt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 #. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`(\mathsf{table}~{{\mathit{tt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+  #. Return :math:`(\mathsf{table}~{{\mathit{tt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 #. Assert: Due to validation, :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
@@ -19631,7 +19631,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{dt}}_1~{{\mathit{dt}}^\ast}` be :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19699,15 +19699,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_0`.
+  a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_0`.
 
-   #. Return :math:`x~{\mathrm{funcs}}({{\mathit{xx}}^\ast})`.
+  #. Return :math:`x~{\mathrm{funcs}}({{\mathit{xx}}^\ast})`.
 
 #. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19720,15 +19720,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_0`.
+  a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_0`.
 
-   #. Return :math:`x~{\mathrm{globals}}({{\mathit{xx}}^\ast})`.
+  #. Return :math:`x~{\mathrm{globals}}({{\mathit{xx}}^\ast})`.
 
 #. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19741,15 +19741,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_0`.
+  a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_0`.
 
-   #. Return :math:`x~{\mathrm{tables}}({{\mathit{xx}}^\ast})`.
+  #. Return :math:`x~{\mathrm{tables}}({{\mathit{xx}}^\ast})`.
 
 #. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19762,15 +19762,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_0`.
+  a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_0`.
 
-   #. Return :math:`x~{\mathrm{mems}}({{\mathit{xx}}^\ast})`.
+  #. Return :math:`x~{\mathrm{mems}}({{\mathit{xx}}^\ast})`.
 
 #. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19783,15 +19783,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{tag}`, then:
 
-   a. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_0`.
+  a. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_0`.
 
-   #. Return :math:`x~{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
+  #. Return :math:`x~{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
 
 #. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19804,15 +19804,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{dt}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{dt}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19825,15 +19825,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19846,15 +19846,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19867,15 +19867,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19888,15 +19888,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{tag}`, then:
 
-   a. Let :math:`(\mathsf{tag}~{\mathit{at}})` be :math:`{\mathit{externtype}}_0`.
+  a. Let :math:`(\mathsf{tag}~{\mathit{at}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{at}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
+  #. Return :math:`{\mathit{at}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -19916,7 +19916,7 @@ watsup 0.4 generator
 
 1. If :math:`0` is less than or equal to :math:`{2^{N - 1}}`, then:
 
-   a. Return :math:`i`.
+  a. Return :math:`i`.
 
 #. Assert: Due to validation, :math:`{2^{N - 1}}` is less than or equal to :math:`i`.
 
@@ -19940,87 +19940,87 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
+  #. Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`.
+  #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`.
 
-   #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}`.
+  #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
+  #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
+  #. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
@@ -20039,187 +20039,187 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
 
-      1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rem}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{rem}`, then:
 
-      1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
+  #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
 
-      1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
 
@@ -20247,105 +20247,105 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+  #. Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
+  #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
+    #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+  #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+  #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+  #. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
@@ -20366,109 +20366,109 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
 #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{wrap}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
+    #) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc}`, then:
 
-         a) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
 
-         a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{convert}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
 #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{promote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+    #) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
 #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+    1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+    #) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{|{{\mathsf{i}}{N}}_1|}` is :math:`{|{{\mathsf{f}}{N}}_2|}`, then:
+    #) If :math:`{|{{\mathsf{i}}{N}}_1|}` is :math:`{|{{\mathsf{f}}{N}}_2|}`, then:
 
-         a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{N}}_1, {{\mathsf{f}}{N}}_2}({\mathit{iN}}_1)`.
+      a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{N}}_1, {{\mathsf{f}}{N}}_2}({\mathit{iN}}_1)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
@@ -20509,7 +20509,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Return :math:`c`.
+  a. Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -20524,7 +20524,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
 
-   a. Return :math:`c`.
+  a. Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -20539,7 +20539,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is consttype, then:
 
-   a. Return :math:`c`.
+  a. Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -20554,7 +20554,7 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is consttype, then:
 
-   a. Return :math:`c`.
+  a. Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
 
@@ -20578,11 +20578,11 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
 
-   a. Return :math:`i`.
+  a. Return :math:`i`.
 
 #. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{high}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
 
-   a. Return :math:`j`.
+  a. Return :math:`j`.
 
 #. Assert: Due to validation, :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}`.
 
@@ -20604,15 +20604,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}`, then:
 
-   a. Return :math:`{{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  a. Return :math:`{{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{andnot}`, then:
 
-   a. Return :math:`{{\mathrm{iandnot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  a. Return :math:`{{\mathrm{iandnot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}`, then:
 
-   a. Return :math:`{{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+  a. Return :math:`{{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}`.
 
@@ -20654,57 +20654,57 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iabs}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iabs}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ineg}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ineg}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ipopcnt}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ipopcnt}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fabs}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fabs}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fneg}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fneg}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsqrt}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsqrt}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fceil}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fceil}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ffloor}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ffloor}}, {\mathit{vN}}_1)`.
 
 #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ftrunc}}, {\mathit{vN}}_1)`.
+  #. Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ftrunc}}, {\mathit{vN}}_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
@@ -20760,103 +20760,103 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{add\_sat}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{add\_sat}`, then:
 
-      1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{sub\_sat}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{sub\_sat}`, then:
 
-      1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}_{{\mathit{sat}}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{min}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{min}`, then:
 
-      1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imin}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imin}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{max}`, then:
+  #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{max}`, then:
 
-      1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imax}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iavgr}}, \mathsf{u}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imax}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iavgr}}, \mathsf{u}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+  #. Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fdiv}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fdiv}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmax}`.
 
@@ -20916,73 +20916,73 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ieq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ieq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ine}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ine}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ilt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ilt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{igt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{igt}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ile}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ile}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
+  #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ige}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+    #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ige}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{feq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{feq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fne}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fne}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{flt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{flt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fgt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fgt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fle}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+  #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fle}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
@@ -20999,71 +20999,71 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Jnn, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+  a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Jnn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Jnn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
+    #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+      a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-         #) Return :math:`{\mathit{iN}}_2`.
+      #) Return :math:`{\mathit{iN}}_2`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Jnn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Jnn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+    #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{convert}`, then:
+    #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+      a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
+      #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-         #) Return :math:`{\mathit{fN}}_2`.
+      #) Return :math:`{\mathit{fN}}_2`.
 
 #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
+    #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
 
-         a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+      a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+      #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-         #) Return :math:`{{\mathit{iN}}_2^?}`.
+      #) Return :math:`{{\mathit{iN}}_2^?}`.
 
 #. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+  a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
+  #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+    1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+    #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-      #) Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+    #) Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-      #) Return :math:`{{\mathit{fN}}_2^\ast}`.
+    #) Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{promote}`.
 
@@ -21101,15 +21101,15 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extmul}`, then:
 
-   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+  #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+  #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})}`.
+  #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})}`.
 
-   #. Return :math:`c`.
+  #. Return :math:`c`.
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is .
 
@@ -21130,7 +21130,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
 
-   a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
+  a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`.
 
@@ -21190,21 +21190,21 @@ watsup 0.4 generator
 
 1. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`({\mathsf{i}}{N}{.}\mathsf{const}~0)`.
+  #. Return :math:`({\mathsf{i}}{N}{.}\mathsf{const}~0)`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`({\mathsf{f}}{N}{.}\mathsf{const}~{+0})`.
+  #. Return :math:`({\mathsf{f}}{N}{.}\mathsf{const}~{+0})`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Vnn, then:
 
-   a. Let :math:`{\mathsf{v}}{N}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`{\mathsf{v}}{N}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`({\mathsf{v}}{N}{.}\mathsf{const}~0)`.
+  #. Return :math:`({\mathsf{v}}{N}{.}\mathsf{const}~0)`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref}`.
 
@@ -21212,7 +21212,7 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathsf{null}^?}}_0` is :math:`(\mathsf{null}~()~{}^?)`, then:
 
-   a. Return :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+  a. Return :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
 #. Assert: Due to validation, :math:`{{\mathsf{null}^?}}_0` is :math:`(\mathsf{null}~\epsilon~{}^?)`.
 
@@ -21227,7 +21227,7 @@ watsup 0.4 generator
 
 #. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype, then:
 
-   a. Return :math:`{\mathit{val}}`.
+  a. Return :math:`{\mathit{val}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{const}`.
 
@@ -21248,25 +21248,25 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   a. Assert: Due to validation, the type of :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is val.
+  a. Assert: Due to validation, the type of :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is val.
 
-   #. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  #. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype.
+  #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype.
 
-   #. Return :math:`{\mathit{val}}`.
+  #. Return :math:`{\mathit{val}}`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+  a. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-   #. Assert: Due to validation, :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{pack}`.
+  #. Assert: Due to validation, :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{pack}`.
 
-   #. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+  #. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. Assert: Due to validation, :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
+  #. Assert: Due to validation, :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
 
-   #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
+  #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
@@ -21275,15 +21275,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
+  #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21296,15 +21296,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
+  #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21317,15 +21317,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+  #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21338,15 +21338,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
+  #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21359,15 +21359,15 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{tag}`, then:
 
-   a. Let :math:`(\mathsf{tag}~{\mathit{ha}})` be :math:`{\mathit{externaddr}}_0`.
+  a. Let :math:`(\mathsf{tag}~{\mathit{ha}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
+  #. Return :math:`{\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21674,11 +21674,11 @@ watsup 0.4 generator
 
 #. If :math:`{|{{r'}^\ast}|} + n` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
+  a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-   #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+  #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
-   #. Return :math:`{\mathit{tableinst}'}`.
+  #. Return :math:`{\mathit{tableinst}'}`.
 
 
 :math:`{\mathrm{growmem}}({\mathit{meminst}}, n)`
@@ -21689,11 +21689,11 @@ watsup 0.4 generator
 
 #. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
+  a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+  #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j)~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
-   #. Return :math:`{\mathit{meminst}'}`.
+  #. Return :math:`{\mathit{meminst}'}`.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
@@ -21702,13 +21702,13 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case , then:
 
-   a. Let :math:`x` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`x` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{func}`.
+  #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{func}`.
 
-   #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+  #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-   #. Return :math:`{\mathit{ft}}`.
+  #. Return :math:`{\mathit{ft}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case .
 
@@ -21723,7 +21723,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{{\mathit{type}'}^\ast}~{\mathit{type}}` be :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21759,29 +21759,29 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   #. Assert: Due to validation, :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
+  #. Assert: Due to validation, :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
 
-   #. Return :math:`\epsilon`.
+  #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+  a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+  #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}`.
+  #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}`.
 
-   #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
+  #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
 
-   #. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({{\mathit{dt}'}^\ast}, {{{\mathit{code}}'}^\ast}, {{\mathit{moduleinst}'}^\ast})`.
+  #. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({{\mathit{dt}'}^\ast}, {{{\mathit{code}}'}^\ast}, {{\mathit{moduleinst}'}^\ast})`.
 
-   #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
+  #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
 :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
@@ -21803,23 +21803,23 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   #. Return :math:`\epsilon`.
+  #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+  a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+  #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
-   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
+  #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
 :math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}), {\mathit{ref}})`
@@ -21841,7 +21841,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -21877,7 +21877,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21907,7 +21907,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{at}}~{{\mathit{at}'}^\ast}` be :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21937,7 +21937,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -21973,7 +21973,7 @@ watsup 0.4 generator
 
 1. If :math:`{{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -21996,27 +21996,27 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+  a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
+  #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{tag}`.
 
@@ -22135,11 +22135,11 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`, then:
 
-   a. Return :math:`(\mathsf{elem{.}drop}~x)`.
+  a. Return :math:`(\mathsf{elem{.}drop}~x)`.
 
 #. Assert: Due to validation, :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`.
 
@@ -22154,7 +22154,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`.
 
@@ -22171,7 +22171,7 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{expr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Return :math:`\epsilon`.
+  a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{expr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -22264,7 +22264,7 @@ watsup 0.4 generator
 
 #. If :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` is defined, then:
 
-   a. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
+  a. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
 
 #. Pop the activation of :math:`f` with arity :math:`0` from the stack.
 
@@ -22312,23 +22312,23 @@ watsup 0.4 generator
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   #. Return :math:`\epsilon`.
+  #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`X~{{X'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+  a. Let :math:`X~{{X'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+  #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`a` be :math:`{\mathrm{allocX}}({\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
+  #. Let :math:`a` be :math:`{\mathrm{allocX}}({\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
 
-   #. Let :math:`{{a'}^\ast}` be :math:`{\mathrm{allocXs}}({\mathit{TODO}}, {\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})`.
+  #. Let :math:`{{a'}^\ast}` be :math:`{\mathrm{allocXs}}({\mathit{TODO}}, {\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})`.
 
-   #. Return :math:`a~{{a'}^\ast}`.
+  #. Return :math:`a~{{a'}^\ast}`.
 
 
 :math:`{\mathit{TODO}}`

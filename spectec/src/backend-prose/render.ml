@@ -27,7 +27,7 @@ let env config inputs outputs render_latex : env =
 
 (* Helpers *)
 
-let indent = "   "
+let indent = "  "
 
 let rec repeat str num =
   if num = 0 then ""
