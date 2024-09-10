@@ -9,14 +9,14 @@ type stmt =
 | LetS of expr * expr
 | CondS of expr
 | CmpS of expr * cmpop * expr
-(* | MemS of expr * expr *)
 | IsValidS of expr option * expr * expr list
 | MatchesS of expr * expr
 | IsConstS of expr option * expr
 | IfS of expr * stmt list
 | ForallS of (expr * expr) list * stmt list
-(* | EquivS of expr * expr *)
 | EitherS of stmt list list
+(* TODO: Merge others statements into RelS *)
+| RelS of string * expr list
 | YetS of string
 
 type def =

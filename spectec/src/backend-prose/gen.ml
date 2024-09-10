@@ -36,18 +36,6 @@ let is_empty_context_rel def =
 let preprocess_il il =
   il
   |> List.concat_map flatten_rec
-  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
-
-let preprocess_prem prem = match prem.it with
-  (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
-  | Ast.RulePr (
-      { it = "Expand"; _ },
-      [[]; [{it = Approx; _}]; []],
-      { it = TupE [dt; ct]; at = tup_at; _ }
-    ) ->
-      let expanded_dt = { dt with it = Ast.CallE ("expanddt" $ no_region, [Ast.ExpA dt $ dt.at]); note = ct.note } in
-      { prem with it = Ast.IfPr (Ast.CmpE (Ast.EqOp, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
-  | _ -> prem
 
 let atomize atom' = atom' $$ no_region % (El.Atom.info "")
 
@@ -55,6 +43,18 @@ let rel_has_id id rel =
   match rel.it with
   | Ast.RelD (id', _, _, _) -> id.it = id'.it
   | _ -> false
+
+let extract_prose_hint Ast.{hintid; hintexp} =
+  match hintid.it, hintexp.it with
+  | "prose", TextE hint -> Some hint
+  | _ -> None
+let extract_rel_hint id =
+  List.find_map (fun def ->
+    match def.it with
+    | Ast.HintD {it = RelH (id', hints); _} when id.it = id'.it ->
+      List.find_map extract_prose_hint hints
+    | _ -> None
+  ) !Langs.il
 
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
@@ -199,34 +199,43 @@ let rec if_expr_to_instrs e =
       [ CmpS (exp_to_expr e, Eq, boolE true ~note:boolT) ]
 
 let rec prem_to_instrs prem =
-  let prem = preprocess_prem prem in
   match prem.it with
   | Ast.LetPr (e1, e2, _) ->
     [ LetS (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e
   | Ast.RulePr (id, _, e) ->
-    let rel = match List.find_opt (rel_has_id id) !Langs.il with Some rel -> rel | None -> failwith id.it in
+    let rel =
+      match List.find_opt (rel_has_id id) !Langs.il with
+      | Some rel -> rel
+      | None -> failwith ("Unknown relation id: " ^ id.it)
+    in
     let args = exp_to_argexpr e in
-    ( match get_rel_kind rel, args with
-    (* contextless *)
-    | ValidRel,      [e]         -> [ IsValidS (None, e, []) ]
-    | ValidInstrRel, [e; t]      -> [ IsValidS (None, e, [t]) ]
-    | ValidWithRel,  [e; e']     -> [ IsValidS (None, e, [e']) ]
-    | MatchRel,      [t1; t2]    -> [ MatchesS (t1, t2) ]
-    | ConstRel,      [e]         -> [ IsConstS (None, e) ]
-    | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
-    | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
-    (* context *)
-    | ValidRel,      [c; e]         -> [ IsValidS (try_omit c, e, []) ]
-    | ValidInstrRel, [c; e; t]      -> [ IsValidS (try_omit c, e, [t]) ]
-    | ValidWithRel,  [c; e; e']     -> [ IsValidS (try_omit c, e, [e']) ]
-    | MatchRel,      [_; t1; t2]    -> [ MatchesS (t1, t2) ]
-    | ConstRel,      [c; e]         -> [ IsConstS (try_omit c, e) ]
-    | ValidConstRel, [c; e; e']     -> [ IsValidS (try_omit c, e, [e']); IsConstS (try_omit c, e) ]
-    | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (try_omit c, e, [e1; e2]) ]
-    | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]
-    | _,              _             -> assert false )
+    ( match extract_rel_hint id with
+    | Some hint ->
+      (* Relation with prose hint *)
+      [ RelS (hint, args) ]
+    | None ->
+      ( match get_rel_kind rel, args with
+      (* contextless *)
+      | ValidRel,      [e]         -> [ IsValidS (None, e, []) ]
+      | ValidInstrRel, [e; t]      -> [ IsValidS (None, e, [t]) ]
+      | ValidWithRel,  [e; e']     -> [ IsValidS (None, e, [e']) ]
+      | MatchRel,      [t1; t2]    -> [ MatchesS (t1, t2) ]
+      | ConstRel,      [e]         -> [ IsConstS (None, e) ]
+      | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
+      | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
+      (* context *)
+      | ValidRel,      [c; e]         -> [ IsValidS (try_omit c, e, []) ]
+      | ValidInstrRel, [c; e; t]      -> [ IsValidS (try_omit c, e, [t]) ]
+      | ValidWithRel,  [c; e; e']     -> [ IsValidS (try_omit c, e, [e']) ]
+      | MatchRel,      [_; t1; t2]    -> [ MatchesS (t1, t2) ]
+      | ConstRel,      [c; e]         -> [ IsConstS (try_omit c, e) ]
+      | ValidConstRel, [c; e; e']     -> [ IsValidS (try_omit c, e, [e']); IsConstS (try_omit c, e) ]
+      | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (try_omit c, e, [e1; e2]) ]
+      | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]
+      | _,              _             -> assert false )
+    )
   | Ast.IterPr (prem, iter) ->
     (match iter with
     | Ast.Opt, [(id, _)] -> [ IfS (isDefinedE (varE id.it ~note:no_note) ~note:no_note, prem_to_instrs prem) ]
@@ -544,7 +553,9 @@ let postprocess_prose defs =
 
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
-  prose_of_rels !Langs.il
+  !Langs.il
+  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
+  |> prose_of_rels
 
 (** Entry for generating execution prose **)
 let gen_execution_prose () =

@@ -557,8 +557,20 @@ let rec render_stmt env depth stmt =
           "" sll
       in
       sprintf "Either:%s\n%s" sl_head' sll'
+    | RelS (s, es) ->
+      (* a;b;c, 1;2 -> a;1;b;2;c *)
+      let rec alternate xs ys =
+        match xs with
+        | [] -> ys
+        | x :: xs -> x :: alternate ys xs
+      in
+
+      let template = String.split_on_char '%' s in
+      let args = List.map (render_expr env) es in
+
+      alternate template args |> String.concat ""
     | YetS s ->
-      sprintf "YetI: %s." s
+      sprintf "YetS: %s." s
   in
   prefix ^ (sentence |> String.capitalize_ascii)
 

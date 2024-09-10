@@ -433,6 +433,18 @@ let rec string_of_stmt = function
   | EitherS iss ->
       sprintf "%s Either:\n%s" (indent ())
         (string_of_list indented_string_of_stmts "" ("\n" ^ indent () ^ " Or:\n") "" iss)
+  | RelS (s, es) ->
+      let rec alternate xs ys =
+        match xs with
+        | [] -> ys
+        | x :: xs -> x :: alternate ys xs
+      in
+
+      let template = String.split_on_char '%' s in
+      let args = List.map string_of_expr es in
+
+      sprintf "%s %s" (indent())
+        (alternate template args |> String.concat "")
   | YetS s -> indent () ^ " Yet: " ^ s
 
 and indented_string_of_stmt i =

@@ -35,4 +35,9 @@ let rec eq_stmt i1 i2 =
       && eq_list eq_stmt il1 il2
   | EitherS (il1), EitherS (il2) ->
       eq_list (fun l1 l2 -> eq_list eq_stmt l1 l2) il1 il2
+  | RelS (s1, el1), RelS (s2, el2) ->
+    s1 = s2
+    && eq_list eq_expr el1 el2
+  | YetS s1, YetS s2 ->
+    s1 = s2
   | _, _ -> i1 = i2
