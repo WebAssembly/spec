@@ -7,6 +7,7 @@ type mixop = Il.Ast.mixop
 
 (* Types *)
 
+(* TODO: define AL type *)
 type typ = Il.Ast.typ
 
 (* Identifiers *)
