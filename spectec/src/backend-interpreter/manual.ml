@@ -78,7 +78,7 @@ let module_ok = function
     |> Reference_interpreter.Valid.check_module;
     *)
 
-    let get_externtype = function
+    let get_clos_externtype = function
       | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
         let s = function
           | Types.StatX x when Int32.to_int x < Array.length !types ->
@@ -98,15 +98,13 @@ let module_ok = function
 
     let externtypes =
       !imports
-      |> Array.to_list
-      |> List.map get_externtype
-      |> listV_of_list
+      |> Array.map get_clos_externtype
+      |> listV
     in
     let externidxs =
       !exports
-      |> Array.to_list
-      |> List.map get_externidx
-      |> listV_of_list
+      |> Array.map get_externidx
+      |> listV
     in
 
     CaseV ("->", [ externtypes; externidxs ])
@@ -120,7 +118,7 @@ let externaddr_type = function
     |> unwrap_listv_to_array
     |> fun arr -> Array.get arr addr
     |> strv_access "TYPE"
-    |> fun type_ -> let res = CaseV (name, [type_]) in print_endline (Print.string_of_value res); print_endline (Print.string_of_value t);res
+    |> fun type_ -> CaseV (name, [type_])
     |> Construct.al_to_extern_type
     |> fun t' -> Match.match_extern_type [] t' (Construct.al_to_extern_type t)
     |> boolV
