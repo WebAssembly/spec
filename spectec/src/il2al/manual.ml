@@ -19,8 +19,8 @@ let eval_expr =
 
   (* Add function definition to AL environment *)
   let param = Il.Ast.ExpP ("_" $ no_region, ty_instrs) $ no_region in
-  Al.Valid.env :=
-    Il.Env.bind_def !Al.Valid.env ("eval_expr" $ no_region) ([param], ty_vals, []);
+  Al.Valid.il_env :=
+    Il.Env.bind_def !Al.Valid.il_env ("eval_expr" $ no_region) ([param], ty_vals, []);
 
   FuncA (
     "eval_expr",

@@ -112,9 +112,9 @@ let rec preprocess_prem prem =
       in
 
       (* Add function definition to AL environment *)
-      if not (Env.mem_def !Al.Valid.env id) then (
+      if not (Env.mem_def !Al.Valid.il_env id) then (
         let param = ExpP ("_" $ no_region, dt.note) $ dt.at in
-        Al.Valid.env := Env.bind_def !Al.Valid.env id ([param], ct.note, [])
+        Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id ([param], ct.note, [])
       );
 
       [ new_prem $ prem.at ]
@@ -137,9 +137,9 @@ let rec preprocess_prem prem =
       in
 
       (* Add function definition to AL environment *)
-      if not (Env.mem_def !Al.Valid.env id) then (
+      if not (Env.mem_def !Al.Valid.il_env id) then (
         let param = ExpP ("_" $ no_region, lhs.note) $ lhs.at in
-        Al.Valid.env := Env.bind_def !Al.Valid.env id ([param], rhs.note, [])
+        Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id ([param], rhs.note, [])
       );
 
       [ new_prem $ prem.at ]
@@ -167,15 +167,15 @@ let preprocess_def (def: def) : def =
 
   match def'.it with
   | TypD (id, ps, insts) ->
-    Al.Valid.env := Env.bind_typ !Al.Valid.env id (ps, insts); def'
+    Al.Valid.il_env := Env.bind_typ !Al.Valid.il_env id (ps, insts); def'
   | RelD (id, mixop, t, rules) ->
-    Al.Valid.env := Env.bind_rel !Al.Valid.env id (mixop, t, rules);
+    Al.Valid.il_env := Env.bind_rel !Al.Valid.il_env id (mixop, t, rules);
     RelD (id, mixop, t, List.map preprocess_rule rules) $ def.at
   | DecD (id, ps, t, clauses) ->
-    Al.Valid.env := Env.bind_def !Al.Valid.env id (ps, t, clauses);
+    Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id (ps, t, clauses);
     DecD (id, ps, t, List.map preprocess_clause clauses) $ def.at
   | GramD (id, ps, t, prods) ->
-    Al.Valid.env := Env.bind_gram !Al.Valid.env id (ps, t, prods); def'
+    Al.Valid.il_env := Env.bind_gram !Al.Valid.il_env id (ps, t, prods); def'
   | RecD _ -> assert (false);
   | HintD _ -> def'
 

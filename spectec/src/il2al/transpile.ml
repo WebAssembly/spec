@@ -606,12 +606,12 @@ let hide_state_expr expr =
 
 let hide_state instr =
   let at = instr.at in
-  let env = Al.Valid.env in
+  let il_env = Al.Valid.il_env in
   let set_unit_type fname =
     let id = (fname $ no_region) in
     let unit_type = Il.Ast.TupT [] $ no_region in
-    match Il.Env.find_def !Al.Valid.env id with
-    | (params, _, clauses) -> env := Al.Valid.Env.bind_def !env id (params, unit_type, clauses)
+    match Il.Env.find_def !Al.Valid.il_env id with
+    | (params, _, clauses) -> il_env := Al.Valid.IlEnv.bind_def !il_env id (params, unit_type, clauses)
   in
   match instr.it with
   (* Perform *)
@@ -690,7 +690,7 @@ let remove_state algo =
 let get_state_arg_opt f =
   let arg = ref (TypA (Il.Ast.BoolT $ no_region)) in
   let id = f $ no_region in
-  match Il.Env.find_opt_def !Al.Valid.env id with
+  match Il.Env.find_opt_def !Al.Valid.il_env id with
   | Some (params, _, _) ->
     let param_state = List.find_opt (
       fun param ->

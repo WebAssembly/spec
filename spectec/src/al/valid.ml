@@ -49,8 +49,8 @@ let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ 
 
 (* Type Env *)
 
-module Env = Il.Env
-let env: Env.t ref = ref Env.empty
+module IlEnv = Il.Env
+let il_env: IlEnv.t ref = ref IlEnv.empty
 
 
 let varT s = VarT (s $ no_region, []) $ no_region
@@ -61,10 +61,10 @@ let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 (* Subtyping *)
 
 let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
-  match Env.find_opt_typ !env id with
+  match IlEnv.find_opt_typ !il_env id with
   | Some (_, insts) ->
     let typ_of_arg arg =
-      match (Eval.reduce_arg !env arg).it with
+      match (Eval.reduce_arg !il_env arg).it with
       | ExpA { it=SubE (_, typ, _); _ } -> typ
       | ExpA { note; _ } -> note
       | TypA typ -> typ
@@ -94,7 +94,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
     let get_deftyp inst =
       let InstD (_, inst_args, deftyp) = inst.it in
       let valid_arg arg inst_arg = 
-        Eval.sub_typ !env (typ_of_arg arg) (typ_of_arg inst_arg)
+        Eval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
       in
       if List.for_all2 valid_arg args inst_args then
         Some deftyp
@@ -158,8 +158,8 @@ and unify_typs_opt : typ list -> typ option = function
 
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
-  | VarT (id, _) when Env.mem_var !env id ->
-    let typ' = Env.find_var !env id in
+  | VarT (id, _) when IlEnv.mem_var !il_env id ->
+    let typ' = IlEnv.find_var !il_env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
@@ -182,7 +182,7 @@ let rec sub_typ typ1 typ2 =
   match typ1'.it, typ2'.it with
   | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
   | NumT _, NumT _ -> true
-  | _, _ -> Eval.sub_typ !env typ1' typ2'
+  | _, _ -> Eval.sub_typ !il_env typ1' typ2'
 
 let rec matches typ1 typ2 =
   match (ground_typ_of typ1).it, (ground_typ_of typ2).it with
@@ -216,8 +216,8 @@ let rec get_typfields_of_inst (inst: inst) : typfield list =
 
 and get_typfields (typ: typ) : typfield list =
   match typ.it with
-  | VarT (id, _) when Env.mem_typ !env id ->
-    let _, insts = Env.find_typ !env id in
+  | VarT (id, _) when IlEnv.mem_typ !il_env id ->
+    let _, insts = IlEnv.find_typ !il_env id in
     List.concat_map get_typfields_of_inst insts
   | _ -> []
 
@@ -287,21 +287,21 @@ let check_tuple source exprs typ =
   | _ -> error_tuple source typ
 
 let check_call source id args result_typ =
-  match Env.find_opt_def !env (id $ no_region) with
+  match IlEnv.find_opt_def !il_env (id $ no_region) with
   | Some (params, typ, _) ->
-    (* TODO: Use local environment *)
-    (* Store global enviroment *)
-    let global_env = !env in
+    (* TODO: Use local il_environment *)
+    (* Store global il_enviroment *)
+    let global_il_env = !il_env in
 
     let check_arg arg param =
       match arg.it, param.it with
       | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
       (* Add local variable typ *)
-      | TypA typ1, TypP id -> env := Env.bind_var !env id typ1
+      | TypA typ1, TypP id -> il_env := IlEnv.bind_var !il_env id typ1
       | DefA aid, DefP (_, pparams, ptyp) ->
-        (match Env.find_opt_def !env (aid $ no_region) with
+        (match IlEnv.find_opt_def !il_env (aid $ no_region) with
         | Some (aparams, atyp, _) -> 
-          if not (Eval.sub_typ !env atyp ptyp) then
+          if not (Eval.sub_typ !il_env atyp ptyp) then
             error_valid
               "argument's return type is not a subtype of parameter's return type"
               source
@@ -321,7 +321,7 @@ let check_call source id args result_typ =
             let aptyp = typ_of_param aparam in
             let pptyp = typ_of_param pparam in
 
-            if not (Eval.sub_typ !env pptyp aptyp) then
+            if not (Eval.sub_typ !il_env pptyp aptyp) then
               error_valid
                 "parameter's parameter type is not a subtype of argument's return type"
                 source
@@ -342,8 +342,8 @@ let check_call source id args result_typ =
     List.iter2 check_arg args params;
     check_match source result_typ typ;
 
-    (* Reset global enviroment *)
-    env := global_env
+    (* Reset global il_enviroment *)
+    il_env := global_il_env
   | None -> error_valid "no function definition" source ""
 
 let check_inv_call source id indices args result_typ =
@@ -594,15 +594,15 @@ let valid_algo (algo: algorithm) =
   |> print_string;
   print_endline ")";
 
-  (* TODO: Use local environment *)
-  (* Store global enviroment *)
-  let global_env = !env in
+  (* TODO: Use local il_environment *)
+  (* Store global il_enviroment *)
+  let global_il_env = !il_env in
 
-  (* Add function argument to environment *)
-  (match Env.find_opt_def !env (Al_util.name_of_algo algo $ no_region) with
+  (* Add function argument to il_environment *)
+  (match IlEnv.find_opt_def !il_env (Al_util.name_of_algo algo $ no_region) with
   | Some (params, _, _) -> List.iter (fun param ->
       (match param.it with
-      | DefP (id, params', typ') -> env := Env.bind_def !env id (params', typ', [])
+      | DefP (id, params', typ') -> il_env := IlEnv.bind_def !il_env id (params', typ', [])
       | _ -> ()
       )
     ) params;
@@ -618,8 +618,8 @@ let valid_algo (algo: algorithm) =
   in
   walker.walk_algo walker algo;
 
-  (* Reset global enviroment *)
-  env := global_env
+  (* Reset global il_enviroment *)
+  il_env := global_il_env
 
 let valid (script: script) =
   Lang.al := script;
