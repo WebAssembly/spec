@@ -743,11 +743,18 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
 and try_step_wasm ctx v =
   try_with_error empty no_region structured_string_of_value (step_wasm ctx) v
 
-and step : AlContext.t -> AlContext.t = AlContext.(function
+and step (ctx: AlContext.t) : AlContext.t =
+  let open AlContext in
+
+  Debugger.run ctx;
+
+  match ctx with
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr name ctx env instr
+    | [ instr ]
+    when can_tail_call instr && not !Debugger.debug ->
+      try_step_instr name ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
       try_step_instr name new_ctx env h
@@ -761,7 +768,7 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     (match il with
     | [] ->
       (match ctx with
-      | Wasm n :: t -> Wasm (n + 1) :: t
+      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
       | Enter (_, [], _) :: t -> Wasm 2 :: t
       | ctx -> Wasm 1 :: ctx
       )
@@ -771,10 +778,10 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     )
   | Execute v :: ctx -> try_step_wasm ctx v
   | _ -> assert false
-)
 
 
 (* AL interpreter Entry *)
+
 
 and run (ctx: AlContext.t) : AlContext.t =
   if AlContext.is_reducible ctx then run (step ctx) else ctx

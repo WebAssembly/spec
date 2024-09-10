@@ -47,6 +47,7 @@ module AlContext : sig
   val execute : value -> mode
   val return : value -> mode
   type t = mode list
+  val string_of_context : mode -> string
   val tl : t -> t
   val is_reducible : t -> bool
   val can_tail_call : instr -> bool

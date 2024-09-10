@@ -175,6 +175,15 @@ module AlContext = struct
 
   type t = mode list
 
+  let string_of_context = function
+    | Al (s, il, _) ->
+      Printf.sprintf "Al (%s, %s, %s)" s (string_of_instrs il) "env"
+    | Wasm i -> "Wasm " ^ string_of_int i
+    | Enter (s, il, _) ->
+      Printf.sprintf "Enter (%s, %s, %s)" s (string_of_instrs il) "env"
+    | Execute v -> "Execute " ^ string_of_value v
+    | Return v -> "Return " ^ string_of_value v
+
   let tl = List.tl
 
   let is_reducible = function
@@ -187,12 +196,13 @@ module AlContext = struct
     | _ -> true
 
   let get_name ctx =
-    match List.hd ctx with
-    | Al (name, _, _) -> name
-    | Wasm _ -> "Wasm"
-    | Execute _ -> "Execute"
-    | Enter _ -> "Enter"
-    | Return _ -> "Return"
+    match ctx with
+    | [] -> ""
+    | Al (name, _, _) :: _ -> name
+    | Wasm _ :: _ -> "Wasm"
+    | Execute _ :: _ -> "Execute"
+    | Enter _ :: _ -> "Enter"
+    | Return _ :: _ -> "Return"
 
   let add_instrs il = function
     | Al (name, il', env) :: t -> Al (name, il @ il', env) :: t
