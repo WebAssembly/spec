@@ -533,40 +533,40 @@ let rec render_stmt env depth stmt =
       sprintf "%s%s is const."
         (render_opt "Under the context " (render_expr_with_type env) ", " c_opt)
         (render_expr env e)
-    | IfS (c, is) ->
+    | IfS (c, sl) ->
       sprintf "If %s,%s"
         (render_expr env c)
-        (render_stmts env (depth + 1) is)
+        (render_stmts env (depth + 1) sl)
     | ForallS (iters, is) ->
       let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
       let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
       sprintf "For all %s,%s"
         (render_iters env iters)
         (render_stmts env (depth + 1) is)
-    | EitherS ill ->
-      let il_head, ill = List.hd ill, List.tl ill in
-      let sil_head = render_stmts env (depth + 1) il_head in
-      let sill =
+    | EitherS sll ->
+      let sl_head, sll = List.hd sll, List.tl sll in
+      let sl_head' = render_stmts env (depth + 1) sl_head in
+      let sll' =
         List.fold_left
-          (fun sill il ->
-            sprintf "%s%s%sOr:%s"
-              sill
+          (fun ssll sl ->
+            sprintf "%s\n%s%sOr:%s"
+              ssll
               (repeat indent depth)
               prefix
-              (render_stmts env (depth + 1) il))
-          "" ill
+              (render_stmts env (depth + 1) sl))
+          "" sll
       in
-      sprintf "Either:%s\n\n%s" sil_head sill
+      sprintf "Either:%s\n%s" sl_head' sll'
     | YetS s ->
       sprintf "YetI: %s." s
   in
   prefix ^ (sentence |> String.capitalize_ascii)
 
-and render_stmts env depth instrs =
+and render_stmts env depth stmts =
   List.fold_left
-    (fun sinstrs i ->
-      sinstrs ^ "\n\n" ^ repeat indent depth ^ render_stmt env depth i)
-    "" instrs
+    (fun stmts i ->
+      stmts ^ "\n\n" ^ repeat indent depth ^ render_stmt env depth i)
+    "" stmts
 
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix expr =

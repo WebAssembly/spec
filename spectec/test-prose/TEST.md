@@ -56,11 +56,13 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.   * Or:
+      * The global type :math:`{\mathit{globaltype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.   * Or:
+      * The table type :math:`{\mathit{tabletype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
@@ -110,13 +112,15 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.   * Or:
+      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
-      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.   * Or:
+      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
@@ -357,7 +361,8 @@ watsup 0.4 generator
 
       * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
@@ -507,7 +512,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
@@ -515,7 +521,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.   * Or:
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
@@ -4235,11 +4242,13 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.   * Or:
+      * The global type :math:`{\mathit{globaltype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.   * Or:
+      * The table type :math:`{\mathit{tabletype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
@@ -4311,13 +4320,15 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.   * Or:
+      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
-      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.   * Or:
+      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
@@ -4800,7 +4811,8 @@ watsup 0.4 generator
 
       * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.   * Or:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * Or:
 
       * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
@@ -4862,7 +4874,8 @@ watsup 0.4 generator
 
       * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
@@ -4874,7 +4887,8 @@ watsup 0.4 generator
 
       * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.   * Or:
+      * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
@@ -4900,11 +4914,14 @@ watsup 0.4 generator
 
    * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
+   * Or:
 
       * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
@@ -4978,7 +4995,8 @@ watsup 0.4 generator
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.   * Or:
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+   * Or:
 
       * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
@@ -5056,7 +5074,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
@@ -5064,7 +5083,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.   * Or:
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
@@ -12346,7 +12366,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.   * Or:
+      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
@@ -12374,11 +12395,13 @@ watsup 0.4 generator
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}`.
 
-      * The vector type :math:`{\mathit{vectype}}` is valid.   * Or:
+      * The vector type :math:`{\mathit{vectype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}`.
 
-      * The reference type :math:`{\mathit{reftype}}` is valid.   * Or:
+      * The reference type :math:`{\mathit{reftype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
@@ -12457,7 +12480,8 @@ watsup 0.4 generator
 
       * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
-      * The field type :math:`{\mathit{fieldtype}}` is valid.   * Or:
+      * The field type :math:`{\mathit{fieldtype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
@@ -12505,47 +12529,56 @@ watsup 0.4 generator
 
       * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{any}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{any}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 31}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{struct}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{array}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.   * Or:
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.   * Or:
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{func}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.   * Or:
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}_1`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{deftype}}_2`.
 
-      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.   * Or:
+      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
@@ -12553,7 +12586,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.   * Or:
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
 
@@ -12561,7 +12595,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
@@ -12571,25 +12606,29 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
 
-      * :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.   * Or:
+      * :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{none}`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nofunc}`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{noextern}`.
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
+   * Or:
 
       * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
@@ -12634,13 +12673,15 @@ watsup 0.4 generator
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{vectype}}_2`.
 
-      * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.   * Or:
+      * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.
+   * Or:
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}_1`.
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{reftype}}_2`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.   * Or:
+      * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
+   * Or:
 
       * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
@@ -12726,7 +12767,8 @@ watsup 0.4 generator
 
       * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
 
-      * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.   * Or:
+      * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
+   * Or:
 
       * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
@@ -12816,7 +12858,8 @@ watsup 0.4 generator
 
       * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x + 1})`.   * Or:
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x + 1})`.
+   * Or:
 
       * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{subtype}}^\ast}`.
 
@@ -12884,15 +12927,18 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.   * Or:
+      * The global type :math:`{\mathit{globaltype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.   * Or:
+      * The table type :math:`{\mathit{tabletype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.   * Or:
+      * The memory type :math:`{\mathit{memtype}}` is valid.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
@@ -12988,19 +13034,22 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
-      * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.   * Or:
+      * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
-      * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.   * Or:
+      * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
-      * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.   * Or:
+      * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.
+   * Or:
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
@@ -13060,11 +13109,13 @@ watsup 0.4 generator
 
       * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * Or:
 
       * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all}~l)`.
 
-      * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+      * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * Or:
 
       * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all\_ref}~l)`.
 
@@ -13927,11 +13978,13 @@ watsup 0.4 generator
 
       * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.   * Or:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * Or:
 
       * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.   * Or:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * Or:
 
       * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
@@ -14001,7 +14054,8 @@ watsup 0.4 generator
 
          * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}, t)`.
 
-      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.   * Or:
+      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
@@ -14011,7 +14065,8 @@ watsup 0.4 generator
 
       * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
 
-      * The instruction type :math:`{\mathit{it}'}` is valid.   * Or:
+      * The instruction type :math:`{\mathit{it}'}` is valid.
+   * Or:
 
       * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
@@ -14037,33 +14092,45 @@ watsup 0.4 generator
 
    * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.
+   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.
+   * Or:
 
       * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
       * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+   * Or:
 
       * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
@@ -14183,7 +14250,8 @@ watsup 0.4 generator
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.   * Or:
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+   * Or:
 
       * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
@@ -14263,7 +14331,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
@@ -14271,7 +14340,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.   * Or:
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
@@ -14279,7 +14349,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.   * Or:
+      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+   * Or:
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~x)`.
 
@@ -14437,7 +14508,8 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
+   * Or:
 
       * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
 
