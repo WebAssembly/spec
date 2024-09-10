@@ -234,12 +234,15 @@ and al_to_el_expr expr =
       in
       Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.CaseE (op, el) ->
+      (* Current rules for omitting parenthesis around a CaseE:
+        1) Has no argument
+        2) Is infix notation *)
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
       (match elal, elel with
-      | None :: _, _
       | _, [] -> Some ele
+      | None :: Some _ :: _, _ -> Some ele
       | _ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
       )
     | Al.Ast.OptE (Some e) ->

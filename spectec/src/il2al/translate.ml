@@ -292,7 +292,7 @@ and translate_exp exp =
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     (* TODO: type *)
     | [ []; [] ], [ e1 ] -> translate_exp e1
-    | [ []; []; [] ], [ e1; e2 ]
+    (* | [ []; []; [] ], [ e1; e2 ] *)
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ]
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
@@ -854,18 +854,18 @@ and handle_special_lhs lhs rhs free_ids =
     )]
   (* Normal cases *)
   | CaseE (op, es) ->
-    let tag = get_atom op |> Option.get in
+    let tag_opt = get_atom op in
     let bindings, es' = extract_non_names es in
-    let rec inject_isCaseOf expr =
+    let rec inject_isCaseOf tag expr =
       match expr.it with
       | IterE (inner_expr, iterexp) ->
-        IterE (inject_isCaseOf inner_expr, iterexp) $$ expr.at % boolT
+        IterE (inject_isCaseOf tag inner_expr, iterexp) $$ expr.at % boolT
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
     in
-    (match tag with
-    | { it = Il.Atom _; _} ->
+    (match tag_opt with
+    | Some ({ it = Il.Atom _; _} as tag) ->
       [ ifI (
-        inject_isCaseOf rhs,
+        inject_isCaseOf tag  rhs,
         letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
         []

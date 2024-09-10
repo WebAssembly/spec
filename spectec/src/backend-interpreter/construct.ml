@@ -112,7 +112,7 @@ let rec al_to_storage_type: value -> storage_type = function
   | v -> ValStorageT (al_to_val_type v)
 
 and al_to_field_type: value -> field_type = function
-  | TupV [ mut; st ] -> FieldT (al_to_mut mut, al_to_storage_type st)
+  | CaseV ("", [ mut; st ]) -> FieldT (al_to_mut mut, al_to_storage_type st)
   | v -> error_value "field type" v
 
 and al_to_result_type: value -> result_type = function
@@ -203,11 +203,11 @@ let al_to_limits (default: int64): value -> int32 limits = function
 
 
 let al_to_global_type: value -> global_type = function
-  | TupV [ mut; vt ] -> GlobalT (al_to_mut mut, al_to_val_type vt)
+  | CaseV ("", [ mut; vt ]) -> GlobalT (al_to_mut mut, al_to_val_type vt)
   | v -> error_value "global type" v
 
 let al_to_table_type: value -> table_type = function
-  | TupV [ limits; rt ] -> TableT (al_to_limits default_table_max limits, al_to_ref_type rt)
+  | CaseV ("", [ limits; rt ]) -> TableT (al_to_limits default_table_max limits, al_to_ref_type rt)
   | v -> error_value "table type" v
 
 let al_to_memory_type: value -> memory_type = function
@@ -650,7 +650,7 @@ let al_to_memop (f: value -> 'p) : value list -> idx * (num_type, 'p) memop = fu
   | v -> error_values "memop" v
 
 let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = function
-  | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
+  | CaseV ("", [ p; ext ]) -> al_to_pack_size p, al_to_extension ext
   | v -> error_value "pack size, extension" v
 
 let al_to_loadop: value list -> idx * loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
@@ -1202,7 +1202,7 @@ let rec al_of_storage_type = function
   | PackStorageT _ as st -> nullary (string_of_storage_type st)
 
 and al_of_field_type = function
-  | FieldT (mut, st) -> tupV [ al_of_mut mut; al_of_storage_type st ]
+  | FieldT (mut, st) -> caseV ("", [ al_of_mut mut; al_of_storage_type st ])
 
 and al_of_result_type rt = al_of_list al_of_val_type rt
 
@@ -1269,10 +1269,10 @@ let al_of_limits default limits =
   tupV [ al_of_int32 limits.min; max ]
 
 let al_of_global_type = function
-  | GlobalT (mut, vt) -> tupV [ al_of_mut mut; al_of_val_type vt ]
+  | GlobalT (mut, vt) -> caseV ("", [ al_of_mut mut; al_of_val_type vt ])
 
 let al_of_table_type = function
-  | TableT (limits, rt) -> tupV [ al_of_limits default_table_max limits; al_of_ref_type rt ]
+  | TableT (limits, rt) -> caseV ("", [ al_of_limits default_table_max limits; al_of_ref_type rt ])
 
 let al_of_memory_type = function
   | MemoryT limits -> CaseV ("PAGE", [ al_of_limits default_memory_max limits ])
@@ -1795,7 +1795,11 @@ let al_of_memop f idx memop =
   in
   [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx idx @ [ StrV str ]
 
-let al_of_pack_size_extension (p, s) = tupV [ al_of_pack_size p; al_of_extension s ]
+let al_of_pack_size_extension (p, s) =
+  if !version = 3 then
+    caseV ("", [ al_of_pack_size p; al_of_extension s ])
+  else
+    tupV [ al_of_pack_size p; al_of_extension s ]
 
 let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
@@ -2021,7 +2025,7 @@ let al_of_global global =
 
 let al_of_table table =
   match !version with
-  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_tup 0 ])
+  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_case "" 0 ])
   | 2 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype ])
   | 3 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype; al_of_const table.it.tinit ])
   | _ -> failwith "Unsupported version"

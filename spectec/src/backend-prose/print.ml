@@ -139,22 +139,20 @@ and string_of_expr expr =
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
   | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE ([[ atom ]], []) -> string_of_atom atom
   | CaseE (op, el) ->
-    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
-    let st, fn = if List.hd op' = "" then "", "" else "(", ")" in
-    (match op' with
-    | [] -> st ^ fn
-    | hd::tl ->
-      let res =
-        List.fold_left2 (
-          fun acc a e ->
-            let a' = if a = "" then "" else " " ^ a in
-            let acc' = if acc = "" then "" else acc ^ " " in
-            acc' ^ string_of_expr e ^ a'
-        ) hd tl el in
-      st ^ res ^ fn
-    )
+    (* Current rules for omitting parenthesis around a CaseE:
+       1) Has no argument
+       2) Is infix notation *)
+    let op' = List.map (string_of_list string_of_atom "" "" "") op in
+    let el' = List.map string_of_expr el in
+
+    let s = Prose_util.alternate op' el'
+    |> List.filter (fun s -> s <> "")
+    |> String.concat " " in
+
+    let has_no_arg = List.length el = 0 in
+    let is_infix = List.hd op' = "" && String.concat "" op' <> "" in
+    if has_no_arg || is_infix then s else "(" ^ s ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE a -> sprintf "the top of the stack is a %s" (string_of_atom a)
@@ -434,17 +432,11 @@ let rec string_of_stmt = function
       sprintf "%s Either:\n%s" (indent ())
         (string_of_list indented_string_of_stmts "" ("\n" ^ indent () ^ " Or:\n") "" iss)
   | RelS (s, es) ->
-      let rec alternate xs ys =
-        match xs with
-        | [] -> ys
-        | x :: xs -> x :: alternate ys xs
-      in
-
       let template = String.split_on_char '%' s in
       let args = List.map string_of_expr es in
 
       sprintf "%s %s" (indent())
-        (alternate template args |> String.concat "")
+        (Prose_util.alternate template args |> String.concat "")
   | YetS s -> indent () ^ " Yet: " ^ s
 
 and indented_string_of_stmt i =

@@ -28,7 +28,7 @@ watsup 0.4 generator
 * The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
 
 
-* The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
+* The global type :math:`((\mathsf{mut}~{()^?}~{}^?)~t)` is valid.
 
 
 * The table type :math:`{\mathit{limits}}` is valid if:
@@ -273,7 +273,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
@@ -281,7 +281,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
 
 
 * The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
@@ -424,7 +424,7 @@ watsup 0.4 generator
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
+  * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`t`.
 
@@ -2803,7 +2803,7 @@ Functype_ok
 - the function type t_1* -> t_2? is valid.
 
 Globaltype_ok
-- the global type ((MUT ()? ?), t) is valid.
+- the global type ((MUT ()? ?) t) is valid.
 
 Tabletype_ok
 - the table type limits is valid if:
@@ -2965,12 +2965,12 @@ Instr_ok/local.tee
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is (MUT, t).
+  - C.GLOBALS[x] is (MUT t).
 
 Instr_ok/memory.size
 - the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
@@ -3033,7 +3033,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is (, t).
+    - C.GLOBALS[x] is (t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -3053,7 +3053,7 @@ Func_ok
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
   - the global type gt is valid.
-  - gt is (mut, t).
+  - gt is (mut t).
   - the expression expr is valid with the number type sequence ?(t).
   - the expression expr is constant.
 
@@ -4214,10 +4214,10 @@ watsup 0.4 generator
 * The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-* The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
+* The global type :math:`((\mathsf{mut}~{()^?}~{}^?)~t)` is valid.
 
 
-* The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
+* The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is valid if:
 
 
   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
@@ -4291,7 +4291,7 @@ watsup 0.4 generator
 * The global type :math:`{\mathit{gt}}` matches the global type :math:`{\mathit{gt}}`.
 
 
-* The table type :math:`({\mathit{lim}}_1, {\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2, {\mathit{rt}})` if:
+* The table type :math:`({\mathit{lim}}_1~{\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2~{\mathit{rt}})` if:
 
 
   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
@@ -4463,7 +4463,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, \mathsf{funcref})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~\mathsf{funcref})`.
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
@@ -4619,7 +4619,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
@@ -4627,7 +4627,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
 
 
 * The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
@@ -4635,7 +4635,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
@@ -4643,7 +4643,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
@@ -4651,7 +4651,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
@@ -4659,7 +4659,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -4667,7 +4667,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -4675,11 +4675,11 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1~{\mathit{rt}})`.
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
 
-  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -4687,7 +4687,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x_2`.
 
@@ -4959,7 +4959,7 @@ watsup 0.4 generator
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
+  * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
@@ -4987,7 +4987,7 @@ watsup 0.4 generator
 
     * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -9003,13 +9003,13 @@ watsup 0.4 generator
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-  a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+  a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
   #. Return :math:`{\mathit{ti}'}`.
 
@@ -9210,11 +9210,11 @@ watsup 0.4 generator
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}))`
-......................................................
+:math:`{\mathrm{alloctable}}(((i, j)~{\mathit{rt}}))`
+.....................................................
 
 
-1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~{\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -9619,10 +9619,10 @@ Functype_ok
 - the function type t_1* -> t_2* is valid.
 
 Globaltype_ok
-- the global type ((MUT ()? ?), t) is valid.
+- the global type ((MUT ()? ?) t) is valid.
 
 Tabletype_ok
-- the table type (limits, reftype) is valid if:
+- the table type (limits reftype) is valid if:
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
 
 Memtype_ok
@@ -9669,7 +9669,7 @@ Globaltype_sub
 - the global type gt matches the global type gt.
 
 Tabletype_sub
-- the table type (lim_1, rt) matches the table type (lim_2, rt) if:
+- the table type (lim_1 rt) matches the table type (lim_2 rt) if:
   - the limits lim_1 matches the limits lim_2.
 
 Memtype_sub
@@ -9772,7 +9772,7 @@ Instr_ok/call
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x y) is valid with the function type t_1* :: [I32] -> t_2* if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, FUNCREF).
+  - C.TABLES[x] is (lim FUNCREF).
   - |C.TYPES| is greater than y.
   - C.TYPES[y] is t_1* -> t_2*.
 
@@ -9896,49 +9896,49 @@ Instr_ok/local.tee
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is (MUT, t).
+  - C.GLOBALS[x] is (MUT t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the function type [I32] -> [rt] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the function type [I32, rt] -> [] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the function type [] -> [I32] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the function type [rt, I32] -> [I32] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the function type [I32, rt, I32] -> [] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
-  - C.TABLES[x_1] is (lim_1, rt).
+  - C.TABLES[x_1] is (lim_1 rt).
   - |C.TABLES| is greater than x_2.
-  - C.TABLES[x_2] is (lim_2, rt).
+  - C.TABLES[x_2] is (lim_2 rt).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
-  - C.TABLES[x_1] is (lim, rt).
+  - C.TABLES[x_1] is (lim rt).
   - |C.ELEMS| is greater than x_2.
   - C.ELEMS[x_2] is rt.
 
@@ -10077,7 +10077,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is (, t).
+    - C.GLOBALS[x] is (t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -10097,7 +10097,7 @@ Func_ok
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
   - the global type gt is valid.
-  - gt is (mut, t).
+  - gt is (mut t).
   - the expression expr is valid with the value type t.
   - the expression expr is constant.
 
@@ -10114,7 +10114,7 @@ Elemmode_ok
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
-    - C.TABLES[x] is (lim, rt).
+    - C.TABLES[x] is (lim rt).
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
   - Or:
@@ -11659,13 +11659,13 @@ vbinop_ lanetype_u1 X M vbinop__u0 v128_1 v128_2
   c. Let lane_2* be $lanes_(Jnn X M, v128_2).
   d. Let v128 be $invlanes_(Jnn X M, $imul_($lsizenn(Jnn), lane_1, lane_2)*).
   e. Return [v128].
-5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
+5. If ((vbinop__u0 is AVGRU) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
   b. Let lane_1* be $lanes_(Jnn X M, v128_1).
   c. Let lane_2* be $lanes_(Jnn X M, v128_2).
   d. Let v128 be $invlanes_(Jnn X M, $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
   e. Return [v128].
-6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
+6. If ((vbinop__u0 is Q15MULR_SATS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
   b. Let lane_1* be $lanes_(Jnn X M, v128_1).
   c. Let lane_2* be $lanes_(Jnn X M, v128_2).
@@ -11881,7 +11881,7 @@ vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop__u0 c_1 c_2
   c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(hf, 0, M_1) : M_1].
   d. Let c be $invlanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
   e. Return c.
-2. Assert: Due to validation, (vextbinop__u0 is (DOTS)).
+2. Assert: Due to validation, (vextbinop__u0 is DOTS).
 3. Let ci_1* be $lanes_(Inn_2 X M_2, c_1).
 4. Let ci_2* be $lanes_(Inn_2 X M_2, c_2).
 5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
@@ -12049,10 +12049,10 @@ with_data x b*
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 growtable ti n r
-1. Let { TYPE: ((i, j), rt); REFS: r'*; } be ti.
+1. Let { TYPE: ((i, j) rt); REFS: r'*; } be ti.
 2. Let i' be (|r'*| + n).
 3. If (i' ≤ j), then:
-  a. Let ti' be { TYPE: ((i', j), rt); REFS: r'* :: r^n; }.
+  a. Let ti' be { TYPE: ((i', j) rt); REFS: r'* :: r^n; }.
   b. Return ti'.
 
 growmemory mi n
@@ -12148,8 +12148,8 @@ allocglobals globaltype_u0* val_u1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ((i, j), rt)
-1. Let ti be { TYPE: ((i, j), rt); REFS: (REF.NULL rt)^i; }.
+alloctable ((i, j) rt)
+1. Let ti be { TYPE: ((i, j) rt); REFS: (REF.NULL rt)^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
@@ -12451,7 +12451,7 @@ watsup 0.4 generator
     * The packed type :math:`{\mathit{packtype}}` is valid.
 
 
-* The field type :math:`((\mathsf{mut}~{()^?}~{}^?), {\mathit{storagetype}})` is valid if:
+* The field type :math:`((\mathsf{mut}~{()^?}~{}^?)~{\mathit{storagetype}})` is valid if:
 
 
   * The storage type :math:`{\mathit{storagetype}}` is valid.
@@ -12708,7 +12708,7 @@ watsup 0.4 generator
     * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
 
 
-* The field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{zt}}_1)` matches the field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{zt}}_2)` if:
+* The field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)~{\mathit{zt}}_1)` matches the field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?)~{\mathit{zt}}_2)` if:
 
 
   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
@@ -12884,13 +12884,13 @@ watsup 0.4 generator
   * :math:`m` is less than or equal to :math:`k`.
 
 
-* The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid if:
+* The global type :math:`((\mathsf{mut}~{()^?}~{}^?)~t)` is valid if:
 
 
   * The value type :math:`t` is valid.
 
 
-* The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
+* The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is valid if:
 
 
   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
@@ -12962,7 +12962,7 @@ watsup 0.4 generator
 
   * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-    * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
+    * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
 
 
 * The limits :math:`(n_1, m_1)` matches the limits :math:`(n_2, m_2)` if:
@@ -12973,7 +12973,7 @@ watsup 0.4 generator
   * :math:`m_1` is less than or equal to :math:`m_2`.
 
 
-* The global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{valtype}}_1)` matches the global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{valtype}}_2)` if:
+* The global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)~{\mathit{valtype}}_1)` matches the global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?)~{\mathit{valtype}}_2)` if:
 
 
   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
@@ -12993,7 +12993,7 @@ watsup 0.4 generator
     * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
 
 
-* The table type :math:`({\mathit{limits}}_1, {\mathit{reftype}}_1)` matches the table type :math:`({\mathit{limits}}_2, {\mathit{reftype}}_2)` if:
+* The table type :math:`({\mathit{limits}}_1~{\mathit{reftype}}_1)` matches the table type :math:`({\mathit{limits}}_2~{\mathit{reftype}}_2)` if:
 
 
   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
@@ -13294,7 +13294,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
@@ -13344,7 +13344,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
@@ -13469,7 +13469,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
 
 * The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13477,7 +13477,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
 
@@ -13495,7 +13495,7 @@ watsup 0.4 generator
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-  * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
+  * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`({\mathsf{mut}^?}~{\mathit{zt}})`.
 
   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -13509,7 +13509,7 @@ watsup 0.4 generator
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-  * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`(\mathsf{mut}, {\mathit{zt}})`.
+  * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`(\mathsf{mut}~{\mathit{zt}})`.
 
 
 * The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13517,7 +13517,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13525,7 +13525,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
@@ -13535,7 +13535,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13543,7 +13543,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{rt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
 
   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
@@ -13555,7 +13555,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * Either:
 
@@ -13575,7 +13575,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -13585,7 +13585,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
@@ -13593,7 +13593,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -13601,7 +13601,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -13609,11 +13609,11 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_1`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x_1]` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x_1]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_2`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x_2]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x_2]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
 
   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
@@ -13623,7 +13623,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
@@ -13635,7 +13635,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`
+  * The expansion of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * Either:
 
@@ -13738,7 +13738,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
@@ -13746,7 +13746,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}~t)`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
@@ -13754,7 +13754,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
@@ -13762,7 +13762,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
@@ -13770,7 +13770,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
 
 
 * The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
@@ -13778,7 +13778,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
@@ -13786,7 +13786,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
@@ -13794,7 +13794,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
@@ -13802,7 +13802,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -13810,7 +13810,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -13818,11 +13818,11 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}}_1)`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1~{\mathit{rt}}_1)`.
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
 
-  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}}_2)`.
+  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2~{\mathit{rt}}_2)`.
 
   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
@@ -13832,7 +13832,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}}_1)`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}}_1)`.
 
   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
@@ -13926,7 +13926,7 @@ watsup 0.4 generator
 
     * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
 
-    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`(M, {\mathit{sx}})`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`(M~{\mathit{sx}})`.
 
     * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathsf{i}}{N}`.
 
@@ -14052,9 +14052,9 @@ watsup 0.4 generator
 
     * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`,
 
-      * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}, t)`.
+      * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}~t)`.
 
-    * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+    * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
   * Or:
 
     * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
@@ -14161,7 +14161,7 @@ watsup 0.4 generator
   * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
 
-* The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}, t)` if:
+* The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~t)` if:
 
 
   * Either:
@@ -14190,7 +14190,7 @@ watsup 0.4 generator
 
     * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
 
 * The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{globaltype}}` if:
@@ -14198,7 +14198,7 @@ watsup 0.4 generator
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * :math:`{\mathit{globaltype}}` is :math:`({\mathsf{mut}^?}, t)`.
+  * :math:`{\mathit{globaltype}}` is :math:`({\mathsf{mut}^?}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
@@ -14210,7 +14210,7 @@ watsup 0.4 generator
 
   * The table type :math:`{\mathit{tt}}` is valid.
 
-  * :math:`{\mathit{tabletype}}` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * :math:`{\mathit{tabletype}}` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
@@ -14240,7 +14240,7 @@ watsup 0.4 generator
 
     * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}'})`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}'})`.
 
     * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
@@ -14474,7 +14474,7 @@ watsup 0.4 generator
 
   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-  * :math:`{x^\ast}` is :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
+  * :math:`{x^\ast}` is :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}))`.
 
   * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
@@ -14508,7 +14508,7 @@ watsup 0.4 generator
 
     * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}~t)`.
   * Or:
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
@@ -16059,7 +16059,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+#. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{val}}, {\mathit{zt}})^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
@@ -16096,7 +16096,7 @@ watsup 0.4 generator
 
     #) Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+    #) Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
     #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -16117,7 +16117,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
 #. Assert: Due to validation, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
@@ -16173,7 +16173,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
 #. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
@@ -16222,7 +16222,7 @@ watsup 0.4 generator
 
     #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+    #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
     #) Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
@@ -16375,7 +16375,7 @@ watsup 0.4 generator
 
       a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+      #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
       #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
@@ -16409,7 +16409,7 @@ watsup 0.4 generator
 
         1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-        #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+        #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
         #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
@@ -16545,7 +16545,7 @@ watsup 0.4 generator
 
     1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+    #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
     #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
@@ -16817,7 +16817,7 @@ watsup 0.4 generator
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -16829,7 +16829,7 @@ watsup 0.4 generator
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -17036,7 +17036,7 @@ watsup 0.4 generator
 
     #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)`.
 
     #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -17050,7 +17050,7 @@ watsup 0.4 generator
 
     #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)`.
 
     #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -17153,7 +17153,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^{n}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{{\mathit{fieldtype}}_0^{n}}`.
+#. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^{n}}` be :math:`{{\mathit{fieldtype}}_0^{n}}`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17192,7 +17192,7 @@ watsup 0.4 generator
 
   #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-  #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+  #. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
   #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -17215,7 +17215,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
 #. Let :math:`{\mathit{ai}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
 
@@ -17258,7 +17258,7 @@ watsup 0.4 generator
 
   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-  #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+  #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
   #. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
 
@@ -18426,8 +18426,8 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{fieldtype}}(({\mathsf{mut}^?}, {\mathit{storagetype}}))`
-........................................................................................
+:math:`{\mathrm{free}}_{\mathit{fieldtype}}(({\mathsf{mut}^?}~{\mathit{storagetype}}))`
+.......................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{storagetype}}({\mathit{storagetype}})`.
@@ -18484,15 +18484,15 @@ watsup 0.4 generator
 1. Return `$free_list($free_typeuse(typeuse)*{typeuse <- typeuse*}) ++ $free_comptype(comptype)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{globaltype}}(({\mathsf{mut}^?}, {\mathit{valtype}}))`
-.....................................................................................
+:math:`{\mathrm{free}}_{\mathit{globaltype}}(({\mathsf{mut}^?}~{\mathit{valtype}}))`
+....................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{tabletype}}(({\mathit{limits}}, {\mathit{reftype}}))`
-.....................................................................................
+:math:`{\mathrm{free}}_{\mathit{tabletype}}(({\mathit{limits}}~{\mathit{reftype}}))`
+....................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
@@ -19461,11 +19461,11 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{pt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 
-:math:`{({\mathsf{mut}^?}, {\mathit{zt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...............................................................................................
+:math:`{({\mathsf{mut}^?}~{\mathit{zt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+..............................................................................................
 
 
-1. Return :math:`({\mathsf{mut}^?}, {{\mathit{zt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathsf{mut}^?}~{{\mathit{zt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -19519,18 +19519,18 @@ watsup 0.4 generator
 1. Return :math:`{{t_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~\rightarrow~{{t_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}`.
 
 
-:math:`{({\mathsf{mut}^?}, t)}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...................................................................................
+:math:`{({\mathsf{mut}^?}~t)}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+..................................................................................
 
 
-1. Return :math:`({\mathsf{mut}^?}, {t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathsf{mut}^?}~{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({\mathit{lim}}, {\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-.............................................................................................
+:math:`{({\mathit{lim}}~{\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+............................................................................................
 
 
-1. Return :math:`({\mathit{lim}}, {{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{\mathit{lim}}~\mathsf{page}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -21670,13 +21670,13 @@ watsup 0.4 generator
 ........................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
 
 #. If :math:`{|{{r'}^\ast}|} + n` is less than or equal to :math:`j`, then:
 
   a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-  #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+  #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
   #. Return :math:`{\mathit{tableinst}'}`.
 
@@ -21822,11 +21822,11 @@ watsup 0.4 generator
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}), {\mathit{ref}})`
-......................................................................
+:math:`{\mathrm{alloctable}}(((i, j)~{\mathit{rt}}), {\mathit{ref}})`
+.....................................................................
 
 
-1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -22423,7 +22423,7 @@ Storagetype_ok
     - the packed type packtype is valid.
 
 Fieldtype_ok
-- the field type ((MUT ()? ?), storagetype) is valid if:
+- the field type ((MUT ()? ?) storagetype) is valid if:
   - the storage type storagetype is valid.
 
 Functype_ok
@@ -22573,7 +22573,7 @@ Storagetype_sub
     - the packed type packtype_1 matches the packed type packtype_2.
 
 Fieldtype_sub
-- the field type ((MUT _u0? ?), zt_1) matches the field type ((MUT _u1? ?), zt_2) if:
+- the field type ((MUT _u0? ?) zt_1) matches the field type ((MUT _u1? ?) zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
     - _u0? is ?().
@@ -22621,7 +22621,7 @@ Subtype_ok
   - For all x in x*,
     - |C.TYPES| is greater than x.
   - For all comptype' in comptype'* and x in x* and x'* in x'**,
-    - $unrolldt(C.TYPES[x]) is (SUB  (_IDX x')* comptype').
+    - $unrolldt(C.TYPES[x]) is (SUB (_IDX x')* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
@@ -22634,7 +22634,7 @@ Subtype_ok2
   - |typeuse*| is |comptype'*|.
   - |typeuse'**| is |comptype'*|.
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**,
-    - $unrollht(C, typeuse) is (SUB  typeuse'* comptype').
+    - $unrollht(C, typeuse) is (SUB typeuse'* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
@@ -22672,11 +22672,11 @@ Limits_ok
   - m is less than or equal to k.
 
 Globaltype_ok
-- the global type ((MUT ()? ?), t) is valid if:
+- the global type ((MUT ()? ?) t) is valid if:
   - the value type t is valid.
 
 Tabletype_ok
-- the table type (limits, reftype) is valid if:
+- the table type (limits reftype) is valid if:
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
@@ -22717,7 +22717,7 @@ Instrtype_sub
   - For all x in x*,
     - |C.LOCALS| is greater than x.
   - For all t in t* and x in x*,
-    - C.LOCALS[x] is (SET, t).
+    - C.LOCALS[x] is (SET t).
 
 Limits_sub
 - the limits (n_1, m_1) matches the limits (n_2, m_2) if:
@@ -22725,7 +22725,7 @@ Limits_sub
   - m_1 is less than or equal to m_2.
 
 Globaltype_sub
-- the global type ((MUT _u0? ?), valtype_1) matches the global type ((MUT _u1? ?), valtype_2) if:
+- the global type ((MUT _u0? ?) valtype_1) matches the global type ((MUT _u1? ?) valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
     - _u0? is ?().
@@ -22736,7 +22736,7 @@ Globaltype_sub
     - the value type valtype_2 matches the value type valtype_1.
 
 Tabletype_sub
-- the table type (limits_1, reftype_1) matches the table type (limits_2, reftype_2) if:
+- the table type (limits_1 reftype_1) matches the table type (limits_2 reftype_2) if:
   - the limits limits_1 matches the limits limits_2.
   - the reference type reftype_1 matches the reference type reftype_2.
   - the reference type reftype_2 matches the reference type reftype_1.
@@ -22800,13 +22800,13 @@ Catch_ok
     - catch_u0 is (CATCH_REF x l).
     - |C.TAGS| is greater than x.
     - The expansion of C.TAGS[x] is (FUNC t* -> [])
-    - the value type sequence t* :: [(REF  EXN)] matches the result type C.LABELS[l].
+    - the value type sequence t* :: [(REF EXN)] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL l).
     - the value type sequence [] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL_REF l).
-    - the value type sequence [(REF  EXN)] matches the result type C.LABELS[l].
+    - the value type sequence [(REF EXN)] matches the result type C.LABELS[l].
 
 Instr_ok/nop
 - the instruction NOP is valid with the instruction type [] -> [].
@@ -22870,7 +22870,7 @@ Instr_ok/br_table
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_on_null
-- the instruction (BR_ON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* :: [(REF  ht)] if:
+- the instruction (BR_ON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* :: [(REF ht)] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the heap type ht is valid.
@@ -22878,7 +22878,7 @@ Instr_ok/br_on_null
 Instr_ok/br_on_non_null
 - the instruction (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* if:
   - |C.LABELS| is greater than l.
-  - C.LABELS[l] is t* :: [(REF  ht)].
+  - C.LABELS[l] is t* :: [(REF ht)].
 
 Instr_ok/br_on_cast
 - the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [$diffrt(rt_1, rt_2)] if:
@@ -22911,7 +22911,7 @@ Instr_ok/call_ref
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [I32] -> t_2* if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
   - |C.TYPES| is greater than y.
   - The expansion of C.TYPES[y] is (FUNC t_1* -> t_2*)
@@ -22940,7 +22940,7 @@ Instr_ok/return_call_ref
 Instr_ok/return_call_indirect
 - the instruction (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [I32] -> t_4* if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
   - |C.TYPES| is greater than y.
   - The expansion of C.TYPES[y] is (FUNC t_1* -> t_2*)
@@ -22988,21 +22988,21 @@ Instr_ok/ref.null
   - the heap type ht is valid.
 
 Instr_ok/ref.func
-- the instruction (REF.FUNC x) is valid with the instruction type [] -> [(REF  dt)] if:
+- the instruction (REF.FUNC x) is valid with the instruction type [] -> [(REF dt)] if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is dt.
   - |C.REFS| is greater than 0.
   - x is contained in C.REFS.
 
 Instr_ok/ref.i31
-- the instruction REF.I31 is valid with the instruction type [I32] -> [(REF  I31)].
+- the instruction REF.I31 is valid with the instruction type [I32] -> [(REF I31)].
 
 Instr_ok/ref.is_null
 - the instruction REF.IS_NULL is valid with the instruction type [(REF NULL ht)] -> [I32] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.as_non_null
-- the instruction REF.AS_NON_NULL is valid with the instruction type [(REF NULL ht)] -> [(REF  ht)] if:
+- the instruction REF.AS_NON_NULL is valid with the instruction type [(REF NULL ht)] -> [(REF ht)] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.eq
@@ -23024,14 +23024,14 @@ Instr_ok/i31.get
 - the instruction (I31.GET sx) is valid with the instruction type [(REF NULL I31)] -> [I32].
 
 Instr_ok/struct.new
-- the instruction (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF  (_IDX x))] if:
+- the instruction (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (STRUCT (mut, zt)*)
+  - The expansion of C.TYPES[x] is (STRUCT (mut zt)*)
 
 Instr_ok/struct.new_default
-- the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF  (_IDX x))] if:
+- the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (STRUCT (mut, zt)*)
+  - The expansion of C.TYPES[x] is (STRUCT (mut zt)*)
   - |zt*| is |val*|.
   - For all val in val* and zt in zt*,
     - $default_($unpack(zt)) is ?(val).
@@ -23041,7 +23041,7 @@ Instr_ok/struct.get
   - |C.TYPES| is greater than x.
   - The expansion of C.TYPES[x] is (STRUCT yt*)
   - |yt*| is greater than i.
-  - yt*[i] is (mut, zt).
+  - yt*[i] is (mut zt).
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/struct.set
@@ -23049,35 +23049,35 @@ Instr_ok/struct.set
   - |C.TYPES| is greater than x.
   - The expansion of C.TYPES[x] is (STRUCT yt*)
   - |yt*| is greater than i.
-  - yt*[i] is (MUT, zt).
+  - yt*[i] is (MUT zt).
 
 Instr_ok/array.new
-- the instruction (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (mut, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (mut zt))
 
 Instr_ok/array.new_default
-- the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (mut, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (mut zt))
   - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/array.new_fixed
-- the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (mut, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (mut zt))
 
 Instr_ok/array.new_elem
-- the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (mut, rt))
+  - The expansion of C.TYPES[x] is (ARRAY (mut rt))
   - |C.ELEMS| is greater than y.
   - the reference type C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
-- the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (mut, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (mut zt))
   - Either:
     - $unpack(zt) is numtype.
   - Or:
@@ -23088,43 +23088,43 @@ Instr_ok/array.new_data
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF NULL (_IDX x)), I32] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (mut, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (mut zt))
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (MUT, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (MUT zt))
 
 Instr_ok/array.len
 - the instruction ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (MUT, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (MUT zt))
 
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (MUT, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (MUT zt))
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> [] if:
   - |C.TYPES| is greater than x_1.
-  - The expansion of C.TYPES[x_1] is (ARRAY (MUT, zt_1))
+  - The expansion of C.TYPES[x_1] is (ARRAY (MUT zt_1))
   - |C.TYPES| is greater than x_2.
-  - The expansion of C.TYPES[x_2] is (ARRAY (mut, zt_2))
+  - The expansion of C.TYPES[x_2] is (ARRAY (mut zt_2))
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
 - the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (MUT, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (MUT zt))
   - |C.ELEMS| is greater than y.
   - the element type C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - The expansion of C.TYPES[x] is (ARRAY (MUT, zt))
+  - The expansion of C.TYPES[x] is (ARRAY (MUT zt))
   - Either:
     - $unpack(zt) is numtype.
   - Or:
@@ -23207,65 +23207,65 @@ Instr_ok/vcvtop
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
   - |C.LOCALS| is greater than x.
-  - C.LOCALS[x] is (SET, t).
+  - C.LOCALS[x] is (SET t).
 
 Instr_ok/local.set
 - the instruction (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
   - |C.LOCALS| is greater than x.
-  - C.LOCALS[x] is (init, t).
+  - C.LOCALS[x] is (init t).
 
 Instr_ok/local.tee
 - the instruction (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
   - |C.LOCALS| is greater than x.
-  - C.LOCALS[x] is (init, t).
+  - C.LOCALS[x] is (init t).
 
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
-  - C.GLOBALS[x] is (MUT, t).
+  - C.GLOBALS[x] is (MUT t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the instruction type [I32] -> [rt] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the instruction type [I32, rt] -> [] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the instruction type [] -> [I32] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the instruction type [rt, I32] -> [I32] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the instruction type [I32, rt, I32] -> [] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
-  - C.TABLES[x_1] is (lim_1, rt_1).
+  - C.TABLES[x_1] is (lim_1 rt_1).
   - |C.TABLES| is greater than x_2.
-  - C.TABLES[x_2] is (lim_2, rt_2).
+  - C.TABLES[x_2] is (lim_2 rt_2).
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt_1).
+  - C.TABLES[x] is (lim rt_1).
   - |C.ELEMS| is greater than y.
   - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
@@ -23320,7 +23320,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
     - numtype_u0 is Inn.
-    - loadop__u2? is ?((M, sx)).
+    - loadop__u2? is ?((M sx)).
     - valtype_u3 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -23390,8 +23390,8 @@ Instrs_ok
     - For all x_1 in x_1*,
       - |C.LOCALS| is greater than x_1.
     - For all init in init* and t in t* and x_1 in x_1*,
-      - C.LOCALS[x_1] is (init, t).
-    - Under the context $with_locals(C, x_1*, (SET, t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
+      - C.LOCALS[x_1] is (init t).
+    - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr_u0* is instr*.
     - instrtype_u4 is it'.
@@ -23437,7 +23437,7 @@ Instr_const
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is (, t).
+    - C.GLOBALS[x] is (t).
   - Or:
     - instr_u0 is (BINOP Inn binop).
     - |[I32, I64]| is greater than 0.
@@ -23457,7 +23457,7 @@ Type_ok
   - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with the oktypeidx (OK x).
 
 Local_ok
-- the local (LOCAL t) is valid with the local type (init_u0, t) if:
+- the local (LOCAL t) is valid with the local type (init_u0 t) if:
   - Either:
     - init_u0 is SET.
     - $default_(t) is different with ?().
@@ -23472,19 +23472,19 @@ Func_ok
   - |local*| is |lct*|.
   - For all lct in lct* and local in local*,
     - the local local is valid with the local type lct.
-  - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
+  - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
   - the global type gt is valid.
-  - globaltype is (mut, t).
+  - globaltype is (mut t).
   - the expression expr is valid with the value type t.
   - the expression expr is constant.
 
 Table_ok
 - the table (TABLE tabletype expr) is valid with the table type tabletype if:
   - the table type tt is valid.
-  - tabletype is (lim, rt).
+  - tabletype is (lim rt).
   - the expression expr is valid with the value type rt.
   - the expression expr is constant.
 
@@ -23502,7 +23502,7 @@ Elemmode_ok
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
-    - C.TABLES[x] is (lim, rt').
+    - C.TABLES[x] is (lim rt').
     - the reference type rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
@@ -23631,7 +23631,7 @@ Module_ok
   - $disjoint_(name, nm*) is true.
   - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I* :: gt*; TABLES: tt_I* :: tt*; MEMS: mt_I* :: mt*; TAGS: at_I* :: at*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - x* is $funcidx_nonfuncs(global* table* mem* elem* data*).
+  - x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
   - dt_I* is $funcsxt(xt_I*).
   - gt_I* is $globalsxt(xt_I*).
   - tt_I* is $tablesxt(xt_I*).
@@ -23649,7 +23649,7 @@ NotationTypingInstrScheme
     - valtype_u1* is [].
     - valtype_u3* is [t].
     - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is (mut, t).
+    - C.GLOBALS[x] is (mut t).
   - Or:
     - instr_u0 is (BLOCK blocktype instr*).
     - valtype_u1* is t_1*.
@@ -24389,7 +24389,7 @@ Step_read/struct.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 3. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be fieldtype_0*.
+4. Let (mut zt)* be fieldtype_0*.
 5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 6. Let ?(val)* be $default_($unpack(zt))*.
 7. Assert: Due to validation, (|val*| is |zt*|).
@@ -24407,7 +24407,7 @@ Step_read/struct.get sx? x i
   b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
     2) Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be fieldtype_0*.
+    3) Let (mut zt)* be fieldtype_0*.
     4) If (i < |zt*|), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -24417,7 +24417,7 @@ Step_read/array.new_default x
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-6. Let (mut, zt) be arraytype_0.
+6. Let (mut zt) be arraytype_0.
 7. Assert: Due to validation, $default_($unpack(zt)) is defined.
 8. Let ?(val) be $default_($unpack(zt)).
 9. Push the values val^n to the stack.
@@ -24444,7 +24444,7 @@ Step_read/array.new_data x y
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-8. Let (mut, zt) be arraytype_0.
+8. Let (mut zt) be arraytype_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
 10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
@@ -24468,7 +24468,7 @@ Step_read/array.get sx? x
   c. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
     2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt) be arraytype_0.
+    3) Let (mut zt) be arraytype_0.
     4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.len
@@ -24543,7 +24543,7 @@ Step_read/array.copy x_1 x_2
       a) Do nothing.
     6) Else if ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
       a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut, zt_2) be arraytype_0.
+      b) Let (mut zt_2) be arraytype_0.
       c) Let sx? be $sx(zt_2).
       d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       e) Push the value (I32.CONST i_1) to the stack.
@@ -24559,7 +24559,7 @@ Step_read/array.copy x_1 x_2
       o) Execute the instruction (ARRAY.COPY x_1 x_2).
     7) Else if $expanddt($type(z, x_2)) is of the case ARRAY, then:
       a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut, zt_2) be arraytype_0.
+      b) Let (mut zt_2) be arraytype_0.
       c) Let sx? be $sx(zt_2).
       d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       e) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
@@ -24626,7 +24626,7 @@ Step_read/array.init_data x y
     1) Trap.
   c. If $expanddt($type(z, x)) is of the case ARRAY, then:
     1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    2) Let (mut, zt) be arraytype_0.
+    2) Let (mut zt) be arraytype_0.
     3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
     4) If (n is 0), then:
@@ -24758,13 +24758,13 @@ Step_read/load numtype_u0 loadop__u2? x ao
 5. If the type of numtype_u0 is Inn, then:
   a. If loadop__u2? is defined, then:
     1) Let ?(loadop__0) be loadop__u2?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be numtype_u0.
   c. If loadop__u2? is defined, then:
     1) Let ?(loadop__0) be loadop__u2?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
@@ -24865,14 +24865,14 @@ Step_read/memory.copy x_1 x_2
   a. If (i_1 ≤ i_2), then:
     1) Push the value (I32.CONST i_1) to the stack.
     2) Push the value (I32.CONST i_2) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8 U)) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (I32.CONST (i_1 + 1)) to the stack.
     6) Push the value (I32.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
     2) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8 U)) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (I32.CONST i_1) to the stack.
     6) Push the value (I32.CONST i_2) to the stack.
@@ -24922,7 +24922,7 @@ Step/struct.new x
 2. Let a be |$structinst(z)|.
 3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 4. Let (STRUCT fieldtype_0^n) be $expanddt($type(z, x)).
-5. Let (mut, zt)^n be fieldtype_0^n.
+5. Let (mut zt)^n be fieldtype_0^n.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
@@ -24941,7 +24941,7 @@ Step/struct.set x i
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
   c. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be fieldtype_0*.
+  d. Let (mut zt)* be fieldtype_0*.
   e. If (i < |zt*|), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
@@ -24952,7 +24952,7 @@ Step/array.new_fixed x n
 4. Let a be |$arrayinst(z)|.
 5. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 6. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-7. Let (mut, zt) be arraytype_0.
+7. Let (mut zt) be arraytype_0.
 8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
 9. Push the value (REF.ARRAY_ADDR a) to the stack.
 10. Perform $add_arrayinst(z, [ai]).
@@ -24973,7 +24973,7 @@ Step/array.set x
     1) Trap.
   c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
   d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-  e. Let (mut, zt) be arraytype_0.
+  e. Let (mut zt) be arraytype_0.
   f. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
 Step/local.set x
@@ -25510,7 +25510,7 @@ free_storagetype storagetype_u0
 3. Let packtype be storagetype_u0.
 4. Return $free_packtype(packtype).
 
-free_fieldtype (mut, storagetype)
+free_fieldtype (mut storagetype)
 1. Return $free_storagetype(storagetype).
 
 free_functype resulttype_1 -> resulttype_2
@@ -25536,10 +25536,10 @@ free_comptype comptype_u0
 free_subtype (SUB fin typeuse* comptype)
 1. Return $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype).
 
-free_globaltype (mut, valtype)
+free_globaltype (mut valtype)
 1. Return $free_valtype(valtype).
 
-free_tabletype (limits, reftype)
+free_tabletype (limits reftype)
 1. Return $free_reftype(reftype).
 
 free_memtype limits PAGE
@@ -26005,8 +26005,8 @@ subst_storagetype storagetype_u0 tv* tu*
 3. Let pt be storagetype_u0.
 4. Return $subst_packtype(pt, tv*, tu*).
 
-subst_fieldtype (mut, zt) tv* tu*
-1. Return (mut, $subst_storagetype(zt, tv*, tu*)).
+subst_fieldtype (mut zt) tv* tu*
+1. Return (mut $subst_storagetype(zt, tv*, tu*)).
 
 subst_comptype comptype_u0 tv* tu*
 1. If comptype_u0 is of the case STRUCT, then:
@@ -26031,11 +26031,11 @@ subst_deftype (DEF qt i) tv* tu*
 subst_functype t_1* -> t_2* tv* tu*
 1. Return $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*.
 
-subst_globaltype (mut, t) tv* tu*
-1. Return (mut, $subst_valtype(t, tv*, tu*)).
+subst_globaltype (mut t) tv* tu*
+1. Return (mut $subst_valtype(t, tv*, tu*)).
 
-subst_tabletype (lim, rt) tv* tu*
-1. Return (lim, $subst_reftype(rt, tv*, tu*)).
+subst_tabletype (lim rt) tv* tu*
+1. Return (lim $subst_reftype(rt, tv*, tu*)).
 
 subst_memtype lim PAGE tv* tu*
 1. Return lim PAGE.
@@ -26646,10 +26646,10 @@ vbinop_ lanetype_u1 X M vbinop__u0 vN_1 vN_2
   e. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
     2) Return $ivbinopsx_(Jnn X M, $imax_, sx, vN_1, vN_2).
-5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
+5. If ((vbinop__u0 is AVGRU) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
   b. Return $ivbinopsx_(Jnn X M, $iavgr_, U, vN_1, vN_2).
-6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
+6. If ((vbinop__u0 is Q15MULR_SATS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
   b. Return $ivbinopsx_(Jnn X M, $iq15mulr_sat_, S, vN_1, vN_2).
 7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
@@ -26796,7 +26796,7 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop___u0 c_1 c_2
   c. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2)[$half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2) : M_2].
   d. Let c be $invlanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
   e. Return c.
-2. Assert: Due to validation, (vextbinop___u0 is (DOTS)).
+2. Assert: Due to validation, (vextbinop___u0 is DOTS).
 3. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1).
 4. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2).
 5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2))*).
@@ -27050,10 +27050,10 @@ add_exninst exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
-1. Let { TYPE: ((i, j), rt); REFS: r'*; } be tableinst.
+1. Let { TYPE: ((i, j) rt); REFS: r'*; } be tableinst.
 2. If ((|r'*| + n) ≤ j), then:
   a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: ((i', j), rt); REFS: r'* :: r^n; }.
+  b. Let tableinst' be { TYPE: ((i', j) rt); REFS: r'* :: r^n; }.
   c. Return tableinst'.
 
 growmem meminst n
@@ -27123,8 +27123,8 @@ allocglobals globaltype_u0* val_u1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ((i, j), rt) ref
-1. Let tableinst be { TYPE: ((i, j), rt); REFS: ref^i; }.
+alloctable ((i, j) rt) ref
+1. Let tableinst be { TYPE: ((i, j) rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.

@@ -18,3 +18,8 @@ let rec extract_desc typ = match typ.it with
     with
     | Some desc -> desc
     | None -> name
+
+let rec alternate xs ys =
+  match xs with
+  | [] -> ys
+  | x :: xs -> x :: alternate ys xs
