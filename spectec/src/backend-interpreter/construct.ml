@@ -760,11 +760,11 @@ and al_to_instr': value -> Ast.instr' = function
     BrOnCastFail (al_to_idx idx, al_to_ref_type rt1, al_to_ref_type rt2)
   | CaseV ("RETURN", []) -> Return
   | CaseV ("CALL", [ idx ]) -> Call (al_to_idx idx)
-  | CaseV ("CALL_REF", [ typeuse ]) -> CallRef (al_to_typeuse typeuse)
+  | CaseV ("CALL_REF", [ OptV (Some (idx)) ]) -> CallRef (al_to_idx idx)
   | CaseV ("CALL_INDIRECT", [ idx1; typeuse2 ]) ->
     CallIndirect (al_to_idx idx1, al_to_typeuse typeuse2)
   | CaseV ("RETURN_CALL", [ idx ]) -> ReturnCall (al_to_idx idx)
-  | CaseV ("RETURN_CALL_REF", [ typeuse ]) -> ReturnCallRef (al_to_typeuse typeuse)
+  | CaseV ("RETURN_CALL_REF", [ OptV (Some (typeuse)) ]) -> ReturnCallRef (al_to_typeuse typeuse)
   | CaseV ("RETURN_CALL_INDIRECT", [ idx1; typeuse2 ]) ->
     ReturnCallIndirect (al_to_idx idx1, al_to_typeuse typeuse2)
   | CaseV ("LOAD", loadop) -> let idx, op = al_to_loadop loadop in Load (idx, op)
