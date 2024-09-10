@@ -556,3 +556,152 @@ syntax casetype = LA nat argh
     -- if nat_1 <= nat_2
   | LFA borg | LFB borg | LFC borg
 ;;  | LGA borg -- if borg = borg | LGB borg   ;; TODO(3, rossberg): what should this produce?
+  | LH borg
+      argh eerk
+  | LI borg
+      argh eerk
+    -- if 0 < 1
+    -- if 1 > 0
+  | LJ borg
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+  | LK borg
+      argh eerk
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+
+
+grammar gram : nat* = "GA" "GB" => 0
+    -- if 0 < 1
+  | "GB" "GC" "GD" => 0
+  | "GC" "GD" => 0 -- if 0 < 1
+  | "GD" "GE" => 0
+    -- if 0 < 1 -- if 1 > 0
+  | "GE" "GF" => 0
+    -- if 0 < 1
+  | "GFA" "GF" => 0 | "GFB" "GF" => 1 | "GFC" => 2
+  | "GG" =>
+    0 -- if 1 > 0
+  | "GH" =>
+    0
+    -- if 1 > 0
+  | "GI" =>
+    0
+    1
+    2
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GJ" "GJ"
+      "G" "J" => 0
+  | "GK" "GJ"
+      "G" "J" => 0
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GI" => 0 1 2
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GI" =>
+    0
+    1
+    2
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+
+
+def $func(nat, nat) : nat*
+
+def $func(n, m) = 0
+def $func(n, m) = 0 -- if n < m
+def $func(n, m) = 0 -- if n > m -- if m < n
+def $func(n, m) = 0 1
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0 1
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0
+  1
+  2
+  -- if n < m
+  -- if m > n
+def $func(n, m) = 0 1 2
+  ----
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0
+  1
+  2
+  ----
+  -- if n < m
+  -- if m > n
+
+
+relation Rel: argh borg -> curb dork hint(tabular)
+
+rule Rel/A:
+  argh borg -> curb dork
+
+rule Rel/B:
+  argh borg -> curb dork -- if 0 < 1
+
+rule Rel/C:
+  argh borg -> curb dork -- if 0 < 1 -- if 1 > 0
+
+rule Rel/D:
+  argh borg -> curb dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/E:
+  argh borg ->
+    curb dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/F:
+  argh borg -> curb
+    dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/G:
+  argh borg ->
+    curb
+    dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/DD:
+  argh borg -> curb dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/EE:
+  argh borg ->
+    curb dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/FF:
+  argh borg -> curb
+    dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/GG:
+  argh borg ->
+    curb
+    dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0

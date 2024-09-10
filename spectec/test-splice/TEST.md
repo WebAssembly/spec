@@ -35,62 +35,62 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{|\mathsf{i{\scriptstyle 32}}|} &=& 32 \\
-{|\mathsf{i{\scriptstyle 64}}|} &=& 64 \\
-{|\mathsf{f{\scriptstyle 32}}|} &=& 32 \\
-{|\mathsf{f{\scriptstyle 64}}|} &=& 64 \\
+{|\mathsf{i{\scriptstyle 32}}|} & = & 32 \\
+{|\mathsf{i{\scriptstyle 64}}|} & = & 64 \\
+{|\mathsf{f{\scriptstyle 32}}|} & = & 32 \\
+{|\mathsf{f{\scriptstyle 64}}|} & = & 64 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(limits)} & {\mathit{limits}} &::=& {}[ {\mathit{u{\kern-0.1em\scriptstyle 32}}} .. {\mathit{u{\kern-0.1em\scriptstyle 32}}} ] \\[0.8ex]
-\mbox{(global type)} & {\mathit{globaltype}} &::=& {\mathsf{mut}^?}~{\mathit{valtype}} \\
-\mbox{(function type)} & {\mathit{functype}} &::=& {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
-\mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~{\mathit{reftype}} \\
-\mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{page} \\[0.8ex]
+\mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 32}}} .. {\mathit{u{\kern-0.1em\scriptstyle 32}}} ] \\[0.8ex]
+\mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
+\mbox{(function type)} & {\mathit{functype}} & ::= & {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
+\mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{limits}}~{\mathit{reftype}} \\
+\mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{limits}}~\mathsf{page} \\[0.8ex]
 {} \\[-2ex]
-\mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{tag}~{\mathit{typeuse}} \\
+\mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{tag}~{\mathit{typeuse}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \ldots \\ &&|&
-\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
-\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
-\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\ &&|&
-\ldots \\
+& {\mathit{instr}} & ::= & \dots \\
+& & | & \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
+& & | & \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
+& & | & \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\
+& & | & \dots \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \ldots \\ &&|&
-{\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\ &&|&
-\mathsf{local{.}get}~{\mathit{localidx}} \\ &&|&
-\mathsf{local{.}set}~{\mathit{localidx}} \\ &&|&
-\mathsf{local{.}tee}~{\mathit{localidx}} \\ &&|&
-\mathsf{global{.}get}~{\mathit{globalidx}} \\ &&|&
-\mathsf{global{.}set}~{\mathit{globalidx}} \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{load}}{{{{\mathit{loadop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{vectype}}{.}\mathsf{load}}{{{{\mathit{vloadop}}}_{{\mathit{vectype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
-{\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
-\mathsf{memory{.}size}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory{.}grow}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory{.}fill}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory{.}copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
-\ldots \\[0.8ex]
-& {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
+& {\mathit{instr}} & ::= & \dots \\
+& & | & {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
+& & | & \mathsf{local{.}get}~{\mathit{localidx}} \\
+& & | & \mathsf{local{.}set}~{\mathit{localidx}} \\
+& & | & \mathsf{local{.}tee}~{\mathit{localidx}} \\
+& & | & \mathsf{global{.}get}~{\mathit{globalidx}} \\
+& & | & \mathsf{global{.}set}~{\mathit{globalidx}} \\
+& & | & {{\mathit{numtype}}{.}\mathsf{load}}{{{{\mathit{loadop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
+& & | & {{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
+& & | & {{\mathit{vectype}}{.}\mathsf{load}}{{{{\mathit{vloadop}}}_{{\mathit{vectype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
+& & | & {{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\
+& & | & {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\
+& & | & {{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\
+& & | & \mathsf{memory{.}size}~{\mathit{memidx}} \\
+& & | & \mathsf{memory{.}grow}~{\mathit{memidx}} \\
+& & | & \mathsf{memory{.}fill}~{\mathit{memidx}} \\
+& & | & \mathsf{memory{.}copy}~{\mathit{memidx}}~{\mathit{memidx}} \\
+& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\
+& & | & \dots \\[0.8ex]
+& {\mathit{expr}} & ::= & {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
 
@@ -233,19 +233,19 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{default}}}_{{\mathsf{i}}{N}} &=& ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{{\mathsf{f}}{N}} &=& ({\mathsf{f}}{N}{.}\mathsf{const}~{+0}) \\
-{{\mathrm{default}}}_{{\mathsf{v}}{N}} &=& ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref{.}null}~{\mathit{ht}}) \\
-{{\mathrm{default}}}_{\mathsf{ref}~{\mathit{ht}}} &=& \epsilon \\
+{{\mathrm{default}}}_{{\mathsf{i}}{N}} & = & ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
+{{\mathrm{default}}}_{{\mathsf{f}}{N}} & = & ({\mathsf{f}}{N}{.}\mathsf{const}~{+0}) \\
+{{\mathrm{default}}}_{{\mathsf{v}}{N}} & = & ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
+{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} & = & (\mathsf{ref{.}null}~{\mathit{ht}}) \\
+{{\mathrm{default}}}_{\mathsf{ref}~{\mathit{ht}}} & = & \epsilon \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{funcs} &=& s{.}\mathsf{funcs} \\[0.8ex]
-(s ; f){.}\mathsf{funcs}{}[x] &=& s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
-(s ; f){.}\mathsf{tables}{}[x] &=& s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
+(s ; f){.}\mathsf{funcs} & = & s{.}\mathsf{funcs} \\[0.8ex]
+(s ; f){.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
+(s ; f){.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
 \end{array}
 $$
 
@@ -256,31 +256,31 @@ The relation ${\mathit{config}} \hookrightarrow {\mathit{config}}$ checks that a
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-& z ; {{\mathit{instr}}^\ast} &\hookrightarrow& z ; {{\mathit{instr}'}^\ast}
+& z ; {{\mathit{instr}}^\ast} & \hookrightarrow & z ; {{\mathit{instr}'}^\ast}
   &\qquad \mbox{if}~{{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\[0.8ex]
-& z ; {{\mathit{instr}}^\ast} &\hookrightarrow& z ; {{\mathit{instr}'}^\ast}
+& z ; {{\mathit{instr}}^\ast} & \hookrightarrow & z ; {{\mathit{instr}'}^\ast}
   &\qquad \mbox{if}~z ; {{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}block}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{n}}{\{ \epsilon \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast})
+{[\textsc{\scriptsize E{-}block}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & ({{\mathsf{label}}_{n}}{\{ \epsilon \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast})
   &\qquad \mbox{if}~{{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\
-{[\textsc{\scriptsize E{-}loop}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{m}}{\{ \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast})
+{[\textsc{\scriptsize E{-}loop}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & ({{\mathsf{label}}_{m}}{\{ \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast})
   &\qquad \mbox{if}~{{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\[0.8ex]
-{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
+{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
   &\qquad \mbox{if}~c \neq 0 \\
-{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
+{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
   &\qquad \mbox{if}~c = 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
+{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
   &\qquad \mbox{if}~c \neq 0 \\[0.8ex]
-{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
+{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
   &\qquad \mbox{if}~c = 0 \\
 \end{array}
 $$

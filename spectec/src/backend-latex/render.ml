@@ -504,12 +504,14 @@ let rec render_sep_defs3 f = function
   | {it = SepD; _}::ds -> Sep :: render_sep_defs3 f ds
   | d::ds -> f d @ render_sep_defs3 f ds
 
-let rec render_nl_list env sep (f : 'a -> row list) : 'a nl_list -> table = function
+let rec render_nl_list env sep (f : env -> 'a -> row list) : 'a nl_list -> table = function
   | [] -> []
-  | [Elem x] -> f x
-  | (Elem x)::Nl::xs when env.config.display -> f x @ render_nl_list env sep f (Nl::xs)
+  | [Elem x] -> f env x
+  | (Elem x)::Nl::xs when env.config.display -> f env x @ render_nl_list env sep f (Nl::xs)
   | (Elem x)::Nl::xs -> render_nl_list env sep f ((Elem x)::xs)
-  | (Elem x)::xs -> concat_table " " (f x) (concat_rows " " sep (render_nl_list env sep f xs))
+  | (Elem x)::xs ->
+    let env' = {env with config = {env.config with display = false}} in
+    concat_table " " (f env' x) (concat_rows " " sep (render_nl_list env sep f xs))
   | Nl::xs when env.config.display -> render_nl_list env sep f xs
   | Nl::xs -> concat_rows " " sep (render_nl_list env sep f xs)
 
@@ -1073,7 +1075,7 @@ and render_nottyp env t : table =
     "\\end{array}"
     )]]
   | CaseT (dots1, ts, tcs, dots2) ->
-    let render = function
+    let render env = function
       | `Dots -> render_dots Dots
       | `Typ t -> render_nottyp env t
       | `TypCase tc -> render_typcase env tc
@@ -1098,7 +1100,7 @@ List.iter (fun row -> Printf.printf "[render_nottyp] %s\n%!" (pr_row row)) rhss;
   | ConT tcon ->
     render_typcon env tcon
   | RangeT tes ->
-    render_nl_list env "~|~" (render_typenum env) tes
+    render_nl_list env "~|~" render_typenum tes
   | _ ->
     [Row [Cell (render_typ env t)]]
 
@@ -1165,7 +1167,7 @@ and render_exp env e =
   | NatE (AtomOp, n) ->
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
-  | TextE t -> "\\mbox{\\tt`" ^ t ^ "'}"
+  | TextE t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
@@ -1391,7 +1393,7 @@ and render_sym env g : string =
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
   | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
-  | TextG t -> "`" ^ t ^ "'"
+  | TextG t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | EpsG -> "\\epsilon"
   | SeqG gs -> render_syms "~~" env gs
   | AltG gs -> render_syms " ~|~ " env gs
@@ -1428,12 +1430,12 @@ and render_prod env prod : row list =
         Cell (render_conditions env (render_exp env e) "&&&&&" prems) :: []
       else
         Cell (render_conditions env ("\\\\\n  &&& \\multicolumn{3}{@{}l@{}}{\\qquad " ^
-        render_exp env e ^ " }") "&&&&&" prems) :: []
+        render_exp env e ^ " } \\\\\n  &&&&&") "&&&&&" prems) :: []
     )]
 
 and render_gram env gram : table =
   let (dots1, prods, dots2) = gram.it in
-  let render = function
+  let render env = function
     | `Dots -> render_dots Dots
     | `Prod p -> render_prod env p
   in
@@ -1580,7 +1582,7 @@ let render_ruledef env d : row list =
         Cell (render_conditions env (render_exp env e2) "&&&" prems) :: []
       else
         Cell (render_conditions env ("\\\\\n  & \\multicolumn{3}{@{}l@{}}{\\qquad " ^
-            render_exp env e2 ^ " }") "&&&" prems) :: []
+            render_exp env e2 ^ " } \\\\\n  &&&") "&&&" prems) :: []
     )]
   | _ -> failwith "render_ruledef"
 
