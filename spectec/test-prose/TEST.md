@@ -299,8 +299,6 @@ watsup 0.4 generator
 * The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
-
    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
    * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
@@ -2979,7 +2977,6 @@ Instr_ok/memory.grow
 
 Instr_ok/load
 - the instruction (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
-  - ((n? is ?()) is equivalent to (sx? is ?())).
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
@@ -4748,8 +4745,6 @@ watsup 0.4 generator
 
 * The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
-
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
 
    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
@@ -9966,7 +9961,6 @@ Instr_ok/data.drop
 
 Instr_ok/load
 - the instruction (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
-  - ((n? is ?()) is equivalent to (sx? is ?())).
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
@@ -13424,8 +13418,6 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{mut*}}|}`.
-
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
 
@@ -13433,8 +13425,6 @@ watsup 0.4 generator
 
 
    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
-
-   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{mut*}}|}`.
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
@@ -15999,8 +15989,6 @@ watsup 0.4 generator
 
 #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`.
-
 #. Assert: Due to validation, for all :math:`{({\mathit{val}}, {\mathit{zt}})^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
@@ -16038,7 +16026,7 @@ watsup 0.4 generator
 
       #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-      #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`, then:
+      #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
          a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
@@ -17134,7 +17122,7 @@ watsup 0.4 generator
 
    #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-   #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`, then:
+   #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
       1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
 
@@ -22966,13 +22954,11 @@ Instr_ok/i31.get
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - |zt*| is |mut*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - |zt*| is |mut*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
   - |zt*| is |val*|.
   - For all val in val* and zt in zt*,
@@ -24332,12 +24318,11 @@ Step_read/struct.new_default x
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 3. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
 4. Let (mut, zt)* be fieldtype_0*.
-5. Assert: Due to validation, (|mut*| is |zt*|).
-6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
-7. Let ?(val)* be $default_($unpack(zt))*.
-8. Assert: Due to validation, (|val*| is |zt*|).
-9. Push the values val* to the stack.
-10. Execute the instruction (STRUCT.NEW x).
+5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
+6. Let ?(val)* be $default_($unpack(zt))*.
+7. Assert: Due to validation, (|val*| is |zt*|).
+8. Push the values val* to the stack.
+9. Execute the instruction (STRUCT.NEW x).
 
 Step_read/struct.get sx? x i
 1. Let z be the current state.
@@ -24351,7 +24336,7 @@ Step_read/struct.get sx? x i
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
     2) Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
     3) Let (mut, zt)* be fieldtype_0*.
-    4) If ((i < |zt*|) and (|mut*| is |zt*|)), then:
+    4) If (i < |zt*|), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.new_default x
@@ -24885,7 +24870,7 @@ Step/struct.set x i
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
   c. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
   d. Let (mut, zt)* be fieldtype_0*.
-  e. If ((i < |zt*|) and (|mut*| is |zt*|)), then:
+  e. If (i < |zt*|), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
 Step/array.new_fixed x n

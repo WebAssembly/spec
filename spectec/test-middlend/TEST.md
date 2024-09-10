@@ -29553,14 +29553,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule struct.new{C : context, x : idx, `zt*` : storagetype*, `mut*` : mut*}:
     `%|-%:%`(C, STRUCT.NEW_instr(x), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)*{zt <- `zt*`}), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
-    -- if (|`mut*`| = |`zt*`|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
 
   ;; 6-typing.watsup:836.1-839.40
   rule struct.new_default{C : context, x : idx, `mut*` : mut*, `zt*` : storagetype*, `val*` : val*}:
     `%|-%:%`(C, STRUCT.NEW_DEFAULT_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
-    -- if (|`mut*`| = |`zt*`|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
     -- if (|`val*`| = |`zt*`|)
     -- (if ($default_($unpack(zt)) = ?(val)))*{val <- `val*`, zt <- `zt*`}
@@ -31023,7 +31021,6 @@ relation Step_read: `%~>%`(config, instr*)
   ;; 8-reduction.watsup
   rule struct.new_default{z : state, x : idx, `val*` : val*, `mut*` : mut*, `zt*` : storagetype*}:
     `%~>%`(`%;%`_config(z, [STRUCT.NEW_DEFAULT_instr(x)]), (val : val <: instr)*{val <- `val*`} ++ [STRUCT.NEW_instr(x)])
-    -- if (|`mut*`| = |`zt*`|)
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
     -- if (|`val*`| = |`zt*`|)
     -- (if ($default_($unpack(zt)) = ?(val)))*{val <- `val*`, zt <- `zt*`}
@@ -31038,7 +31035,6 @@ relation Step_read: `%~>%`(config, instr*)
     -- if (i < |zt*{zt <- `zt*`}|)
     -- if (i < |$structinst(z)[a].FIELDS_structinst|)
     -- if (a < |$structinst(z)|)
-    -- if (|`mut*`| = |`zt*`|)
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
 
   ;; 8-reduction.watsup
@@ -31481,7 +31477,6 @@ relation Step: `%~>%`(config, config)
   rule `struct.set-struct`{z : state, a : addr, val : val, x : idx, i : nat, `zt*` : storagetype*, `mut*` : mut*}:
     `%~>%`(`%;%`_config(z, [REF.STRUCT_ADDR_instr(a) (val : val <: instr) STRUCT.SET_instr(x, `%`_u32(i))]), `%;%`_config($with_struct(z, a, i, $packfield_(zt*{zt <- `zt*`}[i], val)), []))
     -- if (i < |zt*{zt <- `zt*`}|)
-    -- if (|`mut*`| = |`zt*`|)
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
 
   ;; 8-reduction.watsup:450.1-455.65
