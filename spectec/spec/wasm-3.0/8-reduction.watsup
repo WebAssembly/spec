@@ -335,7 +335,7 @@ rule Step_pure/cvtop-trap:
 ;; Reference instructions
 
 rule Step_read/ref.null-idx:
-  z; (REF.NULL $idx(x))  ~>  (REF.NULL $type(z, x))
+  z; (REF.NULL (_IDX x))  ~>  (REF.NULL $type(z, x))
 
 rule Step_read/ref.func:
   z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $moduleinst(z).FUNCS[x])

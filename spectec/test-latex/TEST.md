@@ -2577,12 +2577,6 @@ $$
 \end{array}
 $$
 
-$$
-\begin{array}{@{}lcl@{}l@{}}
-x &=& x \\
-\end{array}
-$$
-
 \vspace{1ex}
 
 $$

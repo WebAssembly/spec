@@ -1353,7 +1353,6 @@ warning: definition `ibytes_` was never spliced
 warning: definition `iclz_` was never spliced
 warning: definition `ictz_` was never spliced
 warning: definition `idiv_` was never spliced
-warning: definition `idx` was never spliced
 warning: definition `ieq_` was never spliced
 warning: definition `ieqz_` was never spliced
 warning: definition `ige_` was never spliced
@@ -1933,7 +1932,6 @@ warning: definition prose `globalsxx` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
 warning: definition prose `half__` was never spliced
-warning: definition prose `idx` was never spliced
 warning: definition prose `inst_reftype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
