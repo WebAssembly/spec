@@ -585,14 +585,13 @@ let init algo =
 
 let valid_algo (algo: algorithm) =
 
-  print_string (Al_util.name_of_algo algo ^ "(");
-
   algo
   |> Al_util.params_of_algo
   |> List.map string_of_arg
   |> String.concat ", "
-  |> print_string;
-  print_endline ")";
+  |> Printf.sprintf "%s(%s)" (Al_util.name_of_algo algo)
+  |> print_endline;
+
 
   (* TODO: Use local il_environment *)
   (* Store global il_enviroment *)
