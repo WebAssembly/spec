@@ -13086,7 +13086,7 @@ watsup 0.4 generator
    * The value type :math:`t` is valid.
 
 
-* The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?})` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The value type :math:`t` is valid.
@@ -13154,7 +13154,7 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
-* The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`,
@@ -18553,7 +18553,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{select}`, then:
 
-   a. Let :math:`{({{\mathit{valtype}}^\ast})^?}~{}^?` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
 
@@ -22748,7 +22748,7 @@ Instr_ok/drop
   - the value type t is valid.
 
 Instr_ok/select
-- the instruction (SELECT() valtype_u0? ?) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT valtype_u0?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - Either:
     - valtype_u0? is ?([t]).
@@ -22788,7 +22788,7 @@ Instr_ok/br_if
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
-- the instruction (BR_TABLE l* l') is valid with the instruction type t_1* :: t* -> t_2* if:
+- the instruction (BR_TABLE l* l') is valid with the instruction type t_1* :: t* :: [I32] -> t_2* if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
   - For all l in l*,
@@ -25528,7 +25528,7 @@ free_instr instr_u0
 3. If (instr_u0 is DROP), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 4. If instr_u0 is of the case SELECT, then:
-  a. Let (SELECT() valtype*? ?) be instr_u0.
+  a. Let (SELECT valtype*?) be instr_u0.
   b. Return $free_opt($free_list($free_valtype(valtype)*)?).
 5. If instr_u0 is of the case BLOCK, then:
   a. Let (BLOCK blocktype instr*) be instr_u0.

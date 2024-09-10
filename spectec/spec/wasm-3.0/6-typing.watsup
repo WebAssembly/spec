@@ -644,7 +644,7 @@ rule Instr_ok/br_if:
   -- if C.LABELS[l] = t*
 
 rule Instr_ok/br_table:
-  C |- BR_TABLE l* l' : t_1* t* -> t_2*
+  C |- BR_TABLE l* l' : t_1* t* I32 -> t_2*
   -- (Resulttype_sub: C |- t* <: C.LABELS[l])*
   -- Resulttype_sub: C |- t* <: C.LABELS[l']
   -- Instrtype_ok: C |- t_1* -> t_2* : OK

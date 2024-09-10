@@ -501,7 +501,7 @@ syntax instr/parametric hint(desc "parametric instruction") =
   | NOP
   | UNREACHABLE
   | DROP
-  | SELECT (valtype*)?
+  | SELECT valtype*?
   | ...
 
 syntax instr/block hint(desc "block instruction") = ...

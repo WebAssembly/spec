@@ -1247,7 +1247,7 @@ syntax instr =
   | NOP
   | UNREACHABLE
   | DROP
-  | `SELECT()%?`{`valtype*?` : valtype*?}(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`} : valtype*?)
+  | SELECT{`valtype*?` : valtype*?}(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`} : valtype*?)
   | BLOCK{blocktype : blocktype, `instr*` : instr*}(blocktype : blocktype, instr*{instr <- `instr*`} : instr*)
   | LOOP{blocktype : blocktype, `instr*` : instr*}(blocktype : blocktype, instr*{instr <- `instr*`} : instr*)
   | `IF%%ELSE%`{blocktype : blocktype, `instr*` : instr*}(blocktype : blocktype, instr*{instr <- `instr*`} : instr*, instr*)
@@ -1827,7 +1827,7 @@ def $free_instr(instr : instr) : free
   ;; 2-syntax-aux.watsup:304.1-304.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
   ;; 2-syntax-aux.watsup:305.1-305.86
-  def $free_instr{`valtype*?` : valtype*?}(`SELECT()%?`_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
+  def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
   ;; 2-syntax-aux.watsup:307.1-307.92
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(BLOCK_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
   ;; 2-syntax-aux.watsup:308.1-308.91
@@ -4281,12 +4281,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; 6-typing.watsup:594.1-596.29
   rule `select-expl`{C : context, t : valtype}:
-    `%|-%:%`(C, `SELECT()%?`_instr(?([t])), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype]), [], `%`_resulttype([t])))
+    `%|-%:%`(C, SELECT_instr(?([t])), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype]), [], `%`_resulttype([t])))
     -- Valtype_ok: `%|-%:OK`(C, t)
 
   ;; 6-typing.watsup:598.1-602.37
   rule `select-impl`{C : context, t : valtype, t' : valtype, numtype : numtype, vectype : vectype}:
-    `%|-%:%`(C, `SELECT()%?`_instr(?()), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype]), [], `%`_resulttype([t])))
+    `%|-%:%`(C, SELECT_instr(?()), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype]), [], `%`_resulttype([t])))
     -- Valtype_ok: `%|-%:OK`(C, t)
     -- Valtype_sub: `%|-%<:%`(C, t, t')
     -- if ((t' = (numtype : numtype <: valtype)) \/ (t' = (vectype : vectype <: valtype)))
@@ -4323,7 +4323,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; 6-typing.watsup:646.1-650.42
   rule br_table{C : context, `l*` : labelidx*, l' : labelidx, `t_1*` : valtype*, `t*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:%`(C, BR_TABLE_instr(l*{l <- `l*`}, l'), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ t*{t <- `t*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    `%|-%:%`(C, BR_TABLE_instr(l*{l <- `l*`}, l'), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ t*{t <- `t*`} ++ [I32_valtype]), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (Resulttype_sub: `%|-%<:%`(C, t*{t <- `t*`}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0))*{l <- `l*`}
     -- Resulttype_sub: `%|-%<:%`(C, t*{t <- `t*`}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
@@ -5312,12 +5312,12 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; 8-reduction.watsup
   rule `select-true`{val_1 : val, val_2 : val, c : num_(I32_numtype), `t*?` : valtype*?}:
-    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) `SELECT()%?`_instr(t*{t <- `t*`}?{`t*` <- `t*?`})], [(val_1 : val <: instr)])
+    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`})], [(val_1 : val <: instr)])
     -- if (c =/= `%`_num_(0))
 
   ;; 8-reduction.watsup
   rule `select-false`{val_1 : val, val_2 : val, c : num_(I32_numtype), `t*?` : valtype*?}:
-    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) `SELECT()%?`_instr(t*{t <- `t*`}?{`t*` <- `t*?`})], [(val_2 : val <: instr)])
+    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`})], [(val_2 : val <: instr)])
     -- if (c = `%`_num_(0))
 
   ;; 8-reduction.watsup
@@ -7152,9 +7152,9 @@ grammar Binstr : instr
   ;; A-binary.watsup:323.5-323.17
   prod 0x1A => DROP_instr
   ;; A-binary.watsup:324.5-324.19
-  prod 0x1B => `SELECT()%?`_instr(?())
+  prod 0x1B => SELECT_instr(?())
   ;; A-binary.watsup:325.5-325.41
-  prod{ts : valtype} {0x1C [ts]:Blist(syntax valtype, grammar Bvaltype)} => `SELECT()%?`_instr(?([ts]))
+  prod{ts : valtype} {0x1C [ts]:Blist(syntax valtype, grammar Bvaltype)} => SELECT_instr(?([ts]))
   ;; A-binary.watsup:332.5-332.36
   prod{x : idx} {0x20 x:Blocalidx} => LOCAL.GET_instr(x)
   ;; A-binary.watsup:333.5-333.36

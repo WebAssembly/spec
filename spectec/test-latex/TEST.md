@@ -2263,7 +2263,7 @@ $$
 \mbox{(instruction)} & {\mathit{instr}} &::=& \mathsf{nop} \\ &&|&
 \mathsf{unreachable} \\ &&|&
 \mathsf{drop} \\ &&|&
-\mathsf{select}~{({{\mathit{valtype}}^\ast})^?} \\ &&|&
+\mathsf{select}~{{{\mathit{valtype}}^\ast}^?} \\ &&|&
 \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\ &&|&
@@ -5844,7 +5844,7 @@ C \vdash {t^\ast} \leq C{.}\mathsf{labels}{}[{l'}]
  \qquad
 C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{
-C \vdash \mathsf{br\_table}~{l^\ast}~{l'} : {t_1^\ast}~{t^\ast} \rightarrow {t_2^\ast}
+C \vdash \mathsf{br\_table}~{l^\ast}~{l'} : {t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}br\_table}]}
 \qquad
 \end{array}
