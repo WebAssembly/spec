@@ -25,23 +25,6 @@ let string_of_nullable_list stringifier left sep right = function
 let indent_depth = ref 0
 let indent () = ((List.init !indent_depth (fun _ -> "  ")) |> String.concat "") ^ "-"
 
-let extract_desc_hint = List.find_map (function
-  | El.Ast.{ hintid = id; hintexp = { it = TextE desc; _ } }
-    when id.it = "desc" -> Some desc
-  | _ -> None)
-let rec extract_desc typ = match typ.it with
-  | Il.Ast.IterT (typ, _) -> extract_desc typ ^ " sequence"
-  | _ ->
-    let name = Il.Print.string_of_typ typ in
-    match !Langs.el |> List.find_map (fun def ->
-      match def.it with
-      | El.Ast.TypD (id, subid, _, _, hints)
-        when id.it = name && (subid.it = "" || (* HARDCODE *) subid.it = "syn") ->
-        extract_desc_hint hints
-      | _ -> None)
-    with
-    | Some desc -> desc
-    | None -> name
 
 
 let string_of_atom = El.Print.string_of_atom
@@ -402,7 +385,7 @@ let string_of_algorithm algo = match algo.it with
         "" params
     ^ string_of_instrs instrs ^ "\n"
 
-let string_of_expr_with_type e = "the " ^ extract_desc e.note ^ " " ^ string_of_expr e
+let string_of_expr_with_type e = "the " ^ Prose_util.extract_desc e.note ^ " " ^ string_of_expr e
 
 let string_of_cmpop = function
   | Eq -> "is"
@@ -416,7 +399,7 @@ let rec string_of_stmt = function
   | LetS (e1, e2) ->
       sprintf "%s Let %s be %s." (indent ())
         (string_of_expr e1)
-        (string_of_expr e2)
+        (string_of_expr_with_type e2)
   | CondS e ->
       sprintf "%s %s." (indent ())
         (string_of_expr e)

@@ -288,12 +288,12 @@ and al_to_el_record record =
 (* Operators *)
 
 let render_prose_cmpop = function
-  | Eq -> "equal to"
-  | Ne -> "different with"
-  | Lt -> "less than"
-  | Gt -> "greater than"
-  | Le -> "less than or equal to"
-  | Ge -> "greater than or equal to"
+  | Eq -> ""
+  | Ne -> " not"
+  | Lt -> " less than"
+  | Gt -> " greater than"
+  | Le -> " less than or equal to"
+  | Ge -> " greater than or equal to"
 
 let render_al_unop = function
   | Al.Ast.NotOp -> "not"
@@ -303,7 +303,7 @@ let render_al_binop = function
   | Al.Ast.AndOp -> "and"
   | Al.Ast.OrOp -> "or"
   | Al.Ast.ImplOp -> "implies"
-  | Al.Ast.EquivOp -> "is equivalent to"
+  | Al.Ast.EquivOp -> "if and only if"
   | Al.Ast.AddOp -> "plus"
   | Al.Ast.SubOp -> "minus"
   | Al.Ast.MulOp -> "multiplied by"
@@ -500,59 +500,67 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
+let render_expr_with_type env e = "the " ^ Prose_util.extract_desc e.note ^ " " ^ render_expr env e
+
 (* Instructions *)
 
-let rec render_stmt env depth = function
-  | LetS (e1, e2) ->
-    sprintf "* Let %s be %s."
-      (render_expr env e1)
-      (render_expr env e2)
-  | CondS e ->
-    sprintf "* %s."
-      (render_expr env e)
-  | CmpS (e1, cmpop, e2) ->
-    sprintf "* %s must be %s %s."
-      (String.capitalize_ascii (render_expr env e1))
-      (render_prose_cmpop cmpop)
-      (render_expr env e2)
-  | IsValidS (c_opt, e, es) ->
-    sprintf "* %s%s is valid%s."
-      (render_opt "Under the context " (render_expr env) ", " c_opt)
-      (render_expr env e)
-      (if es = [] then "" else " with type " ^ render_list (render_expr env) " and " es)
-  | MatchesS (e1, e2) ->
-    sprintf "* %s matches %s."
-      (String.capitalize_ascii (render_expr env e1))
-      (render_expr env e2)
-  | IsConstS (c_opt, e) ->
-    sprintf "* %s%s is const."
-      (render_opt "Under the context " (render_expr env) ", " c_opt)
-      (render_expr env e)
-  | IfS (c, is) ->
-    sprintf "* If %s,%s"
-      (render_expr env c)
-      (render_stmts env (depth + 1) is)
-  | ForallS (iters, is) ->
-    let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
-    let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
-    sprintf "* For all %s,%s"
-      (render_iters env iters)
-      (render_stmts env (depth + 1) is)
-  | EitherS ill ->
-    let il_head, ill = List.hd ill, List.tl ill in
-    let sil_head = render_stmts env (depth + 1) il_head in
-    let sill =
-      List.fold_left
-        (fun sill il ->
-          sprintf "%s%s* Or:%s"
-            sill
-            (repeat indent depth)
-            (render_stmts env (depth + 1) il))
-        "" ill
-    in
-    sprintf "* Either:%s\n\n%s" sil_head sill
-  | YetS s ->
-    sprintf "* YetI: %s." s
+let rec render_stmt env depth stmt =
+  let prefix = "* " in
+  let sentence =
+    match stmt with
+    | LetS (e1, e2) ->
+      sprintf "Let %s be %s."
+        (render_expr env e1)
+        (render_expr_with_type env e2)
+    | CondS e ->
+      sprintf "%s."
+        (render_expr env e)
+    | CmpS (e1, cmpop, e2) ->
+      sprintf "%s is%s %s."
+        (render_expr env e1)
+        (render_prose_cmpop cmpop)
+        (render_expr env e2)
+    | IsValidS (c_opt, e, es) ->
+      sprintf "%s%s is valid%s."
+        (render_opt "Under the context " (render_expr env) ", " c_opt)
+        (render_expr_with_type env e)
+        (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
+    | MatchesS (e1, e2) ->
+      sprintf "%s matches %s."
+        (render_expr_with_type env e1)
+        (render_expr_with_type env e2)
+    | IsConstS (c_opt, e) ->
+      sprintf "%s%s is const."
+        (render_opt "Under the context " (render_expr_with_type env) ", " c_opt)
+        (render_expr env e)
+    | IfS (c, is) ->
+      sprintf "If %s,%s"
+        (render_expr env c)
+        (render_stmts env (depth + 1) is)
+    | ForallS (iters, is) ->
+      let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
+      let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
+      sprintf "For all %s,%s"
+        (render_iters env iters)
+        (render_stmts env (depth + 1) is)
+    | EitherS ill ->
+      let il_head, ill = List.hd ill, List.tl ill in
+      let sil_head = render_stmts env (depth + 1) il_head in
+      let sill =
+        List.fold_left
+          (fun sill il ->
+            sprintf "%s%s%sOr:%s"
+              sill
+              (repeat indent depth)
+              prefix
+              (render_stmts env (depth + 1) il))
+          "" ill
+      in
+      sprintf "Either:%s\n\n%s" sil_head sill
+    | YetS s ->
+      sprintf "YetI: %s." s
+  in
+  prefix ^ (sentence |> String.capitalize_ascii)
 
 and render_stmts env depth instrs =
   List.fold_left

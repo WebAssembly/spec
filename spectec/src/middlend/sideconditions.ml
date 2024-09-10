@@ -124,7 +124,8 @@ and t_arg env arg = match arg.it with
   | GramA _ -> []
 
 
-let rec t_prem env prem = match prem.it with
+let rec t_prem env prem =
+  (match prem.it with
   | RulePr (_, _, exp) -> t_exp env exp
   | IfPr e -> t_exp env e
   | LetPr (e1, e2, _) -> t_exp env e1 @ t_exp env e2
@@ -134,6 +135,7 @@ let rec t_prem env prem = match prem.it with
      t_iterexp env iterexp @
      let env' = env_under_iter env iterexp in
      List.map (fun pr -> iterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
+  ) @ [prem]
 
 let t_prems env = List.concat_map (t_prem env)
 
@@ -163,9 +165,10 @@ let t_rule' = function
       | ExpB (v, t) -> Env.add v.it t env
       | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
     in
-    let extra_prems = t_prems env prems @ t_exp env exp in
-    let prems' = reduce_prems (extra_prems @ prems) in
-    RuleD (id, binds, mixop, exp, prems')
+    let prems' = t_prems env prems in
+    let extra_prems = t_exp env exp in
+    let reduced_prems = reduce_prems (extra_prems @ prems') in
+    RuleD (id, binds, mixop, exp, reduced_prems)
 
 let t_rule x = { x with it = t_rule' x.it }
 

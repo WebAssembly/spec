@@ -17,363 +17,363 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 
-* :math:`(n, m)` is valid with type :math:`k` if:
+* The limits :math:`(n, m)` is valid with the nat :math:`k` if:
 
 
-   * :math:`n` must be less than or equal to :math:`m`.
+   * :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` must be less than or equal to :math:`k`.
-
-
-* :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
+   * :math:`m` is less than or equal to :math:`k`.
 
 
-* :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
+* The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
 
 
-* :math:`{\mathit{limits}}` is valid if:
+* The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
 
 
-   * :math:`{\mathit{limits}}` is valid with type :math:`{2^{32}} - 1`.
+* The table type :math:`{\mathit{limits}}` is valid if:
 
 
-* :math:`{\mathit{limits}}` is valid if:
+   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
 
 
-   * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
+* The memory type :math:`{\mathit{limits}}` is valid if:
 
 
-* :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
 
 
-   * Either:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
-
-      * :math:`{\mathit{functype}}` is valid.
-
-   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
-
-      * :math:`{\mathit{globaltype}}` is valid.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
-
-      * :math:`{\mathit{tabletype}}` is valid.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
-
-      * :math:`{\mathit{memtype}}` is valid.
-
-
-* :math:`(n_{11}, n_{12})` matches :math:`(n_{21}, n_{22})` if:
-
-
-   * :math:`n_{11}` must be greater than or equal to :math:`n_{21}`.
-
-   * :math:`n_{12}` must be less than or equal to :math:`n_{22}`.
-
-
-* :math:`{\mathit{ft}}` matches :math:`{\mathit{ft}}`.
-
-
-* :math:`{\mathit{gt}}` matches :math:`{\mathit{gt}}`.
-
-
-* :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2` if:
-
-
-   * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
-
-
-* :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2` if:
-
-
-   * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
-
-
-* :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+* The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
    * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
-
-      * :math:`{\mathit{ft}}_1` matches :math:`{\mathit{ft}}_2`.
+      * The function type :math:`{\mathit{functype}}` is valid.
 
    * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The global type :math:`{\mathit{globaltype}}` is valid.   * Or:
 
-      * :math:`{\mathit{gt}}_1` matches :math:`{\mathit{gt}}_2`.   * Or:
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The table type :math:`{\mathit{tabletype}}` is valid.   * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * :math:`{\mathit{tt}}_1` matches :math:`{\mathit{tt}}_2`.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
-
-      * :math:`{\mathit{mt}}_1` matches :math:`{\mathit{mt}}_2`.
+      * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
-* :math:`\mathsf{nop}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
+* The limits :math:`(n_{11}, n_{12})` matches the limits :math:`(n_{21}, n_{22})` if:
 
 
-* :math:`\mathsf{unreachable}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+
+   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
-* :math:`\mathsf{drop}` is valid with type :math:`t~\rightarrow~\epsilon`.
+* The function type :math:`{\mathit{ft}}` matches the function type :math:`{\mathit{ft}}`.
 
 
-* :math:`\mathsf{select}` is valid with type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
+* The global type :math:`{\mathit{gt}}` matches the global type :math:`{\mathit{gt}}`.
 
 
-* :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with type :math:`\epsilon~\rightarrow~{t^?}` if:
+* The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{lim}}_2` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
+   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
-* :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is valid with type :math:`\epsilon~\rightarrow~{t^?}` if:
+* The memory type :math:`{\mathit{lim}}_1` matches the memory type :math:`{\mathit{lim}}_2` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} \epsilon]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
+   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
-* :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+* The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
+   * Either:
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+
+      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+
+   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+
+      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+
+      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+
+      * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
 
 
-* :math:`(\mathsf{br}~l)` is valid with type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^?}`.
+* The instruction :math:`\mathsf{unreachable}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+* The instruction :math:`\mathsf{drop}` is valid with the function type :math:`t~\rightarrow~\epsilon`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^?}`.
+* The instruction :math:`\mathsf{select}` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
 
 
-* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`{l'}`.
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+
+
+* The instruction :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
+
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} \epsilon]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+
+
+* The instruction :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+
+
+* The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
+
+
+* The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
+
+
+* The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+
+   * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
    * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`{t^?}` must be equal to :math:`C{.}\mathsf{labels}{}[{l'}]`.
+      * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
    * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{t^?}` must be equal to :math:`C{.}\mathsf{labels}{}[l]`.
+      * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[l]`.
 
 
-* :math:`(\mathsf{call}~x)` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
+* The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
-
-
-* :math:`(\mathsf{call\_indirect}~x)` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
+   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+* The instruction :math:`(\mathsf{call\_indirect}~x)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
 
 
-* :math:`\mathsf{return}` is valid with type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
-   * :math:`C{.}\mathsf{return}` must be equal to :math:`{t^?}`.
+* The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(t{.}\mathsf{const}~c_t)` is valid with type :math:`\epsilon~\rightarrow~t`.
+   * :math:`C{.}\mathsf{return}` is :math:`{t^?}`.
 
 
-* :math:`(t {.} {\mathit{unop}}_t)` is valid with type :math:`t~\rightarrow~t`.
+* The instruction :math:`(t{.}\mathsf{const}~c_t)` is valid with the function type :math:`\epsilon~\rightarrow~t`.
 
 
-* :math:`(t {.} {\mathit{binop}}_t)` is valid with type :math:`t~t~\rightarrow~t`.
+* The instruction :math:`(t {.} {\mathit{unop}}_t)` is valid with the function type :math:`t~\rightarrow~t`.
 
 
-* :math:`(t {.} {\mathit{testop}}_t)` is valid with type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`(t {.} {\mathit{binop}}_t)` is valid with the function type :math:`t~t~\rightarrow~t`.
 
 
-* :math:`(t {.} {\mathit{relop}}_t)` is valid with type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`(t {.} {\mathit{testop}}_t)` is valid with the function type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+* The instruction :math:`(t {.} {\mathit{relop}}_t)` is valid with the function type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+
+
+* The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
-      * :math:`{|{\mathit{nt}}_1|}` must be equal to :math:`{|{\mathit{nt}}_2|}`.
+      * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
 
 
-* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
-
-
-* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+* The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`t~\rightarrow~t` if:
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+* The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathit{mut}}, t)`.
+* The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
+* The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-* :math:`\mathsf{memory{.}size}` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+* The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-* :math:`\mathsf{memory{.}grow}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+* The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+* The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` is equivalent to :math:`{\mathit{sx?}}` is :math:`\epsilon`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * If :math:`n` is defined,
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
-
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-
-* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
-
-
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
    * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
+      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
+
+* The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+
+
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+
+      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
+
+   * If :math:`n` is defined,
+
+      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+* The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t_3^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_3^\ast}`.
 
-      * :math:`{\mathit{instr}}_1` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t^\ast}~{t_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t^\ast}~{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t^\ast}~{t_2^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t^\ast}~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-
-* :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t^?}` if:
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^?}`.
+* The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^?}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
@@ -381,15 +381,15 @@ watsup 0.4 generator
 
    * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(t{.}\mathsf{const}~c)`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(t{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global{.}get}~x)`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(t)`.
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
@@ -400,212 +400,212 @@ watsup 0.4 generator
       * :math:`{\mathit{instr}}` is const.
 
 
-* :math:`(\mathsf{type}~{\mathit{ft}})` is valid with type :math:`{\mathit{ft}}` if:
+* The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
 
 
-   * :math:`{\mathit{ft}}` is valid.
+   * The function type :math:`{\mathit{ft}}` is valid.
 
 
-* :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
+* The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+   * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, :math:`{\mathit{expr}}` is valid with type :math:`{t_2^?}`.
-
-
-* :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with type :math:`{\mathit{gt}}` if:
+   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^?}`.
 
 
-   * :math:`{\mathit{gt}}` is valid.
+* The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
 
-   * :math:`{\mathit{gt}}` must be equal to :math:`({\mathit{mut}}, t)`.
 
-   * :math:`{\mathit{expr}}` is valid with type :math:`t`.
+   * The global type :math:`{\mathit{gt}}` is valid.
+
+   * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
+
+   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`t`.
 
    * :math:`{\mathit{expr}}` is const.
 
 
-* :math:`(\mathsf{table}~{\mathit{tt}})` is valid with type :math:`{\mathit{tt}}` if:
+* The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
 
 
-   * :math:`{\mathit{tt}}` is valid.
+   * The table type :math:`{\mathit{tt}}` is valid.
 
 
-* :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with type :math:`{\mathit{mt}}` if:
+* The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
 
 
-   * :math:`{\mathit{mt}}` is valid.
+   * The memory type :math:`{\mathit{mt}}` is valid.
 
 
-* :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
+* The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`0`.
 
-   * :math:`{|{\mathit{x*}}|}` must be equal to :math:`{|{\mathit{ft*}}|}`.
+   * :math:`C{.}\mathsf{tables}{}[0]` is :math:`{\mathit{lim}}`.
+
+   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`\mathsf{i{\scriptstyle 32}}`.
+
+   * :math:`{\mathit{expr}}` is const.
+
+   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{tables}{}[0]` must be equal to :math:`{\mathit{lim}}`.
-
-   * :math:`{\mathit{expr}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}`.
-
-   * :math:`{\mathit{expr}}` is const.
+      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{ft}}`.
+      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
-* :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
+* The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{lim}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{lim}}`.
 
-   * :math:`{\mathit{expr}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the number type sequence :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is const.
 
 
-* :math:`(\mathsf{start}~x)` is valid if:
+* The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`\epsilon~\rightarrow~\epsilon`.
-
-
-* :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with type :math:`{\mathit{xt}}` if:
+   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-   * :math:`{\mathit{xt}}` is valid.
+* The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-* :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+   * The external type :math:`{\mathit{xt}}` is valid.
+
+
+* The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
 
-      * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{ft}}`.
+      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
    * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`{\mathit{gt}}`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.   * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`{\mathit{tt}}`.   * Or:
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.   * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
-
-
-* :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with type :math:`{\mathit{xt}}` if:
+      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
-   * :math:`{\mathit{externidx}}` is valid with type :math:`{\mathit{xt}}`.
+* The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
+   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
-   * :math:`{|{\mathit{type*}}|}` must be equal to :math:`{|{\mathit{ft'*}}|}`.
+* The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
 
-   * :math:`{|{\mathit{ixt*}}|}` must be equal to :math:`{|{\mathit{import*}}|}`.
 
-   * :math:`{|{\mathit{gt*}}|}` must be equal to :math:`{|{\mathit{global*}}|}`.
-
-   * :math:`{|{\mathit{func*}}|}` must be equal to :math:`{|{\mathit{ft*}}|}`.
-
-   * :math:`{|{\mathit{tt*}}|}` must be equal to :math:`{|{\mathit{table*}}|}`.
-
-   * :math:`{|{\mathit{mt*}}|}` must be equal to :math:`{|{\mathit{mem*}}|}`.
-
-   * :math:`{|{\mathit{xt*}}|}` must be equal to :math:`{|{\mathit{export*}}|}`.
+   * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
 
-      * :math:`{\mathit{type}}` is valid with type :math:`{\mathit{ft}'}`.
+      * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+
+   * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+
+   * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{global}}` is valid with type :math:`{\mathit{gt}}`.
+      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+
+   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
-      * :math:`{\mathit{func}}` is valid with type :math:`{\mathit{ft}}`.
+      * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
+
+   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
 
-      * :math:`{\mathit{table}}` is valid with type :math:`{\mathit{tt}}`.
+      * The table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+
+   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
-      * :math:`{\mathit{mem}}` is valid with type :math:`{\mathit{mt}}`.
+      * The memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`,
 
-      * :math:`{\mathit{elem}}` is valid.
+      * The table segment :math:`{\mathit{elem}}` is valid.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
 
-      * :math:`{\mathit{data}}` is valid.
+      * The memory segment :math:`{\mathit{data}}` is valid.
 
    * If :math:`{\mathit{start}}` is defined,
 
-      * :math:`{\mathit{start}}` is valid.
+      * The start function :math:`{\mathit{start}}` is valid.
+
+   * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
 
-      * :math:`{\mathit{export}}` is valid with type :math:`{\mathit{xt}}`.
+      * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
 
-   * :math:`{|{{\mathit{tt}}^\ast}|}` must be less than or equal to :math:`1`.
+   * :math:`{|{{\mathit{tt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * :math:`{|{{\mathit{mt}}^\ast}|}` must be less than or equal to :math:`1`.
+   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{{\mathit{ift}}^\ast}` must be equal to :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{ift}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{igt}}^\ast}` must be equal to :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{igt}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{itt}}^\ast}` must be equal to :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{itt}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{imt}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{imt}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
 
 
 :math:`\mathsf{unreachable}`
@@ -2862,80 +2862,80 @@ Externtype_sub
     - the memory type mt_1 matches the memory type mt_2.
 
 Instr_ok/nop
-- the instr NOP is valid with the function type [] -> [].
+- the instruction NOP is valid with the function type [] -> [].
 
 Instr_ok/unreachable
-- the instr UNREACHABLE is valid with the function type t_1* -> t_2*.
+- the instruction UNREACHABLE is valid with the function type t_1* -> t_2*.
 
 Instr_ok/drop
-- the instr DROP is valid with the function type [t] -> [].
+- the instruction DROP is valid with the function type [t] -> [].
 
 Instr_ok/select
-- the instr SELECT is valid with the function type [t, t, I32] -> [t].
+- the instruction SELECT is valid with the function type [t, t, I32] -> [t].
 
 Instr_ok/block
-- the instr (BLOCK t? instr*) is valid with the function type [] -> t? if:
-  - Under the context C with .LABELS prepended by [t?], the instr sequence instr* is valid with the function type [] -> t?.
+- the instruction (BLOCK t? instr*) is valid with the function type [] -> t? if:
+  - Under the context C with .LABELS prepended by [t?], the instruction sequence instr* is valid with the function type [] -> t?.
 
 Instr_ok/loop
-- the instr (LOOP t? instr*) is valid with the function type [] -> t? if:
-  - Under the context C with .LABELS prepended by [?()], the instr sequence instr* is valid with the function type [] -> [].
+- the instruction (LOOP t? instr*) is valid with the function type [] -> t? if:
+  - Under the context C with .LABELS prepended by [?()], the instruction sequence instr* is valid with the function type [] -> [].
 
 Instr_ok/if
-- the instr (IF t? instr_1* ELSE instr_2*) is valid with the function type [I32] -> t? if:
-  - Under the context C with .LABELS prepended by [t?], the instr sequence instr_1* is valid with the function type [] -> t?.
-  - Under the context C with .LABELS prepended by [t?], the instr sequence instr_2* is valid with the function type [] -> t?.
+- the instruction (IF t? instr_1* ELSE instr_2*) is valid with the function type [I32] -> t? if:
+  - Under the context C with .LABELS prepended by [t?], the instruction sequence instr_1* is valid with the function type [] -> t?.
+  - Under the context C with .LABELS prepended by [t?], the instruction sequence instr_2* is valid with the function type [] -> t?.
 
 Instr_ok/br
-- the instr (BR l) is valid with the function type t_1* :: t? -> t_2* if:
+- the instruction (BR l) is valid with the function type t_1* :: t? -> t_2* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t?.
 
 Instr_ok/br_if
-- the instr (BR_IF l) is valid with the function type t? :: [I32] -> t? if:
+- the instruction (BR_IF l) is valid with the function type t? :: [I32] -> t? if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t?.
 
 Instr_ok/br_table
-- the instr (BR_TABLE l* l') is valid with the function type t_1* :: t? -> t_2* if:
+- the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t? -> t_2* if:
   - |C.LABELS| is greater than l'.
+  - t? is C.LABELS[l'].
   - For all l in l*,
     - |C.LABELS| is greater than l.
-  - t? is C.LABELS[l'].
   - For all l in l*,
     - t? is C.LABELS[l].
 
 Instr_ok/call
-- the instr (CALL x) is valid with the function type t_1* -> t_2? if:
+- the instruction (CALL x) is valid with the function type t_1* -> t_2? if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is t_1* -> t_2?.
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x) is valid with the function type t_1* :: [I32] -> t_2? if:
+- the instruction (CALL_INDIRECT x) is valid with the function type t_1* :: [I32] -> t_2? if:
   - |C.TYPES| is greater than x.
   - C.TYPES[x] is t_1* -> t_2?.
 
 Instr_ok/return
-- the instr RETURN is valid with the function type t_1* :: t? -> t_2* if:
+- the instruction RETURN is valid with the function type t_1* :: t? -> t_2* if:
   - C.RETURN is ?(t?).
 
 Instr_ok/const
-- the instr (t.CONST c_t) is valid with the function type [] -> [t].
+- the instruction (t.CONST c_t) is valid with the function type [] -> [t].
 
 Instr_ok/unop
-- the instr (UNOP t unop_t) is valid with the function type [t] -> [t].
+- the instruction (UNOP t unop_t) is valid with the function type [t] -> [t].
 
 Instr_ok/binop
-- the instr (BINOP t binop_t) is valid with the function type [t, t] -> [t].
+- the instruction (BINOP t binop_t) is valid with the function type [t, t] -> [t].
 
 Instr_ok/testop
-- the instr (TESTOP t testop_t) is valid with the function type [t] -> [I32].
+- the instruction (TESTOP t testop_t) is valid with the function type [t] -> [I32].
 
 Instr_ok/relop
-- the instr (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
+- the instruction (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
     - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
@@ -2943,44 +2943,44 @@ Instr_ok/cvtop
     - cvtop_u0 is cvtop.
 
 Instr_ok/local.get
-- the instr (LOCAL.GET x) is valid with the function type [] -> [t] if:
+- the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.set
-- the instr (LOCAL.SET x) is valid with the function type [t] -> [] if:
+- the instruction (LOCAL.SET x) is valid with the function type [t] -> [] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.tee
-- the instr (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
+- the instruction (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/global.get
-- the instr (GLOBAL.GET x) is valid with the function type [] -> [t] if:
+- the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
 Instr_ok/global.set
-- the instr (GLOBAL.SET x) is valid with the function type [t] -> [] if:
+- the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/memory.size
-- the instr MEMORY.SIZE is valid with the function type [] -> [I32] if:
+- the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
-- the instr MEMORY.GROW is valid with the function type [I32] -> [I32] if:
+- the instruction MEMORY.GROW is valid with the function type [I32] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/load
-- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
-  - |C.MEMS| is greater than 0.
+- the instruction (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
   - ((n? is ?()) is equivalent to (sx? is ?())).
+  - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
@@ -2990,7 +2990,7 @@ Instr_ok/load
     - nt is Inn.
 
 Instr_ok/store
-- the instr (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
+- the instruction (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
@@ -3001,7 +3001,7 @@ Instr_ok/store
     - nt is Inn.
 
 Instrs_ok
-- the instr sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
+- the instruction sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
   - Either:
     - instr_u0* is [].
     - valtype_u1* is [].
@@ -3010,20 +3010,20 @@ Instrs_ok
     - instr_u0* is [instr_1] :: instr_2*.
     - valtype_u1* is t_1*.
     - valtype_u2* is t_3*.
-    - the instr instr_1 is valid with the function type t_1* -> t_2*.
-    - the instr sequence instr_2* is valid with the function type t_2* -> t_3*.
+    - the instruction instr_1 is valid with the function type t_1* -> t_2*.
+    - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
     - instr_u0* is instr*.
     - valtype_u1* is t* :: t_1*.
     - valtype_u2* is t* :: t_2*.
-    - the instr sequence instr* is valid with the function type t_1* -> t_2*.
+    - the instruction sequence instr* is valid with the function type t_1* -> t_2*.
 
 Expr_ok
 - the expression instr* is valid with the result type t? if:
-  - the instr sequence instr* is valid with the function type [] -> t?.
+  - the instruction sequence instr* is valid with the function type [] -> t?.
 
 Instr_const
-- the instr instr_u0 is constant if:
+- the instruction instr_u0 is constant if:
   - Either:
     - instr_u0 is (t.CONST c).
   - Or:
@@ -3034,7 +3034,7 @@ Instr_const
 Expr_const
 - the expression instr* is constant if:
   - For all instr in instr*,
-    - the instr instr is constant.
+    - the instruction instr is constant.
 
 Type_ok
 - the type (TYPE ft) is valid with the function type ft if:
@@ -3064,12 +3064,12 @@ Mem_ok
 Elem_ok
 - the table segment (ELEM expr x*) is valid if:
   - |C.TABLES| is greater than 0.
-  - |x*| is |ft*|.
-  - For all x in x*,
-    - |C.FUNCS| is greater than x.
   - C.TABLES[0] is lim.
   - the expression expr is valid with the number type sequence ?(I32).
   - the expression expr is constant.
+  - |x*| is |ft*|.
+  - For all x in x*,
+    - |C.FUNCS| is greater than x.
   - For all ft in ft* and x in x*,
     - C.FUNCS[x] is ft.
 
@@ -3119,22 +3119,21 @@ Export_ok
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid if:
   - |type*| is |ft'*|.
-  - |ixt*| is |import*|.
-  - |gt*| is |global*|.
-  - |func*| is |ft*|.
-  - |tt*| is |table*|.
-  - |mt*| is |mem*|.
-  - |xt*| is |export*|.
   - For all ft' in ft'* and type in type*,
     - the type type is valid with the function type ft'.
+  - |ixt*| is |import*|.
   - For all import in import* and ixt in ixt*,
     - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
+  - |gt*| is |global*|.
   - For all global in global* and gt in gt*,
     - Under the context C', the global global is valid with the global type gt.
+  - |func*| is |ft*|.
   - For all ft in ft* and func in func*,
     - the function func is valid with the function type ft.
+  - |tt*| is |table*|.
   - For all table in table* and tt in tt*,
     - the table table is valid with the table type tt.
+  - |mt*| is |mem*|.
   - For all mem in mem* and mt in mt*,
     - the memory mem is valid with the memory type mt.
   - For all elem in elem*,
@@ -3143,6 +3142,7 @@ Module_ok
     - the memory segment data is valid.
   - If start is defined,
     - the start function start is valid.
+  - |xt*| is |export*|.
   - For all export in export* and xt in xt*,
     - the export export is valid with the external type xt.
   - |tt*| is less than or equal to 1.
@@ -4199,701 +4199,701 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 
-* :math:`(n, m)` is valid with type :math:`k` if:
+* The limits :math:`(n, m)` is valid with the nat :math:`k` if:
 
 
-   * :math:`n` must be less than or equal to :math:`m`.
+   * :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` must be less than or equal to :math:`k`.
-
-
-* :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * :math:`m` is less than or equal to :math:`k`.
 
 
-* :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
+* The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-* :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
+* The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid.
 
 
-   * :math:`{\mathit{limits}}` is valid with type :math:`{2^{32}} - 1`.
+* The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
 
 
-* :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
+   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
 
 
-   * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
+* The memory type :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
 
 
-* :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
 
 
-   * Either:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
-
-      * :math:`{\mathit{functype}}` is valid.
-
-   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
-
-      * :math:`{\mathit{globaltype}}` is valid.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
-
-      * :math:`{\mathit{tabletype}}` is valid.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
-
-      * :math:`{\mathit{memtype}}` is valid.
-
-
-* :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`t` if:
+* The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
    * Either:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`t`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+      * The function type :math:`{\mathit{functype}}` is valid.
 
    * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{bot}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+
+      * The global type :math:`{\mathit{globaltype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+
+      * The table type :math:`{\mathit{tabletype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+
+      * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
-* :math:`{t_1^\ast}` matches :math:`{t_2^\ast}` if:
+* The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`t` if:
 
 
-   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` must be equal to :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
+   * Either:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`.
+
+   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+
+
+* The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
+
+
+   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
 
-      * :math:`t_1` matches :math:`t_2`.
+      * The value type :math:`t_1` matches the value type :math:`t_2`.
 
 
-* :math:`(n_{11}, n_{12})` matches :math:`(n_{21}, n_{22})` if:
+* The limits :math:`(n_{11}, n_{12})` matches the limits :math:`(n_{21}, n_{22})` if:
 
 
-   * :math:`n_{11}` must be greater than or equal to :math:`n_{21}`.
+   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * :math:`n_{12}` must be less than or equal to :math:`n_{22}`.
-
-
-* :math:`{\mathit{ft}}` matches :math:`{\mathit{ft}}`.
+   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
-* :math:`{\mathit{gt}}` matches :math:`{\mathit{gt}}`.
+* The function type :math:`{\mathit{ft}}` matches the function type :math:`{\mathit{ft}}`.
 
 
-* :math:`({\mathit{lim}}_1, {\mathit{rt}})` matches :math:`({\mathit{lim}}_2, {\mathit{rt}})` if:
+* The global type :math:`{\mathit{gt}}` matches the global type :math:`{\mathit{gt}}`.
 
 
-   * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
+* The table type :math:`({\mathit{lim}}_1, {\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2, {\mathit{rt}})` if:
 
 
-* :math:`{\mathit{lim}}_1~\mathsf{page}` matches :math:`{\mathit{lim}}_2~\mathsf{page}` if:
+   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
-   * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
+* The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` matches the memory type :math:`{\mathit{lim}}_2~\mathsf{page}` if:
 
 
-* :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
 
 
-   * Either:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
-
-      * :math:`{\mathit{ft}}_1` matches :math:`{\mathit{ft}}_2`.
-
-   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
-
-      * :math:`{\mathit{gt}}_1` matches :math:`{\mathit{gt}}_2`.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
-
-      * :math:`{\mathit{tt}}_1` matches :math:`{\mathit{tt}}_2`.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
-
-      * :math:`{\mathit{mt}}_1` matches :math:`{\mathit{mt}}_2`.
-
-
-* :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+* The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{{\mathit{valtype}}^?}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{{\mathit{valtype}}^?}`.
+      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{typeidx}}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t_1^\ast}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t_2^\ast}`.
+      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.   * Or:
 
-      * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+
+      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+
+      * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
 
 
-* :math:`\mathsf{nop}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
-
-
-* :math:`\mathsf{unreachable}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-
-* :math:`\mathsf{drop}` is valid with type :math:`t~\rightarrow~\epsilon`.
-
-
-* :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+* The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`t`.
+      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{{\mathit{valtype}}^?}`.
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
 
    * Or:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`t` matches :math:`{t'}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
+
+      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+
+      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+* The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+
+
+* The instruction :math:`\mathsf{unreachable}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+* The instruction :math:`\mathsf{drop}` is valid with the function type :math:`t~\rightarrow~\epsilon`.
+
+
+* The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+
+
+   * Either:
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
+
+   * Or:
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+
+      * The value type :math:`t` matches the value type :math:`{t'}`.
 
       * Either:
 
-         * :math:`{t'}` must be equal to :math:`{\mathit{numtype}}`.
+         * :math:`{t'}` is :math:`{\mathit{numtype}}`.
 
       * Or:
 
-         * :math:`{t'}` must be equal to :math:`{\mathit{vectype}}`.
+         * :math:`{t'}` is :math:`{\mathit{vectype}}`.
 
 
-* :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-
-* :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+* The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+* The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{br}~l)` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
+* The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
+* The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+
+
+* The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`{l'}`.
+      * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
    * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
-   * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
-
-* :math:`(\mathsf{call}~x)` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
-
-
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
-* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`y`.
-
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, \mathsf{funcref})`.
-
-   * :math:`C{.}\mathsf{types}{}[y]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`\mathsf{return}` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`C{.}\mathsf{return}` must be equal to :math:`{t^\ast}`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, \mathsf{funcref})`.
+
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+
+   * :math:`C{.}\mathsf{types}{}[y]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-* :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
+* The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+   * :math:`C{.}\mathsf{return}` is :math:`{t^\ast}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+* The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+
+
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+
+
+* The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
-      * :math:`{|{\mathit{nt}}_1|}` must be equal to :math:`{|{\mathit{nt}}_2|}`.
+      * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
 
 
-* :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
+* The instruction :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
+* The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{ft}}`.
-
-
-* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the function type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+
+
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * For all :math:`i` in :math:`{i^\ast}`,
 
-      * :math:`i` must be less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
+      * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the function type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
+* The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
 
 
-   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
-* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
-* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`t~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`t`.
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
-* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathit{mut}}, t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}, t)`.
 
 
-* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
 
 
-* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
+* The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_2`.
+   * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}})`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` must be equal to :math:`({\mathit{lim}}_1, {\mathit{rt}})`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_2]` must be equal to :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-   * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`x_2`.
+   * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{elems}{}[x_2]` must be equal to :math:`{\mathit{rt}}`.
+   * :math:`C{.}\mathsf{elems}{}[x_2]` is :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{elem{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{elems}{}[x]` must be equal to :math:`{\mathit{rt}}`.
+   * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
 
 
-* :math:`\mathsf{memory{.}size}` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}grow}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}fill}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`\mathsf{memory{.}copy}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}init}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`x`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
+   * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
-* :math:`(\mathsf{data{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
+   * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
+* The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
 
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` is equivalent to :math:`{\mathit{sx?}}` is :math:`\epsilon`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
-
-   * If :math:`n` is defined,
-
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
-
-
-* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
-
-
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
    * If :math:`n` is defined,
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
+      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
+
+* The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+
+
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * If :math:`n` is defined,
 
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+
+      * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
+
+   * If :math:`n` is defined,
+
+      * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8 \cdot N`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
    * Or:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.   * Or:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.   * Or:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
-
-
-* :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
-
-   * :math:`{\mathit{laneidx}}` must be less than :math:`128 / n`.
+* The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-* :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+
+   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+* The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-* :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
-
-   * :math:`{\mathit{laneidx}}` must be less than :math:`128 / n`.
+* The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+
+   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+
+
+* The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t_3^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_3^\ast}`.
 
-      * :math:`{\mathit{instr}}_1` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.   * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{{t'}_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{{t'}_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{{t'}_2^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{t'}_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * :math:`{{t'}_1^\ast}` matches :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
 
-      * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.   * Or:
+      * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.   * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t^\ast}~{t_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t^\ast}~{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t^\ast}~{t_2^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t^\ast}~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-
-* :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t^\ast}` if:
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^\ast}`.
+* The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
@@ -4901,21 +4901,21 @@ watsup 0.4 generator
 
    * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{ref{.}func}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global{.}get}~x)`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(t)`.
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
@@ -4926,238 +4926,238 @@ watsup 0.4 generator
       * :math:`{\mathit{instr}}` is const.
 
 
-* :math:`(\mathsf{type}~{\mathit{ft}})` is valid with type :math:`{\mathit{ft}}` if:
+* The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
 
 
-   * :math:`{\mathit{ft}}` is valid.
+   * The function type :math:`{\mathit{ft}}` is valid.
 
 
-* :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+* The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{types}{}[x]` must be equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{\mathit{expr}}` is valid with type :math:`{t_2^\ast}`.
-
-
-* :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with type :math:`{\mathit{gt}}` if:
+   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
 
-   * :math:`{\mathit{gt}}` is valid.
+* The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
 
-   * :math:`{\mathit{gt}}` must be equal to :math:`({\mathit{mut}}, t)`.
 
-   * :math:`{\mathit{expr}}` is valid with type :math:`t`.
+   * The global type :math:`{\mathit{gt}}` is valid.
+
+   * :math:`{\mathit{gt}}` is :math:`({\mathit{mut}}, t)`.
+
+   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
    * :math:`{\mathit{expr}}` is const.
 
 
-* :math:`(\mathsf{table}~{\mathit{tt}})` is valid with type :math:`{\mathit{tt}}` if:
+* The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
 
 
-   * :math:`{\mathit{tt}}` is valid.
+   * The table type :math:`{\mathit{tt}}` is valid.
 
 
-* :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with type :math:`{\mathit{mt}}` if:
+* The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
 
 
-   * :math:`{\mathit{mt}}` is valid.
+   * The memory type :math:`{\mathit{mt}}` is valid.
 
 
-* :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{rt}}` if:
+* The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-      * :math:`{\mathit{expr}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is const.
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{passive}`.   * Or:
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.   * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{declare}`.
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
 
-* :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with type :math:`{\mathit{rt}}` if:
+* The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the reference type :math:`{\mathit{rt}}` if:
 
 
    * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
 
-      * :math:`{\mathit{expr}}` is valid with type :math:`{\mathit{rt}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
       * :math:`{\mathit{expr}}` is const.
 
-   * :math:`{\mathit{elemmode}}` is valid with type :math:`{\mathit{rt}}`.
+   * The elemmode :math:`{\mathit{elemmode}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
 
-* :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+* The datamode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
    * Either:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{active}~0~{\mathit{expr}})`.
+      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
 
-      * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-      * :math:`{\mathit{expr}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is const.
 
    * Or:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{passive}`.
+      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
 
-* :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid if:
+* The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid if:
 
 
-   * :math:`{\mathit{datamode}}` is valid.
+   * The datamode :math:`{\mathit{datamode}}` is valid.
 
 
-* :math:`(\mathsf{start}~x)` is valid if:
+* The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`\epsilon~\rightarrow~\epsilon`.
-
-
-* :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with type :math:`{\mathit{xt}}` if:
+   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-   * :math:`{\mathit{xt}}` is valid.
+* The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-* :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+   * The external type :math:`{\mathit{xt}}` is valid.
+
+
+* The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
 
-      * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{ft}}`.
+      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
    * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`{\mathit{gt}}`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.   * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`{\mathit{tt}}`.   * Or:
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.   * Or:
 
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~x)`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
-
-
-* :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with type :math:`{\mathit{xt}}` if:
+      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
-   * :math:`{\mathit{externidx}}` is valid with type :math:`{\mathit{xt}}`.
+* The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
+   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
-   * :math:`{|{\mathit{type*}}|}` must be equal to :math:`{|{\mathit{ft'*}}|}`.
+* The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
 
-   * :math:`{|{\mathit{ixt*}}|}` must be equal to :math:`{|{\mathit{import*}}|}`.
 
-   * :math:`{|{\mathit{gt*}}|}` must be equal to :math:`{|{\mathit{global*}}|}`.
-
-   * :math:`{|{\mathit{tt*}}|}` must be equal to :math:`{|{\mathit{table*}}|}`.
-
-   * :math:`{|{\mathit{mt*}}|}` must be equal to :math:`{|{\mathit{mem*}}|}`.
-
-   * :math:`{|{\mathit{rt*}}|}` must be equal to :math:`{|{\mathit{elem*}}|}`.
-
-   * :math:`{|{\mathit{func*}}|}` must be equal to :math:`{|{\mathit{ft*}}|}`.
-
-   * :math:`{|{\mathit{xt*}}|}` must be equal to :math:`{|{\mathit{export*}}|}`.
+   * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
 
-      * :math:`{\mathit{type}}` is valid with type :math:`{\mathit{ft}'}`.
+      * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+
+   * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+
+   * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{global}}` is valid with type :math:`{\mathit{gt}}`.
+      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+
+   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{table}}` is valid with type :math:`{\mathit{tt}}`.
+      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+
+   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{mem}}` is valid with type :math:`{\mathit{mt}}`.
+      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+
+   * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{elem}}` is valid with type :math:`{\mathit{rt}}`.
+      * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{data}}` is valid.
+      * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
+
+   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
-      * :math:`{\mathit{func}}` is valid with type :math:`{\mathit{ft}}`.
+      * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
 
    * If :math:`{\mathit{start}}` is defined,
 
-      * :math:`{\mathit{start}}` is valid.
+      * The start function :math:`{\mathit{start}}` is valid.
+
+   * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
 
-      * :math:`{\mathit{export}}` is valid with type :math:`{\mathit{xt}}`.
+      * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
 
-   * :math:`{|{{\mathit{mt}}^\ast}|}` must be less than or equal to :math:`1`.
+   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * :math:`{{\mathit{ift}}^\ast}` must be equal to :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{ift}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{igt}}^\ast}` must be equal to :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{igt}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{itt}}^\ast}` must be equal to :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{itt}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
 
-   * :math:`{{\mathit{imt}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+   * :math:`{{\mathit{imt}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
 
 
 :math:`\mathsf{unreachable}`
@@ -9694,16 +9694,16 @@ Blocktype_ok
     - C.TYPES[typeidx] is t_1* -> t_2*.
 
 Instr_ok/nop
-- the instr NOP is valid with the function type [] -> [].
+- the instruction NOP is valid with the function type [] -> [].
 
 Instr_ok/unreachable
-- the instr UNREACHABLE is valid with the function type t_1* -> t_2*.
+- the instruction UNREACHABLE is valid with the function type t_1* -> t_2*.
 
 Instr_ok/drop
-- the instr DROP is valid with the function type [t] -> [].
+- the instruction DROP is valid with the function type [t] -> [].
 
 Instr_ok/select
-- the instr (SELECT() valtype_u0? ?) is valid with the function type [t, t, I32] -> [t] if:
+- the instruction (SELECT() valtype_u0? ?) is valid with the function type [t, t, I32] -> [t] if:
   - Either:
     - valtype_u0? is ?([t]).
   - Or:
@@ -9715,73 +9715,73 @@ Instr_ok/select
       - t' is vectype.
 
 Instr_ok/block
-- the instr (BLOCK bt instr*) is valid with the function type t_1* -> t_2* if:
+- the instruction (BLOCK bt instr*) is valid with the function type t_1* -> t_2* if:
   - the block type bt is valid with the function type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr* is valid with the function type t_1* -> t_2*.
 
 Instr_ok/loop
-- the instr (LOOP bt instr*) is valid with the function type t_1* -> t_2* if:
+- the instruction (LOOP bt instr*) is valid with the function type t_1* -> t_2* if:
   - the block type bt is valid with the function type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_1*], the instruction sequence instr* is valid with the function type t_1* -> t_2*.
 
 Instr_ok/if
-- the instr (IF bt instr_1* ELSE instr_2*) is valid with the function type t_1* :: [I32] -> t_2* if:
+- the instruction (IF bt instr_1* ELSE instr_2*) is valid with the function type t_1* :: [I32] -> t_2* if:
   - the block type bt is valid with the function type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the function type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr_1* is valid with the function type t_1* -> t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr_2* is valid with the function type t_1* -> t_2*.
 
 Instr_ok/br
-- the instr (BR l) is valid with the function type t_1* :: t* -> t_2* if:
+- the instruction (BR l) is valid with the function type t_1* :: t* -> t_2* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_if
-- the instr (BR_IF l) is valid with the function type t* :: [I32] -> t* if:
+- the instruction (BR_IF l) is valid with the function type t* :: [I32] -> t* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
-- the instr (BR_TABLE l* l') is valid with the function type t_1* :: t* -> t_2* if:
+- the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t* -> t_2* if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
-  - |C.LABELS| is greater than l'.
   - For all l in l*,
     - the value type sequence t* matches the result type C.LABELS[l].
+  - |C.LABELS| is greater than l'.
   - the value type sequence t* matches the result type C.LABELS[l'].
 
 Instr_ok/call
-- the instr (CALL x) is valid with the function type t_1* -> t_2* if:
+- the instruction (CALL x) is valid with the function type t_1* -> t_2* if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is t_1* -> t_2*.
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x y) is valid with the function type t_1* :: [I32] -> t_2* if:
+- the instruction (CALL_INDIRECT x y) is valid with the function type t_1* :: [I32] -> t_2* if:
   - |C.TABLES| is greater than x.
-  - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, FUNCREF).
+  - |C.TYPES| is greater than y.
   - C.TYPES[y] is t_1* -> t_2*.
 
 Instr_ok/return
-- the instr RETURN is valid with the function type t_1* :: t* -> t_2* if:
+- the instruction RETURN is valid with the function type t_1* :: t* -> t_2* if:
   - C.RETURN is ?(t*).
 
 Instr_ok/const
-- the instr (nt.CONST c_nt) is valid with the function type [] -> [nt].
+- the instruction (nt.CONST c_nt) is valid with the function type [] -> [nt].
 
 Instr_ok/unop
-- the instr (UNOP nt unop_nt) is valid with the function type [nt] -> [nt].
+- the instruction (UNOP nt unop_nt) is valid with the function type [nt] -> [nt].
 
 Instr_ok/binop
-- the instr (BINOP nt binop_nt) is valid with the function type [nt, nt] -> [nt].
+- the instruction (BINOP nt binop_nt) is valid with the function type [nt, nt] -> [nt].
 
 Instr_ok/testop
-- the instr (TESTOP nt testop_nt) is valid with the function type [nt] -> [I32].
+- the instruction (TESTOP nt testop_nt) is valid with the function type [nt] -> [I32].
 
 Instr_ok/relop
-- the instr (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
+- the instruction (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
     - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
@@ -9789,185 +9789,185 @@ Instr_ok/cvtop
     - cvtop_u0 is cvtop.
 
 Instr_ok/ref.null
-- the instr (REF.NULL rt) is valid with the function type [] -> [rt].
+- the instruction (REF.NULL rt) is valid with the function type [] -> [rt].
 
 Instr_ok/ref.func
-- the instr (REF.FUNC x) is valid with the function type [] -> [FUNCREF] if:
+- the instruction (REF.FUNC x) is valid with the function type [] -> [FUNCREF] if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is ft.
 
 Instr_ok/ref.is_null
-- the instr REF.IS_NULL is valid with the function type [rt] -> [I32].
+- the instruction REF.IS_NULL is valid with the function type [rt] -> [I32].
 
 Instr_ok/vconst
-- the instr (V128.CONST c) is valid with the function type [] -> [V128].
+- the instruction (V128.CONST c) is valid with the function type [] -> [V128].
 
 Instr_ok/vvunop
-- the instr (VVUNOP V128 vvunop) is valid with the function type [V128] -> [V128].
+- the instruction (VVUNOP V128 vvunop) is valid with the function type [V128] -> [V128].
 
 Instr_ok/vvbinop
-- the instr (VVBINOP V128 vvbinop) is valid with the function type [V128, V128] -> [V128].
+- the instruction (VVBINOP V128 vvbinop) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vvternop
-- the instr (VVTERNOP V128 vvternop) is valid with the function type [V128, V128, V128] -> [V128].
+- the instruction (VVTERNOP V128 vvternop) is valid with the function type [V128, V128, V128] -> [V128].
 
 Instr_ok/vvtestop
-- the instr (VVTESTOP V128 vvtestop) is valid with the function type [V128] -> [I32].
+- the instruction (VVTESTOP V128 vvtestop) is valid with the function type [V128] -> [I32].
 
 Instr_ok/vunop
-- the instr (VUNOP sh vunop_sh) is valid with the function type [V128] -> [V128].
+- the instruction (VUNOP sh vunop_sh) is valid with the function type [V128] -> [V128].
 
 Instr_ok/vbinop
-- the instr (VBINOP sh vbinop_sh) is valid with the function type [V128, V128] -> [V128].
+- the instruction (VBINOP sh vbinop_sh) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vtestop
-- the instr (VTESTOP sh vtestop_sh) is valid with the function type [V128] -> [I32].
+- the instruction (VTESTOP sh vtestop_sh) is valid with the function type [V128] -> [I32].
 
 Instr_ok/vrelop
-- the instr (VRELOP sh vrelop_sh) is valid with the function type [V128, V128] -> [V128].
+- the instruction (VRELOP sh vrelop_sh) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vshiftop
-- the instr (VSHIFTOP sh vshiftop_sh) is valid with the function type [V128, I32] -> [V128].
+- the instruction (VSHIFTOP sh vshiftop_sh) is valid with the function type [V128, I32] -> [V128].
 
 Instr_ok/vbitmask
-- the instr (VBITMASK sh) is valid with the function type [V128] -> [I32].
+- the instruction (VBITMASK sh) is valid with the function type [V128] -> [I32].
 
 Instr_ok/vswizzle
-- the instr (VSWIZZLE sh) is valid with the function type [V128, V128] -> [V128].
+- the instruction (VSWIZZLE sh) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vshuffle
-- the instr (VSHUFFLE sh i*) is valid with the function type [V128, V128] -> [V128] if:
+- the instruction (VSHUFFLE sh i*) is valid with the function type [V128, V128] -> [V128] if:
   - For all i in i*,
     - i is less than (2 · $dim(sh)).
 
 Instr_ok/vsplat
-- the instr (VSPLAT sh) is valid with the function type [$shunpack(sh)] -> [V128].
+- the instruction (VSPLAT sh) is valid with the function type [$shunpack(sh)] -> [V128].
 
 Instr_ok/vextract_lane
-- the instr (VEXTRACT_LANE sh sx? i) is valid with the function type [V128] -> [$shunpack(sh)] if:
+- the instruction (VEXTRACT_LANE sh sx? i) is valid with the function type [V128] -> [$shunpack(sh)] if:
   - i is less than $dim(sh).
 
 Instr_ok/vreplace_lane
-- the instr (VREPLACE_LANE sh i) is valid with the function type [V128, $shunpack(sh)] -> [V128] if:
+- the instruction (VREPLACE_LANE sh i) is valid with the function type [V128, $shunpack(sh)] -> [V128] if:
   - i is less than $dim(sh).
 
 Instr_ok/vextunop
-- the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type [V128] -> [V128].
+- the instruction (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type [V128] -> [V128].
 
 Instr_ok/vextbinop
-- the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the function type [V128, V128] -> [V128].
+- the instruction (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vnarrow
-- the instr (VNARROW sh_1 sh_2 sx) is valid with the function type [V128, V128] -> [V128].
+- the instruction (VNARROW sh_1 sh_2 sx) is valid with the function type [V128, V128] -> [V128].
 
 Instr_ok/vcvtop
-- the instr (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with the function type [V128] -> [V128].
+- the instruction (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with the function type [V128] -> [V128].
 
 Instr_ok/local.get
-- the instr (LOCAL.GET x) is valid with the function type [] -> [t] if:
+- the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.set
-- the instr (LOCAL.SET x) is valid with the function type [t] -> [] if:
+- the instruction (LOCAL.SET x) is valid with the function type [t] -> [] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/local.tee
-- the instr (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
+- the instruction (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
 Instr_ok/global.get
-- the instr (GLOBAL.GET x) is valid with the function type [] -> [t] if:
+- the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
 Instr_ok/global.set
-- the instr (GLOBAL.SET x) is valid with the function type [t] -> [] if:
+- the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/table.get
-- the instr (TABLE.GET x) is valid with the function type [I32] -> [rt] if:
+- the instruction (TABLE.GET x) is valid with the function type [I32] -> [rt] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.set
-- the instr (TABLE.SET x) is valid with the function type [I32, rt] -> [] if:
+- the instruction (TABLE.SET x) is valid with the function type [I32, rt] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.size
-- the instr (TABLE.SIZE x) is valid with the function type [] -> [I32] if:
+- the instruction (TABLE.SIZE x) is valid with the function type [] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.grow
-- the instr (TABLE.GROW x) is valid with the function type [rt, I32] -> [I32] if:
+- the instruction (TABLE.GROW x) is valid with the function type [rt, I32] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.fill
-- the instr (TABLE.FILL x) is valid with the function type [I32, rt, I32] -> [] if:
+- the instruction (TABLE.FILL x) is valid with the function type [I32, rt, I32] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.copy
-- the instr (TABLE.COPY x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
+- the instruction (TABLE.COPY x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
-  - |C.TABLES| is greater than x_2.
   - C.TABLES[x_1] is (lim_1, rt).
+  - |C.TABLES| is greater than x_2.
   - C.TABLES[x_2] is (lim_2, rt).
 
 Instr_ok/table.init
-- the instr (TABLE.INIT x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
+- the instruction (TABLE.INIT x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
-  - |C.ELEMS| is greater than x_2.
   - C.TABLES[x_1] is (lim, rt).
+  - |C.ELEMS| is greater than x_2.
   - C.ELEMS[x_2] is rt.
 
 Instr_ok/elem.drop
-- the instr (ELEM.DROP x) is valid with the function type [] -> [] if:
+- the instruction (ELEM.DROP x) is valid with the function type [] -> [] if:
   - |C.ELEMS| is greater than x.
   - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
-- the instr MEMORY.SIZE is valid with the function type [] -> [I32] if:
+- the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
-- the instr MEMORY.GROW is valid with the function type [I32] -> [I32] if:
+- the instruction MEMORY.GROW is valid with the function type [I32] -> [I32] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.fill
-- the instr MEMORY.FILL is valid with the function type [I32, I32, I32] -> [] if:
+- the instruction MEMORY.FILL is valid with the function type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.copy
-- the instr MEMORY.COPY is valid with the function type [I32, I32, I32] -> [] if:
+- the instruction MEMORY.COPY is valid with the function type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
 Instr_ok/memory.init
-- the instr (MEMORY.INIT x) is valid with the function type [I32, I32, I32] -> [] if:
+- the instruction (MEMORY.INIT x) is valid with the function type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than 0.
-  - |C.DATAS| is greater than x.
   - C.MEMS[0] is mt.
+  - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
 Instr_ok/data.drop
-- the instr (DATA.DROP x) is valid with the function type [] -> [] if:
+- the instruction (DATA.DROP x) is valid with the function type [] -> [] if:
   - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
-  - |C.MEMS| is greater than 0.
+- the instruction (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
   - ((n? is ?()) is equivalent to (sx? is ?())).
+  - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
@@ -9977,7 +9977,7 @@ Instr_ok/load
     - nt is Inn.
 
 Instr_ok/store
-- the instr (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
+- the instruction (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
@@ -9988,7 +9988,7 @@ Instr_ok/store
     - nt is Inn.
 
 Instr_ok/vload
-- the instr (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type [I32] -> [V128] if:
+- the instruction (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type [I32] -> [V128] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - Either:
@@ -10002,27 +10002,27 @@ Instr_ok/vload
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
-- the instr (VLOAD_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [V128] if:
+- the instruction (VLOAD_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [V128] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
 Instr_ok/vstore
-- the instr (VSTORE V128 memarg) is valid with the function type [I32, V128] -> [] if:
+- the instruction (VSTORE V128 memarg) is valid with the function type [I32, V128] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
 
 Instr_ok/vstore_lane
-- the instr (VSTORE_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [] if:
+- the instruction (VSTORE_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [] if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
 Instrs_ok
-- the instr sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
+- the instruction sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
   - Either:
     - instr_u0* is [].
     - valtype_u1* is [].
@@ -10031,27 +10031,27 @@ Instrs_ok
     - instr_u0* is [instr_1] :: instr_2*.
     - valtype_u1* is t_1*.
     - valtype_u2* is t_3*.
-    - the instr instr_1 is valid with the function type t_1* -> t_2*.
-    - the instr sequence instr_2* is valid with the function type t_2* -> t_3*.
+    - the instruction instr_1 is valid with the function type t_1* -> t_2*.
+    - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
     - instr_u0* is instr*.
     - valtype_u1* is t'_1*.
     - valtype_u2* is t'_2*.
-    - the instr sequence instr* is valid with the function type t_1* -> t_2*.
+    - the instruction sequence instr* is valid with the function type t_1* -> t_2*.
     - the value type sequence t'_1* matches the value type sequence t_1*.
     - the value type sequence t_2* matches the value type sequence t'_2*.
   - Or:
     - instr_u0* is instr*.
     - valtype_u1* is t* :: t_1*.
     - valtype_u2* is t* :: t_2*.
-    - the instr sequence instr* is valid with the function type t_1* -> t_2*.
+    - the instruction sequence instr* is valid with the function type t_1* -> t_2*.
 
 Expr_ok
 - the expression instr* is valid with the value type sequence t* if:
-  - the instr sequence instr* is valid with the function type [] -> t*.
+  - the instruction sequence instr* is valid with the function type [] -> t*.
 
 Instr_const
-- the instr instr_u0 is constant if:
+- the instruction instr_u0 is constant if:
   - Either:
     - instr_u0 is (nt.CONST c).
   - Or:
@@ -10068,7 +10068,7 @@ Instr_const
 Expr_const
 - the expression instr* is constant if:
   - For all instr in instr*,
-    - the instr instr is constant.
+    - the instruction instr is constant.
 
 Type_ok
 - the type (TYPE ft) is valid with the function type ft if:
@@ -10169,31 +10169,31 @@ Export_ok
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid if:
   - |type*| is |ft'*|.
-  - |ixt*| is |import*|.
-  - |gt*| is |global*|.
-  - |tt*| is |table*|.
-  - |mt*| is |mem*|.
-  - |rt*| is |elem*|.
-  - |func*| is |ft*|.
-  - |xt*| is |export*|.
   - For all ft' in ft'* and type in type*,
     - the type type is valid with the function type ft'.
+  - |ixt*| is |import*|.
   - For all import in import* and ixt in ixt*,
     - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
+  - |gt*| is |global*|.
   - For all global in global* and gt in gt*,
     - Under the context C', the global global is valid with the global type gt.
+  - |tt*| is |table*|.
   - For all table in table* and tt in tt*,
     - Under the context C', the table table is valid with the table type tt.
+  - |mt*| is |mem*|.
   - For all mem in mem* and mt in mt*,
     - Under the context C', the memory mem is valid with the memory type mt.
+  - |rt*| is |elem*|.
   - For all elem in elem* and rt in rt*,
     - Under the context C', the table segment elem is valid with the reference type rt.
   - For all data in data*,
     - Under the context C', the memory segment data is valid.
+  - |func*| is |ft*|.
   - For all ft in ft* and func in func*,
     - the function func is valid with the function type ft.
   - If start is defined,
     - the start function start is valid.
+  - |xt*| is |export*|.
   - For all export in export* and xt in xt*,
     - the export export is valid with the external type xt.
   - |mt*| is less than or equal to 1.
@@ -12333,1709 +12333,1709 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 
-* :math:`{\mathit{numtype}}` is valid.
+* The number type :math:`{\mathit{numtype}}` is valid.
 
 
-* :math:`{\mathit{vectype}}` is valid.
+* The vector type :math:`{\mathit{vectype}}` is valid.
 
 
-* :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
-
-
-   * Either:
-
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{absheaptype}}`.
-
-   * Or:
-
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{typeidx}}`.
-
-      * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
-
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` must be equal to :math:`{\mathit{dt}}`.   * Or:
-
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{rec}~i)`.
-
-      * :math:`{|C{.}\mathsf{recs}|}` must be greater than :math:`i`.
-
-      * :math:`C{.}\mathsf{recs}{}[i]` must be equal to :math:`{\mathit{st}}`.
-
-
-* :math:`(\mathsf{ref}~(\mathsf{null}~{()^?}~{}^?)~{\mathit{heaptype}})` is valid if:
-
-
-   * :math:`{\mathit{heaptype}}` is valid.
-
-
-* :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+* The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
    * Either:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{numtype}}`.
-
-      * :math:`{\mathit{numtype}}` is valid.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{absheaptype}}`.
 
    * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{vectype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathit{vectype}}` is valid.   * Or:
+      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{reftype}}`.
+      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.   * Or:
 
-      * :math:`{\mathit{reftype}}` is valid.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{bot}`.
+      * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
+
+      * :math:`C{.}\mathsf{recs}{}[i]` is :math:`{\mathit{st}}`.
 
 
-* :math:`{t^\ast}` is valid if:
+* The reference type :math:`(\mathsf{ref}~(\mathsf{null}~{()^?}~{}^?)~{\mathit{heaptype}})` is valid if:
+
+
+   * The heap type :math:`{\mathit{heaptype}}` is valid.
+
+
+* The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+
+
+   * Either:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{numtype}}`.
+
+      * The number type :math:`{\mathit{numtype}}` is valid.
+
+   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}`.
+
+      * The vector type :math:`{\mathit{vectype}}` is valid.   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}`.
+
+      * The reference type :math:`{\mathit{reftype}}` is valid.   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+
+
+* The value type sequence :math:`{t^\ast}` is valid if:
 
 
    * For all :math:`t` in :math:`{t^\ast}`,
 
-      * :math:`t` is valid.
+      * The value type :math:`t` is valid.
 
 
-* :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
+* The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
 
 
-   * :math:`{|{\mathit{x*}}|}` must be equal to :math:`{|{\mathit{lct*}}|}`.
+   * The value type sequence :math:`{t_1^\ast}` is valid.
+
+   * The value type sequence :math:`{t_2^\ast}` is valid.
+
+   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
-
-   * :math:`{t_1^\ast}` is valid.
-
-   * :math:`{t_2^\ast}` is valid.
+      * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`{{\mathit{lt}}}`.
+      * :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
 
 
-* :math:`{\mathit{packtype}}` is valid.
+* The packed type :math:`{\mathit{packtype}}` is valid.
 
 
-* :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+* The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
    * Either:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{valtype}}`.
+      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{valtype}}`.
 
-      * :math:`{\mathit{valtype}}` is valid.
+      * The value type :math:`{\mathit{valtype}}` is valid.
 
    * Or:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{packtype}}`.
+      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
 
-      * :math:`{\mathit{packtype}}` is valid.
-
-
-* :math:`((\mathsf{mut}~{()^?}~{}^?), {\mathit{storagetype}})` is valid if:
+      * The packed type :math:`{\mathit{packtype}}` is valid.
 
 
-   * :math:`{\mathit{storagetype}}` is valid.
+* The field type :math:`((\mathsf{mut}~{()^?}~{}^?), {\mathit{storagetype}})` is valid if:
 
 
-* :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid if:
+   * The storage type :math:`{\mathit{storagetype}}` is valid.
 
 
-   * :math:`{t_1^\ast}` is valid.
-
-   * :math:`{t_2^\ast}` is valid.
+* The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid if:
 
 
-* :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+   * The value type sequence :math:`{t_1^\ast}` is valid.
+
+   * The value type sequence :math:`{t_2^\ast}` is valid.
+
+
+* The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
    * Either:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
       * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`,
 
-         * :math:`{\mathit{fieldtype}}` is valid.
+         * The field type :math:`{\mathit{fieldtype}}` is valid.
 
    * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
-      * :math:`{\mathit{fieldtype}}` is valid.   * Or:
+      * The field type :math:`{\mathit{fieldtype}}` is valid.   * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * :math:`{\mathit{functype}}` is valid.
-
-
-* :math:`{\mathit{packtype}}` matches :math:`{\mathit{packtype}}`.
+      * The function type :math:`{\mathit{functype}}` is valid.
 
 
-* :math:`{\mathit{numtype}}` matches :math:`{\mathit{numtype}}`.
+* The packed type :math:`{\mathit{packtype}}` matches the packed type :math:`{\mathit{packtype}}`.
 
 
-* :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2` if:
+* The number type :math:`{\mathit{numtype}}` matches the number type :math:`{\mathit{numtype}}`.
+
+
+* The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
 
 
    * Either:
 
-      * :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` must be equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+      * :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
    * Or:
 
-      * :math:`{|{{\mathit{typeuse}}^\ast}|}` must be greater than :math:`i`.
+      * :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
-      * :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` must be equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+      * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
 
-      * :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches :math:`{\mathit{deftype}}_2`.
+      * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the heap type :math:`{\mathit{deftype}}_2`.
 
 
-* :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+* The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
    * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{heaptype}}_1`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}_1`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}_2`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}_2`.
 
-      * :math:`{\mathit{heaptype}'}` is valid.
+      * The heap type :math:`{\mathit{heaptype}'}` is valid.
 
-      * :math:`{\mathit{heaptype}}_1` matches :math:`{\mathit{heaptype}'}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
 
-      * :math:`{\mathit{heaptype}'}` matches :math:`{\mathit{heaptype}}_2`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{eq}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{any}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{any}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{i{\scriptstyle 31}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 31}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{eq}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{struct}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{struct}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{eq}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{array}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{array}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{eq}`.   * Or:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{deftype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{struct}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.   * Or:
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{deftype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{array}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.   * Or:
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{deftype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`\mathsf{func}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{func}`.
 
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.   * Or:
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{deftype}}_1`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}_1`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{deftype}}_2`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{deftype}}_2`.
 
-      * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.   * Or:
+      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{typeidx}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
+      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches :math:`{\mathit{heaptype}}`.   * Or:
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{typeidx}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
+      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathit{heaptype}}` matches :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{rec}~i)`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
-      * :math:`{|C{.}\mathsf{recs}|}` must be greater than :math:`i`.
+      * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
 
-      * :math:`{|{{\mathit{typeuse}}^\ast}|}` must be greater than :math:`j`.
+      * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
 
-      * :math:`C{.}\mathsf{recs}{}[i]` must be equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.   * Or:
+      * :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{none}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{none}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}` matches :math:`\mathsf{any}`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{nofunc}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nofunc}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}` matches :math:`\mathsf{func}`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{noextern}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{noextern}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-      * :math:`{\mathit{heaptype}}` matches :math:`\mathsf{extern}`.   * Or:
+      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.   * Or:
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{bot}`.
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
-      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{heaptype}}`.
-
-
-* :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)~{\mathit{ht}}_1)` matches :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?)~{\mathit{ht}}_2)` if:
+      * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
 
-   * :math:`{\mathit{ht}}_1` matches :math:`{\mathit{ht}}_2`.
+* The reference type :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)~{\mathit{ht}}_1)` matches the reference type :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?)~{\mathit{ht}}_2)` if:
+
+
+   * The heap type :math:`{\mathit{ht}}_1` matches the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
-
-   * Or:
-
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`{()^?}`.
-
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`()`.
-
-
-* :math:`{\mathit{vectype}}` matches :math:`{\mathit{vectype}}`.
-
-
-* :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
-
-
-   * Either:
-
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{numtype}}_1`.
-
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{numtype}}_2`.
-
-      * :math:`{\mathit{numtype}}_1` matches :math:`{\mathit{numtype}}_2`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{vectype}}_1`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`{()^?}`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{vectype}}_2`.
-
-      * :math:`{\mathit{vectype}}_1` matches :math:`{\mathit{vectype}}_2`.   * Or:
-
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{reftype}}_1`.
-
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{reftype}}_2`.
-
-      * :math:`{\mathit{reftype}}_1` matches :math:`{\mathit{reftype}}_2`.   * Or:
-
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{bot}`.
-
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{valtype}}`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
 
 
-* :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+* The vector type :math:`{\mathit{vectype}}` matches the vector type :math:`{\mathit{vectype}}`.
+
+
+* The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{valtype}}_1`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{numtype}}_1`.
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{valtype}}_2`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{numtype}}_2`.
 
-      * :math:`{\mathit{valtype}}_1` matches :math:`{\mathit{valtype}}_2`.
+      * The number type :math:`{\mathit{numtype}}_1` matches the number type :math:`{\mathit{numtype}}_2`.
 
    * Or:
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{packtype}}_1`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{vectype}}_1`.
 
-      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`{\mathit{packtype}}_2`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{vectype}}_2`.
 
-      * :math:`{\mathit{packtype}}_1` matches :math:`{\mathit{packtype}}_2`.
+      * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}_1`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{reftype}}_2`.
+
+      * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{valtype}}`.
 
 
-* :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{zt}}_1)` matches :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{zt}}_2)` if:
+* The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
-
-   * :math:`{\mathit{zt}}_1` matches :math:`{\mathit{zt}}_2`.
 
    * Either:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{valtype}}_1`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{valtype}}_2`.
+
+      * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
 
    * Or:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`()`.
+      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}_1`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`()`.
+      * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{packtype}}_2`.
 
-      * :math:`{\mathit{zt}}_2` matches :math:`{\mathit{zt}}_1`.
-
-
-* :math:`{t_1^\ast}` matches :math:`{t_2^\ast}` if:
+      * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
 
 
-   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` must be equal to :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
+* The field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{zt}}_1)` matches the field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{zt}}_2)` if:
+
+
+   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
+
+   * Either:
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
+
+   * Or:
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`.
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
+
+      * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+
+
+* The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
+
+
+   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
 
-      * :math:`t_1` matches :math:`t_2`.
+      * The value type :math:`t_1` matches the value type :math:`t_2`.
 
 
-* :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` matches :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
+* The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` matches the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
 
 
-   * :math:`{t_{21}^\ast}` matches :math:`{t_{11}^\ast}`.
+   * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
 
-   * :math:`{t_{12}^\ast}` matches :math:`{t_{22}^\ast}`.
+   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
 
 
-* :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+* The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
-      * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` must be equal to :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
+      * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
 
       * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`,
 
-         * :math:`{\mathit{yt}}_1` matches :math:`{\mathit{yt}}_2`.
+         * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
 
    * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
 
-      * :math:`{\mathit{yt}}_1` matches :math:`{\mathit{yt}}_2`.   * Or:
+      * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.   * Or:
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * :math:`{\mathit{ft}}_1` matches :math:`{\mathit{ft}}_2`.
-
-
-* :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit{comptype}})` is valid with type :math:`({\mathsf{ok}}{x_0})` if:
+      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
 
-   * :math:`{|{\mathit{x*}}|}` must be equal to :math:`{|{\mathit{comptype'*}}|}`.
+* The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit{comptype}})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x_0})` if:
 
-   * :math:`{|{\mathit{x'**}}|}` must be equal to :math:`{|{\mathit{comptype'*}}|}`.
+
+   * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
 
    * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+      * :math:`x` is less than :math:`x_0`.
 
-   * :math:`{|{x^\ast}|}` must be less than or equal to :math:`1`.
+   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
+
+   * :math:`{|{\mathit{x'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`x` must be less than :math:`x_0`.
+      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`,
 
-      * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
+      * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
-   * :math:`{\mathit{comptype}}` is valid.
+   * The composite type :math:`{\mathit{comptype}}` is valid.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
 
-      * :math:`{\mathit{comptype}}` matches :math:`{\mathit{comptype}'}`.
+      * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
-* :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with type :math:`({\mathsf{ok}}{(x, i)})` if:
+* The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
-   * :math:`{|{\mathit{typeuse*}}|}` must be equal to :math:`{|{\mathit{comptype'*}}|}`.
-
-   * :math:`{|{\mathit{typeuse'**}}|}` must be equal to :math:`{|{\mathit{comptype'*}}|}`.
-
-   * :math:`{|{{\mathit{typeuse}}^\ast}|}` must be less than or equal to :math:`1`.
+   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`,
 
-      * :math:`{\mathit{typeuse}} \prec x, i` must be equal to true.
+      * :math:`{\mathit{typeuse}} \prec x, i` is true.
+
+   * :math:`{|{\mathit{typeuse*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
+
+   * :math:`{|{\mathit{typeuse'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`,
 
-      * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` must be equal to :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
+      * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
-   * :math:`{\mathit{comptype}}` is valid.
+   * The composite type :math:`{\mathit{comptype}}` is valid.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
 
-      * :math:`{\mathit{comptype}}` matches :math:`{\mathit{comptype}'}`.
+      * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
-* :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with type :math:`({\mathsf{ok}}{(x, i)})` if:
-
-
-   * Either:
-
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
-
-   * Or:
-
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
-
-      * :math:`{\mathit{subtype}}_1` is valid with type :math:`({\mathsf{ok}}{(x, i)})`.
-
-      * :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with type :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-* :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with type :math:`({\mathsf{ok}}{x})` if:
+* The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * :math:`{\mathit{subtype}}_1` is valid with type :math:`({\mathsf{ok}}{x})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with type :math:`({\mathsf{ok}}{x + 1})`.   * Or:
-
-      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{subtype}}^\ast}`.
-
-      * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with type :math:`({\mathsf{ok}}{(x, 0)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
-* :math:`({\mathit{rectype}} {.} i)` is valid if:
-
-
-   * :math:`{\mathit{rectype}}` is valid with type :math:`({\mathsf{ok}}{x})`.
-
-   * :math:`{\mathit{rectype}}` must be equal to :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
-
-   * :math:`i` must be less than :math:`n`.
-
-
-* :math:`(n, m)` is valid with type :math:`k` if:
-
-
-   * :math:`n` must be less than or equal to :math:`m`.
-
-   * :math:`m` must be less than or equal to :math:`k`.
-
-
-* :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid if:
-
-
-   * :math:`t` is valid.
-
-
-* :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
-
-
-   * :math:`{\mathit{limits}}` is valid with type :math:`{2^{32}} - 1`.
-
-   * :math:`{\mathit{reftype}}` is valid.
-
-
-* :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
-
-
-   * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
-
-
-* :math:`{\mathit{deftype}}` is valid if:
-
-
-   * :math:`{\mathit{deftype}}` is valid.
-
-   * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
-
-
-* :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+* The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})` if:
 
 
    * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
-
-      * :math:`{\mathit{deftype}}` is valid.
-
-      * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * :math:`{\mathit{globaltype}}` is valid.   * Or:
+      * The sub type :math:`{\mathit{subtype}}_1` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x + 1})`.   * Or:
 
-      * :math:`{\mathit{tabletype}}` is valid.   * Or:
+      * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{subtype}}^\ast}`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
-
-      * :math:`{\mathit{memtype}}` is valid.   * Or:
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
-
-      * :math:`{\mathit{tagtype}}` is valid.
+      * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
-* :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` matches :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
+* The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
-   * :math:`{|{\mathit{x*}}|}` must be equal to :math:`{|{\mathit{t*}}|}`.
+   * The recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
+
+   * :math:`{\mathit{rectype}}` is :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
+
+   * :math:`i` is less than :math:`n`.
+
+
+* The limits :math:`(n, m)` is valid with the nat :math:`k` if:
+
+
+   * :math:`n` is less than or equal to :math:`m`.
+
+   * :math:`m` is less than or equal to :math:`k`.
+
+
+* The global type :math:`((\mathsf{mut}~{()^?}~{}^?), t)` is valid if:
+
+
+   * The value type :math:`t` is valid.
+
+
+* The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
+
+
+   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{32}} - 1`.
+
+   * The reference type :math:`{\mathit{reftype}}` is valid.
+
+
+* The memory type :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
+
+
+   * The limits :math:`{\mathit{limits}}` is valid with the nat :math:`{2^{16}}`.
+
+
+* The memory type :math:`{\mathit{deftype}}` is valid if:
+
+
+   * The defined type :math:`{\mathit{deftype}}` is valid.
+
+   * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
+* The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+
+
+   * Either:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{deftype}})`.
+
+      * The defined type :math:`{\mathit{deftype}}` is valid.
+
+      * :math:`{\mathrm{expand}}({\mathit{deftype}})` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+
+      * The global type :math:`{\mathit{globaltype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+
+      * The table type :math:`{\mathit{tabletype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+
+      * The memory type :math:`{\mathit{memtype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+
+      * The memory type :math:`{\mathit{tagtype}}` is valid.
+
+
+* The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` matches the instruction type :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
+
+
+   * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
+
+   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
+
+   * :math:`{x^\ast}` is :math:`{x_2^\ast} \setminus {x_1^\ast}`.
+
+   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{t*}}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
-
-   * :math:`{t_{21}^\ast}` matches :math:`{t_{11}^\ast}`.
-
-   * :math:`{t_{12}^\ast}` matches :math:`{t_{22}^\ast}`.
-
-   * :math:`{x^\ast}` must be equal to :math:`{x_2^\ast} \setminus {x_1^\ast}`.
+      * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
    * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`,
 
-      * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`(\mathsf{set}, t)`.
+      * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
 
 
-* :math:`(n_1, m_1)` matches :math:`(n_2, m_2)` if:
+* The limits :math:`(n_1, m_1)` matches the limits :math:`(n_2, m_2)` if:
 
 
-   * :math:`n_1` must be greater than or equal to :math:`n_2`.
+   * :math:`n_1` is greater than or equal to :math:`n_2`.
 
-   * :math:`m_1` must be less than or equal to :math:`m_2`.
-
-
-* :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{valtype}}_1)` matches :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{valtype}}_2)` if:
+   * :math:`m_1` is less than or equal to :math:`m_2`.
 
 
-   * :math:`{\mathit{valtype}}_1` matches :math:`{\mathit{valtype}}_2`.
+* The global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?), {\mathit{valtype}}_1)` matches the global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?), {\mathit{valtype}}_2)` if:
+
+
+   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`()`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`()`.
 
-      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`()`.
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
 
-      * :math:`{\mathit{valtype}}_2` matches :math:`{\mathit{valtype}}_1`.
-
-
-* :math:`({\mathit{limits}}_1, {\mathit{reftype}}_1)` matches :math:`({\mathit{limits}}_2, {\mathit{reftype}}_2)` if:
+      * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
 
 
-   * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
-
-   * :math:`{\mathit{reftype}}_1` matches :math:`{\mathit{reftype}}_2`.
-
-   * :math:`{\mathit{reftype}}_2` matches :math:`{\mathit{reftype}}_1`.
+* The table type :math:`({\mathit{limits}}_1, {\mathit{reftype}}_1)` matches the table type :math:`({\mathit{limits}}_2, {\mathit{reftype}}_2)` if:
 
 
-* :math:`{\mathit{limits}}_1~\mathsf{page}` matches :math:`{\mathit{limits}}_2~\mathsf{page}` if:
+   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
+
+   * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
+
+   * The reference type :math:`{\mathit{reftype}}_2` matches the reference type :math:`{\mathit{reftype}}_1`.
 
 
-   * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
+* The memory type :math:`{\mathit{limits}}_1~\mathsf{page}` matches the memory type :math:`{\mathit{limits}}_2~\mathsf{page}` if:
 
 
-* :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2` if:
+   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
 
 
-   * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.
-
-   * :math:`{\mathit{deftype}}_2` matches :math:`{\mathit{deftype}}_1`.
+* The memory type :math:`{\mathit{deftype}}_1` matches the memory type :math:`{\mathit{deftype}}_2` if:
 
 
-* :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+   * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+
+   * The defined type :math:`{\mathit{deftype}}_2` matches the defined type :math:`{\mathit{deftype}}_1`.
+
+
+* The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
-      * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.
+      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
 
    * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
-      * :math:`{\mathit{globaltype}}_1` matches :math:`{\mathit{globaltype}}_2`.   * Or:
+      * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.   * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
-      * :math:`{\mathit{tabletype}}_1` matches :math:`{\mathit{tabletype}}_2`.   * Or:
+      * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.   * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
-      * :math:`{\mathit{memtype}}_1` matches :math:`{\mathit{memtype}}_2`.   * Or:
+      * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.   * Or:
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
-      * :math:`{\mathit{tagtype}}_1` matches :math:`{\mathit{tagtype}}_2`.
+      * The memory type :math:`{\mathit{tagtype}}_1` matches the memory type :math:`{\mathit{tagtype}}_2`.
 
 
-* :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+* The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the instruction type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{{\mathit{valtype}}^?}`.
+      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{{\mathit{valtype}}^?}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{{\mathit{valtype}}^?}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
 
       * If :math:`{\mathit{valtype}}` is defined,
 
-         * :math:`{\mathit{valtype}}` is valid.
+         * The value type :math:`{\mathit{valtype}}` is valid.
 
    * Or:
 
-      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{typeidx}}`.
+      * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` must be equal to :math:`{t_2^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
 
-      * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
+      * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
-* :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+* The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+
+
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
    * Either:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch}~x~l)`.
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch}~x~l)`.
 
-      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * Or:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_ref}~x~l)`.
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_ref}~x~l)`.
 
-      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all}~l)`.
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all}~l)`.
 
-      * :math:`\epsilon` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+      * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
 
-      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * :math:`(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
-
-
-* :math:`\mathsf{nop}` is valid with type :math:`\epsilon~\rightarrow~\epsilon`.
+      * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
-* :math:`\mathsf{unreachable}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`\mathsf{nop}` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+* The instruction :math:`\mathsf{unreachable}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`\mathsf{drop}` is valid with type :math:`t~\rightarrow~\epsilon` if:
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-   * :math:`t` is valid.
+* The instruction :math:`\mathsf{drop}` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-* :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+   * The value type :math:`t` is valid.
 
 
-   * :math:`t` is valid.
+* The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+
+
+   * The value type :math:`t` is valid.
 
    * Either:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`t`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
 
    * Or:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`t` matches :math:`{t'}`.
+      * The value type :math:`t` matches the value type :math:`{t'}`.
 
       * Either:
 
-         * :math:`{t'}` must be equal to :math:`{\mathit{numtype}}`.
+         * :math:`{t'}` is :math:`{\mathit{numtype}}`.
 
       * Or:
 
-         * :math:`{t'}` must be equal to :math:`{\mathit{vectype}}`.
+         * :math:`{t'}` is :math:`{\mathit{vectype}}`.
 
 
-* :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+* The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
-
-
-* :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+* The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_1^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
-
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
+* The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{br}~l)` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
-
-   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+* The instruction :math:`(\mathsf{br}~l)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-* :math:`(\mathsf{br\_if}~l)` is valid with type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
+* The instruction :math:`(\mathsf{br\_if}~l)` is valid with the instruction type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-* :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+
+
+* The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
-
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`{l'}`.
+      * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
    * For all :math:`l` in :math:`{l^\ast}`,
 
-      * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
-   * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
-   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
-* :math:`(\mathsf{br\_on\_null}~l)` is valid with type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
+* The instruction :math:`(\mathsf{br\_on\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}`.
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`{\mathit{ht}}` is valid.
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
+   * The heap type :math:`{\mathit{ht}}` is valid.
 
-* :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
+* The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
-* :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` if:
 
+* The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` if:
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}~{\mathit{rt}}`.
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`{\mathit{rt}}_1` is valid.
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
 
-   * :math:`{\mathit{rt}}_2` is valid.
+   * The reference type :math:`{\mathit{rt}}_1` is valid.
 
-   * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` is valid.
 
-   * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}`.
+   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
+   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
 
-* :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
+* The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
-   * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
 
-   * :math:`C{.}\mathsf{labels}{}[l]` must be equal to :math:`{t^\ast}~{\mathit{rt}}`.
+   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-   * :math:`{\mathit{rt}}_1` is valid.
+   * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
 
-   * :math:`{\mathit{rt}}_2` is valid.
+   * The reference type :math:`{\mathit{rt}}_1` is valid.
 
-   * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` is valid.
 
-   * :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches :math:`{\mathit{rt}}`.
+   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
+   * The reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
 
-* :math:`(\mathsf{call}~x)` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-* :math:`(\mathsf{call\_ref}~x)` is valid with type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`y`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
+   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-* :math:`\mathsf{return}` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`\mathsf{return}` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`C{.}\mathsf{return}` must be equal to :math:`{t^\ast}`.
 
-   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * :math:`C{.}\mathsf{return}` is :math:`{t^\ast}`.
 
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
-* :math:`(\mathsf{return\_call}~x)` is valid with type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
+* The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{return}` must be equal to :math:`{{t'}_2^\ast}`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
+   * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
-   * :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
+   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
 
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
-* :math:`(\mathsf{return\_call\_ref}~x)` is valid with type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
+* The instruction :math:`(\mathsf{return\_call\_ref}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{return}` must be equal to :math:`{{t'}_2^\ast}`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
+   * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
-   * :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
+   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
 
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
-* :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with type :math:`{t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_4^\ast}` if:
 
+* The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_4^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`y`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
-   * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
+   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{return}` must be equal to :math:`{{t'}_2^\ast}`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[y])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
+   * :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
-   * :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
+   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
 
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
 
-* :math:`(\mathsf{throw}~x)` is valid with type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`(\mathsf{throw}~x)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
-* :math:`\mathsf{throw\_ref}` is valid with type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`\mathsf{throw\_ref}` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
-* :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
+* The instruction :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
-   * :math:`{\mathit{bt}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
    * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
 
-      * :math:`{\mathit{catch}}` is valid.
+      * The catch clause :math:`{\mathit{catch}}` is valid.
 
 
-* :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
+* The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the instruction type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+* The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the instruction type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
-* :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})` if:
+* The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})` if:
 
 
-   * :math:`{\mathit{ht}}` is valid.
+   * The heap type :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`(\mathsf{ref{.}func}~x)` is valid with type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
+* The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`{|C{.}\mathsf{refs}|}` must be greater than :math:`0`.
+   * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
 
-   * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{dt}}`.
+   * :math:`{|C{.}\mathsf{refs}|}` is greater than :math:`0`.
 
    * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
 
-* :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
+* The instruction :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
 
 
-* :math:`\mathsf{ref{.}is\_null}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{\mathit{ht}}` is valid.
+   * The heap type :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`\mathsf{ref{.}as\_non\_null}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~{\mathit{ht}})` if:
+* The instruction :math:`\mathsf{ref{.}as\_non\_null}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
-   * :math:`{\mathit{ht}}` is valid.
+   * The heap type :math:`{\mathit{ht}}` is valid.
 
 
-* :math:`\mathsf{ref{.}eq}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`\mathsf{ref{.}eq}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with type :math:`{\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with the instruction type :math:`{\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{\mathit{rt}}` is valid.
+   * The reference type :math:`{\mathit{rt}}` is valid.
 
-   * :math:`{\mathit{rt}'}` is valid.
+   * The reference type :math:`{\mathit{rt}'}` is valid.
 
-   * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
-
-
-* :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with type :math:`{\mathit{rt}'}~\rightarrow~{\mathit{rt}}` if:
+   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
 
-   * :math:`{\mathit{rt}}` is valid.
-
-   * :math:`{\mathit{rt}'}` is valid.
-
-   * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
+* The instruction :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with the instruction type :math:`{\mathit{rt}'}~\rightarrow~{\mathit{rt}}` if:
 
 
-* :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+   * The reference type :math:`{\mathit{rt}}` is valid.
+
+   * The reference type :math:`{\mathit{rt}'}` is valid.
+
+   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
 
-* :math:`(\mathsf{struct{.}new}~x)` is valid with type :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
+* The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{|{\mathit{zt*}}|}` must be equal to :math:`{|{\mathit{mut*}}|}`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+* The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction type :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-* :math:`(\mathsf{struct{.}new\_default}~x)` is valid with type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{mut*}}|}`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+* The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
-   * :math:`{|{\mathit{zt*}}|}` must be equal to :math:`{|{\mathit{mut*}}|}`.
 
-   * :math:`{|{\mathit{zt*}}|}` must be equal to :math:`{|{\mathit{val*}}|}`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{mut*}}|}`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+
+   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
 
    * For all :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}` and :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`,
 
-      * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` must be equal to :math:`{\mathit{val}}`.
+      * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
 
-* :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
+* The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{|{{\mathit{yt}}^\ast}|}` must be greater than :math:`i`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-   * :math:`{{\mathit{yt}}^\ast}{}[i]` must be equal to :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
+   * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
 
-   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` is equivalent to :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
-
-
-* :math:`(\mathsf{struct{.}set}~x~i)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
+   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{|{{\mathit{yt}}^\ast}|}` must be greater than :math:`i`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
-
-   * :math:`{{\mathit{yt}}^\ast}{}[i]` must be equal to :math:`(\mathsf{mut}, {\mathit{zt}})`.
+* The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
-* :math:`(\mathsf{array{.}new}~x)` is valid with type :math:`{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+
+   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
+
+   * :math:`{{\mathit{yt}}^\ast}{}[i]` is :math:`(\mathsf{mut}, {\mathit{zt}})`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+* The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-* :math:`(\mathsf{array{.}new\_default}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
-
-   * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` must be equal to :math:`{\mathit{val}}`.
+* The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-* :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with type :math:`{{\mathrm{unpack}}({\mathit{zt}})^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+
+   * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+* The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the instruction type :math:`{{\mathrm{unpack}}({\mathit{zt}})^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-* :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`y`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{rt}}))`.
-
-   * :math:`C{.}\mathsf{elems}{}[y]` matches :math:`{\mathit{rt}}`.
+* The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-* :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{rt}}))`.
+
+   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+
+   * The reference type :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+* The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
-   * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`y`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
    * Either:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{numtype}}`.
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
 
    * Or:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{vectype}}`.
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
 
-   * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
+   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
-
-* :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
-
-
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
-
-   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` is equivalent to :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
-* :math:`(\mathsf{array{.}set}~x)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
+* The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-
-* :math:`\mathsf{array{.}len}` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
-
-
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
-* :math:`(\mathsf{array{.}fill}~x)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
-
-
-* :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x_1`.
-
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x_2`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_1])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_2])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`.
-
-   * :math:`{\mathit{zt}}_2` matches :math:`{\mathit{zt}}_1`.
+* The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-* :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`y`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
-
-   * :math:`C{.}\mathsf{elems}{}[y]` matches :math:`{\mathit{zt}}`.
+* The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-* :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+* The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
-   * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`y`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_1`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_1])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`.
+
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_2`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x_2])` is :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`.
+
+   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+
+
+* The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+
+
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+
+   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+
+   * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
+
+
+* The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+
+
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
    * Either:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{numtype}}`.
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
 
    * Or:
 
-      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{vectype}}`.
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
 
-   * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
+   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
-
-* :math:`\mathsf{extern{.}convert\_any}` is valid with type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
-
-
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` must be equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
-* :math:`\mathsf{any{.}convert\_extern}` is valid with type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
+* The instruction :math:`\mathsf{extern{.}convert\_any}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` must be equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`\mathsf{any{.}convert\_extern}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+
+
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+
+
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * For all :math:`i` in :math:`{i^\ast}`,
 
-      * :math:`i` must be less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
+      * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
+* The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathrm{unpack}}({\mathit{sh}})` if:
 
 
-   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+* The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * :math:`i` must be less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+   * :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is valid with type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+* The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
-* :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`(\mathsf{set}, t)`.
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}, t)`.
 
 
-* :math:`(\mathsf{local{.}set}~x)` is valid with type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
+* The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`({\mathit{init}}, t)`.
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
 
 
-* :math:`(\mathsf{local{.}tee}~x)` is valid with type :math:`t~{\rightarrow}_{x}\,t` if:
+* The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
 
 
-   * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`({\mathit{init}}, t)`.
+   * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}, t)`.
 
 
-* :math:`(\mathsf{global{.}get}~x)` is valid with type :math:`\epsilon~\rightarrow~t` if:
+* The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathsf{mut}^?}, t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.
 
 
-* :math:`(\mathsf{global{.}set}~x)` is valid with type :math:`t~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(\mathsf{mut}, t)`.
+   * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}, t)`.
 
 
-* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
+* The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_2`.
+   * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1, {\mathit{rt}}_1)`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` must be equal to :math:`({\mathit{lim}}_1, {\mathit{rt}}_1)`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_2]` must be equal to :math:`({\mathit{lim}}_2, {\mathit{rt}}_2)`.
+   * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2, {\mathit{rt}}_2)`.
 
-   * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
 
-* :math:`(\mathsf{table{.}init}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-   * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`y`.
+   * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}}_1)`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}}_1)`.
+   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{elems}{}[y]` must be equal to :math:`{\mathit{rt}}_2`.
+   * :math:`C{.}\mathsf{elems}{}[y]` is :math:`{\mathit{rt}}_2`.
 
-   * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
 
-* :math:`(\mathsf{elem{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{elems}{}[x]` must be equal to :math:`{\mathit{rt}}`.
+   * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{memory{.}size}~x)` is valid with type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{memory{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}grow}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+* The instruction :math:`(\mathsf{memory{.}grow}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}fill}~x)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{memory{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
-* :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x_1`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_1`.
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x_2`.
+   * :math:`C{.}\mathsf{mems}{}[x_1]` is :math:`{\mathit{mt}}_1`.
 
-   * :math:`C{.}\mathsf{mems}{}[x_1]` must be equal to :math:`{\mathit{mt}}_1`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{mems}{}[x_2]` must be equal to :math:`{\mathit{mt}}_2`.
+   * :math:`C{.}\mathsf{mems}{}[x_2]` is :math:`{\mathit{mt}}_2`.
 
 
-* :math:`(\mathsf{memory{.}init}~x~y)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{memory{.}init}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`y`.
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
+   * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
-* :math:`(\mathsf{data{.}drop}~x)` is valid with type :math:`\epsilon~\rightarrow~\epsilon` if:
+* The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
+   * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
+* The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathit{nt}}`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`(M, {\mathit{sx}})`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`(M, {\mathit{sx}})`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
-
-
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+* The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathit{nt}}`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`M`.
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`M`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
-
-
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
    * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8 \cdot N`.   * Or:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.   * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.   * Or:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.   * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
-
-
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
-
-   * :math:`i` must be less than :math:`128 / N`.
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+
+   * :math:`i` is less than :math:`128 / N`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
-
-   * :math:`i` must be less than :math:`128 / N`.
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-* :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` if:
+   * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+
+   * :math:`i` is less than :math:`128 / N`.
+
+
+* The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`\epsilon~\rightarrow~\epsilon`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`\epsilon~\rightarrow~\epsilon`.
 
    * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
-      * :math:`{|{\mathit{t*}}|}` must be equal to :math:`{|{\mathit{init*}}|}`.
+      * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-      * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` must be equal to :math:`{|{\mathit{init*}}|}`.
+      * :math:`{|{\mathit{t*}}|}` is :math:`{|{\mathit{init*}}|}`.
+
+      * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is :math:`{|{\mathit{init*}}|}`.
 
       * For all :math:`x_1` in :math:`{x_1^\ast}`,
 
-         * :math:`{|C{.}\mathsf{locals}|}` must be greater than :math:`x_1`.
-
-      * :math:`{\mathit{instr}}_1` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+         * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x_1`.
 
       * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`,
 
-         * :math:`C{.}\mathsf{locals}{}[x_1]` must be equal to :math:`({\mathit{init}}, t)`.
+         * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}, t)`.
 
-      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, :math:`{{\mathit{instr}}_2^\ast}` is valid with type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.   * Or:
+      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.   * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`{\mathit{it}'}`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{\mathit{it}'}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{\mathit{it}}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
 
-      * :math:`{\mathit{it}}` matches :math:`{\mathit{it}'}`.
+      * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
 
-      * :math:`{\mathit{it}'}` is valid.   * Or:
+      * The instruction type :math:`{\mathit{it}'}` is valid.   * Or:
 
-      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{{\mathit{instr}}^\ast}`.
+      * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{instr}}^\ast}`.
 
-      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` must be equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+      * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-      * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-      * :math:`{t^\ast}` is valid.
-
-
-* :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t^\ast}` if:
+      * The value type sequence :math:`{t^\ast}` is valid.
 
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`\epsilon~\rightarrow~{t^\ast}`.
+* The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
@@ -14043,45 +14043,45 @@ watsup 0.4 generator
 
    * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
    * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{ref{.}func}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{struct{.}new}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{struct{.}new\_default}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{array{.}new}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{array{.}new\_default}~x)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{any{.}convert\_extern}`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{extern{.}convert\_any}`.   * Or:
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global{.}get}~x)`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`(t)`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
-      * :math:`{|\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}|}` must be greater than :math:`0`.
-
-      * :math:`{|\mathsf{add}~\mathsf{sub}~\mathsf{mul}|}` must be greater than :math:`0`.
+      * :math:`{|\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}|}` is greater than :math:`0`.
 
       * :math:`{\mathsf{i}}{N}` is contained in :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}`.
+
+      * :math:`{|\mathsf{add}~\mathsf{sub}~\mathsf{mul}|}` is greater than :math:`0`.
 
       * :math:`{\mathit{binop}}` is contained in :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}`.
 
@@ -14094,370 +14094,370 @@ watsup 0.4 generator
       * :math:`{\mathit{instr}}` is const.
 
 
-* :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with type :math:`{{\mathit{dt}}^\ast}` if:
+* The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be equal to :math:`x`.
+   * :math:`{|C{.}\mathsf{types}|}` is :math:`x`.
 
-   * :math:`{{\mathit{dt}}^\ast}` must be equal to :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
+   * :math:`{{\mathit{dt}}^\ast}` is :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, :math:`{\mathit{rectype}}` is valid with type :math:`({\mathsf{ok}}{x})`.
+   * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
 
 
-* :math:`(\mathsf{local}~t)` is valid with type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}, t)` if:
+* The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}, t)` if:
 
 
    * Either:
 
-      * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{set}`.
+      * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{set}`.
 
-      * :math:`{{\mathrm{default}}}_{t}` must be different with :math:`\epsilon`.
+      * :math:`{{\mathrm{default}}}_{t}` is not :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{unset}`.
+      * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{unset}`.
 
-      * :math:`{{\mathrm{default}}}_{t}` must be equal to :math:`\epsilon`.
-
-
-* :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with type :math:`C{.}\mathsf{types}{}[x]` if:
+      * :math:`{{\mathrm{default}}}_{t}` is :math:`\epsilon`.
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+* The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
 
-   * :math:`{|{\mathit{local*}}|}` must be equal to :math:`{|{\mathit{lct*}}|}`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+   * :math:`{|{\mathit{local*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`,
 
-      * :math:`{\mathit{local}}` is valid with type :math:`{{\mathit{lt}}}`.
+      * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{\mathit{expr}}` is valid with type :math:`{t_2^\ast}`.
-
-
-* :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is valid with type :math:`{\mathit{globaltype}}` if:
+   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
 
-   * :math:`{\mathit{gt}}` is valid.
-
-   * :math:`{\mathit{globaltype}}` must be equal to :math:`({\mathsf{mut}^?}, t)`.
-
-   * :math:`{\mathit{expr}}` is valid with type :math:`t`.
-
-   * :math:`{\mathit{expr}}` is const.
+* The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{globaltype}}` if:
 
 
-* :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid with type :math:`{\mathit{tabletype}}` if:
+   * The global type :math:`{\mathit{gt}}` is valid.
 
+   * :math:`{\mathit{globaltype}}` is :math:`({\mathsf{mut}^?}, t)`.
 
-   * :math:`{\mathit{tt}}` is valid.
-
-   * :math:`{\mathit{tabletype}}` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
-
-   * :math:`{\mathit{expr}}` is valid with type :math:`{\mathit{rt}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
    * :math:`{\mathit{expr}}` is const.
 
 
-* :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with type :math:`{\mathit{memtype}}` if:
+* The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid with the table type :math:`{\mathit{tabletype}}` if:
 
 
-   * :math:`{\mathit{memtype}}` is valid.
+   * The table type :math:`{\mathit{tt}}` is valid.
+
+   * :math:`{\mathit{tabletype}}` is :math:`({\mathit{lim}}, {\mathit{rt}})`.
+
+   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
+
+   * :math:`{\mathit{expr}}` is const.
 
 
-* :math:`(\mathsf{tag}~x)` is valid with type :math:`C{.}\mathsf{types}{}[x]` if:
+* The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with the memory type :math:`{\mathit{memtype}}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
-
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
-* :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{rt}}` if:
+* The tag :math:`(\mathsf{tag}~x)` is valid with the memory type :math:`C{.}\mathsf{types}{}[x]` if:
+
+
+   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
+* The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the element type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}'})`.
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}, {\mathit{rt}'})`.
 
-      * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
+      * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
-      * :math:`{\mathit{expr}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is const.
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{passive}`.   * Or:
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.   * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{declare}`.
-
-
-* :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with type :math:`{\mathit{elemtype}}` if:
+      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
 
-   * :math:`{\mathit{elemtype}}` is valid.
+* The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
+
+
+   * The reference type :math:`{\mathit{elemtype}}` is valid.
 
    * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
 
-      * :math:`{\mathit{expr}}` is valid with type :math:`{\mathit{elemtype}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{elemtype}}`.
 
       * :math:`{\mathit{expr}}` is const.
 
-   * :math:`{\mathit{elemmode}}` is valid with type :math:`{\mathit{elemtype}}`.
+   * The elemmode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
 
-* :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`\mathsf{ok}` if:
+* The datamode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the data type :math:`\mathsf{ok}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-      * :math:`{\mathit{expr}}` is valid with type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is const.
 
    * Or:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{passive}`.
+      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
 
-* :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with type :math:`\mathsf{ok}` if:
+* The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
 
 
-   * :math:`{\mathit{datamode}}` is valid with type :math:`\mathsf{ok}`.
+   * The datamode :math:`{\mathit{datamode}}` is valid with the data type :math:`\mathsf{ok}`.
 
 
-* :math:`(\mathsf{start}~x)` is valid if:
+* The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
+   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` must be equal to :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
-
-
-* :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with type :math:`{\mathit{xt}}` if:
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{funcs}{}[x])` is :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
 
 
-   * :math:`{\mathit{xt}}` is valid.
+* The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-* :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+   * The external type :math:`{\mathit{xt}}` is valid.
 
 
-   * Either:
-
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{func}~x)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
-
-      * :math:`{|C{.}\mathsf{funcs}|}` must be greater than :math:`x`.
-
-      * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{dt}}`.
-
-   * Or:
-
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global}~x)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
-
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
-
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`{\mathit{gt}}`.   * Or:
-
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{table}~x)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
-
-      * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
-
-      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`{\mathit{tt}}`.   * Or:
-
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~x)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
-
-      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
-
-      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.   * Or:
-
-      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~x)`.
-
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{at}})`.
-
-      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
-
-      * :math:`C{.}\mathsf{tags}{}[x]` must be equal to :math:`{\mathit{at}}`.
-
-
-* :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with type :math:`{\mathit{name}}` and :math:`{\mathit{xt}}` if:
-
-
-   * :math:`{\mathit{externidx}}` is valid with type :math:`{\mathit{xt}}`.
-
-
-* :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
+* The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{func}~x)`.
 
-      * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{dt}})`.
+
+      * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
 
    * Or:
 
-      * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global}~x)`.
 
-      * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * :math:`{\mathit{global}}_1` is valid with type :math:`{\mathit{gt}}_1`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * Under the context :math:`C{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {\mathit{gt}}_1]`, :math:`{{\mathit{global}}^\ast}` is valid with type :math:`{{\mathit{gt}}^\ast}`.
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.   * Or:
+
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
+
+      * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.   * Or:
+
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.   * Or:
+
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~x)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{at}})`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{tags}{}[x]` is :math:`{\mathit{at}}`.
 
 
-* :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
+* The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
+
+
+   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+
+
+* The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
 
 
    * Either:
 
-      * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
    * Or:
 
-      * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` must be equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
+      * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
 
-      * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
+      * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
-      * :math:`{\mathit{type}}_1` is valid with type :math:`{{\mathit{dt}}_1^\ast}`.
+      * The global :math:`{\mathit{global}}_1` is valid with the global type :math:`{\mathit{gt}}_1`.
 
-      * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}}^\ast}`.
-
-
-* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` if:
+      * Under the context :math:`C{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {\mathit{gt}}_1]`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
 
-   * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` must be equal to :math:`{|{\mathit{import*}}|}`.
+* The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
 
-   * :math:`{|{\mathit{tt*}}|}` must be equal to :math:`{|{\mathit{table*}}|}`.
 
-   * :math:`{|{\mathit{mt*}}|}` must be equal to :math:`{|{\mathit{mem*}}|}`.
+   * Either:
 
-   * :math:`{|{\mathit{tag*}}|}` must be equal to :math:`{|{\mathit{at*}}|}`.
+      * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
-   * :math:`{|{\mathit{func*}}|}` must be equal to :math:`{|{\mathit{dt*}}|}`.
+      * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-   * :math:`{|{\mathit{rt*}}|}` must be equal to :math:`{|{\mathit{elem*}}|}`.
+   * Or:
 
-   * :math:`{|{\mathit{ok*}}|}` must be equal to :math:`{|{\mathit{data*}}|}`.
+      * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
 
-   * :math:`{|{\mathit{nm*}}|}` must be equal to :math:`{|{\mathit{export*}}|}`.
+      * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
-   * :math:`{|{\mathit{xt}}_{\mathsf{e*}}|}` must be equal to :math:`{|{\mathit{export*}}|}`.
+      * The type definition :math:`{\mathit{type}}_1` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}'}^\ast}`.
+      * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
+
+
+* The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with the module type :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` if:
+
+
+   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
+
+   * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
-   * Under the context :math:`{C'}`, :math:`{{\mathit{global}}^\ast}` is valid with type :math:`{{\mathit{gt}}^\ast}`.
+   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+
+   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{table}}` is valid with type :math:`{\mathit{tt}}`.
+      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+
+   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{mem}}` is valid with type :math:`{\mathit{mt}}`.
+      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+
+   * :math:`{|{\mathit{tag*}}|}` is :math:`{|{\mathit{at*}}|}`.
 
    * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{tag}}` is valid with type :math:`{\mathit{at}}`.
+      * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the memory type :math:`{\mathit{at}}`.
+
+   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{dt*}}|}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
-      * :math:`{\mathit{func}}` is valid with type :math:`{\mathit{dt}}`.
+      * The function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
+
+   * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
 
-      * :math:`{\mathit{elem}}` is valid with type :math:`{\mathit{rt}}`.
+      * The table segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
+
+   * :math:`{|{\mathit{ok*}}|}` is :math:`{|{\mathit{data*}}|}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`,
 
-      * :math:`{\mathit{data}}` is valid with type :math:`{\mathit{ok}}`.
+      * The memory segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
 
    * If :math:`{\mathit{start}}` is defined,
 
-      * :math:`{\mathit{start}}` is valid.
+      * The start function :math:`{\mathit{start}}` is valid.
+
+   * :math:`{|{\mathit{nm*}}|}` is :math:`{|{\mathit{export*}}|}`.
+
+   * :math:`{|{\mathit{xt}}_{\mathsf{e*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`,
 
-      * :math:`{\mathit{export}}` is valid with type :math:`{\mathit{nm}}` and :math:`{\mathit{xt}}_{\mathsf{e}}`.
+      * The export :math:`{\mathit{export}}` is valid with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
-   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` must be equal to true.
+   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
 
-   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * :math:`C` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * :math:`{C'}` is :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
+   * :math:`{x^\ast}` is :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
 
-   * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{gt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{globals}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * :math:`{{\mathit{gt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{globals}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` is :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
 
-* :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
+* The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` must be equal to :math:`\mathsf{i{\scriptstyle 32}}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{global{.}get}~x)`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` must be equal to :math:`t`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`t`.
 
-      * :math:`{|C{.}\mathsf{globals}|}` must be greater than :math:`x`.
+      * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`({\mathsf{mut}^?}, t)`.   * Or:
+      * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}, t)`.   * Or:
 
-      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
+      * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` must be equal to :math:`{t_1^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`{t_1^\ast}`.
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` must be equal to :math:`{t_2^\ast}`.
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`{t_2^\ast}`.
 
-      * :math:`{\mathit{blocktype}}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The block type :math:`{\mathit{blocktype}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 :math:`\mathsf{unreachable}`
@@ -16038,7 +16038,7 @@ watsup 0.4 generator
 
       #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-      #) If :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+      #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`, then:
 
          a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
@@ -17134,7 +17134,7 @@ watsup 0.4 generator
 
    #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
-   #. If :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+   #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`, then:
 
       1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
 
@@ -22342,11 +22342,11 @@ Resulttype_ok
 
 Instrtype_ok
 - the instruction type t_1* ->_ x* t_2* is valid if:
+  - the value type sequence t_1* is valid.
+  - the value type sequence t_2* is valid.
   - |x*| is |lct*|.
   - For all x in x*,
     - |C.LOCALS| is greater than x.
-  - the value type sequence t_1* is valid.
-  - the value type sequence t_2* is valid.
   - For all lct in lct* and x in x*,
     - C.LOCALS[x] is lct.
 
@@ -22395,8 +22395,8 @@ Deftype_sub
   - Either:
     - $clos_deftype(C, deftype_1) is $clos_deftype(C, deftype_2).
   - Or:
-    - |typeuse*| is greater than i.
     - $unrolldt(deftype_1) is (SUB fin typeuse* ct).
+    - |typeuse*| is greater than i.
     - the type use typeuse*[i] matches the heap type deftype_2.
 
 Heaptype_sub
@@ -22451,8 +22451,8 @@ Heaptype_sub
   - Or:
     - heaptype_u0 is (REC i).
     - heaptype_u1 is typeuse*[j].
-    - |C.RECS| is greater than i.
     - |typeuse*| is greater than j.
+    - |C.RECS| is greater than i.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
     - heaptype_u0 is NONE.
@@ -22553,13 +22553,13 @@ Comptype_sub
 
 Subtype_ok
 - the sub type (SUB (FINAL ()? ?) (_IDX x)* comptype) is valid with the oktypeidx (OK x_0) if:
+  - |x*| is less than or equal to 1.
+  - For all x in x*,
+    - x is less than x_0.
   - |x*| is |comptype'*|.
   - |x'**| is |comptype'*|.
   - For all x in x*,
     - |C.TYPES| is greater than x.
-  - |x*| is less than or equal to 1.
-  - For all x in x*,
-    - x is less than x_0.
   - For all comptype' in comptype'* and x in x* and x'* in x'**,
     - $unrolldt(C.TYPES[x]) is (SUB  (_IDX x')* comptype').
   - the composite type comptype is valid.
@@ -22568,11 +22568,11 @@ Subtype_ok
 
 Subtype_ok2
 - the sub type (SUB (FINAL ()? ?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if:
-  - |typeuse*| is |comptype'*|.
-  - |typeuse'**| is |comptype'*|.
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*,
     - $before(typeuse, x, i) is true.
+  - |typeuse*| is |comptype'*|.
+  - |typeuse'**| is |comptype'*|.
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**,
     - $unrollht(C, typeuse) is (SUB  typeuse'* comptype').
   - the composite type comptype is valid.
@@ -22650,12 +22650,12 @@ Externtype_ok
 
 Instrtype_sub
 - the instruction type t_11* ->_ x_1* t_12* matches the instruction type t_21* ->_ x_2* t_22* if:
-  - |x*| is |t*|.
-  - For all x in x*,
-    - |C.LOCALS| is greater than x.
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
   - x* is $setminus_(localidx, x_2*, x_1*).
+  - |x*| is |t*|.
+  - For all x in x*,
+    - |C.LOCALS| is greater than x.
   - For all t in t* and x in x*,
     - C.LOCALS[x] is (SET, t).
 
@@ -22749,18 +22749,18 @@ Catch_ok
     - the value type sequence [(REF  EXN)] matches the result type C.LABELS[l].
 
 Instr_ok/nop
-- the instr NOP is valid with the instruction type [] -> [].
+- the instruction NOP is valid with the instruction type [] -> [].
 
 Instr_ok/unreachable
-- the instr UNREACHABLE is valid with the instruction type t_1* -> t_2* if:
+- the instruction UNREACHABLE is valid with the instruction type t_1* -> t_2* if:
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/drop
-- the instr DROP is valid with the instruction type [t] -> [] if:
+- the instruction DROP is valid with the instruction type [t] -> [] if:
   - the value type t is valid.
 
 Instr_ok/select
-- the instr (SELECT() valtype_u0? ?) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT() valtype_u0? ?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - Either:
     - valtype_u0? is ?([t]).
@@ -22773,55 +22773,55 @@ Instr_ok/select
       - t' is vectype.
 
 Instr_ok/block
-- the instr (BLOCK bt instr*) is valid with the instruction type t_1* -> t_2* if:
+- the instruction (BLOCK bt instr*) is valid with the instruction type t_1* -> t_2* if:
   - the block type bt is valid with the instruction type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
 
 Instr_ok/loop
-- the instr (LOOP bt instr*) is valid with the instruction type t_1* -> t_2* if:
+- the instruction (LOOP bt instr*) is valid with the instruction type t_1* -> t_2* if:
   - the block type bt is valid with the instruction type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
+  - Under the context C with .LABELS prepended by [t_1*], the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
 
 Instr_ok/if
-- the instr (IF bt instr_1* ELSE instr_2*) is valid with the instruction type t_1* :: [I32] -> t_2* if:
+- the instruction (IF bt instr_1* ELSE instr_2*) is valid with the instruction type t_1* :: [I32] -> t_2* if:
   - the block type bt is valid with the instruction type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the instruction type t_1* ->_ x_1* t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the instruction type t_1* ->_ x_2* t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr_1* is valid with the instruction type t_1* ->_ x_1* t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr_2* is valid with the instruction type t_1* ->_ x_2* t_2*.
 
 Instr_ok/br
-- the instr (BR l) is valid with the instruction type t_1* :: t* -> t_2* if:
+- the instruction (BR l) is valid with the instruction type t_1* :: t* -> t_2* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_if
-- the instr (BR_IF l) is valid with the instruction type t* :: [I32] -> t* if:
+- the instruction (BR_IF l) is valid with the instruction type t* :: [I32] -> t* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
-- the instr (BR_TABLE l* l') is valid with the instruction type t_1* :: t* -> t_2* if:
+- the instruction (BR_TABLE l* l') is valid with the instruction type t_1* :: t* -> t_2* if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
-  - |C.LABELS| is greater than l'.
   - For all l in l*,
     - the value type sequence t* matches the result type C.LABELS[l].
+  - |C.LABELS| is greater than l'.
   - the value type sequence t* matches the result type C.LABELS[l'].
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_on_null
-- the instr (BR_ON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* :: [(REF  ht)] if:
+- the instruction (BR_ON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* :: [(REF  ht)] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the heap type ht is valid.
 
 Instr_ok/br_on_non_null
-- the instr (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* if:
+- the instruction (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* :: [(REF  ht)].
 
 Instr_ok/br_on_cast
-- the instr (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [$diffrt(rt_1, rt_2)] if:
+- the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [$diffrt(rt_1, rt_2)] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
@@ -22830,7 +22830,7 @@ Instr_ok/br_on_cast
   - the reference type rt_2 matches the reference type rt.
 
 Instr_ok/br_on_cast_fail
-- the instr (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
+- the instruction (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
@@ -22839,30 +22839,30 @@ Instr_ok/br_on_cast_fail
   - the reference type $diffrt(rt_1, rt_2) matches the reference type rt.
 
 Instr_ok/call
-- the instr (CALL x) is valid with the instruction type t_1* -> t_2* if:
+- the instruction (CALL x) is valid with the instruction type t_1* -> t_2* if:
   - |C.FUNCS| is greater than x.
   - $expanddt(C.FUNCS[x]) is (FUNC t_1* -> t_2*).
 
 Instr_ok/call_ref
-- the instr (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF NULL (_IDX x))] -> t_2* if:
+- the instruction (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF NULL (_IDX x))] -> t_2* if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (FUNC t_1* -> t_2*).
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [I32] -> t_2* if:
+- the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [I32] -> t_2* if:
   - |C.TABLES| is greater than x.
-  - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
+  - |C.TYPES| is greater than y.
   - $expanddt(C.TYPES[y]) is (FUNC t_1* -> t_2*).
 
 Instr_ok/return
-- the instr RETURN is valid with the instruction type t_1* :: t* -> t_2* if:
+- the instruction RETURN is valid with the instruction type t_1* :: t* -> t_2* if:
   - C.RETURN is ?(t*).
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/return_call
-- the instr (RETURN_CALL x) is valid with the instruction type t_3* :: t_1* -> t_4* if:
+- the instruction (RETURN_CALL x) is valid with the instruction type t_3* :: t_1* -> t_4* if:
   - |C.FUNCS| is greater than x.
   - $expanddt(C.FUNCS[x]) is (FUNC t_1* -> t_2*).
   - C.RETURN is ?(t'_2*).
@@ -22870,7 +22870,7 @@ Instr_ok/return_call
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_ref
-- the instr (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF NULL (_IDX x))] -> t_4* if:
+- the instruction (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF NULL (_IDX x))] -> t_4* if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (FUNC t_1* -> t_2*).
   - C.RETURN is ?(t'_2*).
@@ -22878,381 +22878,381 @@ Instr_ok/return_call_ref
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_indirect
-- the instr (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [I32] -> t_4* if:
+- the instruction (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [I32] -> t_4* if:
   - |C.TABLES| is greater than x.
-  - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
+  - |C.TYPES| is greater than y.
   - $expanddt(C.TYPES[y]) is (FUNC t_1* -> t_2*).
   - C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/throw
-- the instr (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
+- the instruction (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
   - |C.TAGS| is greater than x.
   - $expanddt(C.TAGS[x]) is (FUNC t* -> []).
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/throw_ref
-- the instr THROW_REF is valid with the instruction type t_1* :: [(REF NULL EXN)] -> t_2* if:
+- the instruction THROW_REF is valid with the instruction type t_1* :: [(REF NULL EXN)] -> t_2* if:
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/try_table
-- the instr (TRY_TABLE bt catch* instr*) is valid with the instruction type t_1* -> t_2* if:
+- the instruction (TRY_TABLE bt catch* instr*) is valid with the instruction type t_1* -> t_2* if:
   - the block type bt is valid with the instruction type t_1* -> t_2*.
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
+  - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
   - For all catch in catch*,
     - the catch clause catch is valid.
 
 Instr_ok/const
-- the instr (nt.CONST c_nt) is valid with the instruction type [] -> [nt].
+- the instruction (nt.CONST c_nt) is valid with the instruction type [] -> [nt].
 
 Instr_ok/unop
-- the instr (UNOP nt unop_nt) is valid with the instruction type [nt] -> [nt].
+- the instruction (UNOP nt unop_nt) is valid with the instruction type [nt] -> [nt].
 
 Instr_ok/binop
-- the instr (BINOP nt binop_nt) is valid with the instruction type [nt, nt] -> [nt].
+- the instruction (BINOP nt binop_nt) is valid with the instruction type [nt, nt] -> [nt].
 
 Instr_ok/testop
-- the instr (TESTOP nt testop_nt) is valid with the instruction type [nt] -> [I32].
+- the instruction (TESTOP nt testop_nt) is valid with the instruction type [nt] -> [I32].
 
 Instr_ok/relop
-- the instr (RELOP nt relop_nt) is valid with the instruction type [nt, nt] -> [I32].
+- the instruction (RELOP nt relop_nt) is valid with the instruction type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type [nt_2] -> [nt_1].
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type [nt_2] -> [nt_1].
 
 Instr_ok/ref.null
-- the instr (REF.NULL ht) is valid with the instruction type [] -> [(REF NULL ht)] if:
+- the instruction (REF.NULL ht) is valid with the instruction type [] -> [(REF NULL ht)] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.func
-- the instr (REF.FUNC x) is valid with the instruction type [] -> [(REF  dt)] if:
+- the instruction (REF.FUNC x) is valid with the instruction type [] -> [(REF  dt)] if:
   - |C.FUNCS| is greater than x.
-  - |C.REFS| is greater than 0.
   - C.FUNCS[x] is dt.
+  - |C.REFS| is greater than 0.
   - x is contained in C.REFS.
 
 Instr_ok/ref.i31
-- the instr REF.I31 is valid with the instruction type [I32] -> [(REF  I31)].
+- the instruction REF.I31 is valid with the instruction type [I32] -> [(REF  I31)].
 
 Instr_ok/ref.is_null
-- the instr REF.IS_NULL is valid with the instruction type [(REF NULL ht)] -> [I32] if:
+- the instruction REF.IS_NULL is valid with the instruction type [(REF NULL ht)] -> [I32] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.as_non_null
-- the instr REF.AS_NON_NULL is valid with the instruction type [(REF NULL ht)] -> [(REF  ht)] if:
+- the instruction REF.AS_NON_NULL is valid with the instruction type [(REF NULL ht)] -> [(REF  ht)] if:
   - the heap type ht is valid.
 
 Instr_ok/ref.eq
-- the instr REF.EQ is valid with the instruction type [(REF NULL EQ), (REF NULL EQ)] -> [I32].
+- the instruction REF.EQ is valid with the instruction type [(REF NULL EQ), (REF NULL EQ)] -> [I32].
 
 Instr_ok/ref.test
-- the instr (REF.TEST rt) is valid with the instruction type [rt'] -> [I32] if:
+- the instruction (REF.TEST rt) is valid with the instruction type [rt'] -> [I32] if:
   - the reference type rt is valid.
   - the reference type rt' is valid.
   - the reference type rt matches the reference type rt'.
 
 Instr_ok/ref.cast
-- the instr (REF.CAST rt) is valid with the instruction type [rt'] -> [rt] if:
+- the instruction (REF.CAST rt) is valid with the instruction type [rt'] -> [rt] if:
   - the reference type rt is valid.
   - the reference type rt' is valid.
   - the reference type rt matches the reference type rt'.
 
 Instr_ok/i31.get
-- the instr (I31.GET sx) is valid with the instruction type [(REF NULL I31)] -> [I32].
+- the instruction (I31.GET sx) is valid with the instruction type [(REF NULL I31)] -> [I32].
 
 Instr_ok/struct.new
-- the instr (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF  (_IDX x))] if:
+- the instruction (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
 
 Instr_ok/struct.new_default
-- the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF  (_IDX x))] if:
+- the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
-  - |zt*| is |val*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
+  - |zt*| is |val*|.
   - For all val in val* and zt in zt*,
     - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/struct.get
-- the instr (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
+- the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
-  - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
+  - |yt*| is greater than i.
   - yt*[i] is (mut, zt).
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/struct.set
-- the instr (STRUCT.SET x i) is valid with the instruction type [(REF NULL (_IDX x)), $unpack(zt)] -> [] if:
+- the instruction (STRUCT.SET x i) is valid with the instruction type [(REF NULL (_IDX x)), $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
-  - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
+  - |yt*| is greater than i.
   - yt*[i] is (MUT, zt).
 
 Instr_ok/array.new
-- the instr (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 Instr_ok/array.new_default
-- the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - $default_($unpack(zt)) is ?(val).
 
 Instr_ok/array.new_fixed
-- the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 Instr_ok/array.new_elem
-- the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, rt)).
+  - |C.ELEMS| is greater than y.
   - the reference type C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
-- the instr (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
+- the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF  (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - Either:
     - $unpack(zt) is numtype.
   - Or:
     - $unpack(zt) is vectype.
+  - |C.DATAS| is greater than y.
   - C.DATAS[y] is OK.
 
 Instr_ok/array.get
-- the instr (ARRAY.GET sx? x) is valid with the instruction type [(REF NULL (_IDX x)), I32] -> [$unpack(zt)] if:
+- the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF NULL (_IDX x)), I32] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/array.set
-- the instr (ARRAY.SET x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt)] -> [] if:
+- the instruction (ARRAY.SET x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.len
-- the instr ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32] if:
+- the instruction ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.fill
-- the instr (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:
+- the instruction (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
 
 Instr_ok/array.copy
-- the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> [] if:
+- the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> [] if:
   - |C.TYPES| is greater than x_1.
-  - |C.TYPES| is greater than x_2.
   - $expanddt(C.TYPES[x_1]) is (ARRAY (MUT, zt_1)).
+  - |C.TYPES| is greater than x_2.
   - $expanddt(C.TYPES[x_2]) is (ARRAY (mut, zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
-- the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
+- the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
+  - |C.ELEMS| is greater than y.
   - the element type C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
-- the instr (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
+- the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (MUT, zt)).
   - Either:
     - $unpack(zt) is numtype.
   - Or:
     - $unpack(zt) is vectype.
+  - |C.DATAS| is greater than y.
   - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
-- the instr EXTERN.CONVERT_ANY is valid with the instruction type [(REF nul1 ANY)] -> [(REF nul2 EXTERN)] if:
+- the instruction EXTERN.CONVERT_ANY is valid with the instruction type [(REF nul1 ANY)] -> [(REF nul2 EXTERN)] if:
   - nul1 is nul2.
 
 Instr_ok/any.convert_extern
-- the instr ANY.CONVERT_EXTERN is valid with the instruction type [(REF nul1 EXTERN)] -> [(REF nul2 ANY)] if:
+- the instruction ANY.CONVERT_EXTERN is valid with the instruction type [(REF nul1 EXTERN)] -> [(REF nul2 ANY)] if:
   - nul1 is nul2.
 
 Instr_ok/vconst
-- the instr (V128.CONST c) is valid with the instruction type [] -> [V128].
+- the instruction (V128.CONST c) is valid with the instruction type [] -> [V128].
 
 Instr_ok/vvunop
-- the instr (VVUNOP V128 vvunop) is valid with the instruction type [V128] -> [V128].
+- the instruction (VVUNOP V128 vvunop) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/vvbinop
-- the instr (VVBINOP V128 vvbinop) is valid with the instruction type [V128, V128] -> [V128].
+- the instruction (VVBINOP V128 vvbinop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vvternop
-- the instr (VVTERNOP V128 vvternop) is valid with the instruction type [V128, V128, V128] -> [V128].
+- the instruction (VVTERNOP V128 vvternop) is valid with the instruction type [V128, V128, V128] -> [V128].
 
 Instr_ok/vvtestop
-- the instr (VVTESTOP V128 vvtestop) is valid with the instruction type [V128] -> [I32].
+- the instruction (VVTESTOP V128 vvtestop) is valid with the instruction type [V128] -> [I32].
 
 Instr_ok/vunop
-- the instr (VUNOP sh vunop) is valid with the instruction type [V128] -> [V128].
+- the instruction (VUNOP sh vunop) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/vbinop
-- the instr (VBINOP sh vbinop) is valid with the instruction type [V128, V128] -> [V128].
+- the instruction (VBINOP sh vbinop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vtestop
-- the instr (VTESTOP sh vtestop) is valid with the instruction type [V128] -> [I32].
+- the instruction (VTESTOP sh vtestop) is valid with the instruction type [V128] -> [I32].
 
 Instr_ok/vrelop
-- the instr (VRELOP sh vrelop) is valid with the instruction type [V128, V128] -> [V128].
+- the instruction (VRELOP sh vrelop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vshiftop
-- the instr (VSHIFTOP sh vshiftop) is valid with the instruction type [V128, I32] -> [V128].
+- the instruction (VSHIFTOP sh vshiftop) is valid with the instruction type [V128, I32] -> [V128].
 
 Instr_ok/vbitmask
-- the instr (VBITMASK sh) is valid with the instruction type [V128] -> [I32].
+- the instruction (VBITMASK sh) is valid with the instruction type [V128] -> [I32].
 
 Instr_ok/vswizzle
-- the instr (VSWIZZLE sh) is valid with the instruction type [V128, V128] -> [V128].
+- the instruction (VSWIZZLE sh) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vshuffle
-- the instr (VSHUFFLE sh i*) is valid with the instruction type [V128, V128] -> [V128] if:
+- the instruction (VSHUFFLE sh i*) is valid with the instruction type [V128, V128] -> [V128] if:
   - For all i in i*,
     - i is less than (2 · $dim(sh)).
 
 Instr_ok/vsplat
-- the instr (VSPLAT sh) is valid with the instruction type [$unpackshape(sh)] -> [V128].
+- the instruction (VSPLAT sh) is valid with the instruction type [$unpackshape(sh)] -> [V128].
 
 Instr_ok/vextract_lane
-- the instr (VEXTRACT_LANE sh sx? i) is valid with the instruction type [V128] -> [$unpackshape(sh)] if:
+- the instruction (VEXTRACT_LANE sh sx? i) is valid with the instruction type [V128] -> [$unpackshape(sh)] if:
   - i is less than $dim(sh).
 
 Instr_ok/vreplace_lane
-- the instr (VREPLACE_LANE sh i) is valid with the instruction type [V128, $unpackshape(sh)] -> [V128] if:
+- the instruction (VREPLACE_LANE sh i) is valid with the instruction type [V128, $unpackshape(sh)] -> [V128] if:
   - i is less than $dim(sh).
 
 Instr_ok/vextunop
-- the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type [V128] -> [V128].
+- the instruction (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/vextbinop
-- the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the instruction type [V128, V128] -> [V128].
+- the instruction (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vnarrow
-- the instr (VNARROW sh_1 sh_2 sx) is valid with the instruction type [V128, V128] -> [V128].
+- the instruction (VNARROW sh_1 sh_2 sx) is valid with the instruction type [V128, V128] -> [V128].
 
 Instr_ok/vcvtop
-- the instr (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with the instruction type [V128] -> [V128].
+- the instruction (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with the instruction type [V128] -> [V128].
 
 Instr_ok/local.get
-- the instr (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
+- the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (SET, t).
 
 Instr_ok/local.set
-- the instr (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
+- the instruction (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (init, t).
 
 Instr_ok/local.tee
-- the instr (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
+- the instruction (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (init, t).
 
 Instr_ok/global.get
-- the instr (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
+- the instruction (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
 Instr_ok/global.set
-- the instr (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
+- the instruction (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (MUT, t).
 
 Instr_ok/table.get
-- the instr (TABLE.GET x) is valid with the instruction type [I32] -> [rt] if:
+- the instruction (TABLE.GET x) is valid with the instruction type [I32] -> [rt] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.set
-- the instr (TABLE.SET x) is valid with the instruction type [I32, rt] -> [] if:
+- the instruction (TABLE.SET x) is valid with the instruction type [I32, rt] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.size
-- the instr (TABLE.SIZE x) is valid with the instruction type [] -> [I32] if:
+- the instruction (TABLE.SIZE x) is valid with the instruction type [] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.grow
-- the instr (TABLE.GROW x) is valid with the instruction type [rt, I32] -> [I32] if:
+- the instruction (TABLE.GROW x) is valid with the instruction type [rt, I32] -> [I32] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.fill
-- the instr (TABLE.FILL x) is valid with the instruction type [I32, rt, I32] -> [] if:
+- the instruction (TABLE.FILL x) is valid with the instruction type [I32, rt, I32] -> [] if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
 Instr_ok/table.copy
-- the instr (TABLE.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
+- the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x_1.
-  - |C.TABLES| is greater than x_2.
   - C.TABLES[x_1] is (lim_1, rt_1).
+  - |C.TABLES| is greater than x_2.
   - C.TABLES[x_2] is (lim_2, rt_2).
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/table.init
-- the instr (TABLE.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
+- the instruction (TABLE.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.TABLES| is greater than x.
-  - |C.ELEMS| is greater than y.
   - C.TABLES[x] is (lim, rt_1).
+  - |C.ELEMS| is greater than y.
   - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/elem.drop
-- the instr (ELEM.DROP x) is valid with the instruction type [] -> [] if:
+- the instruction (ELEM.DROP x) is valid with the instruction type [] -> [] if:
   - |C.ELEMS| is greater than x.
   - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
-- the instr (MEMORY.SIZE x) is valid with the instruction type [] -> [I32] if:
+- the instruction (MEMORY.SIZE x) is valid with the instruction type [] -> [I32] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
 Instr_ok/memory.grow
-- the instr (MEMORY.GROW x) is valid with the instruction type [I32] -> [I32] if:
+- the instruction (MEMORY.GROW x) is valid with the instruction type [I32] -> [I32] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
 Instr_ok/memory.fill
-- the instr (MEMORY.FILL x) is valid with the instruction type [I32, I32, I32] -> [] if:
+- the instruction (MEMORY.FILL x) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
 Instr_ok/memory.copy
-- the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
+- the instruction (MEMORY.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than x_1.
-  - |C.MEMS| is greater than x_2.
   - C.MEMS[x_1] is mt_1.
+  - |C.MEMS| is greater than x_2.
   - C.MEMS[x_2] is mt_2.
 
 Instr_ok/memory.init
-- the instr (MEMORY.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
+- the instruction (MEMORY.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
   - |C.MEMS| is greater than x.
-  - |C.DATAS| is greater than y.
   - C.MEMS[x] is mt.
+  - |C.DATAS| is greater than y.
   - C.DATAS[y] is OK.
 
 Instr_ok/data.drop
-- the instr (DATA.DROP x) is valid with the instruction type [] -> [] if:
+- the instruction (DATA.DROP x) is valid with the instruction type [] -> [] if:
   - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type [I32] -> [valtype_u3] if:
+- the instruction (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type [I32] -> [valtype_u3] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
@@ -23267,7 +23267,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type [I32, valtype_u2] -> [] if:
+- the instruction (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type [I32, valtype_u2] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
@@ -23282,7 +23282,7 @@ Instr_ok/store
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instr (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type [I32] -> [V128] if:
+- the instruction (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type [I32] -> [V128] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
@@ -23299,59 +23299,59 @@ Instr_ok/vload
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload_lane
-- the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [V128] if:
+- the instruction (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [V128] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
 Instr_ok/vstore
-- the instr (VSTORE V128 x memarg) is valid with the instruction type [I32, V128] -> [] if:
+- the instruction (VSTORE V128 x memarg) is valid with the instruction type [I32, V128] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vstore_lane
-- the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [] if:
+- the instruction (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [] if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
 Instrs_ok
-- the instr sequence instr_u0* is valid with the instruction type instrtype_u4 if:
+- the instruction sequence instr_u0* is valid with the instruction type instrtype_u4 if:
   - Either:
     - instr_u0* is [].
     - instrtype_u4 is [] -> [].
   - Or:
     - instr_u0* is [instr_1] :: instr_2*.
     - instrtype_u4 is t_1* ->_ x_1* :: x_2* t_3*.
+    - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - |t*| is |init*|.
     - |x_1*| is |init*|.
     - For all x_1 in x_1*,
       - |C.LOCALS| is greater than x_1.
-    - the instr instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - For all init in init* and t in t* and x_1 in x_1*,
       - C.LOCALS[x_1] is (init, t).
-    - Under the context $with_locals(C, x_1*, (SET, t)*), the instr sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
+    - Under the context $with_locals(C, x_1*, (SET, t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr_u0* is instr*.
     - instrtype_u4 is it'.
-    - the instr sequence instr* is valid with the instruction type it.
+    - the instruction sequence instr* is valid with the instruction type it.
     - the instruction type it matches the instruction type it'.
     - the instruction type it' is valid.
   - Or:
     - instr_u0* is instr*.
     - instrtype_u4 is t* :: t_1* ->_ x* t* :: t_2*.
-    - the instr sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
+    - the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
     - the value type sequence t* is valid.
 
 Expr_ok
 - the expression instr* is valid with the value type sequence t* if:
-  - the instr sequence instr* is valid with the instruction type [] -> t*.
+  - the instruction sequence instr* is valid with the instruction type [] -> t*.
 
 Instr_const
-- the instr instr_u0 is constant if:
+- the instruction instr_u0 is constant if:
   - Either:
     - instr_u0 is (nt.CONST c_nt).
   - Or:
@@ -23383,14 +23383,14 @@ Instr_const
   - Or:
     - instr_u0 is (BINOP Inn binop).
     - |[I32, I64]| is greater than 0.
-    - |[ADD, SUB, MUL]| is greater than 0.
     - Inn is contained in [I32, I64].
+    - |[ADD, SUB, MUL]| is greater than 0.
     - binop is contained in [ADD, SUB, MUL].
 
 Expr_const
 - the expression instr* is constant if:
   - For all instr in instr*,
-    - the instr instr is constant.
+    - the instruction instr is constant.
 
 Type_ok
 - the type definition (TYPE rectype) is valid with the defined type sequence dt* if:
@@ -23410,8 +23410,8 @@ Local_ok
 Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
   - |C.TYPES| is greater than x.
-  - |local*| is |lct*|.
   - $expanddt(C.TYPES[x]) is (FUNC t_1* -> t_2*).
+  - |local*| is |lct*|.
   - For all lct in lct* and local in local*,
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
@@ -23541,33 +23541,33 @@ Types_ok
 
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type $clos_moduletype(C, xt_I* -> xt_E*) if:
-  - |xt_I*| is |import*|.
-  - |tt*| is |table*|.
-  - |mt*| is |mem*|.
-  - |tag*| is |at*|.
-  - |func*| is |dt*|.
-  - |rt*| is |elem*|.
-  - |ok*| is |data*|.
-  - |nm*| is |export*|.
-  - |xt_E*| is |export*|.
   - Under the context { TYPES: []; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the type definition sequence type* is valid with the defined type sequence dt'*.
+  - |xt_I*| is |import*|.
   - For all import in import* and xt_I in xt_I*,
     - Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
+  - |tt*| is |table*|.
   - For all table in table* and tt in tt*,
     - Under the context C', the table table is valid with the table type tt.
+  - |mt*| is |mem*|.
   - For all mem in mem* and mt in mt*,
     - Under the context C', the memory mem is valid with the memory type mt.
+  - |tag*| is |at*|.
   - For all at in at* and tag in tag*,
     - Under the context C', the tag tag is valid with the memory type at.
+  - |func*| is |dt*|.
   - For all dt in dt* and func in func*,
     - the function func is valid with the defined type dt.
+  - |rt*| is |elem*|.
   - For all elem in elem* and rt in rt*,
     - the table segment elem is valid with the element type rt.
+  - |ok*| is |data*|.
   - For all data in data* and ok in ok*,
     - the memory segment data is valid with the data type ok.
   - If start is defined,
     - the start function start is valid.
+  - |nm*| is |export*|.
+  - |xt_E*| is |export*|.
   - For all export in export* and nm in nm* and xt_E in xt_E*,
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(name, nm*) is true.
@@ -23581,7 +23581,7 @@ Module_ok
   - at_I* is $tagsxt(xt_I*).
 
 NotationTypingInstrScheme
-- the instr sequence [instr_u0] is valid with the function type valtype_u1* -> valtype_u3* if:
+- the instruction sequence [instr_u0] is valid with the function type valtype_u1* -> valtype_u3* if:
   - Either:
     - instr_u0 is (BINOP I32 ADD).
     - valtype_u1* is [I32, I32].
@@ -23597,7 +23597,7 @@ NotationTypingInstrScheme
     - valtype_u1* is t_1*.
     - valtype_u3* is t_2*.
     - the block type blocktype is valid with the instruction type t_1* -> t_2*.
-    - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type t_1* -> t_2*.
+    - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr* is valid with the function type t_1* -> t_2*.
 
 Step_pure/unreachable
 1. Trap.
@@ -24351,7 +24351,7 @@ Step_read/struct.get sx? x i
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
     2) Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
     3) Let (mut, zt)* be fieldtype_0*.
-    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+    4) If ((i < |zt*|) and (|mut*| is |zt*|)), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.new_default x
@@ -24885,7 +24885,7 @@ Step/struct.set x i
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
   c. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
   d. Let (mut, zt)* be fieldtype_0*.
-  e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+  e. If ((i < |zt*|) and (|mut*| is |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
 Step/array.new_fixed x n
