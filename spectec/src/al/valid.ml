@@ -4,7 +4,6 @@ open Il.Ast
 open Ast
 open Al_util
 open Print
-open Walk
 open Free
 
 
@@ -44,18 +43,18 @@ module Env = struct
   type t = expr option Map.Make(String).t
 
   (* TODO: pass env *)
-  let env: t ref = ref empty
-  let add_bound_var id = env := add id None !env
-  let add_bound_vars expr = IdSet.iter add_bound_var (free_expr expr)
-  let add_bound_param arg =
-    match arg.it with ExpA e -> add_bound_vars e | TypA _ | DefA _ -> ()
-  let add_subst lhs rhs =
+  let add_bound_var id env = add id None env
+  let add_bound_vars expr = IdSet.fold add_bound_var (free_expr expr)
+  let add_bound_param arg env =
+    match arg.it with
+    | ExpA e -> add_bound_vars e env
+    | TypA _ | DefA _ -> env
+  let add_subst lhs rhs env =
     let open Eval in
-    env :=
-      get_subst lhs rhs Subst.empty
-      |> Subst.map Option.some
-      |> merge (fun _ _ _ -> (* TODO *) assert (false)) !env
-  let add id expr = env := add id (Some expr) !env
+    get_subst lhs rhs Subst.empty
+    |> Subst.map Option.some
+    |> merge (fun _ _ _ -> (* TODO *) assert (false)) env
+  let add id expr = add id (Some expr)
 end
 
 (* Type Env *)
@@ -433,13 +432,8 @@ let get_typcases source typ =
 
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
-  | IdxP expr ->
-    check_list source typ; check_num source expr.note; unwrap_iter_typ typ
-  | SliceP (expr3, expr4) ->
-    check_list source typ;
-    check_num source expr3.note;
-    check_num source expr4.note;
-    typ
+  | IdxP _ -> check_list source typ; unwrap_iter_typ typ
+  | SliceP _ -> check_list source typ; typ
   | DotP atom ->
     let typfields = get_typfields typ in
     match List.find_opt (fun (field, _, _) -> Atom.eq field atom) typfields with
@@ -447,62 +441,121 @@ let access (source: source) (typ: typ) (path: path) : typ =
     | None -> error_field source typ atom
 
 
+let rec valid_path env path =
+  let source = string_of_path path $ path.at in
+  match path.it with
+  | IdxP expr ->
+    valid_expr env expr;
+    check_num source expr.note;
+  | SliceP (expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_num source expr1.note;
+    check_num source expr2.note;
+  | DotP _ -> ()
+
+and valid_arg env arg =
+  match arg.it with
+  | ExpA expr -> valid_expr env expr
+  | _ -> ()
 
 (* Expr validation *)
 
-let valid_expr (walker: unit_walker) (expr: expr) : unit =
+and valid_expr env (expr: expr) : unit =
+  (* TODO *)
   let source = string_of_expr expr $ expr.at in
   (match expr.it with
   | VarE id ->
-    if not (Env.mem id !Env.env) then error expr.at ("free identifier " ^ id)
+    if not (Env.mem id env) then error expr.at ("free identifier " ^ id)
   | NumE _ -> check_num source expr.note;
+  | BoolE _ | TopFrameE | TopLabelE | ContextKindE _ -> check_bool source expr.note
   | UnE (NotOp, expr') ->
-    check_bool source expr.note; check_bool source expr'.note
+    valid_expr env expr';
+    check_bool source expr.note;
+    check_bool source expr'.note;
   | UnE (MinusOp, expr') ->
-    check_num source expr.note; check_num source expr'.note
-  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
+    valid_expr env expr';
     check_num source expr.note;
-    check_num source expr1.note; check_num source expr2.note
+    check_num source expr'.note;
+  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_num source expr.note;
+    check_num source expr1.note;
+    check_num source expr2.note;
   | BinE ((LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
     check_bool source expr.note;
-    check_num source expr1.note; check_num source expr2.note
+    check_num source expr1.note;
+    check_num source expr2.note;
   | BinE ((ImplOp|EquivOp|AndOp|OrOp), expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
     check_bool source expr.note;
-    check_bool source expr1.note; check_bool source expr2.note
+    check_bool source expr1.note;
+    check_bool source expr2.note;
   | BinE ((EqOp|NeOp), expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
     check_bool source expr.note;
-    (* XXX: Not sure about this rule *)
-    check_match source expr1.note expr2.note
+    check_match source expr1.note expr2.note;
   | AccE (expr', path) ->
-    access source expr'.note path |> check_match source expr.note
+    valid_expr env expr';
+    valid_path env path;
+    access source expr'.note path
+    |> check_match source expr.note;
   | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
+    valid_expr env expr1;
+    List.iter (valid_path env) pl;
+    valid_expr env expr2;
     check_match source expr.note expr1.note;
-    List.fold_left (access source) expr1.note pl |> check_match source expr2.note
+    List.fold_left (access source) expr1.note pl
+    |> check_match source expr2.note;
   | StrE r ->
+    List.iter (fun (_, er) -> valid_expr env !er) r;
     let typfields = get_typfields expr.note in
-    List.iter (check_field source expr.note r) typfields
+    List.iter (check_field source expr.note r) typfields;
   | CompE (expr1, expr2) ->
-    check_struct source expr1.note; check_struct source expr2.note;
-    check_match source expr.note expr1.note; check_match source expr1.note expr2.note
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_struct source expr1.note;
+    check_struct source expr2.note;
+    check_match source expr.note expr1.note;
+    check_match source expr1.note expr2.note;
   | CatE (expr1, expr2) ->
-    check_list source expr1.note; check_list source expr2.note;
-    check_match source expr.note expr1.note; check_match source expr1.note expr2.note
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_list source expr1.note;
+    check_list source expr2.note;
+    check_match source expr.note expr1.note;
+    check_match source expr1.note expr2.note;
   | MemE (expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
     check_bool source expr.note;
-    check_match source expr2.note (iterT expr1.note List)
+    check_match source expr2.note (iterT expr1.note List);
   | LenE expr' ->
-    check_list source expr'.note; check_num source expr.note
-  | TupE exprs -> check_tuple source exprs expr.note
+    valid_expr env expr';
+    check_list source expr'.note;
+    check_num source expr.note;
+  | TupE exprs ->
+    List.iter (valid_expr env) exprs;
+    check_tuple source exprs expr.note;
   | CaseE (op, exprs) ->
+    List.iter (valid_expr env) exprs;
     let tcs = get_typcases source expr.note in
     let _binds, typ, _prems = find_case source tcs op in
-    check_case source exprs typ
-  | CallE (id, args) -> check_call source id args expr.note
-  | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
+    check_case source exprs typ;
+  | CallE (id, args) ->
+    List.iter (valid_arg env) args;
+    check_call source id args expr.note;
+  | InvCallE (id, indices, args) ->
+    List.iter (valid_arg env) args;
+    check_inv_call source id indices args expr.note;
   | IterE (expr1, (iter, xes)) -> (* TODO *)
-    let global_env = !Env.env in
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
-      List.iter (fun (id, e) -> Env.add id e) xes;
+      let _new_env = List.fold_right (fun (id, e) -> Env.add id e) xes env in
       (match iter with
       | Opt ->
         check_match source expr.note (iterT expr1.note Opt);
@@ -512,88 +565,167 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       | _ ->
         check_match source expr.note (iterT expr1.note List);
       );
-    Env.env := global_env
   | OptE expr_opt ->
+    Option.iter (valid_expr env) expr_opt;
     check_opt source expr.note;
     Option.iter
       (fun expr' -> check_match source expr.note (iterT expr'.note Opt))
-      expr_opt
+      expr_opt;
   | ListE l ->
+    List.iter (valid_expr env) l;
     check_list source expr.note;
     let elem_typ = unwrap_iter_typ expr.note in
     l
     |> List.map note
     |> List.iter (check_match source elem_typ)
   | ArityE expr1 ->
-    check_num source expr.note; check_context source expr1.note
+    valid_expr env expr1;
+    check_num source expr.note;
+    check_context source expr1.note;
   | FrameE (expr_opt, expr1) ->
+    Option.iter (valid_expr env) expr_opt;
+    valid_expr env expr1;
     check_context source expr.note;
     Option.iter (fun expr2 -> check_num source expr2.note) expr_opt;
     check_match source expr1.note (varT "frame")
   | LabelE (expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
     check_context source expr.note;
     check_num source expr1.note;
     check_match source expr2.note (iterT (varT "instr") List)
   | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE ->
     check_context source expr.note
-  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopFrameE | TopLabelE ->
-    check_bool source expr.note
+  | IsCaseOfE (expr', _) | IsValidE expr' | HasTypeE (expr', _)  ->
+    valid_expr env expr';
+    check_bool source expr.note;
+  | MatchE (expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_bool source expr.note;
   | ContE expr1 ->
+    valid_expr env expr1;
     check_match source expr.note (iterT (varT "instr") List);
-    check_match source expr1.note (varT "label")
+    check_match source expr1.note (varT "label");
   | ChooseE expr1 ->
-    check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
-  | ContextKindE _ -> () (* TODO: Not used anymore *)
+    valid_expr env expr1;
+    check_list source expr1.note;
+    check_match source expr1.note (iterT expr.note List);
   | IsDefinedE expr1 ->
-    check_opt source expr1.note; check_bool source expr.note
+    valid_expr env expr1;
+    check_opt source expr1.note;
+    check_bool source expr.note;
   | TopValueE expr_opt ->
+    Option.iter (valid_expr env) expr_opt;
     check_bool source expr.note;
     Option.iter (fun expr1 -> check_match source expr1.note (varT "valtype")) expr_opt
   | TopValuesE expr1 ->
-    check_bool source expr.note; check_num source expr1.note
+    valid_expr env expr1;
+    check_bool source expr.note;
+    check_num source expr1.note
   | SubE _ | YetE _ -> error_valid "invalid expression" source ""
-  );
-  base_unit_walker.walk_expr walker expr
+  )
 
 
 (* Instr validation *)
 
-let valid_instr (walker: unit_walker) (instr: instr) : unit =
+let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
   let source = string_of_instr instr $ instr.at in
   (match instr.it with
-  | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
-  | EnterI (expr1, expr2, _) ->
-    check_context source expr1.note; check_instr source expr2.note
+  | IfI (expr, il1, il2) ->
+    valid_expr env expr;
+    check_bool source expr.note;
+    (* TODO: Merge env *)
+    let _env1 = valid_instrs env il1 in
+    let _env2 = valid_instrs env il2 in
+    env
+  | EitherI (il1, il2) ->
+    (* TODO: Merge env *)
+    let _env1 = valid_instrs env il1 in
+    let _env2 = valid_instrs env il2 in
+    env
+  | EnterI (expr1, expr2, il) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_context source expr1.note;
+    check_instr source expr2.note;
+    valid_instrs env il
+  | AssertI expr ->
+    valid_expr env expr;
+    check_bool source expr.note;
+    env
   | PushI expr ->
+    valid_expr env expr;
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
-      error_mismatch source (get_base_typ expr.note) (varT "val")
-  | PopI expr | PopAllI expr -> Env.add_bound_vars expr;
+      error_mismatch source (get_base_typ expr.note) (varT "val");
+    env
+  | PopI expr | PopAllI expr ->
+    let new_env = Env.add_bound_vars expr env in
+    valid_expr new_env expr;
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
-      error_mismatch source (get_base_typ expr.note) (varT "val")
+      error_mismatch source (get_base_typ expr.note) (varT "val");
+    new_env
   | LetI (expr1, expr2) ->
-    Env.add_subst expr1 expr2; check_match source expr1.note expr2.note
-  | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
-  | PerformI (id, args) -> check_call source id args (TupT [] $ no_region)
+    let new_env = Env.add_subst expr1 expr2 env in
+    valid_expr new_env expr1;
+    valid_expr env expr2;
+    check_match source expr1.note expr2.note;
+    new_env
+  | TrapI | NopI | ReturnI None | ExitI _ -> env
+  | ThrowI expr ->
+    if not (sub_typ (get_base_typ expr.note) (varT "val")) then
+      error_mismatch source (get_base_typ expr.note) (varT "val");
+    env
+  | ReturnI (Some expr) ->
+    valid_expr env expr;
+    env
+  | ExecuteI expr | ExecuteSeqI expr ->
+    valid_expr env expr;
+    check_instr source expr.note;
+    env
+  | PerformI (id, args) ->
+    List.iter (valid_arg env) args;
+    check_call source id args (TupT [] $ no_region);
+    env
   | ReplaceI (expr1, path, expr2) ->
-    access source expr1.note path |> check_match source expr2.note
-  | AppendI (expr1, _expr2) -> check_list source expr1.note
-  | FieldWiseAppendI (expr1, expr2) -> check_struct source expr1.note; check_struct source expr2.note
+    valid_expr env expr1;
+    valid_path env path;
+    valid_expr env expr2;
+    access source expr1.note path
+    |> check_match source expr2.note;
+    env
+  | AppendI (expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_list source expr1.note;
+    env
+  | FieldWiseAppendI (expr1, expr2) ->
+    valid_expr env expr1;
+    valid_expr env expr2;
+    check_struct source expr1.note;
+    check_struct source expr2.note;
+    env
   | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
-  | _ -> ()
-  );
-  base_unit_walker.walk_instr walker instr
+  )
 
-let init algo =
+and valid_instrs env = function
+  | [] -> env
+  | h :: t -> valid_instrs (valid_instr env h) t
+
+let init_env algo =
   let params = Al_util.params_of_algo algo in
 
-  Env.add_bound_var "s";
-  List.iter Env.add_bound_param params
+  List.iter (valid_arg Env.empty) params;
+
+  Env.empty
+  |> Env.add_bound_var "s"
+  |> List.fold_right Env.add_bound_param params
 
 
 let valid_algo (algo: algorithm) =
@@ -621,14 +753,8 @@ let valid_algo (algo: algorithm) =
   | _ -> ()
   );
 
-  init algo;
-  let walker =
-    { base_unit_walker with
-      walk_expr = valid_expr;
-      walk_instr = valid_instr
-    }
-  in
-  walker.walk_algo walker algo;
+  let env = init_env algo in
+  let _env = valid_instrs env (Al_util.body_of_algo algo) in
 
   (* Reset global il_enviroment *)
   il_env := global_il_env
