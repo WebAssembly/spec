@@ -57,7 +57,7 @@ let module_ok = function
     CaseV (
       "MODULE",
       [
-        ListV types;
+        ListV _types;
         ListV imports;
         _funcs;
         _globals;
@@ -69,7 +69,7 @@ let module_ok = function
         _start_opt;
         ListV exports;
       ]
-    )
+    ) as v
   ] as vs ->
 
     (* TODO: module validation
@@ -78,11 +78,16 @@ let module_ok = function
     |> Reference_interpreter.Valid.check_module;
     *)
 
+    let m = Construct.al_to_module v in
+    let tys = Reference_interpreter.Ast.def_types_of m in
+
+
     let get_clos_externtype = function
       | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
         let s = function
-          | Types.StatX x when Int32.to_int x < Array.length !types ->
-            Types.DefHT (Construct.al_to_def_type (Array.get !types (Int32.to_int x)))
+          | Types.StatX x when Int32.to_int x < List.length tys ->
+            let dt = List.nth tys (Int32.to_int x) in
+            Types.DefHT dt
           | x -> Types.VarHT x
         in
         externtype
