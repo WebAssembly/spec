@@ -540,7 +540,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_bool source expr.note; check_num source expr1.note
   | SubE _ | YetE _ -> error_valid "invalid expression" source ""
   );
-  (Option.get walker.super).walk_expr walker expr
+  base_unit_walker.walk_expr walker expr
 
 
 (* Instr validation *)
@@ -574,7 +574,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   | _ -> ()
   );
-  (Option.get walker.super).walk_instr walker instr
+  base_unit_walker.walk_instr walker instr
 
 let init algo =
   let params = Al_util.params_of_algo algo in
@@ -612,7 +612,6 @@ let valid_algo (algo: algorithm) =
   init algo;
   let walker =
     { base_unit_walker with
-      super = Some base_unit_walker;
       walk_expr = valid_expr;
       walk_instr = valid_instr
     }

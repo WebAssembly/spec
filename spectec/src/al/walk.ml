@@ -6,7 +6,6 @@ open Source
 (* Unit walker *)
 
 type unit_walker = {
-  super: unit_walker option;
   walk_algo: unit_walker -> algorithm -> unit;
   walk_instr: unit_walker -> instr -> unit;
   walk_expr: unit_walker -> expr -> unit;
@@ -89,13 +88,12 @@ let walk_algo (walker: unit_walker) (algo: algorithm) : unit =
   | FuncA (_, args, instrs) ->
     List.iter (walker.walk_arg walker) args; List.iter (walker.walk_instr walker) instrs
 
-let base_unit_walker = { super=None; walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
+let base_unit_walker = { walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
 
 
 (* Transform walker *)
 
 type walker = {
-  super: walker option;
   walk_algo: walker -> algorithm -> algorithm;
   walk_instr: walker -> instr -> instr;
   walk_expr: walker -> expr -> expr;
@@ -215,7 +213,7 @@ let walk_algo (walker: walker) (algo: algorithm) : algorithm =
   in
   { algo with it }
 
-let base_walker = { super=None; walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
+let base_walker = { walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
 
 
 (* TODO: remove walker below *)
