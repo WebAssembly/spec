@@ -1118,12 +1118,12 @@ let al_of_null = function
   | Null -> some "NULL"
 
 let al_of_final = function
-  | NoFinal -> some "FINAL"
-  | Final -> none "FINAL"
+  | NoFinal -> none "FINAL"
+  | Final -> some "FINAL"
 
 let al_of_mut = function
-  | Cons -> some "MUT"
-  | Var -> none "MUT"
+  | Cons -> none "MUT"
+  | Var -> some "MUT"
 
 let rec al_of_storage_type = function
   | ValStorageT vt -> al_of_val_type vt
@@ -1996,6 +1996,14 @@ let al_of_data data =
     CaseV ("DATA", [ arg_of_case "ACTIVE" 1 seg; bytes_ ])
   else
     CaseV ("DATA", [ bytes_; seg ])
+
+
+let al_of_extern_type = function
+  | ExternFuncT (typeuse) -> CaseV ("FUNC", [al_of_def_type typeuse])
+  | ExternGlobalT (globaltype) -> CaseV ("GLOBAL", [al_of_global_type globaltype])
+  | ExternTableT (tabletype) -> CaseV ("TABLE", [al_of_table_type tabletype])
+  | ExternMemoryT (memtype) -> CaseV ("MEM", [al_of_memory_type memtype])
+  | ExternTagT (TagT (typeuse)) -> CaseV ("TAG", [al_of_def_type typeuse])
 
 let al_of_import_desc module_ idesc =
   match idesc.it with

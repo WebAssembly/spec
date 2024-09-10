@@ -57,7 +57,7 @@ let module_ok = function
     CaseV (
       "MODULE",
       [
-        _types;
+        ListV types;
         ListV imports;
         _funcs;
         _globals;
@@ -79,7 +79,16 @@ let module_ok = function
     *)
 
     let get_externtype = function
-      | CaseV ("IMPORT", [ _name1; _name2; externtype ]) -> externtype
+      | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
+        let s = function
+          | Types.StatX x when Int32.to_int x < Array.length !types ->
+            Types.DefHT (Construct.al_to_def_type (Array.get !types (Int32.to_int x)))
+          | x -> Types.VarHT x
+        in
+        externtype
+        |> Construct.al_to_extern_type
+        |> Types.subst_extern_type s
+        |> Construct.al_of_extern_type
       | _ -> Numerics.error_values "$Module_ok" vs
     in
     let get_externidx = function
@@ -111,7 +120,7 @@ let externaddr_type = function
     |> unwrap_listv_to_array
     |> fun arr -> Array.get arr addr
     |> strv_access "TYPE"
-    |> fun type_ -> CaseV (name, [type_])
+    |> fun type_ -> let res = CaseV (name, [type_]) in print_endline (Print.string_of_value res); print_endline (Print.string_of_value t);res
     |> Construct.al_to_extern_type
     |> fun t' -> Match.match_extern_type [] t' (Construct.al_to_extern_type t)
     |> boolV
