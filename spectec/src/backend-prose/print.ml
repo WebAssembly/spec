@@ -383,7 +383,18 @@ let string_of_algorithm algo = match algo.it with
         "" params
     ^ string_of_instrs instrs ^ "\n"
 
-let string_of_expr_with_type e = "the " ^ Prose_util.extract_desc e.note ^ " " ^ string_of_expr e
+let render_type_visit = ref []
+let init_render_type () = render_type_visit := []
+let string_of_expr_with_type e =
+  let s = string_of_expr e in
+  if List.mem s !render_type_visit then s else (
+    render_type_visit := s :: !render_type_visit;
+    let t = Prose_util.extract_desc e.note in
+    if t = "" then
+      string_of_expr e
+    else
+      "the " ^ t ^ " " ^ string_of_expr e
+  )
 
 let string_of_cmpop = function
   | Eq -> "is"
@@ -408,7 +419,7 @@ let rec raw_string_of_stmt stmt =
         (string_of_expr e)
   | CmpS (e1, cmpop, e2) ->
       sprintf "%s %s %s."
-        (string_of_expr e1)
+        (string_of_expr_with_type e1)
         (string_of_cmpop cmpop)
         (string_of_expr e2)
   | IsValidS (c_opt, e, es) ->
@@ -460,6 +471,7 @@ let string_of_def = function
     ^ "\n"
     ^ string_of_stmt concl ^ "\n"
 | RuleD (anchor, _e, concl, prems) ->
+    init_render_type ();
     let concl_str = string_of_stmt concl in
     let drop_last x = String.sub x 0 (String.length x - 1) in
     anchor

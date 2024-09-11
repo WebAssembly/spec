@@ -409,6 +409,10 @@ and render_expr' env expr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
+  | Al.Ast.MemE (e1, {it = ListE es; _}) ->
+    let se1 = render_expr env e1 in
+    let se2 = render_list (render_expr env) "; " es in
+    sprintf "%s is contained in [%s]" se1 se2
   | Al.Ast.MemE (e1, e2) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
@@ -503,7 +507,18 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
-let render_expr_with_type env e = "the " ^ Prose_util.extract_desc e.note ^ " " ^ render_expr env e
+let render_type_visit = ref []
+let init_render_type () = render_type_visit := []
+let render_expr_with_type env e =
+  let s = render_expr env e in
+  if List.mem s !render_type_visit then s else (
+    render_type_visit := s :: !render_type_visit;
+    let t = Prose_util.extract_desc e.note in
+    if t = "" then
+      render_expr env e
+    else
+      "the " ^ t ^ " " ^ render_expr env e
+  )
 
 (* Instructions *)
 
@@ -524,7 +539,7 @@ let rec render_stmt env depth stmt =
         (render_expr env e)
     | CmpS (e1, cmpop, e2) ->
       sprintf "%s is%s %s."
-        (render_expr env e1)
+        (render_expr_with_type env e1)
         (render_prose_cmpop cmpop)
         (render_expr env e2)
     | IsValidS (c_opt, e, es) ->
@@ -747,6 +762,7 @@ let _render_pred env name params instrs =
   render_stmts env 0 instrs
 
 let render_rule env concl prems =
+  init_render_type ();
   match prems with
   | [] -> render_stmt env 0 concl
   | _ ->
