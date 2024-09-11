@@ -53,7 +53,7 @@ module Env = struct
     let open Eval in
     get_subst lhs rhs Subst.empty
     |> Subst.map Option.some
-    |> merge (fun _ _ _ -> (* TODO *) assert (false)) env
+    |> union (fun _ _ _ -> (* TODO *) assert (false)) env
   let add id expr = add id (Some expr)
 end
 
