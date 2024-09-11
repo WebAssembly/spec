@@ -721,11 +721,15 @@ and valid_instrs env = function
 let init_env algo =
   let params = Al_util.params_of_algo algo in
 
-  List.iter (valid_arg Env.empty) params;
+  let env =
+    Env.empty
+    |> Env.add_bound_var "s"
+    |> List.fold_right Env.add_bound_param params
+  in
 
-  Env.empty
-  |> Env.add_bound_var "s"
-  |> List.fold_right Env.add_bound_param params
+  List.iter (valid_arg env) params;
+
+  env
 
 
 let valid_algo (algo: algorithm) =
