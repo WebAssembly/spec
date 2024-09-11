@@ -393,32 +393,35 @@ let post_process_of_pop i =
   | PopAllI _ -> [i]
   | _ -> error at "not PopI nor PopallI"
 
+let subst_instr_typ e =
+  let subst = Il.Subst.add_typid Il.Subst.empty ("instr" $ no_region) valT in
+  let subst_instr = Il.Subst.subst_typ subst in
+  { e with note = subst_instr e.note }
+
 (* TODO: remove this *)
 let insert_pop' e =
-  let valsT = listT valT in
   let pop =
     match e.it with
     | Il.ListE [e'] ->
-      popI { (translate_exp e') with note = valT } ~at:e'.at
+      popI (translate_exp e' |> subst_instr_typ) ~at:e'.at
     | Il.ListE es ->
-      popsI { (translate_exp e) with note = valsT } (Some (es |> List.length |> Z.of_int |> numE)) ~at:e.at
+      popsI (translate_exp e |> subst_instr_typ) (Some (es |> List.length |> Z.of_int |> numE)) ~at:e.at
     | Il.IterE (_, (Il.ListN (e', None), _)) ->
-      popsI { (translate_exp e) with note = valsT } (Some (translate_exp e')) ~at:e.at
+      popsI (translate_exp e |> subst_instr_typ) (Some (translate_exp e')) ~at:e.at
     | _ ->
-      popsI { (translate_exp e) with note = valsT } None ~at:e.at
+      popsI (translate_exp e |> subst_instr_typ) None ~at:e.at
   in
   post_process_of_pop pop
 
 let insert_pop e e_n =
-  let valsT = listT valT in
   let pop =
     match e.it, e_n.it with
     | ListE [e'], _ ->
-      popI { e' with note = valT } ~at:e'.at
+      popI (subst_instr_typ e') ~at:e'.at
     | _, NumE z when z = Z.minus_one ->
-      popAllI { e with note = valsT } ~at:e.at
+      popAllI (subst_instr_typ e) ~at:e.at
     | _ ->
-      popsI { e with note = valsT } (Some e_n) ~at:e.at
+      popsI (subst_instr_typ e) (Some e_n) ~at:e.at
   in
   post_process_of_pop pop
 
@@ -467,7 +470,7 @@ let rec translate_rhs exp =
     let instrs = translate_rhs inner_exp in
     List.map (walker.walk_instr walker) instrs
   (* Value *)
-  | _ when is_wasm_value exp -> [ pushI {(translate_exp exp) with note = valT} ]
+  | _ when is_wasm_value exp -> [ pushI (translate_exp exp |> subst_instr_typ) ]
   (* Instr *)
   | _ when is_wasm_instr exp -> [ executeI (translate_exp exp) ]
   | _ -> error_exp exp "expression on rhs of reduction"
@@ -1141,7 +1144,7 @@ let translate_context_winstr winstr =
     let vals = Lib.List.last args in
     [
       (* TODO: append Jump instr *)
-      popAllI ({ (translate_exp vals) with note=(listT valT)}) ~at:vals.at;
+      popAllI (translate_exp vals |> subst_instr_typ) ~at:vals.at;
       insert_assert winstr;
       exitI kind ~at:at
     ]
