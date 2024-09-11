@@ -590,10 +590,14 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
       AlContext.add_instrs il2 ctx
     )
   | AssertI e ->
-    if is_true (eval_expr env e) then
-      ctx
-    else
-      fail_expr e "assertion fail"
+    (match e.it with
+    | YetE _ -> ctx
+    | _ ->
+      if is_true (eval_expr env e) then
+        ctx
+      else
+        fail_expr e "assertion fail"
+    )
     (* ctx *)
 
   | PushI e ->
