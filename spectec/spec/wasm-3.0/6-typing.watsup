@@ -887,7 +887,6 @@ rule Instr_ok/array.set:
 
 rule Instr_ok/array.len:
   C |- ARRAY.LEN : (REF NULL ARRAY) -> I32
-  -- Expand: C.TYPES[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.fill:
   C |- ARRAY.FILL x : (REF NULL (_IDX x)) I32 $unpack(zt) I32 -> eps

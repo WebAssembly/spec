@@ -13567,12 +13567,7 @@ watsup 0.4 generator
   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
-* The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
-
-
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
-
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+* The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 * The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -23064,9 +23059,7 @@ Instr_ok/array.set
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
 
 Instr_ok/array.len
-- the instruction ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
+- the instruction ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32].
 
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:

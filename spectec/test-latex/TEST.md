@@ -6431,7 +6431,6 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{array}~(\mathsf{mut}~{\mathit{zt}})
 }{
 C \vdash \mathsf{array{.}len} : (\mathsf{ref}~\mathsf{null}~\mathsf{array}) \rightarrow \mathsf{i{\scriptstyle 32}}
 } \, {[\textsc{\scriptsize T{-}array.len}]}
