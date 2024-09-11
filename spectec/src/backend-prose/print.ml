@@ -23,7 +23,7 @@ let string_of_nullable_list stringifier left sep right = function
   | l -> string_of_list stringifier left sep right l
 
 let indent_depth = ref 0
-let indent () = ((List.init !indent_depth (fun _ -> "  ")) |> String.concat "") ^ "-"
+let indent () = ((List.init !indent_depth (fun _ -> "  ")) |> String.concat "") ^ "- "
 
 
 
@@ -393,51 +393,56 @@ let string_of_cmpop = function
   | Le -> "is less than or equal to"
   | Ge -> "is greater than or equal to"
 
-let rec string_of_stmt = function
+let rec raw_string_of_stmt stmt =
+  let string_of_block = function
+    | [s] -> " " ^ raw_string_of_stmt s
+    | ss -> "\n" ^ indented_string_of_stmts ss
+  in
+  match stmt with
   | LetS (e1, e2) ->
-      sprintf "%s Let %s be %s." (indent ())
+      sprintf "Let %s be %s."
         (string_of_expr e1)
         (string_of_expr_with_type e2)
   | CondS e ->
-      sprintf "%s %s." (indent ())
+      sprintf "%s."
         (string_of_expr e)
   | CmpS (e1, cmpop, e2) ->
-      sprintf "%s %s %s %s." (indent ())
+      sprintf "%s %s %s."
         (string_of_expr e1)
         (string_of_cmpop cmpop)
         (string_of_expr e2)
   | IsValidS (c_opt, e, es) ->
-      sprintf "%s %s%s is valid%s." (indent ())
+      sprintf "%s%s is valid%s."
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
         (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
   | MatchesS (e1, e2) ->
-      sprintf "%s %s matches %s." (indent ())
+      sprintf "%s matches %s."
         (string_of_expr_with_type e1)
         (string_of_expr_with_type e2)
   | IsConstS (c_opt, e) ->
-      sprintf "%s %s%s is constant." (indent ())
+      sprintf "%s%s is constant."
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
-  | IfS (c, is) ->
-      sprintf "%s If %s, \n%s" (indent ())
+  | IfS (c, ss) ->
+      sprintf "If %s,%s"
         (string_of_expr c)
-        (indented_string_of_stmts is)
-  | ForallS (iters, is) ->
+        (string_of_block ss)
+  | ForallS (iters, ss) ->
       let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
-      sprintf "%s For all %s,\n%s" (indent ())
+      sprintf "For all %s,%s"
         (string_of_list string_of_iter "" " and " "" iters)
-        (indented_string_of_stmts is)
-  | EitherS iss ->
-      sprintf "%s Either:\n%s" (indent ())
-        (string_of_list indented_string_of_stmts "" ("\n" ^ indent () ^ " Or:\n") "" iss)
+        (string_of_block ss)
+  | EitherS sss ->
+        string_of_list string_of_block "Either:" ("\n" ^ indent () ^ "Or:") "" sss
   | RelS (s, es) ->
       let template = String.split_on_char '%' s in
       let args = List.map string_of_expr es in
 
-      sprintf "%s %s" (indent())
-        (Prose_util.alternate template args |> String.concat "")
+      Prose_util.alternate template args |> String.concat ""
   | YetS s -> indent () ^ " Yet: " ^ s
+
+and string_of_stmt stmt = indent () ^ raw_string_of_stmt stmt
 
 and indented_string_of_stmt i =
   indent_depth := !indent_depth + 1;

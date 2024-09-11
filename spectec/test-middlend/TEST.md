@@ -30054,9 +30054,7 @@ relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule binop{C : context, Inn : Inn, binop : binop_((Inn : Inn <: numtype))}:
     `%|-%CONST`(C, BINOP_instr((Inn : Inn <: numtype), binop))
-    -- if (|[I32_Inn I64_Inn]| > 0)
     -- if Inn <- [I32_Inn I64_Inn]
-    -- if (|[ADD_binop_ SUB_binop_ MUL_binop_]| > 0)
     -- if binop <- [ADD_binop_ SUB_binop_ MUL_binop_]
 
 ;; 6-typing.watsup

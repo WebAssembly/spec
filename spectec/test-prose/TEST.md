@@ -184,13 +184,9 @@ watsup 0.4 generator
 
   * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-  * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`, :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-    * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
-
-  * For all :math:`l` in :math:`{l^\ast}`,
-
-    * :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 * The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
@@ -239,9 +235,7 @@ watsup 0.4 generator
 
     * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
-  * Or:
-
-    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
+  * Or: :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
 
 
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
@@ -315,9 +309,7 @@ watsup 0.4 generator
 
     * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-  * If :math:`n` is defined,
-
-    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+  * If :math:`n` is defined, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
@@ -335,9 +327,7 @@ watsup 0.4 generator
 
     * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-  * If :math:`n` is defined,
-
-    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+  * If :math:`n` is defined, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
@@ -382,9 +372,7 @@ watsup 0.4 generator
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
 
 
-  * Either:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(t{.}\mathsf{const}~c)`.
+  * Either: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(t{.}\mathsf{const}~c)`.
 
   * Or:
 
@@ -398,9 +386,7 @@ watsup 0.4 generator
 * :math:`{{\mathit{instr}}^\ast}` is const if:
 
 
-  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
-
-    * :math:`{\mathit{instr}}` is const.
+  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`, :math:`{\mathit{instr}}` is const.
 
 
 * The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
@@ -456,13 +442,9 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
-
-  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
-
-    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
@@ -544,57 +526,37 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
 
-  * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
-
-    * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+  * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, the type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
 
   * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
-  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
-
-    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`, under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
   * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
 
-  * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+  * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`, under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
 
   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
-
-    * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, the function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
 
   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
-  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
-
-    * The table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
-  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
+  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
-    * The memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, the table segment :math:`{\mathit{elem}}` is valid.
 
-  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`,
+  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, the memory segment :math:`{\mathit{data}}` is valid.
 
-    * The table segment :math:`{\mathit{elem}}` is valid.
-
-  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
-
-    * The memory segment :math:`{\mathit{data}}` is valid.
-
-  * If :math:`{\mathit{start}}` is defined,
-
-    * The start function :math:`{\mathit{start}}` is valid.
+  * If :math:`{\mathit{start}}` is defined, the start function :math:`{\mathit{start}}` is valid.
 
   * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
-
-    * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
+  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`, the export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
 
   * :math:`{|{{\mathit{tt}}^\ast}|}` is less than or equal to :math:`1`.
 
@@ -2905,10 +2867,8 @@ Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t? -> t_2* if:
   - |C.LABELS| is greater than l'.
   - t? is C.LABELS[l'].
-  - For all l in l*,
-    - |C.LABELS| is greater than l.
-  - For all l in l*,
-    - t? is C.LABELS[l].
+  - For all l in l*, |C.LABELS| is greater than l.
+  - For all l in l*, t? is C.LABELS[l].
 
 Instr_ok/call
 - the instruction (CALL x) is valid with the function type t_1* -> t_2? if:
@@ -2944,8 +2904,7 @@ Instr_ok/cvtop
   - Either:
     - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
-  - Or:
-    - cvtop_u0 is cvtop.
+  - Or: cvtop_u0 is cvtop.
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
@@ -2990,8 +2949,7 @@ Instr_ok/load
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - If n is defined, nt is Inn.
 
 Instr_ok/store
 - the instruction (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
@@ -3001,8 +2959,7 @@ Instr_ok/store
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - If n is defined, nt is Inn.
 
 Instrs_ok
 - the instruction sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
@@ -3028,8 +2985,7 @@ Expr_ok
 
 Instr_const
 - the instruction instr_u0 is constant if:
-  - Either:
-    - instr_u0 is (t.CONST c).
+  - Either: instr_u0 is (t.CONST c).
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
@@ -3037,8 +2993,7 @@ Instr_const
 
 Expr_const
 - the expression instr* is constant if:
-  - For all instr in instr*,
-    - the instruction instr is constant.
+  - For all instr in instr*, the instruction instr is constant.
 
 Type_ok
 - the type (TYPE ft) is valid with the function type ft if:
@@ -3072,10 +3027,8 @@ Elem_ok
   - the expression expr is valid with the number type sequence ?(I32).
   - the expression expr is constant.
   - |x*| is |ft*|.
-  - For all x in x*,
-    - |C.FUNCS| is greater than x.
-  - For all ft in ft* and x in x*,
-    - C.FUNCS[x] is ft.
+  - For all x in x*, |C.FUNCS| is greater than x.
+  - For all ft in ft* and x in x*, C.FUNCS[x] is ft.
 
 Data_ok
 - the memory segment (DATA expr b*) is valid if:
@@ -3123,32 +3076,22 @@ Export_ok
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid if:
   - |type*| is |ft'*|.
-  - For all ft' in ft'* and type in type*,
-    - the type type is valid with the function type ft'.
+  - For all ft' in ft'* and type in type*, the type type is valid with the function type ft'.
   - |ixt*| is |import*|.
-  - For all import in import* and ixt in ixt*,
-    - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
+  - For all import in import* and ixt in ixt*, Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
   - |gt*| is |global*|.
-  - For all global in global* and gt in gt*,
-    - Under the context C', the global global is valid with the global type gt.
+  - For all global in global* and gt in gt*, Under the context C', the global global is valid with the global type gt.
   - |func*| is |ft*|.
-  - For all ft in ft* and func in func*,
-    - the function func is valid with the function type ft.
+  - For all ft in ft* and func in func*, the function func is valid with the function type ft.
   - |tt*| is |table*|.
-  - For all table in table* and tt in tt*,
-    - the table table is valid with the table type tt.
+  - For all table in table* and tt in tt*, the table table is valid with the table type tt.
   - |mt*| is |mem*|.
-  - For all mem in mem* and mt in mt*,
-    - the memory mem is valid with the memory type mt.
-  - For all elem in elem*,
-    - the table segment elem is valid.
-  - For all data in data*,
-    - the memory segment data is valid.
-  - If start is defined,
-    - the start function start is valid.
+  - For all mem in mem* and mt in mt*, the memory mem is valid with the memory type mt.
+  - For all elem in elem*, the table segment elem is valid.
+  - For all data in data*, the memory segment data is valid.
+  - If start is defined, the start function start is valid.
   - |xt*| is |export*|.
-  - For all export in export* and xt in xt*,
-    - the export export is valid with the external type xt.
+  - For all export in export* and xt in xt*, the export export is valid with the external type xt.
   - |tt*| is less than or equal to 1.
   - |mt*| is less than or equal to 1.
   - C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; LOCALS: []; LABELS: []; RETURN: ?(); }.
@@ -4258,13 +4201,9 @@ watsup 0.4 generator
 * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`t` if:
 
 
-  * Either:
+  * Either: :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`.
-
-  * Or:
-
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+  * Or: :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
 
 * The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
@@ -4272,9 +4211,7 @@ watsup 0.4 generator
 
   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
 
-  * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
-
-    * The value type :math:`t_1` matches the value type :math:`t_2`.
+  * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`, the value type :math:`t_1` matches the value type :math:`t_2`.
 
 
 * The limits :math:`(n_{11}, n_{12})` matches the limits :math:`(n_{21}, n_{22})` if:
@@ -4373,9 +4310,7 @@ watsup 0.4 generator
 * The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-  * Either:
-
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
+  * Either: :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
 
   * Or:
 
@@ -4431,13 +4366,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`, :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-    * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
-
-  * For all :math:`l` in :math:`{l^\ast}`,
-
-    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
@@ -4494,9 +4425,7 @@ watsup 0.4 generator
 
     * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
-  * Or:
-
-    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
+  * Or: :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{cvtop}}`.
 
 
 * The instruction :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
@@ -4552,9 +4481,7 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-  * For all :math:`i` in :math:`{i^\ast}`,
-
-    * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
+  * For all :math:`i` in :math:`{i^\ast}`, :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the function type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -4763,9 +4690,7 @@ watsup 0.4 generator
 
     * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-  * If :math:`n` is defined,
-
-    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+  * If :math:`n` is defined, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
@@ -4783,9 +4708,7 @@ watsup 0.4 generator
 
     * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
-  * If :math:`n` is defined,
-
-    * :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+  * If :math:`n` is defined, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
 
 * The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
@@ -4902,19 +4825,11 @@ watsup 0.4 generator
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
 
 
-  * Either:
+  * Either: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
-
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
   * Or:
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
@@ -4927,9 +4842,7 @@ watsup 0.4 generator
 * :math:`{{\mathit{instr}}^\ast}` is const if:
 
 
-  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
-
-    * :math:`{\mathit{instr}}` is const.
+  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`, :math:`{\mathit{instr}}` is const.
 
 
 * The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
@@ -4987,12 +4900,8 @@ watsup 0.4 generator
 
     * :math:`{\mathit{expr}}` is const.
 
-  * Or:
-
-    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
-  * Or:
-
-    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
+  * Or: :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+  * Or: :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
 
 * The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the reference type :math:`{\mathit{rt}}` if:
@@ -5022,9 +4931,7 @@ watsup 0.4 generator
 
     * :math:`{\mathit{expr}}` is const.
 
-  * Or:
-
-    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+  * Or: :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid if:
@@ -5100,59 +5007,39 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{type*}}|}` is :math:`{|{\mathit{ft'*}}|}`.
 
-  * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`,
-
-    * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+  * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, the type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
 
   * :math:`{|{\mathit{ixt*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
-  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`,
-
-    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`, under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
   * :math:`{|{\mathit{gt*}}|}` is :math:`{|{\mathit{global*}}|}`.
 
-  * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+  * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`, under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
 
   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
-  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`, under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
-  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`, under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
   * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
 
-  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
+  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`, under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
-    * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is valid with the reference type :math:`{\mathit{rt}}`.
-
-  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
+  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
 
   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, the function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
 
-    * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
-
-  * If :math:`{\mathit{start}}` is defined,
-
-    * The start function :math:`{\mathit{start}}` is valid.
+  * If :math:`{\mathit{start}}` is defined, the start function :math:`{\mathit{start}}` is valid.
 
   * :math:`{|{\mathit{xt*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`,
-
-    * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
+  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`, the export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
 
   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
@@ -9640,16 +9527,13 @@ Externtype_ok
 
 Valtype_sub
 - the value type valtype_u0 matches the value type t if:
-  - Either:
-    - valtype_u0 is t.
-  - Or:
-    - valtype_u0 is BOT.
+  - Either: valtype_u0 is t.
+  - Or: valtype_u0 is BOT.
 
 Resulttype_sub
 - the value type sequence t_1* matches the value type sequence t_2* if:
   - |t_2*| is |t_1*|.
-  - For all t_1 in t_1* and t_2 in t_2*,
-    - the value type t_1 matches the value type t_2.
+  - For all t_1 in t_1* and t_2 in t_2*, the value type t_1 matches the value type t_2.
 
 Limits_sub
 - the limits (n_11, n_12) matches the limits (n_21, n_22) if:
@@ -9713,8 +9597,7 @@ Instr_ok/drop
 
 Instr_ok/select
 - the instruction (SELECT() valtype_u0? ?) is valid with the function type [t, t, I32] -> [t] if:
-  - Either:
-    - valtype_u0? is ?([t]).
+  - Either: valtype_u0? is ?([t]).
   - Or:
     - valtype_u0? is ?().
     - the value type t matches the value type t'.
@@ -9748,10 +9631,8 @@ Instr_ok/br_if
 
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t* -> t_2* if:
-  - For all l in l*,
-    - |C.LABELS| is greater than l.
-  - For all l in l*,
-    - the value type sequence t* matches the result type C.LABELS[l].
+  - For all l in l*, |C.LABELS| is greater than l.
+  - For all l in l*, the value type sequence t* matches the result type C.LABELS[l].
   - |C.LABELS| is greater than l'.
   - the value type sequence t* matches the result type C.LABELS[l'].
 
@@ -9791,8 +9672,7 @@ Instr_ok/cvtop
   - Either:
     - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
-  - Or:
-    - cvtop_u0 is cvtop.
+  - Or: cvtop_u0 is cvtop.
 
 Instr_ok/ref.null
 - the instruction (REF.NULL rt) is valid with the function type [] -> [rt].
@@ -9843,8 +9723,7 @@ Instr_ok/vswizzle
 
 Instr_ok/vshuffle
 - the instruction (VSHUFFLE sh i*) is valid with the function type [V128, V128] -> [V128] if:
-  - For all i in i*,
-    - i is less than (2 · $dim(sh)).
+  - For all i in i*, i is less than (2 · $dim(sh)).
 
 Instr_ok/vsplat
 - the instruction (VSPLAT sh) is valid with the function type [$shunpack(sh)] -> [V128].
@@ -9978,8 +9857,7 @@ Instr_ok/load
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - If n is defined, nt is Inn.
 
 Instr_ok/store
 - the instruction (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
@@ -9989,8 +9867,7 @@ Instr_ok/store
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - If n is defined, nt is Inn.
 
 Instr_ok/vload
 - the instruction (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type [I32] -> [V128] if:
@@ -10057,14 +9934,10 @@ Expr_ok
 
 Instr_const
 - the instruction instr_u0 is constant if:
-  - Either:
-    - instr_u0 is (nt.CONST c).
-  - Or:
-    - instr_u0 is (vt.CONST vc).
-  - Or:
-    - instr_u0 is (REF.NULL rt).
-  - Or:
-    - instr_u0 is (REF.FUNC x).
+  - Either: instr_u0 is (nt.CONST c).
+  - Or: instr_u0 is (vt.CONST vc).
+  - Or: instr_u0 is (REF.NULL rt).
+  - Or: instr_u0 is (REF.FUNC x).
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
@@ -10072,8 +9945,7 @@ Instr_const
 
 Expr_const
 - the expression instr* is constant if:
-  - For all instr in instr*,
-    - the instruction instr is constant.
+  - For all instr in instr*, the instruction instr is constant.
 
 Type_ok
 - the type (TYPE ft) is valid with the function type ft if:
@@ -10108,10 +9980,8 @@ Elemmode_ok
     - C.TABLES[x] is (lim rt).
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
-  - Or:
-    - elemmode_u0 is PASSIVE.
-  - Or:
-    - elemmode_u0 is DECLARE.
+  - Or: elemmode_u0 is PASSIVE.
+  - Or: elemmode_u0 is DECLARE.
 
 Elem_ok
 - the table segment (ELEM rt expr* elemmode) is valid with the reference type rt if:
@@ -10128,8 +9998,7 @@ Datamode_ok
     - C.MEMS[0] is mt.
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
-  - Or:
-    - datamode_u0 is PASSIVE.
+  - Or: datamode_u0 is PASSIVE.
 
 Data_ok
 - the memory segment (DATA b* datamode) is valid if:
@@ -10174,33 +10043,23 @@ Export_ok
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid if:
   - |type*| is |ft'*|.
-  - For all ft' in ft'* and type in type*,
-    - the type type is valid with the function type ft'.
+  - For all ft' in ft'* and type in type*, the type type is valid with the function type ft'.
   - |ixt*| is |import*|.
-  - For all import in import* and ixt in ixt*,
-    - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
+  - For all import in import* and ixt in ixt*, Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
   - |gt*| is |global*|.
-  - For all global in global* and gt in gt*,
-    - Under the context C', the global global is valid with the global type gt.
+  - For all global in global* and gt in gt*, Under the context C', the global global is valid with the global type gt.
   - |tt*| is |table*|.
-  - For all table in table* and tt in tt*,
-    - Under the context C', the table table is valid with the table type tt.
+  - For all table in table* and tt in tt*, Under the context C', the table table is valid with the table type tt.
   - |mt*| is |mem*|.
-  - For all mem in mem* and mt in mt*,
-    - Under the context C', the memory mem is valid with the memory type mt.
+  - For all mem in mem* and mt in mt*, Under the context C', the memory mem is valid with the memory type mt.
   - |rt*| is |elem*|.
-  - For all elem in elem* and rt in rt*,
-    - Under the context C', the table segment elem is valid with the reference type rt.
-  - For all data in data*,
-    - Under the context C', the memory segment data is valid.
+  - For all elem in elem* and rt in rt*, Under the context C', the table segment elem is valid with the reference type rt.
+  - For all data in data*, Under the context C', the memory segment data is valid.
   - |func*| is |ft*|.
-  - For all ft in ft* and func in func*,
-    - the function func is valid with the function type ft.
-  - If start is defined,
-    - the start function start is valid.
+  - For all ft in ft* and func in func*, the function func is valid with the function type ft.
+  - If start is defined, the start function start is valid.
   - |xt*| is |export*|.
-  - For all export in export* and xt in xt*,
-    - the export export is valid with the external type xt.
+  - For all export in export* and xt in xt*, the export export is valid with the external type xt.
   - |mt*| is less than or equal to 1.
   - C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; ELEMS: rt*; DATAS: OK^n; LOCALS: []; LABELS: []; RETURN: ?(); }.
   - C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }.
@@ -12347,9 +12206,7 @@ watsup 0.4 generator
 * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-  * Either:
-
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{absheaptype}}`.
+  * Either: :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{absheaptype}}`.
 
   * Or:
 
@@ -12392,17 +12249,13 @@ watsup 0.4 generator
     * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{reftype}}`.
 
     * The reference type :math:`{\mathit{reftype}}` is valid.
-  * Or:
-
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
+  * Or: :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{bot}`.
 
 
 * The value type sequence :math:`{t^\ast}` is valid if:
 
 
-  * For all :math:`t` in :math:`{t^\ast}`,
-
-    * The value type :math:`t` is valid.
+  * For all :math:`t` in :math:`{t^\ast}`, the value type :math:`t` is valid.
 
 
 * The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
@@ -12414,13 +12267,9 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-    * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
-
-  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`,
-
-    * :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
+  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
 
 
 * The packed type :math:`{\mathit{packtype}}` is valid.
@@ -12463,9 +12312,7 @@ watsup 0.4 generator
 
     * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
-    * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`,
-
-      * The field type :math:`{\mathit{fieldtype}}` is valid.
+    * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`, the field type :math:`{\mathit{fieldtype}}` is valid.
 
   * Or:
 
@@ -12488,9 +12335,7 @@ watsup 0.4 generator
 * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
 
 
-  * Either:
-
-    * :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+  * Either: :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
   * Or:
 
@@ -12724,9 +12569,7 @@ watsup 0.4 generator
 
   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
 
-  * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`,
-
-    * The value type :math:`t_1` matches the value type :math:`t_2`.
+  * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`, the value type :math:`t_1` matches the value type :math:`t_2`.
 
 
 * The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` matches the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
@@ -12748,9 +12591,7 @@ watsup 0.4 generator
 
     * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
 
-    * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`,
-
-      * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
+    * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`, the field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
 
   * Or:
 
@@ -12773,27 +12614,19 @@ watsup 0.4 generator
 
   * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
 
-  * For all :math:`x` in :math:`{x^\ast}`,
-
-    * :math:`x` is less than :math:`x_0`.
+  * For all :math:`x` in :math:`{x^\ast}`, :math:`x` is less than :math:`x_0`.
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
   * :math:`{|{\mathit{x'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
-
-  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`,
-
-    * :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`, :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
   * The composite type :math:`{\mathit{comptype}}` is valid.
 
-  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
-
-    * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, the composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
 * The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
@@ -12801,31 +12634,23 @@ watsup 0.4 generator
 
   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
 
-  * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`,
-
-    * :math:`{\mathit{typeuse}} \prec x, i` is true.
+  * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, :math:`{\mathit{typeuse}} \prec x, i` is true.
 
   * :math:`{|{\mathit{typeuse*}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
   * :math:`{|{\mathit{typeuse'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`,
-
-    * :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`, :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
   * The composite type :math:`{\mathit{comptype}}` is valid.
 
-  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`,
-
-    * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, the composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
 * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
-  * Either:
-
-    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+  * Either: :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
   * Or:
 
@@ -12839,9 +12664,7 @@ watsup 0.4 generator
 * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})` if:
 
 
-  * Either:
-
-    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
+  * Either: :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
 
   * Or:
 
@@ -12947,13 +12770,9 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{t*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`,
+  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
 
-    * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
-
-  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`,
-
-    * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
+  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
 
 
 * The limits :math:`(n_1, m_1)` matches the limits :math:`(n_2, m_2)` if:
@@ -13060,9 +12879,7 @@ watsup 0.4 generator
 
     * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{{\mathit{valtype}}^?}`.
 
-    * If :math:`{\mathit{valtype}}` is defined,
-
-      * The value type :math:`{\mathit{valtype}}` is valid.
+    * If :math:`{\mathit{valtype}}` is defined, the value type :math:`{\mathit{valtype}}` is valid.
 
   * Or:
 
@@ -13133,9 +12950,7 @@ watsup 0.4 generator
 
   * The value type :math:`t` is valid.
 
-  * Either:
-
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
+  * Either: :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`t`.
 
   * Or:
 
@@ -13193,13 +13008,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-  * For all :math:`l` in :math:`{l^\ast}`,
+  * For all :math:`l` in :math:`{l^\ast}`, :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
 
-    * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
-
-  * For all :math:`l` in :math:`{l^\ast}`,
-
-    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
   * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
 
@@ -13367,9 +13178,7 @@ watsup 0.4 generator
 
   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-  * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
-
-    * The catch clause :math:`{\mathit{catch}}` is valid.
+  * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`, the catch clause :math:`{\mathit{catch}}` is valid.
 
 
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the instruction type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
@@ -13466,9 +13275,7 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
 
-  * For all :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}` and :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`,
-
-    * :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
+  * For all :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}` and :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
 
 * The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
@@ -13669,9 +13476,7 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-  * For all :math:`i` in :math:`{i^\ast}`,
-
-    * :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
+  * For all :math:`i` in :math:`{i^\ast}`, :math:`i` is less than :math:`2 \cdot {\mathrm{dim}}({\mathit{sh}})`.
 
 
 * The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{sh}})~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
@@ -14014,13 +13819,9 @@ watsup 0.4 generator
 
     * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is :math:`{|{\mathit{init*}}|}`.
 
-    * For all :math:`x_1` in :math:`{x_1^\ast}`,
+    * For all :math:`x_1` in :math:`{x_1^\ast}`, :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x_1`.
 
-      * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x_1`.
-
-    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`,
-
-      * :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}~t)`.
+    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}~t)`.
 
     * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
   * Or:
@@ -14054,43 +13855,19 @@ watsup 0.4 generator
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is const if:
 
 
-  * Either:
+  * Either: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
-
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.
-  * Or:
-
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{ref{.}func}~x)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new}~x)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{struct{.}new\_default}~x)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new}~x)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_default}~x)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{any{.}convert\_extern}`.
+  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`.
   * Or:
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
@@ -14102,11 +13879,7 @@ watsup 0.4 generator
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
-    * :math:`{|\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}|}` is greater than :math:`0`.
-
     * :math:`{\mathsf{i}}{N}` is contained in :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}`.
-
-    * :math:`{|\mathsf{add}~\mathsf{sub}~\mathsf{mul}|}` is greater than :math:`0`.
 
     * :math:`{\mathit{binop}}` is contained in :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}`.
 
@@ -14114,9 +13887,7 @@ watsup 0.4 generator
 * :math:`{{\mathit{instr}}^\ast}` is const if:
 
 
-  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`,
-
-    * :math:`{\mathit{instr}}` is const.
+  * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`, :math:`{\mathit{instr}}` is const.
 
 
 * The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}` if:
@@ -14154,9 +13925,7 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{local*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
-  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`,
-
-    * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
+  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`, the local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
 
   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
@@ -14216,12 +13985,8 @@ watsup 0.4 generator
 
     * :math:`{\mathit{expr}}` is const.
 
-  * Or:
-
-    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
-  * Or:
-
-    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
+  * Or: :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+  * Or: :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{declare}`.
 
 
 * The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
@@ -14253,9 +14018,7 @@ watsup 0.4 generator
 
     * :math:`{\mathit{expr}}` is const.
 
-  * Or:
-
-    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
+  * Or: :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
@@ -14382,59 +14145,41 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` is :math:`{|{\mathit{import*}}|}`.
 
-  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`,
-
-    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+  * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`, under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
   * :math:`{|{\mathit{tt*}}|}` is :math:`{|{\mathit{table*}}|}`.
 
-  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+  * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`, under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
   * :math:`{|{\mathit{mt*}}|}` is :math:`{|{\mathit{mem*}}|}`.
 
-  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+  * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`, under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
   * :math:`{|{\mathit{tag*}}|}` is :math:`{|{\mathit{at*}}|}`.
 
-  * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
-
-    * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the memory type :math:`{\mathit{at}}`.
+  * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`, under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the memory type :math:`{\mathit{at}}`.
 
   * :math:`{|{\mathit{func*}}|}` is :math:`{|{\mathit{dt*}}|}`.
 
-  * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
-
-    * The function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
+  * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, the function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
 
   * :math:`{|{\mathit{rt*}}|}` is :math:`{|{\mathit{elem*}}|}`.
 
-  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`,
-
-    * The table segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
+  * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`, the table segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
 
   * :math:`{|{\mathit{ok*}}|}` is :math:`{|{\mathit{data*}}|}`.
 
-  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`,
+  * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`, the memory segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
 
-    * The memory segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
-
-  * If :math:`{\mathit{start}}` is defined,
-
-    * The start function :math:`{\mathit{start}}` is valid.
+  * If :math:`{\mathit{start}}` is defined, the start function :math:`{\mathit{start}}` is valid.
 
   * :math:`{|{\mathit{nm*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
   * :math:`{|{\mathit{xt}}_{\mathsf{e*}}|}` is :math:`{|{\mathit{export*}}|}`.
 
-  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`,
-
-    * The export :math:`{\mathit{export}}` is valid with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
+  * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`, the export :math:`{\mathit{export}}` is valid with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
 
@@ -22334,8 +22079,7 @@ Vectype_ok
 
 Heaptype_ok
 - the heap type heaptype_u0 is valid if:
-  - Either:
-    - heaptype_u0 is absheaptype.
+  - Either: heaptype_u0 is absheaptype.
   - Or:
     - heaptype_u0 is (_IDX typeidx).
     - |C.TYPES| is greater than typeidx.
@@ -22360,23 +22104,19 @@ Valtype_ok
   - Or:
     - valtype_u0 is reftype.
     - the reference type reftype is valid.
-  - Or:
-    - valtype_u0 is BOT.
+  - Or: valtype_u0 is BOT.
 
 Resulttype_ok
 - the value type sequence t* is valid if:
-  - For all t in t*,
-    - the value type t is valid.
+  - For all t in t*, the value type t is valid.
 
 Instrtype_ok
 - the instruction type t_1* ->_ x* t_2* is valid if:
   - the value type sequence t_1* is valid.
   - the value type sequence t_2* is valid.
   - |x*| is |lct*|.
-  - For all x in x*,
-    - |C.LOCALS| is greater than x.
-  - For all lct in lct* and x in x*,
-    - C.LOCALS[x] is lct.
+  - For all x in x*, |C.LOCALS| is greater than x.
+  - For all lct in lct* and x in x*, C.LOCALS[x] is lct.
 
 Packtype_ok
 - the packed type packtype is valid.
@@ -22403,8 +22143,7 @@ Comptype_ok
 - the composite type comptype_u0 is valid if:
   - Either:
     - comptype_u0 is (STRUCT fieldtype*).
-    - For all fieldtype in fieldtype*,
-      - the field type fieldtype is valid.
+    - For all fieldtype in fieldtype*, the field type fieldtype is valid.
   - Or:
     - comptype_u0 is (ARRAY fieldtype).
     - the field type fieldtype is valid.
@@ -22420,8 +22159,7 @@ Numtype_sub
 
 Deftype_sub
 - the defined type deftype_1 matches the defined type deftype_2 if:
-  - Either:
-    - $clos_deftype(C, deftype_1) is $clos_deftype(C, deftype_2).
+  - Either: $clos_deftype(C, deftype_1) is $clos_deftype(C, deftype_2).
   - Or:
     - $unrolldt(deftype_1) is (SUB fin typeuse* ct).
     - |typeuse*| is greater than i.
@@ -22554,8 +22292,7 @@ Fieldtype_sub
 Resulttype_sub
 - the value type sequence t_1* matches the value type sequence t_2* if:
   - |t_2*| is |t_1*|.
-  - For all t_1 in t_1* and t_2 in t_2*,
-    - the value type t_1 matches the value type t_2.
+  - For all t_1 in t_1* and t_2 in t_2*, the value type t_1 matches the value type t_2.
 
 Functype_sub
 - the function type t_11* -> t_12* matches the function type t_21* -> t_22* if:
@@ -22568,8 +22305,7 @@ Comptype_sub
     - comptype_u0 is (STRUCT yt_1* :: [yt'_1]).
     - comptype_u1 is (STRUCT yt_2*).
     - |yt_2*| is |yt_1*|.
-    - For all yt_1 in yt_1* and yt_2 in yt_2*,
-      - the field type yt_1 matches the field type yt_2.
+    - For all yt_1 in yt_1* and yt_2 in yt_2*, the field type yt_1 matches the field type yt_2.
   - Or:
     - comptype_u0 is (ARRAY yt_1).
     - comptype_u1 is (ARRAY yt_2).
@@ -22582,35 +22318,27 @@ Comptype_sub
 Subtype_ok
 - the sub type (SUB (FINAL ()? ?) (_IDX x)* comptype) is valid with the oktypeidx (OK x_0) if:
   - |x*| is less than or equal to 1.
-  - For all x in x*,
-    - x is less than x_0.
+  - For all x in x*, x is less than x_0.
   - |x*| is |comptype'*|.
   - |x'**| is |comptype'*|.
-  - For all x in x*,
-    - |C.TYPES| is greater than x.
-  - For all comptype' in comptype'* and x in x* and x'* in x'**,
-    - $unrolldt(C.TYPES[x]) is (SUB (_IDX x')* comptype').
+  - For all x in x*, |C.TYPES| is greater than x.
+  - For all comptype' in comptype'* and x in x* and x'* in x'**, $unrolldt(C.TYPES[x]) is (SUB (_IDX x')* comptype').
   - the composite type comptype is valid.
-  - For all comptype' in comptype'*,
-    - the composite type comptype matches the composite type comptype'.
+  - For all comptype' in comptype'*, the composite type comptype matches the composite type comptype'.
 
 Subtype_ok2
 - the sub type (SUB (FINAL ()? ?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if:
   - |typeuse*| is less than or equal to 1.
-  - For all typeuse in typeuse*,
-    - $before(typeuse, x, i) is true.
+  - For all typeuse in typeuse*, $before(typeuse, x, i) is true.
   - |typeuse*| is |comptype'*|.
   - |typeuse'**| is |comptype'*|.
-  - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**,
-    - $unrollht(C, typeuse) is (SUB typeuse'* comptype').
+  - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**, $unrollht(C, typeuse) is (SUB typeuse'* comptype').
   - the composite type comptype is valid.
-  - For all comptype' in comptype'*,
-    - the composite type comptype matches the composite type comptype'.
+  - For all comptype' in comptype'*, the composite type comptype matches the composite type comptype'.
 
 Rectype_ok2
 - the recursive type (REC subtype_u0*) is valid with the oktypeidxnat (OK x i) if:
-  - Either:
-    - subtype_u0* is [].
+  - Either: subtype_u0* is [].
   - Or:
     - subtype_u0* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with the oktypeidxnat (OK x i).
@@ -22618,8 +22346,7 @@ Rectype_ok2
 
 Rectype_ok
 - the recursive type (REC subtype_u0*) is valid with the oktypeidx (OK x) if:
-  - Either:
-    - subtype_u0* is [].
+  - Either: subtype_u0* is [].
   - Or:
     - subtype_u0* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with the oktypeidx (OK x).
@@ -22682,10 +22409,8 @@ Instrtype_sub
   - the value type sequence t_12* matches the value type sequence t_22*.
   - x* is $setminus_(localidx, x_2*, x_1*).
   - |x*| is |t*|.
-  - For all x in x*,
-    - |C.LOCALS| is greater than x.
-  - For all t in t* and x in x*,
-    - C.LOCALS[x] is (SET t).
+  - For all x in x*, |C.LOCALS| is greater than x.
+  - For all t in t* and x in x*, C.LOCALS[x] is (SET t).
 
 Limits_sub
 - the limits (n_1, m_1) matches the limits (n_2, m_2) if:
@@ -22747,8 +22472,7 @@ Blocktype_ok
     - blocktype_u0 is (_RESULT valtype?).
     - valtype_u1* is [].
     - valtype_u2* is valtype?.
-    - If valtype is defined,
-      - the value type valtype is valid.
+    - If valtype is defined, the value type valtype is valid.
   - Or:
     - blocktype_u0 is (_IDX typeidx).
     - valtype_u1* is t_1*.
@@ -22790,8 +22514,7 @@ Instr_ok/drop
 Instr_ok/select
 - the instruction (SELECT valtype_u0?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
-  - Either:
-    - valtype_u0? is ?([t]).
+  - Either: valtype_u0? is ?([t]).
   - Or:
     - valtype_u0? is ?().
     - the value type t matches the value type t'.
@@ -22826,10 +22549,8 @@ Instr_ok/br_if
 
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the instruction type t_1* :: t* :: [I32] -> t_2* if:
-  - For all l in l*,
-    - |C.LABELS| is greater than l.
-  - For all l in l*,
-    - the value type sequence t* matches the result type C.LABELS[l].
+  - For all l in l*, |C.LABELS| is greater than l.
+  - For all l in l*, the value type sequence t* matches the result type C.LABELS[l].
   - |C.LABELS| is greater than l'.
   - the value type sequence t* matches the result type C.LABELS[l'].
   - the instruction type t_1* -> t_2* is valid.
@@ -22927,8 +22648,7 @@ Instr_ok/try_table
 - the instruction (TRY_TABLE bt catch* instr*) is valid with the instruction type t_1* -> t_2* if:
   - the block type bt is valid with the instruction type t_1* -> t_2*.
   - Under the context C with .LABELS prepended by [t_2*], the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
-  - For all catch in catch*,
-    - the catch clause catch is valid.
+  - For all catch in catch*, the catch clause catch is valid.
 
 Instr_ok/const
 - the instruction (nt.CONST c_nt) is valid with the instruction type [] -> [nt].
@@ -22998,8 +22718,7 @@ Instr_ok/struct.new_default
   - |C.TYPES| is greater than x.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut zt)*)
   - |zt*| is |val*|.
-  - For all val in val* and zt in zt*,
-    - $default_($unpack(zt)) is ?(val).
+  - For all val in val* and zt in zt*, $default_($unpack(zt)) is ?(val).
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
@@ -23135,8 +22854,7 @@ Instr_ok/vswizzle
 
 Instr_ok/vshuffle
 - the instruction (VSHUFFLE sh i*) is valid with the instruction type [V128, V128] -> [V128] if:
-  - For all i in i*,
-    - i is less than (2 · $dim(sh)).
+  - For all i in i*, i is less than (2 · $dim(sh)).
 
 Instr_ok/vsplat
 - the instruction (VSPLAT sh) is valid with the instruction type [$unpackshape(sh)] -> [V128].
@@ -23344,10 +23062,8 @@ Instrs_ok
     - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - |t*| is |init*|.
     - |x_1*| is |init*|.
-    - For all x_1 in x_1*,
-      - |C.LOCALS| is greater than x_1.
-    - For all init in init* and t in t* and x_1 in x_1*,
-      - C.LOCALS[x_1] is (init t).
+    - For all x_1 in x_1*, |C.LOCALS| is greater than x_1.
+    - For all init in init* and t in t* and x_1 in x_1*, C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr_u0* is instr*.
@@ -23367,45 +23083,30 @@ Expr_ok
 
 Instr_const
 - the instruction instr_u0 is constant if:
-  - Either:
-    - instr_u0 is (nt.CONST c_nt).
-  - Or:
-    - instr_u0 is (vt.CONST c_vt).
-  - Or:
-    - instr_u0 is (REF.NULL ht).
-  - Or:
-    - instr_u0 is REF.I31.
-  - Or:
-    - instr_u0 is (REF.FUNC x).
-  - Or:
-    - instr_u0 is (STRUCT.NEW x).
-  - Or:
-    - instr_u0 is (STRUCT.NEW_DEFAULT x).
-  - Or:
-    - instr_u0 is (ARRAY.NEW x).
-  - Or:
-    - instr_u0 is (ARRAY.NEW_DEFAULT x).
-  - Or:
-    - instr_u0 is (ARRAY.NEW_FIXED x n).
-  - Or:
-    - instr_u0 is ANY.CONVERT_EXTERN.
-  - Or:
-    - instr_u0 is EXTERN.CONVERT_ANY.
+  - Either: instr_u0 is (nt.CONST c_nt).
+  - Or: instr_u0 is (vt.CONST c_vt).
+  - Or: instr_u0 is (REF.NULL ht).
+  - Or: instr_u0 is REF.I31.
+  - Or: instr_u0 is (REF.FUNC x).
+  - Or: instr_u0 is (STRUCT.NEW x).
+  - Or: instr_u0 is (STRUCT.NEW_DEFAULT x).
+  - Or: instr_u0 is (ARRAY.NEW x).
+  - Or: instr_u0 is (ARRAY.NEW_DEFAULT x).
+  - Or: instr_u0 is (ARRAY.NEW_FIXED x n).
+  - Or: instr_u0 is ANY.CONVERT_EXTERN.
+  - Or: instr_u0 is EXTERN.CONVERT_ANY.
   - Or:
     - instr_u0 is (GLOBAL.GET x).
     - |C.GLOBALS| is greater than x.
     - C.GLOBALS[x] is (t).
   - Or:
     - instr_u0 is (BINOP Inn binop).
-    - |[I32, I64]| is greater than 0.
     - Inn is contained in [I32, I64].
-    - |[ADD, SUB, MUL]| is greater than 0.
     - binop is contained in [ADD, SUB, MUL].
 
 Expr_const
 - the expression instr* is constant if:
-  - For all instr in instr*,
-    - the instruction instr is constant.
+  - For all instr in instr*, the instruction instr is constant.
 
 Type_ok
 - the type definition (TYPE rectype) is valid with the defined type sequence dt* if:
@@ -23427,8 +23128,7 @@ Func_ok
   - |C.TYPES| is greater than x.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC t_1* -> t_2*)
   - |local*| is |lct*|.
-  - For all lct in lct* and local in local*,
-    - the local local is valid with the local type lct.
+  - For all lct in lct* and local in local*, the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
 Global_ok
@@ -23463,10 +23163,8 @@ Elemmode_ok
     - the reference type rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
-  - Or:
-    - elemmode_u0 is PASSIVE.
-  - Or:
-    - elemmode_u0 is DECLARE.
+  - Or: elemmode_u0 is PASSIVE.
+  - Or: elemmode_u0 is DECLARE.
 
 Elem_ok
 - the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if:
@@ -23484,8 +23182,7 @@ Datamode_ok
     - C.MEMS[x] is mt.
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
-  - Or:
-    - datamode_u0 is PASSIVE.
+  - Or: datamode_u0 is PASSIVE.
 
 Data_ok
 - the memory segment (DATA b* datamode) is valid with the data type OK if:
@@ -23558,33 +23255,24 @@ Module_ok
 - the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type $clos_moduletype(C, xt_I* -> xt_E*) if:
   - Under the context { TYPES: []; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the type definition sequence type* is valid with the defined type sequence dt'*.
   - |xt_I*| is |import*|.
-  - For all import in import* and xt_I in xt_I*,
-    - Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
+  - For all import in import* and xt_I in xt_I*, Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
   - |tt*| is |table*|.
-  - For all table in table* and tt in tt*,
-    - Under the context C', the table table is valid with the table type tt.
+  - For all table in table* and tt in tt*, Under the context C', the table table is valid with the table type tt.
   - |mt*| is |mem*|.
-  - For all mem in mem* and mt in mt*,
-    - Under the context C', the memory mem is valid with the memory type mt.
+  - For all mem in mem* and mt in mt*, Under the context C', the memory mem is valid with the memory type mt.
   - |tag*| is |at*|.
-  - For all at in at* and tag in tag*,
-    - Under the context C', the tag tag is valid with the memory type at.
+  - For all at in at* and tag in tag*, Under the context C', the tag tag is valid with the memory type at.
   - |func*| is |dt*|.
-  - For all dt in dt* and func in func*,
-    - the function func is valid with the defined type dt.
+  - For all dt in dt* and func in func*, the function func is valid with the defined type dt.
   - |rt*| is |elem*|.
-  - For all elem in elem* and rt in rt*,
-    - the table segment elem is valid with the element type rt.
+  - For all elem in elem* and rt in rt*, the table segment elem is valid with the element type rt.
   - |ok*| is |data*|.
-  - For all data in data* and ok in ok*,
-    - the memory segment data is valid with the data type ok.
-  - If start is defined,
-    - the start function start is valid.
+  - For all data in data* and ok in ok*, the memory segment data is valid with the data type ok.
+  - If start is defined, the start function start is valid.
   - |nm*| is |export*|.
   - |xt_E*| is |export*|.
-  - For all export in export* and nm in nm* and xt_E in xt_E*,
-    - the export export is valid with the name nm and the external type xt_E.
+  - For all export in export* and nm in nm* and xt_E in xt_E*, the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(name, nm*) is true.
   - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I* :: gt*; TABLES: tt_I* :: tt*; MEMS: mt_I* :: mt*; TAGS: at_I* :: at*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.

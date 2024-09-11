@@ -59,12 +59,12 @@ let rec t_exp env e : prem list =
   (* First the conditions to be generated here *)
   begin match e.it with
   | IdxE (exp1, exp2) ->
-    [IfPr (CmpE (LtOp NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (LtOp NatT, exp2, lenE exp1) $$ e.at % (BoolT $ e.at)) $ e.at]
   | TheE exp ->
     [IfPr (CmpE (NeOp, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE ({it = CmpE (EqOp, _, _); _}, iterexp) -> iter_side_conditions env iterexp
   | MemE (_exp, exp) ->
-    [IfPr (CmpE (GtOp NatT, LenE exp $$ exp.at % (NumT NatT $ exp.at), NatE Z.zero $$ no_region % (NumT NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (GtOp NatT, lenE exp, NatE Z.zero $$ no_region % (NumT NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
   | _ -> []
   end @
   (* And now descend *)
@@ -139,9 +139,13 @@ let rec t_prem env prem =
 
 let t_prems env = List.concat_map (t_prem env)
 
-let is_identity e = match e.it with
-  | CmpE (EqOp, e1, e2) -> Il.Eq.eq_exp e1 e2
-  | _ -> false
+let is_identity e =
+  try
+    let e' = (Il.Eval.reduce_exp Il.Env.empty e) in
+    match e'.it with
+    | BoolE b -> b
+    | _ -> false
+  with _ -> false
 
 (* Is prem always true? *)
 let is_true prem = match prem.it with

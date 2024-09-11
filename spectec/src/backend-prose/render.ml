@@ -509,10 +509,14 @@ let render_expr_with_type env e = "the " ^ Prose_util.extract_desc e.note ^ " " 
 
 let rec render_stmt env depth stmt =
   let prefix = "* " in
-  let sentence =
+  let rec render_stmt' stmt =
+    let render_block = function
+      | [s] -> " " ^ render_stmt' s
+      | ss -> render_stmts env (depth + 1) ss
+    in
     match stmt with
     | LetS (e1, e2) ->
-      sprintf "Let %s be %s."
+      sprintf "let %s be %s."
         (render_expr env e1)
         (render_expr_with_type env e2)
     | CondS e ->
@@ -525,7 +529,7 @@ let rec render_stmt env depth stmt =
         (render_expr env e2)
     | IsValidS (c_opt, e, es) ->
       sprintf "%s%s is valid%s."
-        (render_opt "Under the context " (render_expr env) ", " c_opt)
+        (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_expr_with_type env e)
         (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) ->
@@ -534,48 +538,41 @@ let rec render_stmt env depth stmt =
         (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
       sprintf "%s%s is const."
-        (render_opt "Under the context " (render_expr_with_type env) ", " c_opt)
+        (render_opt "under the context " (render_expr_with_type env) ", " c_opt)
         (render_expr env e)
     | IfS (c, sl) ->
-      sprintf "If %s,%s"
+      sprintf "if %s,%s"
         (render_expr env c)
-        (render_stmts env (depth + 1) sl)
+        (render_block sl)
     | ForallS (iters, is) ->
       let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
       let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
-      sprintf "For all %s,%s"
+      sprintf "for all %s,%s"
         (render_iters env iters)
-        (render_stmts env (depth + 1) is)
+        (render_block is)
     | EitherS sll ->
-      let sl_head, sll = List.hd sll, List.tl sll in
-      let sl_head' = render_stmts env (depth + 1) sl_head in
-      let sll' =
+      let hd, tl = List.hd sll, List.tl sll in
+      let hd' = render_block hd in
+      let tl' =
         List.fold_left
           (fun ssll sl ->
             sprintf "%s\n%s%sOr:%s"
               ssll
               (repeat indent depth)
               prefix
-              (render_stmts env (depth + 1) sl))
-          "" sll
+              (render_block sl))
+          "" tl
       in
-      sprintf "Either:%s\n%s" sl_head' sll'
+      sprintf "either:%s\n%s" hd' tl'
     | RelS (s, es) ->
-      (* a;b;c, 1;2 -> a;1;b;2;c *)
-      let rec alternate xs ys =
-        match xs with
-        | [] -> ys
-        | x :: xs -> x :: alternate ys xs
-      in
-
       let template = String.split_on_char '%' s in
       let args = List.map (render_expr env) es in
 
-      alternate template args |> String.concat ""
+      Prose_util.alternate template args |> String.concat ""
     | YetS s ->
       sprintf "YetS: %s." s
   in
-  prefix ^ (sentence |> String.capitalize_ascii)
+  prefix ^ (render_stmt' stmt |> String.capitalize_ascii)
 
 and render_stmts env depth stmts =
   List.fold_left
