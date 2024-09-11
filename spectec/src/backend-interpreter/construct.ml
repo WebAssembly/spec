@@ -719,6 +719,14 @@ let al_to_vlaneop: value list -> idx * vec_laneop * int = function
 
 (* Destruct expressions *)
 
+let al_to_catch' = function
+  | CaseV ("CATCH", [ idx1; idx2 ]) -> Catch (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("CATCH_REF", [ idx1; idx2 ]) -> CatchRef (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("CATCH_ALL", [ idx ]) -> CatchAll (al_to_idx idx)
+  | CaseV ("CATCH_ALL_REF", [ idx ]) -> CatchAllRef (al_to_idx idx)
+  | v -> error_value "catch" v
+let al_to_catch (v: value): Ast.catch = al_to_phrase al_to_catch' v
+
 let al_to_num: value -> num = function
   | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_int32 i32)
   | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_int64 i64)
@@ -802,6 +810,10 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("RETURN_CALL_REF", [ OptV (Some (typeuse)) ]) -> ReturnCallRef (al_to_typeuse typeuse)
   | CaseV ("RETURN_CALL_INDIRECT", [ idx1; typeuse2 ]) ->
     ReturnCallIndirect (al_to_idx idx1, al_to_typeuse typeuse2)
+  | CaseV ("THROW", [ idx ]) -> Throw (al_to_idx idx)
+  | CaseV ("THROW_REF", []) -> ThrowRef
+  | CaseV ("TRY_TABLE", [ bt; catches; instrs ]) ->
+    TryTable (al_to_block_type bt, al_to_list al_to_catch catches, al_to_list al_to_instr instrs)
   | CaseV ("LOAD", loadop) -> let idx, op = al_to_loadop loadop in Load (idx, op)
   | CaseV ("STORE", storeop) -> let idx, op = al_to_storeop storeop in Store (idx, op)
   | CaseV ("VLOAD", vloadop) -> let idx, op = al_to_vloadop vloadop in VecLoad (idx, op)
