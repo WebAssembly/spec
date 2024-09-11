@@ -475,6 +475,21 @@ let al_to_special_vbinop = function
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I16", []); NumV z1 ]); CaseV ("X", [ CaseV ("I32", []); NumV z2 ]); CaseV ("S", []) ]) when z1 = eight && z2 = four -> V128 (V128.I16x8 (V128Op.NarrowS))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I8", []); NumV z1 ]); CaseV ("X", [ CaseV ("I16", []); NumV z2 ]); CaseV ("U", []) ]) when z1 = sixteen && z2 = eight -> V128 (V128.I8x16 (V128Op.NarrowU))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I16", []); NumV z1 ]); CaseV ("X", [ CaseV ("I32", []); NumV z2 ]); CaseV ("U", []) ]) when z1 = eight && z2 = four -> V128 (V128.I16x8 (V128Op.NarrowU))
+  | CaseV ("VEXTBINOP", [ c1; c2; ext ]) as v ->
+    let ext' =
+      match ext with
+      | CaseV ("EXTMUL", [CaseV ("S", []); CaseV ("HIGH", [])]) -> V128Op.ExtMulHighS
+      | CaseV ("EXTMUL", [CaseV ("U", []); CaseV ("HIGH", [])]) -> V128Op.ExtMulHighU
+      | CaseV ("EXTMUL", [CaseV ("S", []); CaseV ("LOW", [])]) -> V128Op.ExtMulLowS
+      | CaseV ("EXTMUL", [CaseV ("U", []); CaseV ("LOW", [])]) -> V128Op.ExtMulLowU
+      | CaseV ("DOT", []) -> V128Op.DotS
+      | _ -> error_value "special vbinop" v
+    in
+    (match c1, c2 with
+    | CaseV ("X", [ CaseV ("I16", []); NumV z1 ]), CaseV ("X", [ CaseV ("I8", []); NumV z2 ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 ext')
+    | CaseV ("X", [ CaseV ("I32", []); NumV z1 ]), CaseV ("X", [ CaseV ("I16", []); NumV z2 ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 ext')
+    | CaseV ("X", [ CaseV ("I64", []); NumV z1 ]), CaseV ("X", [ CaseV ("I32", []); NumV z2 ]) when z1 = two && z2 = four -> V128 (V128.I64x2 ext')
+    | _   -> error_value "special vbinop" v)
   | v -> error_value "special vbinop" v
 
 let al_to_int_vcvtop : value list -> V128Op.icvtop = function
@@ -519,6 +534,25 @@ let al_to_vcvtop : value list -> vec_cvtop = function
   | CaseV ("X", [ CaseV ("F32", []); NumV z ]) :: op when z = four -> V128 (V128.F32x4 (al_to_float_vcvtop op))
   | CaseV ("X", [ CaseV ("F64", []); NumV z ]) :: op when z = two -> V128 (V128.F64x2 (al_to_float_vcvtop op))
   | l -> error_values "vcvtop" l
+
+let al_to_special_vcvtop = function
+  | [ CaseV ("X", [ CaseV ("I16", []); NumV z1 ]); CaseV ("X", [ CaseV ("I8", []); NumV z2 ]); CaseV ("EXTADD_PAIRWISE", [ ext ]) ] when z1 = eight && z2 = sixteen ->
+    let ext =
+      match ext with
+      | CaseV ("S", []) -> V128Op.ExtAddPairwiseS
+      | CaseV ("U", []) -> V128Op.ExtAddPairwiseU
+      | v -> error_value "special vcvtop" v
+    in
+    V128 (V128.I16x8 ext)
+  | [ CaseV ("X", [ CaseV ("I32", []); NumV z1 ]); CaseV ("X", [ CaseV ("I16", []); NumV z2 ]); CaseV ("EXTADD_PAIRWISE", [ ext ]) ] when z1 = four && z2 = eight ->
+    let ext =
+      match ext with
+      | CaseV ("S", []) -> V128Op.ExtAddPairwiseS
+      | CaseV ("U", []) -> V128Op.ExtAddPairwiseU
+      | v -> error_value "special vcvtop" v
+    in
+    V128 (V128.I32x4 ext)
+  | l -> error_values "special vcvtop" l
 
 let al_to_int_vshiftop : value -> V128Op.ishiftop = function
   | CaseV ("SHL", []) -> V128Op.Shl
@@ -715,8 +749,9 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("VRELOP", vop) -> VecCompare (al_to_vrelop vop)
   | CaseV ("VUNOP", vop) -> VecUnary (al_to_vunop vop)
   | CaseV ("VBINOP", vop) -> VecBinary (al_to_vbinop vop)
-  | CaseV (("VSWIZZLE" | "VSHUFFLE" | "VNARROW"), _) as v -> VecBinary (al_to_special_vbinop v)
+  | CaseV (("VSWIZZLE" | "VSHUFFLE" | "VNARROW" | "VEXTBINOP"), _) as v -> VecBinary (al_to_special_vbinop v)
   | CaseV ("VCVTOP", vop) -> VecConvert (al_to_vcvtop vop)
+  | CaseV ("VEXTUNOP", vop) -> VecConvert (al_to_special_vcvtop vop)
   | CaseV ("VSHIFTOP", vop) -> VecShift (al_to_vshiftop vop)
   | CaseV ("VBITMASK", vop) -> VecBitmask (al_to_vbitmaskop vop)
   | CaseV ("VVTESTOP", vop) -> VecTestBits (al_to_vvtestop vop)
