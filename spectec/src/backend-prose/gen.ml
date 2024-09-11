@@ -186,12 +186,14 @@ let rec if_expr_to_instrs e =
   | Ast.BinE (Ast.OrOp, e1, e2) ->
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
-    [ match cond1 with
-      | [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
+    [ match cond1, cond2 with
+      | [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ], _ ->
         (* ~P \/ Q is equivalent to P -> Q *)
         IfS (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
+      | [ CmpS (e1, Eq, e2) ], [ CmpS (e3, Eq, e4) ] when Al.Eq.eq_expr e1 e3 ->
+        CondS (memE (e1, listE [e2; e4] ~note:(iterT e2.note List)) ~note:boolT)
       | _ ->
-        EitherS [cond1; cond2] ]
+        CondS (exp_to_expr e)]
   | Ast.BinE (Ast.EquivOp, _, _)
   | Ast.MemE _ ->
       [ CondS (exp_to_expr e) ]

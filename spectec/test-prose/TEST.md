@@ -4383,13 +4383,7 @@ watsup 0.4 generator
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
-    * Either:
-
-      * :math:`{t'}` is :math:`{\mathit{numtype}}`.
-
-    * Or:
-
-      * :math:`{t'}` is :math:`{\mathit{vectype}}`.
+    * :math:`{t'}` is contained in :math:`{\mathit{numtype}}~{\mathit{vectype}}`.
 
 
 * The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
@@ -9724,10 +9718,7 @@ Instr_ok/select
   - Or:
     - valtype_u0? is ?().
     - the value type t matches the value type t'.
-    - Either:
-      - t' is numtype.
-    - Or:
-      - t' is vectype.
+    - t' is contained in [numtype, vectype].
 
 Instr_ok/block
 - the instruction (BLOCK bt instr*) is valid with the function type t_1* -> t_2* if:
@@ -13152,13 +13143,7 @@ watsup 0.4 generator
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
-    * Either:
-
-      * :math:`{t'}` is :math:`{\mathit{numtype}}`.
-
-    * Or:
-
-      * :math:`{t'}` is :math:`{\mathit{vectype}}`.
+    * :math:`{t'}` is contained in :math:`{\mathit{numtype}}~{\mathit{vectype}}`.
 
 
 * The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
@@ -13557,13 +13542,7 @@ watsup 0.4 generator
 
   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
-  * Either:
-
-    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
-
-  * Or:
-
-    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
+  * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in :math:`{\mathit{numtype}}~{\mathit{vectype}}`.
 
   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
@@ -13637,13 +13616,7 @@ watsup 0.4 generator
 
   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
-  * Either:
-
-    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{numtype}}`.
-
-  * Or:
-
-    * :math:`{\mathrm{unpack}}({\mathit{zt}})` is :math:`{\mathit{vectype}}`.
+  * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in :math:`{\mathit{numtype}}~{\mathit{vectype}}`.
 
   * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
 
@@ -22827,10 +22800,7 @@ Instr_ok/select
   - Or:
     - valtype_u0? is ?().
     - the value type t matches the value type t'.
-    - Either:
-      - t' is numtype.
-    - Or:
-      - t' is vectype.
+    - t' is contained in [numtype, vectype].
 
 Instr_ok/block
 - the instruction (BLOCK bt instr*) is valid with the instruction type t_1* -> t_2* if:
@@ -23078,10 +23048,7 @@ Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt))
-  - Either:
-    - $unpack(zt) is numtype.
-  - Or:
-    - $unpack(zt) is vectype.
+  - $unpack(zt) is contained in [numtype, vectype].
   - |C.DATAS| is greater than y.
   - C.DATAS[y] is OK.
 
@@ -23125,10 +23092,7 @@ Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
-  - Either:
-    - $unpack(zt) is numtype.
-  - Or:
-    - $unpack(zt) is vectype.
+  - $unpack(zt) is contained in [numtype, vectype].
   - |C.DATAS| is greater than y.
   - C.DATAS[y] is OK.
 
