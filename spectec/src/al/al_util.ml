@@ -108,10 +108,12 @@ let singleton v = listV [|v|]
 let iter_var ?(at = no) x iter t =
   let xs = x ^ (match iter with Opt -> "?" | _ -> "*") in
   let il_iter = match iter with Opt -> Il.Ast.Opt | _ -> Il.Ast.List in
-  iterE (varE x ~at:at ~note:t, (iter, [x, varE xs ~at:at ~note:(Il.Ast.IterT (t, il_iter) $ t.at)])) ~at:at ~note:t
+  let iter_note = Il.Ast.IterT (t, il_iter) $ t.at in
+  iterE (varE x ~at:at ~note:t, (iter, [x, varE xs ~at:at ~note:iter_note]))
+    ~at:at ~note:iter_note
 
 
-let some x = caseV (x, [optV (Some (tupV []))])
+    let some x = caseV (x, [optV (Some (tupV []))])
 let none x = caseV (x, [optV None])
 
 
