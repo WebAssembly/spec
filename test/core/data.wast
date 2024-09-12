@@ -499,7 +499,7 @@
 
 ;; Data count without data segment
 
-(assert_invalid
+(assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
     "\01\04\01\60\00\00"       ;; Type section: 1 type
@@ -517,5 +517,5 @@
     "\fc\08\00\00"             ;; memory.init dataidx=0 memidx=0
     "\0b"                      ;; end
   )
-  ""
+  "data count and data section have inconsistent lengths"
 )
