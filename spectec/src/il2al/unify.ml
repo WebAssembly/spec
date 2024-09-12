@@ -12,8 +12,6 @@ open Il2al_util
 
 let error at msg = Error.error at "prose translation" msg
 
-(* Helpers *)
-
 (* Unifying lhs *)
 
 (* Estimate appropriate id name for a given type *)
@@ -37,9 +35,8 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
     (* Already unified *)
     | VarE id, _ when is_unified_id id.it ->
       e1
-    | IterE ({ it = VarE id; _} as e, (iter, _)), _  when is_unified_id id.it ->
+    | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
       let t = overlap_typ e1.note e2.note in
-      let i = (iter, [(id, t)]) in
       { e1 with it = IterE (e, i); note = t }
     (* Not unified *)
     | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
@@ -96,10 +93,11 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       let id = gen_new_unified ty in
       let it =
         match ty.it with
-        | IterT (ty, iter) -> IterE (VarE id $$ no_region % ty, (iter, [(id, ty)]))
+        | IterT (ty1, iter) ->
+          IterE (VarE id $$ no_region % ty1, (iter, [(id, VarE id $$ no_region % ty)]))
         | _ -> VarE id
       in
-      { e1 with it = it; note = ty }
+      { e1 with it; note = ty }
 
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
@@ -129,7 +127,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
       [IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
-      [ExpB (id, template.note, []) $ e.at]
+      [ExpB (id, template.note) $ e.at]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2

@@ -177,7 +177,7 @@ and string_of_expr expr =
     sprintf "label(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
-  | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
+  | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
   | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ([[ atom ]], []) -> string_of_atom atom
@@ -239,6 +239,14 @@ and string_of_arg arg =
   | DefA id -> "$" ^ id
 
 and string_of_args sep = string_of_list string_of_arg sep
+
+
+
+(* Iter exps *)
+
+and string_of_iterexp (iter, xes) =
+  string_of_iter iter ^ "{" ^ String.concat ", "
+    (List.map (fun (id, e) -> id ^ " <- " ^ string_of_expr e) xes) ^ "}"
 
 
 (* Instructions *)
@@ -382,11 +390,6 @@ let string_of_algorithm algo =
 
 (* Wasm type *)
 
-(* Names *)
-
-let structured_string_of_ids ids =
-  "[" ^ String.concat ", " ids ^ "]"
-
 
 (* Values *)
 
@@ -510,14 +513,14 @@ and structured_string_of_expr expr =
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
   | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
-  | IterE (e, ids, iter) ->
+  | IterE (e, (iter, xes)) ->
     "IterE ("
     ^ structured_string_of_expr e
-    ^ ", "
-    ^ structured_string_of_ids ids
-    ^ ", "
-    ^ string_of_iter iter
-    ^ ")"
+    ^ ", ("
+    ^ structured_string_of_iter iter
+    ^ ", {"
+    ^ string_of_list (fun (x, e) -> x ^ structured_string_of_expr e) ", " xes
+    ^ "}))"
   | CaseE (op, el) ->
     "CaseE (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"

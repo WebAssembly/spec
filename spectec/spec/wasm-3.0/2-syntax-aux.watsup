@@ -103,13 +103,10 @@ def $diffrt((REF nul1 ht_1), (REF ht_2)) = (REF nul1 ht_1)
 
 ;; Injection
 
-syntax typevar = _IDX typeidx | REC nat
+syntax typevar = _IDX typeidx hint(show %) | REC nat
 var tv : typevar
 var yy : typeuse hint(show y)
 var tu : typeuse
-
-def $idx(typeidx) : typevar  hint(show %)
-def $idx(x) = _IDX x
 
 
 ;; Free indices
@@ -616,10 +613,10 @@ def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(m
 def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_moduletype(moduletype, heaptype*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
 
-def $subst_all_valtype(t, tu^n) = $subst_valtype(t, $idx(i)^(i<n), tu^n)
-def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, $idx(i)^(i<n), tu^n)
-def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, $idx(i)^(i<n), tu^n)
-def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, $idx(i)^(i<n), tu^n)
+def $subst_all_valtype(t, tu^n) = $subst_valtype(t, (_IDX i)^(i<n), tu^n)
+def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, (_IDX i)^(i<n), tu^n)
+def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, (_IDX i)^(i<n), tu^n)
+def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n)
 
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_deftypes(eps, tu*) = eps
@@ -637,7 +634,7 @@ def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "e
 ;; TODO(3, rossberg): in general, multi-dimensional use of dimensioned vars is ambiguous;
 ;; for example, x** with dimension x* could be x1 x2 x1 x2 or x1 x1 x2 x2.
 ;; For now, we avoid to reuse the dimension var in exact same form
-def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
+def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
   -- if rectype = REC subtype^n
 def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n)))^n
   -- if rectype = REC subtype^n

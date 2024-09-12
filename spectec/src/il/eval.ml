@@ -30,7 +30,24 @@ let snd3 (_, x, _) = x
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
 
+let as_opt_exp e =
+  match e.it with
+  | OptE eo -> eo
+  | _ -> failwith "as_opt_exp"
+
+let as_list_exp e =
+  match e.it with
+  | ListE es -> es
+  | _ -> failwith "as_list_exp"
+
+
 (* Matching Lists *)
+
+let _match_opt match_x env s xo1 xo2 : subst option =
+  match xo1, xo2 with
+  | None, None -> Some s
+  | Some x1, Some x2 -> match_x env s x1 x2
+  | _, _ -> None
 
 let rec match_list match_x env s xs1 xs2 : subst option =
   match xs1, xs2 with
@@ -156,19 +173,19 @@ and reduce_exp env e : exp =
     | AddOp _, NatE n1, NatE n2 -> NatE Z.(n1 + n2) $> e
     | AddOp _, NatE z0, _ when z0 = Z.zero -> e2'
     | AddOp _, _, NatE z0 when z0 = Z.zero -> e1'
-    | SubOp _, NatE n1, NatE n2 -> NatE Z.(n1 - n2) $> e
+    | SubOp _, NatE n1, NatE n2 when n1 >= n2 -> NatE Z.(n1 - n2) $> e
     | SubOp t, NatE z0, _ when z0 = Z.zero -> UnE (MinusOp t, e2') $> e
     | SubOp _, _, NatE z0 when z0 = Z.zero -> e1'
     | MulOp _, NatE n1, NatE n2 -> NatE Z.(n1 * n2) $> e
     | MulOp _, NatE z1, _ when z1 = Z.one -> e2'
     | MulOp _, _, NatE z1 when z1 = Z.one -> e1'
-    | DivOp _, NatE n1, NatE n2 -> NatE Z.(n1 / n2) $> e
+    | DivOp _, NatE n1, NatE n2 when Z.(n2 <> zero && rem n1 n2 = zero) -> NatE Z.(n1 / n2) $> e
     | DivOp _, NatE z0, _ when z0 = Z.zero -> e1'
     | DivOp _, _, NatE z1 when z1 = Z.one -> e1'
     | ModOp _, NatE n1, NatE n2 -> NatE Z.(rem n1 n2) $> e
     | ModOp _, NatE z0, _ when z0 = Z.zero -> e1'
     | ModOp _, _, NatE z1 when z1 = Z.one -> NatE Z.zero $> e
-    | ExpOp _, NatE n1, NatE n2 -> NatE Z.(n1 ** to_int n2) $> e
+    | ExpOp _, NatE n1, NatE n2 when n2 >= Z.zero -> NatE Z.(n1 ** to_int n2) $> e
     | ExpOp _, NatE z01, _ when z01 = Z.zero || z01 = Z.one -> e1'
     | ExpOp _, _, NatE z0 when z0 = Z.zero -> NatE Z.one $> e
     | ExpOp _, _, NatE z1 when z1 = Z.one -> e1'
@@ -280,29 +297,51 @@ and reduce_exp env e : exp =
     | None -> CallE (id, args') $> e
     | Some e -> e
     )
-  | IterE (e1, (iter, bs)) ->
+  | IterE (e1, iterexp) ->
     let e1' = reduce_exp env e1 in
-    let (iter', bs') = reduce_iterexp env (iter, bs) in
-    (match iter' with
-    | ListN ({it = NatE n; _}, ido) when is_normal_exp e1' ->
-      ListE (List.init (Z.to_int n) (fun i ->
-        let idx = NatE (Z.of_int i) $$ e.at % (NumT NatT $ e.at) in
-        let s =
-          match ido with
-          | None -> Subst.empty
-          | Some id -> Subst.add_varid Subst.empty id idx
-        in
-        let s' =
-          List.fold_left (fun s (id, t) ->
-            let iterX = (iter', [(id, t)]) in
-            let tX = IterT (t, List) $ id.at in
-            let eX = IterE (VarE id $$ id.at % t, iterX) $$ id.at % tX in
-            Subst.add_varid s id (IdxE (eX, idx) $$ id.at % t)
-          ) s bs'
-        in reduce_exp env (Subst.subst_exp s' e1')
-      ))
-    | _ -> IterE (e1', (iter', bs'))
-    ) $> e
+    let (iter', xes') as iterexp' = reduce_iterexp env iterexp in
+    let ids, es' = List.split xes' in
+    if not (List.for_all is_head_normal_exp es') || iter' <= List1 && es' = [] then
+      IterE (e1', iterexp') $> e
+    else
+      (match iter' with
+      | Opt ->
+        let eos' = List.map as_opt_exp es' in
+        if List.for_all Option.is_none eos' then
+          OptE None $> e
+        else if List.for_all Option.is_some eos' then
+          let es1' = List.map Option.get eos' in
+          let s = List.fold_left2 Subst.add_varid Subst.empty ids es1' in
+          reduce_exp env (Subst.subst_exp s e1')
+        else
+          IterE (e1', iterexp') $> e
+      | List | List1 ->
+        let n = List.length (as_list_exp (List.hd es')) in
+        if iter' = List || n >= 1 then
+          let en = NatE (Z.of_int n) $$ e.at % (NumT NatT $ e.at) in
+          reduce_exp env (IterE (e1', (ListN (en, None), xes')) $> e)
+        else
+          IterE (e1', iterexp') $> e
+      | ListN ({it = NatE n'; _}, ido) ->
+        let ess' = List.map as_list_exp es' in
+        let ns = List.map List.length ess' in
+        let n = Z.to_int n' in
+        if List.for_all ((=) n) ns then
+          (TupE (List.init n (fun i ->
+            let esI' = List.map (fun es -> List.nth es i) ess' in
+            let s = List.fold_left2 Subst.add_varid Subst.empty ids esI' in
+            let s' =
+              Option.fold ido ~none:s ~some:(fun id ->
+                let en = NatE (Z.of_int i) $$ id.at % (NumT NatT $ id.at) in
+                Subst.add_varid s id en
+              )
+            in Subst.subst_exp s' e1'
+          )) $> e) |> reduce_exp env
+        else
+          IterE (e1', iterexp') $> e
+      | ListN _ ->
+        IterE (e1', iterexp') $> e
+      )
   | ProjE (e1, i) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -372,7 +411,8 @@ and reduce_iter env = function
   | ListN (e, ido) -> ListN (reduce_exp env e, ido)
   | iter -> iter
 
-and reduce_iterexp env (iter, ids) = (reduce_iter env iter, ids)
+and reduce_iterexp env (iter, xes) =
+  (reduce_iter env iter, List.map (fun (id, e) -> id, reduce_exp env e) xes)
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
 
@@ -602,9 +642,63 @@ and match_exp' env s e1 e2 : subst option =
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
 *)
+  | _, UncaseE (e21, mixop) ->
+    match_exp' env s (CaseE (mixop, e1) $$ e1.at % e21.note) e21
+  | _, ProjE (e21, 0) ->  (* only valid on unary tuples! *)
+    match_exp' env s (TupE [e1] $$ e1.at % e21.note) e21
+(*
   | IterE (e11, iter1), IterE (e21, iter2) ->
     let* s' = match_exp' env s e11 e21 in
     match_iterexp env s' iter1 iter2
+  | _, IterE (e21, iter2) ->
+    let e11, iter1 = eta_iter_exp env e1 in
+    let* s' = match_exp' env s e11 e21 in
+    match_iterexp env s' iter1 iter2
+*)
+  | OptE None, IterE (_e21, (Opt, xes)) ->
+    List.fold_left (fun s_opt (_xI, eI) ->
+      let* s = s_opt in
+      match_exp' env s e1 eI
+    ) (Some s) xes
+  | OptE (Some e11), IterE (e21, (Opt, xes)) ->
+    let* s' = match_exp' env s e11 e21 in
+    let* s'' =
+      List.fold_left (fun s_opt (xI, exI) ->
+        let* s = s_opt in
+        match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $> exI))) $> e2) exI
+      ) (Some (List.fold_left Subst.remove_varid s (List.map fst xes))) xes
+    in Some (Subst.union s'' s)  (* re-add possibly locally shadowed bindings *)
+  | ListE _es1, IterE (e21, (List, xes)) ->
+    let en = VarE ("_" $ e2.at) $$ e2.at % (NumT NatT $ e2.at) in
+    match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
+  | ListE es1, IterE (e21, (List1, xes)) ->
+    if es1 = [] then None else
+    let en = VarE ("_" $ e2.at) $$ e2.at % (NumT NatT $ e2.at) in
+    match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
+  | ListE es1, IterE (e21, (ListN (en, id_opt), xes)) ->
+    let en' = NatE (Z.of_int (List.length es1)) $$ e1.at % (NumT NatT $ e1.at) in
+    let* s' = match_exp' env s en' en in
+    let s'' = List.fold_left Subst.remove_varid s' (List.map fst xes) in  (* local subst *)
+    (* match each list element against iteration body for corresponding subst *)
+    let* ss =
+      List.mapi (fun j e1J ->
+        let s''' =
+          match id_opt with
+          | None -> s''
+          | Some xJ ->
+            Subst.add_varid s'' xJ
+              (NatE (Z.of_int j) $$ e1.at % (NumT NatT $ e1.at))
+        in match_exp' env s''' e1J (Subst.subst_exp s''' e21)
+      ) es1 |> Lib.List.flatten_opt
+    in
+    (* now project list for each iteration variable and match against rhs's *)
+    let xs, exs = List.split xes in
+    let* s''' =
+      match_list (fun env s xI exI ->
+        let eI = ListE (List.map (fun sJ -> Subst.subst_exp sJ (VarE xI $> exI)) ss) $> e2 in
+        match_exp' env s eI exI
+      ) env s' xs exs
+    in Some (Subst.union s''' s)  (* re-add possibly locally shadowed bindings *)
   | _, IterE (e21, iter2) ->
     let e11, iter1 = eta_iter_exp env e1 in
     let* s' = match_exp' env s e11 e21 in
@@ -632,7 +726,7 @@ and match_exp' env s e1 e2 : subst option =
           | _ -> false
           )
         | VarE id1, _ ->
-          let t1 = reduce_typ env (fst (Env.find_var env id1)) in
+          let t1 = reduce_typ env (Env.find_var env id1) in
           sub_typ env t1 t21 || raise Irred
         | _, _ -> false
       then match_exp' env s {e1 with note = t21} e21
@@ -669,10 +763,10 @@ and eta_iter_exp env e : exp * iterexp =
   match (reduce_typ env e.note).it with
   | IterT (t, Opt) -> reduce_exp env (TheE e $$ e.at % t), (Opt, [])
   | IterT (t, List) ->
-    let id = "_i_" $ e.at in  (* TODO(2, rossberg): this is unbound now *)
+    let id = "_i_" $ e.at in
     let len = reduce_exp env (LenE e $$ e.at % (NumT NatT $ e.at)) in
     IdxE (e, VarE id $$ e.at % (NumT NatT $ e.at)) $$ e.at % t,
-    (ListN (len, Some id), [(id, t)])
+    (ListN (len, Some id), [])
   | _ -> assert false
 
 
@@ -683,6 +777,9 @@ and match_sym env s g1 g2 : subst option =
   match g1.it, g2.it with
   | _, VarG (id, []) when Subst.mem_gramid s id ->
     match_sym env s g1 (Subst.subst_sym s g2)
+  | _, VarG (id, []) when not (Map.mem id.it env.grams) ->
+    (* An unbound grammar is treated as a pattern variable *)
+    Some (Subst.add_gramid s id g1)
   | VarG (id1, args1), VarG (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
   | IterG (g11, iter1), IterG (g21, iter2) ->

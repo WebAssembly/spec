@@ -58,7 +58,7 @@ let tupE ?(at = no) ~note el = TupE el |> mk_expr at note
 let caseE ?(at = no) ~note (op, el) = CaseE (op, el) |> mk_expr at note
 let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
 let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
-let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
+let iterE ?(at = no) ~note (e, ite) = IterE (e, ite) |> mk_expr at note
 let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
 let arityE ?(at = no) ~note e = ArityE e |> mk_expr at note
@@ -105,9 +105,15 @@ let zero = numV Z.zero
 let one = numV Z.one
 let empty_list = listV [||]
 let singleton v = listV [|v|]
+let iter_var ?(at = no) x iter t =
+  let xs = x ^ (match iter with Opt -> "?" | _ -> "*") in
+  let il_iter = match iter with Opt -> Il.Ast.Opt | _ -> Il.Ast.List in
+  let iter_note = Il.Ast.IterT (t, il_iter) $ t.at in
+  iterE (varE x ~at:at ~note:t, (iter, [x, varE xs ~at:at ~note:iter_note]))
+    ~at:at ~note:iter_note
 
 
-let some x = caseV (x, [optV (Some (tupV []))])
+    let some x = caseV (x, [optV (Some (tupV []))])
 let none x = caseV (x, [optV None])
 
 
@@ -191,6 +197,10 @@ let unwrap_listv: value -> value growable_array = function
 let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
 
+let unwrap_seqv_to_list: value -> value list = function
+  | OptV opt -> Option.to_list opt
+  | ListV arr -> Array.to_list !arr
+  | v -> fail_value "unwrap_seqv_to_list" v
 let unwrap_seq_to_array: value -> value array = function
   | OptV opt -> opt |> Option.to_list |> Array.of_list
   | v -> unwrap_listv_to_array v

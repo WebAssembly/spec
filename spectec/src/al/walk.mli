@@ -1,7 +1,6 @@
 open Ast
 
 type unit_walker = {
-  super: unit_walker option;
   walk_algo: unit_walker -> algorithm -> unit;
   walk_instr: unit_walker -> instr -> unit;
   walk_expr: unit_walker -> expr -> unit;
@@ -10,7 +9,6 @@ type unit_walker = {
   walk_arg: unit_walker -> arg -> unit;
 }
 type walker = {
-  super: walker option;
   walk_algo: walker -> algorithm -> algorithm;
   walk_instr: walker -> instr -> instr;
   walk_expr: walker -> expr -> expr;

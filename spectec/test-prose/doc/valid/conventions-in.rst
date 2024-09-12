@@ -25,14 +25,6 @@ Injection
 
 $${syntax: typevar}
 
-.. _def-idx:
-
-$${definition-prose: idx}
-
-\
-
-$${definition: idx}
-
 .. _syntax-deftype:
 .. _valid-conventions-defined-types:
 

@@ -210,9 +210,8 @@ and translate_exp exp =
   | Il.VarE id -> varE id.it ~at:at ~note:note
   | Il.SubE ({ it = Il.VarE id; _}, t, _) -> subE (id.it, t) ~at:at ~note:note
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
-  | Il.IterE (inner_exp, (iter, ids)) ->
-    let names = List.map (fun (id, _) -> id.it) ids in
-    iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at ~note:note
+  | Il.IterE (inner_exp, iterexp) ->
+    iterE (translate_exp inner_exp, translate_iterexp iterexp) ~at:at ~note:note
   (* property access *)
   | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
     accE (translate_exp inner_exp, dotP atom) ~at:at ~note:note
@@ -344,6 +343,12 @@ and translate_path path =
   in
   translate_path' path
 
+and translate_xes xes =
+  List.map (fun (x, e) -> x.it, translate_exp e) xes
+(* Il.iterexp -> iterexp *)
+and translate_iterexp (iter, xes) =
+  translate_iter iter, translate_xes xes
+
 let insert_assert exp =
   let at = exp.at in
   match exp.it with
@@ -375,7 +380,7 @@ let cond_of_pop_value e =
   | GetCurLabelE ->
     topLabelE () ~at:at ~note:bt
   (* TODO: Remove this when pops is done *)
-  | IterE (_, _, ListN (e', _)) ->
+  | IterE (_, (ListN (e', _), _)) ->
     topValuesE e' ~at:at ~note:bt
   | _ ->
     topValueE None ~note:bt
@@ -388,32 +393,35 @@ let post_process_of_pop i =
   | PopAllI _ -> [i]
   | _ -> error at "not PopI nor PopallI"
 
+let subst_instr_typ e =
+  let subst = Il.Subst.add_typid Il.Subst.empty ("instr" $ no_region) valT in
+  let subst_instr = Il.Subst.subst_typ subst in
+  { e with note = subst_instr e.note }
+
 (* TODO: remove this *)
 let insert_pop' e =
-  let valsT = listT valT in
   let pop =
     match e.it with
     | Il.ListE [e'] ->
-      popI { (translate_exp e') with note = valT } ~at:e'.at
+      popI (translate_exp e' |> subst_instr_typ) ~at:e'.at
     | Il.ListE es ->
-      popsI { (translate_exp e) with note = valsT } (Some (es |> List.length |> Z.of_int |> numE)) ~at:e.at
+      popsI (translate_exp e |> subst_instr_typ) (Some (es |> List.length |> Z.of_int |> numE)) ~at:e.at
     | Il.IterE (_, (Il.ListN (e', None), _)) ->
-      popsI { (translate_exp e) with note = valsT } (Some (translate_exp e')) ~at:e.at
+      popsI (translate_exp e |> subst_instr_typ) (Some (translate_exp e')) ~at:e.at
     | _ ->
-      popsI { (translate_exp e) with note = valsT } None ~at:e.at
+      popsI (translate_exp e |> subst_instr_typ) None ~at:e.at
   in
   post_process_of_pop pop
 
 let insert_pop e e_n =
-  let valsT = listT valT in
   let pop =
     match e.it, e_n.it with
     | ListE [e'], _ ->
-      popI { e' with note = valT } ~at:e'.at
+      popI (subst_instr_typ e') ~at:e'.at
     | _, NumE z when z = Z.minus_one ->
-      popAllI { e with note = valsT } ~at:e.at
+      popAllI (subst_instr_typ e) ~at:e.at
     | _ ->
-      popsI { e with note = valsT } (Some e_n) ~at:e.at
+      popsI (subst_instr_typ e) (Some e_n) ~at:e.at
   in
   post_process_of_pop pop
 
@@ -451,18 +459,18 @@ let rec translate_rhs exp =
       letI (OptE (Some (translate_exp tmp_name)) $$ exp.at % exp.note, translate_exp exp) ~at:at :: translate_rhs tmp_name,
       []
     ) ~at:at ]
-  | Il.IterE (inner_exp, (iter, itl)) ->
-    let iter_ids = itl |> List.map fst |> List.map it in
+  | Il.IterE (inner_exp, (iter, xes)) ->
+    let xes' = List.map (fun (x, e) -> (x.it, translate_exp e)) xes in
     let walk_expr _walker (expr: expr): expr =
       let typ = Il.IterT (expr.note, Il.List) $ no_region in
-      IterE (expr, iter_ids, translate_iter iter) $$ exp.at % typ
+      IterE (expr, (translate_iter iter, xes')) $$ exp.at % typ
     in
     let walker = { Walk.base_walker with walk_expr } in
 
     let instrs = translate_rhs inner_exp in
     List.map (walker.walk_instr walker) instrs
   (* Value *)
-  | _ when is_wasm_value exp -> [ pushI {(translate_exp exp) with note = valT} ]
+  | _ when is_wasm_value exp -> [ pushI (translate_exp exp |> subst_instr_typ) ]
   (* Instr *)
   | _ when is_wasm_instr exp -> [ executeI (translate_exp exp) ]
   | _ -> error_exp exp "expression on rhs of reduction"
@@ -574,7 +582,7 @@ let get_lhs_name e =
 (* Helper functions *)
 let rec contains_name e = match e.it with
   | VarE _ | SubE _ -> true
-  | IterE (e', _, _) -> contains_name e'
+  | IterE (e', _) -> contains_name e'
   | _ -> false
 
 let extract_non_names =
@@ -587,15 +595,21 @@ let extract_non_names =
         | _ -> assert false
       in
       match e.it with
-      | IterE (_, _, iter) ->
-        let fresh' = IterE (fresh, [ name ], iter) $$ e.at % e.note in
+      | IterE (_, (iter, _)) ->
+        let fresh' = iter_var name iter e.note in
         [ e, fresh' ] @ acc, fresh'
       | _ -> [ e, fresh ] @ acc, fresh
   ) []
 
 let contains_diff target_ns e =
+  (* e contains free variables, one of which is not contained in target names (target_ns) *)
   let free_ns = free_expr e in
   not (IdSet.is_empty free_ns) && IdSet.disjoint free_ns target_ns
+
+let is_iter e =
+  match e.it with
+  | IterE _ -> true
+  | _ -> false
 
 let handle_partial_bindings lhs rhs ids =
   match lhs.it with
@@ -614,7 +628,8 @@ let handle_partial_bindings lhs rhs ids =
     ) in
     let walker = Al.Walk.walk_expr { Al.Walk.default_config with
       pre_expr;
-      stop_cond_expr = contains_diff target_ns;
+      (* ASSUMPTION: There is no partial binding for lhs IterE *)
+      stop_cond_expr = (fun e -> contains_diff target_ns e || is_iter e);
     } in
     let new_lhs = walker lhs in
     new_lhs, rhs, List.fold_left (fun il c -> [ ifI (c, il, []) ]) [] !conds
@@ -702,6 +717,7 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
     |> sprintf "lhs expression %s doesn't contain free variable"
     |> error lhs.at
 
+
 and handle_call_lhs lhs rhs free_ids =
 
   (* Helper function *)
@@ -732,16 +748,21 @@ and handle_call_lhs lhs rhs free_ids =
     in
 
     let base_typ, map_iters =  get_base_typ_and_iters lhs.note rhs.note in
-    (* TODO: Better name using type *)
     let var_name = typ_to_var_name base_typ in
     let var_expr = VarE var_name $$ no_region % base_typ in
-    let to_iter_expr =
+    let to_iter_expr e =
       List.fold_right
-        (fun iter e ->
+        (fun iter (e, ex) ->
+          let x, ex' =
+            match ex.it with
+            | VarE x -> x, {ex with it = VarE (x ^ Il.Print.string_of_iter iter)}
+            | _ -> assert false
+          in
           let iter_typ = Il.IterT (e.note, iter) $ no_region in
-          IterE (e, [var_name], translate_iter iter) $$ e.at % iter_typ
+          IterE (e, (translate_iter iter, [x, ex'])) $$ e.at % iter_typ, ex'
         )
-        map_iters
+        map_iters (e, var_expr)
+      |> fst
     in
 
     let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs var_expr free_ids in
@@ -753,22 +774,16 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Get IterE fields *)
 
-  let inner_lhs, iter_ids, iter =
+  let inner_lhs, iter, xes =
     match lhs.it with
-    | IterE (inner_lhs, iter_ids, iter) ->
-      inner_lhs, iter_ids, iter
+    | IterE (inner_lhs, (iter, xes)) -> inner_lhs, iter, xes
     | _ -> assert (false);
   in
+  let iter_ids, _ = List.split xes in
 
   (* Helper functions *)
 
-  let iter_ids_of (expr: expr): string list =
-    expr
-    |> free_expr
-    |> IdSet.inter (IdSet.of_list iter_ids)
-    |> IdSet.elements
-  in
-  let walk_expr (walker: Walk.walker) (expr: expr): expr =
+  let walk_expr (_walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
       let iter', typ =
         match iter with
@@ -777,18 +792,31 @@ and handle_iter_lhs lhs rhs free_ids =
           List, Il.IterT (expr.note, Il.List) $ no_region
         | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
-      IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
+      IterE (expr, (iter', xes)) $$ lhs.at % typ
     else
-      (Option.get walker.super).walk_expr walker expr
+      expr
   in
+
+  (* Rename free_ids to be used for inner_lhs *)
+
+  let free_ids' = free_ids |> List.map (fun id ->
+    let id_opt = xes |> List.find_map (fun (x, e) ->
+      match e.it with
+      | VarE id' when id = id' -> Some x
+      | _ -> None)
+    in
+    match id_opt with
+    | Some id -> id
+    | _ -> id
+  ) in
 
   (* Translate inner lhs *)
 
-  let instrs = handle_special_lhs inner_lhs rhs free_ids in
+  let instrs = handle_special_lhs inner_lhs rhs free_ids' in
 
   (* Iter injection *)
 
-  let walker = { Walk.base_walker with super = Some Walk.base_walker; walk_expr } in
+  let walker = { Walk.base_walker with walk_expr } in
   let instrs' = List.map (walker.walk_instr walker) instrs in
 
   (* Add ListN condition *)
@@ -818,8 +846,8 @@ and handle_special_lhs lhs rhs free_ids =
   | SubE (s, t) ->
     let rec inject_hasType expr =
       match expr.it with
-      | IterE (inner_expr, ids, iter) ->
-        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % boolT
+      | IterE (inner_expr, iterexp) ->
+        IterE (inject_hasType inner_expr, iterexp) $$ expr.at % boolT
       | _ -> HasTypeE (expr, t) $$ rhs.at % boolT
     in
     [ ifI (
@@ -833,8 +861,8 @@ and handle_special_lhs lhs rhs free_ids =
     let bindings, es' = extract_non_names es in
     let rec inject_isCaseOf expr =
       match expr.it with
-      | IterE (inner_expr, ids, iter) ->
-        IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
+      | IterE (inner_expr, iterexp) ->
+        IterE (inject_isCaseOf inner_expr, iterexp) $$ expr.at % boolT
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
     in
     (match tag with
@@ -894,7 +922,7 @@ and handle_special_lhs lhs rhs free_ids =
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (numE (Z.of_int (List.length es)) ~note:natT), bindings', listE es' ~note:e.note
-      | IterE (({ it = VarE _; _ } | { it = SubE _; _ }), _, ListN (e', None)) ->
+      | IterE (({ it = VarE _; _ } | { it = SubE _; _ }), (ListN (e', None), _)) ->
         Some e', [], e
       | _ ->
         None, [], e in
@@ -960,9 +988,9 @@ let translate_rulepr id exp =
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
 
-let rec translate_iterpr pr (iter, ids) =
+let rec translate_iterpr pr (iter, xes) =
   let instrs = translate_prem pr in
-  let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) ids) in
+  let iter' = translate_iter iter in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let handle_iter_ty ty =
@@ -973,13 +1001,16 @@ let rec translate_iterpr pr (iter, ids) =
   in
 
   let distribute_iter lhs rhs =
-    let lhs_ids = IdSet.elements (IdSet.inter (free_expr lhs) ids') in
-    let rhs_ids = IdSet.elements (IdSet.inter (free_expr rhs) ids') in
     let ty = handle_iter_ty lhs.note in
     let ty' = handle_iter_ty rhs.note in
 
-    assert (List.length (lhs_ids @ rhs_ids) > 0);
-    iterE (lhs, lhs_ids, lhs_iter) ~at:lhs.at ~note:ty, iterE (rhs, rhs_ids, iter') ~at:rhs.at ~note:ty'
+    let lhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr lhs)) xes in
+    let rhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr rhs)) xes in
+
+    (
+      iterE (lhs, (lhs_iter, translate_xes lhs_xes)) ~at:lhs.at ~note:ty,
+      iterE (rhs, (iter', translate_xes rhs_xes)) ~at:rhs.at ~note:ty'
+    )
   in
 
   let post_instr i =
@@ -987,9 +1018,8 @@ let rec translate_iterpr pr (iter, ids) =
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
     | IfI (cond, il1, il2) ->
-        let cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
         let ty = handle_iter_ty cond.note in
-        [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at ~note:ty, il1, il2) ~at:at ]
+        [ ifI (iterE (cond, (iter', translate_xes xes)) ~at:cond.at ~note:ty, il1, il2) ~at:at ]
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr } in
@@ -1004,7 +1034,7 @@ and translate_prem prem =
     init_lhs_id ();
     translate_letpr exp1 exp2 ids
   | Il.RulePr (id, _, exp) -> translate_rulepr id exp
-  | Il.IterPr (pr, exp) -> translate_iterpr pr exp
+  | Il.IterPr (pr, iterexp) -> translate_iterpr pr iterexp
 
 
 (* `premise list` -> `instr list` (return instructions) -> `instr list` *)
@@ -1069,7 +1099,7 @@ let translate_helper helper =
 
 
 let extract_winstr r at =
-  let _, _, prems = r in
+  let _l, _, prems = r in
   match List.find_opt is_winstr_prem prems with
   | Some p -> lhs_of_prem p (* TODO: Collect helper functions into one place *)
   | None -> error at "Failed to extract the target wasm instruction"
@@ -1122,7 +1152,7 @@ let translate_context_winstr winstr =
     let vals = Lib.List.last args in
     [
       (* TODO: append Jump instr *)
-      popAllI ({ (translate_exp vals) with note=(listT valT)}) ~at:vals.at;
+      popAllI (translate_exp vals |> subst_instr_typ) ~at:vals.at;
       insert_assert winstr;
       exitI kind ~at:at
     ]
@@ -1212,8 +1242,7 @@ let rec translate_rgroup' (rule: rule_def) =
   let ctxt_block = match ctxt_blocks with
   | [] -> []
   | _ ->
-    let valTs = listT valT in
-    let e_vals = iterE (subE ("val", valT) ~note:valT, [ "val" ], List) ~note:valTs in
+    let e_vals = iter_var "val" List valT in
     let instr_popall = popAllI e_vals in
     let instr_push = pushI e_vals in
 
@@ -1284,4 +1313,3 @@ let translate il =
     List.map translate_rgroup rules @ List.map translate_helper helpers
   in
   List.map Transpile.remove_state al
-

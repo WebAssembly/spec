@@ -124,7 +124,7 @@ let rec uncat e =
 
 let seq2exec e =
   match e.it with
-  | IterE (e', _, Opt) ->
+  | IterE (e', (Opt, _)) ->
     ifI (
       isDefinedE e ~at:e.at ~note:boolT,
       [executeI e' ~at:e.at],
@@ -346,7 +346,7 @@ let remove_dead_assignment il =
           let bindings = free_expr e11 @ free_expr e12 in
           let get_bounds_iters e =
             match e.it with
-            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+            | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
             | _ -> IdSet.empty
           in
           let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -606,12 +606,12 @@ let hide_state_expr expr =
 
 let hide_state instr =
   let at = instr.at in
-  let env = Al.Valid.env in
+  let il_env = Al.Valid.il_env in
   let set_unit_type fname =
     let id = (fname $ no_region) in
     let unit_type = Il.Ast.TupT [] $ no_region in
-    match Il.Env.find_def !Al.Valid.env id with
-    | (params, _, clauses) -> env := Al.Valid.Env.bind_def !env id (params, unit_type, clauses)
+    match Il.Env.find_def !Al.Valid.il_env id with
+    | (params, _, clauses) -> il_env := Al.Valid.IlEnv.bind_def !il_env id (params, unit_type, clauses)
   in
   match instr.it with
   (* Perform *)
@@ -690,7 +690,7 @@ let remove_state algo =
 let get_state_arg_opt f =
   let arg = ref (TypA (Il.Ast.BoolT $ no_region)) in
   let id = f $ no_region in
-  match Il.Env.find_opt_def !Al.Valid.env id with
+  match Il.Env.find_opt_def !Al.Valid.il_env id with
   | Some (params, _, _) ->
     let param_state = List.find_opt (
       fun param ->
@@ -801,7 +801,7 @@ let insert_frame_binding instrs =
       let bindings' = free_expr e11 @ free_expr e12 in
       let get_bounds_iters e =
         match e.it with
-        | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+        | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
         | _ -> IdSet.empty
       in
       let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -1029,8 +1029,7 @@ let remove_enter algo =
             popI e_frame ~at:instr.at
           ]
         | _ ->
-          let ty_vals = listT valT in
-          let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
+          let e_tmp = iter_var "val" List valT in
           pushI e_frame ~at:instr.at :: il @
           (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
             popAllI e_tmp ~at:instr.at;

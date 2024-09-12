@@ -136,7 +136,7 @@ rule Instrs_ok/empty:
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* -> t_3*
   -- Instr_ok: C |- instr_1 : t_1* -> t_2*
-  -- Instrs_ok: C |- instr_2 : t_2* -> t_3*
+  -- Instrs_ok: C |- instr_2* : t_2* -> t_3*
 
 rule Instrs_ok/frame:
   C |- instr* : t* t_1* -> t* t_2*

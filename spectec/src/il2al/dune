@@ -1,6 +1,6 @@
 (library
   (name il2al)
-  (libraries middlend util il al)
+  (libraries util il al)
   (modules
     animate
     unify
@@ -9,6 +9,7 @@
     transpile
     free
     preprocess
+    il_walk
     encode
     def
     il2al_util

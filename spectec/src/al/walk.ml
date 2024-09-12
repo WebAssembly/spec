@@ -6,7 +6,6 @@ open Source
 (* Unit walker *)
 
 type unit_walker = {
-  super: unit_walker option;
   walk_algo: unit_walker -> algorithm -> unit;
   walk_instr: unit_walker -> instr -> unit;
   walk_expr: unit_walker -> expr -> unit;
@@ -57,7 +56,10 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
     walker.walk_expr walker e1; List.iter (walk_path walker) ps;
     walker.walk_expr walker e2
   | OptE e_opt -> Option.iter (walker.walk_expr walker) e_opt
-  | IterE (e, _, i) -> walker.walk_expr walker e; walk_iter walker i
+  | IterE (e, (iter, xes)) ->
+    walker.walk_expr walker e;
+    walker.walk_iter walker iter;
+    List.iter (fun (_, e) -> walker.walk_expr walker e) xes
 
 let walk_instr (walker: unit_walker) (instr: instr) : unit =
   match instr.it with
@@ -86,13 +88,12 @@ let walk_algo (walker: unit_walker) (algo: algorithm) : unit =
   | FuncA (_, args, instrs) ->
     List.iter (walker.walk_arg walker) args; List.iter (walker.walk_instr walker) instrs
 
-let base_unit_walker = { super=None; walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
+let base_unit_walker = { walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
 
 
 (* Transform walker *)
 
 type walker = {
-  super: walker option;
   walk_algo: walker -> algorithm -> algorithm;
   walk_instr: walker -> instr -> instr;
   walk_expr: walker -> expr -> expr;
@@ -155,7 +156,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | LabelE (e1, e2) -> LabelE (walk_expr e1, walk_expr e2)
     | ContE e' -> ContE (walk_expr e')
     | ChooseE e' -> ChooseE (walk_expr e')
-    | IterE (e, ids, iter) -> IterE (walk_expr e, ids, walk_iter iter)
+    | IterE (e, (iter, xes)) -> IterE (walk_expr e, (walk_iter iter, List.map (fun (x, e) -> (x, walk_expr e)) xes))
     | IsCaseOfE (e, a) -> IsCaseOfE (walk_expr e, a)
     | IsDefinedE e -> IsDefinedE (walk_expr e)
     | HasTypeE (e, t) -> HasTypeE(walk_expr e, t)
@@ -212,7 +213,7 @@ let walk_algo (walker: walker) (algo: algorithm) : algorithm =
   in
   { algo with it }
 
-let base_walker = { super=None; walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
+let base_walker = { walk_algo; walk_instr; walk_expr; walk_path; walk_iter; walk_arg }
 
 
 (* TODO: remove walker below *)
@@ -277,7 +278,7 @@ let rec walk_expr f e =
       | ChooseE e' -> ChooseE (new_ e')
       | VarE id -> VarE id
       | SubE (id, t) -> SubE (id, t)
-      | IterE (e, ids, iter) -> IterE (new_ e, ids, iter)
+      | IterE (e, (iter, xes)) -> IterE (new_ e, (iter, List.map (fun (x, e) -> (x, new_ e)) xes))
       | ContextKindE _ -> e.it
       | IsCaseOfE (e, a) -> IsCaseOfE (new_ e, a)
       | IsDefinedE e -> IsDefinedE (new_ e)

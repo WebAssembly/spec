@@ -2577,12 +2577,6 @@ $$
 \end{array}
 $$
 
-$$
-\begin{array}{@{}lcl@{}l@{}}
-x &=& x \\
-\end{array}
-$$
-
 \vspace{1ex}
 
 $$
@@ -7673,7 +7667,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{global}} : {\mathit{gt}}_1
+C \vdash {\mathit{global}}_1 : {\mathit{gt}}_1
  \qquad
 C \oplus \{ \begin{array}[t]{@{}l@{}}
 \mathsf{globals}~{\mathit{gt}}_1 \}\end{array} \vdash {{\mathit{global}}^\ast} : {{\mathit{gt}}^\ast}
@@ -7941,7 +7935,7 @@ $$
 {[\textsc{\scriptsize E{-}refl}]} \quad & z ; {{\mathit{instr}}^\ast} &\hookrightarrow^\ast& z ; {{\mathit{instr}}^\ast} \\
 {[\textsc{\scriptsize E{-}trans}]} \quad & z ; {{\mathit{instr}}^\ast} &\hookrightarrow^\ast& {z''} ; {{\mathit{instr}''}^\ast}
   &\qquad \mbox{if}~z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
-  &&&&\qquad {\land}~{z'} ; {\mathit{instr}'} \hookrightarrow^\ast {z''} ; {{\mathit{instr}''}^\ast} \\
+  &&&&\qquad {\land}~{z'} ; {{\mathit{instr}'}^\ast} \hookrightarrow^\ast {z''} ; {{\mathit{instr}''}^\ast} \\
 \end{array}
 $$
 

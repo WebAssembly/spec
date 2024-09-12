@@ -22,10 +22,20 @@ let mem_typid s id = Map.mem id.it s.typid
 let mem_defid s id = Map.mem id.it s.defid
 let mem_gramid s id = Map.mem id.it s.gramid
 
+let find_varid s id = Map.find id.it s.varid
+let find_typid s id = Map.find id.it s.typid
+let find_defid s id = Map.find id.it s.defid
+let find_gramid s id = Map.find id.it s.gramid
+
 let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
 let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
 let add_defid s id x = if id.it = "_" then s else {s with defid = Map.add id.it x s.defid}
 let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
+
+let remove_varid s id = if id.it = "_" then s else {s with varid = Map.remove id.it s.varid}
+let remove_typid s id = if id.it = "_" then s else {s with typid = Map.remove id.it s.typid}
+let remove_defid s id = if id.it = "_" then s else {s with defid = Map.remove id.it s.defid}
+let remove_gramid s id = if id.it = "_" then s else {s with gramid = Map.remove id.it s.gramid}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
@@ -76,8 +86,10 @@ let subst_gramid s id =
 
 let rec subst_iter s iter =
   match iter with
-  | Opt | List | List1 -> iter
-  | ListN (e, id_opt) -> ListN (subst_exp s e, subst_opt subst_varid s id_opt)
+  | Opt | List | List1 -> iter, s
+  | ListN (e, id_opt) ->
+    ListN (subst_exp s e, subst_opt subst_varid s id_opt),
+    Option.fold id_opt ~none:s ~some:(remove_varid s)
 
 
 (* Types *)
@@ -91,7 +103,9 @@ and subst_typ s t =
     )
   | BoolT | NumT _ | TextT -> t.it
   | TupT ets -> TupT (fst (subst_list_dep subst_typbind Free.bound_typbind s ets))
-  | IterT (t1, iter) -> IterT (subst_typ s t1, subst_iter s iter)
+  | IterT (t1, iter) ->
+    let iter', s' = subst_iter s iter in
+    IterT (subst_typ s' t1, iter')
   ) $ t.at
 
 and subst_typbind s (e, t) =
@@ -137,7 +151,9 @@ and subst_exp s e =
   | LenE e1 -> LenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
   | CallE (id, as_) -> CallE (subst_defid s id, subst_args s as_)
-  | IterE (e1, iterexp) -> IterE (subst_exp s e1, subst_iterexp s iterexp)
+  | IterE (e1, iterexp) ->
+    let it', s' = subst_iterexp s iterexp in
+    IterE (subst_exp s' e1, it')
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
   | UncaseE (e1, op) -> UncaseE (subst_exp s e1, op)
   | OptE eo -> OptE (subst_opt subst_exp s eo)
@@ -159,47 +175,11 @@ and subst_path s p =
   | DotP (p1, atom) -> DotP (subst_path s p1, atom)
   ) $$ p.at % subst_typ s p.note
 
-and subst_iterexp s (iter, bs) =
+and subst_iterexp s (iter, xes) =
   (* TODO(3, rossberg): This is assuming expressions in s are closed, is that okay? *)
-  subst_iter s iter,
-  List.map (fun (id, t) ->
-    let id' =
-      match Map.find_opt id.it s.varid with
-      | None -> id
-      | Some {it = VarE id'; _} -> id'
-      | Some _ ->
-        id  (* TODO(3, rossberg): would need to update bind list; change bs to proper bindings *)
-    in (id', subst_typ s t)
-  ) bs
-(*
-  let iter' = subst_iter s iter in
-  let bs' = 
-    List.map_filter (fun (id, t) ->
-      if mem_varid s id then None else Some (id, subst_typ s t)
-    ) bs
-  in
-  let iter'', f =
-    match iter' with
-    | Opt -> iter', fun e -> TheE e
-    | ListN (e1, Some idx) ->
-      let eidx = VarE idx $$ idx.at % (NumT NatT $ idx.at) in
-      iter', fun e -> IdxE (e, eidx)
-    | ListN (e1, None) ->
-      let idx = gen_id "i" $ e1.at in
-      let eidx = VarE idx $$ at % (NumT NatT $ idx.at) in
-      ListN (e1, Some idx), fun e -> IdxE (e, eidx)
-    | List1 | List ->
-      let idx = gen_id "i" $ at in
-      let eidx = VarE idx $$ idx.at % (NumT NatT $ idx.at) in
-      let e1 = LenE (gen_id "n" $ at) $$ at % (NumT NatT $ idx.at) in
-      ListN (e1, Some idx), fun e -> IdxE (e, eidx)
-  in
-  (iter'', bs'),
-  List.fold_left (fun s' (id, t) ->
-    let e = Map.find id.it s.varid in
-    add_varid s' id (f e $$ e.at % subst_typ s t)
-  ) s bs
-*)
+  let iter', s' = subst_iter s iter in
+  (iter', List.map (fun (id, e) -> (id, subst_exp s e)) xes),
+  List.fold_left remove_varid s' (List.map fst xes)
 
 
 (* Grammars *)
@@ -212,7 +192,9 @@ and subst_sym s g =
   | SeqG gs -> SeqG (subst_list subst_sym s gs)
   | AltG gs -> AltG (subst_list subst_sym s gs)
   | RangeG (g1, g2) -> RangeG (subst_sym s g1, subst_sym s g2)
-  | IterG (g1, iter) -> IterG (subst_sym s g1, subst_iterexp s iter)
+  | IterG (g1, iterexp) ->
+    let it', s' = subst_iterexp s iterexp in
+    IterG (subst_sym s' g1, it')
   | AttrG (e, g1) -> AttrG (subst_exp s e, subst_sym s g1)
   ) $ g.at
 
@@ -225,7 +207,8 @@ and subst_prem s prem =
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr
   | IterPr (prem1, iterexp) ->
-    IterPr (subst_prem s prem1, subst_iterexp s iterexp)
+    let it', s' = subst_iterexp s iterexp in
+    IterPr (subst_prem s' prem1, it')
   | LetPr (e1, e2, ids) -> LetPr (subst_exp s e1, subst_exp s e2, ids)
   ) $ prem.at
 
@@ -242,7 +225,7 @@ and subst_arg s a =
 
 and subst_bind s b =
   (match b.it with
-  | ExpB (id, t, iters) -> ExpB (id, subst_typ s t, iters)
+  | ExpB (id, t) -> ExpB (id, subst_typ s t)
   | TypB id -> TypB id
   | DefB (id, ps, t) ->
     let ps', s' = subst_params s ps in
