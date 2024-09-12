@@ -496,3 +496,26 @@
    )
    "constant expression required"
 )
+
+;; Data count without data segment
+
+(assert_invalid
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\05\03\01\00\01"          ;; Memory section: 1 memory
+    "\08\01\00"                ;; Start section: function 0
+    "\0c\01\01"                ;; Data Count section: 1 segment
+    "\0a\0e\01"                ;; Code section: 1 function
+
+    ;; function 0
+    "\0c\00"
+    "\41\00"                   ;; i32.const 0
+    "\41\00"                   ;; i32.const 0
+    "\41\00"                   ;; i32.const 0
+    "\fc\08\00\00"             ;; memory.init dataidx=0 memidx=0
+    "\0b"                      ;; end
+  )
+  ""
+)
