@@ -33,7 +33,7 @@ end
 module AlContext : sig
   type mode =
     (* Al context *)
-    | Al of string * instr list * env
+    | Al of string * value list * instr list * env
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -41,12 +41,13 @@ module AlContext : sig
     | Execute of value
     (* Return register *)
     | Return of value
-  val al : string * instr list * env -> mode
+  val al : string * value list * instr list * env -> mode
   val wasm : int -> mode
   val enter : string * instr list * env -> mode
   val execute : value -> mode
   val return : value -> mode
   type t = mode list
+  val string_of_context : mode -> string
   val tl : t -> t
   val is_reducible : t -> bool
   val can_tail_call : instr -> bool

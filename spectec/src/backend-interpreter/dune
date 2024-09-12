@@ -9,5 +9,7 @@
     exception
     manual
     ds
-    builtin)
+    builtin
+    debugger
+    )
 )

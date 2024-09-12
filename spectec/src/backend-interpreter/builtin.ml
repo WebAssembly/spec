@@ -26,7 +26,7 @@ let builtin () =
     let dt =
       CaseV ("DEF", [
         CaseV ("REC", [
-          [| CaseV ("SUB", [none "FINAL"; listV [||]; ftype]) |] |> listV
+          [| CaseV ("SUB", [some "FINAL"; listV [||]; ftype]) |] |> listV
         ]); numV Z.zero
       ]) in
     name, StrV [
@@ -62,17 +62,23 @@ let builtin () =
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (TextV "global_type");
-    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (TextV "global_type");
-    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (TextV "global_type");
-    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TextV "global_type");
+    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (TupV [none "MUT"; nullary "I32"]);
+    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (TupV [none "MUT"; nullary "I64"]);
+    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (TupV [none "MUT"; nullary "F32"]);
+    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TupV [none "MUT"; nullary "F64"]);
   ] in
   (* Builtin tables *)
   let nulls = CaseV ("REF.NULL", [ nullary "FUNC" ]) |> Array.make 10 in
+  let funcref =
+    if !Construct.version = 3 then
+      CaseV ("REF", [some "NULL"; nullary "FUNC"])
+    else
+      nullary "FUNCREF"
+  in
   let tables = [
     "table",
     listV nulls
-    |> create_tableinst (TupV [ TupV [ numV (Z.of_int 10); numV (Z.of_int 20) ]; nullary "FUNCREF" ]);
+    |> create_tableinst (TupV [ TupV [ numV (Z.of_int 10); numV (Z.of_int 20) ]; funcref ]);
   ] in
   (* Builtin memories *)
   let zeros = numV Z.zero |> Array.make 0x10000 in

@@ -5,6 +5,36 @@ open El.Atom
 open Def
 open Il2al_util
 
+let typing_functions = ref []
+
+let rec transform_rulepr_prem prem =
+  match prem.it with
+  | IterPr (prem, iterexp) ->
+    prem
+    |> transform_rulepr_prem
+    |> (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
+  | IfPr ({ it = CmpE (EqOp, { it = CallE (id, args); note; at }, rhs); _ })
+  when List.mem id.it !typing_functions ->
+    IfPr (CallE (id, args @ [ExpA rhs $ rhs.at]) $$ at % note) $ prem.at
+  | _ -> prem
+
+let transform_rulepr_rule (rule: rule) : rule =
+  let RuleD (id, binds, mixop, exp, prems) = rule.it in
+  RuleD (id, binds, mixop, exp, List.map transform_rulepr_prem prems) $ rule.at
+
+let transform_rulepr_clause (clause: clause) : clause =
+  let DefD (binds, args, exp, prems) = clause.it in
+  DefD (binds, args, exp, List.map transform_rulepr_prem prems) $ clause.at
+
+let transform_rulepr_def (def: def) : def =
+  match def.it with
+  | RelD (id, mixop, t, rules) ->
+    RelD (id, mixop, t, List.map transform_rulepr_rule rules) $ def.at
+  | DecD (id, ps, t, clauses) ->
+    DecD (id, ps, t, List.map transform_rulepr_clause clauses) $ def.at
+  | _ -> def
+
+let transform_rulepr = List.map transform_rulepr_def
 
 (* Remove or *)
 let remove_or_exp e =
@@ -128,6 +158,8 @@ let rec preprocess_prem prem =
     (* `id`: C |- `lhs` : `rhs` *)
     | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
     when turnstile.it = Turnstile && colon.it = Colon ->
+      typing_functions := id.it :: !typing_functions;
+
       (* $`id`(`lhs`) = `rhs` *)
       let typing_function_call =
         CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note
@@ -211,4 +243,5 @@ let preprocess (il: script) : rule_def list * helper_def list =
   |> List.map preprocess_def
   |> Encode.transform
   |> Animate.transform
+  |> transform_rulepr
   |> Unify.unify

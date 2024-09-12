@@ -133,6 +133,8 @@ let argspec = Arg.align
   "--prose-rst", Arg.Unit (fun () -> target := Prose false), " Generate prose";
   "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args),
     " Generate interpreter";
+  "--debug", Arg.Unit (fun () -> Backend_interpreter.Debugger.debug := true),
+    " Debug interpreter";
 
   "--latex-macros", Arg.Set latex_macros, " Splice Latex with macro invocations";
 

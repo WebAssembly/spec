@@ -569,13 +569,17 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI _e -> ctx
-  (*
-    if is_true (eval_expr env e) then
-      ctx
-    else
-      fail_expr e "assertion fail"
-  *)
+  | AssertI _e ->
+    (* (match e.it with
+    | YetE _ -> ctx
+    | _ ->
+      if is_true (eval_expr env e) then
+        ctx
+      else
+        fail_expr e "assertion fail"
+    ) *)
+    ctx
+
   | PushI e ->
     (match eval_expr env e with
     | FrameV _ as v -> WasmContext.push_context (v, [], [])
@@ -724,13 +728,20 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
 and try_step_wasm ctx v =
   try_with_error empty no_region structured_string_of_value (step_wasm ctx) v
 
-and step : AlContext.t -> AlContext.t = AlContext.(function
-  | Al (name, il, env) :: ctx ->
+and step (ctx: AlContext.t) : AlContext.t =
+  let open AlContext in
+
+  Debugger.run ctx;
+
+  match ctx with
+  | Al (name, args, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr name ctx env instr
+    | [ instr ]
+    when can_tail_call instr && not !Debugger.debug ->
+      try_step_instr name ctx env instr
     | h :: t ->
-      let new_ctx = Al (name, t, env) :: ctx in
+      let new_ctx = Al (name, args, t, env) :: ctx in
       try_step_instr name new_ctx env h
     )
   | Wasm n :: ctx ->
@@ -742,7 +753,7 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     (match il with
     | [] ->
       (match ctx with
-      | Wasm n :: t -> Wasm (n + 1) :: t
+      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
       | Enter (_, [], _) :: t -> Wasm 2 :: t
       | ctx -> Wasm 1 :: ctx
       )
@@ -752,10 +763,10 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     )
   | Execute v :: ctx -> try_step_wasm ctx v
   | _ -> assert false
-)
 
 
 (* AL interpreter Entry *)
+
 
 and run (ctx: AlContext.t) : AlContext.t =
   if AlContext.is_reducible ctx then run (step ctx) else ctx
@@ -781,7 +792,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
     |> List.fold_right2 assign_param params args
   in
 
-  AlContext.al (name, body, env)
+  AlContext.al (name, args, body, env)
 
 and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)

@@ -590,7 +590,15 @@ let extract_non_names =
     if contains_name e then acc, e
     else
       let fresh = get_lhs_name e in
-      [ e, fresh ] @ acc, fresh
+      let name = match fresh.it with
+        | VarE id -> id
+        | _ -> assert false
+      in
+      match e.it with
+      | IterE (_, (iter, _)) ->
+        let fresh' = iter_var name iter e.note in
+        [ e, fresh' ] @ acc, fresh'
+      | _ -> [ e, fresh ] @ acc, fresh
   ) []
 
 let contains_diff target_ns e =
