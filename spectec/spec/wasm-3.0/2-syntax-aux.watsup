@@ -611,11 +611,17 @@ def $subst_moduletype(xt_1* -> xt_2*, tv*, tu*) = $subst_externtype(xt_1, tv*, t
 def $subst_all_valtype(valtype, heaptype*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_globaltype(globaltype, heaptype*) : globaltype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_tabletype(tabletype, heaptype*) : tabletype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_memtype(memtype, heaptype*) : memtype  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_moduletype(moduletype, heaptype*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
 
 def $subst_all_valtype(t, tu^n) = $subst_valtype(t, (_IDX i)^(i<n), tu^n)
 def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, (_IDX i)^(i<n), tu^n)
 def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, (_IDX i)^(i<n), tu^n)
+def $subst_all_globaltype(gt, tu^n) = $subst_globaltype(gt, (_IDX i)^(i<n), tu^n)
+def $subst_all_tabletype(tt, tu^n) = $subst_tabletype(tt, (_IDX i)^(i<n), tu^n)
+def $subst_all_memtype(mt, tu^n) = $subst_memtype(mt, (_IDX i)^(i<n), tu^n)
 def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n)
 
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
