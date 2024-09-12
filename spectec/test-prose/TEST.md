@@ -771,9 +771,9 @@ watsup 0.4 generator
 ......................
 
 
-1. Let :math:`f` be the current frame.
+1. Let :math:`F` be the current frame.
 
-#. Let :math:`n` be the arity of :math:`f`.
+#. Let :math:`n` be the arity of :math:`F`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -798,9 +798,9 @@ watsup 0.4 generator
 
    a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`f` be the current frame.
+   #. Let :math:`F` be the current frame.
 
-   #. Let :math:`n` be the arity of :math:`f`.
+   #. Let :math:`n` be the arity of :math:`F`.
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -3240,8 +3240,8 @@ Step_pure/br_table l* l'
   a. Execute the instruction (BR l').
 
 Step_pure/frame
-1. Let f be the current frame.
-2. Let n be the arity of f.
+1. Let F be the current frame.
+2. Let n be the arity of F.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Assert: Due to validation, there are at least n values on the top of the stack.
 5. Pop the values val^n from the stack.
@@ -3253,8 +3253,8 @@ Step_pure/return
 1. Pop all values val* from the top of the stack.
 2. If the top of the stack is a FRAME_, then:
   a. Push the values val* to the stack.
-  b. Let f be the current frame.
-  c. Let n be the arity of f.
+  b. Let F be the current frame.
+  c. Let n be the arity of F.
   d. Assert: Due to validation, there are at least n values on the top of the stack.
   e. Pop the values val^n from the stack.
   f. Pop all values val'* from the top of the stack.
@@ -5338,9 +5338,9 @@ watsup 0.4 generator
 ......................
 
 
-1. Let :math:`f` be the current frame.
+1. Let :math:`F` be the current frame.
 
-#. Let :math:`n` be the arity of :math:`f`.
+#. Let :math:`n` be the arity of :math:`F`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5365,9 +5365,9 @@ watsup 0.4 generator
 
    a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`f` be the current frame.
+   #. Let :math:`F` be the current frame.
 
-   #. Let :math:`n` be the arity of :math:`f`.
+   #. Let :math:`n` be the arity of :math:`F`.
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -10305,8 +10305,8 @@ Step_pure/br_table l* l'
   a. Execute the instruction (BR l').
 
 Step_pure/frame
-1. Let f be the current frame.
-2. Let n be the arity of f.
+1. Let F be the current frame.
+2. Let n be the arity of F.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Assert: Due to validation, there are at least n values on the top of the stack.
 5. Pop the values val^n from the stack.
@@ -10318,8 +10318,8 @@ Step_pure/return
 1. Pop all values val* from the top of the stack.
 2. If the top of the stack is a FRAME_, then:
   a. Push the values val* to the stack.
-  b. Let f be the current frame.
-  c. Let n be the arity of f.
+  b. Let F be the current frame.
+  c. Let n be the arity of F.
   d. Assert: Due to validation, there are at least n values on the top of the stack.
   e. Pop the values val^n from the stack.
   f. Pop all values val'* from the top of the stack.
@@ -14717,9 +14717,9 @@ watsup 0.4 generator
 ......................
 
 
-1. Let :math:`f` be the current frame.
+1. Let :math:`F` be the current frame.
 
-#. Let :math:`n` be the arity of :math:`f`.
+#. Let :math:`n` be the arity of :math:`F`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -14744,9 +14744,9 @@ watsup 0.4 generator
 
    a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`f` be the current frame.
+   #. Let :math:`F` be the current frame.
 
-   #. Let :math:`n` be the arity of :math:`f`.
+   #. Let :math:`n` be the arity of :math:`F`.
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -23695,8 +23695,8 @@ Step_pure/return_call_indirect x yy
 3. Execute the instruction (RETURN_CALL_REF yy).
 
 Step_pure/frame
-1. Let f be the current frame.
-2. Let n be the arity of f.
+1. Let F be the current frame.
+2. Let n be the arity of F.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Assert: Due to validation, there are at least n values on the top of the stack.
 5. Pop the values val^n from the stack.
@@ -23708,8 +23708,8 @@ Step_pure/return
 1. Pop all values val* from the top of the stack.
 2. If the top of the stack is a FRAME_, then:
   a. Push the values val* to the stack.
-  b. Let f be the current frame.
-  c. Let n be the arity of f.
+  b. Let F be the current frame.
+  c. Let n be the arity of F.
   d. Assert: Due to validation, there are at least n values on the top of the stack.
   e. Pop the values val^n from the stack.
   f. Pop all values val'* from the top of the stack.

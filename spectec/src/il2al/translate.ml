@@ -1125,10 +1125,11 @@ let translate_context_winstr winstr =
   (* Frame *)
   | Il.Atom "FRAME_" ->
     (match args with
-    | [arity; name; inner_exp] ->
+    | [arity; _name; inner_exp] ->
+      let eF = varE "F" ~at:at ~note:callframeT in (* frame id *)
       [
-        letI (translate_exp name, getCurFrameE () ~note:name.note) ~at:at;
-        letI (translate_exp arity, arityE (translate_exp name) ~note:arity.note) ~at:at;
+        letI (eF, getCurFrameE () ~note:callframeT) ~at:at;
+        letI (translate_exp arity, arityE eF ~note:arity.note) ~at:at;
         insert_assert inner_exp;
       ]
       @ insert_pop' (inner_exp) @
@@ -1161,11 +1162,11 @@ let translate_context ctx =
       letI (translate_exp instrs, contE label ~note:instrs.note) ~at:at;
     ],
     exitI atom ~at:at
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f ]; _ }) ->
-    let frame = translate_exp f in
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; _f ]; _ }) ->
+    let eF = varE "F" ~at:at ~note:callframeT in (* frame id *)
     [
-      letI (frame, getCurFrameE () ~note:frameT) ~at:at;
-      letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
+      letI (eF, getCurFrameE () ~note:callframeT) ~at:at;
+      letI (translate_exp n, arityE eF ~note:n.note) ~at:at;
     ],
     exitI atom ~at:at
   | Il.CaseE ([atom]::_, _) ->
