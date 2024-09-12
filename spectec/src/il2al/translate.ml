@@ -369,12 +369,8 @@ let cond_of_pop_value e =
   let at = e.at in
   let bt = boolT in
   match e.it with
-  | CaseE (op, [t; _]) ->
-    (match get_atom op with
-    | Some {it = Il.Atom "CONST"; _} -> topValueE (Some t) ~note:bt
-    | Some {it = Il.Atom "VCONST"; _} -> topValueE (Some t) ~note:bt
-    | _ -> topValueE None ~note:bt
-    )
+  | CaseE (_op, [_t; _]) ->
+    topValueE None ~note:bt
   | GetCurFrameE ->
     topFrameE () ~at:at ~note:bt
   | GetCurLabelE ->
