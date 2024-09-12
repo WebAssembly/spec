@@ -1023,11 +1023,11 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
 
-#. Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
+#. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
+#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
@@ -2580,23 +2580,23 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{\mathit{type}}_0~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{\mathit{global}}_1~{\mathit{table}}_2~{\mathit{mem}}_3~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^{n_{\mathit{mem}}}}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{\mathit{mem}}_3`.
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^{n_{\mathit{mem}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^{n_{\mathit{table}}}}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{\mathit{table}}_2`.
+#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^{n_{\mathit{table}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^{n_{\mathit{global}}}}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{\mathit{global}}_1`.
+#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^{n_{\mathit{global}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
-#. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{\mathit{type}}_0`.
+#. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
@@ -3360,9 +3360,9 @@ Step_read/call_addr a
 4. Assert: Due to validation, there are at least k values on the top of the stack.
 5. Pop the values val^k from the stack.
 6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0 instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL.
-9. Let (LOCAL t)* be local_0.
+7. Let (FUNC x local_0* instr*) be func.
+8. Assert: Due to validation, local_0 is of the case LOCAL*.
+9. Let (LOCAL t)* be local_0*.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
 11. Let F be the activation of f with arity n.
 12. Push F to the stack.
@@ -4100,15 +4100,15 @@ allocmodule module externaddr* val*
 3. Let ma_ex* be $mems(externaddr*).
 4. Let ta_ex* be $tables(externaddr*).
 5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem* data* start? export*) be module.
-7. Assert: Due to validation, mem_3 is of the case MEMORY.
-8. Let (MEMORY memtype)^n_mem be mem_3.
-9. Assert: Due to validation, table_2 is of the case TABLE.
-10. Let (TABLE tabletype)^n_table be table_2.
-11. Assert: Due to validation, global_1 is of the case GLOBAL.
-12. Let (GLOBAL globaltype expr_1)^n_global be global_1.
-13. Assert: Due to validation, type_0 is of the case TYPE.
-14. Let (TYPE ft)* be type_0.
+6. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem* data* start? export*) be module.
+7. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
+8. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
+9. Assert: Due to validation, table_2 is of the case TABLE^n_table.
+10. Let (TABLE tabletype)^n_table be table_2^n_table.
+11. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
+12. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+13. Assert: Due to validation, type_0 is of the case TYPE*.
+14. Let (TYPE ft)* be type_0*.
 15. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
 16. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
 17. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
@@ -6032,11 +6032,11 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
 
-#. Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
+#. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
+#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
@@ -9389,31 +9389,31 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{\mathit{type}}_0~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{\mathit{global}}_1~{\mathit{table}}_2~{\mathit{mem}}_3~{\mathit{elem}}_4~{\mathit{data}}_5~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}_4^{n_{\mathit{elem}}}}~{{\mathit{data}}_5^{n_{\mathit{data}}}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{data}}_5)^{n_{\mathit{data}}}}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
 
-#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{\mathit{data}}_5`.
+#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^{n_{\mathit{data}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{elem}}_4)^{n_{\mathit{elem}}}}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{\mathit{elem}}_4`.
+#. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^{n_{\mathit{elem}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^{n_{\mathit{mem}}}}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{\mathit{mem}}_3`.
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^{n_{\mathit{mem}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^{n_{\mathit{table}}}}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{\mathit{table}}_2`.
+#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^{n_{\mathit{table}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^{n_{\mathit{global}}}}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{\mathit{global}}_1`.
+#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^{n_{\mathit{global}}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
-#. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{\mathit{type}}_0`.
+#. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
@@ -10636,9 +10636,9 @@ Step_read/call_addr a
 4. Assert: Due to validation, there are at least k values on the top of the stack.
 5. Pop the values val^k from the stack.
 6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0 instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL.
-9. Let (LOCAL t)* be local_0.
+7. Let (FUNC x local_0* instr*) be func.
+8. Assert: Due to validation, local_0 is of the case LOCAL*.
+9. Let (LOCAL t)* be local_0*.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
 11. Let F be the activation of f with arity n.
 12. Push F to the stack.
@@ -12243,19 +12243,19 @@ allocmodule module externaddr* val* ref**
 3. Let ma_ex* be $mems(externaddr*).
 4. Let ta_ex* be $tables(externaddr*).
 5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem_4 data_5 start? export*) be module.
-7. Assert: Due to validation, data_5 is of the case DATA.
-8. Let (DATA byte* datamode)^n_data be data_5.
-9. Assert: Due to validation, elem_4 is of the case ELEM.
-10. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4.
-11. Assert: Due to validation, mem_3 is of the case MEMORY.
-12. Let (MEMORY memtype)^n_mem be mem_3.
-13. Assert: Due to validation, table_2 is of the case TABLE.
-14. Let (TABLE tabletype)^n_table be table_2.
-15. Assert: Due to validation, global_1 is of the case GLOBAL.
-16. Let (GLOBAL globaltype expr_1)^n_global be global_1.
-17. Assert: Due to validation, type_0 is of the case TYPE.
-18. Let (TYPE ft)* be type_0.
+6. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem_4^n_elem data_5^n_data start? export*) be module.
+7. Assert: Due to validation, data_5 is of the case DATA^n_data.
+8. Let (DATA byte* datamode)^n_data be data_5^n_data.
+9. Assert: Due to validation, elem_4 is of the case ELEM^n_elem.
+10. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4^n_elem.
+11. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
+12. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
+13. Assert: Due to validation, table_2 is of the case TABLE^n_table.
+14. Let (TABLE tabletype)^n_table be table_2^n_table.
+15. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
+16. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+17. Assert: Due to validation, type_0 is of the case TYPE*.
+18. Let (TYPE ft)* be type_0*.
 19. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
 20. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
 21. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
@@ -14797,7 +14797,7 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Assert: Due to validation, YetE: a handler is now on the top of the stack.
+#. Assert: Due to validation, a handler is now on the top of the stack.
 
 #. Exit from :math:`\mathsf{handler}`.
 
@@ -15614,31 +15614,31 @@ watsup 0.4 generator
 
       #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is of the case :math:`\mathsf{func}`.
 
-      #) Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
+      #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+      #) If for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
 
-      #) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
+         a) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
-      #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+         #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
-      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
+         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
 
-      #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+         #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
 
-      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-      #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
+         #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-      #) Let :math:`F` be the activation of :math:`f` with arity :math:`m`.
+         #) Let :math:`F` be the activation of :math:`f` with arity :math:`m`.
 
-      #) Push :math:`F` to the stack.
+         #) Push :math:`F` to the stack.
 
-      #) Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`\epsilon`.
+         #) Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`\epsilon`.
 
-      #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+         #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -16037,9 +16037,9 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`.
 
@@ -16076,9 +16076,9 @@ watsup 0.4 generator
 
       1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-      #) Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+      #) Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
+      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
       #) If :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -17133,9 +17133,9 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^{n}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{\mathit{fieldtype}}_0`.
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{{\mathit{fieldtype}}_0^{n}}`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17172,9 +17172,9 @@ watsup 0.4 generator
 
    #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-   #. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+   #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
+   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
 
    #. If :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -23786,7 +23786,7 @@ Step_pure/return
 
 Step_pure/handler
 1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, YetE (a handler is now on the top of the stack).
+2. Assert: Due to validation, a handler is now on the top of the stack.
 3. Exit from HANDLER_.
 4. Push the values val* to the stack.
 
@@ -24175,19 +24175,19 @@ Step_read/call_ref yy
   b. If (a < |$funcinst(z)|), then:
     1) Let fi be $funcinst(z)[a].
     2) Assert: Due to validation, fi.CODE is of the case FUNC.
-    3) Let (FUNC x local_0 instr*) be fi.CODE.
-    4) Assert: Due to validation, local_0 is of the case LOCAL.
-    5) Let (LOCAL t)* be local_0.
-    6) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-    7) Let (FUNC functype_0) be $expanddt(fi.TYPE).
-    8) Let (t_1^n -> t_2^m) be functype_0.
-    9) Assert: Due to validation, there are at least n values on the top of the stack.
-    10) Pop the values val^n from the stack.
-    11) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
-    12) Let F be the activation of f with arity m.
-    13) Push F to the stack.
-    14) Let L be the label_m{[]}.
-    15) Enter instr* with label L.
+    3) Let (FUNC x local_0* instr*) be fi.CODE.
+    4) If local_0 is of the case LOCAL*, then:
+      a) Let (LOCAL t)* be local_0*.
+      b) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+      c) Let (FUNC functype_0) be $expanddt(fi.TYPE).
+      d) Let (t_1^n -> t_2^m) be functype_0.
+      e) Assert: Due to validation, there are at least n values on the top of the stack.
+      f) Pop the values val^n from the stack.
+      g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
+      h) Let F be the activation of f with arity m.
+      i) Push F to the stack.
+      j) Let L be the label_m{[]}.
+      k) Enter instr* with label L.
 
 Step_read/return_call x
 1. Let z be the current state.
@@ -24379,8 +24379,8 @@ Step_read/ref.cast rt
 Step_read/struct.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-3. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be fieldtype_0.
+3. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
+4. Let (mut, zt)* be fieldtype_0*.
 5. Assert: Due to validation, (|mut*| is |zt*|).
 6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 7. Let ?(val)* be $default_($unpack(zt))*.
@@ -24398,8 +24398,8 @@ Step_read/struct.get sx? x i
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-    2) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be fieldtype_0.
+    2) Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
+    3) Let (mut, zt)* be fieldtype_0*.
     4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -24913,8 +24913,8 @@ Step/struct.new x
 1. Let z be the current state.
 2. Let a be |$structinst(z)|.
 3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-4. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-5. Let (mut, zt)^n be fieldtype_0.
+4. Let (STRUCT fieldtype_0^n) be $expanddt($type(z, x)).
+5. Let (mut, zt)^n be fieldtype_0^n.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
@@ -24932,8 +24932,8 @@ Step/struct.set x i
 7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-  c. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be fieldtype_0.
+  c. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
+  d. Let (mut, zt)* be fieldtype_0*.
   e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
