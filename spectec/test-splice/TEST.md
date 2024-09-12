@@ -10,7 +10,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-../spec/wasm-3.0/6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
+../spec/wasm-3.0/6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -1365,7 +1365,10 @@ warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
 warning: definition `inot_` was never spliced
+warning: definition `inst_globaltype` was never spliced
+warning: definition `inst_memtype` was never spliced
 warning: definition `inst_reftype` was never spliced
+warning: definition `inst_tabletype` was never spliced
 warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instrdots` was never spliced
@@ -1441,8 +1444,11 @@ warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
 warning: definition `subst_all_deftypes` was never spliced
+warning: definition `subst_all_globaltype` was never spliced
+warning: definition `subst_all_memtype` was never spliced
 warning: definition `subst_all_moduletype` was never spliced
 warning: definition `subst_all_reftype` was never spliced
+warning: definition `subst_all_tabletype` was never spliced
 warning: definition `subst_all_valtype` was never spliced
 warning: definition `subst_comptype` was never spliced
 warning: definition `subst_deftype` was never spliced
@@ -1932,7 +1938,10 @@ warning: definition prose `globalsxx` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
 warning: definition prose `half__` was never spliced
+warning: definition prose `inst_globaltype` was never spliced
+warning: definition prose `inst_memtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
+warning: definition prose `inst_tabletype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
 warning: definition prose `invfbytes_` was never spliced
@@ -1990,8 +1999,11 @@ warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced
 warning: definition prose `subst_all_deftypes` was never spliced
+warning: definition prose `subst_all_globaltype` was never spliced
+warning: definition prose `subst_all_memtype` was never spliced
 warning: definition prose `subst_all_moduletype` was never spliced
 warning: definition prose `subst_all_reftype` was never spliced
+warning: definition prose `subst_all_tabletype` was never spliced
 warning: definition prose `subst_all_valtype` was never spliced
 warning: definition prose `subst_comptype` was never spliced
 warning: definition prose `subst_deftype` was never spliced

@@ -57,9 +57,9 @@ def $allocmems(s, memtype memtype'*) = (s_2, ma ma'*)
   -- if (s_2, ma'*) = $allocmems(s_1, memtype'*)
 
 def $alloctag(store, tagtype) : (store, tagaddr)
-def $alloctag(s, at) = (s ++ {TAGS taginst}, |s.TAGS|)
+def $alloctag(s, tagtype) = (s ++ {TAGS taginst}, |s.TAGS|)
   ---- ----
-  -- if taginst = { TYPE at }
+  -- if taginst = { TYPE tagtype }
 
 def $alloctags(store, tagtype*) : (store, tagaddr*) hint(show $alloctag*#((%,%)))
 def $alloctags(s, eps) = (s, eps)
@@ -128,12 +128,13 @@ def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, modu
   -- if ea* = ($(|s.ELEMS|+i_E))^(i_E<|elem*|)
   -- if da* = ($(|s.DATAS|+i_D))^(i_D<|data*|)
   -- if dt* = $alloctypes(type*)
+  ;; TODO(2, rossberg): use $inst_type(_, moduleinst) instead of $subst_all_type(_, dt*) below
   -- if (s_1, fa*) = $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^(|func*|))
-  -- if (s_2, ga*) = $allocglobals(s_1, globaltype*, val_G*)
-  -- if (s_3, ta*) = $alloctables(s_2, tabletype*, ref_T*)
-  -- if (s_4, ma*) = $allocmems(s_3, memtype*)
+  -- if (s_2, ga*) = $allocglobals(s_1, $subst_all_globaltype(globaltype, dt*)*, val_G*)
+  -- if (s_3, ta*) = $alloctables(s_2, $subst_all_tabletype(tabletype, dt*)*, ref_T*)
+  -- if (s_4, ma*) = $allocmems(s_3, $subst_all_memtype(memtype, dt*)*)
   -- if (s_5, aa*) = $alloctags(s_4, dt*[y]*)
-  -- if (s_6, ea*) = $allocelems(s_5, elemtype*, (ref_E*)*)
+  -- if (s_6, ea*) = $allocelems(s_5, $subst_all_reftype(elemtype, dt*)*, (ref_E*)*)
   -- if (s_7, da*) = $allocdatas(s_6, OK^(|data*|), (byte*)*)
   ;; TODO(2, rossberg): use moduleinst here and remove hack above
   -- if xi* = $allocexports({FUNCS fa_I* fa*, GLOBALS ga_I* ga*, TABLES ta_I* ta*, MEMS ma_I* ma*, TAGS aa_I* aa*}, export*)

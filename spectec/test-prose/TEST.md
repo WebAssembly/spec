@@ -12363,7 +12363,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
+6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 
 * :math:`{\mathit{numtype}}` is valid.
 
@@ -13641,10 +13641,16 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`\mathsf{extern{.}convert\_any}` is valid with type :math:`((\mathsf{ref}~{\mathsf{null}^?}~\mathsf{any})~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~{\mathsf{null}^?}~\mathsf{extern}))`.
+* :math:`\mathsf{extern{.}convert\_any}` is valid with type :math:`((\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern}))` if and only if:
 
 
-* :math:`\mathsf{any{.}convert\_extern}` is valid with type :math:`((\mathsf{ref}~{\mathsf{null}^?}~\mathsf{extern})~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~{\mathsf{null}^?}~\mathsf{any}))`.
+   * :math:`{\mathsf{null}}{{{}_{1}^?}}` must be equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+
+
+* :math:`\mathsf{any{.}convert\_extern}` is valid with type :math:`((\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~{\rightarrow}_{\epsilon}\,(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any}))` if and only if:
+
+
+   * :math:`{\mathsf{null}}{{{}_{1}^?}}` must be equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 * :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})`.
@@ -19573,6 +19579,27 @@ watsup 0.4 generator
 1. Return :math:`{{\mathit{dt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
 
 
+:math:`{{\mathit{gt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
+.........................................................
+
+
+1. Return :math:`{{\mathit{gt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
+
+
+:math:`{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
+.........................................................
+
+
+1. Return :math:`{{\mathit{tt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
+
+
+:math:`{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
+.........................................................
+
+
+1. Return :math:`{{\mathit{mt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
+
+
 :math:`{{\mathit{mmt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
 ..........................................................
 
@@ -21112,6 +21139,33 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{rt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
 
 
+:math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{gt}})`
+................................................................
+
+
+1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
+
+#. Return :math:`{{\mathit{gt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+
+
+:math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}})`
+................................................................
+
+
+1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
+
+#. Return :math:`{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+
+
+:math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}})`
+................................................................
+
+
+1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
+
+#. Return :math:`{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+
+
 :math:`{{\mathrm{default}}}_{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}`
 .........................................................................................
 
@@ -21816,11 +21870,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctag}}({\mathit{at}})`
-..........................................
+:math:`{\mathrm{alloctag}}({\mathit{tagtype}})`
+...............................................
 
 
-1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{at}} \}\end{array}`.
+1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tags}|}`.
 
@@ -22030,15 +22084,15 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
 
 #. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
 
 #. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
 
 #. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ma}}^\ast}`.
 
@@ -22046,7 +22100,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocelems}}({{\mathit{elemtype}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ea}}^\ast}`.
 
@@ -22287,7 +22341,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
+6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 Numtype_ok
 - the number type numtype is valid.
 
@@ -23065,10 +23119,12 @@ Instr_ok/array.init_data
   - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
-- the instr EXTERN.CONVERT_ANY is valid with the instruction type ([(REF nul ANY)] ->_ [] [(REF nul EXTERN)]).
+- the instr EXTERN.CONVERT_ANY is valid with the instruction type ([(REF nul1 ANY)] ->_ [] [(REF nul2 EXTERN)]) if and only if:
+  - nul1 is nul2.
 
 Instr_ok/any.convert_extern
-- the instr ANY.CONVERT_EXTERN is valid with the instruction type ([(REF nul EXTERN)] ->_ [] [(REF nul ANY)]).
+- the instr ANY.CONVERT_EXTERN is valid with the instruction type ([(REF nul1 EXTERN)] ->_ [] [(REF nul2 ANY)]) if and only if:
+  - nul1 is nul2.
 
 Instr_ok/vconst
 - the instr (V128.CONST c) is valid with the instruction type ([] ->_ [] [V128]).
@@ -26002,6 +26058,15 @@ subst_all_reftype rt tu^n
 subst_all_deftype dt tu^n
 1. Return $subst_deftype(dt, (_IDX i)^(i<n), tu^n).
 
+subst_all_globaltype gt tu^n
+1. Return $subst_globaltype(gt, (_IDX i)^(i<n), tu^n).
+
+subst_all_tabletype tt tu^n
+1. Return $subst_tabletype(tt, (_IDX i)^(i<n), tu^n).
+
+subst_all_memtype mt tu^n
+1. Return $subst_memtype(mt, (_IDX i)^(i<n), tu^n).
+
 subst_all_moduletype mmt tu^n
 1. Return $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n).
 
@@ -26745,6 +26810,18 @@ inst_reftype moduleinst rt
 1. Let dt* be moduleinst.TYPES.
 2. Return $subst_all_reftype(rt, dt*).
 
+inst_globaltype moduleinst gt
+1. Let dt* be moduleinst.TYPES.
+2. Return $subst_all_globaltype(gt, dt*).
+
+inst_tabletype moduleinst tt
+1. Let dt* be moduleinst.TYPES.
+2. Return $subst_all_tabletype(tt, dt*).
+
+inst_memtype moduleinst mt
+1. Let dt* be moduleinst.TYPES.
+2. Return $subst_all_memtype(mt, dt*).
+
 default_ valtype_u0
 1. If the type of valtype_u0 is Inn, then:
   a. Let Inn be valtype_u0.
@@ -27069,8 +27146,8 @@ allocmems memtype_u0*
 4. Let ma'* be $allocmems(memtype'*).
 5. Return [ma] :: ma'*.
 
-alloctag at
-1. Let taginst be { TYPE: at; }.
+alloctag tagtype
+1. Let taginst be { TYPE: tagtype; }.
 2. Let a be |s.TAGS|.
 3. Append taginst to the s.TAGS.
 4. Return a.
@@ -27171,15 +27248,15 @@ allocmodule module externaddr* val_G* ref_T* ref_E**
 31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
 32. Let n_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
 33. Assert: Due to validation, (n_0 is fa*).
-34. Let n_0 be $allocglobals(globaltype*, val_G*).
+34. Let n_0 be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
 35. Assert: Due to validation, (n_0 is ga*).
-36. Let n_0 be $alloctables(tabletype*, ref_T*).
+36. Let n_0 be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
 37. Assert: Due to validation, (n_0 is ta*).
-38. Let n_0 be $allocmems(memtype*).
+38. Let n_0 be $allocmems($subst_all_memtype(memtype, dt*)*).
 39. Assert: Due to validation, (n_0 is ma*).
 40. Let n_0 be $alloctags(dt*[y]*).
 41. Assert: Due to validation, (n_0 is aa*).
-42. Let n_0 be $allocelems(elemtype*, ref_E**).
+42. Let n_0 be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
 43. Assert: Due to validation, (n_0 is ea*).
 44. Let n_0 be $allocdatas(OK^|data*|, byte**).
 45. Assert: Due to validation, (n_0 is da*).

@@ -3304,6 +3304,24 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{{\mathit{gt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]} &=& {{\mathit{gt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]} &=& {{\mathit{tt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]} &=& {{\mathit{mt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {{\mathit{mmt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]} &=& {{\mathit{mmt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]} \\
 \end{array}
 $$
@@ -3996,6 +4014,27 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{rt}}) &=& {{\mathit{rt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
+  &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{gt}}) &=& {{\mathit{gt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
+  &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}}) &=& {{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
+  &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}}) &=& {{\mathit{mt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
   &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
 \end{array}
 $$
@@ -6459,8 +6498,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+{\mathsf{null}}{{{}_{1}^?}} = {\mathsf{null}}{{{}_{2}^?}}
 }{
-C \vdash \mathsf{extern{.}convert\_any} : (\mathsf{ref}~{\mathsf{null}^?}~\mathsf{any}) \rightarrow (\mathsf{ref}~{\mathsf{null}^?}~\mathsf{extern})
+C \vdash \mathsf{extern{.}convert\_any} : (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any}) \rightarrow (\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})
 } \, {[\textsc{\scriptsize T{-}extern.convert\_any}]}
 \qquad
 \end{array}
@@ -6469,8 +6509,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+{\mathsf{null}}{{{}_{1}^?}} = {\mathsf{null}}{{{}_{2}^?}}
 }{
-C \vdash \mathsf{any{.}convert\_extern} : (\mathsf{ref}~{\mathsf{null}^?}~\mathsf{extern}) \rightarrow (\mathsf{ref}~{\mathsf{null}^?}~\mathsf{any})
+C \vdash \mathsf{any{.}convert\_extern} : (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern}) \rightarrow (\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})
 } \, {[\textsc{\scriptsize T{-}any.convert\_extern}]}
 \qquad
 \end{array}
@@ -9138,10 +9179,10 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{alloctag}}(s, {\mathit{at}}) &=& \multicolumn{2}{l@{}}{ (s \oplus \{ \begin{array}[t]{@{}l@{}}
+{\mathrm{alloctag}}(s, {\mathit{tagtype}}) &=& \multicolumn{2}{l@{}}{ (s \oplus \{ \begin{array}[t]{@{}l@{}}
 \mathsf{tags}~{\mathit{taginst}} \}\end{array}, {|s{.}\mathsf{tags}|}) } \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad \mbox{if}~{\mathit{taginst}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~{\mathit{at}} \}\end{array}} \\
+\mathsf{type}~{\mathit{tagtype}} \}\end{array}} \\
 \end{array}
 $$
 
@@ -9238,11 +9279,11 @@ $$
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{da}}^\ast} = {({|s{.}\mathsf{datas}|} + i_{\mathsf{d}})^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{dt}}^\ast} = {{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_1, {{\mathit{fa}}^\ast}) = {{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_2, {{\mathit{ga}}^\ast}) = {{{\mathrm{allocglobal}}^\ast}}{(s_1, {{\mathit{globaltype}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_3, {{\mathit{ta}}^\ast}) = {{{\mathrm{alloctable}}^\ast}}{(s_2, {{\mathit{tabletype}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_4, {{\mathit{ma}}^\ast}) = {{{\mathrm{allocmem}}^\ast}}{(s_3, {{\mathit{memtype}}^\ast})}} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_2, {{\mathit{ga}}^\ast}) = {{{\mathrm{allocglobal}}^\ast}}{(s_1, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_3, {{\mathit{ta}}^\ast}) = {{{\mathrm{alloctable}}^\ast}}{(s_2, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_4, {{\mathit{ma}}^\ast}) = {{{\mathrm{allocmem}}^\ast}}{(s_3, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_5, {{\mathit{aa}}^\ast}) = {{{\mathrm{alloctag}}^\ast}}{(s_4, {{{\mathit{dt}}^\ast}{}[y]^\ast})}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_6, {{\mathit{ea}}^\ast}) = {{{\mathrm{allocelem}}^\ast}}{(s_5, {{\mathit{elemtype}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})}} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_6, {{\mathit{ea}}^\ast}) = {{{\mathrm{allocelem}}^\ast}}{(s_5, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s_7, {{\mathit{da}}^\ast}) = {{{\mathrm{allocdata}}^\ast}}{(s_6, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {({{\mathit{byte}}^\ast})^\ast})}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{xi}}^\ast} = {{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}
 \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}} \\
