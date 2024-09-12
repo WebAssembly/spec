@@ -547,6 +547,9 @@ let rec render_stmt env depth stmt =
         (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_expr_with_type env e)
         (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
+    | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
+      sprintf "%s matches itself."
+        (render_expr_with_type env e1)
     | MatchesS (e1, e2) ->
       sprintf "%s matches %s."
         (render_expr_with_type env e1)
@@ -581,7 +584,7 @@ let rec render_stmt env depth stmt =
       sprintf "either:%s\n%s" hd' tl'
     | RelS (s, es) ->
       let template = String.split_on_char '%' s in
-      let args = List.map (render_expr env) es in
+      let args = List.map (render_expr_with_type env) es in
 
       Prose_util.alternate template args |> String.concat ""
     | YetS s ->

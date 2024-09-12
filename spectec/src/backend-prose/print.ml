@@ -427,6 +427,9 @@ let rec raw_string_of_stmt stmt =
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
         (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
+  | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
+      sprintf "%s matches itself."
+        (string_of_expr_with_type e1)
   | MatchesS (e1, e2) ->
       sprintf "%s matches %s."
         (string_of_expr_with_type e1)
@@ -448,7 +451,7 @@ let rec raw_string_of_stmt stmt =
         string_of_list string_of_block "Either:" ("\n" ^ indent () ^ "Or:") "" sss
   | RelS (s, es) ->
       let template = String.split_on_char '%' s in
-      let args = List.map string_of_expr es in
+      let args = List.map string_of_expr_with_type es in
 
       Prose_util.alternate template args |> String.concat ""
   | YetS s -> indent () ^ " Yet: " ^ s

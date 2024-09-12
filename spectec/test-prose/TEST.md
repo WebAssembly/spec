@@ -77,10 +77,10 @@ watsup 0.4 generator
   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
-* :math:`{\mathit{ft}}` matches the function type :math:`{\mathit{ft}}`.
+* The function type :math:`{\mathit{ft}}` matches itself.
 
 
-* :math:`{\mathit{gt}}` matches the global type :math:`{\mathit{gt}}`.
+* The global type :math:`{\mathit{gt}}` matches itself.
 
 
 * The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{lim}}_2` if:
@@ -2796,10 +2796,10 @@ Limits_sub
   - n_12 is less than or equal to n_22.
 
 Functype_sub
-- ft matches the function type ft.
+- the function type ft matches itself.
 
 Globaltype_sub
-- gt matches the global type gt.
+- the global type gt matches itself.
 
 Tabletype_sub
 - the table type lim_1 matches the table type lim_2 if:
@@ -4222,10 +4222,10 @@ watsup 0.4 generator
   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
-* :math:`{\mathit{ft}}` matches the function type :math:`{\mathit{ft}}`.
+* The function type :math:`{\mathit{ft}}` matches itself.
 
 
-* :math:`{\mathit{gt}}` matches the global type :math:`{\mathit{gt}}`.
+* The global type :math:`{\mathit{gt}}` matches itself.
 
 
 * The table type :math:`({\mathit{lim}}_1~{\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2~{\mathit{rt}})` if:
@@ -9541,10 +9541,10 @@ Limits_sub
   - n_12 is less than or equal to n_22.
 
 Functype_sub
-- ft matches the function type ft.
+- the function type ft matches itself.
 
 Globaltype_sub
-- gt matches the global type gt.
+- the global type gt matches itself.
 
 Tabletype_sub
 - the table type (lim_1 rt) matches the table type (lim_2 rt) if:
@@ -12326,10 +12326,10 @@ watsup 0.4 generator
     * The function type :math:`{\mathit{functype}}` is valid.
 
 
-* :math:`{\mathit{packtype}}` matches the packed type :math:`{\mathit{packtype}}`.
+* The packed type :math:`{\mathit{packtype}}` matches itself.
 
 
-* :math:`{\mathit{numtype}}` matches the number type :math:`{\mathit{numtype}}`.
+* The number type :math:`{\mathit{numtype}}` matches itself.
 
 
 * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
@@ -12392,21 +12392,21 @@ watsup 0.4 generator
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct}`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`
   * Or:
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array}`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`(\mathsf{array}~{\mathit{fieldtype}})`
+    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`
   * Or:
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}`.
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{func}`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`(\mathsf{func}~{\mathit{functype}})`
+    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
   * Or:
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{deftype}}_1`.
@@ -12489,7 +12489,7 @@ watsup 0.4 generator
     * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is :math:`()`.
 
 
-* :math:`{\mathit{vectype}}` matches the vector type :math:`{\mathit{vectype}}`.
+* The vector type :math:`{\mathit{vectype}}` matches itself.
 
 
 * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
@@ -12723,7 +12723,7 @@ watsup 0.4 generator
 
   * :math:`{\mathit{deftype}}` is valid.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`(\mathsf{func}~{\mathit{functype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
 * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
@@ -12735,7 +12735,7 @@ watsup 0.4 generator
 
     * The defined type :math:`{\mathit{deftype}}` is valid.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`(\mathsf{func}~{\mathit{functype}})`
+    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
   * Or:
 
@@ -12891,7 +12891,7 @@ watsup 0.4 generator
 
     * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
@@ -12905,7 +12905,7 @@ watsup 0.4 generator
 
     * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
     * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -13074,7 +13074,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
@@ -13082,7 +13082,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
@@ -13096,7 +13096,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[y]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The instruction :math:`\mathsf{return}` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
@@ -13112,7 +13112,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
@@ -13126,7 +13126,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
@@ -13146,7 +13146,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[y]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
@@ -13160,7 +13160,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -13263,7 +13263,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
 
 * The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13271,7 +13271,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
 
@@ -13283,7 +13283,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -13297,7 +13297,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -13309,7 +13309,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13317,7 +13317,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * The value :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
@@ -13327,7 +13327,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
@@ -13335,7 +13335,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
 
   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
@@ -13347,7 +13347,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
@@ -13361,7 +13361,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -13371,7 +13371,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
@@ -13382,7 +13382,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
@@ -13390,11 +13390,11 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_1`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x_1]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_2`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x_2]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
 
   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
@@ -13404,7 +13404,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
 
@@ -13416,7 +13416,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
@@ -13921,7 +13921,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * :math:`{|{\mathit{local*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
@@ -13965,7 +13965,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{func}~{\mathit{functype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
 * The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the element type :math:`{\mathit{rt}}` if:
@@ -14032,7 +14032,7 @@ watsup 0.4 generator
 
   * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
@@ -22152,10 +22152,10 @@ Comptype_ok
     - the function type functype is valid.
 
 Packtype_sub
-- packtype matches the packed type packtype.
+- the packed type packtype matches itself.
 
 Numtype_sub
-- numtype matches the number type numtype.
+- the number type numtype matches itself.
 
 Deftype_sub
 - the defined type deftype_1 matches the defined type deftype_2 if:
@@ -22191,15 +22191,15 @@ Heaptype_sub
   - Or:
     - heaptype_u0 is deftype.
     - heaptype_u1 is STRUCT.
-    - The :ref:`expansion <aux-expand-deftype>` of deftype is (STRUCT fieldtype*)
+    - The :ref:`expansion <aux-expand-deftype>` of the defined type deftype is the composite type (STRUCT fieldtype*)
   - Or:
     - heaptype_u0 is deftype.
     - heaptype_u1 is ARRAY.
-    - The :ref:`expansion <aux-expand-deftype>` of deftype is (ARRAY fieldtype)
+    - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (ARRAY fieldtype)
   - Or:
     - heaptype_u0 is deftype.
     - heaptype_u1 is FUNC.
-    - The :ref:`expansion <aux-expand-deftype>` of deftype is (FUNC functype)
+    - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype)
   - Or:
     - heaptype_u0 is deftype_1.
     - heaptype_u1 is deftype_2.
@@ -22247,7 +22247,7 @@ Reftype_sub
     - _u1? is ?(()).
 
 Vectype_sub
-- vectype matches the vector type vectype.
+- the vector type vectype matches itself.
 
 Valtype_sub
 - the value type valtype_u0 matches the value type valtype_u1 if:
@@ -22382,14 +22382,14 @@ Memtype_ok
 Tagtype_ok
 - the memory type deftype is valid if:
   - deftype is valid.
-  - The :ref:`expansion <aux-expand-deftype>` of deftype is (FUNC functype)
+  - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype)
 
 Externtype_ok
 - the external type externtype_u0 is valid if:
   - Either:
     - externtype_u0 is (FUNC deftype).
     - the defined type deftype is valid.
-    - The :ref:`expansion <aux-expand-deftype>` of deftype is (FUNC functype)
+    - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype)
   - Or:
     - externtype_u0 is (GLOBAL globaltype).
     - the global type globaltype is valid.
@@ -22478,7 +22478,7 @@ Blocktype_ok
     - valtype_u1* is t_1*.
     - valtype_u2* is t_2*.
     - |C.TYPES| is greater than typeidx.
-    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is (FUNC t_1* -> t_2*)
+    - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*)
 
 Catch_ok
 - the catch clause catch_u0 is valid if:
@@ -22486,7 +22486,7 @@ Catch_ok
   - Either:
     - catch_u0 is (CATCH x l).
     - |C.TAGS| is greater than x.
-    - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> [])
+    - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TAGS[x] is the composite type (FUNC t* -> [])
     - the value type sequence t* matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_REF x l).
@@ -22587,12 +22587,12 @@ Instr_ok/br_on_cast_fail
 Instr_ok/call
 - the instruction (CALL x) is valid with the instruction type t_1* -> t_2* if:
   - |C.FUNCS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*)
 
 Instr_ok/call_ref
 - the instruction (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF NULL (_IDX x))] -> t_2* if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
 
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [I32] -> t_2* if:
@@ -22600,7 +22600,7 @@ Instr_ok/call_indirect
   - the table type C.TABLES[x] is (lim rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
   - |C.TYPES| is greater than y.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[y] is the composite type (FUNC t_1* -> t_2*)
 
 Instr_ok/return
 - the instruction RETURN is valid with the instruction type t_1* :: t* -> t_2* if:
@@ -22610,7 +22610,7 @@ Instr_ok/return
 Instr_ok/return_call
 - the instruction (RETURN_CALL x) is valid with the instruction type t_3* :: t_1* -> t_4* if:
   - |C.FUNCS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*)
   - the result type C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
@@ -22618,7 +22618,7 @@ Instr_ok/return_call
 Instr_ok/return_call_ref
 - the instruction (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF NULL (_IDX x))] -> t_4* if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
   - the result type C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
@@ -22629,7 +22629,7 @@ Instr_ok/return_call_indirect
   - the table type C.TABLES[x] is (lim rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
   - |C.TYPES| is greater than y.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[y] is the composite type (FUNC t_1* -> t_2*)
   - the result type C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
@@ -22637,7 +22637,7 @@ Instr_ok/return_call_indirect
 Instr_ok/throw
 - the instruction (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
   - |C.TAGS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> [])
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TAGS[x] is the composite type (FUNC t* -> [])
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/throw_ref
@@ -22711,19 +22711,19 @@ Instr_ok/i31.get
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut zt)*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT (mut zt)*)
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut zt)*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT (mut zt)*)
   - |zt*| is |val*|.
   - For all val in val* and zt in zt*, the value $default_($unpack(zt)) is ?(val).
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT yt*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT yt*)
   - |yt*| is greater than i.
   - the field type yt*[i] is (mut zt).
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
@@ -22731,37 +22731,37 @@ Instr_ok/struct.get
 Instr_ok/struct.set
 - the instruction (STRUCT.SET x i) is valid with the instruction type [(REF NULL (_IDX x)), $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT yt*)
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT yt*)
   - |yt*| is greater than i.
   - the field type yt*[i] is (MUT zt).
 
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
   - the value $default_($unpack(zt)) is ?(val).
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut rt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut rt))
   - |C.ELEMS| is greater than y.
   - the reference type C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
   - $unpack(zt) is contained in [numtype, vectype].
   - |C.DATAS| is greater than y.
   - the data type C.DATAS[y] is OK.
@@ -22769,13 +22769,13 @@ Instr_ok/array.new_data
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF NULL (_IDX x)), I32] -> [$unpack(zt)] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt)] -> [] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
 
 Instr_ok/array.len
 - the instruction ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32].
@@ -22783,27 +22783,27 @@ Instr_ok/array.len
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> [] if:
   - |C.TYPES| is greater than x_1.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is (ARRAY (MUT zt_1))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x_1] is the composite type (ARRAY (MUT zt_1))
   - |C.TYPES| is greater than x_2.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is (ARRAY (mut zt_2))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x_2] is the composite type (ARRAY (mut zt_2))
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
 - the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
   - |C.ELEMS| is greater than y.
   - the element type C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (MUT zt))
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
   - $unpack(zt) is contained in [numtype, vectype].
   - |C.DATAS| is greater than y.
   - the data type C.DATAS[y] is OK.
@@ -23126,7 +23126,7 @@ Local_ok
 Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC t_1* -> t_2*)
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
   - |local*| is |lct*|.
   - For all lct in lct* and local in local*, the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
@@ -23152,7 +23152,7 @@ Mem_ok
 Tag_ok
 - the tag (TAG x) is valid with the memory type C.TYPES[x] if:
   - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC functype)
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype)
 
 Elemmode_ok
 - the elemmode elemmode_u0 is valid with the element type rt if:
@@ -23191,7 +23191,7 @@ Data_ok
 Start_ok
 - the start function (START x) is valid if:
   - |C.FUNCS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is (FUNC [] -> [])
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.FUNCS[x] is the composite type (FUNC [] -> [])
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
