@@ -1431,13 +1431,9 @@ Memory Instructions
 
 :math:`t\K{.}\LOAD~x~\memarg`
 .............................
-$${rule-prose: Instr_ok/load}
-
+$${rule-prose: Instr_ok/load-val}
 .. todo::
  below is the official specification
- (*) - [Semantics are right but it should be more easy to read]
-
-
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1448,10 +1444,12 @@ $${rule-prose: Instr_ok/load}
 $${rule: Instr_ok/load-val}
 
 
-.. _valid-load-pack:
-
 :math:`t\K{.}\LOAD{N}\K{\_}\sx~x~\memarg`
 .........................................
+.. _valid-load-pack:
+$${rule-prose: Instr_ok/load-pack}
+.. todo::
+ below is the official specification
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1465,11 +1463,9 @@ $${rule: Instr_ok/load-pack}
 
 :math:`t\K{.}\STORE~x~\memarg`
 ..............................
-$${rule-prose: Instr_ok/store}
-
+$${rule-prose: Instr_ok/store-val}
 .. todo::
  below is the official specification
- (*) - [Semantics are right but it should be more easy to read]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1484,6 +1480,9 @@ $${rule: Instr_ok/store-val}
 
 :math:`t\K{.}\STORE{N}~x~\memarg`
 .................................
+$${rule-prose: Instr_ok/store-pack}
+.. todo::
+ below is the official specification
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1497,7 +1496,7 @@ $${rule: Instr_ok/store-pack}
 
 :math:`\K{v128.}\LOAD~x~\memarg`
 .....................................
-$${rule-prose: Instr_ok/vload}
+$${rule-prose: Instr_ok/vload-val}
 .. todo::
  below is the official specification
 
@@ -1514,6 +1513,9 @@ $${rule: Instr_ok/vload-val}
 
 :math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg`
 ..............................................
+$${rule-prose: Instr_ok/vload-pack}
+.. todo::
+ below is the official specification
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
@@ -1527,6 +1529,9 @@ $${rule: Instr_ok/vload-pack}
 
 :math:`\K{v128.}\LOAD{N}\K{\_splat}~x~\memarg`
 ..............................................
+$${rule-prose: Instr_ok/vload-splat}
+.. todo::
+ below is the official specification
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1540,6 +1545,9 @@ $${rule: Instr_ok/vload-splat}
 
 :math:`\K{v128.}\LOAD{N}\K{\_zero}~x~\memarg`
 .............................................
+$${rule-prose: Instr_ok/vload-zero}
+.. todo::
+ below is the official specification
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.

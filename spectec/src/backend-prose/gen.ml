@@ -4,6 +4,7 @@ open Eq
 open Il
 open Al.Al_util
 open Il2al.Translate
+open Il2al.Il2al_util
 open Util.Source
 open Util.Error
 
@@ -176,6 +177,15 @@ let exp_to_argexpr es = translate_argexp es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   match e.it with
+  | Ast.CmpE (GtOp _, {it = LenE ({it = DotE _; _} as arr); _}, index)
+  | Ast.CmpE (LtOp _, index, {it = LenE ({it = DotE _; _} as arr); _}) ->
+    let note =
+      match arr.note.it with
+      | IterT (t, _) -> t
+      | _ -> arr.note
+      in
+    let e' = accE (exp_to_expr arr, Al.Ast.IdxP (exp_to_expr index) $ index.at) ~at:e.at ~note:note in
+    [ IsDefinedS e' ]
   | Ast.CmpE (op, e1, e2) ->
     let op = cmpop_to_cmpop op in
     let e1 = exp_to_expr e1 in
@@ -332,7 +342,7 @@ let rec group_vrules = function
       let same_rules, diff_rules =
         List.partition (fun (_, rule) -> name_of_rule rule = rule_name) t in
       let same_rules = List.map snd same_rules in
-      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules |> Il2al.Unify.unify_rules)) in
+      let group = (rule_name, rel_id, rule :: same_rules) in
       group :: group_vrules diff_rules
 
 (* TODO: The codes below are too repetitive. Should be factored. *)
@@ -369,10 +379,25 @@ let prose_of_valid_rel def =
 
 (** 2. C |- instr : type **)
 let proses_of_valid_instr_rel rel =
-  rel
-  |> extract_vrules
-  |> group_vrules
-  |> List.map vrule_group_to_prose
+  let groups = rel
+    |> extract_vrules
+    |> group_vrules
+  in
+
+  let grouped_proses =
+    groups
+    |> List.map (fun (name, id, rules) -> name, id, List.map pack_pair_rule (Il2al.Unify.unify_rules rules))
+    |> List.map vrule_group_to_prose
+  in
+
+  let ungrouped_proses =
+    groups
+    |> List.filter (fun (_, _, rules) -> List.length rules > 1)
+    |> List.concat_map (fun (_, id, rules) -> List.map (fun r -> (full_name_of_rule r , id, [pack_pair_rule r])) rules)
+    |> List.map vrule_group_to_prose
+  in
+
+  grouped_proses @ ungrouped_proses
 
 (** 3. C |- e : e **)
 let prose_of_valid_with_rules rel_id rules =

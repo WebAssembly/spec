@@ -27,6 +27,8 @@ let rec eq_stmt i1 i2 =
   | IsConstS (opt1, e11), IsConstS (opt2, e21) ->
       Option.equal eq_expr opt1 opt2
       && eq_expr e11 e21
+  | IsDefinedS e1, IsDefinedS e2 ->
+      eq_expr e1 e2
   | IfS (e11, il1), IfS (e21, il2) ->
       eq_expr e11 e21
       && List.for_all2 eq_stmt il1 il2

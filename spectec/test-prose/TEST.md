@@ -164,27 +164,27 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
 
 
 * The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^?}`.
 
 
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` is defined in the context.
 
   * The number type :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-  * For all :math:`l` in :math:`{l^\ast}`, :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * For all :math:`l` in :math:`{l^\ast}`, the result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
   * For all :math:`l` in :math:`{l^\ast}`, :math:`{t^?}` is :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -192,17 +192,17 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
 * The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
@@ -241,65 +241,65 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The number type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The number type :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The number type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The number type :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The number type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The number type :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}~t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
 
 
 * The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -315,9 +315,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -328,6 +328,15 @@ watsup 0.4 generator
     * :math:`n / 8` is less than :math:`{|{\mathit{nt}}|} / 8`.
 
   * If :math:`n` is defined, the number type :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
+
+
+* The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+
+
+  * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
+
+
+* The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
@@ -378,9 +387,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
@@ -398,9 +407,9 @@ watsup 0.4 generator
 * The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^?}`.
 
@@ -432,9 +441,9 @@ watsup 0.4 generator
 * The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`0`.
+  * The table type :math:`C{.}\mathsf{tables}{}[0]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[0]` is :math:`{\mathit{lim}}`.
+  * :math:`C{.}\mathsf{tables}{}[0]` is :math:`{\mathit{lim}}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -442,17 +451,17 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{ft*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * For all :math:`x` in :math:`{x^\ast}`, the function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`, the function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
 * The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{lim}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{lim}}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -462,9 +471,9 @@ watsup 0.4 generator
 * The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
@@ -482,9 +491,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
 
-    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-    * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
   * Or:
 
@@ -492,27 +501,27 @@ watsup 0.4 generator
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
@@ -2855,30 +2864,30 @@ Instr_ok/if
 
 Instr_ok/br
 - the instruction (BR l) is valid with the function type t_1* :: t? -> t_2* if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t?.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t?.
 
 Instr_ok/br_if
 - the instruction (BR_IF l) is valid with the function type t? :: [I32] -> t? if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t?.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t?.
 
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t? -> t_2* if:
-  - |C.LABELS| is greater than l'.
+  - the result type C.LABELS[l'] is defined in the context.
   - the number type t? is C.LABELS[l'].
-  - For all l in l*, |C.LABELS| is greater than l.
+  - For all l in l*, the result type C.LABELS[l] is defined in the context.
   - For all l in l*, t? is C.LABELS[l].
 
 Instr_ok/call
 - the instruction (CALL x) is valid with the function type t_1* -> t_2? if:
-  - |C.FUNCS| is greater than x.
-  - the function type C.FUNCS[x] is t_1* -> t_2?.
+  - the function type C.FUNCS[x] is defined in the context.
+  - C.FUNCS[x] is t_1* -> t_2?.
 
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x) is valid with the function type t_1* :: [I32] -> t_2? if:
-  - |C.TYPES| is greater than x.
-  - the function type C.TYPES[x] is t_1* -> t_2?.
+  - the function type C.TYPES[x] is defined in the context.
+  - C.TYPES[x] is t_1* -> t_2?.
 
 Instr_ok/return
 - the instruction RETURN is valid with the function type t_1* :: t? -> t_2* if:
@@ -2908,43 +2917,43 @@ Instr_ok/cvtop
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
-  - |C.LOCALS| is greater than x.
-  - the number type C.LOCALS[x] is t.
+  - the number type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is t.
 
 Instr_ok/local.set
 - the instruction (LOCAL.SET x) is valid with the function type [t] -> [] if:
-  - |C.LOCALS| is greater than x.
-  - the number type C.LOCALS[x] is t.
+  - the number type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is t.
 
 Instr_ok/local.tee
 - the instruction (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
-  - |C.LOCALS| is greater than x.
-  - the number type C.LOCALS[x] is t.
+  - the number type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is t.
 
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
-  - |C.GLOBALS| is greater than x.
-  - the global type C.GLOBALS[x] is (mut t).
+  - the global type C.GLOBALS[x] is defined in the context.
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
-  - |C.GLOBALS| is greater than x.
-  - the global type C.GLOBALS[x] is (MUT t).
+  - the global type C.GLOBALS[x] is defined in the context.
+  - C.GLOBALS[x] is (MUT t).
 
 Instr_ok/memory.size
 - the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
 - the instruction MEMORY.GROW is valid with the function type [I32] -> [I32] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
 
 Instr_ok/load
 - the instruction (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
@@ -2953,13 +2962,20 @@ Instr_ok/load
 
 Instr_ok/store
 - the instruction (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
   - If n is defined, the number type nt is Inn.
+
+Instr_ok/cvtop-reinterpret
+- the instruction (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type [nt_2] -> [nt_1] if:
+  - $size(nt_1) is $size(nt_2).
+
+Instr_ok/cvtop-convert
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with [nt_2] -> [nt_1].
 
 Instrs_ok
 - the instruction sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
@@ -2988,8 +3004,8 @@ Instr_const
   - Either: instr_u0 is (t.CONST c).
   - Or:
     - instr_u0 is (GLOBAL.GET x).
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is (t).
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is (t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -3001,8 +3017,8 @@ Type_ok
 
 Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2? if:
-  - |C.TYPES| is greater than x.
-  - the function type C.TYPES[x] is t_1* -> t_2?.
+  - the function type C.TYPES[x] is defined in the context.
+  - C.TYPES[x] is t_1* -> t_2?.
   - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2?] with .RETURN appended by ?(t_2?), the expression expr is valid with the result type t_2?.
 
 Global_ok
@@ -3022,25 +3038,25 @@ Mem_ok
 
 Elem_ok
 - the table segment (ELEM expr x*) is valid if:
-  - |C.TABLES| is greater than 0.
-  - the table type C.TABLES[0] is lim.
+  - the table type C.TABLES[0] is defined in the context.
+  - C.TABLES[0] is lim.
   - the expression expr is valid with the number type ?(I32).
   - expr is constant.
   - |x*| is |ft*|.
-  - For all x in x*, |C.FUNCS| is greater than x.
-  - For all ft in ft* and x in x*, the function type C.FUNCS[x] is ft.
+  - For all x in x*, the function type C.FUNCS[x] is defined in the context.
+  - For all ft in ft* and x in x*, C.FUNCS[x] is ft.
 
 Data_ok
 - the memory segment (DATA expr b*) is valid if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is lim.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is lim.
   - the expression expr is valid with the number type ?(I32).
   - expr is constant.
 
 Start_ok
 - the start function (START x) is valid if:
-  - |C.FUNCS| is greater than x.
-  - the function type C.FUNCS[x] is [] -> [].
+  - the function type C.FUNCS[x] is defined in the context.
+  - C.FUNCS[x] is [] -> [].
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
@@ -3051,23 +3067,23 @@ Externidx_ok
   - Either:
     - externidx_u0 is (FUNC x).
     - externtype_u1 is (FUNC ft).
-    - |C.FUNCS| is greater than x.
-    - the function type C.FUNCS[x] is ft.
+    - the function type C.FUNCS[x] is defined in the context.
+    - C.FUNCS[x] is ft.
   - Or:
     - externidx_u0 is (GLOBAL x).
     - externtype_u1 is (GLOBAL gt).
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is gt.
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is gt.
   - Or:
     - externidx_u0 is (TABLE x).
     - externtype_u1 is (TABLE tt).
-    - |C.TABLES| is greater than x.
-    - the table type C.TABLES[x] is tt.
+    - the table type C.TABLES[x] is defined in the context.
+    - C.TABLES[x] is tt.
   - Or:
     - externidx_u0 is (MEM x).
     - externtype_u1 is (MEM mt).
-    - |C.MEMS| is greater than x.
-    - the memory type C.MEMS[x] is mt.
+    - the memory type C.MEMS[x] is defined in the context.
+    - C.MEMS[x] is mt.
 
 Export_ok
 - the export (EXPORT name externidx) is valid with the external type xt if:
@@ -4293,9 +4309,9 @@ watsup 0.4 generator
 
     * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
 
-    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is defined in the context.
 
-    * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
@@ -4350,49 +4366,49 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * For all :math:`l` in :math:`{l^\ast}`, :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * For all :math:`l` in :math:`{l^\ast}`, the result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` is defined in the context.
 
-  * :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
 * The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~\mathsf{funcref})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~\mathsf{funcref})`.
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+  * The function type :math:`C{.}\mathsf{types}{}[y]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{types}{}[y]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * :math:`C{.}\mathsf{types}{}[y]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 * The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
@@ -4434,9 +4450,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
 
 * The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the function type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
@@ -4514,173 +4530,173 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The value type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The value type :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The value type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The value type :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The value type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The value type :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`t`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}~t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathit{mut}}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
 
 
 * The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1~{\mathit{rt}})`.
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
-  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x_2`.
+  * The element type :math:`C{.}\mathsf{elems}{}[x_2]` is defined in the context.
 
-  * The element type :math:`C{.}\mathsf{elems}{}[x_2]` is :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[x_2]` is :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
+  * The element type :math:`C{.}\mathsf{elems}{}[x]` is defined in the context.
 
-  * The element type :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
-  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
+  * The data type :math:`C{.}\mathsf{datas}{}[x]` is defined in the context.
 
-  * The data type :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
+  * The data type :math:`C{.}\mathsf{datas}{}[x]` is defined in the context.
 
-  * The data type :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -4696,9 +4712,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -4714,9 +4730,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -4739,9 +4755,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -4751,9 +4767,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -4761,13 +4777,63 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
   * The lane index :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+
+
+* The instruction :math:`t~{}^?` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
+
+
+* The instruction :math:`\epsilon~{}^?` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+
+
+  * The value type :math:`t` matches the value type :math:`{t'}`.
+
+  * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+
+
+* The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+
+
+  * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
+
+
+* The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+
+
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+
+
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{splat}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+
+
+* The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{zero}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
@@ -4834,9 +4900,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
@@ -4854,9 +4920,9 @@ watsup 0.4 generator
 * The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * :math:`C{.}\mathsf{types}{}[x]` is :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
@@ -4892,9 +4958,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -4923,9 +4989,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
-    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`0`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is defined in the context.
 
-    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[0]` is :math:`{\mathit{mt}}`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -4943,9 +5009,9 @@ watsup 0.4 generator
 * The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
@@ -4963,9 +5029,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{ft}})`.
 
-    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * The function type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-    * The function type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{ft}}`.
 
   * Or:
 
@@ -4973,27 +5039,27 @@ watsup 0.4 generator
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
@@ -9583,8 +9649,8 @@ Blocktype_ok
     - blocktype_u0 is (_IDX typeidx).
     - valtype_u1* is t_1*.
     - valtype_u2* is t_2*.
-    - |C.TYPES| is greater than typeidx.
-    - the function type C.TYPES[typeidx] is t_1* -> t_2*.
+    - the function type C.TYPES[typeidx] is defined in the context.
+    - C.TYPES[typeidx] is t_1* -> t_2*.
 
 Instr_ok/nop
 - the instruction NOP is valid with the function type [] -> [].
@@ -9621,32 +9687,32 @@ Instr_ok/if
 
 Instr_ok/br
 - the instruction (BR l) is valid with the function type t_1* :: t* -> t_2* if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t*.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t*.
 
 Instr_ok/br_if
 - the instruction (BR_IF l) is valid with the function type t* :: [I32] -> t* if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t*.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t*.
 
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t* -> t_2* if:
-  - For all l in l*, |C.LABELS| is greater than l.
-  - For all l in l*, the value type sequence t* matches the result type C.LABELS[l].
-  - |C.LABELS| is greater than l'.
-  - t* matches the result type C.LABELS[l'].
+  - For all l in l*, the result type C.LABELS[l] is defined in the context.
+  - For all l in l*, the value type sequence t* matches C.LABELS[l].
+  - the result type C.LABELS[l'] is defined in the context.
+  - t* matches C.LABELS[l'].
 
 Instr_ok/call
 - the instruction (CALL x) is valid with the function type t_1* -> t_2* if:
-  - |C.FUNCS| is greater than x.
-  - the function type C.FUNCS[x] is t_1* -> t_2*.
+  - the function type C.FUNCS[x] is defined in the context.
+  - C.FUNCS[x] is t_1* -> t_2*.
 
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x y) is valid with the function type t_1* :: [I32] -> t_2* if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim FUNCREF).
-  - |C.TYPES| is greater than y.
-  - the function type C.TYPES[y] is t_1* -> t_2*.
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim FUNCREF).
+  - the function type C.TYPES[y] is defined in the context.
+  - C.TYPES[y] is t_1* -> t_2*.
 
 Instr_ok/return
 - the instruction RETURN is valid with the function type t_1* :: t* -> t_2* if:
@@ -9679,8 +9745,8 @@ Instr_ok/ref.null
 
 Instr_ok/ref.func
 - the instruction (REF.FUNC x) is valid with the function type [] -> [FUNCREF] if:
-  - |C.FUNCS| is greater than x.
-  - the function type C.FUNCS[x] is ft.
+  - the function type C.FUNCS[x] is defined in the context.
+  - C.FUNCS[x] is ft.
 
 Instr_ok/ref.is_null
 - the instruction REF.IS_NULL is valid with the function type [rt] -> [I32].
@@ -9750,109 +9816,109 @@ Instr_ok/vcvtop
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
-  - |C.LOCALS| is greater than x.
-  - the value type C.LOCALS[x] is t.
+  - the value type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is t.
 
 Instr_ok/local.set
 - the instruction (LOCAL.SET x) is valid with the function type [t] -> [] if:
-  - |C.LOCALS| is greater than x.
-  - the value type C.LOCALS[x] is t.
+  - the value type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is t.
 
 Instr_ok/local.tee
 - the instruction (LOCAL.TEE x) is valid with the function type [t] -> [t] if:
-  - |C.LOCALS| is greater than x.
-  - the value type C.LOCALS[x] is t.
+  - the value type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is t.
 
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
-  - |C.GLOBALS| is greater than x.
-  - the global type C.GLOBALS[x] is (mut t).
+  - the global type C.GLOBALS[x] is defined in the context.
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
-  - |C.GLOBALS| is greater than x.
-  - the global type C.GLOBALS[x] is (MUT t).
+  - the global type C.GLOBALS[x] is defined in the context.
+  - C.GLOBALS[x] is (MUT t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the function type [I32] -> [rt] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the function type [I32, rt] -> [] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the function type [] -> [I32] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the function type [rt, I32] -> [I32] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the function type [I32, rt, I32] -> [] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
-  - |C.TABLES| is greater than x_1.
-  - the table type C.TABLES[x_1] is (lim_1 rt).
-  - |C.TABLES| is greater than x_2.
-  - the table type C.TABLES[x_2] is (lim_2 rt).
+  - the table type C.TABLES[x_1] is defined in the context.
+  - C.TABLES[x_1] is (lim_1 rt).
+  - the table type C.TABLES[x_2] is defined in the context.
+  - C.TABLES[x_2] is (lim_2 rt).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
-  - |C.TABLES| is greater than x_1.
-  - the table type C.TABLES[x_1] is (lim rt).
-  - |C.ELEMS| is greater than x_2.
-  - the element type C.ELEMS[x_2] is rt.
+  - the table type C.TABLES[x_1] is defined in the context.
+  - C.TABLES[x_1] is (lim rt).
+  - the element type C.ELEMS[x_2] is defined in the context.
+  - C.ELEMS[x_2] is rt.
 
 Instr_ok/elem.drop
 - the instruction (ELEM.DROP x) is valid with the function type [] -> [] if:
-  - |C.ELEMS| is greater than x.
-  - the element type C.ELEMS[x] is rt.
+  - the element type C.ELEMS[x] is defined in the context.
+  - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
 - the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
 - the instruction MEMORY.GROW is valid with the function type [I32] -> [I32] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
 
 Instr_ok/memory.fill
 - the instruction MEMORY.FILL is valid with the function type [I32, I32, I32] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
 
 Instr_ok/memory.copy
 - the instruction MEMORY.COPY is valid with the function type [I32, I32, I32] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
 
 Instr_ok/memory.init
 - the instruction (MEMORY.INIT x) is valid with the function type [I32, I32, I32] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
-  - |C.DATAS| is greater than x.
-  - the data type C.DATAS[x] is OK.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
+  - the data type C.DATAS[x] is defined in the context.
+  - C.DATAS[x] is OK.
 
 Instr_ok/data.drop
 - the instruction (DATA.DROP x) is valid with the function type [] -> [] if:
-  - |C.DATAS| is greater than x.
-  - the data type C.DATAS[x] is OK.
+  - the data type C.DATAS[x] is defined in the context.
+  - C.DATAS[x] is OK.
 
 Instr_ok/load
 - the instruction (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type [I32] -> [nt] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
@@ -9861,8 +9927,8 @@ Instr_ok/load
 
 Instr_ok/store
 - the instruction (STORE nt n? memarg) is valid with the function type [I32, nt] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
@@ -9871,8 +9937,8 @@ Instr_ok/store
 
 Instr_ok/vload
 - the instruction (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type [I32] -> [V128] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - Either:
     - the vloadop vloadop_u0 is (SHAPE M X N sx).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
@@ -9885,23 +9951,56 @@ Instr_ok/vload
 
 Instr_ok/vload_lane
 - the instruction (VLOAD_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [V128] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - the lane index laneidx is less than (128 / n).
 
 Instr_ok/vstore
 - the instruction (VSTORE V128 memarg) is valid with the function type [I32, V128] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
 
 Instr_ok/vstore_lane
 - the instruction (VSTORE_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [] if:
-  - |C.MEMS| is greater than 0.
-  - the memory type C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - the lane index laneidx is less than (128 / n).
+
+Instr_ok/select-expl
+- the instruction (SELECT() ?([t]) ?) is valid with the function type [t, t, I32] -> [t].
+
+Instr_ok/select-impl
+- the instruction (SELECT() ?() ?) is valid with the function type [t, t, I32] -> [t] if:
+  - the value type t matches the value type t'.
+  - t' is contained in [numtype, vectype].
+
+Instr_ok/cvtop-reinterpret
+- the instruction (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type [nt_2] -> [nt_1] if:
+  - $size(nt_1) is $size(nt_2).
+
+Instr_ok/cvtop-convert
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with [nt_2] -> [nt_1].
+
+Instr_ok/vload
+- the instruction (VLOAD V128 ?((SHAPE M X N sx)) memarg) is valid with the function type [I32] -> [V128] if:
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
+
+Instr_ok/vload-splat
+- the instruction (VLOAD V128 ?((SPLAT n)) memarg) is valid with the function type [I32] -> [V128] if:
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
+
+Instr_ok/vload-zero
+- the instruction (VLOAD V128 ?((ZERO n)) memarg) is valid with the function type [I32] -> [V128] if:
+  - the memory type C.MEMS[0] is defined in the context.
+  - C.MEMS[0] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instrs_ok
 - the instruction sequence instr_u0* is valid with the function type valtype_u1* -> valtype_u2* if:
@@ -9940,8 +10039,8 @@ Instr_const
   - Or: instr_u0 is (REF.FUNC x).
   - Or:
     - instr_u0 is (GLOBAL.GET x).
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is (t).
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is (t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -9953,8 +10052,8 @@ Type_ok
 
 Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2* if:
-  - |C.TYPES| is greater than x.
-  - the function type C.TYPES[x] is t_1* -> t_2*.
+  - the function type C.TYPES[x] is defined in the context.
+  - C.TYPES[x] is t_1* -> t_2*.
   - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
 Global_ok
@@ -9976,8 +10075,8 @@ Elemmode_ok
 - the elemmode elemmode_u0 is valid with the reference type rt if:
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
-    - |C.TABLES| is greater than x.
-    - the table type C.TABLES[x] is (lim rt).
+    - the table type C.TABLES[x] is defined in the context.
+    - C.TABLES[x] is (lim rt).
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or: elemmode_u0 is PASSIVE.
@@ -9994,8 +10093,8 @@ Datamode_ok
 - the datamode datamode_u0 is valid if:
   - Either:
     - datamode_u0 is (ACTIVE 0 expr).
-    - |C.MEMS| is greater than 0.
-    - the memory type C.MEMS[0] is mt.
+    - the memory type C.MEMS[0] is defined in the context.
+    - C.MEMS[0] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or: datamode_u0 is PASSIVE.
@@ -10006,8 +10105,8 @@ Data_ok
 
 Start_ok
 - the start function (START x) is valid if:
-  - |C.FUNCS| is greater than x.
-  - the function type C.FUNCS[x] is [] -> [].
+  - the function type C.FUNCS[x] is defined in the context.
+  - C.FUNCS[x] is [] -> [].
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
@@ -10018,23 +10117,23 @@ Externidx_ok
   - Either:
     - externidx_u0 is (FUNC x).
     - externtype_u1 is (FUNC ft).
-    - |C.FUNCS| is greater than x.
-    - the function type C.FUNCS[x] is ft.
+    - the function type C.FUNCS[x] is defined in the context.
+    - C.FUNCS[x] is ft.
   - Or:
     - externidx_u0 is (GLOBAL x).
     - externtype_u1 is (GLOBAL gt).
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is gt.
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is gt.
   - Or:
     - externidx_u0 is (TABLE x).
     - externtype_u1 is (TABLE tt).
-    - |C.TABLES| is greater than x.
-    - the table type C.TABLES[x] is tt.
+    - the table type C.TABLES[x] is defined in the context.
+    - C.TABLES[x] is tt.
   - Or:
     - externidx_u0 is (MEM x).
     - externtype_u1 is (MEM mt).
-    - |C.MEMS| is greater than x.
-    - the memory type C.MEMS[x] is mt.
+    - the memory type C.MEMS[x] is defined in the context.
+    - C.MEMS[x] is mt.
 
 Export_ok
 - the export (EXPORT name externidx) is valid with the external type xt if:
@@ -12212,16 +12311,16 @@ watsup 0.4 generator
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{typeidx}}`.
 
-    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is defined in the context.
 
-    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.
+    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{dt}}`.
   * Or:
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{rec}~i)`.
 
-    * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
+    * The sub type :math:`C{.}\mathsf{recs}{}[i]` is defined in the context.
 
-    * The sub type :math:`C{.}\mathsf{recs}{}[i]` is :math:`{\mathit{st}}`.
+    * :math:`C{.}\mathsf{recs}{}[i]` is :math:`{\mathit{st}}`.
 
 
 * The reference type :math:`(\mathsf{ref}~(\mathsf{null}~{()^?}~{}^?)~{\mathit{heaptype}})` is valid if:
@@ -12267,9 +12366,9 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{lct*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * For all :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
+  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{locals}{}[x]` is :math:`{{\mathit{lt}}}`.
 
 
 * The packed type :math:`{\mathit{packtype}}` is valid.
@@ -12420,16 +12519,16 @@ watsup 0.4 generator
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{heaptype}}`.
 
-    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is defined in the context.
 
-    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
   * Or:
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{heaptype}}`.
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{typeidx}}`.
 
-    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is defined in the context.
 
     * :math:`{\mathit{heaptype}}` matches :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
   * Or:
@@ -12440,9 +12539,9 @@ watsup 0.4 generator
 
     * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
 
-    * :math:`{|C{.}\mathsf{recs}|}` is greater than :math:`i`.
+    * The sub type :math:`C{.}\mathsf{recs}{}[i]` is defined in the context.
 
-    * The sub type :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+    * :math:`C{.}\mathsf{recs}{}[i]` is :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
   * Or:
 
     * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{none}`.
@@ -12620,7 +12719,7 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x'**}}|}` is :math:`{|{\mathit{comptype'*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * For all :math:`x` in :math:`{x^\ast}`, the defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`, the sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
@@ -12770,9 +12869,9 @@ watsup 0.4 generator
 
   * :math:`{|{\mathit{x*}}|}` is :math:`{|{\mathit{t*}}|}`.
 
-  * For all :math:`x` in :math:`{x^\ast}`, :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * For all :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
+  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
 
 
 * The limits :math:`(n_1, m_1)` matches the limits :math:`(n_2, m_2)` if:
@@ -12889,31 +12988,31 @@ watsup 0.4 generator
 
     * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`{t_2^\ast}`.
 
-    * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`{\mathit{typeidx}}`.
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is defined in the context.
 
-    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
   * Either:
 
     * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch}~x~l)`.
 
-    * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+    * The memory type :math:`C{.}\mathsf{tags}{}[x]` is defined in the context.
 
-    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
-    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
   * Or:
 
     * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{catch\_ref}~x~l)`.
 
-    * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+    * :math:`C{.}\mathsf{tags}{}[x]` is defined in the context.
 
     * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
@@ -12990,9 +13089,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br}~l)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -13000,21 +13099,21 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br\_if}~l)` is valid with the instruction type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
 
 * The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-  * For all :math:`l` in :math:`{l^\ast}`, :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * For all :math:`l` in :math:`{l^\ast}`, the result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`{l'}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` is defined in the context.
 
-  * :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -13022,9 +13121,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br\_on\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}`.
 
   * The heap type :math:`{\mathit{ht}}` is valid.
 
@@ -13032,17 +13131,17 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
 * The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
 
   * The reference type :math:`{\mathit{rt}}_1` is valid.
 
@@ -13056,9 +13155,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
 
-  * :math:`{|C{.}\mathsf{labels}|}` is greater than :math:`l`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is defined in the context.
 
-  * The result type :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{labels}{}[l]` is :math:`{t^\ast}~{\mathit{rt}}`.
 
   * The reference type :math:`{\mathit{rt}}_1` is valid.
 
@@ -13072,31 +13171,31 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+  * The defined type :math:`C{.}\mathsf{types}{}[y]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 * The instruction :math:`\mathsf{return}` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
@@ -13110,9 +13209,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
@@ -13124,9 +13223,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{return\_call\_ref}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
@@ -13138,15 +13237,15 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_4^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`y`.
+  * The defined type :math:`C{.}\mathsf{types}{}[y]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is :math:`{{t'}_2^\ast}`.
 
@@ -13158,9 +13257,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{throw}~x)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{tags}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -13208,11 +13307,11 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
+  * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
 
-  * :math:`{|C{.}\mathsf{refs}|}` is greater than :math:`0`.
+  * The index :math:`C{.}\mathsf{refs}{}[0]` is defined in the context.
 
   * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
@@ -13261,17 +13360,17 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction type :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
 
 * The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
   * :math:`{|{\mathit{zt*}}|}` is :math:`{|{\mathit{val*}}|}`.
 
@@ -13281,9 +13380,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -13295,9 +13394,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -13307,17 +13406,17 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction type :math:`{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * The value :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is :math:`{\mathit{val}}`.
 
@@ -13325,43 +13424,43 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the instruction type :math:`{{\mathrm{unpack}}({\mathit{zt}})^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
 
-  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` is defined in the context.
 
-  * The reference type :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
-  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
+  * The data type :math:`C{.}\mathsf{datas}{}[y]` is defined in the context.
 
-  * The data type :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathrm{unpack}}({\mathit{zt}})` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -13369,9 +13468,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
@@ -13380,21 +13479,21 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 * The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_1`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x_1]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x_2`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x_2]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
 
   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
@@ -13402,27 +13501,27 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
-  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` is defined in the context.
 
-  * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
+  * :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
 
 
 * The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
-  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
+  * The data type :math:`C{.}\mathsf{datas}{}[y]` is defined in the context.
 
-  * The data type :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`\mathsf{extern{.}convert\_any}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
@@ -13509,93 +13608,93 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The local type :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`(\mathsf{set}~t)`.
 
 
 * The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The local type :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}~t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}~t)`.
 
 
 * The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
 
 
-  * :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is defined in the context.
 
-  * The local type :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}~t)`.
+  * :math:`C{.}\mathsf{locals}{}[x]` is :math:`({\mathit{init}}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}~t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}~t)`.
 
 
 * The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
+  * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(\mathsf{mut}~t)`.
 
 
 * The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 * The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_1`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1~{\mathit{rt}}_1)`.
+  * :math:`C{.}\mathsf{tables}{}[x_1]` is :math:`({\mathit{lim}}_1~{\mathit{rt}}_1)`.
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x_2`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2~{\mathit{rt}}_2)`.
+  * :math:`C{.}\mathsf{tables}{}[x_2]` is :math:`({\mathit{lim}}_2~{\mathit{rt}}_2)`.
 
   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
@@ -13603,13 +13702,13 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}}_1)`.
+  * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}}_1)`.
 
-  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`y`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` is defined in the context.
 
-  * The element type :math:`C{.}\mathsf{elems}{}[y]` is :math:`{\mathit{rt}}_2`.
+  * :math:`C{.}\mathsf{elems}{}[y]` is :math:`{\mathit{rt}}_2`.
 
   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
@@ -13617,73 +13716,73 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{elems}|}` is greater than :math:`x`.
+  * The element type :math:`C{.}\mathsf{elems}{}[x]` is defined in the context.
 
-  * The element type :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
+  * :math:`C{.}\mathsf{elems}{}[x]` is :math:`{\mathit{rt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}grow}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}fill}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
 
 * The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_1`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` is :math:`{\mathit{mt}}_1`.
+  * :math:`C{.}\mathsf{mems}{}[x_1]` is :math:`{\mathit{mt}}_1`.
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x_2`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x_2]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x_2]` is :math:`{\mathit{mt}}_2`.
+  * :math:`C{.}\mathsf{mems}{}[x_2]` is :math:`{\mathit{mt}}_2`.
 
 
 * The instruction :math:`(\mathsf{memory{.}init}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
-  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`y`.
+  * The data type :math:`C{.}\mathsf{datas}{}[y]` is defined in the context.
 
-  * The data type :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[y]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{datas}|}` is greater than :math:`x`.
+  * The data type :math:`C{.}\mathsf{datas}{}[x]` is defined in the context.
 
-  * The data type :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
+  * :math:`C{.}\mathsf{datas}{}[x]` is :math:`\mathsf{ok}`.
 
 
 * The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -13709,9 +13808,9 @@ watsup 0.4 generator
 * The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -13737,9 +13836,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -13767,9 +13866,9 @@ watsup 0.4 generator
 * The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -13779,9 +13878,9 @@ watsup 0.4 generator
 * The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -13789,13 +13888,109 @@ watsup 0.4 generator
 * The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-  * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
   * :math:`i` is less than :math:`128 / N`.
+
+
+* The instruction :math:`(\mathsf{select}~t)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+
+
+  * The value type :math:`t` is valid.
+
+
+* The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+
+
+  * The value type :math:`t` is valid.
+
+  * :math:`t` matches the value type :math:`{t'}`.
+
+  * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+
+
+* The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+
+* The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{N}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+
+
+* The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+
+* The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{N}~\rightarrow~\epsilon` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+
+
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+
+
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+
+
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+
+
+* The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
+
+  * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+
+  * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with the instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` if:
@@ -13819,9 +14014,9 @@ watsup 0.4 generator
 
     * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is :math:`{|{\mathit{init*}}|}`.
 
-    * For all :math:`x_1` in :math:`{x_1^\ast}`, :math:`{|C{.}\mathsf{locals}|}` is greater than :math:`x_1`.
+    * For all :math:`x_1` in :math:`{x_1^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x_1]` is defined in the context.
 
-    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}~t)`.
+    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, :math:`C{.}\mathsf{locals}{}[x_1]` is :math:`({\mathit{init}}~t)`.
 
     * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
   * Or:
@@ -13872,9 +14067,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{global{.}get}~x)`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`(t)`.
   * Or:
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
@@ -13919,7 +14114,7 @@ watsup 0.4 generator
 * The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
@@ -13963,7 +14158,7 @@ watsup 0.4 generator
 * The tag :math:`(\mathsf{tag}~x)` is valid with the memory type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-  * :math:`{|C{.}\mathsf{types}|}` is greater than :math:`x`.
+  * :math:`C{.}\mathsf{types}{}[x]` is defined in the context.
 
   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
@@ -13975,9 +14170,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}'})`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`({\mathit{lim}}~{\mathit{rt}'})`.
 
     * :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
@@ -14010,9 +14205,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -14030,9 +14225,9 @@ watsup 0.4 generator
 * The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-  * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`
 
 
 * The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
@@ -14050,9 +14245,9 @@ watsup 0.4 generator
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{func}~{\mathit{dt}})`.
 
-    * :math:`{|C{.}\mathsf{funcs}|}` is greater than :math:`x`.
+    * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is defined in the context.
 
-    * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
+    * :math:`C{.}\mathsf{funcs}{}[x]` is :math:`{\mathit{dt}}`.
 
   * Or:
 
@@ -14060,36 +14255,36 @@ watsup 0.4 generator
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`{\mathit{gt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{table}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-    * :math:`{|C{.}\mathsf{tables}|}` is greater than :math:`x`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is defined in the context.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
+    * :math:`C{.}\mathsf{tables}{}[x]` is :math:`{\mathit{tt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{mem}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-    * :math:`{|C{.}\mathsf{mems}|}` is greater than :math:`x`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is defined in the context.
 
-    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
+    * :math:`C{.}\mathsf{mems}{}[x]` is :math:`{\mathit{mt}}`.
   * Or:
 
     * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{tag}~x)`.
 
     * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`(\mathsf{tag}~{\mathit{at}})`.
 
-    * :math:`{|C{.}\mathsf{tags}|}` is greater than :math:`x`.
+    * The memory type :math:`C{.}\mathsf{tags}{}[x]` is defined in the context.
 
-    * The memory type :math:`C{.}\mathsf{tags}{}[x]` is :math:`{\mathit{at}}`.
+    * :math:`C{.}\mathsf{tags}{}[x]` is :math:`{\mathit{at}}`.
 
 
 * The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
@@ -14219,9 +14414,9 @@ watsup 0.4 generator
 
     * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is :math:`t`.
 
-    * :math:`{|C{.}\mathsf{globals}|}` is greater than :math:`x`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is defined in the context.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}~t)`.
+    * :math:`C{.}\mathsf{globals}{}[x]` is :math:`({\mathsf{mut}^?}~t)`.
   * Or:
 
     * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
@@ -22082,12 +22277,12 @@ Heaptype_ok
   - Either: heaptype_u0 is absheaptype.
   - Or:
     - heaptype_u0 is (_IDX typeidx).
-    - |C.TYPES| is greater than typeidx.
-    - the defined type C.TYPES[typeidx] is dt.
+    - the defined type C.TYPES[typeidx] is defined in the context.
+    - C.TYPES[typeidx] is dt.
   - Or:
     - heaptype_u0 is (REC i).
-    - |C.RECS| is greater than i.
-    - the sub type C.RECS[i] is st.
+    - the sub type C.RECS[i] is defined in the context.
+    - C.RECS[i] is st.
 
 Reftype_ok
 - the reference type (REF (NULL ()? ?) heaptype) is valid if:
@@ -22115,8 +22310,8 @@ Instrtype_ok
   - the value type sequence t_1* is valid.
   - the value type sequence t_2* is valid.
   - |x*| is |lct*|.
-  - For all x in x*, |C.LOCALS| is greater than x.
-  - For all lct in lct* and x in x*, the local type C.LOCALS[x] is lct.
+  - For all x in x*, the local type C.LOCALS[x] is defined in the context.
+  - For all lct in lct* and x in x*, C.LOCALS[x] is lct.
 
 Packtype_ok
 - the packed type packtype is valid.
@@ -22207,19 +22402,19 @@ Heaptype_sub
   - Or:
     - heaptype_u0 is (_IDX typeidx).
     - heaptype_u1 is heaptype.
-    - |C.TYPES| is greater than typeidx.
-    - the defined type C.TYPES[typeidx] matches the heap type heaptype.
+    - the defined type C.TYPES[typeidx] is defined in the context.
+    - C.TYPES[typeidx] matches the heap type heaptype.
   - Or:
     - heaptype_u0 is heaptype.
     - heaptype_u1 is (_IDX typeidx).
-    - |C.TYPES| is greater than typeidx.
+    - C.TYPES[typeidx] is defined in the context.
     - heaptype matches C.TYPES[typeidx].
   - Or:
     - heaptype_u0 is (REC i).
     - heaptype_u1 is typeuse*[j].
     - |typeuse*| is greater than j.
-    - |C.RECS| is greater than i.
-    - the sub type C.RECS[i] is (SUB fin typeuse* ct).
+    - the sub type C.RECS[i] is defined in the context.
+    - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
     - heaptype_u0 is NONE.
     - heaptype_u1 is heaptype.
@@ -22321,7 +22516,7 @@ Subtype_ok
   - For all x in x*, the index x is less than x_0.
   - |x*| is |comptype'*|.
   - |x'**| is |comptype'*|.
-  - For all x in x*, |C.TYPES| is greater than x.
+  - For all x in x*, the defined type C.TYPES[x] is defined in the context.
   - For all comptype' in comptype'* and x in x* and x'* in x'**, the sub type $unrolldt(C.TYPES[x]) is (SUB (_IDX x')* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*, comptype matches the composite type comptype'.
@@ -22409,8 +22604,8 @@ Instrtype_sub
   - the value type sequence t_12* matches the value type sequence t_22*.
   - the index sequence x* is $setminus_(localidx, x_2*, x_1*).
   - |x*| is |t*|.
-  - For all x in x*, |C.LOCALS| is greater than x.
-  - For all t in t* and x in x*, the local type C.LOCALS[x] is (SET t).
+  - For all x in x*, the local type C.LOCALS[x] is defined in the context.
+  - For all t in t* and x in x*, C.LOCALS[x] is (SET t).
 
 Limits_sub
 - the limits (n_1, m_1) matches the limits (n_2, m_2) if:
@@ -22477,20 +22672,20 @@ Blocktype_ok
     - blocktype_u0 is (_IDX typeidx).
     - valtype_u1* is t_1*.
     - valtype_u2* is t_2*.
-    - |C.TYPES| is greater than typeidx.
-    - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*)
+    - the defined type C.TYPES[typeidx] is defined in the context.
+    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*)
 
 Catch_ok
 - the catch clause catch_u0 is valid if:
-  - |C.LABELS| is greater than l.
+  - the result type C.LABELS[l] is defined in the context.
   - Either:
     - catch_u0 is (CATCH x l).
-    - |C.TAGS| is greater than x.
-    - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TAGS[x] is the composite type (FUNC t* -> [])
-    - the value type sequence t* matches the result type C.LABELS[l].
+    - the memory type C.TAGS[x] is defined in the context.
+    - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> [])
+    - the value type sequence t* matches C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_REF x l).
-    - |C.TAGS| is greater than x.
+    - C.TAGS[x] is defined in the context.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> [])
     - the value type sequence t* :: [(REF EXN)] matches C.LABELS[l].
   - Or:
@@ -22538,38 +22733,38 @@ Instr_ok/if
 
 Instr_ok/br
 - the instruction (BR l) is valid with the instruction type t_1* :: t* -> t_2* if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t*.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t*.
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_if
 - the instruction (BR_IF l) is valid with the instruction type t* :: [I32] -> t* if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t*.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t*.
 
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the instruction type t_1* :: t* :: [I32] -> t_2* if:
-  - For all l in l*, |C.LABELS| is greater than l.
-  - For all l in l*, the value type sequence t* matches the result type C.LABELS[l].
-  - |C.LABELS| is greater than l'.
-  - t* matches the result type C.LABELS[l'].
+  - For all l in l*, the result type C.LABELS[l] is defined in the context.
+  - For all l in l*, the value type sequence t* matches C.LABELS[l].
+  - the result type C.LABELS[l'] is defined in the context.
+  - t* matches C.LABELS[l'].
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_on_null
 - the instruction (BR_ON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* :: [(REF ht)] if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t*.
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t*.
   - the heap type ht is valid.
 
 Instr_ok/br_on_non_null
 - the instruction (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF NULL ht)] -> t* if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t* :: [(REF ht)].
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t* :: [(REF ht)].
 
 Instr_ok/br_on_cast
 - the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [$diffrt(rt_1, rt_2)] if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t* :: [rt].
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
   - rt_2 matches rt_1.
@@ -22577,8 +22772,8 @@ Instr_ok/br_on_cast
 
 Instr_ok/br_on_cast_fail
 - the instruction (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
-  - |C.LABELS| is greater than l.
-  - the result type C.LABELS[l] is t* :: [rt].
+  - the result type C.LABELS[l] is defined in the context.
+  - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
   - rt_2 matches rt_1.
@@ -22586,21 +22781,21 @@ Instr_ok/br_on_cast_fail
 
 Instr_ok/call
 - the instruction (CALL x) is valid with the instruction type t_1* -> t_2* if:
-  - |C.FUNCS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*)
+  - the defined type C.FUNCS[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*)
 
 Instr_ok/call_ref
 - the instruction (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF NULL (_IDX x))] -> t_2* if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
 
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [I32] -> t_2* if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
-  - |C.TYPES| is greater than y.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[y] is the composite type (FUNC t_1* -> t_2*)
+  - the defined type C.TYPES[y] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*)
 
 Instr_ok/return
 - the instruction RETURN is valid with the instruction type t_1* :: t* -> t_2* if:
@@ -22609,35 +22804,35 @@ Instr_ok/return
 
 Instr_ok/return_call
 - the instruction (RETURN_CALL x) is valid with the instruction type t_3* :: t_1* -> t_4* if:
-  - |C.FUNCS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*)
+  - the defined type C.FUNCS[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*)
   - the result type C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_ref
 - the instruction (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF NULL (_IDX x))] -> t_4* if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
   - the result type C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_indirect
 - the instruction (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [I32] -> t_4* if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
   - the reference type rt matches the reference type (REF NULL FUNC).
-  - |C.TYPES| is greater than y.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[y] is the composite type (FUNC t_1* -> t_2*)
+  - the defined type C.TYPES[y] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*)
   - the result type C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/throw
 - the instruction (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
-  - |C.TAGS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TAGS[x] is the composite type (FUNC t* -> [])
+  - the memory type C.TAGS[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> [])
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/throw_ref
@@ -22674,9 +22869,9 @@ Instr_ok/ref.null
 
 Instr_ok/ref.func
 - the instruction (REF.FUNC x) is valid with the instruction type [] -> [(REF dt)] if:
-  - |C.FUNCS| is greater than x.
-  - the defined type C.FUNCS[x] is dt.
-  - |C.REFS| is greater than 0.
+  - the defined type C.FUNCS[x] is defined in the context.
+  - C.FUNCS[x] is dt.
+  - the index C.REFS[0] is defined in the context.
   - x is contained in C.REFS.
 
 Instr_ok/ref.i31
@@ -22710,103 +22905,103 @@ Instr_ok/i31.get
 
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type $unpack(zt)* -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT (mut zt)*)
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*)
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT (mut zt)*)
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*)
   - |zt*| is |val*|.
   - For all val in val* and zt in zt*, the value $default_($unpack(zt)) is ?(val).
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT yt*)
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*)
   - |yt*| is greater than i.
   - the field type yt*[i] is (mut zt).
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/struct.set
 - the instruction (STRUCT.SET x i) is valid with the instruction type [(REF NULL (_IDX x)), $unpack(zt)] -> [] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (STRUCT yt*)
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*)
   - |yt*| is greater than i.
   - the field type yt*[i] is (MUT zt).
 
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [$unpack(zt), I32] -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt))
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt))
   - the value $default_($unpack(zt)) is ?(val).
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt))
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut rt))
-  - |C.ELEMS| is greater than y.
-  - the reference type C.ELEMS[y] matches the reference type rt.
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut rt))
+  - the element type C.ELEMS[y] is defined in the context.
+  - C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt))
   - $unpack(zt) is contained in [numtype, vectype].
-  - |C.DATAS| is greater than y.
-  - the data type C.DATAS[y] is OK.
+  - the data type C.DATAS[y] is defined in the context.
+  - C.DATAS[y] is OK.
 
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF NULL (_IDX x)), I32] -> [$unpack(zt)] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (mut zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt))
   - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt)] -> [] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (MUT zt))
 
 Instr_ok/array.len
 - the instruction ARRAY.LEN is valid with the instruction type [(REF NULL ARRAY)] -> [I32].
 
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF NULL (_IDX x)), I32, $unpack(zt), I32] -> [] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (MUT zt))
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF NULL (_IDX x_1)), I32, (REF NULL (_IDX x_2)), I32, I32] -> [] if:
-  - |C.TYPES| is greater than x_1.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x_1] is the composite type (ARRAY (MUT zt_1))
-  - |C.TYPES| is greater than x_2.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x_2] is the composite type (ARRAY (mut zt_2))
+  - the defined type C.TYPES[x_1] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is the composite type (ARRAY (MUT zt_1))
+  - the defined type C.TYPES[x_2] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is the composite type (ARRAY (mut zt_2))
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
 - the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
-  - |C.ELEMS| is greater than y.
-  - the element type C.ELEMS[y] matches the storage type zt.
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (MUT zt))
+  - the element type C.ELEMS[y] is defined in the context.
+  - C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
-  - |C.TYPES| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.TYPES[x] is the composite type (ARRAY (MUT zt))
+  - the defined type C.TYPES[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (MUT zt))
   - $unpack(zt) is contained in [numtype, vectype].
-  - |C.DATAS| is greater than y.
-  - the data type C.DATAS[y] is OK.
+  - the data type C.DATAS[y] is defined in the context.
+  - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
 - the instruction EXTERN.CONVERT_ANY is valid with the instruction type [(REF nul1 ANY)] -> [(REF nul2 EXTERN)] if:
@@ -22881,113 +23076,113 @@ Instr_ok/vcvtop
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
-  - |C.LOCALS| is greater than x.
-  - the local type C.LOCALS[x] is (SET t).
+  - the local type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is (SET t).
 
 Instr_ok/local.set
 - the instruction (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
-  - |C.LOCALS| is greater than x.
-  - the local type C.LOCALS[x] is (init t).
+  - the local type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is (init t).
 
 Instr_ok/local.tee
 - the instruction (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
-  - |C.LOCALS| is greater than x.
-  - the local type C.LOCALS[x] is (init t).
+  - the local type C.LOCALS[x] is defined in the context.
+  - C.LOCALS[x] is (init t).
 
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
-  - |C.GLOBALS| is greater than x.
-  - the global type C.GLOBALS[x] is (mut t).
+  - the global type C.GLOBALS[x] is defined in the context.
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
-  - |C.GLOBALS| is greater than x.
-  - the global type C.GLOBALS[x] is (MUT t).
+  - the global type C.GLOBALS[x] is defined in the context.
+  - C.GLOBALS[x] is (MUT t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the instruction type [I32] -> [rt] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the instruction type [I32, rt] -> [] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the instruction type [] -> [I32] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the instruction type [rt, I32] -> [I32] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the instruction type [I32, rt, I32] -> [] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt).
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
-  - |C.TABLES| is greater than x_1.
-  - the table type C.TABLES[x_1] is (lim_1 rt_1).
-  - |C.TABLES| is greater than x_2.
-  - the table type C.TABLES[x_2] is (lim_2 rt_2).
+  - the table type C.TABLES[x_1] is defined in the context.
+  - C.TABLES[x_1] is (lim_1 rt_1).
+  - the table type C.TABLES[x_2] is defined in the context.
+  - C.TABLES[x_2] is (lim_2 rt_2).
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
-  - |C.TABLES| is greater than x.
-  - the table type C.TABLES[x] is (lim rt_1).
-  - |C.ELEMS| is greater than y.
-  - the element type C.ELEMS[y] is rt_2.
+  - the table type C.TABLES[x] is defined in the context.
+  - C.TABLES[x] is (lim rt_1).
+  - the element type C.ELEMS[y] is defined in the context.
+  - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/elem.drop
 - the instruction (ELEM.DROP x) is valid with the instruction type [] -> [] if:
-  - |C.ELEMS| is greater than x.
-  - the element type C.ELEMS[x] is rt.
+  - the element type C.ELEMS[x] is defined in the context.
+  - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
 - the instruction (MEMORY.SIZE x) is valid with the instruction type [] -> [I32] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
 
 Instr_ok/memory.grow
 - the instruction (MEMORY.GROW x) is valid with the instruction type [I32] -> [I32] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
 
 Instr_ok/memory.fill
 - the instruction (MEMORY.FILL x) is valid with the instruction type [I32, I32, I32] -> [] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
 
 Instr_ok/memory.copy
 - the instruction (MEMORY.COPY x_1 x_2) is valid with the instruction type [I32, I32, I32] -> [] if:
-  - |C.MEMS| is greater than x_1.
-  - the memory type C.MEMS[x_1] is mt_1.
-  - |C.MEMS| is greater than x_2.
-  - the memory type C.MEMS[x_2] is mt_2.
+  - the memory type C.MEMS[x_1] is defined in the context.
+  - C.MEMS[x_1] is mt_1.
+  - the memory type C.MEMS[x_2] is defined in the context.
+  - C.MEMS[x_2] is mt_2.
 
 Instr_ok/memory.init
 - the instruction (MEMORY.INIT x y) is valid with the instruction type [I32, I32, I32] -> [] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
-  - |C.DATAS| is greater than y.
-  - the data type C.DATAS[y] is OK.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - the data type C.DATAS[y] is defined in the context.
+  - C.DATAS[y] is OK.
 
 Instr_ok/data.drop
 - the instruction (DATA.DROP x) is valid with the instruction type [] -> [] if:
-  - |C.DATAS| is greater than x.
-  - the data type C.DATAS[x] is OK.
+  - the data type C.DATAS[x] is defined in the context.
+  - C.DATAS[x] is OK.
 
 Instr_ok/load
 - the instruction (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type [I32] -> [valtype_u3] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
   - Either:
     - the number type numtype_u0 is nt.
     - the loadop_(numtype_u1) loadop__u2? is ?().
@@ -23001,8 +23196,8 @@ Instr_ok/load
 
 Instr_ok/store
 - the instruction (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type [I32, valtype_u2] -> [] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
   - Either:
     - the number type numtype_u0 is nt.
     - the pack size sz_u1? is ?().
@@ -23016,8 +23211,8 @@ Instr_ok/store
 
 Instr_ok/vload
 - the instruction (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type [I32] -> [V128] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
   - Either:
     - the vloadop_(V128_vectype) vloadop__u0? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
@@ -23033,23 +23228,81 @@ Instr_ok/vload
 
 Instr_ok/vload_lane
 - the instruction (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [V128] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
 Instr_ok/vstore
 - the instruction (VSTORE V128 x memarg) is valid with the instruction type [I32, V128] -> [] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vstore_lane
 - the instruction (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [I32, V128] -> [] if:
-  - |C.MEMS| is greater than x.
-  - the memory type C.MEMS[x] is mt.
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
+
+Instr_ok/select-expl
+- the instruction (SELECT ?([t])) is valid with the instruction type [t, t, I32] -> [t] if:
+  - the value type t is valid.
+
+Instr_ok/select-impl
+- the instruction (SELECT ?()) is valid with the instruction type [t, t, I32] -> [t] if:
+  - the value type t is valid.
+  - t matches the value type t'.
+  - t' is contained in [numtype, vectype].
+
+Instr_ok/load-val
+- the instruction (LOAD nt ?() x memarg) is valid with the instruction type [I32] -> [nt] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+
+Instr_ok/load-pack
+- the instruction (LOAD Inn ?((M sx)) x memarg) is valid with the instruction type [I32] -> [Inn] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+
+Instr_ok/store-val
+- the instruction (STORE nt ?() x memarg) is valid with the instruction type [I32, nt] -> [] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+
+Instr_ok/store-pack
+- the instruction (STORE Inn ?(M) x memarg) is valid with the instruction type [I32, Inn] -> [] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+
+Instr_ok/vload-val
+- the instruction (VLOAD V128 ?() x memarg) is valid with the instruction type [I32] -> [V128] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+
+Instr_ok/vload-pack
+- the instruction (VLOAD V128 ?((SHAPE M X N sx)) x memarg) is valid with the instruction type [I32] -> [V128] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
+
+Instr_ok/vload-splat
+- the instruction (VLOAD V128 ?((SPLAT N)) x memarg) is valid with the instruction type [I32] -> [V128] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+
+Instr_ok/vload-zero
+- the instruction (VLOAD V128 ?((ZERO N)) x memarg) is valid with the instruction type [I32] -> [V128] if:
+  - the memory type C.MEMS[x] is defined in the context.
+  - C.MEMS[x] is mt.
+  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instrs_ok
 - the instruction sequence instr_u0* is valid with the instruction type instrtype_u4 if:
@@ -23062,8 +23315,8 @@ Instrs_ok
     - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - |t*| is |init*|.
     - |x_1*| is |init*|.
-    - For all x_1 in x_1*, |C.LOCALS| is greater than x_1.
-    - For all init in init* and t in t* and x_1 in x_1*, the local type C.LOCALS[x_1] is (init t).
+    - For all x_1 in x_1*, the local type C.LOCALS[x_1] is defined in the context.
+    - For all init in init* and t in t* and x_1 in x_1*, C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr_u0* is instr*.
@@ -23097,8 +23350,8 @@ Instr_const
   - Or: instr_u0 is EXTERN.CONVERT_ANY.
   - Or:
     - instr_u0 is (GLOBAL.GET x).
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is (t).
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is (t).
   - Or:
     - instr_u0 is (BINOP Inn binop).
     - Inn is contained in [I32, I64].
@@ -23125,7 +23378,7 @@ Local_ok
 
 Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
-  - |C.TYPES| is greater than x.
+  - C.TYPES[x] is defined in the context.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*)
   - |local*| is |lct*|.
   - For all lct in lct* and local in local*, the local local is valid with the local type lct.
@@ -23151,15 +23404,15 @@ Mem_ok
 
 Tag_ok
 - the tag (TAG x) is valid with the memory type C.TYPES[x] if:
-  - |C.TYPES| is greater than x.
+  - C.TYPES[x] is defined in the context.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype)
 
 Elemmode_ok
 - the elemmode elemmode_u0 is valid with the element type rt if:
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
-    - |C.TABLES| is greater than x.
-    - the table type C.TABLES[x] is (lim rt').
+    - the table type C.TABLES[x] is defined in the context.
+    - C.TABLES[x] is (lim rt').
     - rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - expr is constant.
@@ -23178,8 +23431,8 @@ Datamode_ok
 - the datamode datamode_u0 is valid with the data type OK if:
   - Either:
     - datamode_u0 is (ACTIVE x expr).
-    - |C.MEMS| is greater than x.
-    - the memory type C.MEMS[x] is mt.
+    - the memory type C.MEMS[x] is defined in the context.
+    - C.MEMS[x] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or: datamode_u0 is PASSIVE.
@@ -23190,8 +23443,8 @@ Data_ok
 
 Start_ok
 - the start function (START x) is valid if:
-  - |C.FUNCS| is greater than x.
-  - The :ref:`expansion <aux-expand-deftype>` of the defined type C.FUNCS[x] is the composite type (FUNC [] -> [])
+  - the defined type C.FUNCS[x] is defined in the context.
+  - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC [] -> [])
 
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
@@ -23202,28 +23455,28 @@ Externidx_ok
   - Either:
     - externidx_u0 is (FUNC x).
     - externtype_u1 is (FUNC dt).
-    - |C.FUNCS| is greater than x.
-    - the defined type C.FUNCS[x] is dt.
+    - the defined type C.FUNCS[x] is defined in the context.
+    - C.FUNCS[x] is dt.
   - Or:
     - externidx_u0 is (GLOBAL x).
     - externtype_u1 is (GLOBAL gt).
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is gt.
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is gt.
   - Or:
     - externidx_u0 is (TABLE x).
     - externtype_u1 is (TABLE tt).
-    - |C.TABLES| is greater than x.
-    - the table type C.TABLES[x] is tt.
+    - the table type C.TABLES[x] is defined in the context.
+    - C.TABLES[x] is tt.
   - Or:
     - externidx_u0 is (MEM x).
     - externtype_u1 is (MEM mt).
-    - |C.MEMS| is greater than x.
-    - the memory type C.MEMS[x] is mt.
+    - the memory type C.MEMS[x] is defined in the context.
+    - C.MEMS[x] is mt.
   - Or:
     - externidx_u0 is (TAG x).
     - externtype_u1 is (TAG at).
-    - |C.TAGS| is greater than x.
-    - the memory type C.TAGS[x] is at.
+    - the memory type C.TAGS[x] is defined in the context.
+    - C.TAGS[x] is at.
 
 Export_ok
 - the export (EXPORT name externidx) is valid with the name name and the external type xt if:
@@ -23293,8 +23546,8 @@ NotationTypingInstrScheme
     - instr_u0 is (GLOBAL.GET x).
     - valtype_u1* is [].
     - valtype_u3* is [t].
-    - |C.GLOBALS| is greater than x.
-    - the global type C.GLOBALS[x] is (mut t).
+    - the global type C.GLOBALS[x] is defined in the context.
+    - C.GLOBALS[x] is (mut t).
   - Or:
     - instr_u0 is (BLOCK blocktype instr*).
     - valtype_u1* is t_1*.

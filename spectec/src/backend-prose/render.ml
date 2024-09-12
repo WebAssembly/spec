@@ -558,6 +558,9 @@ let rec render_stmt env depth stmt =
       sprintf "%s%s is const."
         (render_opt "under the context " (render_expr_with_type env) ", " c_opt)
         (render_expr env e)
+    | IsDefinedS e ->
+      sprintf "%s is defined in the context."
+        (render_expr_with_type env e)
     | IfS (c, sl) ->
       sprintf "if %s,%s"
         (render_expr env c)

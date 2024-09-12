@@ -438,6 +438,9 @@ let rec raw_string_of_stmt stmt =
       sprintf "%s%s is constant."
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
+  | IsDefinedS e ->
+      sprintf "%s is defined in the context."
+        (string_of_expr_with_type e)
   | IfS (c, ss) ->
       sprintf "If %s,%s"
         (string_of_expr c)

@@ -1586,6 +1586,8 @@ warning: rule prose `Instr_ok/global.set` was never spliced
 warning: rule prose `Instr_ok/i31.get` was never spliced
 warning: rule prose `Instr_ok/if` was never spliced
 warning: rule prose `Instr_ok/load` was never spliced
+warning: rule prose `Instr_ok/load-pack` was never spliced
+warning: rule prose `Instr_ok/load-val` was never spliced
 warning: rule prose `Instr_ok/local.get` was never spliced
 warning: rule prose `Instr_ok/local.set` was never spliced
 warning: rule prose `Instr_ok/local.tee` was never spliced
@@ -1610,7 +1612,11 @@ warning: rule prose `Instr_ok/return_call` was never spliced
 warning: rule prose `Instr_ok/return_call_indirect` was never spliced
 warning: rule prose `Instr_ok/return_call_ref` was never spliced
 warning: rule prose `Instr_ok/select` was never spliced
+warning: rule prose `Instr_ok/select-expl` was never spliced
+warning: rule prose `Instr_ok/select-impl` was never spliced
 warning: rule prose `Instr_ok/store` was never spliced
+warning: rule prose `Instr_ok/store-pack` was never spliced
+warning: rule prose `Instr_ok/store-val` was never spliced
 warning: rule prose `Instr_ok/struct.get` was never spliced
 warning: rule prose `Instr_ok/struct.new` was never spliced
 warning: rule prose `Instr_ok/struct.new_default` was never spliced
@@ -1636,6 +1642,10 @@ warning: rule prose `Instr_ok/vextbinop` was never spliced
 warning: rule prose `Instr_ok/vextract_lane` was never spliced
 warning: rule prose `Instr_ok/vextunop` was never spliced
 warning: rule prose `Instr_ok/vload` was never spliced
+warning: rule prose `Instr_ok/vload-pack` was never spliced
+warning: rule prose `Instr_ok/vload-splat` was never spliced
+warning: rule prose `Instr_ok/vload-val` was never spliced
+warning: rule prose `Instr_ok/vload-zero` was never spliced
 warning: rule prose `Instr_ok/vload_lane` was never spliced
 warning: rule prose `Instr_ok/vnarrow` was never spliced
 warning: rule prose `Instr_ok/vrelop` was never spliced

@@ -90,11 +90,6 @@ let is_context exp =
     | _ -> false)
   | _ -> false
 
-let name_of_rule rule =
-  match rule.it with
-  | Il.RuleD (id, _, _, _, _) ->
-    String.split_on_char '-' id.it |> List.hd
-
 let args_of_clause clause =
   match clause.it with
   | Il.DefD (_, args, _, _) -> args
