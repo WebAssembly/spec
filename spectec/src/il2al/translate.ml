@@ -359,7 +359,7 @@ let insert_assert exp =
   | Il.CaseE ([{it = Il.Atom "LABEL_"; _}]::_, { it = Il.TupE [ _n; _instrs; _vals ]; _ }) ->
     assertI (topLabelE () ~at:at ~note:boolT) ~at:at
   | Il.CaseE ([{it = Il.Atom "HANDLER_"; _}]::_, _) ->
-    assertI (yetE "a handler is now on the top of the stack" ~at:at ~note:boolT) ~at:at
+    assertI (topHandlerE () ~at:at ~note:boolT) ~at:at
   | Il.CaseE ([{it = Il.Atom "CONST"; _}]::_, { it = Il.TupE (ty' :: _); _ }) ->
     assertI (topValueE (Some (translate_exp ty')) ~note:boolT) ~at:at
   | _ ->

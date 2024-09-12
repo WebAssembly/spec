@@ -178,6 +178,7 @@ and string_of_expr expr =
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelE -> "a label is now on the top of the stack"
   | TopFrameE -> "a frame is now on the top of the stack"
+  | TopHandlerE -> "a handler is now on the top of the stack"
   | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
   | TopValueE None -> "a value is on the top of the stack"
   | TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)

@@ -453,6 +453,7 @@ and render_expr' env expr =
     sprintf "%s is valid" se
   | Al.Ast.TopLabelE -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameE -> "a frame is now on the top of the stack"
+  | Al.Ast.TopHandlerE -> "a handler is now on the top of the stack"
   | Al.Ast.TopValueE (Some e) ->
     let se = render_expr env e in
     sprintf "a value of value type %s is on the top of the stack" se

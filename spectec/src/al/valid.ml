@@ -468,7 +468,7 @@ and valid_expr env (expr: expr) : unit =
   | VarE id ->
     if not (Env.mem id env) then error expr.at ("free identifier " ^ id)
   | NumE _ -> check_num source expr.note;
-  | BoolE _ | TopFrameE | TopLabelE | ContextKindE _ -> check_bool source expr.note
+  | BoolE _ | TopFrameE | TopLabelE | TopHandlerE | ContextKindE _ -> check_bool source expr.note
   | UnE (NotOp, expr') ->
     valid_expr env expr';
     check_bool source expr.note;

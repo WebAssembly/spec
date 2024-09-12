@@ -206,6 +206,8 @@ and string_of_expr expr =
     (* TODO: "type(top()) == label"*)
   | TopFrameE -> "top_frame()"
     (* TODO: "type(top()) == frame"*)
+  | TopHandlerE -> "top_handler()"
+    (* TODO: "type(top()) == handler"*)
   | TopValueE (Some e) -> sprintf "top_value(%s)" (string_of_expr e)
   | TopValueE None -> "top_value()"
   | TopValuesE e -> sprintf "top_values(%s)" (string_of_expr e)
@@ -534,6 +536,7 @@ and structured_string_of_expr expr =
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"
+  | TopHandlerE -> "TopHandlerE"
   | TopValueE None -> "TopValueE"
   | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")"
   | TopValuesE e -> "TopValuesE (" ^ structured_string_of_expr e ^ ")"

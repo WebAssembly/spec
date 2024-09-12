@@ -119,6 +119,7 @@ and expr' =
   | HasTypeE of expr * typ                        (* the type of expr is ty *)
   | TopFrameE                                     (* "a frame is now on the top of the stack" *)
   | TopLabelE                                     (* "a label is now on the top of the stack" *)
+  | TopHandlerE                                   (* "a handler is now on the top of the stack" *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)

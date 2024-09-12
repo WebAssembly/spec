@@ -56,6 +56,7 @@ let rec free_expr expr =
   | MatchE (e1, e2) -> free_expr e1 @ free_expr e2
   | TopLabelE
   | TopFrameE
+  | TopHandlerE
   | TopValueE None -> IdSet.empty
   | IsDefinedE e
   | IsCaseOfE (e, _)

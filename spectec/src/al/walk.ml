@@ -35,7 +35,7 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
   match expr.it with
   | VarE _ | SubE _ | NumE _ | BoolE _ | GetCurStateE | GetCurLabelE
   | GetCurContextE | GetCurFrameE | YetE _ | TopLabelE | TopFrameE
-  | TopValueE None | ContextKindE _ -> ()
+  | TopHandlerE | TopValueE None | ContextKindE _ -> ()
 
   | UnE (_, e) | LenE e | ArityE e | ContE e
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
@@ -133,7 +133,8 @@ let walk_expr (walker: walker) (expr: expr) : expr =
   let it =
     match expr.it with
     | NumE _ | BoolE _ | VarE _ | SubE _ | GetCurStateE | GetCurFrameE
-    | GetCurLabelE | GetCurContextE | ContextKindE _ | TopLabelE | TopFrameE | YetE _ -> expr.it
+    | GetCurLabelE | GetCurContextE | ContextKindE _ | TopLabelE | TopFrameE
+    | TopHandlerE | YetE _ -> expr.it
     | UnE (op, e) -> UnE (op, walk_expr e)
     | BinE (op, e1, e2) -> BinE (op, walk_expr e1, walk_expr e2)
     | CallE (id, al) -> CallE (id, List.map walk_arg al)
@@ -286,6 +287,7 @@ let rec walk_expr f e =
       | IsValidE e -> IsValidE (new_ e)
       | TopLabelE -> e.it
       | TopFrameE -> e.it
+      | TopHandlerE -> e.it
       | TopValueE (Some e) -> TopValueE (Some (new_ e))
       | TopValueE _ -> e.it
       | TopValuesE e -> TopValuesE (new_ e)

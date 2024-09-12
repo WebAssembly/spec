@@ -78,6 +78,7 @@ let matchE ?(at = no) ~note (e1, e2) = MatchE (e1, e2) |> mk_expr at note
 let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note
 let topLabelE ?(at = no) ~note () = TopLabelE |> mk_expr at note
 let topFrameE ?(at = no) ~note () = TopFrameE |> mk_expr at note
+let topHandlerE ?(at = no) ~note () = TopHandlerE |> mk_expr at note
 let topValueE ?(at = no) ~note e_opt = TopValueE e_opt |> mk_expr at note
 let topValuesE ?(at = no) ~note e = TopValuesE e |> mk_expr at note
 let subE ?(at = no) ~note (id, ty) = SubE (id, ty) |> mk_expr at note

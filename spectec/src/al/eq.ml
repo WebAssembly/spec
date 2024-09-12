@@ -54,7 +54,8 @@ let rec eq_expr e1 e2 =
   | MatchE (e11, e12), MatchE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && Il.Eq.eq_typ t1 t2
   | TopLabelE, TopLabelE
-  | TopFrameE, TopFrameE -> true
+  | TopFrameE, TopFrameE
+  | TopHandlerE, TopHandlerE -> true
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
   | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2
