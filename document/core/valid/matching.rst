@@ -13,6 +13,9 @@ On most types, a notion of *subtyping* is defined that is applicable in :ref:`va
 
 Number Types
 ~~~~~~~~~~~~
+$${rule-prose: Numtype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`number type <syntax-numtype>` ${:numtype_1} matches a :ref:`number type <syntax-numtype>` ${:numtype_2} if and only if:
 
@@ -26,6 +29,9 @@ $${rule: Numtype_sub}
 
 Vector Types
 ~~~~~~~~~~~~
+$${rule-prose: Vectype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`vector type <syntax-vectype>` ${:vectype_1} matches a :ref:`vector type <syntax-vectype>` ${:vectype_2} if and only if:
 
@@ -39,6 +45,9 @@ $${rule: Vectype_sub}
 
 Heap Types
 ~~~~~~~~~~
+$${rule-prose: Heaptype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`heap type <syntax-heaptype>` ${:heaptype_1} matches a :ref:`heap type <syntax-heaptype>` ${:heaptype_2} if and only if:
 
@@ -87,6 +96,9 @@ $${rule-ignore: Heaptype_sub/def}
 
 Reference Types
 ~~~~~~~~~~~~~~~
+$${rule-prose: Reftype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`reference type <syntax-reftype>` ${reftype: REF nul1 heaptype_1} matches a :ref:`reference type <syntax-reftype>` ${reftype: REF nul2 heaptype_2} if and only if:
 
@@ -102,6 +114,9 @@ $${rule: {Reftype_sub/*}}
 
 Value Types
 ~~~~~~~~~~~
+$${rule-prose: Valtype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`value type <syntax-valtype>` ${:valtype_1} matches a :ref:`value type <syntax-valtype>` ${:valtype_2} if and only if:
 
@@ -120,6 +135,9 @@ $${rule-ignore: Valtype_sub/num Valtype_sub/vec Valtype_sub/ref}
 
 Result Types
 ~~~~~~~~~~~~
+$${rule-prose: Resulttype_sub}
+.. todo::
+ below is the official specification
 
 Subtyping is lifted to :ref:`result types <syntax-resulttype>` in a pointwise manner.
 That is, a :ref:`result type <syntax-resulttype>` ${:t_1*} matches a :ref:`result type <syntax-resulttype>` ${:t_2*} if and only if:
@@ -134,6 +152,9 @@ $${rule: Resulttype_sub}
 
 Instruction Types
 ~~~~~~~~~~~~~~~~~
+$${rule-prose: Instrtype_sub}
+.. todo::
+ below is the official specification
 
 Subtyping is further lifted to :ref:`instruction types <syntax-instrtype>`.
 An :ref:`instruction type <syntax-instrtype>` ${instrtype: t_11* ->_(x_1*) t_12*} matches a type ${instrtype: t_21* ->_(x_2*) t_22*} if and only if:
@@ -161,6 +182,9 @@ $${rule: Instrtype_sub}
 
 Function Types
 ~~~~~~~~~~~~~~
+$${rule-prose: Functype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`function type <syntax-functype>` ${functype: t_11* -> t_12*} matches a type ${functype: t_21* -> t_22*} if and only if:
 
@@ -178,6 +202,9 @@ $${rule: Functype_sub}
 
 Composite Types
 ~~~~~~~~~~~~~~~
+$${rule-prose: Comptype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`composite type <syntax-comptype>` ${:comptype_1} matches a type ${:comptype_2} if and only if:
 
@@ -207,6 +234,9 @@ $${rule: {Comptype_sub/*}}
 
 Field Types
 ~~~~~~~~~~~
+$${rule-prose: Fieldtype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`field type <syntax-fieldtype>` ${fieldtype: (mut1 storagetype_1)} matches a type ${fieldtype: (mut2 storagetype_2)} if and only if:
 
@@ -218,6 +248,9 @@ A :ref:`field type <syntax-fieldtype>` ${fieldtype: (mut1 storagetype_1)} matche
 
 $${rule: {Fieldtype_sub/*}}
 
+$${rule-prose: Storagetype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type :math:`\storagetype_2` if and only if:
 
@@ -225,6 +258,9 @@ A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type
 
 * Or :math:`\storagetype_1` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_1` and :math:`\storagetype_2` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_2` and :math:`\packtype_1` :ref:`matches <match-packtype>` :math:`\packtype_2`.
 
+$${rule-prose: Packtype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`packed type <syntax-packtype>` ${:packtype_1} matches a type ${:packtype_2} if and only if:
 
@@ -239,6 +275,9 @@ $${rule: Packtype_sub}
 
 Defined Types
 ~~~~~~~~~~~~~
+$${rule-prose: Deftype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`defined type <syntax-deftype>` ${:deftype_1} matches a type ${:deftype_2} if and only if:
 
@@ -263,6 +302,9 @@ $${rule: Deftype_sub/refl Deftype_sub/super}
 
 Limits
 ~~~~~~
+$${rule-prose: Limits_sub}
+.. todo::
+ below is the official specification
 
 :ref:`Limits <syntax-limits>` ${limits: `[n_1 .. m_1]} match limits ${limits: `[n_2 .. m_2]} if and only if:
 
@@ -286,6 +328,9 @@ $${rule: Limits_sub}
 
 Table Types
 ~~~~~~~~~~~
+$${rule-prose: Tabletype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`table type <syntax-tabletype>` ${tabletype: (limits_1 reftype_1)} matches ${tabletype: (limits_1 reftype_1)} if and only if:
 
@@ -301,6 +346,9 @@ $${rule: Tabletype_sub}
 
 Memory Types
 ~~~~~~~~~~~~
+$${rule-prose: Memtype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`memory type <syntax-memtype>` ${memtype: (limits_1 PAGE)} matches ${memtype: (limits_2 PAGE)} if and only if:
 
@@ -314,6 +362,9 @@ $${rule: Memtype_sub}
 
 Global Types
 ~~~~~~~~~~~~
+$${rule-prose: Globaltype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`global type <syntax-globaltype>` ${globaltype: (mut1 valtype_1)} matches ${globaltype: (mut2 valtype_2)} if and only if:
 
@@ -329,6 +380,9 @@ $${rule: {Globaltype_sub/*}}
 
 Tag Types
 ~~~~~~~~~
+$${rule-prose: Tagtype_sub}
+.. todo::
+ below is the official specification
 
 A :ref:`tag type <syntax-tagtype>` ${tagtype: deftype_1} matches ${tagtype: deftype_2} if and only if:
 
@@ -342,6 +396,9 @@ $${rule: {Tagtype_sub}}
 
 External Types
 ~~~~~~~~~~~~~~
+$${rule-prose: Externtype_sub}
+.. todo::
+ below is the official specification
 
 Functions
 .........

@@ -126,7 +126,7 @@ $${rule-prose: Instr_ok/select}
 .. todo::
  below is the official specification
 
- (*) - [Make more readable]
+ (*) - [contained in]
 
 * If :math:`t^\ast` is present, then:
 
@@ -828,7 +828,7 @@ External Reference Instructions
 $${rule-prose: Instr_ok/any.convert_extern}
 
 .. todo::
- (*) below is the official specification
+ below is the official specification
 
 * The instruction is valid with type :math:`[(\REF~\NULL_1^?~\EXTERN)] \to [(\REF~\NULL_2^?~\ANY)]` for any :math:`\NULL_1^?` that equals :math:`\NULL_2^?`.
 
@@ -1325,16 +1325,6 @@ $${rule: Instr_ok/table.size}
 $${rule-prose: Instr_ok/table.grow}
 
 .. todo::
-   (L1) - [change "lim" to "limits"]
-
-   (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-
-   (2) Change Inequality condition to  existence condition
-
-   (3) Need to add more specific type - ["limits t" to "table type"]
-
-   (5) Different name in prose specification - [change "lim" to "limits"]
-
  below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
@@ -1353,16 +1343,6 @@ $${rule: Instr_ok/table.grow}
 $${rule-prose: Instr_ok/table.fill}
 
 .. todo::
-    (L1) - [change "lim" to "limits"]
-
-   (1)  Erase Unnecessary parentheses, epsilon or ‘?’ Symbol.
-
-   (2) Change Inequality condition to  existence condition
-
-   (3) Need to add more specific type - ["limits t" to "table type"]
-
-   (5) Different name in prose specification - [change "lim" to "limits"]
-
  below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
@@ -1770,7 +1750,7 @@ $${rule-prose: Instr_ok/loop}
 .. todo::
  below is the official specification
 
- (*) - [Erase unneccessary symbols below the arrow, changed notation for context]
+ (*) - changed notation for context
 
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-functype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
@@ -1794,7 +1774,7 @@ $${rule-prose: Instr_ok/if}
 .. todo::
  below is the official specification
 
- (*) - [Erase unneccessary symbols below the arrow, changed notation for context]
+ (*) - [changed notation for context]
 
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
@@ -1844,6 +1824,7 @@ $${rule-prose: Catch_ok}
 
 .. todo::
    below is the official specification
+   
    (**) - [THE OFFICIAL SPECIFICATION IS WRONG! It should have "expansion" in the tag type ]
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
@@ -2328,11 +2309,7 @@ Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 .. todo::
  below is the official specification
 
- (L2) - [the result type should be "t1* -> t2* t3*", notation for Context C is different("C[.locals ...]" vs "C(with C.locals ...) ]
-
- (*) - [Need more specific description, change notaion for context]
-
- (**) - [RESULT TYPE OF OFFICIAL SPEC IS WRONG]
+ (*) - Simpified notaion for context
 
 * The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`.
 
@@ -2353,10 +2330,6 @@ Subsumption for :math:`\instr^\ast`
 
 .. todo::
  below is the official specification
-
- (L1) - [change "it'" to "instrtype"]
-
- (3) Need to add more specific type - [change "it'" to "instrtype"]
 
 * The instruction sequence :math:`\instr^\ast` must be valid with some type :math:`\instrtype`.
 
@@ -2404,7 +2377,7 @@ $${rule-prose: Expr_ok}
 .. todo::
  below is the official specification
 
- (L1) - [instruction name should be "instr* end"]
+ (L1) - [should expr be be "instr* end"?]
 
 
 * The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
