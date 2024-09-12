@@ -674,9 +674,12 @@ let al_to_vmemop' (f: value -> 'p): value list -> (vec_type, 'p) memop = functio
     }
   | v -> error_values "vmemop" v
 
-let al_to_vmemop (f: value -> 'p): value list -> idx * (vec_type, 'p) memop = function
-  | vl when !version <= 2 -> 0l @@ no_region, al_to_vmemop' f vl
-  | idx :: vl when !version >= 3 -> al_to_idx idx, al_to_vmemop' f vl
+let al_to_vmemop (f: value -> 'p) (g: value list -> value * (value list)): value list -> idx * (vec_type, 'p) memop = function
+  | vl when !version <= 2 ->
+    0l @@ no_region, al_to_vmemop' f vl
+  | vl when !version >= 3 ->
+    let idx, vl' = g vl in
+    al_to_idx idx, al_to_vmemop' f vl'
   | v -> error_values "vmemop" v
 
 let al_to_pack_shape = function
@@ -702,17 +705,30 @@ let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
   | v -> error_value "vloadop'" v
 
 let al_to_vloadop: value list -> idx * vec_loadop = function
-  | _v128 :: memop :: idx :: vl -> al_to_vmemop (al_to_opt al_to_vloadop') (idx :: memop :: vl)
+  | _v128 :: vl ->
+    let split vl =
+      match vl with
+      | memop :: idx :: vl' -> idx, memop :: vl'
+      | _ -> error_values "vloadop" vl
+    in
+    al_to_vmemop (al_to_opt al_to_vloadop') split vl
   | vs -> error_value "vloadop" (TupV vs)
 
 let al_to_vstoreop = function
-  | _v128 :: vl -> al_to_vmemop (fun _ -> ()) vl
+  | _v128 :: vl ->
+    let split = Util.Lib.List.split_hd in
+    al_to_vmemop (fun _ -> ()) split vl
   | vs -> error_value "vstoreop" (TupV vs)
 
 let al_to_vlaneop: value list -> idx * vec_laneop * int = function
-  | _v128 :: ps :: idx :: vl ->
+  | _v128 :: vl ->
     let h, t = Util.Lib.List.split_last vl in
-    let idx, op = al_to_vmemop al_to_pack_size (idx :: ps ::h) in
+    let split vl =
+      match vl with
+      | ps :: idx :: vl' -> idx, ps :: vl'
+      | _ -> error_values "vlaneop" vl
+    in
+    let idx, op = al_to_vmemop al_to_pack_size split h in
     idx, op, al_to_int t
   | vs -> error_value "vlaneop" (TupV vs)
 
