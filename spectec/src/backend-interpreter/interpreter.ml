@@ -753,14 +753,14 @@ and step (ctx: AlContext.t) : AlContext.t =
   Debugger.run ctx;
 
   match ctx with
-  | Al (name, il, env) :: ctx ->
+  | Al (name, args, il, env) :: ctx ->
     (match il with
     | [] -> ctx
     | [ instr ]
     when can_tail_call instr && not !Debugger.debug ->
       try_step_instr name ctx env instr
     | h :: t ->
-      let new_ctx = Al (name, t, env) :: ctx in
+      let new_ctx = Al (name, args, t, env) :: ctx in
       try_step_instr name new_ctx env h
     )
   | Wasm n :: ctx ->
@@ -811,7 +811,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
     |> List.fold_right2 assign_param params args
   in
 
-  AlContext.al (name, body, env)
+  AlContext.al (name, args, body, env)
 
 and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)
