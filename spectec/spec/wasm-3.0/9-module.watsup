@@ -128,6 +128,7 @@ def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, modu
   -- if ea* = ($(|s.ELEMS|+i_E))^(i_E<|elem*|)
   -- if da* = ($(|s.DATAS|+i_D))^(i_D<|data*|)
   -- if dt* = $alloctypes(type*)
+  ;; TODO(2, rossberg): use $inst_type(_, moduleinst) instead of $subst_all_type(_, dt*) below
   -- if (s_1, fa*) = $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^(|func*|))
   -- if (s_2, ga*) = $allocglobals(s_1, $subst_all_globaltype(globaltype, dt*)*, val_G*)
   -- if (s_3, ta*) = $alloctables(s_2, $subst_all_tabletype(tabletype, dt*)*, ref_T*)

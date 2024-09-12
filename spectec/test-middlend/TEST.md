@@ -3261,6 +3261,24 @@ def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
     -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
+def $inst_globaltype(moduleinst : moduleinst, globaltype : globaltype) : globaltype
+  ;; 5-runtime-aux.watsup
+  def $inst_globaltype{moduleinst : moduleinst, gt : globaltype, `dt*` : deftype*}(moduleinst, gt) = $subst_all_globaltype(gt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_tabletype(moduleinst : moduleinst, tabletype : tabletype) : tabletype
+  ;; 5-runtime-aux.watsup
+  def $inst_tabletype{moduleinst : moduleinst, tt : tabletype, `dt*` : deftype*}(moduleinst, tt) = $subst_all_tabletype(tt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_memtype(moduleinst : moduleinst, memtype : memtype) : memtype
+  ;; 5-runtime-aux.watsup
+  def $inst_memtype{moduleinst : moduleinst, mt : memtype, `dt*` : deftype*}(moduleinst, mt) = $subst_all_memtype(mt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
   ;; 5-runtime-aux.watsup
   def $default_{Inn : Inn}((Inn : Inn <: valtype)) = ?(CONST_val((Inn : Inn <: numtype), `%`_num_(0)))
@@ -3290,13 +3308,13 @@ def $unpackfield_(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.87
+;; 5-runtime-aux.watsup:55.1-55.87
 def $funcsxa(externaddr*) : funcaddr*
-  ;; 5-runtime-aux.watsup:52.1-52.24
+  ;; 5-runtime-aux.watsup:61.1-61.24
   def $funcsxa([]) = []
-  ;; 5-runtime-aux.watsup:53.1-53.47
+  ;; 5-runtime-aux.watsup:62.1-62.47
   def $funcsxa{fa : funcaddr, `xa*` : externaddr*}([FUNC_externaddr(fa)] ++ xa*{xa <- `xa*`}) = [fa] ++ $funcsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:54.1-54.59
+  ;; 5-runtime-aux.watsup:63.1-63.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -3304,13 +3322,13 @@ def $funcsxa(externaddr*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.89
+;; 5-runtime-aux.watsup:56.1-56.89
 def $globalsxa(externaddr*) : globaladdr*
-  ;; 5-runtime-aux.watsup:56.1-56.26
+  ;; 5-runtime-aux.watsup:65.1-65.26
   def $globalsxa([]) = []
-  ;; 5-runtime-aux.watsup:57.1-57.53
+  ;; 5-runtime-aux.watsup:66.1-66.53
   def $globalsxa{ga : globaladdr, `xa*` : externaddr*}([GLOBAL_externaddr(ga)] ++ xa*{xa <- `xa*`}) = [ga] ++ $globalsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:58.1-58.63
+  ;; 5-runtime-aux.watsup:67.1-67.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -3318,13 +3336,13 @@ def $globalsxa(externaddr*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:48.1-48.88
+;; 5-runtime-aux.watsup:57.1-57.88
 def $tablesxa(externaddr*) : tableaddr*
-  ;; 5-runtime-aux.watsup:60.1-60.25
+  ;; 5-runtime-aux.watsup:69.1-69.25
   def $tablesxa([]) = []
-  ;; 5-runtime-aux.watsup:61.1-61.50
+  ;; 5-runtime-aux.watsup:70.1-70.50
   def $tablesxa{ta : tableaddr, `xa*` : externaddr*}([TABLE_externaddr(ta)] ++ xa*{xa <- `xa*`}) = [ta] ++ $tablesxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:62.1-62.61
+  ;; 5-runtime-aux.watsup:71.1-71.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -3332,13 +3350,13 @@ def $tablesxa(externaddr*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:49.1-49.86
+;; 5-runtime-aux.watsup:58.1-58.86
 def $memsxa(externaddr*) : memaddr*
-  ;; 5-runtime-aux.watsup:64.1-64.23
+  ;; 5-runtime-aux.watsup:73.1-73.23
   def $memsxa([]) = []
-  ;; 5-runtime-aux.watsup:65.1-65.44
+  ;; 5-runtime-aux.watsup:74.1-74.44
   def $memsxa{ma : memaddr, `xa*` : externaddr*}([MEM_externaddr(ma)] ++ xa*{xa <- `xa*`}) = [ma] ++ $memsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:66.1-66.57
+  ;; 5-runtime-aux.watsup:75.1-75.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -3346,13 +3364,13 @@ def $memsxa(externaddr*) : memaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:50.1-50.86
+;; 5-runtime-aux.watsup:59.1-59.86
 def $tagsxa(externaddr*) : tagaddr*
-  ;; 5-runtime-aux.watsup:68.1-68.23
+  ;; 5-runtime-aux.watsup:77.1-77.23
   def $tagsxa([]) = []
-  ;; 5-runtime-aux.watsup:69.1-69.44
+  ;; 5-runtime-aux.watsup:78.1-78.44
   def $tagsxa{ha : tagaddr, `xa*` : externaddr*}([TAG_externaddr(ha)] ++ xa*{xa <- `xa*`}) = [ha] ++ $tagsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:70.1-70.57
+  ;; 5-runtime-aux.watsup:79.1-79.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -6607,11 +6625,11 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:169.1-169.94
+;; 9-module.watsup:170.1-170.94
 def $evalglobals(state : state, globaltype*, expr*) : (state, val*)
-  ;; 9-module.watsup:170.1-170.41
+  ;; 9-module.watsup:171.1-171.41
   def $evalglobals{z : state}(z, [], []) = (z, [])
-  ;; 9-module.watsup:171.1-176.81
+  ;; 9-module.watsup:172.1-177.81
   def $evalglobals{z : state, gt : globaltype, `gt'*` : globaltype*, expr : expr, `expr'*` : expr*, z' : state, val : val, `val'*` : val*, s : store, f : frame, s' : store, a : addr}(z, [gt] ++ gt'*{gt' <- `gt'*`}, [expr] ++ expr'*{expr' <- `expr'*`}) = (z', [val] ++ val'*{val' <- `val'*`})
     -- Eval_expr: `%;%~>*%;%`(z, expr, z, [val])
     -- if (z = `%;%`_state(s, f))
@@ -11581,6 +11599,24 @@ def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
     -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
+def $inst_globaltype(moduleinst : moduleinst, globaltype : globaltype) : globaltype
+  ;; 5-runtime-aux.watsup
+  def $inst_globaltype{moduleinst : moduleinst, gt : globaltype, `dt*` : deftype*}(moduleinst, gt) = $subst_all_globaltype(gt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_tabletype(moduleinst : moduleinst, tabletype : tabletype) : tabletype
+  ;; 5-runtime-aux.watsup
+  def $inst_tabletype{moduleinst : moduleinst, tt : tabletype, `dt*` : deftype*}(moduleinst, tt) = $subst_all_tabletype(tt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_memtype(moduleinst : moduleinst, memtype : memtype) : memtype
+  ;; 5-runtime-aux.watsup
+  def $inst_memtype{moduleinst : moduleinst, mt : memtype, `dt*` : deftype*}(moduleinst, mt) = $subst_all_memtype(mt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
   ;; 5-runtime-aux.watsup
   def $default_{Inn : Inn}((Inn : Inn <: valtype)) = ?(CONST_val((Inn : Inn <: numtype), `%`_num_(0)))
@@ -11610,13 +11646,13 @@ def $unpackfield_(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.87
+;; 5-runtime-aux.watsup:55.1-55.87
 def $funcsxa(externaddr*) : funcaddr*
-  ;; 5-runtime-aux.watsup:52.1-52.24
+  ;; 5-runtime-aux.watsup:61.1-61.24
   def $funcsxa([]) = []
-  ;; 5-runtime-aux.watsup:53.1-53.47
+  ;; 5-runtime-aux.watsup:62.1-62.47
   def $funcsxa{fa : funcaddr, `xa*` : externaddr*}([FUNC_externaddr(fa)] ++ xa*{xa <- `xa*`}) = [fa] ++ $funcsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:54.1-54.59
+  ;; 5-runtime-aux.watsup:63.1-63.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -11624,13 +11660,13 @@ def $funcsxa(externaddr*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.89
+;; 5-runtime-aux.watsup:56.1-56.89
 def $globalsxa(externaddr*) : globaladdr*
-  ;; 5-runtime-aux.watsup:56.1-56.26
+  ;; 5-runtime-aux.watsup:65.1-65.26
   def $globalsxa([]) = []
-  ;; 5-runtime-aux.watsup:57.1-57.53
+  ;; 5-runtime-aux.watsup:66.1-66.53
   def $globalsxa{ga : globaladdr, `xa*` : externaddr*}([GLOBAL_externaddr(ga)] ++ xa*{xa <- `xa*`}) = [ga] ++ $globalsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:58.1-58.63
+  ;; 5-runtime-aux.watsup:67.1-67.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -11638,13 +11674,13 @@ def $globalsxa(externaddr*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:48.1-48.88
+;; 5-runtime-aux.watsup:57.1-57.88
 def $tablesxa(externaddr*) : tableaddr*
-  ;; 5-runtime-aux.watsup:60.1-60.25
+  ;; 5-runtime-aux.watsup:69.1-69.25
   def $tablesxa([]) = []
-  ;; 5-runtime-aux.watsup:61.1-61.50
+  ;; 5-runtime-aux.watsup:70.1-70.50
   def $tablesxa{ta : tableaddr, `xa*` : externaddr*}([TABLE_externaddr(ta)] ++ xa*{xa <- `xa*`}) = [ta] ++ $tablesxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:62.1-62.61
+  ;; 5-runtime-aux.watsup:71.1-71.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -11652,13 +11688,13 @@ def $tablesxa(externaddr*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:49.1-49.86
+;; 5-runtime-aux.watsup:58.1-58.86
 def $memsxa(externaddr*) : memaddr*
-  ;; 5-runtime-aux.watsup:64.1-64.23
+  ;; 5-runtime-aux.watsup:73.1-73.23
   def $memsxa([]) = []
-  ;; 5-runtime-aux.watsup:65.1-65.44
+  ;; 5-runtime-aux.watsup:74.1-74.44
   def $memsxa{ma : memaddr, `xa*` : externaddr*}([MEM_externaddr(ma)] ++ xa*{xa <- `xa*`}) = [ma] ++ $memsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:66.1-66.57
+  ;; 5-runtime-aux.watsup:75.1-75.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -11666,13 +11702,13 @@ def $memsxa(externaddr*) : memaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:50.1-50.86
+;; 5-runtime-aux.watsup:59.1-59.86
 def $tagsxa(externaddr*) : tagaddr*
-  ;; 5-runtime-aux.watsup:68.1-68.23
+  ;; 5-runtime-aux.watsup:77.1-77.23
   def $tagsxa([]) = []
-  ;; 5-runtime-aux.watsup:69.1-69.44
+  ;; 5-runtime-aux.watsup:78.1-78.44
   def $tagsxa{ha : tagaddr, `xa*` : externaddr*}([TAG_externaddr(ha)] ++ xa*{xa <- `xa*`}) = [ha] ++ $tagsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:70.1-70.57
+  ;; 5-runtime-aux.watsup:79.1-79.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -14929,11 +14965,11 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:169.1-169.94
+;; 9-module.watsup:170.1-170.94
 def $evalglobals(state : state, globaltype*, expr*) : (state, val*)
-  ;; 9-module.watsup:170.1-170.41
+  ;; 9-module.watsup:171.1-171.41
   def $evalglobals{z : state}(z, [], []) = (z, [])
-  ;; 9-module.watsup:171.1-176.81
+  ;; 9-module.watsup:172.1-177.81
   def $evalglobals{z : state, gt : globaltype, `gt'*` : globaltype*, expr : expr, `expr'*` : expr*, z' : state, val : val, `val'*` : val*, s : store, f : frame, s' : store, a : addr}(z, [gt] ++ gt'*{gt' <- `gt'*`}, [expr] ++ expr'*{expr' <- `expr'*`}) = (z', [val] ++ val'*{val' <- `val'*`})
     -- Eval_expr: `%;%~>*%;%`(z, expr, z, [val])
     -- if (z = `%;%`_state(s, f))
@@ -19903,6 +19939,24 @@ def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
     -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
+def $inst_globaltype(moduleinst : moduleinst, globaltype : globaltype) : globaltype
+  ;; 5-runtime-aux.watsup
+  def $inst_globaltype{moduleinst : moduleinst, gt : globaltype, `dt*` : deftype*}(moduleinst, gt) = $subst_all_globaltype(gt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_tabletype(moduleinst : moduleinst, tabletype : tabletype) : tabletype
+  ;; 5-runtime-aux.watsup
+  def $inst_tabletype{moduleinst : moduleinst, tt : tabletype, `dt*` : deftype*}(moduleinst, tt) = $subst_all_tabletype(tt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_memtype(moduleinst : moduleinst, memtype : memtype) : memtype
+  ;; 5-runtime-aux.watsup
+  def $inst_memtype{moduleinst : moduleinst, mt : memtype, `dt*` : deftype*}(moduleinst, mt) = $subst_all_memtype(mt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
   ;; 5-runtime-aux.watsup
   def $default_{Inn : Inn}((Inn : Inn <: valtype)) = ?(CONST_val((Inn : Inn <: numtype), `%`_num_(0)))
@@ -19932,13 +19986,13 @@ def $unpackfield_(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.87
+;; 5-runtime-aux.watsup:55.1-55.87
 def $funcsxa(externaddr*) : funcaddr*
-  ;; 5-runtime-aux.watsup:52.1-52.24
+  ;; 5-runtime-aux.watsup:61.1-61.24
   def $funcsxa([]) = []
-  ;; 5-runtime-aux.watsup:53.1-53.47
+  ;; 5-runtime-aux.watsup:62.1-62.47
   def $funcsxa{fa : funcaddr, `xa*` : externaddr*}([FUNC_externaddr(fa)] ++ xa*{xa <- `xa*`}) = [fa] ++ $funcsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:54.1-54.59
+  ;; 5-runtime-aux.watsup:63.1-63.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -19946,13 +20000,13 @@ def $funcsxa(externaddr*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.89
+;; 5-runtime-aux.watsup:56.1-56.89
 def $globalsxa(externaddr*) : globaladdr*
-  ;; 5-runtime-aux.watsup:56.1-56.26
+  ;; 5-runtime-aux.watsup:65.1-65.26
   def $globalsxa([]) = []
-  ;; 5-runtime-aux.watsup:57.1-57.53
+  ;; 5-runtime-aux.watsup:66.1-66.53
   def $globalsxa{ga : globaladdr, `xa*` : externaddr*}([GLOBAL_externaddr(ga)] ++ xa*{xa <- `xa*`}) = [ga] ++ $globalsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:58.1-58.63
+  ;; 5-runtime-aux.watsup:67.1-67.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -19960,13 +20014,13 @@ def $globalsxa(externaddr*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:48.1-48.88
+;; 5-runtime-aux.watsup:57.1-57.88
 def $tablesxa(externaddr*) : tableaddr*
-  ;; 5-runtime-aux.watsup:60.1-60.25
+  ;; 5-runtime-aux.watsup:69.1-69.25
   def $tablesxa([]) = []
-  ;; 5-runtime-aux.watsup:61.1-61.50
+  ;; 5-runtime-aux.watsup:70.1-70.50
   def $tablesxa{ta : tableaddr, `xa*` : externaddr*}([TABLE_externaddr(ta)] ++ xa*{xa <- `xa*`}) = [ta] ++ $tablesxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:62.1-62.61
+  ;; 5-runtime-aux.watsup:71.1-71.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -19974,13 +20028,13 @@ def $tablesxa(externaddr*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:49.1-49.86
+;; 5-runtime-aux.watsup:58.1-58.86
 def $memsxa(externaddr*) : memaddr*
-  ;; 5-runtime-aux.watsup:64.1-64.23
+  ;; 5-runtime-aux.watsup:73.1-73.23
   def $memsxa([]) = []
-  ;; 5-runtime-aux.watsup:65.1-65.44
+  ;; 5-runtime-aux.watsup:74.1-74.44
   def $memsxa{ma : memaddr, `xa*` : externaddr*}([MEM_externaddr(ma)] ++ xa*{xa <- `xa*`}) = [ma] ++ $memsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:66.1-66.57
+  ;; 5-runtime-aux.watsup:75.1-75.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -19988,13 +20042,13 @@ def $memsxa(externaddr*) : memaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:50.1-50.86
+;; 5-runtime-aux.watsup:59.1-59.86
 def $tagsxa(externaddr*) : tagaddr*
-  ;; 5-runtime-aux.watsup:68.1-68.23
+  ;; 5-runtime-aux.watsup:77.1-77.23
   def $tagsxa([]) = []
-  ;; 5-runtime-aux.watsup:69.1-69.44
+  ;; 5-runtime-aux.watsup:78.1-78.44
   def $tagsxa{ha : tagaddr, `xa*` : externaddr*}([TAG_externaddr(ha)] ++ xa*{xa <- `xa*`}) = [ha] ++ $tagsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:70.1-70.57
+  ;; 5-runtime-aux.watsup:79.1-79.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -23251,11 +23305,11 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:169.1-169.94
+;; 9-module.watsup:170.1-170.94
 def $evalglobals(state : state, globaltype*, expr*) : (state, val*)
-  ;; 9-module.watsup:170.1-170.41
+  ;; 9-module.watsup:171.1-171.41
   def $evalglobals{z : state}(z, [], []) = (z, [])
-  ;; 9-module.watsup:171.1-176.81
+  ;; 9-module.watsup:172.1-177.81
   def $evalglobals{z : state, gt : globaltype, `gt'*` : globaltype*, expr : expr, `expr'*` : expr*, z' : state, val : val, `val'*` : val*, s : store, f : frame, s' : store, a : addr}(z, [gt] ++ gt'*{gt' <- `gt'*`}, [expr] ++ expr'*{expr' <- `expr'*`}) = (z', [val] ++ val'*{val' <- `val'*`})
     -- Eval_expr: `%;%~>*%;%`(z, expr, z, [val])
     -- if (z = `%;%`_state(s, f))
@@ -28225,6 +28279,24 @@ def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
     -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
+def $inst_globaltype(moduleinst : moduleinst, globaltype : globaltype) : globaltype
+  ;; 5-runtime-aux.watsup
+  def $inst_globaltype{moduleinst : moduleinst, gt : globaltype, `dt*` : deftype*}(moduleinst, gt) = $subst_all_globaltype(gt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_tabletype(moduleinst : moduleinst, tabletype : tabletype) : tabletype
+  ;; 5-runtime-aux.watsup
+  def $inst_tabletype{moduleinst : moduleinst, tt : tabletype, `dt*` : deftype*}(moduleinst, tt) = $subst_all_tabletype(tt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
+def $inst_memtype(moduleinst : moduleinst, memtype : memtype) : memtype
+  ;; 5-runtime-aux.watsup
+  def $inst_memtype{moduleinst : moduleinst, mt : memtype, `dt*` : deftype*}(moduleinst, mt) = $subst_all_memtype(mt, (dt : deftype <: heaptype)*{dt <- `dt*`})
+    -- if (dt*{dt <- `dt*`} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
   ;; 5-runtime-aux.watsup
   def $default_{Inn : Inn}((Inn : Inn <: valtype)) = ?(CONST_val((Inn : Inn <: numtype), `%`_num_(0)))
@@ -28254,13 +28326,13 @@ def $unpackfield_(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.87
+;; 5-runtime-aux.watsup:55.1-55.87
 def $funcsxa(externaddr*) : funcaddr*
-  ;; 5-runtime-aux.watsup:52.1-52.24
+  ;; 5-runtime-aux.watsup:61.1-61.24
   def $funcsxa([]) = []
-  ;; 5-runtime-aux.watsup:53.1-53.47
+  ;; 5-runtime-aux.watsup:62.1-62.47
   def $funcsxa{fa : funcaddr, `xa*` : externaddr*}([FUNC_externaddr(fa)] ++ xa*{xa <- `xa*`}) = [fa] ++ $funcsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:54.1-54.59
+  ;; 5-runtime-aux.watsup:63.1-63.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -28268,13 +28340,13 @@ def $funcsxa(externaddr*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.89
+;; 5-runtime-aux.watsup:56.1-56.89
 def $globalsxa(externaddr*) : globaladdr*
-  ;; 5-runtime-aux.watsup:56.1-56.26
+  ;; 5-runtime-aux.watsup:65.1-65.26
   def $globalsxa([]) = []
-  ;; 5-runtime-aux.watsup:57.1-57.53
+  ;; 5-runtime-aux.watsup:66.1-66.53
   def $globalsxa{ga : globaladdr, `xa*` : externaddr*}([GLOBAL_externaddr(ga)] ++ xa*{xa <- `xa*`}) = [ga] ++ $globalsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:58.1-58.63
+  ;; 5-runtime-aux.watsup:67.1-67.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -28282,13 +28354,13 @@ def $globalsxa(externaddr*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:48.1-48.88
+;; 5-runtime-aux.watsup:57.1-57.88
 def $tablesxa(externaddr*) : tableaddr*
-  ;; 5-runtime-aux.watsup:60.1-60.25
+  ;; 5-runtime-aux.watsup:69.1-69.25
   def $tablesxa([]) = []
-  ;; 5-runtime-aux.watsup:61.1-61.50
+  ;; 5-runtime-aux.watsup:70.1-70.50
   def $tablesxa{ta : tableaddr, `xa*` : externaddr*}([TABLE_externaddr(ta)] ++ xa*{xa <- `xa*`}) = [ta] ++ $tablesxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:62.1-62.61
+  ;; 5-runtime-aux.watsup:71.1-71.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -28296,13 +28368,13 @@ def $tablesxa(externaddr*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:49.1-49.86
+;; 5-runtime-aux.watsup:58.1-58.86
 def $memsxa(externaddr*) : memaddr*
-  ;; 5-runtime-aux.watsup:64.1-64.23
+  ;; 5-runtime-aux.watsup:73.1-73.23
   def $memsxa([]) = []
-  ;; 5-runtime-aux.watsup:65.1-65.44
+  ;; 5-runtime-aux.watsup:74.1-74.44
   def $memsxa{ma : memaddr, `xa*` : externaddr*}([MEM_externaddr(ma)] ++ xa*{xa <- `xa*`}) = [ma] ++ $memsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:66.1-66.57
+  ;; 5-runtime-aux.watsup:75.1-75.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -28310,13 +28382,13 @@ def $memsxa(externaddr*) : memaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:50.1-50.86
+;; 5-runtime-aux.watsup:59.1-59.86
 def $tagsxa(externaddr*) : tagaddr*
-  ;; 5-runtime-aux.watsup:68.1-68.23
+  ;; 5-runtime-aux.watsup:77.1-77.23
   def $tagsxa([]) = []
-  ;; 5-runtime-aux.watsup:69.1-69.44
+  ;; 5-runtime-aux.watsup:78.1-78.44
   def $tagsxa{ha : tagaddr, `xa*` : externaddr*}([TAG_externaddr(ha)] ++ xa*{xa <- `xa*`}) = [ha] ++ $tagsxa(xa*{xa <- `xa*`})
-  ;; 5-runtime-aux.watsup:70.1-70.57
+  ;; 5-runtime-aux.watsup:79.1-79.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
     -- otherwise
 }
@@ -31766,11 +31838,11 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:169.1-169.94
+;; 9-module.watsup:170.1-170.94
 def $evalglobals(state : state, globaltype*, expr*) : (state, val*)
-  ;; 9-module.watsup:170.1-170.41
+  ;; 9-module.watsup:171.1-171.41
   def $evalglobals{z : state}(z, [], []) = (z, [])
-  ;; 9-module.watsup:171.1-176.81
+  ;; 9-module.watsup:172.1-177.81
   def $evalglobals{z : state, gt : globaltype, `gt'*` : globaltype*, expr : expr, `expr'*` : expr*, z' : state, val : val, `val'*` : val*, s : store, f : frame, s' : store, a : addr}(z, [gt] ++ gt'*{gt' <- `gt'*`}, [expr] ++ expr'*{expr' <- `expr'*`}) = (z', [val] ++ val'*{val' <- `val'*`})
     -- Eval_expr: `%;%~>*%;%`(z, expr, z, [val])
     -- if (z = `%;%`_state(s, f))

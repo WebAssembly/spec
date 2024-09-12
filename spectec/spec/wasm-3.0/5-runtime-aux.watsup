@@ -6,11 +6,20 @@
 
 def $inst_valtype(moduleinst, valtype) : valtype  hint(show $inst_(%,%)) hint(macro "insttype")
 def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_(%,%)) hint(macro "insttype")
+def $inst_globaltype(moduleinst, globaltype) : globaltype  hint(show $inst_(%,%)) hint(macro "insttype")
+def $inst_tabletype(moduleinst, tabletype) : tabletype  hint(show $inst_(%,%)) hint(macro "insttype")
+def $inst_memtype(moduleinst, memtype) : memtype  hint(show $inst_(%,%)) hint(macro "insttype")
 
 ;; TODO(3, rossberg): make inlining moduleinst.TYPES work
 def $inst_valtype(moduleinst, t) = $subst_all_valtype(t, dt*)
   -- if dt* = moduleinst.TYPES
 def $inst_reftype(moduleinst, rt) = $subst_all_reftype(rt, dt*)
+  -- if dt* = moduleinst.TYPES
+def $inst_globaltype(moduleinst, gt) = $subst_all_globaltype(gt, dt*)
+  -- if dt* = moduleinst.TYPES
+def $inst_tabletype(moduleinst, tt) = $subst_all_tabletype(tt, dt*)
+  -- if dt* = moduleinst.TYPES
+def $inst_memtype(moduleinst, mt) = $subst_all_memtype(mt, dt*)
   -- if dt* = moduleinst.TYPES
 
 

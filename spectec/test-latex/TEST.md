@@ -4018,6 +4018,27 @@ $$
 \end{array}
 $$
 
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{gt}}) &=& {{\mathit{gt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
+  &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}}) &=& {{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
+  &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}}) &=& {{\mathit{mt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}
+  &\qquad \mbox{if}~{{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+\end{array}
+$$
+
 \vspace{1ex}
 
 \vspace{1ex}

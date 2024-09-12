@@ -1365,7 +1365,10 @@ warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
 warning: definition `inot_` was never spliced
+warning: definition `inst_globaltype` was never spliced
+warning: definition `inst_memtype` was never spliced
 warning: definition `inst_reftype` was never spliced
+warning: definition `inst_tabletype` was never spliced
 warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instrdots` was never spliced
@@ -1935,7 +1938,10 @@ warning: definition prose `globalsxx` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
 warning: definition prose `half__` was never spliced
+warning: definition prose `inst_globaltype` was never spliced
+warning: definition prose `inst_memtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
+warning: definition prose `inst_tabletype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
 warning: definition prose `invfbytes_` was never spliced
