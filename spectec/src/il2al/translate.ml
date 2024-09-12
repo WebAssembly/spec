@@ -1309,4 +1309,4 @@ let translate il =
   let al =
     List.map translate_rgroup rules @ List.map translate_helper helpers
   in
-  List.map Transpile.remove_state al
+  Postprocess.postprocess al

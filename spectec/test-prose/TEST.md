@@ -637,7 +637,7 @@ watsup 0.4 generator
 .......................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -662,7 +662,7 @@ watsup 0.4 generator
 .............................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -737,7 +737,7 @@ watsup 0.4 generator
 .........................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -754,7 +754,7 @@ watsup 0.4 generator
 ........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -829,11 +829,9 @@ watsup 0.4 generator
 .............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
+#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -848,13 +846,11 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -871,11 +867,9 @@ watsup 0.4 generator
 ...............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
+#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{t}}{(c_1)}`.
 
@@ -886,13 +880,11 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -905,11 +897,9 @@ watsup 0.4 generator
 ....................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`t_1` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t_1`.
+#. Pop the value :math:`(t_1{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -982,7 +972,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1064,7 +1054,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1148,11 +1138,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1191,7 +1181,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -3176,7 +3166,7 @@ Step_pure/drop
 3. Do nothing.
 
 Step_pure/select
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value val_2 from the stack.
@@ -3188,7 +3178,7 @@ Step_pure/select
   a. Push the value val_2 to the stack.
 
 Step_pure/if t? instr_1* instr_2*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. If (c is not 0), then:
   a. Execute the instruction (BLOCK t? instr_1*).
@@ -3224,7 +3214,7 @@ Step_pure/br n_u0
     4) Execute the instruction (BR l).
 
 Step_pure/br_if l
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. If (c is not 0), then:
   a. Execute the instruction (BR l).
@@ -3232,7 +3222,7 @@ Step_pure/br_if l
   a. Do nothing.
 
 Step_pure/br_table l* l'
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST i) from the stack.
 3. If (i < |l*|), then:
   a. Execute the instruction (BR l*[i]).
@@ -3268,49 +3258,44 @@ Step_pure/return
   e. Execute the instruction RETURN.
 
 Step_pure/unop t unop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. If (|$unop_(t, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop the value (t.CONST c_1) from the stack.
+3. If (|$unop_(t, unop, c_1)| ≤ 0), then:
   a. Trap.
-5. Let c be an element of $unop_(t, unop, c_1).
-6. Push the value (t.CONST c) to the stack.
+4. Let c be an element of $unop_(t, unop, c_1).
+5. Push the value (t.CONST c) to the stack.
 
 Step_pure/binop t binop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value (valtype_0.CONST c_1) from the stack.
-6. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop the value (t.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+4. Pop the value (valtype_0.CONST c_1) from the stack.
+5. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-7. Let c be an element of $binop_(t, binop, c_1, c_2).
-8. Push the value (t.CONST c) to the stack.
+6. Let c be an element of $binop_(t, binop, c_1, c_2).
+7. Push the value (t.CONST c) to the stack.
 
 Step_pure/testop t testop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. Let c be $testop_(t, testop, c_1).
-5. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop the value (t.CONST c_1) from the stack.
+3. Let c be $testop_(t, testop, c_1).
+4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop t relop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value (valtype_0.CONST c_1) from the stack.
-6. Let c be $relop_(t, relop, c_1, c_2).
-7. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop the value (t.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+4. Pop the value (valtype_0.CONST c_1) from the stack.
+5. Let c be $relop_(t, relop, c_1, c_2).
+6. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop t_2 t_1 cvtop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (valtype_0 is t_1).
-4. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
+2. Pop the value (t_1.CONST c_1) from the stack.
+3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-5. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
-6. Push the value (t_2.CONST c) to the stack.
+4. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
+5. Push the value (t_2.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -3340,7 +3325,7 @@ Step_read/call x
 
 Step_read/call_indirect x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If (i ≥ |$table(z, 0).REFS|), then:
   a. Trap.
@@ -3379,7 +3364,7 @@ Step_read/global.get x
 
 Step_read/load valtype_u0 sz_sx_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If sz_sx_u1? is not defined, then:
   a. Let t be valtype_u0.
@@ -3419,9 +3404,9 @@ Step/global.set x
 
 Step/store valtype_u0 sz_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type valtype_u2 is on the top of the stack.
 3. Pop the value (valtype_u2.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. Let t be valtype_u2.
 7. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and ((valtype_u0 is t) and sz_u1? is not defined)), then:
@@ -3440,7 +3425,7 @@ Step/store valtype_u0 sz_u1? ao
 
 Step/memory.grow
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Either:
   a. Let mi be $growmemory($mem(z, 0), n).
@@ -5204,7 +5189,7 @@ watsup 0.4 generator
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5229,7 +5214,7 @@ watsup 0.4 generator
 .....................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5304,7 +5289,7 @@ watsup 0.4 generator
 .........................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5321,7 +5306,7 @@ watsup 0.4 generator
 ........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -5396,11 +5381,9 @@ watsup 0.4 generator
 .........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -5415,13 +5398,11 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5438,11 +5419,9 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
 
@@ -5453,13 +5432,11 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5472,11 +5449,9 @@ watsup 0.4 generator
 ............................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
+#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -5508,7 +5483,7 @@ watsup 0.4 generator
 ..........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5521,11 +5496,11 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5538,15 +5513,15 @@ watsup 0.4 generator
 ............................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5559,7 +5534,7 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5572,7 +5547,7 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5589,11 +5564,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5610,7 +5585,7 @@ watsup 0.4 generator
 .................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5629,11 +5604,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5646,11 +5621,11 @@ watsup 0.4 generator
 ..................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5665,7 +5640,7 @@ watsup 0.4 generator
 .............................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5680,11 +5655,11 @@ watsup 0.4 generator
 .............................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5705,11 +5680,11 @@ watsup 0.4 generator
 ......................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5743,7 +5718,7 @@ watsup 0.4 generator
 ..............................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5782,7 +5757,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5795,7 +5770,7 @@ watsup 0.4 generator
 .............................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5808,11 +5783,11 @@ watsup 0.4 generator
 ...............................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5825,11 +5800,11 @@ watsup 0.4 generator
 .......................................................................................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5850,7 +5825,7 @@ watsup 0.4 generator
 ...............................................................................................................................................................................................................................................................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5991,7 +5966,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6084,7 +6059,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6112,7 +6087,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6120,7 +6095,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6155,15 +6130,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6220,15 +6195,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6267,7 +6242,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6314,7 +6289,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6391,11 +6366,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6433,7 +6408,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6441,7 +6416,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6476,15 +6451,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6541,15 +6516,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6618,7 +6593,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6635,7 +6610,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6671,11 +6646,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6714,11 +6689,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6737,11 +6712,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6768,7 +6743,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -10241,7 +10216,7 @@ Step_pure/drop
 3. Do nothing.
 
 Step_pure/select t*?
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value val_2 from the stack.
@@ -10253,7 +10228,7 @@ Step_pure/select t*?
   a. Push the value val_2 to the stack.
 
 Step_pure/if bt instr_1* instr_2*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. If (c is not 0), then:
   a. Execute the instruction (BLOCK bt instr_1*).
@@ -10289,7 +10264,7 @@ Step_pure/br n_u0
     4) Execute the instruction (BR l).
 
 Step_pure/br_if l
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. If (c is not 0), then:
   a. Execute the instruction (BR l).
@@ -10297,7 +10272,7 @@ Step_pure/br_if l
   a. Do nothing.
 
 Step_pure/br_table l* l'
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST i) from the stack.
 3. If (i < |l*|), then:
   a. Execute the instruction (BR l*[i]).
@@ -10333,49 +10308,44 @@ Step_pure/return
   e. Execute the instruction RETURN.
 
 Step_pure/unop nt unop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_1) from the stack.
+3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
-5. Let c be an element of $unop_(nt, unop, c_1).
-6. Push the value (nt.CONST c) to the stack.
+4. Let c be an element of $unop_(nt, unop, c_1).
+5. Push the value (nt.CONST c) to the stack.
 
 Step_pure/binop nt binop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+4. Pop the value (numtype_0.CONST c_1) from the stack.
+5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-7. Let c be an element of $binop_(nt, binop, c_1, c_2).
-8. Push the value (nt.CONST c) to the stack.
+6. Let c be an element of $binop_(nt, binop, c_1, c_2).
+7. Push the value (nt.CONST c) to the stack.
 
 Step_pure/testop nt testop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Let c be $testop_(nt, testop, c_1).
-5. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_1) from the stack.
+3. Let c be $testop_(nt, testop, c_1).
+4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. Let c be $relop_(nt, relop, c_1, c_2).
-7. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+4. Pop the value (numtype_0.CONST c_1) from the stack.
+5. Let c be $relop_(nt, relop, c_1, c_2).
+6. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt_1).
-4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
+2. Pop the value (nt_1.CONST c_1) from the stack.
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-6. Push the value (nt_2.CONST c) to the stack.
+4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+5. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -10386,37 +10356,37 @@ Step_pure/ref.is_null
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/vvunop V128 vvunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vvunop_(V128, vvunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvbinop V128 vvbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvternop V128 vvternop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 6. Pop the value (V128.CONST c_1) from the stack.
 7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
 8. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvtestop V128 ANY_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $ine_($size(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vunop sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
   a. Trap.
@@ -10424,9 +10394,9 @@ Step_pure/vunop sh vunop
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbinop sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
@@ -10434,7 +10404,7 @@ Step_pure/vbinop sh vbinop
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vtestop (Jnn X N) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X N), c).
 4. If (ci_1 is not 0)*, then:
@@ -10443,33 +10413,33 @@ Step_pure/vtestop (Jnn X N) ALL_TRUE
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/vrelop sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshiftop (Jnn X N) vshiftop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Jnn X N), c_1).
 6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbitmask (Jnn X N)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X N), c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
 Step_pure/vswizzle (Pnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
 6. Let ci* be $lanes_((Pnn X M), c_2).
@@ -10479,9 +10449,9 @@ Step_pure/vswizzle (Pnn X M)
 10. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshuffle (Pnn X N) i*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<N).
 6. Let c'* be $lanes_((Pnn X N), c_1) :: $lanes_((Pnn X N), c_2).
@@ -10497,7 +10467,7 @@ Step_pure/vsplat (Lnn X N)
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextract_lane (lanetype_u0 X N) sx_u1? i
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
@@ -10516,29 +10486,29 @@ Step_pure/vreplace_lane (Lnn X N) i
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
 6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_1 sh_2 vextunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextbinop sh_1 sh_2 vextbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vnarrow (Jnn_2 X N_2) (Jnn_1 X N_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
@@ -10548,7 +10518,7 @@ Step_pure/vnarrow (Jnn_2 X N_2) (Jnn_1 X N_1) sx
 10. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_u5?
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half_u2? is not defined and zero_u5? is not defined), then:
   a. Let Lnn_1 be lanetype_u4.
@@ -10616,7 +10586,7 @@ Step_read/call x
 
 Step_read/call_indirect x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
@@ -10660,7 +10630,7 @@ Step_read/global.get x
 
 Step_read/table.get x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
@@ -10673,11 +10643,11 @@ Step_read/table.size x
 
 Step_read/table.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
@@ -10694,11 +10664,11 @@ Step_read/table.fill x
 
 Step_read/table.copy x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$table(z, y).REFS|), then:
   a. Trap.
@@ -10726,11 +10696,11 @@ Step_read/table.copy x y
 
 Step_read/table.init x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
@@ -10749,7 +10719,7 @@ Step_read/table.init x y
 
 Step_read/load numtype_u0 sz_sx_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If sz_sx_u1? is not defined, then:
   a. Let nt be numtype_u0.
@@ -10772,7 +10742,7 @@ Step_read/load numtype_u0 sz_sx_u1? ao
 
 Step_read/vload V128 vloadop_u0? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vloadop_u0? is not defined), then:
   a. Trap.
@@ -10810,9 +10780,9 @@ Step_read/vload V128 vloadop_u0? ao
 
 Step_read/vload_lane V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
@@ -10830,11 +10800,11 @@ Step_read/memory.size
 
 Step_read/memory.fill
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. If ((i + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
@@ -10851,11 +10821,11 @@ Step_read/memory.fill
 
 Step_read/memory.copy
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
@@ -10883,11 +10853,11 @@ Step_read/memory.copy
 
 Step_read/memory.init x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$data(z, x).BYTES|), then:
   a. Trap.
@@ -10920,7 +10890,7 @@ Step/table.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
@@ -10928,7 +10898,7 @@ Step/table.set x
 
 Step/table.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value ref from the stack.
@@ -10945,9 +10915,9 @@ Step/elem.drop x
 
 Step/store numtype_u0 sz_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type numtype_u2 is on the top of the stack.
 3. Pop the value (numtype_u2.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. Let nt be numtype_u2.
 7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and ((numtype_u0 is nt) and sz_u1? is not defined)), then:
@@ -10966,9 +10936,9 @@ Step/store numtype_u0 sz_u1? ao
 
 Step/vstore V128 ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
@@ -10977,9 +10947,9 @@ Step/vstore V128 ao
 
 Step/vstore_lane V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
   a. Trap.
@@ -10992,7 +10962,7 @@ Step/vstore_lane V128 N ao j
 
 Step/memory.grow
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Either:
   a. Let mi be $growmemory($mem(z, 0), n).
@@ -14521,7 +14491,7 @@ watsup 0.4 generator
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -14546,7 +14516,7 @@ watsup 0.4 generator
 .....................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -14631,7 +14601,7 @@ watsup 0.4 generator
 .........................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -14648,7 +14618,7 @@ watsup 0.4 generator
 ........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -14808,11 +14778,9 @@ watsup 0.4 generator
 .........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -14827,13 +14795,11 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -14850,11 +14816,9 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}(c_1)}`.
 
@@ -14865,13 +14829,11 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -14884,11 +14846,9 @@ watsup 0.4 generator
 ............................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
+#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -14903,7 +14863,7 @@ watsup 0.4 generator
 .........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -15000,7 +14960,7 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -15055,7 +15015,7 @@ watsup 0.4 generator
 ..........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15070,11 +15030,11 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15089,15 +15049,15 @@ watsup 0.4 generator
 ............................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15112,7 +15072,7 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15125,7 +15085,7 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15142,11 +15102,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15163,7 +15123,7 @@ watsup 0.4 generator
 ...............................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -15182,11 +15142,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15199,11 +15159,11 @@ watsup 0.4 generator
 ................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15218,7 +15178,7 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -15233,11 +15193,11 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15258,11 +15218,11 @@ watsup 0.4 generator
 ....................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15296,7 +15256,7 @@ watsup 0.4 generator
 .........................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15335,7 +15295,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15348,7 +15308,7 @@ watsup 0.4 generator
 ...............................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15361,11 +15321,11 @@ watsup 0.4 generator
 ................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15378,11 +15338,11 @@ watsup 0.4 generator
 ...................................................................................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -15403,7 +15363,7 @@ watsup 0.4 generator
 ............................................................................................................................................................................................................................................................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16091,7 +16051,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16116,11 +16076,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16143,11 +16103,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16178,7 +16138,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16238,7 +16198,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16246,7 +16206,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16301,11 +16261,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
@@ -16313,7 +16273,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
@@ -16430,15 +16390,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16495,15 +16455,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16594,7 +16554,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16622,7 +16582,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16630,7 +16590,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16665,15 +16625,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -16730,15 +16690,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -16777,7 +16737,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16824,7 +16784,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16901,11 +16861,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16943,7 +16903,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16951,7 +16911,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16986,15 +16946,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
@@ -17051,15 +17011,15 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -17216,7 +17176,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17281,7 +17241,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17298,7 +17258,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17334,11 +17294,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17381,11 +17341,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17404,11 +17364,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17435,7 +17395,7 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -23655,7 +23615,7 @@ Step_pure/drop
 3. Do nothing.
 
 Step_pure/select t*?
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value val_2 from the stack.
@@ -23667,7 +23627,7 @@ Step_pure/select t*?
   a. Push the value val_2 to the stack.
 
 Step_pure/if bt instr_1* instr_2*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. If (c is not 0), then:
   a. Execute the instruction (BLOCK bt instr_1*).
@@ -23708,7 +23668,7 @@ Step_pure/br l
   e. Execute the instruction (BR l).
 
 Step_pure/br_if l
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST c) from the stack.
 3. If (c is not 0), then:
   a. Execute the instruction (BR l).
@@ -23716,7 +23676,7 @@ Step_pure/br_if l
   a. Do nothing.
 
 Step_pure/br_table l* l'
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST i) from the stack.
 3. If (i < |l*|), then:
   a. Execute the instruction (BR l*[i]).
@@ -23791,52 +23751,47 @@ Step_pure/handler
 4. Push the values val* to the stack.
 
 Step_pure/unop nt unop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_1) from the stack.
+3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
-5. Let c be an element of $unop_(nt, unop, c_1).
-6. Push the value (nt.CONST c) to the stack.
+4. Let c be an element of $unop_(nt, unop, c_1).
+5. Push the value (nt.CONST c) to the stack.
 
 Step_pure/binop nt binop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+4. Pop the value (numtype_0.CONST c_1) from the stack.
+5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-7. Let c be an element of $binop_(nt, binop, c_1, c_2).
-8. Push the value (nt.CONST c) to the stack.
+6. Let c be an element of $binop_(nt, binop, c_1, c_2).
+7. Push the value (nt.CONST c) to the stack.
 
 Step_pure/testop nt testop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Let c be $testop_(nt, testop, c_1).
-5. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_1) from the stack.
+3. Let c be $testop_(nt, testop, c_1).
+4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. Let c be $relop_(nt, relop, c_1, c_2).
-7. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop the value (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+4. Pop the value (numtype_0.CONST c_1) from the stack.
+5. Let c be $relop_(nt, relop, c_1, c_2).
+6. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt_1).
-4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
+2. Pop the value (nt_1.CONST c_1) from the stack.
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-6. Push the value (nt_2.CONST c) to the stack.
+4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+5. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.i31
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST i) from the stack.
 3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
 
@@ -23882,7 +23837,7 @@ Step_pure/i31.get sx
   b. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
 
 Step_pure/array.new x
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value val from the stack.
@@ -23908,40 +23863,40 @@ Step_pure/any.convert_extern
   b. Push the value addrref to the stack.
 
 Step_pure/vvunop V128 vvunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
 4. Let c be an element of $vvunop_(V128, vvunop, c_1).
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvbinop V128 vvbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
 6. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvternop V128 vvternop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 6. Pop the value (V128.CONST c_1) from the stack.
 7. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
 8. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
 9. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvtestop V128 ANY_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $ine_($vsize(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vunop sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
   a. Trap.
@@ -23949,9 +23904,9 @@ Step_pure/vunop sh vunop
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbinop sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
@@ -23959,7 +23914,7 @@ Step_pure/vbinop sh vbinop
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vtestop (Jnn X M) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X M), c).
 4. If (ci_1 is not 0)*, then:
@@ -23968,33 +23923,33 @@ Step_pure/vtestop (Jnn X M) ALL_TRUE
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/vrelop sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshiftop (Jnn X M) vshiftop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Jnn X M), c_1).
 6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbitmask (Jnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X M), c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
 Step_pure/vswizzle (Pnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
 6. Let ci* be $lanes_((Pnn X M), c_2).
@@ -24004,9 +23959,9 @@ Step_pure/vswizzle (Pnn X M)
 10. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshuffle (Pnn X M) i*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<M).
 6. Let c'* be $lanes_((Pnn X M), c_1) :: $lanes_((Pnn X M), c_2).
@@ -24022,7 +23977,7 @@ Step_pure/vsplat (Lnn X M)
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextract_lane (lanetype_u0 X M) sx_u1? i
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
@@ -24041,29 +23996,29 @@ Step_pure/vreplace_lane (Lnn X M) i
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
 6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_2 sh_1 vextunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextbinop sh_2 sh_1 vextbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
@@ -24073,7 +24028,7 @@ Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
 10. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zero___u13?
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half___u4? is not defined and zero___u13? is not defined), then:
   a. Let Lnn_1 be lanetype_u6.
@@ -24405,7 +24360,7 @@ Step_read/struct.get sx? x i
 
 Step_read/array.new_default x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
@@ -24417,9 +24372,9 @@ Step_read/array.new_default x
 
 Step_read/array.new_elem x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
@@ -24430,9 +24385,9 @@ Step_read/array.new_elem x y
 
 Step_read/array.new_data x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
@@ -24447,7 +24402,7 @@ Step_read/array.new_data x y
 
 Step_read/array.get sx? x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value instr_u0 from the stack.
@@ -24476,11 +24431,11 @@ Step_read/array.len
 
 Step_read/array.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value instr_u0 from the stack.
@@ -24507,13 +24462,13 @@ Step_read/array.fill x
 
 Step_read/array.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
 7. Pop the value instr_u0 from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
 10. Assert: Due to validation, a value is on the top of the stack.
 11. Pop the value instr_u1 from the stack.
@@ -24570,11 +24525,11 @@ Step_read/array.copy x_1 x_2
 
 Step_read/array.init_elem x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value instr_u0 from the stack.
@@ -24602,11 +24557,11 @@ Step_read/array.init_elem x y
 
 Step_read/array.init_data x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value instr_u0 from the stack.
@@ -24650,7 +24605,7 @@ Step_read/global.get x
 
 Step_read/table.get x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
@@ -24663,11 +24618,11 @@ Step_read/table.size x
 
 Step_read/table.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
@@ -24684,11 +24639,11 @@ Step_read/table.fill x
 
 Step_read/table.copy x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$table(z, y).REFS|), then:
   a. Trap.
@@ -24716,11 +24671,11 @@ Step_read/table.copy x y
 
 Step_read/table.init x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
@@ -24739,7 +24694,7 @@ Step_read/table.init x y
 
 Step_read/load numtype_u0 loadop__u2? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If loadop__u2? is not defined, then:
   a. Let nt be numtype_u0.
@@ -24762,7 +24717,7 @@ Step_read/load numtype_u0 loadop__u2? x ao
 
 Step_read/vload V128 vloadop__u0? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vloadop__u0? is not defined), then:
   a. Trap.
@@ -24800,9 +24755,9 @@ Step_read/vload V128 vloadop__u0? x ao
 
 Step_read/vload_lane V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -24820,11 +24775,11 @@ Step_read/memory.size x
 
 Step_read/memory.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. If ((i + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -24841,11 +24796,11 @@ Step_read/memory.fill x
 
 Step_read/memory.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i_1) from the stack.
 8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
   a. Trap.
@@ -24873,11 +24828,11 @@ Step_read/memory.copy x_1 x_2
 
 Step_read/memory.init x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST j) from the stack.
 8. If ((i + n) > |$data(z, y).BYTES|), then:
   a. Trap.
@@ -24953,7 +24908,7 @@ Step/array.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
 7. Pop the value instr_u0 from the stack.
@@ -24984,7 +24939,7 @@ Step/table.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
@@ -24992,7 +24947,7 @@ Step/table.set x
 
 Step/table.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value ref from the stack.
@@ -25009,9 +24964,9 @@ Step/elem.drop x
 
 Step/store nt sz_u0? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type numtype_u1 is on the top of the stack.
 3. Pop the value (numtype_u1.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (numtype_u1 is nt), then:
   a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u0? is not defined), then:
@@ -25032,9 +24987,9 @@ Step/store nt sz_u0? x ao
 
 Step/vstore V128 x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -25043,9 +24998,9 @@ Step/vstore V128 x ao
 
 Step/vstore_lane V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -25058,7 +25013,7 @@ Step/vstore_lane V128 N x ao j
 
 Step/memory.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Either:
   a. Let mi be $growmem($mem(z, x), n).
