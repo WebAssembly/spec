@@ -688,16 +688,11 @@ let al_to_pack_shape = function
   | [NumV z1; NumV z2] when z1 = thirtytwo && z2 = two -> Pack.Pack32x2
   | vs -> error_value "pack shape" (TupV vs)
 
-let pack_shape_to_pack_size = function
-  | Pack.Pack8x8 -> Pack.Pack8
-  | Pack.Pack16x4 -> Pack.Pack16
-  | Pack.Pack32x2 -> Pack.Pack32
-
 let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
   | CaseV ("SHAPE", [ v1; v2; ext ] ) ->
     let pack_shape = al_to_pack_shape [v1; v2] in
     (
-      pack_shape_to_pack_size pack_shape,
+      Pack.Pack64,
       Pack.ExtLane (pack_shape, al_to_extension ext)
     )
   | CaseV ("SPLAT", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtSplat
@@ -705,7 +700,7 @@ let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
   | v -> error_value "vloadop'" v
 
 let al_to_vloadop: value list -> idx * vec_loadop = function
-  | _v128 :: vl ->
+  | CaseV ("V128", []) :: vl ->
     let split vl =
       match vl with
       | memop :: idx :: vl' -> idx, memop :: vl'
@@ -715,13 +710,13 @@ let al_to_vloadop: value list -> idx * vec_loadop = function
   | vs -> error_value "vloadop" (TupV vs)
 
 let al_to_vstoreop = function
-  | _v128 :: vl ->
+  | CaseV ("V128", []) :: vl ->
     let split = Util.Lib.List.split_hd in
     al_to_vmemop (fun _ -> ()) split vl
   | vs -> error_value "vstoreop" (TupV vs)
 
 let al_to_vlaneop: value list -> idx * vec_laneop * int = function
-  | _v128 :: vl ->
+  | CaseV ("V128", []) :: vl ->
     let h, t = Util.Lib.List.split_last vl in
     let split vl =
       match vl with
@@ -1816,13 +1811,14 @@ let al_of_vloadop idx vloadop =
   let vmemop = match vloadop.pack with
   | Option.Some (pack_size, vextension) -> (
     match vextension with
-    | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", al_of_pack_shape pack_shape @ [al_of_extension extension])
+    | Pack.ExtLane (pack_shape, extension) ->
+      CaseV ("SHAPE", al_of_pack_shape pack_shape @ [al_of_extension extension])
     | Pack.ExtSplat -> CaseV ("SPLAT", [ al_of_pack_size pack_size ])
     | Pack.ExtZero -> CaseV ("ZERO", [ al_of_pack_size pack_size ])
   ) |> Option.some |> optV
   | None -> OptV None in
 
-  [ al_of_vec_type V128T; vmemop ] @ al_of_memidx idx @ [ StrV str ]
+  al_of_vec_type V128T :: vmemop :: al_of_memidx idx @ [ StrV str ]
 
 let al_of_vstoreop idx vstoreop =
   let str =
@@ -1831,7 +1827,7 @@ let al_of_vstoreop idx vstoreop =
     |> Record.add "OFFSET" (al_of_int32 vstoreop.offset)
   in
 
-  [ al_of_vec_type V128T ] @ al_of_memidx idx @ [ StrV str; ]
+  al_of_vec_type V128T :: al_of_memidx idx @ [ StrV str ]
 
 let al_of_vlaneop idx vlaneop laneidx =
   let pack_size = vlaneop.pack in
