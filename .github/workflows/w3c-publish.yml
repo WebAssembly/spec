@@ -10,7 +10,13 @@ on:
     inputs:
       w3c-status:
         required: true
-        type: string
+        type: choice
+        description: W3C Document Status
+        options:
+          - ED
+          - WD
+          - CRD
+          - CR
 
 jobs:
   publish-to-w3c-TR:
