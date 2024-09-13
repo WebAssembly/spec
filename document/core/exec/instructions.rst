@@ -3145,9 +3145,9 @@ The following auxiliary rules define the semantics of entering and exiting |TRYT
 Entering :math:`\instr^\ast` with label :math:`L` and exception handler :math:`H`
 .................................................................................
 
-1. Push :math:`L` to the stack.
+1. Push :math:`H` to the stack.
 
-2. Push :math:`H` onto the stack.
+2. Push :math:`L` onto the stack.
 
 3. Jump to the start of the instruction sequence :math:`\instr^\ast`.
 
