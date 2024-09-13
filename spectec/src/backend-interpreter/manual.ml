@@ -69,16 +69,14 @@ let module_ok = function
         _start_opt;
         ListV exports;
       ]
-    ) as v
-  ] as vs ->
+    ) as module_
+  ] ->
 
-    (* TODO: module validation
     module_
     |> Construct.al_to_module
     |> Reference_interpreter.Valid.check_module;
-    *)
 
-    let m = Construct.al_to_module v in
+    let m = Construct.al_to_module module_ in
     let tys = Reference_interpreter.Ast.def_types_of m in
 
 
@@ -94,11 +92,11 @@ let module_ok = function
         |> Construct.al_to_extern_type
         |> Types.subst_extern_type s
         |> Construct.al_of_extern_type
-      | _ -> Numerics.error_values "$Module_ok" vs
+      | _ -> Numerics.error_values "$Module_ok" [ module_ ]
     in
     let get_externidx = function
       | CaseV ("EXPORT", [ _name; externidx ]) -> externidx
-      | _ -> Numerics.error_values "$Module_ok" vs
+      | _ -> Numerics.error_values "$Module_ok" [ module_ ]
     in
 
     let externtypes =
