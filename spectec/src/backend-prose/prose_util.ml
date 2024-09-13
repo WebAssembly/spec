@@ -18,7 +18,7 @@ let rec extract_desc typ = match typ.it with
       | _ -> None)
     with
     | Some desc -> desc
-    | None -> name)
+    | None -> "")
   | _ -> ""
 
 let rec alternate xs ys =

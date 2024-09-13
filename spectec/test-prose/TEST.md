@@ -231,7 +231,7 @@ watsup 0.4 generator
 
   * Either:
 
-    * The cvtop :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
+    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
     * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
@@ -2911,7 +2911,7 @@ Instr_ok/relop
 Instr_ok/cvtop
 - the instruction (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - the cvtop cvtop_u0 is REINTERPRET.
+    - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or: cvtop_u0 is cvtop.
 
@@ -4437,7 +4437,7 @@ watsup 0.4 generator
 
   * Either:
 
-    * The cvtop :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
+    * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
     * :math:`{|{\mathit{nt}}_1|}` is :math:`{|{\mathit{nt}}_2|}`.
 
@@ -4736,7 +4736,7 @@ watsup 0.4 generator
 
   * Either:
 
-    * The vloadop :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
+    * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
 
     * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
@@ -4951,7 +4951,7 @@ watsup 0.4 generator
   * :math:`{\mathit{mt}}` is valid.
 
 
-* The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the reference type :math:`{\mathit{rt}}` if:
+* :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the reference type :math:`{\mathit{rt}}` if:
 
 
   * Either:
@@ -4979,10 +4979,10 @@ watsup 0.4 generator
 
     * :math:`{\mathit{expr}}` is const.
 
-  * The elemmode :math:`{\mathit{elemmode}}` is valid with :math:`{\mathit{rt}}`.
+  * :math:`{\mathit{elemmode}}` is valid with :math:`{\mathit{rt}}`.
 
 
-* The datamode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
+* :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
   * Either:
@@ -5003,7 +5003,7 @@ watsup 0.4 generator
 * The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid if:
 
 
-  * The datamode :math:`{\mathit{datamode}}` is valid.
+  * :math:`{\mathit{datamode}}` is valid.
 
 
 * The start function :math:`(\mathsf{start}~x)` is valid if:
@@ -9736,7 +9736,7 @@ Instr_ok/relop
 Instr_ok/cvtop
 - the instruction (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - the cvtop cvtop_u0 is REINTERPRET.
+    - cvtop_u0 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or: cvtop_u0 is cvtop.
 
@@ -9940,7 +9940,7 @@ Instr_ok/vload
   - the memory type C.MEMS[0] is defined in the context.
   - C.MEMS[0] is mt.
   - Either:
-    - the vloadop vloadop_u0 is (SHAPE M X N sx).
+    - vloadop_u0 is (SHAPE M X N sx).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
   - Or:
     - vloadop_u0 is (SPLAT n).
@@ -10072,7 +10072,7 @@ Mem_ok
   - mt is valid.
 
 Elemmode_ok
-- the elemmode elemmode_u0 is valid with the reference type rt if:
+- elemmode_u0 is valid with the reference type rt if:
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - the table type C.TABLES[x] is defined in the context.
@@ -10087,10 +10087,10 @@ Elem_ok
   - For all expr in expr*,
     - the expression expr is valid with rt.
     - expr is constant.
-  - the elemmode elemmode is valid with rt.
+  - elemmode is valid with rt.
 
 Datamode_ok
-- the datamode datamode_u0 is valid if:
+- datamode_u0 is valid if:
   - Either:
     - datamode_u0 is (ACTIVE 0 expr).
     - the memory type C.MEMS[0] is defined in the context.
@@ -10101,7 +10101,7 @@ Datamode_ok
 
 Data_ok
 - the memory segment (DATA b* datamode) is valid if:
-  - the datamode datamode is valid.
+  - datamode is valid.
 
 Start_ok
 - the start function (START x) is valid if:
@@ -12708,7 +12708,7 @@ watsup 0.4 generator
     * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
 
-* The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit{comptype}})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x_0})` if:
+* The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit{comptype}})` is valid with :math:`({\mathsf{ok}}{x_0})` if:
 
 
   * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
@@ -12728,7 +12728,7 @@ watsup 0.4 generator
   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
-* The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
+* The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
@@ -12746,7 +12746,7 @@ watsup 0.4 generator
   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
-* The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, i)})` if:
+* The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
   * Either: the sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
@@ -12757,10 +12757,10 @@ watsup 0.4 generator
 
     * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x, i)})`.
 
-    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
-* The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})` if:
+* The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})` is valid with :math:`({\mathsf{ok}}{x})` if:
 
 
   * Either: the sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`.
@@ -12771,18 +12771,18 @@ watsup 0.4 generator
 
     * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{x})`.
 
-    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidx :math:`({\mathsf{ok}}{x + 1})`.
+    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x + 1})`.
   * Or:
 
     * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`{{\mathit{subtype}}^\ast}`.
 
-    * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with the oktypeidxnat :math:`({\mathsf{ok}}{(x, 0)})`.
+    * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
 * The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
-  * The recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
+  * The recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{x})`.
 
   * :math:`{\mathit{rectype}}` is :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
@@ -13788,7 +13788,7 @@ watsup 0.4 generator
 
     * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`.
 
-    * The loadop_(numtype_u1) :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is :math:`\epsilon`.
 
     * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is :math:`{\mathit{nt}}`.
 
@@ -13842,7 +13842,7 @@ watsup 0.4 generator
 
   * Either:
 
-    * The vloadop_(V128_vectype) :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
+    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is :math:`\epsilon`.
 
     * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -14092,7 +14092,7 @@ watsup 0.4 generator
 
   * :math:`{{\mathit{dt}}^\ast}` is :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with the oktypeidx :math:`({\mathsf{ok}}{x})`.
+  * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{x})`.
 
 
 * The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~t)` if:
@@ -14163,7 +14163,7 @@ watsup 0.4 generator
   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
-* The elemmode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the element type :math:`{\mathit{rt}}` if:
+* The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the element type :math:`{\mathit{rt}}` if:
 
 
   * Either:
@@ -14195,10 +14195,10 @@ watsup 0.4 generator
 
     * :math:`{\mathit{expr}}` is const.
 
-  * The elemmode :math:`{\mathit{elemmode}}` is valid with :math:`{\mathit{elemtype}}`.
+  * The elem mode :math:`{\mathit{elemmode}}` is valid with :math:`{\mathit{elemtype}}`.
 
 
-* The datamode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the data type :math:`\mathsf{ok}` if:
+* The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with the data type :math:`\mathsf{ok}` if:
 
 
   * Either:
@@ -14219,7 +14219,7 @@ watsup 0.4 generator
 * The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
 
 
-  * The datamode :math:`{\mathit{datamode}}` is valid with :math:`\mathsf{ok}`.
+  * The data mode :math:`{\mathit{datamode}}` is valid with :math:`\mathsf{ok}`.
 
 
 * The start function :math:`(\mathsf{start}~x)` is valid if:
@@ -22511,7 +22511,7 @@ Comptype_sub
     - the function type ft_1 matches the function type ft_2.
 
 Subtype_ok
-- the sub type (SUB (FINAL ()? ?) (_IDX x)* comptype) is valid with the oktypeidx (OK x_0) if:
+- the sub type (SUB (FINAL ()? ?) (_IDX x)* comptype) is valid with (OK x_0) if:
   - |x*| is less than or equal to 1.
   - For all x in x*, the index x is less than x_0.
   - |x*| is |comptype'*|.
@@ -22522,7 +22522,7 @@ Subtype_ok
   - For all comptype' in comptype'*, comptype matches the composite type comptype'.
 
 Subtype_ok2
-- the sub type (SUB (FINAL ()? ?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if:
+- the sub type (SUB (FINAL ()? ?) typeuse* compttype) is valid with (OK x i) if:
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*, $before(typeuse, x, i) is true.
   - |typeuse*| is |comptype'*|.
@@ -22532,27 +22532,27 @@ Subtype_ok2
   - For all comptype' in comptype'*, comptype matches the composite type comptype'.
 
 Rectype_ok2
-- the recursive type (REC subtype_u0*) is valid with the oktypeidxnat (OK x i) if:
+- the recursive type (REC subtype_u0*) is valid with (OK x i) if:
   - Either: the sub type sequence subtype_u0* is [].
   - Or:
     - subtype_u0* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x i).
-    - the recursive type (REC subtype*) is valid with the oktypeidxnat (OK (x + 1) (i + 1)).
+    - the recursive type (REC subtype*) is valid with (OK (x + 1) (i + 1)).
 
 Rectype_ok
-- the recursive type (REC subtype_u0*) is valid with the oktypeidx (OK x) if:
+- the recursive type (REC subtype_u0*) is valid with (OK x) if:
   - Either: the sub type sequence subtype_u0* is [].
   - Or:
     - subtype_u0* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x).
-    - the recursive type (REC subtype*) is valid with the oktypeidx (OK (x + 1)).
+    - the recursive type (REC subtype*) is valid with (OK (x + 1)).
   - Or:
     - subtype_u0* is subtype*.
-    - Under the context C with .RECS prepended by subtype*, (REC subtype*) is valid with the oktypeidxnat (OK x 0).
+    - Under the context C with .RECS prepended by subtype*, (REC subtype*) is valid with (OK x 0).
 
 Deftype_ok
 - the defined type (DEF rectype i) is valid if:
-  - the recursive type rectype is valid with the oktypeidx (OK x).
+  - the recursive type rectype is valid with (OK x).
   - rectype is (REC subtype^n).
   - i is less than n.
 
@@ -23185,7 +23185,7 @@ Instr_ok/load
   - C.MEMS[x] is mt.
   - Either:
     - the number type numtype_u0 is nt.
-    - the loadop_(numtype_u1) loadop__u2? is ?().
+    - loadop__u2? is ?().
     - the value type valtype_u3 is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
@@ -23214,7 +23214,7 @@ Instr_ok/vload
   - the memory type C.MEMS[x] is defined in the context.
   - C.MEMS[x] is mt.
   - Either:
-    - the vloadop_(V128_vectype) vloadop__u0? is ?().
+    - vloadop__u0? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
   - Or:
     - vloadop__u0? is ?((SHAPE M X N sx)).
@@ -23365,7 +23365,7 @@ Type_ok
 - the type definition (TYPE rectype) is valid with the defined type sequence dt* if:
   - |C.TYPES| is x.
   - dt* is $rolldt(x, rectype).
-  - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with the oktypeidx (OK x).
+  - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with (OK x).
 
 Local_ok
 - the local (LOCAL t) is valid with the local type (init_u0 t) if:
@@ -23408,7 +23408,7 @@ Tag_ok
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype)
 
 Elemmode_ok
-- the elemmode elemmode_u0 is valid with the element type rt if:
+- the elem mode elemmode_u0 is valid with the element type rt if:
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - the table type C.TABLES[x] is defined in the context.
@@ -23425,10 +23425,10 @@ Elem_ok
   - For all expr in expr*,
     - the expression expr is valid with elemtype.
     - expr is constant.
-  - the elemmode elemmode is valid with elemtype.
+  - the elem mode elemmode is valid with elemtype.
 
 Datamode_ok
-- the datamode datamode_u0 is valid with the data type OK if:
+- the data mode datamode_u0 is valid with the data type OK if:
   - Either:
     - datamode_u0 is (ACTIVE x expr).
     - the memory type C.MEMS[x] is defined in the context.
@@ -23439,7 +23439,7 @@ Datamode_ok
 
 Data_ok
 - the memory segment (DATA b* datamode) is valid with the data type OK if:
-  - the datamode datamode is valid with OK.
+  - the data mode datamode is valid with OK.
 
 Start_ok
 - the start function (START x) is valid if:
