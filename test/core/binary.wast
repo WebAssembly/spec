@@ -258,27 +258,47 @@
   "\0a\01\00"  ;; Code section with 0 functions
 )
 
-;; Fewer passive segments than datacount
+;; Fewer passive segments than data count
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\0c\01\03"                   ;; Datacount section with value "3"
-    "\0b\05\02"                   ;; Data section with two entries
-    "\01\00"                      ;; Passive data section
-    "\01\00")                     ;; Passive data section
-  "data count and data section have inconsistent lengths")
+    "\0c\01\03"                ;; Data count section with value 3
+    "\0b\05\02"                ;; Data section with two entries
+    "\01\00"                   ;; Passive data section
+    "\01\00"                   ;; Passive data section
+  )
+  "data count and data section have inconsistent lengths"
+)
 
-;; More passive segments than datacount
+;; More passive segments than data count
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\0c\01\01"                   ;; Datacount section with value "1"
-    "\0b\05\02"                   ;; Data section with two entries
-    "\01\00"                      ;; Passive data section
-    "\01\00")                     ;; Passive data section
-  "data count and data section have inconsistent lengths")
+    "\0c\01\01"                ;; Data count section with value 1
+    "\0b\05\02"                ;; Data section with two entries
+    "\01\00"                   ;; Passive data section
+    "\01\00"                   ;; Passive data section
+  )
+  "data count and data section have inconsistent lengths"
+)
 
-;; memory.init requires a datacount section
+;; Non-zero data count section without data section
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\05\03\01\00\01"          ;; Memory section with one entry
+    "\0c\01\01"                ;; Data count section with value 1
+  )
+  "data count and data section have inconsistent lengths"
+)
+
+;; Zero data count section without data section
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\0c\01\00"                  ;; Data count section with value 0
+)
+
+;; memory.init requires a data count section
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -298,9 +318,10 @@
 
     "\0b\03\01\01\00"          ;; Data section
   )                            ;; end
-  "data count section required")
+  "data count section required"
+)
 
-;; data.drop requires a datacount section
+;; data.drop requires a data count section
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -317,7 +338,8 @@
 
     "\0b\03\01\01\00"          ;; Data section
   )                            ;; end
-  "data count section required")
+  "data count section required"
+)
 
 ;; passive element segment containing illegal opcode
 (assert_malformed
@@ -342,8 +364,10 @@
 
     ;; function 0
     "\02\00"
-    "\0b")                     ;; end
-  "illegal opcode")
+    "\0b"                      ;; end
+  )
+  "illegal opcode"
+)
 
 ;; passive element segment containing type other than funcref
 (assert_malformed
@@ -368,8 +392,10 @@
 
     ;; function 0
     "\02\00"
-    "\0b")                     ;; end
-  "malformed reference type")
+    "\0b"                      ;; end
+  )
+  "malformed reference type"
+)
 
 ;; passive element segment containing opcode ref.func
 (module binary
@@ -393,7 +419,8 @@
 
   ;; function 0
   "\02\00"
-  "\0b")                     ;; end
+  "\0b"                      ;; end
+)
 
 ;; passive element segment containing opcode ref.null
 (module binary
@@ -417,7 +444,8 @@
 
   ;; function 0
   "\02\00"
-  "\0b")                     ;; end
+  "\0b"                      ;; end
+)
 
 
 ;; Type count can be zero
@@ -982,8 +1010,8 @@
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
-    "\0c\01\01"                   ;; Datacount section with value "1"
-    "\0c\01\01"                   ;; Datacount section with value "1"
+    "\0c\01\01"                   ;; Data count section with value "1"
+    "\0c\01\01"                   ;; Data count section with value "1"
   )
   "unexpected content after last section"
 )
@@ -1154,18 +1182,18 @@
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
-      "\0c\01\01"                 ;; Datacount section with value "1"
+      "\0c\01\01"                 ;; Data count section with value "1"
       "\09\01\00"                 ;; Element section with zero entries
   )
   "unexpected content after last section"
 )
 
-;; Datacount section out of order
+;; Data count section out of order
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
       "\0a\01\00"                 ;; Code section with zero entries
-      "\0c\01\01"                 ;; Datacount section with value "1"
+      "\0c\01\01"                 ;; Data count section with value "1"
   )
   "unexpected content after last section"
 )
