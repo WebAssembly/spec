@@ -4076,7 +4076,7 @@ Control Instructions
 
    a. Trap.
 
-4. Assert: due to :ref:`validation <valid-throw_ref>`, :math:`\reff` is an :ref:`exception reference <syntax-ref.exn-addr>`.
+4. Assert: due to :ref:`validation <valid-throw_ref>`, :math:`\reff` is an :ref:`exception reference <syntax-ref.exn>`.
 
 5. Let :math:`\REFEXNADDR~\X{ea}` be :math:`\reff`.
 
