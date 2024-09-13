@@ -71,6 +71,8 @@ jobs:
           path: document/web-api/index.html
 
   build-spec-versions:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout repo
         uses: actions/checkout@v2
       - name: Upload artifacts
