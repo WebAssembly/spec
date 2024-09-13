@@ -85,7 +85,7 @@ jobs:
       - name: Build main spec
         run: cd document/metadata/code && make main
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: code-metadata-rendered
           path: document/metadata/code/_build/html
@@ -148,7 +148,7 @@ jobs:
           name: web-api-rendered
           path: _output/web-api
       - name: Download code metadata spec artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: code-metadata-rendered
           path: _output/metadata/code
