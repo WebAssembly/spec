@@ -69,72 +69,76 @@ let module_ok = function
         _start_opt;
         ListV exports;
       ]
-    ) as module_
+    ) as m
   ] ->
+    (try
+      let module_ = Construct.al_to_module m in
+      Reference_interpreter.Valid.check_module module_;
 
-    module_
-    |> Construct.al_to_module
-    |> Reference_interpreter.Valid.check_module;
-
-    let m = Construct.al_to_module module_ in
-    let tys = Reference_interpreter.Ast.def_types_of m in
+      let tys = Reference_interpreter.Ast.def_types_of module_ in
 
 
-    let get_clos_externtype = function
-      | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
-        let s = function
-          | Types.StatX x when Int32.to_int x < List.length tys ->
-            let dt = List.nth tys (Int32.to_int x) in
-            Types.DefHT dt
-          | x -> Types.VarHT x
-        in
-        externtype
-        |> Construct.al_to_extern_type
-        |> Types.subst_extern_type s
-        |> Construct.al_of_extern_type
-      | _ -> Numerics.error_values "$Module_ok" [ module_ ]
-    in
-    let get_externidx = function
-      | CaseV ("EXPORT", [ _name; externidx ]) -> externidx
-      | _ -> Numerics.error_values "$Module_ok" [ module_ ]
-    in
+      let get_clos_externtype = function
+        | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
+          let s = function
+            | Types.StatX x when Int32.to_int x < List.length tys ->
+              let dt = List.nth tys (Int32.to_int x) in
+              Types.DefHT dt
+            | x -> Types.VarHT x
+          in
+          externtype
+          |> Construct.al_to_extern_type
+          |> Types.subst_extern_type s
+          |> Construct.al_of_extern_type
+        | _ -> Numerics.error_values "$Module_ok" [ m ]
+      in
+      let get_externidx = function
+        | CaseV ("EXPORT", [ _name; externidx ]) -> externidx
+        | _ -> Numerics.error_values "$Module_ok" [ m ]
+      in
 
-    let externtypes =
-      !imports
-      |> Array.map get_clos_externtype
-      |> listV
-    in
-    let externidxs =
-      !exports
-      |> Array.map get_externidx
-      |> listV
-    in
+      let externtypes =
+        !imports
+        |> Array.map get_clos_externtype
+        |> listV
+      in
+      let externidxs =
+        !exports
+        |> Array.map get_externidx
+        |> listV
+      in
 
-    CaseV ("->", [ externtypes; externidxs ])
+      CaseV ("->", [ externtypes; externidxs ])
+    with _ -> raise Exception.Invalid
+    )
+
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let externaddr_type = function
   | [ CaseV (name, [ NumV z ]); t ] ->
-    let addr = Z.to_int z in
-    name^"S"
-    |> Store.access
-    |> unwrap_listv_to_array
-    |> fun arr -> Array.get arr addr
-    |> strv_access "TYPE"
-    |> fun type_ -> CaseV (name, [type_])
-    |> Construct.al_to_extern_type
-    |> fun t' -> Match.match_extern_type [] t' (Construct.al_to_extern_type t)
-    |> boolV
+    (try
+      let addr = Z.to_int z in
+      let externaddr_type =
+        name^"S"
+        |> Store.access
+        |> unwrap_listv_to_array
+        |> fun arr -> Array.get arr addr
+        |> strv_access "TYPE"
+        |> fun type_ -> CaseV (name, [type_])
+        |> Construct.al_to_extern_type
+      in
+      let extern_type = Construct.al_to_extern_type t in
+      boolV (Match.match_extern_type [] externaddr_type extern_type)
+    with _ -> raise Exception.Invalid)
   | vs -> Numerics.error_values "$Externaddr_type" vs
 
 let val_type = function
   | [ v; t ] ->
-    v
-    |> Construct.al_to_value
-    |> Value.type_of_value
-    |> fun t' ->
-      Match.match_val_type [] t' (Construct.al_to_val_type t)
-    |> boolV
+    let value = Construct.al_to_value v in
+    let val_type = Construct.al_to_val_type t in
+    (try
+      boolV (Match.match_val_type [] (Value.type_of_value value) val_type)
+    with _ -> raise Exception.Invalid)
   | vs -> Numerics.error_values "$Val_type" vs
 
 let manual_map =

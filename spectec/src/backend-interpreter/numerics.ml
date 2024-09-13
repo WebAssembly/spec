@@ -7,7 +7,7 @@ open Al_util
 
 (* Errors *)
 
-let error fname msg = raise (Exception.InvalidArg (fname ^ ": " ^ msg))
+let error fname msg = raise (Exception.ArgMismatch (fname ^ ": " ^ msg))
 
 let error_typ_value fname typ v =
   Printf.sprintf "invalid %s: %s" typ (Print.string_of_value v)
@@ -1248,7 +1248,7 @@ let call_numerics name args =
   let fname = strip_suffix name in
   match List.find_opt (fun numerics -> numerics.name = fname) numerics_list with
   | Some numerics -> numerics.f args
-  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ name))
+  | None -> raise (Exception.UnknownFunc ("Unknown numerics: " ^ name))
 
 let mem name =
   let fname = strip_suffix name in

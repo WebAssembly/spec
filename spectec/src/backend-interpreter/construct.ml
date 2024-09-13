@@ -11,12 +11,12 @@ open Util
 
 (* Errors *)
 
-exception InvalidConversion of string
+exception WrongConversion of string
 
 let empty = ""
 
 let error category msg =
-  raise (InvalidConversion (Printf.sprintf "%s: invalid construction %s" category msg))
+  raise (WrongConversion (Printf.sprintf "%s: invalid construction %s" category msg))
 
 let error_value category v = error category ("`" ^ string_of_value v ^ "`")
 

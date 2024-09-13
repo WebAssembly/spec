@@ -155,7 +155,7 @@ let call name =
   let as_const ty = function
   | CaseV ("CONST", [ CaseV (ty', []) ; n ])
   | OptV (Some (CaseV ("CONST", [ CaseV (ty', []) ; n ]))) when ty = ty' -> n
-  | v -> raise (Exception.InvalidArg ("Not " ^ ty ^ ".CONST: " ^ string_of_value v)) in
+  | v -> raise (Exception.ArgMismatch ("Not " ^ ty ^ ".CONST: " ^ string_of_value v)) in
 
   match name with
   | "PRINT" -> print_endline "- print: ()"
@@ -191,4 +191,4 @@ let call name =
     let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     Printf.printf "- print_f64_f64: %s %s\n" f64 f64'
-  | name -> raise (Exception.InvalidFunc ("Invalid builtin function: " ^ name))
+  | name -> raise (Exception.UnknownFunc ("No builtin function: " ^ name))

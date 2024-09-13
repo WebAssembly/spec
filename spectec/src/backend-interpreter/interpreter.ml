@@ -25,9 +25,9 @@ let fail_path path msg =
 let try_with_error fname at stringifier f step =
   let prefix = if fname <> empty then "$" ^ fname ^ ": " else fname in
   try f step with
-  | Construct.InvalidConversion msg
-  | Exception.InvalidArg msg
-  | Exception.InvalidFunc msg
+  | Exception.WrongConversion msg
+  | Exception.ArgMismatch msg
+  | Exception.UnknownFunc msg
   | Exception.FreeVar msg
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
@@ -807,7 +807,7 @@ and call_func (name: string) (args: value list) : value option =
   else if Manual.mem name then
     Some (Manual.call_func name args)
   else
-    raise (Exception.InvalidFunc ("There is no function named: " ^ name))
+    raise (Exception.UnknownFunc ("There is no function named: " ^ name))
 
 
 (* Wasm interpreter entry *)
