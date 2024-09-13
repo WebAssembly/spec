@@ -151,7 +151,7 @@ and string_of_expr expr =
     sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
-  | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
+  | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
   | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ([[ atom ]], []) -> string_of_atom atom
@@ -178,6 +178,7 @@ and string_of_expr expr =
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelE -> "a label is now on the top of the stack"
   | TopFrameE -> "a frame is now on the top of the stack"
+  | TopHandlerE -> "a handler is now on the top of the stack"
   | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
   | TopValueE None -> "a value is on the top of the stack"
   | TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
@@ -217,6 +218,7 @@ and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
   | TypA typ -> string_of_typ typ
+  | DefA id -> "$" ^ id
 
 and string_of_args sep =
   let string_of_list stringifier sep = function
@@ -230,6 +232,17 @@ and string_of_args sep =
       ^ (if is_long then (sep ^ "..." ^ stringifier (List.hd (List.rev t))) else "")
   in
   string_of_list string_of_arg sep
+
+
+(* Iter exps *)
+
+and string_of_iterexp (iter, xes) =
+  let suffix = "{"
+    ^ String.concat ", " (List.map (fun (id, e) -> id ^ " <- " ^ string_of_expr e) xes)
+  ^ "}"
+  in
+  ignore suffix;
+  string_of_iter iter
 
 (* Instructions *)
 

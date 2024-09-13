@@ -1,6 +1,6 @@
 (library
   (name backend_interpreter)
-  (libraries reference_interpreter util str el il middlend il2al al)
+  (libraries reference_interpreter util il al)
   (modules
     interpreter
     numerics
@@ -9,5 +9,7 @@
     exception
     manual
     ds
-    builtin)
+    builtin
+    debugger
+    )
 )

@@ -595,11 +595,11 @@ $${rule-prose: Step_read/array.new_data}
 
 17. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft})`.
 
-18. For each consecutive subsequence :math:`{b'}^n` of :math:`b^\ast`:
+18. For each of the :math:`n` consecutive subsequences :math:`{b'}^z` of :math:`b^\ast`:
 
     a. Assert: due to :ref:`validation <valid-array.new_data>`, :math:`\bytes_{\X{ft}}` is defined.
 
-    b. Let :math:`c_i` be the constant for which :math:`\bytes_{\X{ft}}(c_i)` is :math:`{b'}^n`.
+    b. Let :math:`c_i` be the constant for which :math:`\bytes_{\X{ft}}(c_i)` is :math:`{b'}^z`.
 
     c. Push the value :math:`t.\CONST~c_i` to the stack.
 

@@ -68,6 +68,7 @@ let rec reduce_typ env t : typ =
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
     let id' = El.Convert.strip_var_suffix id in
+    if id'.it <> id.it && args = [] then reduce_typ env (El.Convert.typ_of_varid id') else
     (match reduce_typ_app env id args' t.at (Map.find id'.it env.typs) with
     | Some t' ->
 (* TODO(2, rossberg): reenable?

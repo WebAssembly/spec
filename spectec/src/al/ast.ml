@@ -7,6 +7,7 @@ type mixop = Il.Ast.mixop
 
 (* Types *)
 
+(* TODO: define AL type *)
 type typ = Il.Ast.typ
 
 (* Identifiers *)
@@ -36,6 +37,7 @@ and value =
   | TupV of value list                 (* tuple of values *)
   | FrameV of value option * value     (* TODO: desugar using CaseV? *)
   | LabelV of value * value            (* TODO: desugar using CaseV? *)
+  | FnameV of id                       (* name of the first order function *)
 
 type extend_dir =                      (* direction of extension *)
   | Front                              (* extend from the front *)
@@ -96,7 +98,7 @@ and expr' =
   | CaseE of mixop * expr list                    (* mixop `(` expr* `)` -- CaseE *)
   | CallE of id * arg list                        (* id `(` expr* `)` *)
   | InvCallE of id * int option list * arg list   (* id`_`int*`^-1(` expr* `)` *)
-  | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)
+  | IterE of expr * iterexp                       (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
   | ArityE of expr                                (* "the arity of expr" *)
@@ -117,6 +119,7 @@ and expr' =
   | HasTypeE of expr * typ                        (* the type of expr is ty *)
   | TopFrameE                                     (* "a frame is now on the top of the stack" *)
   | TopLabelE                                     (* "a label is now on the top of the stack" *)
+  | TopHandlerE                                   (* "a handler is now on the top of the stack" *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
@@ -134,6 +137,9 @@ and arg = arg' phrase
 and arg' =
   | ExpA of expr
   | TypA of typ
+  | DefA of id
+
+and iterexp = iter * (id * expr) list
 
 (* Instructions *)
 

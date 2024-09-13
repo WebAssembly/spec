@@ -133,6 +133,7 @@ type env =
     desc_gram : hints ref;
     deco_typ : bool;
     deco_rule : bool;
+    tab_rel : hints ref;
   }
 
 let new_env config =
@@ -155,6 +156,7 @@ let new_env config =
     desc_gram = ref Map.empty;
     deco_typ = false;
     deco_rule = false;
+    tab_rel = ref Map.empty;
   }
 
 let config env : Config.t =
@@ -222,7 +224,8 @@ let env_hintdef env hd =
     env_hints "show" env.show_gram id1 hints
   | RelH (id, hints) ->
     env_hints "macro" env.macro_rel id hints;
-    env_hints "show" env.show_rel id hints
+    env_hints "show" env.show_rel id hints;
+    env_hints "tabular" env.tab_rel id hints
   | VarH (id, hints) ->
     env_hints "macro" env.macro_var id hints;
     env_hints "show" env.show_var id hints
@@ -1402,13 +1405,13 @@ let render_ruledef env d =
   | _ -> failwith "render_ruledef"
 
 
-let render_reddef env d =
+let render_ruledef_tabular env d =
   match d.it with
   | RuleD (id1, id2, e, prems) ->
     let e1, op, e2 =
       match e.it with
       | InfixE (e1, op, e2) -> e1, op, e2
-      | _ -> error e.at "unrecognized format for reduction rule"
+      | _ -> error e.at "unrecognized format for tabular rule, infix operator expected"
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
       render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
@@ -1417,7 +1420,7 @@ let render_reddef env d =
         else
           render_conditions env ("\\\\\n  & \\multicolumn{3}{@{}l@{}}{\\qquad " ^
             render_exp env e2 ^ " }") "&&&" prems
-  | _ -> failwith "render_reddef"
+  | _ -> failwith "render_ruledef_tabular"
 
 let render_funcdef env d =
   match d.it with
@@ -1431,20 +1434,6 @@ let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
   | {it = SepD; _}::ds -> "{} \\\\[-2ex]\n" ^ render_sep_defs ~sep ~br f ds
   | d::{it = SepD; _}::ds -> f d ^ br ^ render_sep_defs ~sep ~br f ds
   | d::ds -> f d ^ sep ^ render_sep_defs ~sep ~br f ds
-
-
-type rel_sort = TypingRel | ReductionRel
-
-let rec classify_rel e : rel_sort option =
-  match e.it with
-  | InfixE (_, {it = Turnstile; _}, _) -> Some TypingRel
-  | InfixE (_, {it = SqArrow | SqArrowStar | Approx; _}, _) -> Some ReductionRel
-  | InfixE (e1, _, e2) ->
-    (match classify_rel e1 with
-    | None -> classify_rel e2
-    | some -> some
-    )
-  | _ -> None
 
 
 let rec render_defs env = function
@@ -1470,18 +1459,16 @@ let rec render_defs env = function
     | RelD (_, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
-    | RuleD (_, _, e, _) ->
-      (match classify_rel e with
-      | Some TypingRel | None ->
+    | RuleD (id1, _, _, _) ->
+      if Map.mem id1.it !(env.tab_rel) then
+        "\\begin{array}{@{}l@{}r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
+          render_sep_defs (render_ruledef_tabular env) ds ^
+        "\\end{array}"
+      else
         "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
           render_sep_defs ~sep:"\n\\qquad\n" ~br:"\n\\\\[3ex]\\displaystyle\n"
             (render_ruledef env) ds ^
         "\\end{array}"
-      | Some ReductionRel ->
-        "\\begin{array}{@{}l@{}r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
-          render_sep_defs (render_reddef env) ds ^
-        "\\end{array}"
-      )
     | DefD _ ->
       "\\begin{array}{@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_funcdef env) ds ^
@@ -1511,13 +1498,13 @@ let rec split_gramdefs gramdefs = function
     | GramD _ -> split_gramdefs (d::gramdefs) ds
     | _ -> List.rev gramdefs, d::ds
 
-let rec split_reddefs id reddefs = function
-  | [] -> List.rev reddefs, []
+let rec split_tabdefs id tabdefs = function
+  | [] -> List.rev tabdefs, []
   | d::ds ->
     match d.it with
     | RuleD (id1, _, _, _) when id1.it = id ->
-      split_reddefs id (d::reddefs) ds
-    | _ -> List.rev reddefs, d::ds
+      split_tabdefs id (d::tabdefs) ds
+    | _ -> List.rev tabdefs, d::ds
 
 let rec split_funcdefs id funcdefs = function
   | [] -> List.rev funcdefs, []
@@ -1541,16 +1528,14 @@ let rec render_script env = function
     | RelD _ ->
       "$" ^ render_def env d ^ "$\n\n" ^
       render_script env ds
-    | RuleD (id1, _, e, _) ->
-      (match classify_rel e with
-      | Some TypingRel | None ->
+    | RuleD (id1, _, _, _) ->
+      if Map.mem id1.it !(env.tab_rel) then
+        let tabdefs, ds' = split_tabdefs id1.it [d] ds in
+        "$$\n" ^ render_defs env tabdefs ^ "\n$$\n\n" ^
+        render_script env ds'
+      else
         "$$\n" ^ render_def env d ^ "\n$$\n\n" ^
         render_script env ds
-      | Some ReductionRel ->
-        let reddefs, ds' = split_reddefs id1.it [d] ds in
-        "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
-        render_script env ds'
-      )
     | DefD (id, _, _, _) ->
       let funcdefs, ds' = split_funcdefs id.it [d] ds in
       "$$\n" ^ render_defs env funcdefs ^ "\n$$\n\n" ^

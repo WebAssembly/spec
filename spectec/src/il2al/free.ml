@@ -35,7 +35,7 @@ let rec free_exp ignore_listN e =
   | IterE (e1, iter) ->
     let free1 = f e1 in
     let bound, free2 = fi iter in
-    diff (union free1 free2) bound
+    union (diff free1 bound) free2
 
 and free_expfield ignore_listN (_, e) = free_exp ignore_listN e
 
@@ -57,12 +57,19 @@ and free_path ignore_listN p =
     union (fp p1) (union (f e1) (f e2))
   | DotP (p1, _) -> fp p1
 
-and free_iterexp ignore_listN (iter, _) =
+and free_iterexp ignore_listN (iter, xes) =
   let f = free_exp ignore_listN in
+  let bound = free_list free_varid (List.map fst xes) in
+  let free = free_list f (List.map snd xes) in
   match iter with
-  | ListN (e, None) -> empty, if ignore_listN then empty else f e
-  | ListN (e, Some id) -> free_varid id, if ignore_listN then empty else f e
-  | _ -> empty, empty
+  | ListN (e, None) ->
+    bound, if ignore_listN then free else union free (f e)
+  | ListN (e, Some id) ->
+    (* Do not regard i* as free *)
+    let snd' = (fun (x, e) -> if Il.Eq.eq_id id x then None else Some e) in
+    let free = free_list f (List.filter_map snd' xes) in
+    union bound (free_varid id), if ignore_listN then empty else union free (f e)
+  | _ -> bound, free
 
 let rec free_prem ignore_listN prem =
   let f = free_exp ignore_listN in

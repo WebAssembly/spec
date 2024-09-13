@@ -10,7 +10,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-../spec/wasm-3.0/6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
+../spec/wasm-3.0/6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -1329,6 +1329,9 @@ warning: definition `funcidx_nonfuncs` was never spliced
 warning: definition `funcsxa` was never spliced
 warning: definition `funcsxt` was never spliced
 warning: definition `funcsxx` was never spliced
+warning: definition `fvbinop_` was never spliced
+warning: definition `fvrelop_` was never spliced
+warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
@@ -1350,7 +1353,6 @@ warning: definition `ibytes_` was never spliced
 warning: definition `iclz_` was never spliced
 warning: definition `ictz_` was never spliced
 warning: definition `idiv_` was never spliced
-warning: definition `idx` was never spliced
 warning: definition `ieq_` was never spliced
 warning: definition `ieqz_` was never spliced
 warning: definition `ige_` was never spliced
@@ -1363,7 +1365,10 @@ warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
 warning: definition `inot_` was never spliced
+warning: definition `inst_globaltype` was never spliced
+warning: definition `inst_memtype` was never spliced
 warning: definition `inst_reftype` was never spliced
+warning: definition `inst_tabletype` was never spliced
 warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instrdots` was never spliced
@@ -1383,6 +1388,11 @@ warning: definition `ishr_` was never spliced
 warning: definition `isize` was never spliced
 warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
+warning: definition `ivbinop_` was never spliced
+warning: definition `ivbinopsx_` was never spliced
+warning: definition `ivrelop_` was never spliced
+warning: definition `ivrelopsx_` was never spliced
+warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
@@ -1434,8 +1444,11 @@ warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
 warning: definition `subst_all_deftypes` was never spliced
+warning: definition `subst_all_globaltype` was never spliced
+warning: definition `subst_all_memtype` was never spliced
 warning: definition `subst_all_moduletype` was never spliced
 warning: definition `subst_all_reftype` was never spliced
+warning: definition `subst_all_tabletype` was never spliced
 warning: definition `subst_all_valtype` was never spliced
 warning: definition `subst_comptype` was never spliced
 warning: definition `subst_deftype` was never spliced
@@ -1913,6 +1926,9 @@ warning: definition prose `funcinst` was never spliced
 warning: definition prose `funcsxa` was never spliced
 warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxx` was never spliced
+warning: definition prose `fvbinop_` was never spliced
+warning: definition prose `fvrelop_` was never spliced
+warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
 warning: definition prose `globalinst` was never spliced
@@ -1922,8 +1938,10 @@ warning: definition prose `globalsxx` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
 warning: definition prose `half__` was never spliced
-warning: definition prose `idx` was never spliced
+warning: definition prose `inst_globaltype` was never spliced
+warning: definition prose `inst_memtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
+warning: definition prose `inst_tabletype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
 warning: definition prose `invfbytes_` was never spliced
@@ -1931,6 +1949,11 @@ warning: definition prose `invibytes_` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned_` was never spliced
+warning: definition prose `ivbinop_` was never spliced
+warning: definition prose `ivbinopsx_` was never spliced
+warning: definition prose `ivrelop_` was never spliced
+warning: definition prose `ivrelopsx_` was never spliced
+warning: definition prose `ivunop_` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `list_` was never spliced
 warning: definition prose `local` was never spliced
@@ -1976,8 +1999,11 @@ warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced
 warning: definition prose `subst_all_deftypes` was never spliced
+warning: definition prose `subst_all_globaltype` was never spliced
+warning: definition prose `subst_all_memtype` was never spliced
 warning: definition prose `subst_all_moduletype` was never spliced
 warning: definition prose `subst_all_reftype` was never spliced
+warning: definition prose `subst_all_tabletype` was never spliced
 warning: definition prose `subst_all_valtype` was never spliced
 warning: definition prose `subst_comptype` was never spliced
 warning: definition prose `subst_deftype` was never spliced

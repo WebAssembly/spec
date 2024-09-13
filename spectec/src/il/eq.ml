@@ -110,8 +110,8 @@ and eq_path p1 p2 =
   | DotP (p11, atom1), DotP (p21, atom2) -> eq_path p11 p21 && eq_atom atom1 atom2
   | _, _ -> p1.it = p2.it
 
-and eq_iterexp (iter1, bs1) (iter2, bs2) =
-  eq_iter iter1 iter2 && eq_list (eq_pair eq_id eq_typ) bs1 bs2
+and eq_iterexp (iter1, xes1) (iter2, xes2) =
+  eq_iter iter1 iter2 && eq_list (eq_pair eq_id eq_exp) xes1 xes2
 
 
 (* Grammars *)

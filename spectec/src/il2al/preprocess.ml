@@ -5,6 +5,36 @@ open El.Atom
 open Def
 open Il2al_util
 
+let typing_functions = ref []
+
+let rec transform_rulepr_prem prem =
+  match prem.it with
+  | IterPr (prem, iterexp) ->
+    prem
+    |> transform_rulepr_prem
+    |> (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
+  | IfPr ({ it = CmpE (EqOp, { it = CallE (id, args); note; at }, rhs); _ })
+  when List.mem id.it !typing_functions ->
+    IfPr (CallE (id, args @ [ExpA rhs $ rhs.at]) $$ at % note) $ prem.at
+  | _ -> prem
+
+let transform_rulepr_rule (rule: rule) : rule =
+  let RuleD (id, binds, mixop, exp, prems) = rule.it in
+  RuleD (id, binds, mixop, exp, List.map transform_rulepr_prem prems) $ rule.at
+
+let transform_rulepr_clause (clause: clause) : clause =
+  let DefD (binds, args, exp, prems) = clause.it in
+  DefD (binds, args, exp, List.map transform_rulepr_prem prems) $ clause.at
+
+let transform_rulepr_def (def: def) : def =
+  match def.it with
+  | RelD (id, mixop, t, rules) ->
+    RelD (id, mixop, t, List.map transform_rulepr_rule rules) $ def.at
+  | DecD (id, ps, t, clauses) ->
+    DecD (id, ps, t, List.map transform_rulepr_clause clauses) $ def.at
+  | _ -> def
+
+let transform_rulepr = List.map transform_rulepr_def
 
 (* Remove or *)
 let remove_or_exp e =
@@ -112,9 +142,9 @@ let rec preprocess_prem prem =
       in
 
       (* Add function definition to AL environment *)
-      if not (Env.mem_def !Al.Valid.env id) then (
+      if not (Env.mem_def !Al.Valid.il_env id) then (
         let param = ExpP ("_" $ no_region, dt.note) $ dt.at in
-        Al.Valid.env := Env.bind_def !Al.Valid.env id ([param], ct.note, [])
+        Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id ([param], ct.note, [])
       );
 
       [ new_prem $ prem.at ]
@@ -128,6 +158,8 @@ let rec preprocess_prem prem =
     (* `id`: C |- `lhs` : `rhs` *)
     | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
     when turnstile.it = Turnstile && colon.it = Colon ->
+      typing_functions := id.it :: !typing_functions;
+
       (* $`id`(`lhs`) = `rhs` *)
       let typing_function_call =
         CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note
@@ -137,9 +169,9 @@ let rec preprocess_prem prem =
       in
 
       (* Add function definition to AL environment *)
-      if not (Env.mem_def !Al.Valid.env id) then (
+      if not (Env.mem_def !Al.Valid.il_env id) then (
         let param = ExpP ("_" $ no_region, lhs.note) $ lhs.at in
-        Al.Valid.env := Env.bind_def !Al.Valid.env id ([param], rhs.note, [])
+        Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id ([param], rhs.note, [])
       );
 
       [ new_prem $ prem.at ]
@@ -167,15 +199,15 @@ let preprocess_def (def: def) : def =
 
   match def'.it with
   | TypD (id, ps, insts) ->
-    Al.Valid.env := Env.bind_typ !Al.Valid.env id (ps, insts); def'
+    Al.Valid.il_env := Env.bind_typ !Al.Valid.il_env id (ps, insts); def'
   | RelD (id, mixop, t, rules) ->
-    Al.Valid.env := Env.bind_rel !Al.Valid.env id (mixop, t, rules);
+    Al.Valid.il_env := Env.bind_rel !Al.Valid.il_env id (mixop, t, rules);
     RelD (id, mixop, t, List.map preprocess_rule rules) $ def.at
   | DecD (id, ps, t, clauses) ->
-    Al.Valid.env := Env.bind_def !Al.Valid.env id (ps, t, clauses);
+    Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id (ps, t, clauses);
     DecD (id, ps, t, List.map preprocess_clause clauses) $ def.at
   | GramD (id, ps, t, prods) ->
-    Al.Valid.env := Env.bind_gram !Al.Valid.env id (ps, t, prods); def'
+    Al.Valid.il_env := Env.bind_gram !Al.Valid.il_env id (ps, t, prods); def'
   | RecD _ -> assert (false);
   | HintD _ -> def'
 
@@ -211,4 +243,5 @@ let preprocess (il: script) : rule_def list * helper_def list =
   |> List.map preprocess_def
   |> Encode.transform
   |> Animate.transform
+  |> transform_rulepr
   |> Unify.unify

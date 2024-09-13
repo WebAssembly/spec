@@ -162,7 +162,7 @@ let rec if_expr_to_instrs e =
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match cond1 with
-      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
+      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
         (* ~P \/ Q is equivalent to P -> Q *)
         IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
       | _ ->
@@ -208,7 +208,7 @@ let rec prem_to_instrs prem =
     | Ast.(List | ListN _), vars ->
         let to_iter (id, _) =
           let name = varE id.it ~note:no_note in
-          name, iterE (name, [id.it], Al.Ast.List) ~note:no_note
+          name, iter_var id.it List no_note
         in
         [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
     | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]

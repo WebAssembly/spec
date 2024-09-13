@@ -74,6 +74,7 @@ and string_of_value =
   | StrV r -> string_of_record r
   | OptV (Some e) -> "?(" ^ string_of_value e ^ ")"
   | OptV None -> "?()"
+  | FnameV id -> "$" ^ id
 
 and string_of_values sep = string_of_list string_of_value sep
 
@@ -176,7 +177,7 @@ and string_of_expr expr =
     sprintf "label(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
-  | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
+  | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
   | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ([[ atom ]], []) -> string_of_atom atom
@@ -205,6 +206,8 @@ and string_of_expr expr =
     (* TODO: "type(top()) == label"*)
   | TopFrameE -> "top_frame()"
     (* TODO: "type(top()) == frame"*)
+  | TopHandlerE -> "top_handler()"
+    (* TODO: "type(top()) == handler"*)
   | TopValueE (Some e) -> sprintf "top_value(%s)" (string_of_expr e)
   | TopValueE None -> "top_value()"
   | TopValuesE e -> sprintf "top_values(%s)" (string_of_expr e)
@@ -235,8 +238,17 @@ and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
   | TypA typ -> string_of_typ typ
+  | DefA id -> "$" ^ id
 
 and string_of_args sep = string_of_list string_of_arg sep
+
+
+
+(* Iter exps *)
+
+and string_of_iterexp (iter, xes) =
+  string_of_iter iter ^ "{" ^ String.concat ", "
+    (List.map (fun (id, e) -> id ^ " <- " ^ string_of_expr e) xes) ^ "}"
 
 
 (* Instructions *)
@@ -380,11 +392,6 @@ let string_of_algorithm algo =
 
 (* Wasm type *)
 
-(* Names *)
-
-let structured_string_of_ids ids =
-  "[" ^ String.concat ", " ids ^ "]"
-
 
 (* Values *)
 
@@ -400,6 +407,7 @@ let rec structured_string_of_value = function
   | StrV _r -> "StrV (TODO)"
   | OptV None -> "OptV"
   | OptV (Some e) -> "OptV (" ^ structured_string_of_value e ^ ")"
+  | FnameV id -> "FnameV (\"" ^ id ^ "\")"
 
 and structured_string_of_values vl = string_of_list structured_string_of_value ", " vl
 
@@ -507,14 +515,14 @@ and structured_string_of_expr expr =
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
   | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
-  | IterE (e, ids, iter) ->
+  | IterE (e, (iter, xes)) ->
     "IterE ("
     ^ structured_string_of_expr e
-    ^ ", "
-    ^ structured_string_of_ids ids
-    ^ ", "
-    ^ string_of_iter iter
-    ^ ")"
+    ^ ", ("
+    ^ structured_string_of_iter iter
+    ^ ", {"
+    ^ string_of_list (fun (x, e) -> x ^ structured_string_of_expr e) ", " xes
+    ^ "}))"
   | CaseE (op, el) ->
     "CaseE (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
@@ -528,6 +536,7 @@ and structured_string_of_expr expr =
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"
+  | TopHandlerE -> "TopHandlerE"
   | TopValueE None -> "TopValueE"
   | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")"
   | TopValuesE e -> "TopValuesE (" ^ structured_string_of_expr e ^ ")"
@@ -561,6 +570,7 @@ and structured_string_of_arg arg =
   match arg.it with
   | ExpA e -> sprintf "ExpA (%s)" (structured_string_of_expr e)
   | TypA typ -> sprintf "TypA (%s)" (string_of_typ typ)
+  | DefA id -> sprintf "DefA (%s)" id
 
 and structured_string_of_args al = string_of_list structured_string_of_arg ", " al
 

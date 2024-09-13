@@ -255,7 +255,7 @@ $${rule: Deftype_sub/refl Deftype_sub/super}
 .. note::
    Note that there is no explicit definition of type *equivalence*,
    since it coincides with syntactic equality,
-   as used in the premise of the fomer rule above.
+   as used in the premise of the former rule above.
 
 
 .. index:: limits
