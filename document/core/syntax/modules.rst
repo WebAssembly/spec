@@ -424,7 +424,7 @@ The |MIMPORTS| component of a module defines a set of *imports* that are require
      \IDFUNC~\typeidx \\&&|&
      \IDTABLE~\tabletype \\&&|&
      \IDMEM~\memtype \\&&|&
-     \IDTAG~\tagtype \\&&|&
+     \IDTAG~\typeidx \\&&|&
      \IDGLOBAL~\globaltype \\
    \end{array}
 

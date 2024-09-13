@@ -213,6 +213,7 @@ let global_type s =
 let tag_type s =
   zero s; at var s
 
+
 (* Instructions *)
 
 open Ast
