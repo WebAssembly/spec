@@ -471,17 +471,15 @@ and indented_string_of_stmts is =
   (string_of_list indented_string_of_stmt "" "\n" "" is)
 
 let string_of_def = function
-| RuleD (anchor, _e, concl, []) ->
+| RuleD (anchor, concl, []) ->
     anchor
-    (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ string_of_stmt concl ^ "\n"
-| RuleD (anchor, _e, concl, prems) ->
+| RuleD (anchor, concl, prems) ->
     init_render_type ();
     let concl_str = string_of_stmt concl in
     let drop_last x = String.sub x 0 (String.length x - 1) in
     anchor
-    (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ drop_last concl_str
     ^ " if:\n"

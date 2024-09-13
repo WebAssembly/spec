@@ -246,7 +246,7 @@ syntax tabletype hint(desc "table type") =
   limits reftype
 syntax memtype hint(desc "memory type") =
   limits PAGE
-syntax tagtype hint(desc "memory type") =
+syntax tagtype hint(desc "tag type") =
   deftype
 syntax elemtype hint(desc "element type") =
   reftype

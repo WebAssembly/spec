@@ -21,7 +21,7 @@ type stmt =
 | YetS of string
 
 type def =
-| RuleD of Al.Ast.anchor * Al.Ast.expr * stmt * stmt list
+| RuleD of Al.Ast.anchor * stmt * stmt list
 | AlgoD of Al.Ast.algorithm
 
 type prose = def list

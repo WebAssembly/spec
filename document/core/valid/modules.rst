@@ -439,7 +439,7 @@ $${rule: Export_ok}
 
 :math:`\XDFUNC~x`
 .................
-$${rule-prose: Externidx_ok}
+$${rule-prose: Externidx_ok/func}
 .. todo::
  below is the official specification
 
@@ -454,6 +454,9 @@ $${rule: Externidx_ok/func}
 
 :math:`\XDTABLE~x`
 ..................
+$${rule-prose: Externidx_ok/table}
+.. todo::
+ below is the official specification
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -464,6 +467,9 @@ $${rule: Externidx_ok/table}
 
 :math:`\XDMEM~x`
 ................
+$${rule-prose: Externidx_ok/mem}
+.. todo::
+ below is the official specification
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -474,6 +480,9 @@ $${rule: Externidx_ok/mem}
 
 :math:`\XDGLOBAL~x`
 ...................
+$${rule-prose: Externidx_ok/global}
+.. todo::
+ below is the official specification
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 

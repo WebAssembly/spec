@@ -791,7 +791,7 @@ let render_func_algo env fname params instrs =
   render_instrs env fname 0 instrs
 
 let render_def env = function
-  | RuleD (_, _, concl, prems) ->
+  | RuleD (_, concl, prems) ->
       "\n" ^ render_rule env concl prems ^ "\n\n"
   | AlgoD algo -> (match algo.it with
     | Al.Ast.RuleA (name, _, params, instrs) ->

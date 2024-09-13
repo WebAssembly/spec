@@ -263,75 +263,90 @@ let rec prem_to_instrs prem =
     let s = Il.Print.string_of_prem prem in
     print_yet_prem prem "prem_to_instrs"; [ YetS s ]
 
-type vrule_group =
-  string * Ast.id * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
+let extract_single_rule rule =
+  match rule.it with
+  | Ast.RuleD (_, _, _, exp, _) ->
+    match exp.it with
+    (* c? |- e : OK *)
+    (* c? |- e CONST *)
+    | Ast.TupE [ e ]
+    | Ast.TupE [ _; e ] -> e
+    | _ -> exp
 
-(** Main translation for typing rules **)
-let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
-  let (winstr, t, _prems, _tenv) = vrules |> List.hd in
+let extract_pair_rule rule =
+  match rule.it with
+  | Ast.RuleD (_, _, _, exp, _) ->
+    match exp.it with
+    (* c? |- e1 <: e2 *)
+    (* c? |- e : t *)
+    (* c? |- e : e *)
+    (* c? |- e : e CONST *)
+    | Ast.TupE [ e1; e2 ]
+    | Ast.TupE [ _; e1; e2 ] -> e1, e2
+    | _ -> error exp.at
+      (Print.string_of_exp exp
+      |> Printf.sprintf "exp `%s` cannot be a rule for the double-argument relation")
+
+let extract_triplet_rule rule =
+  match rule.it with
+  | Ast.RuleD (_, _, _, exp, _) ->
+    match exp.it with
+    (* c? |- e : e e *)
+    | Ast.TupE [ e1; e2; e3 ]
+    | Ast.TupE [ _; e1; e2; e3 ] -> e1, e2, e3
+    | _ -> error exp.at
+      (Print.string_of_exp exp
+      |> Printf.sprintf "exp `%s` cannot be a rule for the triple-argument relation")
+
+(** Main translation for rules **)
+let prose_of_rules name mk_concl rules =
+  let rule = List.hd rules in
 
   (* anchor *)
-  let anchor = rel_id.it ^ "/" ^ rule_name in
-  (* expr *)
-  let expr = exp_to_expr winstr in
+  let anchor = name in
   (* concl *)
-  let concl = IsValidS (None, expr, [exp_to_expr t]) in
+  let concl = mk_concl rule in
   (* prems *)
-  let prems =
-    vrules
-    |> List.map (fun (_, _, prems, _) -> prems)
+  let prems = (
+    rules
+    |> List.map prems_of_rule
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
         | [ stmts ] -> stmts
         | stmtss -> [ EitherS stmtss ])
-  in
+  ) in
 
-  (* Predicate *)
-  RuleD (anchor, expr, concl, prems)
+  RuleD (anchor, concl, prems)
 
+
+let proses_of_rel mk_concl def =
+  match def.it with
+  | Ast.RelD (rel_id, _, _, rules) ->
+    let merged_prose = prose_of_rules rel_id.it mk_concl (Il2al.Unify.unify_rules rules) in
+    let unmerged_proses = if List.length rules < 2 then [] else
+      List.map (fun r -> prose_of_rules (rel_id.it ^ "/" ^ name_of_rule r) mk_concl [r]) rules
+    in
+
+    merged_prose :: unmerged_proses  
+  | _ -> assert false
+
+(** 1. C |- expr : OK *)
+let proses_of_valid_rel = proses_of_rel (fun rule ->
+  let e = extract_single_rule rule in
+  IsValidS (None, exp_to_expr e, []))
+
+(** 2. C |- instr : type **)
+(* Validation prose for instructions are not grouped according to relation name
+   (which will result in grouping the entire rules),
+   but according to instr name *)
+type vrule_group =
+  string * Ast.id * Ast.rule list
 let rec extract_vrules def =
   match def.it with
   | Ast.RecD defs -> List.concat_map extract_vrules defs
   | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" ->
       List.map (fun rule -> (id, rule)) rules
   | _ -> []
-
-let pack_single_rule rule =
-  match rule.it with
-  | Ast.RuleD (_, tenv, _, exp, prems) ->
-    match exp.it with
-    (* c? |- e : OK *)
-    (* c? |- e CONST *)
-    | Ast.TupE [ e ] -> (e, prems, tenv)
-    | Ast.TupE [ _; e ] -> (e, prems, tenv)
-    | _ -> (exp, prems, tenv)
-
-let pack_pair_rule rule =
-  match rule.it with
-  | Ast.RuleD (_, tenv, _, exp, prems) ->
-    match exp.it with
-    (* c? |- e1 <: e2 *)
-    (* c? |- e : t *)
-    (* c? |- e : e *)
-    (* c? |- e : e CONST *)
-    | Ast.TupE [ e1; e2 ] -> (e1, e2, prems, tenv)
-    | Ast.TupE [ _; e1; e2 ] -> (e1, e2, prems, tenv)
-    | _ -> error exp.at
-      (Print.string_of_exp exp
-      |> Printf.sprintf "exp `%s` cannot be a rule for the double-argument relation")
-
-let pack_triplet_rule rule =
-  match rule.it with
-  | Ast.RuleD (_, tenv, _, exp, prems) ->
-    match exp.it with
-    (* c? |- e : e e *)
-    | Ast.TupE [ e1; e2; e3 ] -> (e1, e2, e3, prems, tenv)
-    | Ast.TupE [ _; e1; e2; e3 ] -> (e1, e2, e3, prems, tenv)
-    | _ -> error exp.at
-      (Print.string_of_exp exp
-      |> Printf.sprintf "exp `%s` cannot be a rule for the triple-argument relation")
-
-
 (* group typing rules that have same name *)
 (* (Il.id * Il.rule) list -> vrule_group list *)
 let rec group_vrules = function
@@ -344,40 +359,11 @@ let rec group_vrules = function
       let same_rules = List.map snd same_rules in
       let group = (rule_name, rel_id, rule :: same_rules) in
       group :: group_vrules diff_rules
-
-(* TODO: The codes below are too repetitive. Should be factored. *)
-
-(** 1. C |- expr : OK *)
-let prose_of_valid_rules rel_id rules =
-  let rule = List.hd rules in
-  let (e, _, _) = pack_single_rule rule in
-
-  (* anchor *)
-  let anchor = rel_id.it in
-  (* expr *)
-  let expr = exp_to_expr e in
-  (* concl *)
-  let concl = IsValidS (None, expr, []) in
-  (* prems *)
-  let prems = (
-    rules
-    |> List.map pack_single_rule
-    |> List.map (fun (_, prems, _) -> prems)
-    |> List.map (List.concat_map prem_to_instrs)
-    |> (function
-        | [ stmts ] -> stmts
-        | stmtss -> [ EitherS stmtss ])
-  ) in
-
-  RuleD (anchor, expr, concl, prems)
-
-
-let prose_of_valid_rel def =
-  match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Unify.unify_rules rules)
-  | _ -> assert false
-
-(** 2. C |- instr : type **)
+let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
+  prose_of_rules
+    (rel_id.it ^ "/" ^ rule_name)
+    (fun rule -> let winstr, t = extract_pair_rule rule in IsValidS (None, exp_to_expr winstr, [exp_to_expr t]))
+    vrules
 let proses_of_valid_instr_rel rel =
   let groups = rel
     |> extract_vrules
@@ -386,138 +372,41 @@ let proses_of_valid_instr_rel rel =
 
   let grouped_proses =
     groups
-    |> List.map (fun (name, id, rules) -> name, id, List.map pack_pair_rule (Il2al.Unify.unify_rules rules))
+    |> List.map (fun (name, id, rules) -> name, id, Il2al.Unify.unify_rules rules)
     |> List.map vrule_group_to_prose
   in
 
   let ungrouped_proses =
     groups
     |> List.filter (fun (_, _, rules) -> List.length rules > 1)
-    |> List.concat_map (fun (_, id, rules) -> List.map (fun r -> (full_name_of_rule r , id, [pack_pair_rule r])) rules)
+    |> List.concat_map (fun (_, id, rules) -> List.map (fun r -> (full_name_of_rule r, id, [r])) rules)
     |> List.map vrule_group_to_prose
   in
 
   grouped_proses @ ungrouped_proses
 
 (** 3. C |- e : e **)
-let prose_of_valid_with_rules rel_id rules =
-  let rule = List.hd rules in
-  let (e1, e2, _, _) = pack_pair_rule rule in
-
-  (* anchor *)
-  let anchor = rel_id.it in
-  (* expr *)
-  let expr = exp_to_expr e1 in
-  (* concl *)
-  let concl = IsValidS (None, expr, [exp_to_expr e2]) in
-  (* prems *)
-  let prems = (
-    rules
-    |> List.map pack_pair_rule
-    |> List.map (fun (_, _, prems, _) -> prems)
-    |> List.map (List.concat_map prem_to_instrs)
-    |> (function
-        | [ stmts ] -> stmts
-        | stmtss -> [ EitherS stmtss ])
-  ) in
-
-  RuleD (anchor, expr, concl, prems)
-
-let prose_of_valid_with_rel def =
-  match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Unify.unify_rules rules)
-  | _ -> assert false
+let proses_of_valid_with_rel = proses_of_rel (fun rule ->
+  let e1, e2 = extract_pair_rule rule in
+  IsValidS (None, exp_to_expr e1, [exp_to_expr e2]))
 
 (** 4. C |- type <: type **)
-let prose_of_match_rules rel_id rules =
-  let rule = List.hd rules in
-  let (e1, e2, _, _) = pack_pair_rule rule in
-
-  (* anchor *)
-  let anchor = rel_id.it in
-  (* expr *)
-  let expr = exp_to_expr e1 in
-  (* concl *)
-  let concl = MatchesS (expr, exp_to_expr e2) in
-  (* prems *)
-  let prems = (
-    rules
-    |> List.map pack_pair_rule
-    |> List.map (fun (_, _, prems, _) -> prems)
-    |> List.map (List.concat_map prem_to_instrs)
-    |> (function
-        | [ stmts ] -> stmts
-        | stmtss -> [ EitherS stmtss ])
-  ) in
-
-  RuleD (anchor, expr, concl, prems)
-
-let prose_of_match_rel def =
-  match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Unify.unify_rules rules)
-  | _ -> assert false
-
+let proses_of_match_rel = proses_of_rel (fun rule ->
+  let e1, e2 = extract_pair_rule rule in
+  MatchesS (exp_to_expr e1, exp_to_expr e2))
 
 (** 5. C |- x CONST **)
-let prose_of_const_rules rel_id rules =
-  let rule = List.hd rules in
-  let (e, _, _) = pack_single_rule rule in
-
-  (* anchor *)
-  let anchor = rel_id.it in
-  (* expr *)
-  let expr = exp_to_expr e in
-  (* concl *)
-  let concl = IsConstS (None, expr) in
-  (* prems *)
-  let prems = (
-    rules
-    |> List.map pack_single_rule
-    |> List.map (fun (_, prems, _) -> prems)
-    |> List.map (List.concat_map prem_to_instrs)
-    |> (function
-        | [ stmts ] -> stmts
-        | stmtss -> [ EitherS stmtss ])
-  ) in
-
-  RuleD (anchor, expr, concl, prems)
-
-let prose_of_const_rel def =
-  match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Unify.unify_rules rules)
-  | _ -> assert false
+let proses_of_const_rel = proses_of_rel (fun rule ->
+  let e = extract_single_rule rule in
+  IsConstS (None, exp_to_expr e))
 
 (** 6. C |- e : e CONST **)
 let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
 
 (** 7. C |- e : e e **)
-let prose_of_valid_with2_rules rel_id rules =
-  let rule = List.hd rules in
-  let (e1, e2, e3, _, _) = pack_triplet_rule rule in
-
-  (* anchor *)
-  let anchor = rel_id.it in
-  (* expr *)
-  let expr = exp_to_expr e1 in
-  (* concl *)
-  let concl = IsValidS (None, expr, [exp_to_expr e2; exp_to_expr e3]) in
-  (* prems *)
-  let prems = (
-    rules
-    |> List.map pack_triplet_rule
-    |> List.map (fun (_, _, _, prems, _) -> prems)
-    |> List.map (List.concat_map prem_to_instrs)
-    |> (function
-        | [ stmts ] -> stmts
-        | stmtss -> [ EitherS stmtss ])
-  ) in
-
-  RuleD (anchor, expr, concl, prems)
-
-let prose_of_valid_with2_rel def =
-  match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Unify.unify_rules rules)
-  | _ -> assert false
+let proses_of_valid_with2_rel = proses_of_rel (fun rule ->
+  let e1, e2, e3 = extract_triplet_rule rule in
+  IsValidS (None, exp_to_expr e1, [exp_to_expr e2; exp_to_expr e3]))
 
 (** 8. Others **)
 let proses_of_other_rel rel = ( match rel.it with
@@ -527,13 +416,13 @@ let proses_of_other_rel rel = ( match rel.it with
   []
 
 let prose_of_rel rel = match get_rel_kind rel with
-  | ValidRel      -> [ prose_of_valid_rel rel ]
+  | ValidRel      -> proses_of_valid_rel rel
   | ValidInstrRel -> proses_of_valid_instr_rel rel
-  | ValidWithRel  -> [ prose_of_valid_with_rel rel ]
-  | MatchRel      -> [ prose_of_match_rel rel ]
-  | ConstRel      -> [ prose_of_const_rel rel ]
+  | ValidWithRel  -> proses_of_valid_with_rel rel
+  | MatchRel      -> proses_of_match_rel rel
+  | ConstRel      -> proses_of_const_rel rel
   | ValidConstRel -> proses_of_valid_const_rel rel
-  | ValidWith2Rel -> [ prose_of_valid_with2_rel rel ]
+  | ValidWith2Rel -> proses_of_valid_with2_rel rel
   | OtherRel      -> proses_of_other_rel rel
 
 let prose_of_rels = List.concat_map prose_of_rel
@@ -571,9 +460,9 @@ let unify_either stmts =
 let postprocess_prose defs =
   List.map (fun def ->
     match def with
-    | RuleD (anchor, e, i, il) ->
+    | RuleD (anchor, i, il) ->
       let new_il = unify_either il in
-      RuleD (anchor, e, i, new_il)
+      RuleD (anchor, i, new_il)
     | AlgoD _ -> def
   ) defs
 

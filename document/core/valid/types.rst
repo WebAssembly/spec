@@ -44,15 +44,15 @@ $${rule: Vectype_ok}
 
 Heap Types
 ~~~~~~~~~~
-$${rule-prose: Heaptype_ok}
-.. todo::
- below is the official specification
-
 Concrete :ref:`heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is,
 while abstract ones are vacuously valid.
 
+
 :math:`\absheaptype`
 ....................
+$${rule-prose: Heaptype_ok/abs}
+.. todo::
+ below is the official specification
 
 * The heap type is valid.
 
@@ -61,6 +61,9 @@ $${rule: Heaptype_ok/abs}
 
 :math:`\typeidx`
 ................
+$${rule-prose: Heaptype_ok/typeidx}
+.. todo::
+ below is the official specification
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
@@ -113,14 +116,14 @@ Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number types <v
 
 Block Types
 ~~~~~~~~~~~
-$${rule-prose: Blocktype_ok}
-.. todo::
- below is the official specification
 
 :ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to :ref:`instruction types <syntax-instrtype>` by the following rules.
 
 :math:`\typeidx`
 ................
+$${rule-prose: Blocktype_ok/typeidx}
+.. todo::
+ below is the official specification
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
@@ -133,6 +136,9 @@ $${rule: Blocktype_ok/typeidx}
 
 :math:`[\valtype^?]`
 ....................
+$${rule-prose: Blocktype_ok/valtype}
+.. todo::
+ below is the official specification
 
 * The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
 
@@ -227,12 +233,12 @@ $${rule: Functype_ok}
 
 Composite Types
 ~~~~~~~~~~~~~~~
-$${rule-prose: Comptype_ok}
-.. todo::
- below is the official specification
 
 :math:`\TFUNC~\functype`
 ........................
+$${rule-prose: Comptype_ok/func}
+.. todo::
+ below is the official specification
 
 * The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
 
@@ -242,6 +248,9 @@ $${rule: Comptype_ok/func}
 
 :math:`\TSTRUCT~\fieldtype^\ast`
 ................................
+$${rule-prose: Comptype_ok/struct}
+.. todo::
+ below is the official specification
 
 * For each :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
 
@@ -253,6 +262,9 @@ $${rule: Comptype_ok/struct}
 
 :math:`\TARRAY~\fieldtype`
 ..........................
+$${rule-prose: Comptype_ok/array}
+.. todo::
+ below is the official specification
 
 * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
 
@@ -513,12 +525,12 @@ $${rule: Globaltype_ok}
 
 External Types
 ~~~~~~~~~~~~~~
-$${rule-prose: Externtype_ok}
-.. todo::
- below is the official specification
 
 :math:`\XTFUNC~\deftype`
 ........................
+$${rule-prose: Externtype_ok/func}
+.. todo::
+ below is the official specification
 
 * The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
 
@@ -531,6 +543,9 @@ $${rule: Externtype_ok/func}
 
 :math:`\XTTABLE~\tabletype`
 ...........................
+$${rule-prose: Externtype_ok/table}
+.. todo::
+ below is the official specification
 
 * The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
 
@@ -541,6 +556,9 @@ $${rule: Externtype_ok/table}
 
 :math:`\XTMEM~\memtype`
 .......................
+$${rule-prose: Externtype_ok/mem}
+.. todo::
+ below is the official specification
 
 * The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
 
@@ -551,6 +569,9 @@ $${rule: Externtype_ok/mem}
 
 :math:`\XTTAG~\tagtype`
 .......................
+$${rule-prose: Externtype_ok/tag}
+.. todo::
+ below is the official specification
 
 * The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
 
@@ -561,6 +582,9 @@ $${rule: Externtype_ok/tag}
 
 :math:`\XTGLOBAL~\globaltype`
 .............................
+$${rule-prose: Externtype_ok/global}
+.. todo::
+ below is the official specification
 
 * The :ref:`global type <syntax-globaltype>` :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
 

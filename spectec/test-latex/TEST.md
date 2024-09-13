@@ -1956,7 +1956,7 @@ $$
 \mbox{(global type)} & {\mathit{globaltype}} &::=& {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{page} \\
-\mbox{(memory type)} & {\mathit{tagtype}} &::=& {\mathit{deftype}} \\
+\mbox{(tag type)} & {\mathit{tagtype}} &::=& {\mathit{deftype}} \\
 \mbox{(element type)} & {\mathit{elemtype}} &::=& {\mathit{reftype}} \\
 \mbox{(data type)} & {\mathit{datatype}} &::=& \mathsf{ok} \\
 \mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{tag}~{\mathit{typeuse}} \\

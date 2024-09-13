@@ -258,6 +258,7 @@ A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type
 
 * Or :math:`\storagetype_1` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_1` and :math:`\storagetype_2` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_2` and :math:`\packtype_1` :ref:`matches <match-packtype>` :math:`\packtype_2`.
 
+
 $${rule-prose: Packtype_sub}
 .. todo::
  below is the official specification
@@ -396,12 +397,12 @@ $${rule: {Tagtype_sub}}
 
 External Types
 ~~~~~~~~~~~~~~
-$${rule-prose: Externtype_sub}
-.. todo::
- below is the official specification
 
 Functions
 .........
+$${rule-prose: Externtype_sub/func}
+.. todo::
+ below is the official specification
 
 An :ref:`external type <syntax-externtype>` ${externtype: FUNC deftype_1} matches ${externtype: FUNC deftype_2} if and only if:
 
@@ -412,6 +413,9 @@ $${rule: Externtype_sub/func}
 
 Tables
 ......
+$${rule-prose: Externtype_sub/table}
+.. todo::
+ below is the official specification
 
 An :ref:`external type <syntax-externtype>` ${externtype: TABLE tabletype_1} matches ${externtype: TABLE tabletype_2} if and only if:
 
@@ -422,6 +426,9 @@ $${rule: Externtype_sub/table}
 
 Memories
 ........
+$${rule-prose: Externtype_sub/mem}
+.. todo::
+ below is the official specification
 
 An :ref:`external type <syntax-externtype>` ${externtype: MEM memtype_1} matches ${externtype: MEM memtype_2} if and only if:
 
@@ -432,6 +439,9 @@ $${rule: Externtype_sub/mem}
 
 Globals
 .......
+$${rule-prose: Externtype_sub/global}
+.. todo::
+ below is the official specification
 
 An :ref:`external type <syntax-externtype>` ${externtype: GLOBAL globaltype_1} matches ${externtype: GLOBAL globaltype_2} if and only if:
 
@@ -442,6 +452,9 @@ $${rule: Externtype_sub/global}
 
 Tags
 ....
+$${rule-prose: Externtype_sub/tag}
+.. todo::
+ below is the official specification
 
 An :ref:`external type <syntax-externtype>` ${externtype: TAG tagtype_1} matches ${externtype: TAG tagtype_2} if and only if:
 
