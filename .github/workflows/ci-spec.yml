@@ -83,7 +83,7 @@ jobs:
 
   publish-spec:
     runs-on: ubuntu-latest
-    needs: [build-core-spec, build-js-api-spec, build-web-api-spec]
+    needs: [build-core-spec, build-js-api-spec, build-web-api-spec, build-spec-versions]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
