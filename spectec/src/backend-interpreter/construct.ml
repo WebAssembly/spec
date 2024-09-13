@@ -955,25 +955,40 @@ let al_to_extern_type = function
   | CaseV ("TAG", [typeuse]) -> ExternTagT (TagT (al_to_def_type typeuse))
   | v -> error_value "extern_type" v
 
-  (*
+let al_to_import_desc' types = function
+  | CaseV ("FUNC", [ dt ]) ->
+    let x =
+      { empty_module with types } @@ no_region
+      |> def_types_of
+      |> List.mapi (fun idx dt' -> idx, dt')
+      |> List.find_map (fun (idx, dt') -> if al_to_def_type dt = dt' then Some idx else None)
+      |> Option.get
+      |> Int32.of_int
+    in
+    FuncImport (x @@ no_region)
+  | CaseV ("TABLE", [ tt ]) -> TableImport (al_to_table_type tt)
+  | CaseV ("MEM", [ mt ]) -> MemoryImport (al_to_memory_type mt)
+  | CaseV ("GLOBAL", [ gt ]) -> GlobalImport (al_to_global_type gt)
+  | CaseV ("TAG", [ dt ]) ->
+    let x =
+      { empty_module with types } @@ no_region
+      |> def_types_of
+      |> List.mapi (fun idx dt' -> idx, dt')
+      |> List.find_map (fun (idx, dt') -> if al_to_def_type dt = dt' then Some idx else None)
+      |> Option.get
+      |> Int32.of_int
+    in
+    TagImport (x @@ no_region)
+  | v -> error_value "import desc" v
+let al_to_import_desc types idesc = al_to_import_desc' types idesc @@ no_region
 
-let al_to_import_desc module_ idesc =
-  match idesc.it with
-  | FuncImport x ->
-      let dts = def_types_of module_ in
-      let dt = Lib.List32.nth dts x.it |> al_to_def_type in
-      CaseV ("FUNC", [ dt ])
-  | TableImport tt -> CaseV ("TABLE", [ al_to_table_type tt ])
-  | MemoryImport mt -> CaseV ("MEM", [ al_to_memory_type mt ])
-  | GlobalImport gt -> CaseV ("GLOBAL", [ al_to_global_type gt ])
-
-let al_to_import module_ import =
-  CaseV ("IMPORT", [
-    al_to_name import.it.module_name;
-    al_to_name import.it.item_name;
-    al_to_import_desc module_ import.it.idesc;
-  ])
-  *)
+let al_to_import types = function
+  | CaseV ("IMPORT", [ module_name; item_name; idesc ]) ->
+    { module_name = al_to_name module_name;
+      item_name = al_to_name item_name;
+      idesc = al_to_import_desc types idesc;
+    } @@ no_region
+  | v -> error_value "import" v
 
 let al_to_export_desc': value -> export_desc' = function
   | CaseV ("FUNC", [ idx ]) -> FuncExport (al_to_idx idx)
@@ -1003,12 +1018,11 @@ let rec al_to_module': value -> module_' = function
       types; _imports; funcs; globals; tables; memories; listV [||]; elems; datas; start; exports
     ]))
   | CaseV ("MODULE", [
-      types; _imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
+      types; imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
     ]) ->
     {
       types = al_to_list al_to_type types;
-      (* TODO: imports = al_to_list (al_to_import module_) imports;*)
-      imports = [];
+      imports = al_to_list (al_to_import (al_to_list al_to_type types)) imports;
       funcs = al_to_list al_to_func funcs;
       globals = al_to_list al_to_global globals;
       tables = al_to_list al_to_table tables;
