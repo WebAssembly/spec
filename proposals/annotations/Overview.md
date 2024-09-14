@@ -93,7 +93,7 @@ Expressing generic custom sections (cf. https://gist.github.com/binji/d1cfff7faa
 Expressing names
 ```wasm
 (module (@name "Gümüsü")
-  (func $lambda (@name "λ") (param $x (@name "α βγ δ") i32) (result i32) (get_local $x))
+  (func $lambda (@name "λ") (param $x (@name "α βγ δ") i32) (result i32) (local.get $x))
 )
 ```
 
