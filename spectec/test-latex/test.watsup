@@ -573,6 +573,8 @@ syntax casetype = LA nat argh
     -- if 1 > 0
 
 
+;; Grammars
+
 grammar gram : nat* = "GA" "GB" => 0
     -- if 0 < 1
   | "GB" "GC" "GD" => 0
@@ -612,6 +614,8 @@ grammar gram : nat* = "GA" "GB" => 0
     -- if 1 > 0
 
 
+;; Functions
+
 def $func(nat, nat) : nat*
 
 def $func(n, m) = 0
@@ -642,6 +646,8 @@ def $func(n, m) =
   -- if n < m
   -- if m > n
 
+
+;; Rules
 
 relation Rel: argh borg -> curb dork hint(tabular)
 

@@ -1377,7 +1377,7 @@ rule Module_ok:
   -- (Export_ok: C |- export : nm xt_E)*
   -- if $disjoint_(name, nm*)
   ----
-  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, TAGS at_I* at*, ELEMS rt*, DATAS ok*, REFS x*}
+  -- if C = C' ++ {GLOBALS gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, TAGS at_I* at*, ELEMS rt*, DATAS ok*}
   ----
   -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*, REFS x*}
   -- if x* = $funcidx_nonfuncs(global* table* mem* elem* data*)
