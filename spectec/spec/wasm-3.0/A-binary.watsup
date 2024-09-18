@@ -1234,5 +1234,5 @@ grammar Bmodule : module =
       MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
     ----
     -- (if n = |data*|)?
-    -- if n? =/= eps \/ $dataidx_funcs(func*) = eps
+    -- if (n? =/= eps \/ $dataidx_funcs(func*) = eps)
     -- (if func = FUNC typeidx local* expr)*

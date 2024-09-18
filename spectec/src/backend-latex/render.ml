@@ -477,28 +477,30 @@ let rec concat_table sep tab1 tab2 =
   | [Row cols] -> concat_cols_table sep cols tab2
   | row::tab1' -> row :: concat_table sep tab1' tab2
 
-let rec render_cols ((fmt, indent_wide, indent_narrow) as cfg) = function
+let rec render_cols ((fmt, indent_wide, indent_narrow) as cfg) i = function
   | [] -> ""
   | (Br w)::cols ->
     let width = List.length fmt in
     let indent = if w = `Wide then indent_wide else indent_narrow in
     let fmt' = "l" :: List.map (fun _ -> "@{}l") (List.tl cols) in
-    let n = List.length cols in
-    " \\\\\n" ^ String.make indent '&' ^ " " ^
+    (* Add spare `&` at the end of the current line to work around Latex strangeness
+     * (it would calculate the formula's width incorrectly, leading to bogus placing.) *)
+    let n = width - i in
+    " " ^ String.make (max 0 (n - 1)) '&' ^ " \\\\\n" ^ String.make indent '&' ^ " " ^
     "\\multicolumn{" ^ string_of_int (width - indent) ^ "}{@{}l@{}}{\\quad  " ^
       (if n <= 1 then "" else "\\begin{array}[t]{@{}" ^
         String.concat "" fmt' ^ "@{}} ") ^
-      render_cols (fmt', 0, 0) cols ^
+      render_cols (fmt', 0, 0) 0 cols ^
       (if n <= 1 then "" else " \\end{array}") ^ " }"
   | (Col s)::[] -> s
-  | (Col "")::cols -> "& " ^ render_cols cfg cols
-  | (Col s)::cols -> s ^ " & " ^ render_cols cfg cols
+  | (Col "")::cols -> "& " ^ render_cols cfg (i + 1) cols
+  | (Col s)::cols -> s ^ " & " ^ render_cols cfg (i + 1) cols
 
 let rec render_rows cfg = function
   | [] -> ""
   | Sep::rows -> "{} \\\\[-2ex]\n" ^ render_rows cfg rows
-  | (Row r)::Sep::rows -> render_cols cfg r ^ " \\\\[0.8ex]\n" ^ render_rows cfg rows
-  | (Row r)::rows -> render_cols cfg r ^ " \\\\\n" ^ render_rows cfg rows
+  | (Row r)::Sep::rows -> render_cols cfg 0 r ^ " \\\\[0.8ex]\n" ^ render_rows cfg rows
+  | (Row r)::rows -> render_cols cfg 0 r ^ " \\\\\n" ^ render_rows cfg rows
 
 let _has_br tab = List.exists (function Row r -> List.exists (function Br _ -> true | _ -> false) r | _ -> false) tab
 
@@ -1453,7 +1455,7 @@ and render_prod env prod : row list =
         if g.at.right.line = e.at.left.line then
           Col (render_exp env e) :: []
         else
-          Br `Wide :: Col (render_exp env e) :: []
+          Br `Narrow :: Col (render_exp env e) :: []
       )
       (render_conditions env prems)
 
@@ -1658,7 +1660,7 @@ let rec render_defs env = function
         error d.at "cannot render decorators without Latex multicolumn enabled";
 *)
       let sp_deco = if env.deco_gram then sp else "@{}" in
-      render_table sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 5
+      render_table sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 3
         (render_sep_defs (render_gramdef env) ds')
     | RelD (_, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
