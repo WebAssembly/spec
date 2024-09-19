@@ -152,8 +152,15 @@ def build_html_js(out_dir):
 
 def build_html_from_js(tests, html_dir, use_sync):
     for js_file in tests:
+        subdir = os.path.basename(os.path.dirname(js_file))
+       # if subdir == 'js':
+       #     subdir = ''
+       # else:
+       #     FIXME: ensure_empty_dir needs to happen before all of this
+       #     ensure_empty_dir(os.path.join(html_dir, subdir))
         js_filename = os.path.basename(js_file)
         html_filename = js_filename + '.html'
+        #html_file = os.path.join(html_dir, subdir, html_filename)
         html_file = os.path.join(html_dir, html_filename)
         js_harness = "sync_index.js" if use_sync else "async_index.js"
         with open(html_file, 'w+') as f:
