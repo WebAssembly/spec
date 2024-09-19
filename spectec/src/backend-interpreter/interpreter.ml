@@ -700,28 +700,13 @@ and try_step_instr fname ctx env instr =
   try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
-  (* TODO: Change ref.null semantics *)
-  | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
-    let mm =
-      WasmContext.get_current_frame ()
-      |> unwrap_framev
-      |> strv_access "MODULE"
-    in
-    (* TODO: some *)
-    let null = caseV ("NULL", [ optV (Some (listV [||])) ]) in
-    let dummy_rt = CaseV ("REF", [ null; ht ]) in
-
-    (* substitute heap type *)
-    (match call_func "inst_reftype" [ mm; dummy_rt ] with
-    | Some (CaseV ("REF", [ n; ht' ])) when n = null ->
-      CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-    | _ -> raise (Exception.MissingReturnValue "inst_reftype"));
-    ctx
+  | CaseV ("REF.NULL" as name, ([ CaseV ("_IDX", _) ] as args)) ->
+    create_context name args :: ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
-  | CaseV (fname, args) -> create_context fname args :: ctx
+  | CaseV (name, args) -> create_context name args :: ctx
   | v -> fail_value "cannot step a wasm instr" v
 
 
