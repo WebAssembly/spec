@@ -269,8 +269,6 @@ module WasmContext = struct
     (* TODO: Generalize context *)
     let ctx_kind =
       match v with
-      | FrameV _ -> "Frame"
-      | LabelV _ -> "Label"
       | TextV s -> s
       | _ -> "Unknown context"
     in
@@ -292,25 +290,18 @@ module WasmContext = struct
     | None -> failwith "Wasm context stack underflow"
 
   let get_top_context () =
-    let ctx, vs, _ = get_context () in
-    if List.length vs = 0 then Some ctx 
-    else None
+    let ctx, _, _ = get_context () in
+    ctx
 
-  let get_current_frame () =
-    let match_frame = function
-      | FrameV _ -> true
+  let get_current_context typ =
+    let match_context = function
+      | CaseV (t, _) when t = typ -> true
       | _ -> false
-    in get_value_with_condition match_frame
-
-  let get_current_label () =
-    let match_label = function
-      | LabelV _ -> true
-      | _ -> false
-    in get_value_with_condition match_label
+    in get_value_with_condition match_context
 
   let get_module_instance () =
-    match get_current_frame () with
-    | FrameV (_, mm) -> mm
+    match get_current_context "FRAME_" with
+    | CaseV (_, [_; mm]) -> mm
     | _ -> failwith "Invalid frame"
 
   (* Value stack *)

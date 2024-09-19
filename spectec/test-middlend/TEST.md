@@ -3248,6 +3248,12 @@ syntax state =
 syntax config =
   | `%;%`{state : state, `instr*` : instr*}(state : state, instr*{instr <- `instr*`} : instr*)
 
+;; 4-runtime.watsup
+syntax evalctx =
+  | `LABEL_%{%}`{n : n, `instr*` : instr*}(n : n, instr*{instr <- `instr*`} : instr*)
+  | `FRAME_%{%}`{n : n, frame : frame}(n : n, frame : frame)
+  | `HANDLER_%{%}`{n : n, `catch*` : catch*}(n : n, catch*{catch <- `catch*`} : catch*)
+
 ;; 5-runtime-aux.watsup
 def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
   ;; 5-runtime-aux.watsup
@@ -11585,6 +11591,12 @@ syntax state =
 ;; 4-runtime.watsup
 syntax config =
   | `%;%`{state : state, `instr*` : instr*}(state : state, instr*{instr <- `instr*`} : instr*)
+
+;; 4-runtime.watsup
+syntax evalctx =
+  | `LABEL_%{%}`{n : n, `instr*` : instr*}(n : n, instr*{instr <- `instr*`} : instr*)
+  | `FRAME_%{%}`{n : n, frame : frame}(n : n, frame : frame)
+  | `HANDLER_%{%}`{n : n, `catch*` : catch*}(n : n, catch*{catch <- `catch*`} : catch*)
 
 ;; 5-runtime-aux.watsup
 def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
@@ -19926,6 +19938,12 @@ syntax state =
 syntax config =
   | `%;%`{state : state, `instr*` : instr*}(state : state, instr*{instr <- `instr*`} : instr*)
 
+;; 4-runtime.watsup
+syntax evalctx =
+  | `LABEL_%{%}`{n : n, `instr*` : instr*}(n : n, instr*{instr <- `instr*`} : instr*)
+  | `FRAME_%{%}`{n : n, frame : frame}(n : n, frame : frame)
+  | `HANDLER_%{%}`{n : n, `catch*` : catch*}(n : n, catch*{catch <- `catch*`} : catch*)
+
 ;; 5-runtime-aux.watsup
 def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
   ;; 5-runtime-aux.watsup
@@ -28265,6 +28283,12 @@ syntax state =
 ;; 4-runtime.watsup
 syntax config =
   | `%;%`{state : state, `instr*` : instr*}(state : state, instr*{instr <- `instr*`} : instr*)
+
+;; 4-runtime.watsup
+syntax evalctx =
+  | `LABEL_%{%}`{n : n, `instr*` : instr*}(n : n, instr*{instr <- `instr*`} : instr*)
+  | `FRAME_%{%}`{n : n, frame : frame}(n : n, frame : frame)
+  | `HANDLER_%{%}`{n : n, `catch*` : catch*}(n : n, catch*{catch <- `catch*`} : catch*)
 
 ;; 5-runtime-aux.watsup
 def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype

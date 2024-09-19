@@ -857,7 +857,9 @@ let insert_frame_binding instrs =
   in
 
   match List.concat_map (walker.walk_instr walker) instrs with
-  | il when !found -> (letI (varE "f" ~note:frameT, getCurFrameE () ~note:frameT)) :: il
+  | il when !found ->
+    let frame = frameE (varE "_" ~note:natT, varE "f" ~note:frameT) ~note:evalctxT in
+    (letI (frame, getCurContextE (Some frame_atom) ~note:evalctxT)) :: il
   | _ -> instrs
 
 
@@ -907,7 +909,8 @@ let handle_framed_algo a instrs =
   in
   (* End of helpers *)
 
-  let instr_hd = letI (e_zf, { e_zf with it = GetCurFrameE }) ~at:e_zf.at in
+  let frame = frameE (varE "_" ~note:natT, e_zf) ~note:evalctxT ~at:e_zf.at in
+  let instr_hd = letI (frame, getCurContextE (Some frame_atom) ~note:evalctxT) in
   let walk_expr walker expr = 
     let expr1 = frame_finder expr in
     let expr2 = Al.Walk.base_walker.walk_expr walker expr1 in
@@ -945,14 +948,15 @@ let handle_unframed_algo instrs =
       match !frame_arg with
       | Some { it = ExpA f; _ } ->
         let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
-        let frame = frameE (None, f) ~at:f.at ~note:callframeT in
+        let zeroE = numE Z.zero ~note:natT in
+        let frame = frameE (zeroE, f) ~at:f.at ~note:callframeT in
         let frame' =
           match instr.it with
           (* HARDCODE: the frame-passing-style *)
           | LetI ( { it = TupE [f'; _]; _ }, _) ->
-            frameE (None, f') ~at:f'.at ~note:callframeT
+            frameE (zeroE, f') ~at:f'.at ~note:callframeT
           | _ ->
-            frameE (None, varE "_f" ~note:f.note) ~note:callframeT
+            frameE (zeroE, varE "_f" ~note:f.note) ~note:callframeT
         in
         [
           pushI frame ~at:frame.at;
@@ -1050,10 +1054,8 @@ let ensure_return il =
 let remove_exit algo =
   let exit_to_pop instr =
     match instr.it with
-    | ExitI ({ it = Atom.Atom "FRAME_"; _ }) ->
-      popI (getCurFrameE () ~note:frameT) ~at:instr.at
-    | ExitI ({ it = Atom.Atom "LABEL_"; _ }) ->
-      popI (getCurLabelE () ~note:labelT) ~at:instr.at
+    | ExitI ({ it = Atom.Atom id; _ }) when List.mem id context_names ->
+      popI (getCurContextE (Some (atom_of_name id "evalctx")) ~note:evalctxT) ~at:instr.at
     | _ -> instr
   in
   let walk_instr walker instr = 
@@ -1071,7 +1073,7 @@ let remove_enter algo =
   let enter_frame_to_push_then_pop instr =
     match instr.it with
     | EnterI (
-      ({ it = FrameE (Some e_arity, _); _ } as e_frame),
+      ({ it = CaseE ([{ it = Atom.Atom "FRAME_"; _ }] :: _, [e_arity; _]); _ } as e_frame),
       { it = CatE (instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }); _ },
       il) ->
         begin match e_arity.it with
@@ -1089,11 +1091,6 @@ let remove_enter algo =
             pushI e_tmp ~at:instr.at;
           ]
         end
-    | EnterI (
-      ({ it = FrameE (None, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
-      il) ->
-        pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
     | _ -> [ instr ]
   in
 

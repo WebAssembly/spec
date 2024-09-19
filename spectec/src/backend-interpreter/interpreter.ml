@@ -100,7 +100,6 @@ and access_path env base path =
   | DotP str -> (
     let str = Print.string_of_atom str in
     match base with
-    | FrameV (_, StrV r) -> Record.find str r
     | StrV r -> Record.find str r
     | v ->
       fail_path path
@@ -124,7 +123,6 @@ and replace_path env base path v_new =
     let str = Print.string_of_atom str in
     let r =
       match base with
-      | FrameV (_, StrV r) -> r
       | StrV r -> r
       | v ->
         fail_path path
@@ -305,38 +303,9 @@ and eval_expr env expr =
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
-  | ArityE e ->
-    (match eval_expr env e with
-    | LabelV (v, _) -> v
-    | FrameV (Some v, _) -> v
-    | FrameV _ -> numV Z.zero
-    | _ -> fail_expr expr "inner expr is not a context" (* Due to AL validation, unreachable *))
-  | FrameE (e_opt, e) ->
-    let arity =
-      match Option.map (eval_expr env) e_opt with
-      | None | Some (NumV _) as arity -> arity
-      | _ -> fail_expr expr "wrong arity of frame"
-    in
-    let r =
-      match eval_expr env e with
-      | StrV _ as v -> v
-      | _ -> fail_expr expr "inner expr is not a frame"
-    in
-    FrameV (arity, r)
-  | GetCurFrameE -> WasmContext.get_current_frame ()
-  | LabelE (e1, e2) ->
-    let v1 = eval_expr env e1 in
-    let v2 = eval_expr env e2 in
-    LabelV (v1, v2)
-  | GetCurLabelE -> WasmContext.get_current_label ()
-  | GetCurContextE ->
-    (match WasmContext.get_top_context () with
-    | None -> fail_expr expr "cannot get the current context"
-    | Some ctxt -> ctxt)
-  | ContE e ->
-    (match eval_expr env e with
-    | LabelV (_, vs) -> vs
-    | _ -> fail_expr expr "inner expr is not a label")
+  | GetCurContextE None -> WasmContext.get_top_context ()
+  | GetCurContextE (Some { it = Atom a; _ }) when List.mem a context_names ->
+    WasmContext.get_current_context a
   | ChooseE e ->
     let a = eval_expr env e |> unwrap_listv_to_array in
     if Array.length a = 0 then
@@ -368,22 +337,10 @@ and eval_expr env expr =
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
   (* condition *)
-  | TopFrameE ->
-    let ctx = WasmContext.get_top_context () in
-    (match ctx with
-    | Some (FrameV _) -> boolV true
-    | _ -> boolV false)
-  | TopLabelE ->
-    let ctx = WasmContext.get_top_context () in
-    (match ctx with
-    | Some (LabelV _) -> boolV true
-    | _ -> boolV false)
   | ContextKindE a ->
     let ctx = WasmContext.get_top_context () in
     (match a.it, ctx with
-    | Atom "FRAME_", Some (FrameV _) -> boolV true
-    | Atom "LABEL_", Some (LabelV _) -> boolV true
-    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
+    | Atom case, CaseV (case', _) -> boolV (case = case')
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -582,16 +539,16 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
 
   | PushI e ->
     (match eval_expr env e with
-    | FrameV _ as v -> WasmContext.push_context (v, [], [])
+    | CaseV ("FRAME_", _) as v -> WasmContext.push_context (v, [], [])
     | ListV vs -> Array.iter WasmContext.push_value !vs
     | v -> WasmContext.push_value v
     );
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE (_, inner_e) ->
+    | CaseE ([{it = El.Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
       (match WasmContext.pop_context () with
-      | FrameV (_, inner_v), _, _ ->
+      | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
         AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))

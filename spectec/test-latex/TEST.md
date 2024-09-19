@@ -3999,6 +3999,9 @@ $$
 {{\mathsf{frame}}_{n}}{\{ {\mathit{frame}} \}}~{{\mathit{instr}}^\ast} \\ &&|&
 {{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{trap} \\
+\mbox{(evaluation context)} & {\mathit{evalctx}} &::=& {{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}^\ast} \}} \\ &&|&
+{{\mathsf{frame}}_{n}}{\{ {\mathit{frame}} \}} \\ &&|&
+{{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}} \\
 \end{array}
 $$
 

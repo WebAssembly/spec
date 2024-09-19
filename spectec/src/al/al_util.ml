@@ -61,14 +61,8 @@ let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at
 let iterE ?(at = no) ~note (e, ite) = IterE (e, ite) |> mk_expr at note
 let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
-let arityE ?(at = no) ~note e = ArityE e |> mk_expr at note
-let frameE ?(at = no) ~note (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
-let labelE ?(at = no) ~note (e1, e2) = LabelE (e1, e2) |> mk_expr at note
 let getCurStateE ?(at = no) ~note () = GetCurStateE |> mk_expr at note
-let getCurFrameE ?(at = no) ~note () = GetCurFrameE |> mk_expr at note
-let getCurLabelE ?(at = no) ~note () = GetCurLabelE |> mk_expr at note
-let getCurContextE ?(at = no) ~note () = GetCurContextE |> mk_expr at note
-let contE ?(at = no) ~note e = ContE e |> mk_expr at note
+let getCurContextE ?(at = no) ~note e = GetCurContextE e |> mk_expr at note
 let chooseE ?(at = no) ~note e = ChooseE e |> mk_expr at note
 let isCaseOfE ?(at = no) ~note (e, a) = IsCaseOfE (e, a) |> mk_expr at note
 let isValidE ?(at = no) ~note e = IsValidE e |> mk_expr at note
@@ -76,9 +70,6 @@ let contextKindE ?(at = no) ~note a = ContextKindE a |> mk_expr at note
 let isDefinedE ?(at = no) ~note e = IsDefinedE e |> mk_expr at note
 let matchE ?(at = no) ~note (e1, e2) = MatchE (e1, e2) |> mk_expr at note
 let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note
-let topLabelE ?(at = no) ~note () = TopLabelE |> mk_expr at note
-let topFrameE ?(at = no) ~note () = TopFrameE |> mk_expr at note
-let topHandlerE ?(at = no) ~note () = TopHandlerE |> mk_expr at note
 let topValueE ?(at = no) ~note e_opt = TopValueE e_opt |> mk_expr at note
 let topValuesE ?(at = no) ~note e = TopValuesE e |> mk_expr at note
 let subE ?(at = no) ~note (id, ty) = SubE (id, ty) |> mk_expr at note
@@ -185,6 +176,12 @@ let rec typ_to_var_name ty =
   | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
   | Il.Ast.IterT (t, _) -> typ_to_var_name t
 
+let context_names = [
+  "FRAME_";
+  "LABEL_";
+  "HANDLER_";
+]
+
 (* Destruct *)
 
 let unwrap_optv: value -> value option = function
@@ -250,15 +247,24 @@ let args_of_casev = function
   | v -> fail_value "args_of_casev" v
 
 let arity_of_framev: value -> value = function
-  | FrameV (Some v, _) -> v
+  | CaseV ("FRAME_", [v; _]) -> v
   | v -> fail_value "arity_of_framev" v
 
 let unwrap_framev: value -> value = function
-  | FrameV (_, v) -> v
+  | CaseV ("FRAME_", [_; v]) -> v
   | v -> fail_value "unwrap_framev" v
 
 
 (* Mixop *)
+
+let atom_of_name name typ = El.Atom.Atom name $$ no_region % (El.Atom.info typ)
+let atom_of_atom' atom' typ = atom' $$ no_region % (El.Atom.info typ)
+
+let frame_atom = atom_of_name "FRAME_" "evalctx"
+let frameE ?(at = no) ~note (arity, e) =
+  let frame_mixop = [[frame_atom]; [atom_of_atom' El.Atom.LBrace "evalctx"]; [atom_of_atom' El.Atom.RBrace "evalctx"]] in
+  caseE (frame_mixop, [arity; e]) ~at:at ~note:note
+
 
 let get_atom op =
   match List.find_opt (fun al -> List.length al <> 0) op with
@@ -279,11 +285,8 @@ let boolT = Il.Ast.BoolT $ no_region
 let natT = Il.Ast.NumT Il.Ast.NatT $ no_region
 let topT = varT "TOP" []
 let valT = varT "val" []
-let callframeT = varT "callframe" []
 let frameT = varT "frame" []
-let labelT = varT "label" []
-let handlerT = varT "handler" []
 let stateT = varT "state" []
 let instrT = varT "instr" []
 let admininstrT = varT "admininstr" []
-let funcT = varT "func" []
+let evalctxT = varT "evalctx" []
