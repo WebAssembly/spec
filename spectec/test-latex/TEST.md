@@ -3,7 +3,7 @@
 ```sh
 $ (../src/exe-watsup/main.exe test.watsup --latex)
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{1_{{\mathit{xyz}}_y}}) & = & 0 \\
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{2_{{\mathsf{xyz}}_y}}) & = & 0 \\
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{3_{{\mathsf{atom}}_y}}) & = & 0 \\
@@ -11,13 +11,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{curried}}}_{n_1}(n_2) & = & n_1 + n_2 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{testfuse}} & ::= & {\mathsf{ab}}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\
 & & | & {\mathsf{cd}}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\
 & & | & {\mathsf{ef}}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\
@@ -33,7 +33,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{InfixArrow}} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\mathit{InfixArrow{\kern-0.1em\scriptstyle 2}}} & ::= & {\mathbb{N}^\ast} \Rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\mathit{AtomArrow}} & ::= & {\mathbb{N}^?}~{\rightarrow}_{{\mathbb{N}^\ast}}\,{\mathbb{N}^\ast} \\
@@ -42,7 +42,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{InfixArrow}}(a \rightarrow_{c} {}) & = & 0 \\
 {\mathrm{InfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{InfixArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
@@ -54,7 +54,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{c} {}) & = & 0 \\
 {\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{c} b) & = & 0 \\
 {\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{{c^\ast}} b) & = & 0 \\
@@ -66,7 +66,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{AtomArrow}}(a~{\rightarrow}_{c}) & = & 0 \\
 {\mathrm{AtomArrow}}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\mathrm{AtomArrow}}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
@@ -78,7 +78,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{c}) & = & 0 \\
 {\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{c}\,b) & = & 0 \\
 {\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{{c^\ast}}\,b) & = & 0 \\
@@ -90,14 +90,14 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{MacroInfixArrow}} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\mathit{MacroAtomArrow}} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{MacroInfixArrow}}(a \rightarrow_{c} {}) & = & 0 \\
 {\mathrm{MacroInfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{MacroInfixArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
@@ -109,7 +109,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{MacroAtomArrow}}(a \rightarrow_{c} {}) & = & 0 \\
 {\mathrm{MacroAtomArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{MacroAtomArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
@@ -121,14 +121,14 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{ShowInfixArrow}} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\mathit{ShowAtomArrow}} & ::= & {\mathbb{N}^\ast}~{\rightarrow}_{{\mathbb{N}^\ast}}\,{\mathbb{N}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{ShowInfixArrow}}(a \rightarrow_{c} ) & = & 0 \\
 {\mathrm{ShowInfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{ShowInfixArrow}}(a \rightarrow_{({c^\ast})} b) & = & 0 \\
@@ -140,7 +140,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{c}) & = & 0 \\
 {\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{({c^\ast})}\,b) & = & 0 \\
@@ -152,14 +152,14 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{ShowMacroInfixArrow}} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\mathit{ShowMacroAtomArrow}} & ::= & {\mathbb{N}^\ast}~{\rightarrow}_{{\mathbb{N}^\ast}}\,{\mathbb{N}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{c} ) & = & 0 \\
 {\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{({c^\ast})} b) & = & 0 \\
@@ -171,7 +171,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{c}) & = & 0 \\
 {\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{({c^\ast})}\,b) & = & 0 \\
@@ -187,7 +187,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{fii}} & ::= & \mathsf{fii} \\
 & {\mathit{faa}} & ::= & \mathsf{faa} \\
 & {\mathit{foo}} & ::= & \mathsf{foo} \\
@@ -200,21 +200,23 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{macros{\kern-0.1em\scriptstyle 1}}} & = & 0
-  &\qquad \mbox{if}~{\mathit{fii}} = \mathsf{fii} \\
-  &&&\qquad {\land}~{\mathit{faa}} = \mathsf{faa} \\
-  &&&\qquad {\land}~{\mathit{foo}} = \mathsf{foo} \\
-  &&&\qquad {\land}~{\mathit{fuu}} = \mathsf{fuu} \\
-  &&&\qquad {\land}~{\mathit{foobar}} = \mathsf{bar} \\
-  &&&\qquad {\land}~{\mathit{fooboo}} = \mathsf{boo} \\
-  &&&\qquad {\land}~{\mathit{fob}} = \mathsf{baz} \\
-  &&&\qquad {\land}~{\mathit{fib}} = \mathsf{boi} \\
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{macros{\kern-0.1em\scriptstyle 1}}} & = & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ {\mathit{fii}} = \mathsf{fii} \\
+{\land}~ {\mathit{faa}} = \mathsf{faa} \\
+{\land}~ {\mathit{foo}} = \mathsf{foo} \\
+{\land}~ {\mathit{fuu}} = \mathsf{fuu} \\
+{\land}~ {\mathit{foobar}} = \mathsf{bar} \\
+{\land}~ {\mathit{fooboo}} = \mathsf{boo} \\
+{\land}~ {\mathit{fob}} = \mathsf{baz} \\
+{\land}~ {\mathit{fib}} = \mathsf{boi} \\
+\end{array} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{ufii}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) & ::= & \mathsf{ufii} \\
 & {{\mathit{ufaa}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) & ::= & \mathsf{ufaa} \\
 & {{\mathit{ufoo}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) & ::= & \mathsf{ufoo} \\
@@ -227,137 +229,139 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{macros{\kern-0.1em\scriptstyle 2}}} & = & 0
-  &\qquad \mbox{if}~{\mathit{ufii}} = \mathsf{ufii} \\
-  &&&\qquad {\land}~{\mathit{ufaa}} = \mathsf{ufaa} \\
-  &&&\qquad {\land}~{\mathit{ufoo}} = \mathsf{ufoo} \\
-  &&&\qquad {\land}~{\mathit{ufuu}} = \mathsf{ufuu} \\
-  &&&\qquad {\land}~{\mathit{ubar}} = \mathsf{ubar} \\
-  &&&\qquad {\land}~{\mathit{uboo}} = \mathsf{uboo} \\
-  &&&\qquad {\land}~{\mathit{ubaz}} = \mathsf{ubaz} \\
-  &&&\qquad {\land}~{\mathit{uboi}} = \mathsf{uboi} \\
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{macros{\kern-0.1em\scriptstyle 2}}} & = & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ {\mathit{ufii}} = \mathsf{ufii} \\
+{\land}~ {\mathit{ufaa}} = \mathsf{ufaa} \\
+{\land}~ {\mathit{ufoo}} = \mathsf{ufoo} \\
+{\land}~ {\mathit{ufuu}} = \mathsf{ufuu} \\
+{\land}~ {\mathit{ubar}} = \mathsf{ubar} \\
+{\land}~ {\mathit{uboo}} = \mathsf{uboo} \\
+{\land}~ {\mathit{ubaz}} = \mathsf{ubaz} \\
+{\land}~ {\mathit{uboi}} = \mathsf{uboi} \\
+\end{array} \\
 \end{array}
 $$
 
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{fii}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{faa}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{foo}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{fuu}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{foobar}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{fooboo}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{fob}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{fib}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufii}}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufaa}}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufoo}}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufuu}}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufoobar}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufooboo}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufob}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufib}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{foo\_bar}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{foo\_boo}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufoo\_bar}}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufoo\_boo}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
@@ -365,7 +369,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{parent}} & ::= & \mathsf{aa} \\
 & & | & \mathsf{aax} \\
 & & | & \mathsf{aay} \\
@@ -390,7 +394,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{parent}}(\mathsf{aa}) & = & 0 \\
 {\mathrm{parent}}(\mathsf{aax}) & = & 0 \\
 {\mathrm{parent}}(\mathsf{aay}) & = & 0 \\
@@ -415,7 +419,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{parentimplicit}}(t) & ::= & \mathsf{pp} \\
 & & | & \mathsf{ppx} \\
 & & | & \mathsf{ppy} \\
@@ -432,7 +436,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{parentimpl}}(\mathsf{pp}) & = & 0 \\
 {\mathrm{parentimpl}}(\mathsf{ppx}) & = & 0 \\
 {\mathrm{parentimpl}}(\mathsf{ppy}) & = & 0 \\
@@ -449,13 +453,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{indirect}} & ::= & {\mathit{parentimplicit}}(\mathbb{N}) \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{indirect}}(\mathsf{pp}) & = & 0 \\
 {\mathrm{indirect}}(\mathsf{ppx}) & = & 0 \\
 {\mathrm{indirect}}(\mathsf{ppy}) & = & 0 \\
@@ -472,7 +476,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{family}}(0) & ::= & \mathsf{ff} \\
 & {\mathit{family}}(1) & ::= & \mathsf{gg} \\
 & {\mathit{family}}(2) & ::= & \mathsf{hh} \\
@@ -480,7 +484,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{family}}(0, \mathsf{ff}) & = & 0 \\
 {\mathrm{family}}(1, \mathsf{gg}) & = & 0 \\
 {\mathrm{family}}(2, \mathsf{hh}) & = & 0 \\
@@ -488,13 +492,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{child}} & ::= & {\mathit{parent}} ~|~ {\mathit{family}}(0) ~|~ {\mathit{indirect}} ~|~ \mathsf{zzz} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{child}}(\mathsf{aa}) & = & 0 \\
 {\mathrm{child}}(\mathsf{aax}) & = & 0 \\
 {\mathrm{child}}(\mathsf{aay}) & = & 0 \\
@@ -533,13 +537,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{grandchild}} & ::= & {\mathit{child}} ~|~ \mathsf{zzzz} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{grandchild}}(\mathsf{aa}) & = & 0 \\
 {\mathrm{grandchild}}(\mathsf{aax}) & = & 0 \\
 {\mathrm{grandchild}}(\mathsf{aay}) & = & 0 \\
@@ -581,21 +585,22 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{rec}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{fa}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fb}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fc}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fd}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fee}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fff}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fgg}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fhh}~{\mathbb{N}^\ast} \}\end{array} \\
+\mathsf{fa}~{\mathbb{N}^\ast} \\
+\mathsf{fb}~{\mathbb{N}^\ast} \\
+\mathsf{fc}~{\mathbb{N}^\ast} \\
+\mathsf{fd}~{\mathbb{N}^\ast} \\
+\mathsf{fee}~{\mathbb{N}^\ast} \\
+\mathsf{fff}~{\mathbb{N}^\ast} \\
+\mathsf{fgg}~{\mathbb{N}^\ast} \\
+\mathsf{fhh}~{\mathbb{N}^\ast} \} \\
+\end{array} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{proj}}(r, 0) & = & r{.}\mathsf{fa} \\
 {\mathrm{proj}}(r, 1) & = & r{.}\mathsf{fb} \\
 {\mathrm{proj}}(r, 2) & = & r{.}\mathsf{fc} \\
@@ -608,7 +613,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{upd}}(r, 0) & = & r{}[{.}\mathsf{fa} = 0] \\
 {\mathrm{upd}}(r, 1) & = & r{}[{.}\mathsf{fb} = 0] \\
 {\mathrm{upd}}(r, 2) & = & r{}[{.}\mathsf{fc} = 0] \\
@@ -621,7 +626,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{ext}}(r, 0) & = & r{}[{.}\mathsf{fa} \mathrel{{=}{\oplus}} 0] \\
 {\mathrm{ext}}(r, 1) & = & r{}[{.}\mathsf{fb} \mathrel{{=}{\oplus}} 0] \\
 {\mathrm{ext}}(r, 2) & = & r{}[{.}\mathsf{fc} \mathrel{{=}{\oplus}} 0] \\
@@ -634,21 +639,22 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{recimpl}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{fia}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fib}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fic}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fid}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fiee}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fiff}~{\mathbb{N}^\ast},\; \\
-  \mathsf{figg}~{\mathbb{N}^\ast},\; \\
-  \mathsf{fihh}~{\mathbb{N}^\ast} \}\end{array} \\
+\mathsf{fia}~{\mathbb{N}^\ast} \\
+\mathsf{fib}~{\mathbb{N}^\ast} \\
+\mathsf{fic}~{\mathbb{N}^\ast} \\
+\mathsf{fid}~{\mathbb{N}^\ast} \\
+\mathsf{fiee}~{\mathbb{N}^\ast} \\
+\mathsf{fiff}~{\mathbb{N}^\ast} \\
+\mathsf{figg}~{\mathbb{N}^\ast} \\
+\mathsf{fihh}~{\mathbb{N}^\ast} \} \\
+\end{array} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{rproj}}(r, 0) & = & r{.}\mathsf{fia} \\
 {\mathrm{rproj}}(r, 1) & = & r{.}\mathsf{fib} \\
 {\mathrm{rproj}}(r, 2) & = & r{.}\mathsf{fic} \\
@@ -663,7 +669,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{cona}} & ::= & \mathbb{N}~\mathsf{coa}~\mathbb{N} \\
 & {\mathit{conb}} & ::= & \mathbb{N}~\mathsf{cob}~\mathbb{N} \\
 & {\mathit{conc}} & ::= & \mathbb{N}~\mathsf{coc}~\mathbb{N} \\
@@ -678,9 +684,10 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & C & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
- \}\end{array} \\
+ \} \\
+\end{array} \\
 \end{array}
 $$
 
@@ -711,7 +718,7 @@ C \vdash {\mathit{parent}} \leq \mathsf{aa}
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Reval}]} \quad & {\mathit{parent}} ; {\mathit{child}} & \hookrightarrow & \mathsf{aa} ; \mathsf{bbb} \\
 \end{array}
 $$
@@ -743,7 +750,7 @@ C \vdash {\mathit{parent}} \leq \mathsf{aa}
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Reval\_macro}]} \quad & {\mathit{parent}} ; {\mathit{child}} & \hookrightarrow & \mathsf{aa} ; \mathsf{bbb} \\
 \end{array}
 $$
@@ -775,7 +782,7 @@ C \vdash {\mathit{parent}} \leq \mathsf{aa}
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Reval\_nomacro}]} \quad & {\mathit{parent}} ; {\mathit{child}} & \hookrightarrow & \mathsf{aa} ; \mathsf{bbb} \\
 \end{array}
 $$
@@ -785,7 +792,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{argh}} & ::= & \mathsf{argh} \\
 & {\mathit{borg}} & ::= & \mathsf{borg} \\
 & {\mathit{curb}} & ::= & \mathsf{curb} \\
@@ -797,7 +804,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{dotstypex}} & ::= & {\mathit{argh}} ~|~ \mathsf{dx{\scriptstyle 1}} ~|~ \dots \\
 & {\mathit{dotstypey}} & ::= & {\mathit{argh}} ~|~ \mathsf{dy{\scriptstyle 1}} ~|~ \dots \\
 & {\mathit{dotstypex}} & ::= & \dots ~|~ {\mathit{borg}} ~|~ \mathsf{dx{\scriptstyle 2}} ~|~ \dots \\
@@ -820,100 +827,140 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{casetype}} & ::= & \mathsf{la}~\mathbb{N}~{\mathit{argh}}
-  &\qquad \mbox{if}~\mathbb{N} = 0 \\
-  &&&&\qquad {\land}~{\mathit{argh}} \neq \mathsf{argh} \\
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{casetype}} & ::= & \mathsf{la}~\mathbb{N}~{\mathit{argh}} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ \mathbb{N} = 0 \\
+{\land}~ {\mathit{argh}} \neq \mathsf{argh} \\
+\end{array} \\
 & & | & \mathsf{lb}~{\mathit{borg}}~{\mathit{curb}} \\
-& & | & \mathsf{lc}~{\mathit{dork}}_1~{\mathit{dork}}_2
-  &\qquad \mbox{if}~{\mathit{dork}}_1 \neq {\mathit{dork}}_2 \\
-& & | & \mathsf{ld}~{\mathit{argh}}~\mathbb{N}
-  &\qquad \mbox{if}~\mathbb{N} > 0 \\
-  &&&&\qquad {\land}~{\mathit{argh}} \neq \mathsf{argh} \\
-& & | & \mathsf{le}~{\mathit{nat}}_1~{\mathit{nat}}_2
-  &\qquad \mbox{if}~{\mathit{nat}}_1 \leq {\mathit{nat}}_2 \\
+& & | & \mathsf{lc}~{\mathit{dork}}_1~{\mathit{dork}}_2 & \quad \mbox{if}~ {\mathit{dork}}_1 \neq {\mathit{dork}}_2 \\
+& & | & \mathsf{ld}~{\mathit{argh}}~\mathbb{N} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ \mathbb{N} > 0 \\
+{\land}~ {\mathit{argh}} \neq \mathsf{argh} \\
+\end{array} \\
+& & | & \mathsf{le}~{\mathit{nat}}_1~{\mathit{nat}}_2 & \quad \mbox{if}~ {\mathit{nat}}_1 \leq {\mathit{nat}}_2 \\
 & & | & \mathsf{lfa}~{\mathit{borg}} ~|~ \mathsf{lfb}~{\mathit{borg}} ~|~ \mathsf{lfc}~{\mathit{borg}} \\
-& & | & \begin{array}[t]{@{}l@{}} \mathsf{lh}~{\mathit{borg}} \\ {\mathit{argh}}~{\mathit{eerk}} \end{array} \\
-& & | & \begin{array}[t]{@{}l@{}} \mathsf{li}~{\mathit{borg}} \\ {\mathit{argh}}~{\mathit{eerk}} \end{array}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-& & | & \multicolumn{2}{l@{}}{ \mathsf{lj}~{\mathit{borg}} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-& & | & \multicolumn{2}{l@{}}{ \begin{array}[t]{@{}l@{}} \mathsf{lk}~{\mathit{borg}} \\ {\mathit{argh}}~{\mathit{eerk}} \end{array} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
+& & | & \begin{array}[t]{@{}l@{}} \mathsf{lh}~{\mathit{borg}} \\
+  {\mathit{argh}}~{\mathit{eerk}} \end{array} \\
+& & | & \begin{array}[t]{@{}l@{}} \mathsf{li}~{\mathit{borg}} \\
+  {\mathit{argh}}~{\mathit{eerk}} \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+& & | & \mathsf{lj}~{\mathit{borg}} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+& & | & \begin{array}[t]{@{}l@{}} \mathsf{lk}~{\mathit{borg}} \\
+  {\mathit{argh}}~{\mathit{eerk}} \end{array} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
 \end{array}
 $$
 
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{gram}} & ::= & \mbox{\texttt{`GA'}}~~\mbox{\texttt{`GB'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{gram}} & ::= & \mbox{\texttt{`GA'}}~~\mbox{\texttt{`GB'}} & \quad\Rightarrow\quad & 0 & \quad \mbox{if}~ 0 < 1 \\
 & & | & \mbox{\texttt{`GB'}}~~\mbox{\texttt{`GC'}}~~\mbox{\texttt{`GD'}} & \quad\Rightarrow\quad & 0 \\
-& & | & \mbox{\texttt{`GC'}}~~\mbox{\texttt{`GD'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
-& & | & \mbox{\texttt{`GD'}}~~\mbox{\texttt{`GE'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&&&\qquad {\land}~1 > 0 \\
-& & | & \mbox{\texttt{`GE'}}~~\mbox{\texttt{`GF'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
+& & | & \mbox{\texttt{`GC'}}~~\mbox{\texttt{`GD'}} & \quad\Rightarrow\quad & 0 & \quad \mbox{if}~ 0 < 1 \\
+& & | & \mbox{\texttt{`GD'}}~~\mbox{\texttt{`GE'}} & \quad\Rightarrow\quad & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+& & | & \mbox{\texttt{`GE'}}~~\mbox{\texttt{`GF'}} & \quad\Rightarrow\quad & 0 & \quad \mbox{if}~ 0 < 1 \\
 & & | & \mbox{\texttt{`GFA'}}~~\mbox{\texttt{`GF'}} ~\Rightarrow~ 0 ~|~ \mbox{\texttt{`GFB'}}~~\mbox{\texttt{`GF'}} ~\Rightarrow~ 1 ~|~ \mbox{\texttt{`GFC'}} & \quad\Rightarrow\quad & 2 \\
-& & | & \mbox{\texttt{`GG'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad 0 } \\
-  &&&&&
-  &\qquad \mbox{if}~1 > 0 \\
-& & | & \mbox{\texttt{`GH'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad 0 } \\
-  &&&&&
-  &\qquad \mbox{if}~1 > 0 \\
-& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array} } \\
-  &&&&&
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&&&\qquad {\land}~1 > 0 \\
+& & | & \mbox{\texttt{`GG'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} 0 & \quad \mbox{if}~ 1 > 0 \end{array} } \\
+& & | & \mbox{\texttt{`GH'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} 0 & \quad \mbox{if}~ 1 > 0 \end{array} } \\
+& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \\
 & & | & \mbox{\texttt{`GJ'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 \\
-& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&&&\qquad {\land}~1 > 0 \\
-& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & \multicolumn{2}{l@{}}{ 0~1~2 } \\
-  &&&&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array} } \\
-  &&&&& \\
-  &&&&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
+& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & 0~1~2 &   \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \end{array} } \\
 \end{array}
 $$
 
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{func}}(n, m) & = & 0 \\
-{\mathrm{func}}(n, m) & = & 0
-  &\qquad \mbox{if}~n < m \\
-{\mathrm{func}}(n, m) & = & 0
-  &\qquad \mbox{if}~n > m \\
-  &&&\qquad {\land}~m < n \\
-{\mathrm{func}}(n, m) & = & 0~1
-  &\qquad \mbox{if}~n < m \\
-  &&&\qquad {\land}~m > n \\
-{\mathrm{func}}(n, m) & = & 0~1
-  &\qquad \mbox{if}~n < m \\
-  &&&\qquad {\land}~m > n \\
-{\mathrm{func}}(n, m) & = & \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array}
-  &\qquad \mbox{if}~n < m \\
-  &&&\qquad {\land}~m > n \\
-{\mathrm{func}}(n, m) & = & \multicolumn{2}{l@{}}{ 0~1~2 } \\
-  && \multicolumn{2}{l@{}}{\quad \mbox{if}~n < m} \\
-  && \multicolumn{2}{l@{}}{\quad {\land}~m > n} \\
-{\mathrm{func}}(n, m) & = & \multicolumn{2}{l@{}}{ \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array} } \\
-  && \multicolumn{2}{l@{}}{\quad \mbox{if}~n < m} \\
-  && \multicolumn{2}{l@{}}{\quad {\land}~m > n} \\
+{\mathrm{func}}(n, m) & = & 0 & \quad \mbox{if}~ n < m \\
+{\mathrm{func}}(n, m) & = & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n > m \\
+{\land}~ m < n \\
+\end{array} \\
+{\mathrm{func}}(n, m) & = & 0~1 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \\
+{\mathrm{func}}(n, m) & = &  & \\
+ \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} 0~1 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \end{array} } \\
+{\mathrm{func}}(n, m) & = &  & \\
+ \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \end{array} } \\
+{\mathrm{func}}(n, m) & = & 0~1~2 &   \\
+&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} } \\
+{\mathrm{func}}(n, m) & = &  & \\
+ \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \end{array} } \end{array} } \\
 \end{array}
 $$
 
@@ -922,45 +969,66 @@ $$
 $\boxed{{\mathit{argh}}~{\mathit{borg}} \rightarrow {\mathit{curb}}~{\mathit{dork}}}$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Rel{-}A}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}} \\
-{[\textsc{\scriptsize Rel{-}B}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}}
-  &\qquad \mbox{if}~0 < 1 \\
-{[\textsc{\scriptsize Rel{-}C}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}D}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}E}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad {\mathit{curb}}~{\mathit{dork}} } \\
-  &&&
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}F}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\ {\mathit{dork}} \end{array}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}G}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\ {\mathit{dork}} \end{array} } \\
-  &&&
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}DD}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \multicolumn{2}{l@{}}{ {\mathit{curb}}~{\mathit{dork}} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-{[\textsc{\scriptsize Rel{-}EE}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad {\mathit{curb}}~{\mathit{dork}} } \\
-  &&& \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-{[\textsc{\scriptsize Rel{-}FF}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \multicolumn{2}{l@{}}{ \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\ {\mathit{dork}} \end{array} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-{[\textsc{\scriptsize Rel{-}GG}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\ {\mathit{dork}} \end{array} } \\
-  &&& \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
+{[\textsc{\scriptsize Rel{-}B}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}} & \quad \mbox{if}~ 0 < 1 \\
+{[\textsc{\scriptsize Rel{-}C}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+{[\textsc{\scriptsize Rel{-}D}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+{[\textsc{\scriptsize Rel{-}E}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} {\mathit{curb}}~{\mathit{dork}} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \\
+{[\textsc{\scriptsize Rel{-}F}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\
+  {\mathit{dork}} \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+{[\textsc{\scriptsize Rel{-}G}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\
+  {\mathit{dork}} \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \\
+{[\textsc{\scriptsize Rel{-}DD}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & {\mathit{curb}}~{\mathit{dork}} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+{[\textsc{\scriptsize Rel{-}EE}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} {\mathit{curb}}~{\mathit{dork}} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \end{array} } \\
+{[\textsc{\scriptsize Rel{-}FF}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow & \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\
+  {\mathit{dork}} \end{array} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+{[\textsc{\scriptsize Rel{-}GG}]} \quad & {\mathit{argh}}~{\mathit{borg}} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} {\mathit{curb}} \\
+  {\mathit{dork}} \end{array} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \end{array} } \\
 \end{array}
 $$
 
@@ -970,7 +1038,7 @@ $$
 ```sh
 $ (../src/exe-watsup/main.exe test.watsup --latex --latex-macros)
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{1_{{\mathit{xyz}}_y}}) & = & 0 \\
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{2_{{\mathsf{xyz}}_y}}) & = & 0 \\
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{3_{{\mathsf{atom}}_y}}) & = & 0 \\
@@ -978,13 +1046,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\curried}}_{n_1}(n_2) & = & n_1 + n_2 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\testfuse} & ::= & {\AB}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\
 & & | & {\CD}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\
 & & | & {\EF}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\
@@ -1000,7 +1068,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\InfixArrow} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\InfixArrow2} & ::= & {\mathbb{N}^\ast} \Rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\AtomArrow} & ::= & {\mathbb{N}^?}~{\rightarrow}_{{\mathbb{N}^\ast}}\,{\mathbb{N}^\ast} \\
@@ -1009,7 +1077,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\InfixArrow}(a \rightarrow_{c} {}) & = & 0 \\
 {\InfixArrow}(a \rightarrow_{c} b) & = & 0 \\
 {\InfixArrow}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
@@ -1021,7 +1089,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\InfixArrow2}(a \Rightarrow_{c} {}) & = & 0 \\
 {\InfixArrow2}(a \Rightarrow_{c} b) & = & 0 \\
 {\InfixArrow2}(a \Rightarrow_{{c^\ast}} b) & = & 0 \\
@@ -1033,7 +1101,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\AtomArrow}(a~{\rightarrow}_{c}) & = & 0 \\
 {\AtomArrow}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\AtomArrow}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
@@ -1045,7 +1113,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\AtomArrow2}(a~{\Rightarrow}_{c}) & = & 0 \\
 {\AtomArrow2}(a~{\Rightarrow}_{c}\,b) & = & 0 \\
 {\AtomArrow2}(a~{\Rightarrow}_{{c^\ast}}\,b) & = & 0 \\
@@ -1057,14 +1125,14 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\MacroInfixArrow} & ::= & {\mathbb{N}^\ast} \to_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\MacroAtomArrow} & ::= & {\mathbb{N}^\ast} \to_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\MacroInfixArrow}(a \to_{c} {}) & = & 0 \\
 {\MacroInfixArrow}(a \to_{c} b) & = & 0 \\
 {\MacroInfixArrow}(a \to_{{c^\ast}} b) & = & 0 \\
@@ -1076,7 +1144,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\MacroAtomArrow}(a \to_{c} {}) & = & 0 \\
 {\MacroAtomArrow}(a \to_{c} b) & = & 0 \\
 {\MacroAtomArrow}(a \to_{{c^\ast}} b) & = & 0 \\
@@ -1088,14 +1156,14 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\ShowInfixArrow} & ::= & {\mathbb{N}^\ast} \rightarrow_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\ShowAtomArrow} & ::= & {\mathbb{N}^\ast}~{\rightarrow}_{{\mathbb{N}^\ast}}\,{\mathbb{N}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\ShowInfixArrow}(a \rightarrow_{c} ) & = & 0 \\
 {\ShowInfixArrow}(a \rightarrow_{c} b) & = & 0 \\
 {\ShowInfixArrow}(a \rightarrow_{({c^\ast})} b) & = & 0 \\
@@ -1107,7 +1175,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\ShowAtomArrow}(a~{\rightarrow}_{c}) & = & 0 \\
 {\ShowAtomArrow}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\ShowAtomArrow}(a~{\rightarrow}_{({c^\ast})}\,b) & = & 0 \\
@@ -1119,14 +1187,14 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\ShowMacroInfixArrow} & ::= & {\mathbb{N}^\ast} \to_{{\mathbb{N}^\ast}} {\mathbb{N}^\ast} \\
 & {\ShowMacroAtomArrow} & ::= & {\mathbb{N}^\ast}~{\to}_{{\mathbb{N}^\ast}}\,{\mathbb{N}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\ShowMacroInfixArrow}(a \to_{c} ) & = & 0 \\
 {\ShowMacroInfixArrow}(a \to_{c} b) & = & 0 \\
 {\ShowMacroInfixArrow}(a \to_{({c^\ast})} b) & = & 0 \\
@@ -1138,7 +1206,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\ShowMacroAtomArrow}(a~{\to}_{c}) & = & 0 \\
 {\ShowMacroAtomArrow}(a~{\to}_{c}\,b) & = & 0 \\
 {\ShowMacroAtomArrow}(a~{\to}_{({c^\ast})}\,b) & = & 0 \\
@@ -1154,7 +1222,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\fii} & ::= & \FII \\
 & {\faa} & ::= & \FAA \\
 & {\XfooYfooZ} & ::= & \FOO \\
@@ -1167,21 +1235,23 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
-{\macros1} & = & 0
-  &\qquad \mbox{if}~{\fii} = \FII \\
-  &&&\qquad {\land}~{\faa} = \FAA \\
-  &&&\qquad {\land}~{\XfooYfooZ} = \FOO \\
-  &&&\qquad {\land}~{\mathit{fuu}} = \FUU \\
-  &&&\qquad {\land}~{\foobar} = \BAR \\
-  &&&\qquad {\land}~{\fooboo} = \BOO \\
-  &&&\qquad {\land}~{\XfobYfobZ} = \BAZ \\
-  &&&\qquad {\land}~{\mathit{fib}} = \BOI \\
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\macros1} & = & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ {\fii} = \FII \\
+{\land}~ {\faa} = \FAA \\
+{\land}~ {\XfooYfooZ} = \FOO \\
+{\land}~ {\mathit{fuu}} = \FUU \\
+{\land}~ {\foobar} = \BAR \\
+{\land}~ {\fooboo} = \BOO \\
+{\land}~ {\XfobYfobZ} = \BAZ \\
+{\land}~ {\mathit{fib}} = \BOI \\
+\end{array} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\ufii}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) & ::= & \UFII \\
 & {{\ufaa}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) & ::= & \UFAA \\
 & {{\XufooYufooZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) & ::= & \UFOO \\
@@ -1194,137 +1264,139 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
-{\macros2} & = & 0
-  &\qquad \mbox{if}~{\mathit{ufii}} = \UFII \\
-  &&&\qquad {\land}~{\mathit{ufaa}} = \UFAA \\
-  &&&\qquad {\land}~{\mathit{ufoo}} = \UFOO \\
-  &&&\qquad {\land}~{\mathit{ufuu}} = \UFUU \\
-  &&&\qquad {\land}~{\mathit{ubar}} = \UBAR \\
-  &&&\qquad {\land}~{\mathit{uboo}} = \UBOO \\
-  &&&\qquad {\land}~{\mathit{ubaz}} = \UBAZ \\
-  &&&\qquad {\land}~{\mathit{uboi}} = \UBOI \\
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\macros2} & = & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ {\mathit{ufii}} = \UFII \\
+{\land}~ {\mathit{ufaa}} = \UFAA \\
+{\land}~ {\mathit{ufoo}} = \UFOO \\
+{\land}~ {\mathit{ufuu}} = \UFUU \\
+{\land}~ {\mathit{ubar}} = \UBAR \\
+{\land}~ {\mathit{uboo}} = \UBOO \\
+{\land}~ {\mathit{ubaz}} = \UBAZ \\
+{\land}~ {\mathit{uboi}} = \UBOI \\
+\end{array} \\
 \end{array}
 $$
 
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\fii} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\faa} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\XfooYfooZ} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{fuu}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{foobar}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{fooboo}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{XfobYfobZ}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathit{fib}} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\ufii}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\ufaa}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\XufooYufooZ}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ufuu}}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufoobar}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufooboo}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{XufobYufobZ}}}_{x}(y, {\mathit{XzYzZ}}) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{ufib}}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\foobar} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\fooboo} & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\ufoobar}}_{x}(y) & = & 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\ufooboo}}_{x}(y, z) & = & 0 \\
 \end{array}
 $$
@@ -1332,7 +1404,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\parent} & ::= & \AA \\
 & & | & \AAX \\
 & & | & \xAAYyAAYz \\
@@ -1357,7 +1429,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\parent}(\AA) & = & 0 \\
 {\parent}(\AAX) & = & 0 \\
 {\parent}(\xAAYyAAYz) & = & 0 \\
@@ -1382,7 +1454,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\parentimplicit}(t) & ::= & \PP \\
 & & | & \PPX \\
 & & | & \PPYxPPY \\
@@ -1399,7 +1471,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\parentimpl}(\PPimpl) & = & 0 \\
 {\parentimpl}(\PPX) & = & 0 \\
 {\parentimpl}(\PPYxPPY) & = & 0 \\
@@ -1416,13 +1488,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\indirect} & ::= & {\parentimplicit}(\mathbb{N}) \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\indirect}(\PPimpl) & = & 0 \\
 {\indirect}(\PPX) & = & 0 \\
 {\indirect}(\PPYxPPY) & = & 0 \\
@@ -1439,7 +1511,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\family}(0) & ::= & \FF \\
 & {\family}(1) & ::= & \GGfamily \\
 & {\family}(2) & ::= & \xHHy \\
@@ -1447,7 +1519,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\family}(0, \FFfamily) & = & 0 \\
 {\family}(1, \GGfamily) & = & 0 \\
 {\family}(2, \xHHy) & = & 0 \\
@@ -1455,13 +1527,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\child} & ::= & {\parent} ~|~ {\family}(0) ~|~ {\indirect} ~|~ \ZZZ \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\child}(\AA) & = & 0 \\
 {\child}(\AAX) & = & 0 \\
 {\child}(\xAAYyAAYz) & = & 0 \\
@@ -1500,13 +1572,13 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\grandchild} & ::= & {\child} ~|~ \ZZZZ \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\grandchild}(\AA) & = & 0 \\
 {\grandchild}(\AAX) & = & 0 \\
 {\grandchild}(\xAAYyAAYz) & = & 0 \\
@@ -1548,21 +1620,22 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\rec} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\FA~{\mathbb{N}^\ast},\; \\
-  \FB~{\mathbb{N}^\ast},\; \\
-  \xFCyFCz~{\mathbb{N}^\ast},\; \\
-  \mathsf{fd}~{\mathbb{N}^\ast},\; \\
-  \FEE~{\mathbb{N}^\ast},\; \\
-  \FFF~{\mathbb{N}^\ast},\; \\
-  \xFGGyFGGz~{\mathbb{N}^\ast},\; \\
-  \mathsf{fhh}~{\mathbb{N}^\ast} \}\end{array} \\
+\FA~{\mathbb{N}^\ast} \\
+\FB~{\mathbb{N}^\ast} \\
+\xFCyFCz~{\mathbb{N}^\ast} \\
+\mathsf{fd}~{\mathbb{N}^\ast} \\
+\FEE~{\mathbb{N}^\ast} \\
+\FFF~{\mathbb{N}^\ast} \\
+\xFGGyFGGz~{\mathbb{N}^\ast} \\
+\mathsf{fhh}~{\mathbb{N}^\ast} \} \\
+\end{array} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\proj}(r, 0) & = & r{.}\FA \\
 {\proj}(r, 1) & = & r{.}\FB \\
 {\proj}(r, 2) & = & r{.}\xFCyFCz \\
@@ -1575,7 +1648,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\upd}(r, 0) & = & r{}[{.}\FA = 0] \\
 {\upd}(r, 1) & = & r{}[{.}\FB = 0] \\
 {\upd}(r, 2) & = & r{}[{.}\xFCyFCz = 0] \\
@@ -1588,7 +1661,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\ext}(r, 0) & = & r{}[{.}\FA \mathrel{{=}{\oplus}} 0] \\
 {\ext}(r, 1) & = & r{}[{.}\FB \mathrel{{=}{\oplus}} 0] \\
 {\ext}(r, 2) & = & r{}[{.}\xFCyFCz \mathrel{{=}{\oplus}} 0] \\
@@ -1601,21 +1674,22 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\recimpl} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\RFIA~{\mathbb{N}^\ast},\; \\
-  \FIB~{\mathbb{N}^\ast},\; \\
-  \xFICyFICz~{\mathbb{N}^\ast},\; \\
-  \mathsf{fid}~{\mathbb{N}^\ast},\; \\
-  \RFIEE~{\mathbb{N}^\ast},\; \\
-  \FIFF~{\mathbb{N}^\ast},\; \\
-  \xFIGGyFIGGz~{\mathbb{N}^\ast},\; \\
-  \mathsf{fihh}~{\mathbb{N}^\ast} \}\end{array} \\
+\RFIA~{\mathbb{N}^\ast} \\
+\FIB~{\mathbb{N}^\ast} \\
+\xFICyFICz~{\mathbb{N}^\ast} \\
+\mathsf{fid}~{\mathbb{N}^\ast} \\
+\RFIEE~{\mathbb{N}^\ast} \\
+\FIFF~{\mathbb{N}^\ast} \\
+\xFIGGyFIGGz~{\mathbb{N}^\ast} \\
+\mathsf{fihh}~{\mathbb{N}^\ast} \} \\
+\end{array} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\rproj}(r, 0) & = & r{.}\RFIA \\
 {\rproj}(r, 1) & = & r{.}\FIB \\
 {\rproj}(r, 2) & = & r{.}\xFICyFICz \\
@@ -1630,7 +1704,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\cona} & ::= & \mathbb{N}~\COA~\mathbb{N} \\
 & {\conb} & ::= & \mathbb{N}~\COB~\mathbb{N} \\
 & {\conc} & ::= & \mathbb{N}~\xCOCyCOCz~\mathbb{N} \\
@@ -1645,9 +1719,10 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\C} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
- \}\end{array} \\
+ \} \\
+\end{array} \\
 \end{array}
 $$
 
@@ -1678,7 +1753,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Reval}]} \quad & {\parent} ; {\child} & \hookrightarrow & \AA ; \BBB \\
 \end{array}
 $$
@@ -1710,7 +1785,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Reval\_macro}]} \quad & {\parent} ; {\child} & \sqarroweval & \AA ; \BBB \\
 \end{array}
 $$
@@ -1742,7 +1817,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Reval\_nomacro}]} \quad & {\parent} ; {\child} & \hookrightarrow & \AA ; \BBB \\
 \end{array}
 $$
@@ -1752,7 +1827,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\argh} & ::= & \ARGH \\
 & {\borg} & ::= & \BORG \\
 & {\curb} & ::= & \CURB \\
@@ -1764,7 +1839,7 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\dotstypex} & ::= & {\argh} ~|~ \DX1 ~|~ \dots \\
 & {\dotstypey} & ::= & {\argh} ~|~ \DY1 ~|~ \dots \\
 & {\dotstypex} & ::= & \dots ~|~ {\borg} ~|~ \DX2 ~|~ \dots \\
@@ -1787,100 +1862,140 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
-& {\casetype} & ::= & \LA~\mathbb{N}~{\argh}
-  &\qquad \mbox{if}~\mathbb{N} = 0 \\
-  &&&&\qquad {\land}~{\argh} \neq \ARGH \\
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\casetype} & ::= & \LA~\mathbb{N}~{\argh} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ \mathbb{N} = 0 \\
+{\land}~ {\argh} \neq \ARGH \\
+\end{array} \\
 & & | & \LB~{\borg}~{\curb} \\
-& & | & \LC~{\dork}_1~{\dork}_2
-  &\qquad \mbox{if}~{\dork}_1 \neq {\dork}_2 \\
-& & | & \LD~{\argh}~\mathbb{N}
-  &\qquad \mbox{if}~\mathbb{N} > 0 \\
-  &&&&\qquad {\land}~{\argh} \neq \ARGH \\
-& & | & \LE~{\mathit{nat}}_1~{\mathit{nat}}_2
-  &\qquad \mbox{if}~{\mathit{nat}}_1 \leq {\mathit{nat}}_2 \\
+& & | & \LC~{\dork}_1~{\dork}_2 & \quad \mbox{if}~ {\dork}_1 \neq {\dork}_2 \\
+& & | & \LD~{\argh}~\mathbb{N} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ \mathbb{N} > 0 \\
+{\land}~ {\argh} \neq \ARGH \\
+\end{array} \\
+& & | & \LE~{\mathit{nat}}_1~{\mathit{nat}}_2 & \quad \mbox{if}~ {\mathit{nat}}_1 \leq {\mathit{nat}}_2 \\
 & & | & \LFA~{\borg} ~|~ \LFB~{\borg} ~|~ \LFC~{\borg} \\
-& & | & \begin{array}[t]{@{}l@{}} \LH~{\borg} \\ {\argh}~{\eerk} \end{array} \\
-& & | & \begin{array}[t]{@{}l@{}} \LI~{\borg} \\ {\argh}~{\eerk} \end{array}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-& & | & \multicolumn{2}{l@{}}{ \LJ~{\borg} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-& & | & \multicolumn{2}{l@{}}{ \begin{array}[t]{@{}l@{}} \LK~{\borg} \\ {\argh}~{\eerk} \end{array} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
+& & | & \begin{array}[t]{@{}l@{}} \LH~{\borg} \\
+  {\argh}~{\eerk} \end{array} \\
+& & | & \begin{array}[t]{@{}l@{}} \LI~{\borg} \\
+  {\argh}~{\eerk} \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+& & | & \LJ~{\borg} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+& & | & \begin{array}[t]{@{}l@{}} \LK~{\borg} \\
+  {\argh}~{\eerk} \end{array} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
 \end{array}
 $$
 
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}l@{}l@{}}
-& {\gram} & ::= & \mbox{\texttt{`GA'}}~~\mbox{\texttt{`GB'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\gram} & ::= & \mbox{\texttt{`GA'}}~~\mbox{\texttt{`GB'}} & \quad\Rightarrow\quad & 0 & \quad \mbox{if}~ 0 < 1 \\
 & & | & \mbox{\texttt{`GB'}}~~\mbox{\texttt{`GC'}}~~\mbox{\texttt{`GD'}} & \quad\Rightarrow\quad & 0 \\
-& & | & \mbox{\texttt{`GC'}}~~\mbox{\texttt{`GD'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
-& & | & \mbox{\texttt{`GD'}}~~\mbox{\texttt{`GE'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&&&\qquad {\land}~1 > 0 \\
-& & | & \mbox{\texttt{`GE'}}~~\mbox{\texttt{`GF'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
+& & | & \mbox{\texttt{`GC'}}~~\mbox{\texttt{`GD'}} & \quad\Rightarrow\quad & 0 & \quad \mbox{if}~ 0 < 1 \\
+& & | & \mbox{\texttt{`GD'}}~~\mbox{\texttt{`GE'}} & \quad\Rightarrow\quad & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+& & | & \mbox{\texttt{`GE'}}~~\mbox{\texttt{`GF'}} & \quad\Rightarrow\quad & 0 & \quad \mbox{if}~ 0 < 1 \\
 & & | & \mbox{\texttt{`GFA'}}~~\mbox{\texttt{`GF'}} ~\Rightarrow~ 0 ~|~ \mbox{\texttt{`GFB'}}~~\mbox{\texttt{`GF'}} ~\Rightarrow~ 1 ~|~ \mbox{\texttt{`GFC'}} & \quad\Rightarrow\quad & 2 \\
-& & | & \mbox{\texttt{`GG'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad 0 } \\
-  &&&&&
-  &\qquad \mbox{if}~1 > 0 \\
-& & | & \mbox{\texttt{`GH'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad 0 } \\
-  &&&&&
-  &\qquad \mbox{if}~1 > 0 \\
-& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array} } \\
-  &&&&&
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&&&\qquad {\land}~1 > 0 \\
+& & | & \mbox{\texttt{`GG'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} 0 & \quad \mbox{if}~ 1 > 0 \end{array} } \\
+& & | & \mbox{\texttt{`GH'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} 0 & \quad \mbox{if}~ 1 > 0 \end{array} } \\
+& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \\
 & & | & \mbox{\texttt{`GJ'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 \\
-& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&&&\qquad {\land}~1 > 0 \\
-& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & \multicolumn{2}{l@{}}{ 0~1~2 } \\
-  &&&&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & \\
-  &&& \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array} } \\
-  &&&&& \\
-  &&&&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
+& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad & 0~1~2 &   \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+& & | & \mbox{\texttt{`GI'}} & \quad\Rightarrow\quad &  & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \end{array} } \\
 \end{array}
 $$
 
 \vspace{1ex}
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\func}(n, m) & = & 0 \\
-{\func}(n, m) & = & 0
-  &\qquad \mbox{if}~n < m \\
-{\func}(n, m) & = & 0
-  &\qquad \mbox{if}~n > m \\
-  &&&\qquad {\land}~m < n \\
-{\func}(n, m) & = & 0~1
-  &\qquad \mbox{if}~n < m \\
-  &&&\qquad {\land}~m > n \\
-{\func}(n, m) & = & 0~1
-  &\qquad \mbox{if}~n < m \\
-  &&&\qquad {\land}~m > n \\
-{\func}(n, m) & = & \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array}
-  &\qquad \mbox{if}~n < m \\
-  &&&\qquad {\land}~m > n \\
-{\func}(n, m) & = & \multicolumn{2}{l@{}}{ 0~1~2 } \\
-  && \multicolumn{2}{l@{}}{\quad \mbox{if}~n < m} \\
-  && \multicolumn{2}{l@{}}{\quad {\land}~m > n} \\
-{\func}(n, m) & = & \multicolumn{2}{l@{}}{ \begin{array}[t]{@{}l@{}} 0 \\ 1 \\ 2 \end{array} } \\
-  && \multicolumn{2}{l@{}}{\quad \mbox{if}~n < m} \\
-  && \multicolumn{2}{l@{}}{\quad {\land}~m > n} \\
+{\func}(n, m) & = & 0 & \quad \mbox{if}~ n < m \\
+{\func}(n, m) & = & 0 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n > m \\
+{\land}~ m < n \\
+\end{array} \\
+{\func}(n, m) & = & 0~1 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \\
+{\func}(n, m) & = &  & \\
+ \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} 0~1 & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \end{array} } \\
+{\func}(n, m) & = &  & \\
+ \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \end{array} } \\
+{\func}(n, m) & = & 0~1~2 &   \\
+&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} } \\
+{\func}(n, m) & = &  & \\
+ \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} 0 \\
+  1 \\
+  2 \end{array} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n < m \\
+{\land}~ m > n \\
+\end{array} \end{array} } \end{array} } \\
 \end{array}
 $$
 
@@ -1889,45 +2004,66 @@ $$
 $\boxed{{\argh}~{\borg} \rightarrow {\curb}~{\dork}}$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize Rel{-}A}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork} \\
-{[\textsc{\scriptsize Rel{-}B}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork}
-  &\qquad \mbox{if}~0 < 1 \\
-{[\textsc{\scriptsize Rel{-}C}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}D}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}E}]} \quad & {\argh}~{\borg} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad {\curb}~{\dork} } \\
-  &&&
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}F}]} \quad & {\argh}~{\borg} & \rightarrow & \begin{array}[t]{@{}l@{}} {\curb} \\ {\dork} \end{array}
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}G}]} \quad & {\argh}~{\borg} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} {\curb} \\ {\dork} \end{array} } \\
-  &&&
-  &\qquad \mbox{if}~0 < 1 \\
-  &&&&\qquad {\land}~1 > 0 \\
-{[\textsc{\scriptsize Rel{-}DD}]} \quad & {\argh}~{\borg} & \rightarrow & \multicolumn{2}{l@{}}{ {\curb}~{\dork} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-{[\textsc{\scriptsize Rel{-}EE}]} \quad & {\argh}~{\borg} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad {\curb}~{\dork} } \\
-  &&& \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-{[\textsc{\scriptsize Rel{-}FF}]} \quad & {\argh}~{\borg} & \rightarrow & \multicolumn{2}{l@{}}{ \begin{array}[t]{@{}l@{}} {\curb} \\ {\dork} \end{array} } \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
-{[\textsc{\scriptsize Rel{-}GG}]} \quad & {\argh}~{\borg} & \rightarrow & \\
-  & \multicolumn{3}{@{}l@{}}{\qquad \begin{array}[t]{@{}l@{}} {\curb} \\ {\dork} \end{array} } \\
-  &&& \\
-  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~0 < 1} \\
-  &&& \multicolumn{2}{l@{}}{\quad {\land}~1 > 0} \\
+{[\textsc{\scriptsize Rel{-}B}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork} & \quad \mbox{if}~ 0 < 1 \\
+{[\textsc{\scriptsize Rel{-}C}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+{[\textsc{\scriptsize Rel{-}D}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+{[\textsc{\scriptsize Rel{-}E}]} \quad & {\argh}~{\borg} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} {\curb}~{\dork} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \\
+{[\textsc{\scriptsize Rel{-}F}]} \quad & {\argh}~{\borg} & \rightarrow & \begin{array}[t]{@{}l@{}} {\curb} \\
+  {\dork} \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \\
+{[\textsc{\scriptsize Rel{-}G}]} \quad & {\argh}~{\borg} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} {\curb} \\
+  {\dork} \end{array} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \\
+{[\textsc{\scriptsize Rel{-}DD}]} \quad & {\argh}~{\borg} & \rightarrow & {\curb}~{\dork} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+{[\textsc{\scriptsize Rel{-}EE}]} \quad & {\argh}~{\borg} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} {\curb}~{\dork} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \end{array} } \\
+{[\textsc{\scriptsize Rel{-}FF}]} \quad & {\argh}~{\borg} & \rightarrow & \begin{array}[t]{@{}l@{}} {\curb} \\
+  {\dork} \end{array} &   \\
+&&& \multicolumn{2}{@{}l@{}}{\quad  \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} } \\
+{[\textsc{\scriptsize Rel{-}GG}]} \quad & {\argh}~{\borg} & \rightarrow &  & \\
+& \multicolumn{4}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}l@{}l@{}} \begin{array}[t]{@{}l@{}} {\curb} \\
+  {\dork} \end{array} &  & \\
+ \multicolumn{3}{@{}l@{}}{\quad  \begin{array}[t]{@{}l@{}} \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ 0 < 1 \\
+{\land}~ 1 > 0 \\
+\end{array} \end{array} } \end{array} } \\
 \end{array}
 $$
 

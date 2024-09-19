@@ -34,7 +34,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 \subsection*{Syntax}
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {|\mathsf{i{\scriptstyle 32}}|} & = & 32 \\
 {|\mathsf{i{\scriptstyle 64}}|} & = & 64 \\
 {|\mathsf{f{\scriptstyle 32}}|} & = & 32 \\
@@ -43,7 +43,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
+\begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 32}}} .. {\mathit{u{\kern-0.1em\scriptstyle 32}}} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(function type)} & {\mathit{functype}} & ::= & {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
@@ -55,7 +55,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}l@{}rrl@{}l@{}}
+\begin{array}[t]{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} & ::= & \dots \\
 & & | & \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
@@ -65,7 +65,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}l@{}rrl@{}l@{}}
+\begin{array}[t]{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} & ::= & \dots \\
 & & | & {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
 & & | & {\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\
@@ -232,7 +232,7 @@ $$
 \subsection*{Runtime}
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{default}}}_{{\mathsf{i}}{N}} & = & ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
 {{\mathrm{default}}}_{{\mathsf{f}}{N}} & = & ({\mathsf{f}}{N}{.}\mathsf{const}~{+0}) \\
 {{\mathrm{default}}}_{{\mathsf{v}}{N}} & = & ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
@@ -242,7 +242,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}lcl@{}l@{}}
+\begin{array}[t]{@{}lcl@{}l@{}}
 (s ; f){.}\mathsf{funcs} & = & s{.}\mathsf{funcs} \\[0.8ex]
 (s ; f){.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
 (s ; f){.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
@@ -255,33 +255,25 @@ $$
 The relation ${\mathit{config}} \hookrightarrow {\mathit{config}}$ checks that a function type is well-formed.
 
 $$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-& z ; {{\mathit{instr}}^\ast} & \hookrightarrow & z ; {{\mathit{instr}'}^\ast}
-  &\qquad \mbox{if}~{{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\[0.8ex]
-& z ; {{\mathit{instr}}^\ast} & \hookrightarrow & z ; {{\mathit{instr}'}^\ast}
-  &\qquad \mbox{if}~z ; {{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\
+\begin{array}[t]{@{}l@{}rcl@{}l@{}}
+& z ; {{\mathit{instr}}^\ast} & \hookrightarrow & z ; {{\mathit{instr}'}^\ast} & \quad \mbox{if}~ {{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\[0.8ex]
+& z ; {{\mathit{instr}}^\ast} & \hookrightarrow & z ; {{\mathit{instr}'}^\ast} & \quad \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}block}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & ({{\mathsf{label}}_{n}}{\{ \epsilon \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast})
-  &\qquad \mbox{if}~{{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\
-{[\textsc{\scriptsize E{-}loop}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & ({{\mathsf{label}}_{m}}{\{ \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast})
-  &\qquad \mbox{if}~{{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\[0.8ex]
-{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
-  &\qquad \mbox{if}~c \neq 0 \\
-{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
-  &\qquad \mbox{if}~c = 0 \\
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}block}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & ({{\mathsf{label}}_{n}}{\{ \epsilon \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}) & \quad \mbox{if}~ {{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\
+{[\textsc{\scriptsize E{-}loop}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & ({{\mathsf{label}}_{m}}{\{ \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}) & \quad \mbox{if}~ {{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\[0.8ex]
+{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}) & \quad \mbox{if}~ c \neq 0 \\
+{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast}) & \quad \mbox{if}~ c = 0 \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
-  &\qquad \mbox{if}~c \neq 0 \\[0.8ex]
-{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
-  &\qquad \mbox{if}~c = 0 \\
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}) & \quad \mbox{if}~ c \neq 0 \\[0.8ex]
+{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) & \hookrightarrow & (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast}) & \quad \mbox{if}~ c = 0 \\
 \end{array}
 $$
 

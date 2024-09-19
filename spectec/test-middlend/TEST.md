@@ -5115,7 +5115,7 @@ def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
 ;; 6-typing.watsup
 relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `x*` : idx*}:
+  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `x*` : idx*}:
     `|-%:%`(MODULE_module(type*{type <- `type*`}, import*{import <- `import*`}, func*{func <- `func*`}, global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, tag*{tag <- `tag*`}, elem*{elem <- `elem*`}, data*{data <- `data*`}, start?{start <- `start?`}, export*{export <- `export*`}), $clos_moduletype(C, `%->%`_moduletype(xt_I*{xt_I <- `xt_I*`}, xt_E*{xt_E <- `xt_E*`})))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type <- `type*`}, dt'*{dt' <- `dt'*`})
     -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, import, xt_I))*{import <- `import*`, xt_I <- `xt_I*`}
@@ -5129,7 +5129,7 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- (Start_ok: `%|-%:OK`(C, start))?{start <- `start?`}
     -- (Export_ok: `%|-%:%%`(C, export, nm, xt_E))*{export <- `export*`, nm <- `nm*`, xt_E <- `xt_E*`}
     -- if $disjoint_(syntax name, nm*{nm <- `nm*`})
-    -- if (C = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`} ++ gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
+    -- if (C = C' +++ {TYPES [], RECS [], FUNCS [], GLOBALS gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS []})
     -- if (C' = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`}, TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
     -- if (x*{x <- `x*`} = $funcidx_nonfuncs(`%%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`}, data*{data <- `data*`})))
     -- if (dt_I*{dt_I <- `dt_I*`} = $funcsxt(xt_I*{xt_I <- `xt_I*`}))
@@ -13420,7 +13420,7 @@ def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
 ;; 6-typing.watsup
 relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `x*` : idx*}:
+  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `x*` : idx*}:
     `|-%:%`(MODULE_module(type*{type <- `type*`}, import*{import <- `import*`}, func*{func <- `func*`}, global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, tag*{tag <- `tag*`}, elem*{elem <- `elem*`}, data*{data <- `data*`}, start?{start <- `start?`}, export*{export <- `export*`}), $clos_moduletype(C, `%->%`_moduletype(xt_I*{xt_I <- `xt_I*`}, xt_E*{xt_E <- `xt_E*`})))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type <- `type*`}, dt'*{dt' <- `dt'*`})
     -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, import, xt_I))*{import <- `import*`, xt_I <- `xt_I*`}
@@ -13434,7 +13434,7 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- (Start_ok: `%|-%:OK`(C, start))?{start <- `start?`}
     -- (Export_ok: `%|-%:%%`(C, export, nm, xt_E))*{export <- `export*`, nm <- `nm*`, xt_E <- `xt_E*`}
     -- if $disjoint_(syntax name, nm*{nm <- `nm*`})
-    -- if (C = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`} ++ gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
+    -- if (C = C' +++ {TYPES [], RECS [], FUNCS [], GLOBALS gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS []})
     -- if (C' = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`}, TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
     -- if (x*{x <- `x*`} = $funcidx_nonfuncs(`%%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`}, data*{data <- `data*`})))
     -- if (dt_I*{dt_I <- `dt_I*`} = $funcsxt(xt_I*{xt_I <- `xt_I*`}))
@@ -21725,7 +21725,7 @@ def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
 ;; 6-typing.watsup
 relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `x*` : idx*}:
+  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `x*` : idx*}:
     `|-%:%`(MODULE_module(type*{type <- `type*`}, import*{import <- `import*`}, func*{func <- `func*`}, global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, tag*{tag <- `tag*`}, elem*{elem <- `elem*`}, data*{data <- `data*`}, start?{start <- `start?`}, export*{export <- `export*`}), $clos_moduletype(C, `%->%`_moduletype(xt_I*{xt_I <- `xt_I*`}, xt_E*{xt_E <- `xt_E*`})))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type <- `type*`}, dt'*{dt' <- `dt'*`})
     -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, import, xt_I))*{import <- `import*`, xt_I <- `xt_I*`}
@@ -21739,7 +21739,7 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- (Start_ok: `%|-%:OK`(C, start))?{start <- `start?`}
     -- (Export_ok: `%|-%:%%`(C, export, nm, xt_E))*{export <- `export*`, nm <- `nm*`, xt_E <- `xt_E*`}
     -- if $disjoint_(syntax name, nm*{nm <- `nm*`})
-    -- if (C = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`} ++ gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
+    -- if (C = C' +++ {TYPES [], RECS [], FUNCS [], GLOBALS gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS []})
     -- if (C' = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`}, TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
     -- if (x*{x <- `x*`} = $funcidx_nonfuncs(`%%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`}, data*{data <- `data*`})))
     -- if (dt_I*{dt_I <- `dt_I*`} = $funcsxt(xt_I*{xt_I <- `xt_I*`}))
@@ -30151,7 +30151,7 @@ def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
 ;; 6-typing.watsup
 relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `x*` : idx*}:
+  rule _{`type*` : type*, `import*` : import*, `func*` : func*, `global*` : global*, `table*` : table*, `mem*` : mem*, `tag*` : tag*, `elem*` : elem*, `data*` : data*, `start?` : start?, `export*` : export*, C : context, `xt_I*` : externtype*, `xt_E*` : externtype*, `dt'*` : deftype*, C' : context, `gt*` : globaltype*, `tt*` : tabletype*, `mt*` : memtype*, `at*` : tagtype*, `dt*` : deftype*, `rt*` : reftype*, `ok*` : datatype*, `nm*` : name*, `tt_I*` : tabletype*, `mt_I*` : memtype*, `at_I*` : tagtype*, `dt_I*` : deftype*, `gt_I*` : globaltype*, `x*` : idx*}:
     `|-%:%`(MODULE_module(type*{type <- `type*`}, import*{import <- `import*`}, func*{func <- `func*`}, global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, tag*{tag <- `tag*`}, elem*{elem <- `elem*`}, data*{data <- `data*`}, start?{start <- `start?`}, export*{export <- `export*`}), $clos_moduletype(C, `%->%`_moduletype(xt_I*{xt_I <- `xt_I*`}, xt_E*{xt_E <- `xt_E*`})))
     -- if (|`import*`| = |`xt_I*`|)
     -- if (|`table*`| = |`tt*`|)
@@ -30174,7 +30174,7 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- (Start_ok: `%|-%:OK`(C, start))?{start <- `start?`}
     -- (Export_ok: `%|-%:%%`(C, export, nm, xt_E))*{export <- `export*`, nm <- `nm*`, xt_E <- `xt_E*`}
     -- if $disjoint_(syntax name, nm*{nm <- `nm*`})
-    -- if (C = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`} ++ gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
+    -- if (C = C' +++ {TYPES [], RECS [], FUNCS [], GLOBALS gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS at_I*{at_I <- `at_I*`} ++ at*{at <- `at*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS []})
     -- if (C' = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`}, TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
     -- if (x*{x <- `x*`} = $funcidx_nonfuncs(`%%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`}, data*{data <- `data*`})))
     -- if (dt_I*{dt_I <- `dt_I*`} = $funcsxt(xt_I*{xt_I <- `xt_I*`}))

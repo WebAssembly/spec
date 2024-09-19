@@ -1170,65 +1170,37 @@ grammar Btagsec : tag* hint(desc "tag section") =
 
 ;; Modules
 
-;; TODO(2, rossberg): avoid double empty lines
+;; TODO(3, rossberg): avoid empty lines
 grammar Bmagic : () = 0x00 0x61 0x73 0x6D => ()
 grammar Bversion : () = 0x01 0x00 0x00 0x00 => ()
 grammar Bmodule : module =
-  | Bmagic
-    Bversion
+  | Bmagic Bversion
 
+    Bcustomsec* type*:Btypesec
 
-    Bcustomsec*
-    type*:Btypesec
+    Bcustomsec* import*:Bimportsec
 
+    Bcustomsec* typeidx*:Bfuncsec
 
-    Bcustomsec*
-    import*:Bimportsec
+    Bcustomsec* table*:Btablesec
 
+    Bcustomsec* mem*:Bmemsec
 
-    Bcustomsec*
-    typeidx*:Bfuncsec
+    Bcustomsec* tag*:Btagsec
 
+    Bcustomsec* global*:Bglobalsec
 
-    Bcustomsec*
-    table*:Btablesec
+    Bcustomsec* export*:Bexportsec
 
+    Bcustomsec* start?:Bstartsec
 
-    Bcustomsec*
-    mem*:Bmemsec
+    Bcustomsec* elem*:Belemsec
 
+    Bcustomsec* n?:Bdatacntsec
 
-    Bcustomsec*
-    tag*:Btagsec
+    Bcustomsec* (local*, expr)*:Bcodesec
 
-
-    Bcustomsec*
-    global*:Bglobalsec
-
-
-    Bcustomsec*
-    export*:Bexportsec
-
-
-    Bcustomsec*
-    start?:Bstartsec
-
-
-    Bcustomsec*
-    elem*:Belemsec
-
-
-    Bcustomsec*
-    n?:Bdatacntsec
-
-
-    Bcustomsec*
-    (local*, expr)*:Bcodesec
-
-
-    Bcustomsec*
-    data*:Bdatasec
-
+    Bcustomsec* data*:Bdatasec
 
     Bcustomsec* =>
       MODULE type* import* func* global* table* mem* tag* elem* data* start? export*

@@ -119,7 +119,7 @@ let rec is_typcon t =
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH
 %token BIGAND BIGOR BIGADD BIGMUL BIGCAT
-%token COMMA_NL NL_BAR NL_NL_NL
+%token COMMA_NL NL_BAR NL_NL NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
@@ -741,6 +741,7 @@ sym_seq : sym_seq_ { $1 $ $sloc }
 sym_seq_ :
   | sym_attr_ { $1 }
   | sym_seq sym_attr { SeqG (as_seq_sym $1 @ [Elem $2]) }
+  | sym_seq NL_NL sym_attr { SeqG (as_seq_sym $1 @ [Nl; Elem $3]) }
   | sym_seq NL_NL_NL sym_attr { SeqG (as_seq_sym $1 @ [Nl; Elem $3]) }
 
 sym_alt : sym_alt_ { $1 $ $sloc }
@@ -787,7 +788,10 @@ param_ :
     { DefP ($3, $5, $8) }
 
 
-def : def_ { $1 $ $sloc }
+def :
+  | def_ { $1 $ $sloc }
+  | NL_NL def
+    { $2 }
 def_ :
   | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* exit_scope
     { FamD ($2, List.map El.Convert.param_of_arg $4, $7) }
