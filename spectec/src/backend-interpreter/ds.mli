@@ -33,7 +33,7 @@ end
 module AlContext : sig
   type mode =
     (* Al context *)
-    | Al of string * value list * instr list * env
+    | Al of string * arg list * instr list * env
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -41,7 +41,7 @@ module AlContext : sig
     | Execute of value
     (* Return register *)
     | Return of value
-  val al : string * value list * instr list * env -> mode
+  val al : string * arg list * instr list * env -> mode
   val wasm : int -> mode
   val enter : string * instr list * env -> mode
   val execute : value -> mode

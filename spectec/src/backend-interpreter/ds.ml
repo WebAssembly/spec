@@ -158,7 +158,7 @@ end
 module AlContext = struct
   type mode =
     (* Al context *)
-    | Al of string * value list * instr list * env
+    | Al of string * arg list * instr list * env
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -179,7 +179,7 @@ module AlContext = struct
     | Al (s, args, il, _) ->
       Printf.sprintf "Al %s (%s):%s"
         s
-        (args |> List.map string_of_value |> String.concat ", ")
+        (args |> List.map string_of_arg |> String.concat ", ")
         (string_of_instrs il)
     | Wasm i -> "Wasm " ^ string_of_int i
     | Enter (s, il, _) ->

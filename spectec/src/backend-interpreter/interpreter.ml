@@ -792,7 +792,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
     |> List.fold_right2 assign_param params args
   in
 
-  AlContext.al (name, args, body, env)
+  AlContext.al (name, params, body, env)
 
 and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)
