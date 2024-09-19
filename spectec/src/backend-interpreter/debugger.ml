@@ -12,6 +12,10 @@ type state =
 
 let debug = ref false
 let break_points = ref []
+let is_bp name =
+  List.exists
+    (fun bp -> bp = String.lowercase_ascii name || bp = String.uppercase_ascii name)
+    !break_points
 let state = ref Step
 let command_cnt = ref 0
 let try_command () =
@@ -44,6 +48,8 @@ let help_msg =
   "
 
 let allow_command ctx =
+  let is_entry name il = name |> lookup_algo |> body_of_algo = il in
+
   match !state with
   | Step -> try_command ()
   | StepInstr name when name == AlContext.get_name ctx ->
@@ -51,14 +57,7 @@ let allow_command ctx =
   | Continue ->
     (match ctx with
     | AlContext.Al (name, _, il, _) :: _
-    | AlContext.Enter (name, il, _) :: _
-    when
-      List.exists
-        (fun bp ->
-          bp = String.lowercase_ascii name || bp = String.uppercase_ascii name)
-        !break_points &&
-      name |> lookup_algo |> body_of_algo = il
-    -> try_command ()
+    when is_bp name && is_entry -> try_command ()
     | _ -> false
     )
   | Quit -> false
