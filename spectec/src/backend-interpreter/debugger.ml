@@ -57,7 +57,7 @@ let allow_command ctx =
   | Continue ->
     (match ctx with
     | AlContext.Al (name, _, il, _) :: _
-    when is_bp name && is_entry -> try_command ()
+    when is_bp name && is_entry name il -> try_command ()
     | _ -> false
     )
   | Quit -> false
