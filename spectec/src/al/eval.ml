@@ -21,12 +21,11 @@ let rec get_subst lhs rhs s =
   match lhs.it, rhs.it with
   | VarE id, _ -> Subst.add id rhs s
   | UnE (op1, e1), UnE (op2, e2) when op1 = op2 -> get_subst e1 e2 s
-  | OptE (Some e1), OptE (Some e2) | FrameE (None, e1), FrameE (None, e2) ->
+  | OptE (Some e1), OptE (Some e2) ->
     get_subst e1 e2 s
   | BinE (op1, e11, e12), BinE (op2, e21, e22) when op1 = op2 ->
     s |> get_subst e11 e21 |> get_subst e12 e22
-  | CompE (e11, e12), CompE (e21, e22) | CatE (e11, e12), CatE (e21, e22)
-  | LabelE (e11, e12), LabelE (e21, e22) | FrameE (Some e11, e12), FrameE (Some e21, e22) ->
+  | CompE (e11, e12), CompE (e21, e22) | CatE (e11, e12), CatE (e21, e22) ->
     s |> get_subst e11 e21 |> get_subst e12 e22
   | TupE el1, TupE el2 | ListE el1, ListE el2 ->
     List.fold_right2 get_subst el1 el2 s

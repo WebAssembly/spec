@@ -468,7 +468,8 @@ and valid_expr env (expr: expr) : unit =
   | VarE id ->
     if not (Env.mem id env) then error expr.at ("free identifier " ^ id)
   | NumE _ -> check_num source expr.note;
-  | BoolE _ | TopFrameE | TopLabelE | TopHandlerE | ContextKindE _ -> check_bool source expr.note
+  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | ContextKindE _ ->
+    check_bool source expr.note;
   | UnE (NotOp, expr') ->
     valid_expr env expr';
     check_bool source expr.note;
@@ -578,39 +579,10 @@ and valid_expr env (expr: expr) : unit =
     l
     |> List.map note
     |> List.iter (check_match source elem_typ)
-  | ArityE expr1 ->
-    valid_expr env expr1;
-    check_num source expr.note;
-    check_context source expr1.note;
-  | FrameE (expr_opt, expr1) ->
-    Option.iter (valid_expr env) expr_opt;
-    valid_expr env expr1;
-    check_context source expr.note;
-    Option.iter (fun expr2 -> check_num source expr2.note) expr_opt;
-    check_match source expr1.note (varT "frame")
-  | LabelE (expr1, expr2) ->
-    valid_expr env expr1;
-    valid_expr env expr2;
-    check_context source expr.note;
-    check_num source expr1.note;
-    check_match source expr2.note (iterT (varT "instr") List)
-  | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE ->
+  | GetCurStateE | GetCurContextE _ ->
     check_context source expr.note
-  | IsCaseOfE (expr', _) | IsValidE expr' | HasTypeE (expr', _)  ->
-    valid_expr env expr';
-    check_bool source expr.note;
-  | MatchE (expr1, expr2) ->
-    valid_expr env expr1;
-    valid_expr env expr2;
-    check_bool source expr.note;
-  | ContE expr1 ->
-    valid_expr env expr1;
-    check_match source expr.note (iterT (varT "instr") List);
-    check_match source expr1.note (varT "label");
   | ChooseE expr1 ->
-    valid_expr env expr1;
-    check_list source expr1.note;
-    check_match source expr1.note (iterT expr.note List);
+    check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
   | IsDefinedE expr1 ->
     valid_expr env expr1;
     check_opt source expr1.note;
