@@ -6,6 +6,9 @@ let error at msg = Error.error at "syntax" msg
 
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
+let empty_nl_list xs = filter_nl xs = []
+let hd_nl_list xs = List.hd (filter_nl xs)
+let last_nl_list xs = Lib.List.last (filter_nl xs)
 let forall_nl_list f xs = List.for_all f (filter_nl xs)
 let exists_nl_list f xs = List.exists f (filter_nl xs)
 let find_nl_list f xs = List.find_opt f (filter_nl xs)
@@ -15,7 +18,6 @@ let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
 let filter_nl_list f xs = List.filter (function Nl -> true | Elem x -> f x) xs
 let concat_map_nl_list f xs = List.concat_map (function Nl -> [Nl] | Elem x -> f x) xs
 let concat_map_filter_nl_list f xs = List.concat_map (function Nl -> [] | Elem x -> f x) xs
-
 
 let rec is_sub s i = i = String.length s || s.[i] = '_' && is_sub s (i + 1)
 

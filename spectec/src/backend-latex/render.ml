@@ -1431,7 +1431,7 @@ and render_sym env g : string =
   | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | EpsG -> "\\epsilon"
-  | SeqG gs -> render_syms "~~" env gs
+  | SeqG gs -> render_sym_seq env gs
   | AltG gs -> render_syms " ~|~ " env gs
   | RangeG (g1, g2) ->
     render_sym env g1 ^ " ~|~ \\ldots ~|~ " ^ render_sym env g2
@@ -1444,9 +1444,25 @@ and render_sym env g : string =
     "{" ^ render_sym env g1 ^ "}" ^ "{" ^ render_sym env g2 ^ "}"
   | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
+(* TODO(3, rossberg): don't hard-code number of tabs *)
 and render_syms sep env gs =
   let br = if env.config.display then " \\\\\n&&& " else " " in
   altern_map_nl sep br (render_sym env) gs
+
+(* TODO(3, rossberg): don't hard-code number of tabs *)
+and render_sym_seq env = function
+  | [] -> ""
+  | (Elem g1)::(Elem g2)::gs when g1.at.right.line < g2.at.left.line ->
+    let s1 = render_sym env g1 in
+    let s2 = render_sym_seq env (Elem g2::gs) in
+    s1 ^ " \\\\\n  &&& " ^ s2
+  | (Elem g1)::gs ->
+    let s1 = render_sym env g1 in
+    let s2 = render_sym_seq env gs in
+    if s1 <> "" && s2 <> "" then s1 ^ "~~" ^ s2 else s1 ^ s2
+  | Nl::gs ->
+    let s = render_sym_seq env gs in
+    " \\\\[0.8ex]\n  &&& " ^ s
 
 and render_prod env prod : row list =
   let (g, e, prems) = prod.it in

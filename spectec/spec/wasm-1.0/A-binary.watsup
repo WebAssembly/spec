@@ -522,29 +522,17 @@ grammar Bdatasec : data* hint(desc "data section") =
 
 grammar Bmodule : module =
   | 0x00 0x61 0x73 0x6D 1:Bu32
-
     Bcustomsec* type*:Btypesec
-
     Bcustomsec* import*:Bimportsec
-
     Bcustomsec* typeidx*:Bfuncsec
-
     Bcustomsec* table*:Btablesec
-
     Bcustomsec* mem*:Bmemsec
-
     Bcustomsec* global*:Bglobalsec
-
     Bcustomsec* export*:Bexportsec
-
     Bcustomsec* start?:Bstartsec
-
     Bcustomsec* elem*:Belemsec
-
     Bcustomsec* (local*, expr)*:Bcodesec
-
     Bcustomsec* data*:Bdatasec
-
     Bcustomsec* =>
       MODULE type* import* func* global* table* mem* elem* data* start? export*
     -- (if func = FUNC typeidx local* expr)*

@@ -892,8 +892,10 @@ $$
 \mbox{if}~ 0 < 1 \\
 {\land}~ 1 > 0 \\
 \end{array} \end{array} } \\
-& & | & \mbox{\texttt{`GJ'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 \\
-& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 & \quad
+& & | & \mbox{\texttt{`GJ'}}~~\mbox{\texttt{`GJ'}} \\
+  &&& \mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 \\
+& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}} \\
+  &&& \mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ 0 < 1 \\
 {\land}~ 1 > 0 \\
@@ -1927,8 +1929,10 @@ $$
 \mbox{if}~ 0 < 1 \\
 {\land}~ 1 > 0 \\
 \end{array} \end{array} } \\
-& & | & \mbox{\texttt{`GJ'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 \\
-& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}}~~\mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 & \quad
+& & | & \mbox{\texttt{`GJ'}}~~\mbox{\texttt{`GJ'}} \\
+  &&& \mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 \\
+& & | & \mbox{\texttt{`GK'}}~~\mbox{\texttt{`GJ'}} \\
+  &&& \mbox{\texttt{`G'}}~~\mbox{\texttt{`J'}} & \quad\Rightarrow\quad & 0 & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ 0 < 1 \\
 {\land}~ 1 > 0 \\
