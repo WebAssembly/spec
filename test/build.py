@@ -67,13 +67,19 @@ def convert_wast_to_js(out_js_dir):
 
     inputs = []
 
-    for wast_file in glob.glob(os.path.join(WAST_TESTS_DIR, '*.wast')):
+    for wast_file in glob.glob(os.path.join(WAST_TESTS_DIR, '**/*.wast'),
+                               recursive = True):
         # Don't try to compile tests that are supposed to fail.
         if '.fail.' in wast_file:
             continue
 
+        js_subdir = os.path.basename(os.path.dirname(wast_file))
+        if js_subdir == 'core':
+            js_subdir = ''
+        else:
+            ensure_empty_dir(os.path.join(out_js_dir, js_subdir))
         js_filename = os.path.basename(wast_file) + '.js'
-        js_file = os.path.join(out_js_dir, js_filename)
+        js_file = os.path.join(out_js_dir, js_subdir, js_filename)
         inputs.append((wast_file, js_file))
 
     pool = mp.Pool(processes=8)
