@@ -95,7 +95,7 @@ def $unpackshape(Lnn X N) = $lunpack(Lnn)
 
 ;; Type difference
 
-def $diffrt(reftype, reftype) : reftype  hint(show %\%)
+def $diffrt(reftype, reftype) : reftype  hint(show %\%) hint(macro "reftypediff")
 
 def $diffrt((REF nul1 ht_1), (REF NULL ht_2)) = (REF ht_1)
 def $diffrt((REF nul1 ht_1), (REF ht_2)) = (REF nul1 ht_1)
