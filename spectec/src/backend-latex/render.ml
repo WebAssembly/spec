@@ -517,6 +517,15 @@ let rec render_sep_defs f = function
   | {it = SepD; _}::ds -> Sep :: render_sep_defs f ds
   | d::ds -> f d @ render_sep_defs f ds
 
+(*
+ * TODO(4, rossberg): Reconcile this; perhaps get rid of NL lists altogether.
+ * The NLs in different NL lists are currently interpreted differently:
+ *  - comma nl list (str): comma-nl => NL instead of WS
+ *  - bar nl list (alt): nl-bar => NL instead of WS
+ *  - dash nl list (prem): dash-dash => Sep instead of NL
+ *  - sym seq: nl-nl-nl => Sep instead of NL or WS
+ *  - sym alt: nl-bar => NL instead of WS
+ *)
 let rec render_nl_list env (sep : [`V | `H] * string) (f : env -> 'a -> row list) :
   'a nl_list -> table =
   function
