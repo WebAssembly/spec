@@ -2271,7 +2271,7 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
-* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
