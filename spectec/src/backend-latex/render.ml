@@ -477,39 +477,73 @@ let rec concat_table sep tab1 tab2 =
   | [Row cols] -> concat_cols_table sep cols tab2
   | row::tab1' -> row :: concat_table sep tab1' tab2
 
-let rec render_cols ((fmt, indent_wide, indent_narrow) as cfg) i = function
+let has_br tab = List.exists (function Row r -> List.exists (function Br _ -> true | _ -> false) r | _ -> false) tab
+
+let rec render_cols env ((fmt, indent_wide, indent_narrow) as cfg) rem_rows i = function
   | [] -> ""
   | (Br w)::cols ->
     let width = List.length fmt in
     let indent = if w = `Wide then indent_wide else indent_narrow in
     let fmt' = "l" :: List.map (fun _ -> "@{}l") (List.tl cols) in
-    (* Add spare `&` at the end of the current line to work around Latex strangeness
-     * (it would calculate the formula's width incorrectly, leading to bogus placing.) *)
     let n = width - i in
-    " " ^ String.make (max 0 (n - 1)) '&' ^ " \\\\\n" ^ String.make indent '&' ^ " " ^
-    "\\multicolumn{" ^ string_of_int (width - indent) ^ "}{@{}l@{}}{\\quad  " ^
-      (if n <= 1 then "" else "\\begin{array}[t]{@{}" ^
-        String.concat "" fmt' ^ "@{}} ") ^
-      render_cols (fmt', 0, 0) 0 cols ^
-      (if n <= 1 then "" else " \\end{array}") ^ " }"
+    if env.config.multicolumn then
+      (* Add spare `&` at the end of the current line to work around Latex strangeness
+       * (it will calculate the formula's width incorrectly, leading to bogus placement.) *)
+      " " ^ String.make (max 0 (n - 1)) '&' ^ " \\\\\n" ^ String.make indent '&' ^ " " ^
+      "\\multicolumn{" ^ string_of_int (width - indent) ^ "}{@{}l@{}}{\\quad\n" ^
+        (if n <= 1 then
+          render_cols env (fmt', 0, 0) [] 0 cols
+        else
+          render_table env "" fmt' 0 0 [Row cols]
+        ) ^
+      "\n}"
+    else
+      (* Work around the lack of multicolumn in MathJax: end the current array
+       * and put the indented stuff into its own table. After that, re-begin the
+       * previous table. This ruins layout somewhat, but is the best we can do. *)
+      let inner = render_table env "" fmt' 0 0 [Row cols] in
+      "\\end{array}\n\\\\\n" ^
+      "\\hspace{" ^ string_of_int (10*n) ^ "ex}" ^  (* fake approximate indentation *)
+      if rem_rows <> [] then
+        inner ^
+        (* Restart interrupted array *)
+        "\n\\\\\n\\begin{array}[t]{@{}" ^ String.concat "" fmt ^ "@{}}\n"
+      else
+        (* HACK: Avoid empty arrays. But since the enclosing render_table will
+         * end the current table, we must suppress a superfluous end if we do
+         * not restart the current table. We do so by removing the end from the
+         * inner table. Yes, this is a terrible hack! *)
+        let suffix = "\n\\end{array}" in
+        assert (String.ends_with ~suffix inner);
+        String.sub inner 0 (String.length inner - String.length suffix)
   | (Col s)::[] -> s
-  | (Col "")::cols -> "& " ^ render_cols cfg (i + 1) cols
-  | (Col s)::cols -> s ^ " & " ^ render_cols cfg (i + 1) cols
+  | (Col "")::cols -> "& " ^ render_cols env cfg rem_rows (i + 1) cols
+  | (Col s)::cols -> s ^ " & " ^ render_cols env cfg rem_rows (i + 1) cols
 
-let rec render_rows cfg = function
+and render_rows env cfg = function
   | [] -> ""
-  | Sep::rows -> "{} \\\\[-2ex]\n" ^ render_rows cfg rows
-  | (Row r)::Sep::rows -> render_cols cfg 0 r ^ " \\\\[0.8ex]\n" ^ render_rows cfg rows
-  | (Row r)::rows -> render_cols cfg 0 r ^ " \\\\\n" ^ render_rows cfg rows
+  | Sep::rows -> "{} \\\\[-2ex]\n" ^ render_rows env cfg rows
+  | (Row r)::Sep::rows ->
+    render_cols env cfg rows 0 r ^
+    (if not env.config.multicolumn && has_br [Row r] then " \\\\[-1.5\\baselineskip]\n"
+     else " \\\\[0.8ex]\n") ^
+    render_rows env cfg rows
+  | (Row r)::rows ->
+    render_cols env cfg rows 0 r ^
+    (if not env.config.multicolumn && has_br [Row r] then "" else " \\\\\n") ^
+    render_rows env cfg rows
 
-let _has_br tab = List.exists (function Row r -> List.exists (function Br _ -> true | _ -> false) r | _ -> false) tab
-
-let render_table sp fmt indent_wide indent_narrow (tab : table) =
+and render_table env sp fmt indent_wide indent_narrow (tab : table) =
+  (* If the target can't handle multicolumn, then we break the table apart
+   * at breaks, putting all inside a wrapper array. *)
+  let wrapped = not env.config.multicolumn && has_br tab in
   let fmt' = List.hd fmt ::
     List.map (fun s -> if s.[0] = '@' then s else sp ^ s) (List.tl fmt) in
+  (if wrapped then "\\begin{array}[t]{@{}l@{}}\n" else "") ^
   "\\begin{array}[t]{@{}" ^ String.concat "" fmt' ^ "@{}}\n" ^
-  render_rows (fmt, indent_wide, indent_narrow) tab ^
-  "\\end{array}"
+  render_rows env (fmt, indent_wide, indent_narrow) tab ^
+  "\\end{array}" ^
+  (if wrapped then "\n\\end{array}" else "")
 
 
 let rec render_sep_defs f = function
@@ -1100,7 +1134,7 @@ and render_nottyp env t : table =
   | StrT tfs ->
     [Row [Col (
       "\\{ " ^
-      render_table "@{}" ["l"; "l"] 0 0
+      render_table env "@{}" ["l"; "l"] 0 0
         (concat_table "" (render_nl_list env (`H, " ") render_typfield tfs) [Row [Col " \\}"]])
     )]]
   | CaseT (dots1, ts, tcs, dots2) ->
@@ -1387,7 +1421,7 @@ and render_conditions env prems : row list =
     | [Elem prem] -> [Row [Col ("\\quad " ^ pre ^ "~ " ^ render_prem env prem)]]
     | _ ->
       [Row [Col
-        ("\\quad\n" ^ render_table "" ["l"] 0 0
+        ("\\quad\n" ^ render_table env "" ["l"] 0 0
           (map_rows (merge_cols "~ ")
             (prefix_rows [Col pre] [Col "{\\land}"]
               (render_nl_list env (`V, " \\and ") render_condition prems''')
@@ -1476,7 +1510,7 @@ and render_prod env prod : row list =
   | _ ->
     prefix_rows_hd
       ( Col (render_sym env g) ::
-        Col "\\quad\\Rightarrow\\quad" ::
+        Col "\\quad\\Rightarrow\\quad{}" ::
         if g.at.right.line = e.at.left.line then
           Col (render_exp env e) :: []
         else
@@ -1673,7 +1707,7 @@ let rec render_defs env = function
         error d.at "cannot render decorators without Latex multicolumn enabled";
 *)
       let sp_deco = if env.deco_typ then sp else "@{}" in
-      render_table sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"] 1 3
+      render_table env sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"] 1 3
         (render_sep_defs (render_typdef env) ds')
     | GramD _ ->
       (* Columns: decorator & lhs & ::=/| & rhs & => & attr & premise *)
@@ -1685,7 +1719,7 @@ let rec render_defs env = function
         error d.at "cannot render decorators without Latex multicolumn enabled";
 *)
       let sp_deco = if env.deco_gram then sp else "@{}" in
-      render_table sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 3
+      render_table env sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 3
         (render_sep_defs (render_gramdef env) ds')
     | RelD (_, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
@@ -1698,7 +1732,7 @@ let rec render_defs env = function
           error d.at "cannot render decorators without Latex multicolumn enabled";
 *)
         let sp_deco = if env.deco_rule then sp else "@{}" in
-        render_table sp ["l"; sp_deco ^ "r"; "c"; "l"; "@{}l"] 1 3
+        render_table env sp ["l"; sp_deco ^ "r"; "c"; "l"; "@{}l"] 1 3
           (render_sep_defs (render_ruledef env) ds)
       else
         "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
@@ -1707,7 +1741,7 @@ let rec render_defs env = function
         "\\end{array}"
     | DefD _ ->
       (* Columns: lhs & = & rhs & premise *)
-      render_table sp ["l"; "c"; "l"; "@{}l"] 0 2
+      render_table env sp ["l"; "c"; "l"; "@{}l"] 0 2
         (render_sep_defs (render_funcdef env) ds)
     | SepD ->
       " \\\\\n" ^

@@ -104,7 +104,7 @@ $(SPLICEDIR)/_splice: $(SPLICEDIR) $(RSTFILES) $(SPECTECFILES)
 	@echo Modified $?
 	@echo ${if ${filter %.$(SPECTECEXT), $?}, $(RSTFILES), ${filter %.rst, $?}} >$@
 	@echo Splicing `cat $@`
-	@$(SPECTEC) $(SPECTECPAT) --splice-sphinx --latex-macros -p `cat $@` -o $(SPLICEDIR)
+	@$(SPECTEC) $(SPECTECPAT) --splice-sphinx-html --latex-macros -p `cat $@` -o $(SPLICEDIR)
 
 #$(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTECFILES)
 #	$(SPECTEC) $(SPECTECFILES) --splice-sphinx -p $< -o $@

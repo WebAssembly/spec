@@ -129,6 +129,8 @@ let argspec = Arg.align
     " Splice Sphinx";
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
     " Splice Sphinx";
+  "--splice-sphinx-html", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx_html),
+    " Splice Sphinx for HTML (work around multicolumn command)";
   "--prose", Arg.Unit (fun () -> target := Prose true), " Generate prose";
   "--prose-rst", Arg.Unit (fun () -> target := Prose false), " Generate prose";
   "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args),

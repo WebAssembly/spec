@@ -35,6 +35,11 @@ let sphinx =
       {token = "$"; prefix = ":math:`"; suffix = "`"; newline = false; indent = ""};
       {token = "$$"; prefix = ".. math::\n"; suffix = ""; newline = true; indent = "   "};
     ];
-    latex = {Backend_latex.Config.default with multicolumn = false};
+    latex = Backend_latex.Config.default;
     prose = Backend_prose.Config.default;
+  }
+
+let sphinx_html =
+  { sphinx with
+    latex = {sphinx.latex with multicolumn = false};
   }
