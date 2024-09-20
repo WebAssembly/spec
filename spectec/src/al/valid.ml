@@ -582,7 +582,9 @@ and valid_expr env (expr: expr) : unit =
   | GetCurStateE | GetCurContextE _ ->
     check_context source expr.note
   | ChooseE expr1 ->
-    check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
+    valid_expr env expr1;
+    check_list source expr1.note;
+    check_match source expr1.note (iterT expr.note List)
   | IsDefinedE expr1 ->
     valid_expr env expr1;
     check_opt source expr1.note;
