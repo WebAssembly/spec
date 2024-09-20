@@ -16,7 +16,6 @@ WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
 WAST_TEST_SUBDIRS = [os.path.basename(d) for d in
                      filter(os.path.isdir,
                             glob.glob(os.path.join(WAST_TESTS_DIR, '*')))]
-print('ADAMK: WAST_TEST_SUBDIRS =', WAST_TEST_SUBDIRS)
 HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 HARNESS_FILES = ['testharness.js', 'testharnessreport.js', 'testharness.css']
@@ -157,19 +156,20 @@ def build_html_js(out_dir):
 def build_html_from_js(tests, html_dir, use_sync):
     for js_file in tests:
         subdir = os.path.basename(os.path.dirname(js_file))
+        js_prefix = '../js'
         if subdir == 'js':
             subdir = ''
-        print('ADAMK: subdir = ', subdir)
-        js_filename = os.path.basename(js_file)
-        html_filename = js_filename + '.html'
+            js_prefix = './js'
+        js_filename = os.path.join(js_prefix, subdir, os.path.basename(js_file))
+        html_filename = os.path.basename(js_file) + '.html'
         html_file = os.path.join(html_dir, subdir, html_filename)
-        #html_file = os.path.join(html_dir, html_filename)
         js_harness = "sync_index.js" if use_sync else "async_index.js"
+        harness_dir = os.path.join(js_prefix, 'harness')
         with open(html_file, 'w+') as f:
-            content = HTML_HEADER.replace('{PREFIX}', './js/harness') \
-                                 .replace('{WPT_PREFIX}', './js/harness') \
+            content = HTML_HEADER.replace('{PREFIX}', harness_dir) \
+                                 .replace('{WPT_PREFIX}', harness_dir) \
                                  .replace('{JS_HARNESS}', js_harness)
-            content += "        <script src=./js/{SCRIPT}></script>".replace('{SCRIPT}', js_filename)
+            content += "        <script src={SCRIPT}></script>".replace('{SCRIPT}', js_filename)
             content += HTML_BOTTOM
             f.write(content)
 
