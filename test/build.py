@@ -119,9 +119,9 @@ HTML_HEADER = """<!doctype html>
     </head>
     <body>
 
-        <script src={WPT_PREFIX}/testharness.js></script>
-        <script src={WPT_PREFIX}/testharnessreport.js></script>
-        <script src={PREFIX}/{JS_HARNESS}></script>
+        <script src="{WPT_PREFIX}/testharness.js"></script>
+        <script src="{WPT_PREFIX}/testharnessreport.js"></script>
+        <script src="{PREFIX}/{JS_HARNESS}"></script>
 
         <div id=log></div>
 """
@@ -169,7 +169,7 @@ def build_html_from_js(tests, html_dir, use_sync):
             content = HTML_HEADER.replace('{PREFIX}', harness_dir) \
                                  .replace('{WPT_PREFIX}', harness_dir) \
                                  .replace('{JS_HARNESS}', js_harness)
-            content += "        <script src={SCRIPT}></script>".replace('{SCRIPT}', js_filename)
+            content += '        <script src="' + js_filename + '"></script>'
             content += HTML_BOTTOM
             f.write(content)
 
