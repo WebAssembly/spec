@@ -13,6 +13,10 @@ INTERPRETER_DIR = os.path.join(SCRIPT_DIR, '..', 'interpreter')
 WASM_EXEC = os.path.join(INTERPRETER_DIR, 'wasm')
 
 WAST_TESTS_DIR = os.path.join(SCRIPT_DIR, 'core')
+WAST_TEST_SUBDIRS = [os.path.basename(d) for d in
+                     filter(os.path.isdir,
+                            glob.glob(os.path.join(WAST_TESTS_DIR, '*')))]
+print('ADAMK: WAST_TEST_SUBDIRS =', WAST_TEST_SUBDIRS)
 HARNESS_DIR = os.path.join(SCRIPT_DIR, 'harness')
 
 HARNESS_FILES = ['testharness.js', 'testharnessreport.js', 'testharness.css']
@@ -76,8 +80,6 @@ def convert_wast_to_js(out_js_dir):
         js_subdir = os.path.basename(os.path.dirname(wast_file))
         if js_subdir == 'core':
             js_subdir = ''
-        else:
-            ensure_empty_dir(os.path.join(out_js_dir, js_subdir))
         js_filename = os.path.basename(wast_file) + '.js'
         js_file = os.path.join(out_js_dir, js_subdir, js_filename)
         inputs.append((wast_file, js_file))
@@ -143,6 +145,8 @@ def wrap_single_test(js_file):
 
 def build_html_js(out_dir):
     ensure_empty_dir(out_dir)
+    for d in WAST_TEST_SUBDIRS:
+        ensure_empty_dir(os.path.join(out_dir, d))
     copy_harness_files(out_dir, True)
 
     tests = convert_wast_to_js(out_dir)
@@ -153,15 +157,13 @@ def build_html_js(out_dir):
 def build_html_from_js(tests, html_dir, use_sync):
     for js_file in tests:
         subdir = os.path.basename(os.path.dirname(js_file))
-       # if subdir == 'js':
-       #     subdir = ''
-       # else:
-       #     FIXME: ensure_empty_dir needs to happen before all of this
-       #     ensure_empty_dir(os.path.join(html_dir, subdir))
+        if subdir == 'js':
+            subdir = ''
+        print('ADAMK: subdir = ', subdir)
         js_filename = os.path.basename(js_file)
         html_filename = js_filename + '.html'
-        #html_file = os.path.join(html_dir, subdir, html_filename)
-        html_file = os.path.join(html_dir, html_filename)
+        html_file = os.path.join(html_dir, subdir, html_filename)
+        #html_file = os.path.join(html_dir, html_filename)
         js_harness = "sync_index.js" if use_sync else "async_index.js"
         with open(html_file, 'w+') as f:
             content = HTML_HEADER.replace('{PREFIX}', './js/harness') \
@@ -171,7 +173,7 @@ def build_html_from_js(tests, html_dir, use_sync):
             content += HTML_BOTTOM
             f.write(content)
 
-def build_html(html_dir, js_dir, use_sync):
+def build_html(html_dir, use_sync):
     print("Building HTML tests...")
 
     js_html_dir = os.path.join(html_dir, 'js')
@@ -261,11 +263,15 @@ if __name__ == '__main__':
 
     if js_dir is not None:
         ensure_empty_dir(js_dir)
+        for d in WAST_TEST_SUBDIRS:
+            ensure_empty_dir(os.path.join(js_dir, d))
         build_js(js_dir)
 
     if html_dir is not None:
         ensure_empty_dir(html_dir)
-        build_html(html_dir, js_dir, args.use_sync)
+        for d in WAST_TEST_SUBDIRS:
+            ensure_empty_dir(os.path.join(html_dir, d))
+        build_html(html_dir, args.use_sync)
 
     if front_dir is not None:
         ensure_empty_dir(front_dir)
