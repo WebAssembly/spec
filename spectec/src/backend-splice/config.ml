@@ -38,8 +38,3 @@ let sphinx =
     latex = Backend_latex.Config.default;
     prose = Backend_prose.Config.default;
   }
-
-let sphinx_html =
-  { sphinx with
-    latex = {sphinx.latex with multicolumn = false};
-  }

@@ -484,15 +484,12 @@ let rec render_cols env ((fmt, indent_wide, indent_narrow) as cfg) i = function
     let indent = if w = `Wide then indent_wide else indent_narrow in
     let fmt' = "l" :: List.map (fun _ -> "@{}l") (List.tl cols) in
     let n = width - i in
-    (* Add spare `&` at the end of the current line to work around Latex
+    (* Add spare &'s at the end of the current line to work around Latex
      * strangeness (it will calculate the formula's width incorrectly,
      * leading to bogus placement). *)
-    " " ^ String.make (max 0 (n - 1)) '&' ^ " \\\\\n" ^
+    String.make (max 0 (n - 1)) '&' ^ " \\\\\n" ^
     String.make indent '&' ^ " " ^
-    (if not env.config.multicolumn then "" else
-      "\\multicolumn{" ^ string_of_int (width - indent) ^ "}{@{}l@{}}"
-    ) ^
-    "{\\quad\n" ^
+    "\\multicolumn{" ^ string_of_int (width - indent) ^ "}{@{}l@{}}{\\quad\n" ^
       (if n <= 1 then
         render_cols env (fmt', 0, 0) 0 cols
       else

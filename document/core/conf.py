@@ -497,5 +497,10 @@ rst_prolog = """
 # https://docs.mathjax.org/en/latest/web/configuration.html#configuration
 # https://docs.mathjax.org/en/latest/options/input/tex.html#tex-maxbuffer
 mathjax3_config = {
-    'tex': { 'maxBuffer': 30*1024 },
+    'tex': {
+      'maxBuffer': 30*1024,
+      'macros': {
+        'multicolumn': ['', 2]   # Bummer, MathJax can't handle multicolumn, ignore it
+      }
+    }
 }
