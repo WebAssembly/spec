@@ -96,14 +96,22 @@ The following sections provide an overview of what has changed.</p>
 <span id="index-1"></span><h3>Sign extension instructions<a class="headerlink" href="#sign-extension-instructions" title="Permalink to this heading">¶</a></h3>
 <p>Added new numeric instructions for performing sign extension within integer representations <a class="footnote-reference brackets" href="#proposal-signext" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <ul class="simple">
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathit{N}\mathsf{\_s}\)</span></p></li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{extend}}\mathit{N}\mathsf{\_s}\)</span></p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="non-trapping-float-to-int-conversions">
 <span id="index-2"></span><h3>Non-trapping float-to-int conversions<a class="headerlink" href="#non-trapping-float-to-int-conversions" title="Permalink to this heading">¶</a></h3>
 <p>Added new conversion instructions that avoid trapping when converting a floating-point number to an integer <a class="footnote-reference brackets" href="#proposal-cvtsat" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <ul class="simple">
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_sat\_f}\mathit{mm}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">numeric instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\mathit{nn}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{trunc}}\mathsf{\_sat\_f}\mathit{mm}\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="multiple-values">
@@ -118,9 +126,24 @@ The following sections provide an overview of what has changed.</p>
 <span id="index-4"></span><h3>Reference types<a class="headerlink" href="#reference-types" title="Permalink to this heading">¶</a></h3>
 <p>Added <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{funcref}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{externref}}\)</span> as new value types and respective instructions <a class="footnote-reference brackets" href="#proposal-reftype" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
 <ul class="simple">
-<li><p>New <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a>: <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference types</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{funcref}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{externref}}\)</span></p></li>
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-ref"><span class="std std-ref">reference instructions</span></a>: <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}is\_null}}\)</span></p></li>
-<li><p>Enrich <a class="reference internal" href="../syntax/instructions.html#syntax-instr-parametric"><span class="std std-ref">parametric instruction</span></a>: <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> with optional type immediate</p></li>
+<li><p>New <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference</span></a> <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value types</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{funcref}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathsf{externref}}\)</span></p></li>
+</ul>
+</li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-ref"><span class="std std-ref">reference instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}is\_null}}\)</span></p></li>
+</ul>
+</li>
+<li><p>Enrich <a class="reference internal" href="../syntax/instructions.html#syntax-instr-parametric"><span class="std std-ref">parametric instruction</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-parametric}{\mathsf{select}}\)</span> with optional type immediate</p></li>
+</ul>
+</li>
 <li><p>New <a class="reference internal" href="../syntax/modules.html#syntax-elemmode"><span class="std std-ref">declarative</span></a> form of <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a></p></li>
 </ul>
 </section>
@@ -129,15 +152,36 @@ The following sections provide an overview of what has changed.</p>
 <p>Added instructions to directly access and modify tables <a class="footnote-reference brackets" href="#proposal-reftype" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">Table types</span></a> allow any <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> as element type</p></li>
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">table instructions</span></a>: <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.get}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.set}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.grow}}\)</span></p></li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">table instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.get}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.set}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.grow}}\)</span></p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="multiple-tables">
 <span id="index-6"></span><h3>Multiple tables<a class="headerlink" href="#multiple-tables" title="Permalink to this heading">¶</a></h3>
 <p>Added the ability to use multiple tables per module <a class="footnote-reference brackets" href="#proposal-reftype" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">Modules</span></a> may <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">define</span></a>, <a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a>, and <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">export</span></a> multiple tables</p></li>
-<li><p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">Table instructions</span></a> take a <a class="reference internal" href="../syntax/modules.html#syntax-tableidx"><span class="std std-ref">table index</span></a> immediate: <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.get}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.set}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.grow}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span></p></li>
+<li><p><a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">Modules</span></a> may</p>
+<ul>
+<li><p><a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">define</span></a> multiple tables</p></li>
+<li><p><a class="reference internal" href="../syntax/modules.html#syntax-import"><span class="std std-ref">import</span></a> multiple tables</p></li>
+<li><p><a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">export</span></a> multiple tables</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">Table instructions</span></a> take a <a class="reference internal" href="../syntax/modules.html#syntax-tableidx"><span class="std std-ref">table index</span></a> immediate:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.get}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.set}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.size}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.grow}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_indirect}}\)</span></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">Element segments</span></a> take a <a class="reference internal" href="../syntax/modules.html#syntax-tableidx"><span class="std std-ref">table index</span></a></p></li>
 </ul>
 </section>
@@ -145,8 +189,22 @@ The following sections provide an overview of what has changed.</p>
 <span id="index-7"></span><h3>Bulk memory and table instructions<a class="headerlink" href="#bulk-memory-and-table-instructions" title="Permalink to this heading">¶</a></h3>
 <p>Added instructions that modify ranges of memory or table entries <a class="footnote-reference brackets" href="#proposal-reftype" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#proposal-bulk" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></p>
 <ul class="simple">
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>: <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.fill}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.init}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.copy}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{data.drop}}\)</span></p></li>
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">table instructions</span></a>: <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.fill}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.init}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.copy}}\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{elem.drop}}\)</span></p></li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.fill}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.init}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory.copy}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{data.drop}}\)</span></p></li>
+</ul>
+</li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">table instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.fill}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.init}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table.copy}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{elem.drop}}\)</span></p></li>
+</ul>
+</li>
 <li><p>New <a class="reference internal" href="../syntax/modules.html#syntax-datamode"><span class="std std-ref">passive</span></a> form of <a class="reference internal" href="../syntax/modules.html#syntax-data"><span class="std std-ref">data segment</span></a></p></li>
 <li><p>New <a class="reference internal" href="../syntax/modules.html#syntax-elemmode"><span class="std std-ref">passive</span></a> form of <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a></p></li>
 <li><p>New <a class="reference internal" href="../binary/modules.html#binary-datacountsec"><span class="std std-ref">data count section</span></a> in binary format</p></li>
@@ -155,21 +213,142 @@ The following sections provide an overview of what has changed.</p>
 </section>
 <section id="vector-instructions">
 <span id="index-8"></span><h3>Vector instructions<a class="headerlink" href="#vector-instructions" title="Permalink to this heading">¶</a></h3>
-<p>Added vector type and instructions that manipulate multiple numeric values in parallel (also known as <em>SIMD</em>, single instruction multiple data) <a class="footnote-reference brackets" href="#proposal-vectype" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p>
+<p>Added vector type and instructions that manipulate multiple numeric values in parallel
+(also known as <em>SIMD</em>, single instruction multiple data) <a class="footnote-reference brackets" href="#proposal-vectype" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p>
 <ul class="simple">
-<li><p>New <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a>: <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{v128}}\)</span></p></li>
-<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}\!N\!\mathsf{x}\!M\!\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}N\mathsf{\_zero}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}N\mathsf{\_splat}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}N\mathsf{\_lane}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{}N\mathsf{\_lane}\)</span></p></li>
-<li><p>New constant <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instruction</span></a>: <span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{const}}\)</span></p></li>
-<li><p>New unary <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{v128.not}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.abs}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.neg}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i8x16.popcnt}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.abs}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.neg}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.sqrt}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.ceil}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.floor}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.trunc}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.nearest}\)</span></p></li>
-<li><p>New binary <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{v128.and}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.andnot}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.or}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{v128.xor}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.add}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.sub}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.mul}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.add\_sat\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.sub\_sat\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.min\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.max\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.shl}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.shr\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.add}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.extmul\_}\href{../syntax/instructions.html#syntax-half}{\mathit{half}}\mathsf{\_i}\!N'\!\mathsf{x}\!M'\!\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i16x8.q15mulr\_sat\_s}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i32x4.dot\_i16x8\_s}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i16x8.extadd\_pairwise\_i8x16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i32x4.extadd\_pairwise\_i16x8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i8x16.avgr\_u}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i16x8.avgr\_u}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.sub}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.mul}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.div}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.min}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.max}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.pmin}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.pmax}\)</span></p></li>
-<li><p>New ternary <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instruction</span></a>: <span class="math notranslate nohighlight">\(\mathsf{v128.bitselect}\)</span></p></li>
-<li><p>New test <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{v128.any\_true}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.all\_true}\)</span></p></li>
-<li><p>New relational <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.eq}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.ne}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.lt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.gt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.le\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.ge\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.eq}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.ne}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.lt}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.gt}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.le}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.ge}\)</span></p></li>
-<li><p>New conversion <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:<span class="math notranslate nohighlight">\(\mathsf{i32x4.trunc\_sat\_f32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i32x4.trunc\_sat\_f64x2\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\mathsf{\_zero}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f32x4.convert\_i32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f32x4.demote\_f64x2\_zero}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f64x2.convert\_low\_i32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f64x2.promote\_low\_f32x4}\)</span></p></li>
-<li><p>New lane access <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.extract\_lane\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}^?\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.replace\_lane}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.extract\_lane}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.replace\_lane}\)</span></p></li>
-<li><p>New lane splitting/combining <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.extend\_}\href{../syntax/instructions.html#syntax-half}{\mathit{half}}\mathsf{\_i}\!N'\!\mathsf{x}\!M'\!\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i8x16.narrow\_i16x8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i16x8.narrow\_i32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
-<li><p>New byte reordering <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i8x16.shuffle}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i8x16.swizzle}\)</span></p></li>
-<li><p>New injection/projection <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>: <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.splat}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.splat}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.bitmask}\)</span></p></li>
+<li><p>New <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{v128}}\)</span></p></li>
+</ul>
+</li>
+<li><p>New <a class="reference internal" href="../syntax/instructions.html#syntax-instr-memory"><span class="std std-ref">memory instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}\!N\!\mathsf{x}\!M\!\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}N\mathsf{\_zero}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}N\mathsf{\_splat}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}{}N\mathsf{\_lane}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}{}N\mathsf{\_lane}\)</span></p></li>
+</ul>
+</li>
+<li><p>New constant <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instruction</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{const}}\)</span></p></li>
+</ul>
+</li>
+<li><p>New unary <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.not}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.abs}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.neg}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i8x16.popcnt}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.abs}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.neg}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.sqrt}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.ceil}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.floor}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.trunc}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.nearest}\)</span></p></li>
+</ul>
+</li>
+<li><p>New binary <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.and}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.andnot}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.or}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.xor}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.add}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.sub}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.mul}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.add\_sat\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.sub\_sat\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.min\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.max\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.shl}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.shr\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.add}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.sub}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.mul}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.div}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i16x8.extadd\_pairwise\_i8x16\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i32x4.extadd\_pairwise\_i16x8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.extmul\_}\href{../syntax/instructions.html#syntax-half}{\mathit{half}}\mathsf{\_i}\!N'\!\mathsf{x}\!M'\!\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i16x8.q15mulr\_sat\_s}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i32x4.dot\_i16x8\_s}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i8x16.avgr\_u}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i16x8.avgr\_u}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.min}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.max}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.pmin}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.pmax}\)</span></p></li>
+</ul>
+</li>
+<li><p>New ternary <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instruction</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.bitselect}\)</span></p></li>
+</ul>
+</li>
+<li><p>New test <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{v128.any\_true}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.all\_true}\)</span></p></li>
+</ul>
+</li>
+<li><p>New relational <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.eq}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.ne}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.lt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.gt\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.le\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.ge\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.eq}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.ne}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.lt}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.gt}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.le}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.ge}\)</span></p></li>
+</ul>
+</li>
+<li><p>New conversion <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i32x4.trunc\_sat\_f32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i32x4.trunc\_sat\_f64x2\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\mathsf{\_zero}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f32x4.convert\_i32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f32x4.demote\_f64x2\_zero}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f64x2.convert\_low\_i32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f64x2.promote\_low\_f32x4}\)</span></p></li>
+</ul>
+</li>
+<li><p>New lane access <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.extract\_lane\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}^?\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.replace\_lane}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.extract\_lane}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.replace\_lane}\)</span></p></li>
+</ul>
+</li>
+<li><p>New lane splitting/combining <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.extend\_}\href{../syntax/instructions.html#syntax-half}{\mathit{half}}\mathsf{\_i}\!N'\!\mathsf{x}\!M'\!\mathsf{\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i8x16.narrow\_i16x8\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i16x8.narrow\_i32x4\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}\)</span></p></li>
+</ul>
+</li>
+<li><p>New byte reordering <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i8x16.shuffle}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i8x16.swizzle}\)</span></p></li>
+</ul>
+</li>
+<li><p>New injection/projection <a class="reference internal" href="../syntax/instructions.html#syntax-instr-vec"><span class="std std-ref">vector instructions</span></a>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.splat}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{f}\!N\!\mathsf{x}\!M\!\mathsf{.splat}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathsf{i}\!N\!\mathsf{x}\!M\!\mathsf{.bitmask}\)</span></p></li>
+</ul>
+</li>
 </ul>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="proposal-signext" role="note">
