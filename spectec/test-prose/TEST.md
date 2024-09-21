@@ -815,7 +815,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -832,7 +832,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
@@ -853,7 +853,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{t}}{(c_1)}`.
 
@@ -866,7 +866,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
@@ -883,7 +883,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`t_1` is on the top of the stack.
 
-#. Pop the value :math:`(t_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -3225,7 +3225,7 @@ Step_pure/return
 
 Step_pure/unop t unop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_1) from the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
 3. If (|$unop_(t, unop, c_1)| ≤ 0), then:
   a. Trap.
 4. Let c be an element of $unop_(t, unop, c_1).
@@ -3233,7 +3233,7 @@ Step_pure/unop t unop
 
 Step_pure/binop t binop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_2) from the stack.
+2. Pop the value (valtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
 4. Pop the value (valtype_0.CONST c_1) from the stack.
 5. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
@@ -3243,13 +3243,13 @@ Step_pure/binop t binop
 
 Step_pure/testop t testop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_1) from the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
 3. Let c be $testop_(t, testop, c_1).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop t relop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_2) from the stack.
+2. Pop the value (valtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
 4. Pop the value (valtype_0.CONST c_1) from the stack.
 5. Let c be $relop_(t, relop, c_1, c_2).
@@ -3257,7 +3257,7 @@ Step_pure/relop t relop
 
 Step_pure/cvtop t_2 t_1 cvtop
 1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
-2. Pop the value (t_1.CONST c_1) from the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
 3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
 4. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
@@ -5328,7 +5328,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -5345,7 +5345,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
@@ -5366,7 +5366,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
 
@@ -5379,7 +5379,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
@@ -5396,7 +5396,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -10238,7 +10238,7 @@ Step_pure/return
 
 Step_pure/unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
 4. Let c be an element of $unop_(nt, unop, c_1).
@@ -10246,7 +10246,7 @@ Step_pure/unop nt unop
 
 Step_pure/binop nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
@@ -10256,13 +10256,13 @@ Step_pure/binop nt binop
 
 Step_pure/testop nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. Let c be $testop_(nt, testop, c_1).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. Let c be $relop_(nt, relop, c_1, c_2).
@@ -10270,7 +10270,7 @@ Step_pure/relop nt relop
 
 Step_pure/cvtop nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
-2. Pop the value (nt_1.CONST c_1) from the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
 4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
@@ -14687,7 +14687,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -14704,7 +14704,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
@@ -14725,7 +14725,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}(c_1)}`.
 
@@ -14738,7 +14738,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
@@ -14755,7 +14755,7 @@ watsup 0.4 generator
 
 1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -23622,7 +23622,7 @@ Step_pure/handler
 
 Step_pure/unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
 4. Let c be an element of $unop_(nt, unop, c_1).
@@ -23630,7 +23630,7 @@ Step_pure/unop nt unop
 
 Step_pure/binop nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
@@ -23640,13 +23640,13 @@ Step_pure/binop nt binop
 
 Step_pure/testop nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. Let c be $testop_(nt, testop, c_1).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. Let c be $relop_(nt, relop, c_1, c_2).
@@ -23654,7 +23654,7 @@ Step_pure/relop nt relop
 
 Step_pure/cvtop nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
-2. Pop the value (nt_1.CONST c_1) from the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
 4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
