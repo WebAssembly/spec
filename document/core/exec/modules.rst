@@ -31,6 +31,10 @@ are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the follow
 :ref:`Functions <syntax-funcinst>`
 ..................................
 
+$${definition-prose: allocfunc}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's'), (3) Actual prose uses 'func' for function variable name while LaTex expression uses 'code', (4) Number 5 doesn't exist in the actual prose
+
 1. Let :math:`\func` be the :ref:`function <syntax-func>` to allocate and :math:`\moduleinst` its :ref:`module instance <syntax-moduleinst>`.
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\moduleinst.\MITYPES[\func.\FTYPE]`.
@@ -42,7 +46,6 @@ are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the follow
 6. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
 
 7. Return :math:`a`.
-
 $${definition: allocfunc}
 
 .. note::
@@ -56,11 +59,14 @@ $${definition: allocfunc}
 :ref:`Tables <syntax-tableinst>`
 ................................
 
+$${definition-prose: alloctable}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
+
 1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` of the table to allocate and :math:`\reff` the initialization value.
 
 2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
-
-3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
+                                                                                                      3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
 4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype', \TIREFS~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
 
@@ -76,6 +82,10 @@ $${definition: alloctable}
 
 :ref:`Memories <syntax-meminst>`
 ................................
+
+$${definition-prose: allocmem}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
 
 1. Let :math:`\memtype` be the :ref:`memory type <syntax-memtype>` of the memory to allocate.
 
@@ -150,6 +160,10 @@ $${definition: allocmem}
 :ref:`Globals <syntax-globalinst>`
 ..................................
 
+$${definition-prose: allocglobal}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
+
 1. Let :math:`\globaltype` be the :ref:`global type <syntax-globaltype>` of the global to allocate and :math:`\val` its initialization :ref:`value <syntax-val>`.
 
 2. Let :math:`a` be the first free :ref:`global address <syntax-globaladdr>` in :math:`S`.
@@ -168,6 +182,10 @@ $${definition: allocglobal}
 
 :ref:`Element segments <syntax-eleminst>`
 .........................................
+
+$${definition-prose: allocelem}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
 
 1. Let :math:`\reftype` be the elements' type and :math:`\reff^\ast` the list of :ref:`references <syntax-ref>` to allocate.
 
@@ -188,6 +206,10 @@ $${definition: allocelem}
 :ref:`Data segments <syntax-datainst>`
 ......................................
 
+$${definition-prose: allocdata}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
+
 1. Let :math:`b^\ast` be the list of :ref:`bytes <syntax-byte>` to allocate.
 
 2. Let :math:`a` be the first free :ref:`data address <syntax-dataaddr>` in :math:`S`.
@@ -206,6 +228,8 @@ $${definition: allocdata}
 
 Growing :ref:`tables <syntax-tableinst>`
 ........................................
+
+$${definition-prose: growtable}
 
 1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow, :math:`n` the number of elements by which to grow it, and :math:`\reff` the initialization value.
 
@@ -231,6 +255,8 @@ $${definition: growtable}
 
 Growing :ref:`memories <syntax-meminst>`
 ........................................
+
+$${definition-prose: growmem}
 
 1. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` to grow and :math:`n` the number of :ref:`pages <page-size>` by which to grow it.
 
@@ -259,7 +285,9 @@ $${definition: growmem}
 :ref:`Modules <syntax-moduleinst>`
 ..................................
 
-.. todo:: update prose for types
+.. todo:: (0) Allocmodule is skipped due to an unexpected error
+
+.. todo:: (0) update prose for types
 
 The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external addresses <syntax-externaddr>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` list of the module,
 a list of initialization :ref:`values <syntax-val>` for the module's :ref:`globals <syntax-global>`,
@@ -360,6 +388,10 @@ $${definition: allocmodule}
 
 Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
 
+$${definition-prose: allocXs}
+
+.. todo:: (0) Update prose for TODOs
+
 $${definition: allocXs}
 $${definition-ignore: allocfuncs allocglobals alloctables allocmems allocelems allocdatas}
 
@@ -367,12 +399,15 @@ For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-re
 
 .. _alloc-type:
 
+$${definition-prose: alloctypes}
 $${definition: alloctypes}
 
 Finally, export instances are produced with the help of the following definition:
 
 .. _alloc-export:
 
+$${definition-prose: allocexports}
+$${definition-prose: allocexport}
 $${definition: {allocexports allocexport}}
 
 .. note::
@@ -394,6 +429,10 @@ Instantiation checks that the module is :ref:`valid <valid>` and the provided im
 and may *fail* with an error otherwise.
 Instantiation can also result in an :ref:`exception <exception>` or :ref:`trap <trap>` when initializing a :ref:`table <syntax-table>` or :ref:`memory <syntax-mem>` from an :ref:`active segment <syntax-data>` or when executing the :ref:`start <syntax-start>` function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
+
+$${definition-prose: instantiate}
+
+.. todo:: (2) At line 24 and 27, f is popped instead of z'
 
 1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
 
@@ -508,11 +547,14 @@ where:
 
 .. _eval-globals:
 
+$${definition-prose: evalglobals}
 $${definition: evalglobals}
 
 .. _aux-runelem:
 .. _aux-rundata:
 
+$${definition-prose: runelem_}
+$${definition-prose: rundata_}
 $${definition: runelem_ rundata_}
 
 .. note::
@@ -537,6 +579,10 @@ $${definition: runelem_ rundata_}
 
 Invocation
 ~~~~~~~~~~
+
+$${definition-prose: invoke}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
 
 Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` ${:funcaddr} in the :ref:`store <syntax-store>` ${:s} and an appropriate list ${:val*} of argument :ref:`values <syntax-val>`.
 
