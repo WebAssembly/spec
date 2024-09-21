@@ -27,5 +27,4 @@ module String :
 sig
   val implode : char list -> string
   val explode : string -> char list
-  val repeat : int -> string -> string
 end

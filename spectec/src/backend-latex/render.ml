@@ -1123,11 +1123,6 @@ and render_nottyp env t : table =
         (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
       )
     in
-(*
-let pr_col = function Br _ -> "\\\\" | Col s -> s in
-let pr_row = function Sep -> "----" | Row cols -> String.concat " & " (List.map pr_col cols) in
-List.iter (fun row -> Printf.printf "[render_nottyp] %s\n%!" (pr_row row)) rhss;
-*)
     if env.config.display then
       rhss
     else

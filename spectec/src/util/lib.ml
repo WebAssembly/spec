@@ -71,7 +71,4 @@ struct
     let cs = ref [] in
     for i = String.length s - 1 downto 0 do cs := s.[i] :: !cs done;
     !cs
-
-  let repeat n s =
-    String.concat "" (List.init n (fun _ -> s))
 end
