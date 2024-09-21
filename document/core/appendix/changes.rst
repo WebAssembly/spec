@@ -344,14 +344,14 @@ Added tag definitions, imports, and exports, and instructions to throw and catch
 
 * New :ref:`reference type <syntax-reftype>` short-hands:
 
- - |EXNREF|
- - |NULLEXNREF|
+  - |EXNREF|
+  - |NULLEXNREF|
 
 * New :ref:`control instructions <syntax-instr-control>`:
 
- - |THROW|
- - |THROWREF|
- - |TRYTABLE|
+  - |THROW|
+  - |THROWREF|
+  - |TRYTABLE|
 
 * New :ref:`tag section <binary-tagsec>` in binary format.
 
@@ -410,9 +410,9 @@ Added more precise types for references. [#proposal-typedref]_
 
 * New :ref:`reference instructions <syntax-instr-ref>`:
 
- - |REFASNONNULL|
- - |BRONNULL|
- - |BRONNONNULL|
+  - |REFASNONNULL|
+  - |BRONNULL|
+  - |BRONNONNULL|
 
 * New :ref:`control instruction <syntax-instr-control>`:
 
@@ -468,11 +468,11 @@ Added managed reference types. [#proposal-gc]_
 
 * New generic :ref:`reference instructions <syntax-instr-ref>`:
 
- - |REFEQ|
- - |REFTEST|
- - |REFCAST|
- - |BRONCAST|
- - |BRONCASTFAIL|
+  - |REFEQ|
+  - |REFTEST|
+  - |REFCAST|
+  - |BRONCAST|
+  - |BRONCASTFAIL|
 
 * New :ref:`reference instructions <syntax-instr-ref>` for :ref:`unboxed scalars <syntax-i31>`:
 
