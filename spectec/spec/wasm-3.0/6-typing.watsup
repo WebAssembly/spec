@@ -914,10 +914,12 @@ rule Instr_ok/array.init_data:
 ;; External reference instructions
 
 rule Instr_ok/extern.convert_any:
-  C |- EXTERN.CONVERT_ANY : (REF nul ANY) -> (REF nul EXTERN)
+  C |- EXTERN.CONVERT_ANY : (REF nul1 ANY) -> (REF nul2 EXTERN)
+  -- if nul1 = nul2
 
 rule Instr_ok/any.convert_extern:
-  C |- ANY.CONVERT_EXTERN : (REF nul EXTERN) -> (REF nul ANY)
+  C |- ANY.CONVERT_EXTERN : (REF nul1 EXTERN) -> (REF nul2 ANY)
+  -- if nul1 = nul2
 
 
 ;; Vector instructions

@@ -411,33 +411,16 @@ and render_expr' env expr =
     let loop = Al.Al_util.iterE (ids, (iter, [])) ~note:Al.Al_util.no_note in
     let sloop = render_expr env loop in
     sprintf "for all %s, %s" sloop se
-  | Al.Ast.ArityE e ->
-    let se = render_expr env e in
-    sprintf "the arity of %s" se
   | Al.Ast.GetCurStateE -> "the current state"
-  | Al.Ast.GetCurLabelE -> "the current label"
-  | Al.Ast.GetCurFrameE -> "the current frame"
-  | Al.Ast.GetCurContextE -> "the current context"
-  | Al.Ast.FrameE (None, e2) ->
-    let se2 = render_expr env e2 in
-    sprintf "the activation of %s" se2
-  | Al.Ast.FrameE (Some e1, e2) ->
-    let se1 = render_expr env e1 in
-    let se2 = render_expr env e2 in
-    sprintf "the activation of %s with arity %s" se2 se1
-  | Al.Ast.ContE e ->
-    let se = render_expr env e in
-    sprintf "the continuation of %s" se
+  | Al.Ast.GetCurContextE None -> "the current context"
+  | Al.Ast.GetCurContextE (Some a) ->
+    sprintf "the current %s context" (render_atom env a)
   | Al.Ast.ChooseE e ->
     let se = render_expr env e in
     sprintf "an element of %s" se
-  | Al.Ast.LabelE (e1, e2) ->
-    let se1 = render_expr env e1 in
-    let se2 = render_expr env e2 in
-    sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
   | Al.Ast.ContextKindE a ->
     let sa = render_atom env a in
-    sprintf "the top of the stack is a %s" sa
+    sprintf "the first non-value entry of the stack is a %s" sa
   | Al.Ast.IsDefinedE e ->
     let se = render_expr env e in
     sprintf "%s is defined" se
@@ -451,8 +434,6 @@ and render_expr' env expr =
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se
-  | Al.Ast.TopLabelE -> "a label is now on the top of the stack"
-  | Al.Ast.TopFrameE -> "a frame is now on the top of the stack"
   | Al.Ast.TopValueE (Some e) ->
     let se = render_expr env e in
     sprintf "a value of value type %s is on the top of the stack" se
@@ -558,14 +539,9 @@ and render_prose_instrs env depth instrs =
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix expr =
   match expr.it with
-  | Al.Ast.GetCurContextE
-  | Al.Ast.GetCurFrameE
-  | Al.Ast.GetCurLabelE
-  | Al.Ast.ContE _
-  | Al.Ast.FrameE _
-  | Al.Ast.LabelE _
+  | Al.Ast.GetCurContextE _
   | Al.Ast.VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
 

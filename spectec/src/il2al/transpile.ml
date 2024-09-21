@@ -302,17 +302,19 @@ let remove_unnecessary_branch =
   remove_unnecessary_branch' []
 
 let push_either =
-  let push_either' i =
+  let push_either' walker i =
     let either_at = i.at in
+    let walk_instr = walker.walk_instr walker in
     match i.it with
     | EitherI (il1, il2) ->
       (match Lib.List.split_last il1 with
       | hds, { it = IfI (c, then_body, []); at = if_at; _ } ->
-        eitherI (hds @ [ ifI (c, then_body, il2) ~at:if_at ], il2) ~at:either_at
-      | _ -> i)
-    | _ -> i in
-
-  Walk.walk_instr { Walk.default_config with pre_instr = lift push_either' }
+        walk_instr (eitherI (hds @ [ ifI (c, then_body, il2) ~at:if_at ], il2) ~at:either_at)
+      | _ -> walk_instr i)
+    | _ -> walk_instr i 
+  in
+  let walker = {Walk.base_walker with walk_instr = push_either'} in
+  walker.walk_instr walker
 
 let merge_three_branches i =
   let at1 = i.at in
@@ -450,12 +452,18 @@ let infer_case_assert instrs =
     | BinE ((AndOp | OrOp), c1, c2) -> handle_cond c1 mt_then mt_else; handle_cond c2 mt_then mt_else
     | _ -> ()
   in
-  let handle_if i =
+  let handle_if walker i =
+    let walk_expr = walker.walk_expr walker in
+    let walk_instr = walker.walk_instr walker in
     match i.it with
-    | IfI (c, il1, il2) -> handle_cond c (il1 = []) (il2 = [])
-    | _ -> ()
+    | IfI (c, il1, il2) -> 
+      handle_cond c (il1 = []) (il2 = []);
+      let it = IfI (walk_expr c, List.concat_map walk_instr il1, List.concat_map walk_instr il2) in
+      [{i with it}]
+    | _ -> base_walker.walk_instr walker i
   in
-  let count_cases = walk_instrs { default_config with pre_instr = (fun i -> handle_if i; [ i ]) } in
+  let walker = {base_walker with walk_instr = handle_if} in
+  let count_cases = List.concat_map (walker.walk_instr walker) in
   count_cases instrs |> ignore;
 
   let is_single_case_check c =
@@ -514,13 +522,20 @@ let reduce_comp expr =
 let loop_max = 100
 let loop_cnt = ref loop_max
 let rec enhance_readability instrs =
-  let walk_config =
-    {
-      Walk.default_config with
-      pre_expr = simplify_record_concat |> composite if_not_defined |> composite reduce_comp;
-      post_instr =
-        unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
-    } in
+  let pre_expr = simplify_record_concat |> composite if_not_defined |> composite reduce_comp in
+  let walk_expr walker expr = 
+    let expr1 = pre_expr expr in
+    Al.Walk.base_walker.walk_expr walker expr1
+  in
+  let post_instr = unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches) in
+  let walk_instr walker instr = 
+    let instr1 = Al.Walk.base_walker.walk_instr walker instr in
+    List.concat_map post_instr instr1
+  in
+  let walker = {Walk.base_walker with 
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  } in
 
   let instrs' =
     instrs
@@ -531,7 +546,7 @@ let rec enhance_readability instrs =
     |> List.concat_map remove_unnecessary_branch
     |> remove_nop []
     |> infer_case_assert
-    |> Walk.walk_instrs walk_config
+    |> List.concat_map (walker.walk_instr walker)
   in
 
   if !loop_cnt = 0 || Eq.eq_instrs instrs instrs' then (
@@ -552,13 +567,12 @@ let flatten_if instrs =
       ifI (binE (AndOp, e1, e2) ~at:at ~note:boolT, il1, il2) ~at:at1
     | _ -> instr
   in
-  let walk_config =
-    {
-      Walk.default_config with
-      post_instr = lift flatten_if';
-    } in
-
-  Walk.walk_instrs walk_config instrs
+  let walk_instr walker instr = 
+    let instr1 = Al.Walk.base_walker.walk_instr walker instr in
+    List.map flatten_if' instr1
+  in
+  let walker = { base_walker with walk_instr = walk_instr } in
+  List.concat_map (walker.walk_instr walker) instrs
 
 let rec mk_access ps base =
   match ps with
@@ -606,12 +620,12 @@ let hide_state_expr expr =
 
 let hide_state instr =
   let at = instr.at in
-  let env = Al.Valid.env in
+  let il_env = Al.Valid.il_env in
   let set_unit_type fname =
     let id = (fname $ no_region) in
     let unit_type = Il.Ast.TupT [] $ no_region in
-    match Il.Env.find_def !Al.Valid.env id with
-    | (params, _, clauses) -> env := Al.Valid.Env.bind_def !env id (params, unit_type, clauses)
+    match Il.Env.find_def !Al.Valid.il_env id with
+    | (params, _, clauses) -> il_env := Al.Valid.IlEnv.bind_def !il_env id (params, unit_type, clauses)
   in
   match instr.it with
   (* Perform *)
@@ -662,15 +676,20 @@ let hide_state instr =
   | _ -> [ instr ]
 
 let remove_state algo =
-  let walk_config =
-      {
-        Walk.default_config with
-        pre_instr = hide_state;
-        pre_expr = hide_state_expr;
-      }
+  let walk_expr walker expr = 
+    let expr1 = hide_state_expr expr in
+    Al.Walk.base_walker.walk_expr walker expr1
   in
-
-  let algo' = Walk.walk walk_config algo in
+  let walk_instr walker instr = 
+    let instr1 = hide_state instr in
+    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  }
+  in
+  let algo' = walker.walk_algo walker algo in
   { algo' with it =
     match algo'.it with
     | FuncA (name, args, body) ->
@@ -690,7 +709,7 @@ let remove_state algo =
 let get_state_arg_opt f =
   let arg = ref (TypA (Il.Ast.BoolT $ no_region)) in
   let id = f $ no_region in
-  match Il.Env.find_opt_def !Al.Valid.env id with
+  match Il.Env.find_opt_def !Al.Valid.il_env id with
   | Some (params, _, _) ->
     let param_state = List.find_opt (
       fun param ->
@@ -730,16 +749,20 @@ let recover_state algo =
     | _ -> [instr]
   in
 
-  let walk_config =
-      {
-        Walk.default_config with
-        (* pre_instr = ; *)
-        pre_expr = recover_state_expr;
-        pre_instr = recover_state_instr
-      }
+  let walk_expr walker expr = 
+    let expr1 = recover_state_expr expr in
+    Al.Walk.base_walker.walk_expr walker expr1
   in
-
-  let algo' = Walk.walk walk_config algo in
+  let walk_instr walker instr = 
+    let instr1 = recover_state_instr instr in
+    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  }
+  in
+  let algo' = walker.walk_algo walker algo in
   algo'
 
 let insert_state_binding algo =
@@ -752,14 +775,12 @@ let insert_state_binding algo =
     e
   in
 
-  let walk_config =
-    {
-      Walk.default_config with
-      pre_expr = count_state;
-    }
+  let walk_expr walker expr = 
+    let expr1 = count_state expr in
+    Al.Walk.base_walker.walk_expr walker expr1
   in
-
-  let algo' = Walk.walk walk_config algo in
+  let walker = { Walk.base_walker with walk_expr = walk_expr; } in
+  let algo' = walker.walk_algo walker algo in
   if !state_count > 0 then (
     match algo.it with
     | RuleA _ ->
@@ -820,18 +841,25 @@ let insert_frame_binding instrs =
     [ i ]
   in
 
-  let walk_config =
-    {
-      Walk.default_config with
-      pre_expr = count_frame;
-      pre_instr = update_bindings;
-      stop_cond_instr = found_frame;
-      post_instr = check_free_frame;
-    }
+  let walk_expr walker expr = 
+    let expr1 = count_frame expr in
+    Al.Walk.base_walker.walk_expr walker expr1
+  in
+  let walk_instr walker instr = 
+    let instr1 = update_bindings instr in
+    let instr2 = List.concat_map (fun i -> if found_frame i then [i] else Al.Walk.base_walker.walk_instr walker i) instr1 in
+    List.concat_map check_free_frame instr2
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  }
   in
 
-  match Walk.walk_instrs walk_config instrs with
-  | il when !found -> (letI (varE "f" ~note:frameT, getCurFrameE () ~note:frameT)) :: il
+  match List.concat_map (walker.walk_instr walker) instrs with
+  | il when !found ->
+    let frame = frameE (varE "_" ~note:natT, varE "f" ~note:frameT) ~note:evalctxT in
+    (letI (frame, getCurContextE (Some frame_atom) ~note:evalctxT)) :: il
   | _ -> instrs
 
 
@@ -881,13 +909,23 @@ let handle_framed_algo a instrs =
   in
   (* End of helpers *)
 
-  let instr_hd = letI (e_zf, { e_zf with it = GetCurFrameE }) ~at:e_zf.at in
-  let instr_tl = walk_instrs { default_config with
-    post_instr;
-    pre_expr = frame_finder;
-    post_expr = expr_to_mutI
-  } instrs in
-
+  let frame = frameE (varE "_" ~note:natT, e_zf) ~note:evalctxT ~at:e_zf.at in
+  let instr_hd = letI (frame, getCurContextE (Some frame_atom) ~note:evalctxT) in
+  let walk_expr walker expr = 
+    let expr1 = frame_finder expr in
+    let expr2 = Al.Walk.base_walker.walk_expr walker expr1 in
+    expr_to_mutI expr2
+  in
+  let walk_instr walker instr = 
+    let instr1 = Al.Walk.base_walker.walk_instr walker instr in
+    List.concat_map post_instr instr1
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  }
+  in
+  let instr_tl = List.concat_map (walker.walk_instr walker) instrs in
   if !frame_appeared then instr_hd :: instr_tl else instr_tl
 
 (* Case 2 *)
@@ -910,14 +948,15 @@ let handle_unframed_algo instrs =
       match !frame_arg with
       | Some { it = ExpA f; _ } ->
         let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
-        let frame = frameE (None, f) ~at:f.at ~note:callframeT in
+        let zeroE = numE Z.zero ~note:natT in
+        let frame = frameE (zeroE, f) ~at:f.at ~note:callframeT in
         let frame' =
           match instr.it with
           (* HARDCODE: the frame-passing-style *)
           | LetI ( { it = TupE [f'; _]; _ }, _) ->
-            frameE (None, f') ~at:f'.at ~note:callframeT
+            frameE (zeroE, f') ~at:f'.at ~note:callframeT
           | _ ->
-            frameE (None, varE "_f" ~note:f.note) ~note:callframeT
+            frameE (zeroE, varE "_f" ~note:f.note) ~note:callframeT
         in
         [
           pushI frame ~at:frame.at;
@@ -931,10 +970,20 @@ let handle_unframed_algo instrs =
   in
   (* End of helpers *)
 
-  walk_instrs { default_config with
-    post_instr;
-    pre_expr = extract_frame_arg;
-  } instrs
+  let walk_expr walker expr = 
+    let expr1 = extract_frame_arg expr in
+    Al.Walk.base_walker.walk_expr walker expr1
+  in
+  let walk_instr walker instr = 
+    let instr1 = Al.Walk.base_walker.walk_instr walker instr in
+    List.concat_map post_instr instr1
+  in
+  let walker = { Walk.base_walker with
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  }
+  in
+  List.concat_map (walker.walk_instr walker) instrs
 
 let handle_frame params instrs =
   match List.find_opt (fun a -> is_frame_arg a || is_state_arg a) params with
@@ -986,8 +1035,15 @@ and enforce_return il = il |> List.rev |> enforce_return' |> List.rev
 let contains_return il =
   let ret = ref false in
   let pre_instr = fun i -> (match i.it with ReturnI _ | TrapI -> ret := true | _ -> ()); [ i ] in
-  let config = { Walk.default_config with pre_instr } in
-  List.map (Walk.walk_instr config) il |> ignore;
+  let walk_instr walker instr = 
+    let instr1 = pre_instr instr in
+    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+  in
+  let walker = { Walk.base_walker with
+    walk_instr = walk_instr;
+  }
+  in
+  List.concat_map (walker.walk_instr walker) il |> ignore;
   !ret
 
 (* If intrs contain a return statement, make sure that every path has return statement in the end *)
@@ -998,28 +1054,26 @@ let ensure_return il =
 let remove_exit algo =
   let exit_to_pop instr =
     match instr.it with
-    | ExitI ({ it = Atom.Atom "FRAME_"; _ }) ->
-      popI (getCurFrameE () ~note:frameT) ~at:instr.at
-    | ExitI ({ it = Atom.Atom "LABEL_"; _ }) ->
-      popI (getCurLabelE () ~note:labelT) ~at:instr.at
+    | ExitI ({ it = Atom.Atom id; _ }) when List.mem id context_names ->
+      popI (getCurContextE (Some (atom_of_name id "evalctx")) ~note:evalctxT) ~at:instr.at
     | _ -> instr
   in
-
-  let walk_config =
-    {
-      Walk.default_config with
-      pre_instr = lift exit_to_pop;
-    }
+  let walk_instr walker instr = 
+    let instr1 = (lift exit_to_pop) instr in
+    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
   in
-
-  Walk.walk walk_config algo
+  let walker = { Walk.base_walker with
+    walk_instr = walk_instr;
+  }
+  in
+  walker.walk_algo walker algo
 
 (* EnterI to PushI *)
 let remove_enter algo =
   let enter_frame_to_push_then_pop instr =
     match instr.it with
     | EnterI (
-      ({ it = FrameE (Some e_arity, _); _ } as e_frame),
+      ({ it = CaseE ([{ it = Atom.Atom "FRAME_"; _ }] :: _, [e_arity; _]); _ } as e_frame),
       { it = CatE (instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }); _ },
       il) ->
         begin match e_arity.it with
@@ -1037,11 +1091,6 @@ let remove_enter algo =
             pushI e_tmp ~at:instr.at;
           ]
         end
-    | EnterI (
-      ({ it = FrameE (None, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
-      il) ->
-        pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
     | _ -> [ instr ]
   in
 
@@ -1081,22 +1130,28 @@ let remove_enter algo =
 
   let remove_enter' = Source.map (function
     | FuncA (name, params, body) ->
-        let walk_config =
-          {
-            Walk.default_config with
-            pre_instr = enter_frame_to_push_then_pop @@ (lift enter_label_to_push);
-          }
+        let pre_instr = enter_frame_to_push_then_pop @@ (lift enter_label_to_push) in
+        let walk_instr walker instr = 
+          let instr1 = pre_instr instr in
+          List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
         in
-        let body = Walk.walk_instrs walk_config body in
+        let walker = { Walk.base_walker with
+          walk_instr = walk_instr;
+        }
+        in
+        let body = List.concat_map (walker.walk_instr walker) body in
         FuncA (name, params, body)
     | RuleA (name, anchor, params, body) ->
-        let walk_config =
-          {
-            Walk.default_config with
-            pre_instr = enter_frame_to_push @@ (lift enter_label_to_push) @@ enter_handler_to_push;
-          }
+        let pre_instr = enter_frame_to_push @@ (lift enter_label_to_push) @@ enter_handler_to_push in
+        let walk_instr walker instr = 
+          let instr1 = pre_instr instr in
+          List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
         in
-        let body = Walk.walk_instrs walk_config body in
+        let walker = { Walk.base_walker with
+          walk_instr = walk_instr;
+        }
+        in
+        let body = List.concat_map (walker.walk_instr walker) body in
         RuleA (name, anchor, params, body)
   ) in
 

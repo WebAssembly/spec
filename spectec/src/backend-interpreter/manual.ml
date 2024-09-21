@@ -1,20 +1,21 @@
+open Reference_interpreter
 open Al
 open Ast
 open Al_util
+open Ds
 
 module FuncMap = Map.Make (String)
 
 let ref_type =
   (* TODO: some / none *)
-  let null = caseV ("NULL", [ optV (Some (listV [||])) ]) in
-  let nonull = caseV ("NULL", [ optV None ]) in
+  let null = some "NULL" in
+  let nonull = none "NULL" in
   let none = nullary "NONE" in
   let nofunc = nullary "NOFUNC" in
   let noexn = nullary "NOEXN" in
   let noextern = nullary "NOEXTERN" in
 
   let match_heap_type v1 v2 =
-    let open Reference_interpreter in
     let ht1 = Construct.al_to_heap_type v1 in
     let ht2 = Construct.al_to_heap_type v2 in
     Match.match_ref_type [] (Types.Null, ht1) (Types.Null, ht2)
@@ -52,20 +53,100 @@ let ref_type =
   | vs -> Numerics.error_values "$Ref_type" vs
 
 let module_ok = function
-  | [_module_] ->
-    (*
-    module_
-    |> Construct.al_to_module
-    |> Reference_interpreter.Valid.check_module;
-    *)
-    (* TODO: Moduletype *)
-    CaseV ("->", [listV_of_list []; listV_of_list []])
+  | [
+    CaseV (
+      "MODULE",
+      [
+        ListV _types;
+        ListV imports;
+        _funcs;
+        _globals;
+        _tables;
+        _mems;
+        _tags;
+        _elems;
+        _datas;
+        _start_opt;
+        ListV exports;
+      ]
+    ) as m
+  ] ->
+    (try
+      let module_ = Construct.al_to_module m in
+      Reference_interpreter.Valid.check_module module_;
+
+      let tys = Reference_interpreter.Ast.def_types_of module_ in
+
+
+      let get_clos_externtype = function
+        | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
+          let s = function
+            | Types.StatX x when Int32.to_int x < List.length tys ->
+              let dt = List.nth tys (Int32.to_int x) in
+              Types.DefHT dt
+            | x -> Types.VarHT x
+          in
+          externtype
+          |> Construct.al_to_extern_type
+          |> Types.subst_extern_type s
+          |> Construct.al_of_extern_type
+        | _ -> Numerics.error_values "$Module_ok" [ m ]
+      in
+      let get_externidx = function
+        | CaseV ("EXPORT", [ _name; externidx ]) -> externidx
+        | _ -> Numerics.error_values "$Module_ok" [ m ]
+      in
+
+      let externtypes =
+        !imports
+        |> Array.map get_clos_externtype
+        |> listV
+      in
+      let externidxs =
+        !exports
+        |> Array.map get_externidx
+        |> listV
+      in
+
+      CaseV ("->", [ externtypes; externidxs ])
+    with _ -> raise Exception.Invalid
+    )
+
   | vs -> Numerics.error_values "$Module_ok" vs
+
+let externaddr_type = function
+  | [ CaseV (name, [ NumV z ]); t ] ->
+    (try
+      let addr = Z.to_int z in
+      let externaddr_type =
+        name^"S"
+        |> Store.access
+        |> unwrap_listv_to_array
+        |> fun arr -> Array.get arr addr
+        |> strv_access "TYPE"
+        |> fun type_ -> CaseV (name, [type_])
+        |> Construct.al_to_extern_type
+      in
+      let extern_type = Construct.al_to_extern_type t in
+      boolV (Match.match_extern_type [] externaddr_type extern_type)
+    with _ -> raise Exception.Invalid)
+  | vs -> Numerics.error_values "$Externaddr_type" vs
+
+let val_type = function
+  | [ v; t ] ->
+    let value = Construct.al_to_value v in
+    let val_type = Construct.al_to_val_type t in
+    (try
+      boolV (Match.match_val_type [] (Value.type_of_value value) val_type)
+    with _ -> raise Exception.Invalid)
+  | vs -> Numerics.error_values "$Val_type" vs
 
 let manual_map =
   FuncMap.empty
   |> FuncMap.add "Ref_type" ref_type
   |> FuncMap.add "Module_ok" module_ok
+  |> FuncMap.add "Val_type" val_type
+  |> FuncMap.add "Externaddr_type" externaddr_type
 
 let mem name = FuncMap.mem name manual_map
 

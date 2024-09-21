@@ -25,9 +25,9 @@ let fail_path path msg =
 let try_with_error fname at stringifier f step =
   let prefix = if fname <> empty then "$" ^ fname ^ ": " else fname in
   try f step with
-  | Construct.InvalidConversion msg
-  | Exception.InvalidArg msg
-  | Exception.InvalidFunc msg
+  | Exception.WrongConversion msg
+  | Exception.ArgMismatch msg
+  | Exception.UnknownFunc msg
   | Exception.FreeVar msg
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
@@ -100,7 +100,6 @@ and access_path env base path =
   | DotP str -> (
     let str = Print.string_of_atom str in
     match base with
-    | FrameV (_, StrV r) -> Record.find str r
     | StrV r -> Record.find str r
     | v ->
       fail_path path
@@ -124,7 +123,6 @@ and replace_path env base path v_new =
     let str = Print.string_of_atom str in
     let r =
       match base with
-      | FrameV (_, StrV r) -> r
       | StrV r -> r
       | v ->
         fail_path path
@@ -305,38 +303,9 @@ and eval_expr env expr =
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
-  | ArityE e ->
-    (match eval_expr env e with
-    | LabelV (v, _) -> v
-    | FrameV (Some v, _) -> v
-    | FrameV _ -> numV Z.zero
-    | _ -> fail_expr expr "inner expr is not a context" (* Due to AL validation, unreachable *))
-  | FrameE (e_opt, e) ->
-    let arity =
-      match Option.map (eval_expr env) e_opt with
-      | None | Some (NumV _) as arity -> arity
-      | _ -> fail_expr expr "wrong arity of frame"
-    in
-    let r =
-      match eval_expr env e with
-      | StrV _ as v -> v
-      | _ -> fail_expr expr "inner expr is not a frame"
-    in
-    FrameV (arity, r)
-  | GetCurFrameE -> WasmContext.get_current_frame ()
-  | LabelE (e1, e2) ->
-    let v1 = eval_expr env e1 in
-    let v2 = eval_expr env e2 in
-    LabelV (v1, v2)
-  | GetCurLabelE -> WasmContext.get_current_label ()
-  | GetCurContextE ->
-    (match WasmContext.get_top_context () with
-    | None -> fail_expr expr "cannot get the current context"
-    | Some ctxt -> ctxt)
-  | ContE e ->
-    (match eval_expr env e with
-    | LabelV (_, vs) -> vs
-    | _ -> fail_expr expr "inner expr is not a label")
+  | GetCurContextE None -> WasmContext.get_top_context ()
+  | GetCurContextE (Some { it = Atom a; _ }) when List.mem a context_names ->
+    WasmContext.get_current_context a
   | ChooseE e ->
     let a = eval_expr env e |> unwrap_listv_to_array in
     if Array.length a = 0 then
@@ -368,22 +337,10 @@ and eval_expr env expr =
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
   (* condition *)
-  | TopFrameE ->
-    let ctx = WasmContext.get_top_context () in
-    (match ctx with
-    | Some (FrameV _) -> boolV true
-    | _ -> boolV false)
-  | TopLabelE ->
-    let ctx = WasmContext.get_top_context () in
-    (match ctx with
-    | Some (LabelV _) -> boolV true
-    | _ -> boolV false)
   | ContextKindE a ->
     let ctx = WasmContext.get_top_context () in
     (match a.it, ctx with
-    | Atom "FRAME_", Some (FrameV _) -> boolV true
-    | Atom "LABEL_", Some (LabelV _) -> boolV true
-    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
+    | Atom case, CaseV (case', _) -> boolV (case = case')
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -569,25 +526,29 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI _e -> ctx
-  (*
-    if is_true (eval_expr env e) then
-      ctx
-    else
-      fail_expr e "assertion fail"
-  *)
+  | AssertI _e ->
+    (* (match e.it with
+    | YetE _ -> ctx
+    | _ ->
+      if is_true (eval_expr env e) then
+        ctx
+      else
+        fail_expr e "assertion fail"
+    ) *)
+    ctx
+
   | PushI e ->
     (match eval_expr env e with
-    | FrameV _ as v -> WasmContext.push_context (v, [], [])
+    | CaseV ("FRAME_", _) as v -> WasmContext.push_context (v, [], [])
     | ListV vs -> Array.iter WasmContext.push_value !vs
     | v -> WasmContext.push_value v
     );
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE (_, inner_e) ->
+    | CaseE ([{it = El.Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
       (match WasmContext.pop_context () with
-      | FrameV (_, inner_v), _, _ ->
+      | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
         AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
@@ -696,41 +657,33 @@ and try_step_instr fname ctx env instr =
   try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
-  (* TODO: Change ref.null semantics *)
-  | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
-    let mm =
-      WasmContext.get_current_frame ()
-      |> unwrap_framev
-      |> strv_access "MODULE"
-    in
-    (* TODO: some *)
-    let null = caseV ("NULL", [ optV (Some (listV [||])) ]) in
-    let dummy_rt = CaseV ("REF", [ null; ht ]) in
-
-    (* substitute heap type *)
-    (match call_func "inst_reftype" [ mm; dummy_rt ] with
-    | Some (CaseV ("REF", [ n; ht' ])) when n = null ->
-      CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-    | _ -> raise (Exception.MissingReturnValue "inst_reftype"));
-    ctx
+  | CaseV ("REF.NULL" as name, ([ CaseV ("_IDX", _) ] as args)) ->
+    create_context name args :: ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
-  | CaseV (fname, args) -> create_context fname args :: ctx
+  | CaseV (name, args) -> create_context name args :: ctx
   | v -> fail_value "cannot step a wasm instr" v
 
 
 and try_step_wasm ctx v =
   try_with_error empty no_region structured_string_of_value (step_wasm ctx) v
 
-and step : AlContext.t -> AlContext.t = AlContext.(function
-  | Al (name, il, env) :: ctx ->
+and step (ctx: AlContext.t) : AlContext.t =
+  let open AlContext in
+
+  Debugger.run ctx;
+
+  match ctx with
+  | Al (name, args, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr name ctx env instr
+    | [ instr ]
+    when can_tail_call instr && not !Debugger.debug ->
+      try_step_instr name ctx env instr
     | h :: t ->
-      let new_ctx = Al (name, t, env) :: ctx in
+      let new_ctx = Al (name, args, t, env) :: ctx in
       try_step_instr name new_ctx env h
     )
   | Wasm n :: ctx ->
@@ -742,7 +695,7 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     (match il with
     | [] ->
       (match ctx with
-      | Wasm n :: t -> Wasm (n + 1) :: t
+      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
       | Enter (_, [], _) :: t -> Wasm 2 :: t
       | ctx -> Wasm 1 :: ctx
       )
@@ -752,10 +705,10 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
     )
   | Execute v :: ctx -> try_step_wasm ctx v
   | _ -> assert false
-)
 
 
 (* AL interpreter Entry *)
+
 
 and run (ctx: AlContext.t) : AlContext.t =
   if AlContext.is_reducible ctx then run (step ctx) else ctx
@@ -781,7 +734,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
     |> List.fold_right2 assign_param params args
   in
 
-  AlContext.al (name, body, env)
+  AlContext.al (name, params, body, env)
 
 and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)
@@ -796,7 +749,7 @@ and call_func (name: string) (args: value list) : value option =
   else if Manual.mem name then
     Some (Manual.call_func name args)
   else
-    raise (Exception.InvalidFunc ("There is no function named: " ^ name))
+    raise (Exception.UnknownFunc ("There is no function named: " ^ name))
 
 
 (* Wasm interpreter entry *)

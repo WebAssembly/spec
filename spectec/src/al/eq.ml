@@ -36,16 +36,8 @@ let rec eq_expr e1 e2 =
     eq_expr e1 e2 && eq_iterexp ie1 ie2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
-  | ArityE e1, ArityE e2 -> eq_expr e1 e2
-  | FrameE (eo1, e1), FrameE (eo2, e2) ->
-    eq_expr_opt eo1 eo2 && eq_expr e1 e2
-  | LabelE (e11, e12), LabelE (e21, e22) ->
-    eq_expr e11 e21 && eq_expr e12 e22
-  | GetCurStateE, GetCurStateE
-  | GetCurFrameE, GetCurFrameE
-  | GetCurLabelE, GetCurLabelE
-  | GetCurContextE, GetCurContextE -> true
-  | ContE e1, ContE e2 -> eq_expr e1 e2
+  | GetCurStateE, GetCurStateE -> true
+  | GetCurContextE i1, GetCurContextE i2 -> Option.equal (=) i1 i2
   | ChooseE e1, ChooseE e2 -> eq_expr e1 e2
   | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) -> eq_expr e1 e2 && El.Atom.eq a1 a2
   | IsValidE e1, IsValidE e2 -> eq_expr e1 e2
@@ -53,8 +45,6 @@ let rec eq_expr e1 e2 =
   | IsDefinedE e1, IsDefinedE e2 -> eq_expr e1 e2
   | MatchE (e11, e12), MatchE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && Il.Eq.eq_typ t1 t2
-  | TopLabelE, TopLabelE
-  | TopFrameE, TopFrameE -> true
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
   | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2

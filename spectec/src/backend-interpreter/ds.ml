@@ -158,7 +158,7 @@ end
 module AlContext = struct
   type mode =
     (* Al context *)
-    | Al of string * instr list * env
+    | Al of string * arg list * instr list * env
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -167,13 +167,25 @@ module AlContext = struct
     (* Return register *)
     | Return of value
 
-  let al (name, il, env) = Al (name, il, env)
+  let al (name, args, il, env) = Al (name, args, il, env)
   let wasm n = Wasm n
   let enter (name, il, env) = Enter (name, il, env)
   let execute v = Execute v
   let return v = Return v
 
   type t = mode list
+
+  let string_of_context = function
+    | Al (s, args, il, _) ->
+      Printf.sprintf "Al %s (%s):%s"
+        s
+        (args |> List.map string_of_arg |> String.concat ", ")
+        (string_of_instrs il)
+    | Wasm i -> "Wasm " ^ string_of_int i
+    | Enter (s, il, _) ->
+      Printf.sprintf "Enter %s:%s" s (string_of_instrs il)
+    | Execute v -> "Execute " ^ string_of_value v
+    | Return v -> "Return " ^ string_of_value v
 
   let tl = List.tl
 
@@ -187,30 +199,31 @@ module AlContext = struct
     | _ -> true
 
   let get_name ctx =
-    match List.hd ctx with
-    | Al (name, _, _) -> name
-    | Wasm _ -> "Wasm"
-    | Execute _ -> "Execute"
-    | Enter _ -> "Enter"
-    | Return _ -> "Return"
+    match ctx with
+    | [] -> ""
+    | Al (name, _, _, _) :: _ -> name
+    | Wasm _ :: _ -> "Wasm"
+    | Execute _ :: _ -> "Execute"
+    | Enter _ :: _ -> "Enter"
+    | Return _ :: _ -> "Return"
 
   let add_instrs il = function
-    | Al (name, il', env) :: t -> Al (name, il @ il', env) :: t
+    | Al (name, args, il', env) :: t -> Al (name, args, il @ il', env) :: t
     | Enter (name, il', env) :: t -> Enter (name, il @ il', env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_env = function
-    | Al (_, _, env) :: _ -> env
+    | Al (_, _, _, env) :: _ -> env
     | Enter (_, _, env) :: _ -> env
     | _ -> failwith "Not in AL context"
 
   let set_env env = function
-    | Al (name, il, _) :: t -> Al (name, il, env) :: t
+    | Al (name, args, il, _) :: t -> Al (name, args, il, env) :: t
     | Enter (name, il, _) :: t -> Enter (name, il, env) :: t
     | _ -> failwith "Not in AL context"
 
   let update_env k v = function
-    | Al (name, il, env) :: t -> Al (name, il, Env.add k v env) :: t
+    | Al (name, args, il, env) :: t -> Al (name, args, il, Env.add k v env) :: t
     | Enter (name, il, env) :: t -> Enter (name, il, Env.add k v env) :: t
     | _ -> failwith "Not in AL context"
 
@@ -253,15 +266,21 @@ module WasmContext = struct
 
   let string_of_context ctx =
     let v, vs, vs_instr = ctx in
-    Printf.sprintf "(%s, %s, %s)"
-      (string_of_value v)
+    (* TODO: Generalize context *)
+    let ctx_kind =
+      match v with
+      | TextV s -> s
+      | _ -> "Unknown context"
+    in
+    Printf.sprintf "(%s; %s; %s)"
+      ctx_kind
       (string_of_list string_of_value ", " vs)
       (string_of_list string_of_value ", " vs_instr)
 
   let string_of_context_stack () =
-    List.fold_left
-      (fun acc ctx -> (string_of_context ctx) ^ " :: " ^ acc)
-      "[]" !context_stack
+    !context_stack
+    |> List.map string_of_context
+    |> String.concat "\n"
 
   (* Context *)
 
@@ -271,25 +290,18 @@ module WasmContext = struct
     | None -> failwith "Wasm context stack underflow"
 
   let get_top_context () =
-    let ctx, vs, _ = get_context () in
-    if List.length vs = 0 then Some ctx 
-    else None
+    let ctx, _, _ = get_context () in
+    ctx
 
-  let get_current_frame () =
-    let match_frame = function
-      | FrameV _ -> true
+  let get_current_context typ =
+    let match_context = function
+      | CaseV (t, _) when t = typ -> true
       | _ -> false
-    in get_value_with_condition match_frame
-
-  let get_current_label () =
-    let match_label = function
-      | LabelV _ -> true
-      | _ -> false
-    in get_value_with_condition match_label
+    in get_value_with_condition match_context
 
   let get_module_instance () =
-    match get_current_frame () with
-    | FrameV (_, mm) -> mm
+    match get_current_context "FRAME_" with
+    | CaseV (_, [_; mm]) -> mm
     | _ -> failwith "Invalid frame"
 
   (* Value stack *)
@@ -342,14 +354,20 @@ let init algos =
   (* Initialize info_map *)
   let init_info algo =
     let algo_name = name_of_algo algo in
-    let config = {
-      Walk.default_config with pre_instr =
-        (fun i ->
-          let info = Info.make_info algo_name i in
-          Info.add i.note info;
-          [i])
-    } in
-    Walk.walk config algo
+    let pre_instr = (fun i ->
+      let info = Info.make_info algo_name i in
+      Info.add i.note info;
+      [i]) 
+    in
+    let walk_instr walker instr = 
+      let instr1 = pre_instr instr in
+      List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+    in
+    let walker = { Walk.base_walker with
+      walk_instr = walk_instr;
+    }
+    in
+    walker.walk_algo walker algo
   in
   List.map init_info algos |> ignore;
 

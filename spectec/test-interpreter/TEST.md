@@ -776,7 +776,7 @@ watsup 0.4 generator
 - 259/259 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/align.wast =====
-- 73/73 (100.00%)
+- 113/113 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/annotations.wast =====
 - 10/10 (100.00%)
@@ -788,34 +788,34 @@ watsup 0.4 generator
 - 19/19 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/block.wast =====
-- 53/53 (100.00%)
+- 208/208 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/br.wast =====
-- 77/77 (100.00%)
+- 97/97 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/br_if.wast =====
-- 89/89 (100.00%)
+- 119/119 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/br_on_non_null.wast =====
-- 9/9 (100.00%)
+- 10/10 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/br_on_null.wast =====
-- 9/9 (100.00%)
+- 10/10 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/br_table.wast =====
-- 162/162 (100.00%)
+- 186/186 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/bulk.wast =====
 - 117/117 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/call.wast =====
-- 71/71 (100.00%)
+- 89/89 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/call_indirect.wast =====
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/call_ref.wast =====
-- 31/31 (100.00%)
+- 35/35 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/comments.wast =====
 - 8/8 (100.00%)
@@ -824,40 +824,40 @@ watsup 0.4 generator
 - 702/702 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/conversions.wast =====
-- 594/594 (100.00%)
+- 619/619 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/custom.wast =====
 - 3/3 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/data.wast =====
-- 45/45 (100.00%)
+- 65/65 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/elem.wast =====
-- 122/122 (100.00%)
+- 148/148 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/endianness.wast =====
 - 69/69 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/exports.wast =====
-- 65/65 (100.00%)
+- 97/97 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/f32.wast =====
-- 2501/2501 (100.00%)
+- 2512/2512 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/f32_bitwise.wast =====
-- 361/361 (100.00%)
+- 364/364 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/f32_cmp.wast =====
-- 2401/2401 (100.00%)
+- 2407/2407 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/f64.wast =====
-- 2501/2501 (100.00%)
+- 2512/2512 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/f64_bitwise.wast =====
-- 361/361 (100.00%)
+- 364/364 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/f64_cmp.wast =====
-- 2401/2401 (100.00%)
+- 2407/2407 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/fac.wast =====
 - 7/7 (100.00%)
@@ -878,35 +878,35 @@ watsup 0.4 generator
 - 5/5 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/func.wast =====
-- 100/100 (100.00%)
+- 152/152 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/func_ptrs.wast =====
 - print_i32: 83
-- 29/29 (100.00%)
+- 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array.wast =====
-- 40/40 (100.00%)
+- 46/46 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_copy.wast =====
-- 31/31 (100.00%)
+- 35/35 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_fill.wast =====
-- 14/14 (100.00%)
+- 17/17 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_data.wast =====
-- 31/31 (100.00%)
+- 33/33 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_elem.wast =====
-- 20/20 (100.00%)
+- 23/23 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/binary-gc.wast =====
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/br_on_cast.wast =====
-- 31/31 (100.00%)
+- 37/37 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/br_on_cast_fail.wast =====
-- 31/31 (100.00%)
+- 37/37 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/extern.wast =====
 - 18/18 (100.00%)
@@ -918,31 +918,31 @@ watsup 0.4 generator
 - 45/45 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/ref_eq.wast =====
-- 83/83 (100.00%)
+- 89/89 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/ref_test.wast =====
 - 71/71 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/struct.wast =====
-- 25/25 (100.00%)
+- 29/29 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/type-subtyping.wast =====
-- 67/67 (100.00%)
+- 83/83 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/global.wast =====
-- 76/76 (100.00%)
+- 116/116 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/i32.wast =====
-- 375/375 (100.00%)
+- 458/458 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/i64.wast =====
-- 385/385 (100.00%)
+- 414/414 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/id.wast =====
 - 1/1 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/if.wast =====
-- 125/125 (100.00%)
+- 217/217 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/imports.wast =====
 - print_i32: 13
@@ -958,7 +958,7 @@ watsup 0.4 generator
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- 91/91 (100.00%)
+- 92/92 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/inline-module.wast =====
 - 1/1 (100.00%)
@@ -970,7 +970,7 @@ watsup 0.4 generator
 - 31/31 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/labels.wast =====
-- 26/26 (100.00%)
+- 29/29 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/left-to-right.wast =====
 - 96/96 (100.00%)
@@ -979,28 +979,28 @@ watsup 0.4 generator
 - 111/111 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/load.wast =====
-- 58/58 (100.00%)
+- 104/104 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/local_get.wast =====
-- 20/20 (100.00%)
+- 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/local_init.wast =====
-- 6/6 (100.00%)
+- 10/10 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/local_set.wast =====
-- 20/20 (100.00%)
+- 53/53 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/local_tee.wast =====
-- 56/56 (100.00%)
+- 98/98 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/loop.wast =====
-- 78/78 (100.00%)
+- 105/105 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory-multi.wast =====
 - 6/6 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory.wast =====
-- 64/64 (100.00%)
+- 80/80 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory_copy.wast =====
 - 0/0 (100.00%)
@@ -1012,13 +1012,13 @@ watsup 0.4 generator
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory_init.wast =====
-- 173/173 (100.00%)
+- 240/240 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory_redundancy.wast =====
 - 8/8 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory_size.wast =====
-- 46/46 (100.00%)
+- 48/48 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory_trap.wast =====
 - 182/182 (100.00%)
@@ -1114,7 +1114,7 @@ watsup 0.4 generator
 - 21/21 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/multi-memory/memory_size3.wast =====
-- 0/0 (100.00%)
+- 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/multi-memory/memory_trap0.wast =====
 - 14/14 (100.00%)
@@ -1140,28 +1140,28 @@ watsup 0.4 generator
 - 486/486 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/nop.wast =====
-- 84/84 (100.00%)
+- 88/88 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/obsolete-keywords.wast =====
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/ref.wast =====
-- 1/1 (100.00%)
-
-===== ../../test-interpreter/spec-test-3/ref_as_non_null.wast =====
-- 6/6 (100.00%)
-
-===== ../../test-interpreter/spec-test-3/ref_func.wast =====
 - 13/13 (100.00%)
 
+===== ../../test-interpreter/spec-test-3/ref_as_non_null.wast =====
+- 7/7 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/ref_func.wast =====
+- 16/16 (100.00%)
+
 ===== ../../test-interpreter/spec-test-3/ref_is_null.wast =====
-- 20/20 (100.00%)
+- 22/22 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/ref_null.wast =====
 - 34/34 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/return.wast =====
-- 64/64 (100.00%)
+- 84/84 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/return_call.wast =====
 - 0/0 (100.00%)
@@ -1173,181 +1173,181 @@ watsup 0.4 generator
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/select.wast =====
-- 127/127 (100.00%)
+- 157/157 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_address.wast =====
 - 45/45 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_align.wast =====
-- 54/54 (100.00%)
+- 66/66 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_bit_shift.wast =====
-- 213/213 (100.00%)
+- 237/237 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_bitwise.wast =====
-- 141/141 (100.00%)
+- 169/169 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_boolean.wast =====
-- 261/261 (100.00%)
+- 273/273 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_const.wast =====
 - 577/577 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_conversions.wast =====
-- 234/234 (100.00%)
+- 252/252 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f32x4.wast =====
-- 774/774 (100.00%)
+- 782/782 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f32x4_arith.wast =====
-- 1806/1806 (100.00%)
+- 1822/1822 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f32x4_cmp.wast =====
-- 2583/2583 (100.00%)
+- 2601/2601 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f32x4_pmin_pmax.wast =====
-- 3873/3873 (100.00%)
+- 3879/3879 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f32x4_rounding.wast =====
-- 177/177 (100.00%)
+- 185/185 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f64x2.wast =====
-- 795/795 (100.00%)
+- 803/803 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f64x2_arith.wast =====
-- 1809/1809 (100.00%)
+- 1825/1825 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f64x2_cmp.wast =====
-- 2661/2661 (100.00%)
+- 2679/2679 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f64x2_pmin_pmax.wast =====
-- 3873/3873 (100.00%)
+- 3879/3879 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f64x2_rounding.wast =====
-- 177/177 (100.00%)
+- 185/185 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_arith.wast =====
-- 183/183 (100.00%)
+- 194/194 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_arith2.wast =====
-- 153/153 (100.00%)
+- 170/170 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_cmp.wast =====
-- 435/435 (100.00%)
+- 465/465 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast =====
-- 17/17 (100.00%)
+- 21/21 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast =====
-- 105/105 (100.00%)
+- 117/117 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast =====
-- 27/27 (100.00%)
+- 30/30 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_sat_arith.wast =====
-- 206/206 (100.00%)
+- 218/218 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_arith.wast =====
-- 183/183 (100.00%)
+- 194/194 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_arith2.wast =====
-- 123/123 (100.00%)
+- 137/137 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_cmp.wast =====
-- 435/435 (100.00%)
+- 465/465 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast =====
-- 27/27 (100.00%)
+- 30/30 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast =====
-- 17/17 (100.00%)
+- 21/21 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast =====
-- 105/105 (100.00%)
+- 117/117 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast =====
-- 103/103 (100.00%)
+- 107/107 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f64x2.wast =====
-- 103/103 (100.00%)
+- 107/107 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i64x2_arith.wast =====
-- 189/189 (100.00%)
+- 200/200 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i64x2_arith2.wast =====
-- 23/23 (100.00%)
+- 25/25 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i64x2_cmp.wast =====
-- 103/103 (100.00%)
+- 113/113 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast =====
-- 105/105 (100.00%)
+- 117/117 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith.wast =====
-- 123/123 (100.00%)
+- 131/131 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast =====
-- 186/186 (100.00%)
+- 205/205 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_cmp.wast =====
-- 415/415 (100.00%)
+- 445/445 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_sat_arith.wast =====
-- 190/190 (100.00%)
+- 202/202 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast =====
-- 229/229 (100.00%)
+- 253/253 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_lane.wast =====
-- 286/286 (100.00%)
+- 369/369 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_linking.wast =====
 - 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load.wast =====
-- 31/31 (100.00%)
+- 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load16_lane.wast =====
-- 33/33 (100.00%)
+- 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load32_lane.wast =====
-- 21/21 (100.00%)
+- 24/24 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load64_lane.wast =====
-- 13/13 (100.00%)
+- 16/16 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load8_lane.wast =====
-- 49/49 (100.00%)
+- 52/52 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_extend.wast =====
-- 86/86 (100.00%)
+- 98/98 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast =====
-- 114/114 (100.00%)
+- 122/122 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_zero.wast =====
-- 29/29 (100.00%)
+- 33/33 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_memory-multi.wast =====
 - 1/1 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_splat.wast =====
-- 162/162 (100.00%)
+- 184/184 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store.wast =====
-- 19/19 (100.00%)
+- 25/25 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store16_lane.wast =====
-- 33/33 (100.00%)
+- 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store32_lane.wast =====
-- 21/21 (100.00%)
+- 24/24 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store64_lane.wast =====
-- 13/13 (100.00%)
+- 16/16 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store8_lane.wast =====
-- 49/49 (100.00%)
+- 52/52 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/skip-stack-guard-page.wast =====
 - 1/1 (100.00%)
@@ -1359,49 +1359,49 @@ watsup 0.4 generator
 - print_i32: 1
 - print_i32: 2
 - print: ()
-- 16/16 (100.00%)
+- 19/19 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/store.wast =====
-- 50/50 (100.00%)
+- 101/101 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/switch.wast =====
-- 27/27 (100.00%)
+- 28/28 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table-sub.wast =====
-- 1/1 (100.00%)
+- 3/3 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table.wast =====
-- 22/22 (100.00%)
+- 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_copy.wast =====
 - 1727/1727 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_fill.wast =====
-- 36/36 (100.00%)
+- 45/45 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_get.wast =====
-- 11/11 (100.00%)
+- 16/16 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_grow.wast =====
-- 43/43 (100.00%)
+- 50/50 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_init.wast =====
-- 712/712 (100.00%)
+- 779/779 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_set.wast =====
-- 19/19 (100.00%)
+- 26/26 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_size.wast =====
-- 37/37 (100.00%)
+- 39/39 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/tag.wast =====
-- 4/4 (100.00%)
+- 5/5 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/throw.wast =====
-- 10/10 (100.00%)
+- 13/13 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/throw_ref.wast =====
-- 13/13 (100.00%)
+- 15/15 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/token.wast =====
 - 35/35 (100.00%)
@@ -1410,16 +1410,16 @@ watsup 0.4 generator
 - 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/try_table.wast =====
-- 49/49 (100.00%)
+- 58/58 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/type-canon.wast =====
 - 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/type-equivalence.wast =====
-- 25/25 (100.00%)
+- 26/26 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/type-rec.wast =====
-- 11/11 (100.00%)
+- 17/17 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/type.wast =====
 - 1/1 (100.00%)
@@ -1428,7 +1428,7 @@ watsup 0.4 generator
 - 64/64 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/unreached-invalid.wast =====
-- 0/0 (100.00%)
+- 121/121 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/unreached-valid.wast =====
 - 13/13 (100.00%)
@@ -1448,7 +1448,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [46981/46981] (100.00%)
+Total [49087/49087] (100.00%)
 
 == Complete.
 ```

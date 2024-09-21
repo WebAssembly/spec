@@ -7,6 +7,7 @@ type mixop = Il.Ast.mixop
 
 (* Types *)
 
+(* TODO: define AL type *)
 type typ = Il.Ast.typ
 
 (* Identifiers *)
@@ -34,8 +35,6 @@ and value =
   | CaseV of id * value list           (* constructor *)
   | OptV of value option               (* optional value *)
   | TupV of value list                 (* tuple of values *)
-  | FrameV of value option * value     (* TODO: desugar using CaseV? *)
-  | LabelV of value * value            (* TODO: desugar using CaseV? *)
   | FnameV of id                       (* name of the first order function *)
 
 type extend_dir =                      (* direction of extension *)
@@ -100,24 +99,16 @@ and expr' =
   | IterE of expr * iterexp                       (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
-  | ArityE of expr                                (* "the arity of expr" *)
-  | FrameE of expr option * expr                  (* "the activation of expr (with arity expr)?" *)
-  | LabelE of expr * expr                         (* "the label whose arity is expr and whose continuation is expr" *)
   | GetCurStateE                                  (* "the current state" *)
-  | GetCurFrameE                                  (* "the current frame" *)
-  | GetCurLabelE                                  (* "the current lbael" *)
-  | GetCurContextE                                (* "the current context" *)
-  | ContE of expr                                 (* "the continuation of" expr *)
+  | GetCurContextE of atom option                 (* "the current context of certain (Some) or any (None) type" *)
   | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
   | IsCaseOfE of expr * atom                      (* expr is of the case atom *)
   | IsValidE of expr                              (* expr is valid *)
-  | ContextKindE of atom                          (* "the top of the stack is a" atom *)
+  | ContextKindE of atom                          (* "the fisrt non-value entry of the stack is a" atom *)
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
   | HasTypeE of expr * typ                        (* the type of expr is ty *)
-  | TopFrameE                                     (* "a frame is now on the top of the stack" *)
-  | TopLabelE                                     (* "a label is now on the top of the stack" *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)

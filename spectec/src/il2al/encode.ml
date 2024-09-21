@@ -41,19 +41,13 @@ let args_of_case e =
   | CaseE (_, exp) -> [ exp ]
   | _ -> error e.at "cannot get arguments of case expression"
 
-let context_names = [
-  "FRAME_";
-  "LABEL_";
-  "HANDLER_";
-]
-
 let is_context e =
   is_case e &&
   match case_of_case e with
   | (atom :: _) :: _ ->
     (match it atom with
 
-  | Atom a -> List.mem a context_names
+  | Atom a -> List.mem a Al.Al_util.context_names
     | _ -> false)
   | _ -> false
 
