@@ -270,7 +270,7 @@ module WasmContext = struct
     let ctx_kind =
       match v with
       | TextV s -> s
-      | _ -> "Unknown context"
+      | _ -> Printf.sprintf "Unknown_context: %s" (string_of_value v)
     in
     Printf.sprintf "(%s; %s; %s)"
       ctx_kind
@@ -357,9 +357,9 @@ let init algos =
     let pre_instr = (fun i ->
       let info = Info.make_info algo_name i in
       Info.add i.note info;
-      [i]) 
+      [i])
     in
-    let walk_instr walker instr = 
+    let walk_instr walker instr =
       let instr1 = pre_instr instr in
       List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
     in
