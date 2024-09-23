@@ -94,11 +94,11 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
 
 1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` of the table to allocate and :math:`\reff` the initialization value.
 
-2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+2. Let :math:`(\idxtype~\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
-4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype', \TIELEM~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
+4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype, \TIELEM~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
 
 5. Append :math:`\tableinst` to the |STABLES| of :math:`S`.
 
@@ -108,7 +108,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \begin{array}{rlll}
    \alloctable(S, \tabletype, \reff) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\reftype \\
+   \tabletype &=& \idxtype~\{\LMIN~n, \LMAX~m^?\}~\reftype \\
    \tableaddr &=& |S.\STABLES| \\
    \tableinst &=& \{ \TITYPE~\tabletype, \TIELEM~\reff^n \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
@@ -123,7 +123,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
 
 1. Let :math:`\memtype` be the :ref:`memory type <syntax-memtype>` of the memory to allocate.
 
-2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
+2. Let :math:`(\idxtype~\{\LMIN~n, \LMAX~m^?\})` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
@@ -137,7 +137,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \begin{array}{rlll}
    \allocmem(S, \memtype) &=& S', \memaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \memtype &=& \{\LMIN~n, \LMAX~m^?\} \\
+   \memtype &=& \idxtype~\{\LMIN~n, \LMAX~m^?\} \\
    \memaddr &=& |S.\SMEMS| \\
    \meminst &=& \{ \MITYPE~\memtype, \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \} \\
    S' &=& S \compose \{\SMEMS~\meminst\} \\
@@ -284,28 +284,25 @@ Growing :ref:`tables <syntax-tableinst>`
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
-3. If :math:`\X{len}` is larger than or equal to :math:`2^{32}`, then fail.
+3. Let :math:`(\idxtype~\limits~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
 
-4. Let :math:`\limits~t` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
+4. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+5. If the :ref:`table type <syntax-tabletype>` :math:`(\idxtype~\limits'~\reftype)` is not :ref:`valid <valid-tabletype>`, then fail.
 
-6. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+6. Append :math:`\reff^n` to :math:`\tableinst.\TIELEM`.
 
-7. Append :math:`\reff^n` to :math:`\tableinst.\TIELEM`.
-
-8. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`\limits'~t`.
+7. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`(\idxtype~\limits'~\reftype)`.
 
 .. math::
    \begin{array}{rllll}
-   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \limits'~t \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
+   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \idxtype~\limits'~\reftype \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
-       \wedge & \X{len} < 2^{32} \\
-       \wedge & \limits~t = \tableinst.\TITYPE \\
+       \wedge & \idxtype~\limits~\reftype = \tableinst.\TITYPE \\
        \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashlimits \limits' \ok) \\
+       \wedge & \vdashtabletype \idxtype~\limits'~\reftype \ok) \\
        \end{array} \\
    \end{array}
 
@@ -322,28 +319,25 @@ Growing :ref:`memories <syntax-meminst>`
 
 3. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\meminst.\MIDATA` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-4. If :math:`\X{len}` is larger than :math:`2^{16}`, then fail.
+4. Let :math:`(\idxtype~\limits)` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
 
-5. Let :math:`\limits` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
+5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-6. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+6. If the :ref:`memory type <syntax-memtype>` :math:`(\idxtype~\limits')` is not :ref:`valid <valid-memtype>`, then fail.
 
-7. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+7. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
 
-8. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
-
-9. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`\limits'`.
+8. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`(\idxtype~\limits')`.
 
 .. math::
    \begin{array}{rllll}
-   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
+   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \idxtype~\limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\meminst.\MIDATA| / 64\,\F{Ki} \\
-       \wedge & \X{len} \leq 2^{16} \\
-       \wedge & \limits = \meminst.\MITYPE \\
+       \wedge & \idxtype~\limits = \meminst.\MITYPE \\
        \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashlimits \limits' \ok) \\
+       \wedge & \vdashmemtype \idxtype~\limits' \ok) \\
        \end{array} \\
    \end{array}
 

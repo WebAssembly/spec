@@ -356,18 +356,18 @@ Table Instances
 ~~~~~~~~~~~~~~~
 
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
-It records its :ref:`type <syntax-tabletype>` and holds a vector of :ref:`reference values <syntax-ref>`.
+It records its :ref:`type <syntax-tabletype>` and holds a sequence of :ref:`reference values <syntax-ref>`.
 
 .. math::
    \begin{array}{llll}
    \production{table instance} & \tableinst &::=&
-     \{ \TITYPE~\tabletype, \TIELEM~\vec(\reff) \} \\
+     \{ \TITYPE~\tabletype, \TIELEM~\reff^\ast \} \\
    \end{array}
 
 Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an active :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
 
 It is an invariant of the semantics that all table elements have a type :ref:`matching <match-reftype>` the element type of :math:`\tabletype`.
-It also is an invariant that the length of the element vector never exceeds the maximum size of :math:`\tabletype`, if present.
+It also is an invariant that the length of the element sequence never exceeds the maximum size of :math:`\tabletype`, if present.
 
 
 .. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
@@ -380,15 +380,15 @@ Memory Instances
 ~~~~~~~~~~~~~~~~
 
 A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-mem>`.
-It records its :ref:`type <syntax-memtype>` and holds a vector of :ref:`bytes <syntax-byte>`.
+It records its :ref:`type <syntax-memtype>` and holds a sequence of :ref:`bytes <syntax-byte>`.
 
 .. math::
    \begin{array}{llll}
    \production{memory instance} & \meminst &::=&
-     \{ \MITYPE~\memtype, \MIDATA~\vec(\byte) \} \\
+     \{ \MITYPE~\memtype, \MIDATA~\byte^\ast \} \\
    \end{array}
 
-The length of the vector always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
+The length of the sequence always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
 
 The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of an active :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
 
