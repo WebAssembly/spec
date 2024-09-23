@@ -37,7 +37,7 @@ let is_empty_context_rel def =
   | Ast.RelD (_, [ { it = El.Atom.Turnstile; _} ] :: _, _, _) -> true
   | _ -> false
 
-let preprocess_il il =
+let extract_validation_il il =
   il
   |> List.concat_map flatten_rec
   |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
@@ -181,7 +181,7 @@ let rec prem_to_instrs prem =
   | Ast.IfPr e ->
     if_expr_to_instrs e
   | Ast.RulePr (id, _, e) ->
-    let rel = match List.find_opt (rel_has_id id) !Langs.preprocessed_il with Some rel -> rel | None -> failwith id.it in
+    let rel = match List.find_opt (rel_has_id id) !Langs.validation_il with Some rel -> rel | None -> failwith id.it in
     let args = exp_to_argexpr e in
     ( match get_rel_kind rel, args with
     (* contextless *)
@@ -518,7 +518,7 @@ let postprocess_prose defs =
 
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
-  prose_of_rels (!Langs.preprocessed_il)
+  prose_of_rels (!Langs.validation_il)
 
 let get_state_arg_opt f =
   let arg = ref (Al.Ast.TypA (Il.Ast.BoolT $ no_region)) in
@@ -596,7 +596,7 @@ let gen_execution_prose () =
 (** Main entry for generating prose **)
 let gen_prose el il al =
   Langs.el := el;
-  Langs.preprocessed_il := preprocess_il il;
+  Langs.validation_il := extract_validation_il il;
   Langs.il := il;
   Langs.al := al;
 
