@@ -1,4 +1,4 @@
-DIRS     = core js-api web-api metadata/code legacy/exceptions
+DIRS     = core js-api web-api metadata/code legacy/exceptions versions
 FILES    = index.html
 BUILDDIR = _build
 TAR      = tar
@@ -60,7 +60,7 @@ $(DIRS:%=build-%): build-%:
 	(cd $(@:build-%=%); make BUILDDIR=$(BUILDDIR) all)
 
 .PHONY: $(DIRS:%=dir-%)
-$(DIRS:%=dir-%): dir-%:
+$(DIRS:%=dir-%): dir-%: $(BUILDDIR)
 	mkdir -p $(BUILDDIR)/$(@:dir-%=%)
 	rm -rf $(BUILDDIR)/$(@:dir-%=%)/*
 	cp -R $(@:dir-%=%)/$(BUILDDIR)/html/* $(BUILDDIR)/$(@:dir-%=%)/

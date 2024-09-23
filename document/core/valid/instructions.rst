@@ -2044,7 +2044,7 @@ Control Instructions
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
@@ -2056,7 +2056,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CTAGS[x] = [t^\ast] \toF []
+     \expanddt(C.\CTAGS[x]) = [t^\ast] \toF []
      \qquad
      C.\CLABELS[l] = [t^\ast]
    }{
@@ -2068,21 +2068,21 @@ Control Instructions
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be the same as :math:`C.\CLABELS[l]` with |EXNREF| appended.
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast~(\REF~\EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CTAGS[x] = [t^\ast] \toF []
+     \expanddt(C.\CTAGS[x]) = [t^\ast] \toF []
      \qquad
-     C.\CLABELS[l] = [t^\ast~\EXNREF]
+     C \vdashresulttypematch [t^\ast~(\REF~\EXN)] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCHREF~x~l \ok
    }
@@ -2108,13 +2108,13 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l] must be :math:`[\EXNREF]`.
+* The :ref:`result type <syntax-resulttype>` :math:`[(\REF~\EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [\EXNREF]
+     C \vdashresulttypematch [(\REF~\EXN)] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCHALLREF~l \ok
    }
@@ -2343,7 +2343,7 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
-* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{

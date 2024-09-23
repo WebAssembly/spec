@@ -763,6 +763,8 @@ rule token = parse
       | "module" -> MODULE
       | "binary" -> BIN
       | "quote" -> QUOTE
+      | "definition" -> DEFINITION
+      | "instance" -> INSTANCE
 
       | "script" -> SCRIPT
       | "register" -> REGISTER

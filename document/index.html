@@ -14,13 +14,20 @@
 <div id="readme" class="readme blob isntapaper_body">
 <article class="markdown-body entry-content">
 
+
 <h1>WebAssembly Specifications</h1>
 
 <p>
 To support the <em>embedding</em> of WebAssembly into different environments, its specification is split into <em>layers</em> that are specified in separate documents.
 </p>
 
-<h3>Core specification</h3>
+<p>
+  Source for these documents is available
+  <a href="https://github.com/WebAssembly/spec/">here</a>.
+</p>
+
+
+<h3>Core Specification</h3>
 
 <p>Defines the semantics of WebAssembly modules independent from a concrete embedding.
   The WebAssembly core is specified in a single document:</p>
@@ -41,12 +48,13 @@ To support the <em>embedding</em> of WebAssembly into different environments, it
     </li>
   </ul>
 
-<h3>Embedder specifications</h3>
+
+<h3>Embedder Specifications</h3>
 
 <p>Define <em>application programming interfaces</em> (APIs) enabling the use of WebAssembly modules in concrete embedding environments.
   Currently, two APIs are specified:</p>
 
-  <ul>
+<ul>
   <li><p><b>JavaScript Embedding</b>: defines JavaScript classes and objects for accessing WebAssembly from within JavaScript, including methods for validation, compilation, instantiation, and classes for representing and manipulating imports and exports as JavaScript objects.</p>
     <ul>
       <li><a href="js-api/">W3C version</a></li>
@@ -60,7 +68,8 @@ To support the <em>embedding</em> of WebAssembly into different environments, it
       <!-- <li><a href="https://github.com/WebAssembly/spec/document/web-api/">Sources</a></li> -->
     </ul>
   </li>
-  </ul>
+</ul>
+
 
 <h3>Metadata specifications</h3>
 
@@ -97,10 +106,14 @@ To support the <em>embedding</em> of WebAssembly into different environments, it
     </li>
   </ul>
 
-<p>
-  Source for all documents is available
-  <a href="https://github.com/WebAssembly/spec/">here</a>.
-</p>
+
+<h3>All Versions</h3>
+
+<ul>
+  <li><a href="versions/core/WebAssembly-1.0.pdf">WebAssembly 1.0</a> (2017)</li>
+  <li><a href="versions/core/WebAssembly-2.0.pdf">WebAssembly 2.0</a> (2022)</li>
+  <li><a href="versions/core/WebAssembly-3.0-draft.pdf">WebAssembly 3.0</a> (Draft 2024)</li>
+</ul>
 
 </article>
 </div>
