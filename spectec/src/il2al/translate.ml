@@ -350,6 +350,7 @@ let insert_assert exp =
     assertI (contextKindE (atom_of_name id "evalctx") ~note:boolT) ~at:at
   | Il.IterE (_, (Il.ListN (e, None), _)) ->
     assertI (topValuesE (translate_exp e) ~at:at ~note:boolT) ~at:at
+  | Il.IterE (_, (Il.List, _)) -> nopI () ~at:at
   | Il.CaseE ([{it = Il.Atom "CONST"; _}]::_, { it = Il.TupE (ty' :: _); _ }) ->
     assertI (topValueE (Some (translate_exp ty')) ~note:boolT) ~at:at
   | _ ->
