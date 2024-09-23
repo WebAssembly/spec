@@ -553,7 +553,7 @@ let handle_partial_bindings lhs rhs ids =
         new_e
       )
     ) in
-    let walk_expr walker expr = 
+    let walk_expr walker expr =
       let stop_cond_expr e = contains_diff target_ns e || is_iter e in
       let expr1 = pre_expr expr in
       if stop_cond_expr expr1 then expr1 else Al.Walk.base_walker.walk_expr walker expr1
@@ -928,29 +928,26 @@ let rec translate_iterpr pr (iter, xes) =
     | _ -> ty
   in
 
-  let distribute_iter lhs rhs =
-    let ty = handle_iter_ty lhs.note in
-    let ty' = handle_iter_ty rhs.note in
-
-    let lhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr lhs)) xes in
-    let rhs_xes = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr rhs)) xes in
-
-    (
-      iterE (lhs, (lhs_iter, translate_xes lhs_xes)) ~at:lhs.at ~note:ty,
-      iterE (rhs, (iter', translate_xes rhs_xes)) ~at:rhs.at ~note:ty'
-    )
+  let inject_iter expr iter xes =
+    let ty = handle_iter_ty expr.note in
+    let xes' = List.filter (fun (x, _) -> IdSet.mem x.it (free_expr expr)) xes in
+    if xes' = [] then expr
+    else iterE (expr, (iter, translate_xes xes')) ~at:expr.at ~note:ty
   in
 
   let post_instr i =
     let at = i.at in
     match i.it with
-    | LetI (lhs, rhs) -> [letI (distribute_iter lhs rhs) ~at:at]
+    | LetI (lhs, rhs) ->
+      let lhs' = inject_iter lhs lhs_iter xes in
+      let rhs' = inject_iter rhs iter' xes in
+      [letI (lhs', rhs') ~at:at]
     | IfI (cond, il1, il2) ->
-        let ty = handle_iter_ty cond.note in
-        [ ifI (iterE (cond, (iter', translate_xes xes)) ~at:cond.at ~note:ty, il1, il2) ~at:at ]
+      let cond' = inject_iter cond iter' xes in
+      [ ifI (cond', il1, il2) ~at:at ]
     | _ -> [i]
   in
-  let walk_instr walker instr = 
+  let walk_instr walker instr =
     let instr1 = Al.Walk.base_walker.walk_instr walker instr in
     List.concat_map post_instr instr1
   in
@@ -1011,7 +1008,7 @@ let translate_helper helper =
   let id, clauses, partial = helper.it in
   let name = id.it in
   let args = List.hd clauses |> args_of_clause in
-  let walk_expr walker expr = 
+  let walk_expr walker expr =
     let expr1 = Transpile.remove_sub expr in
     Al.Walk.base_walker.walk_expr walker expr1
   in
@@ -1200,7 +1197,7 @@ and translate_rgroup (rule: rule_def) =
     |> List.map (fun e -> ExpA e $ e.at)
   in
   (* TODO: refactor transpiles *)
-  let walk_expr walker expr = 
+  let walk_expr walker expr =
     let expr1 = Transpile.remove_sub expr in
     Al.Walk.base_walker.walk_expr walker expr1
   in
