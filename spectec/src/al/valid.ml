@@ -51,9 +51,13 @@ module Env = struct
     | TypA _ | DefA _ -> env
   let add_subst lhs rhs env =
     let open Eval in
-    get_subst lhs rhs Subst.empty
-    |> Subst.map Option.some
-    |> union (fun _ _ _ -> (* TODO *) assert (false)) env
+    match get_subst lhs rhs Subst.empty with
+    | None ->
+      IdSet.fold (fun id env -> add_bound_var id env) (Free.free_expr lhs) env
+    | Some subst ->
+      subst
+      |> Subst.map Option.some
+      |> union (fun _ _ _ -> (* TODO *) assert (false)) env
   let add id expr = add id (Some expr)
 end
 
@@ -271,6 +275,11 @@ let check_context source typ =
   match typ.it with
   | VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_mismatch source typ (varT "context")
+
+let check_evalctx source typ =
+  match typ.it with
+  | VarT (id, []) when id.it = "evalctx" -> ()
+  | _ -> error_mismatch source typ (varT "evalctx")
 
 let check_field source source_typ expr_record typfield =
   let atom, (_, typ, _), _ = typfield in
@@ -579,8 +588,10 @@ and valid_expr env (expr: expr) : unit =
     l
     |> List.map note
     |> List.iter (check_match source elem_typ)
-  | GetCurStateE | GetCurContextE _ ->
+  | GetCurStateE ->
     check_context source expr.note
+  | GetCurContextE _ ->
+    check_evalctx source expr.note
   | ChooseE expr1 ->
     valid_expr env expr1;
     check_list source expr1.note;

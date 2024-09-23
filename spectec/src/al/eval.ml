@@ -4,6 +4,8 @@ open Walk
 open Util
 open Source
 
+let (let*) = Option.bind
+
 module Subst = struct
   include Map.Make(String)
 
@@ -19,28 +21,32 @@ end
 
 let rec get_subst lhs rhs s =
   match lhs.it, rhs.it with
-  | VarE id, _ -> Subst.add id rhs s
+  | VarE id, _ -> Some (Subst.add id rhs s)
   | UnE (op1, e1), UnE (op2, e2) when op1 = op2 -> get_subst e1 e2 s
   | OptE (Some e1), OptE (Some e2) ->
     get_subst e1 e2 s
   | BinE (op1, e11, e12), BinE (op2, e21, e22) when op1 = op2 ->
-    s |> get_subst e11 e21 |> get_subst e12 e22
+    let* s = s |> get_subst e11 e21 in
+    get_subst e12 e22 s
   | CompE (e11, e12), CompE (e21, e22) | CatE (e11, e12), CatE (e21, e22) ->
-    s |> get_subst e11 e21 |> get_subst e12 e22
+    let* s = s |> get_subst e11 e21 in
+    get_subst e12 e22 s
   | TupE el1, TupE el2 | ListE el1, ListE el2 ->
-    List.fold_right2 get_subst el1 el2 s
+    List.fold_right2 (fun e1 e2 s -> let* s = s in get_subst e1 e2 s)
+      el1 el2 (Some s)
   | CaseE (name1, el1), CaseE (name2, el2) when name1 = name2 ->
-    List.fold_right2 get_subst el1 el2 s
+    List.fold_right2 (fun e1 e2 s -> let* s = s in get_subst e1 e2 s)
+      el1 el2 (Some s)
   | StrE r1, StrE r2 ->
-    List.fold_left (fun acc (k, e) -> get_subst !e (Record.find k r2) acc) s r1
-  | IterE _, _ -> (* TODO *) s
-  | _, _ when Eq.eq_expr lhs rhs -> s
-  | _ -> assert (false)
+    List.fold_left (fun s (k, e) -> let* s = s in get_subst !e (Record.find k r2) s) (Some s) r1
+  (* | IterE _, _ -> (* TODO *) s *)
+  | _, _ when Eq.eq_expr lhs rhs -> Some s
+  | _ -> None
 
 let get_subst_arg param arg s =
   match param.it, arg.it with
   | ExpA e1, ExpA e2 -> get_subst e1 e2 s
-  | _ -> s
+  | _ -> Some s
 
 let ($>) it e = {e with it}
 
@@ -352,7 +358,9 @@ and reduce_call id args : expr option =
   let func_finder = fun al -> match al.it with | FuncA (fname, _, _) -> fname = id | RuleA _ -> false in
   match (List.find func_finder !Lang.al).it with
   | FuncA (_, params, il) ->
-    let s = List.fold_right2 get_subst_arg params args Subst.empty in
+    let* s = List.fold_right2
+      (fun p a s -> let* s = s in get_subst_arg p a s)
+      params args (Some Subst.empty) in
     reduce_instrs s il
   | _ -> assert (false)
 
@@ -363,7 +371,7 @@ and reduce_instrs s : instr list -> expr option = function
     | ReturnI expr_opt -> Option.map (reduce_exp s) expr_opt
     | LetI (expr1, expr2) ->
       let new_s = get_subst expr1 expr2 s in
-      reduce_instrs new_s t
+      Option.fold ~some:(fun s -> reduce_instrs s t) ~none:None new_s
     | IfI (expr, il1, il2) ->
       (* TODO: consider iter *)
       (match (reduce_exp s expr).it with
