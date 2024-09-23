@@ -608,6 +608,14 @@ let hide_state_args args =
   |> Lib.List.filter_not is_state_arg
   |> Lib.List.filter_not is_store_arg
 
+let is_state_param param = match param.it with
+  | Il.Ast.ExpP (_, ({ it = VarT ({ it = "state"; _ }, _); _ })) -> true
+  | _ -> false
+
+let hide_state_params params =
+  params
+  |> Lib.List.filter_not is_state_param
+
 let hide_state_expr expr =
   let expr' =
     match expr.it with
@@ -676,6 +684,12 @@ let hide_state instr =
   | _ -> [ instr ]
 
 let remove_state algo =
+  let il_env = Al.Valid.il_env in
+  let defs = Al.Valid.IlEnv.Map.map (function
+    | (params, typ, clauses) -> (hide_state_params params, typ, clauses)
+  ) !il_env.defs in
+  il_env := { !il_env with defs };
+
   let walk_expr walker expr = 
     let expr1 = hide_state_expr expr in
     Al.Walk.base_walker.walk_expr walker expr1
@@ -705,65 +719,6 @@ let remove_state algo =
       FuncA (name, args', body')
     | rule -> rule
   }
-
-let get_state_arg_opt f =
-  let arg = ref (TypA (Il.Ast.BoolT $ no_region)) in
-  let id = f $ no_region in
-  match Il.Env.find_opt_def !Al.Valid.il_env id with
-  | Some (params, _, _) ->
-    let param_state = List.find_opt (
-      fun param ->
-        match param.it with
-        | Il.Ast.ExpP (id, ({ at = _ ; it = VarT ({ at = _ ; it = "state"; note = _ ;}, _); note = _ } as typ)) ->
-          arg := ExpA ((VarE "z") $$ id.at % typ);
-          true
-        | _ -> false
-    ) params in
-    if Option.is_some param_state then (
-      let param_state = Option.get param_state in
-      Some {param_state with it = !arg}
-    ) else None
-  | None -> None
-
-let recover_state algo =
-
-  let recover_state_expr expr =
-    match expr.it with
-    | CallE (f, args) ->
-      let arg_state = get_state_arg_opt f in
-      if Option.is_some arg_state then
-        let answer = {expr with it = CallE (f, Option.get arg_state :: args)} in
-        answer
-      else expr
-    | _ -> expr
-  in
-
-  let recover_state_instr instr =
-    match instr.it with
-    | PerformI (f, args) ->
-      let arg_state = get_state_arg_opt f in
-      if Option.is_some arg_state then
-        let answer = {instr with it = PerformI (f, Option.get arg_state :: args)} in
-        [answer]
-      else [instr]
-    | _ -> [instr]
-  in
-
-  let walk_expr walker expr = 
-    let expr1 = recover_state_expr expr in
-    Al.Walk.base_walker.walk_expr walker expr1
-  in
-  let walk_instr walker instr = 
-    let instr1 = recover_state_instr instr in
-    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
-  in
-  let walker = { Walk.base_walker with
-    walk_expr = walk_expr;
-    walk_instr = walk_instr;
-  }
-  in
-  let algo' = walker.walk_algo walker algo in
-  algo'
 
 let insert_state_binding algo =
   let state_count = ref 0 in
