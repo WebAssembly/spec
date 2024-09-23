@@ -502,7 +502,9 @@ Limits
 Table Types
 ~~~~~~~~~~~
 
-A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :math:`(\limits_2~\reftype_2)` if and only if:
+A :ref:`table type <syntax-tabletype>` :math:`(\idxtype_1~\limits_1~\reftype_1)` matches :math:`(\idxtype_2~\limits_2~\reftype_2)` if and only if:
+
+* Index types :math:`\idxtype_1` and :math:`\idxtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -511,13 +513,15 @@ A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :m
 .. math::
    ~\\[-1ex]
    \frac{
+     C \vdashnumtypematch \idxtype_1 \matchesnumtype \idxtype_2
+     \qquad
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
      \qquad
      C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2
      \qquad
      C \vdashreftypematch \reftype_2 \matchesreftype \reftype_1
    }{
-     C \vdashtabletypematch \limits_1~\reftype_1 \matchestabletype \limits_2~\reftype_2
+     C \vdashtabletypematch \idxtype_1~\limits_1~\reftype_1 \matchestabletype \idxtype_2~\limits_2~\reftype_2
    }
 
 
@@ -527,7 +531,9 @@ A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :m
 Memory Types
 ~~~~~~~~~~~~
 
-A :ref:`memory type <syntax-memtype>` :math:`\limits_1` matches :math:`\limits_2` if and only if:
+A :ref:`memory type <syntax-memtype>` :math:`(\idxtype_1~\limits_1)` matches :math:`(\idxtype_2~\limits_2)` if and only if:
+
+* Index types :math:`\idxtype_1` and :math:`\idxtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -535,6 +541,8 @@ A :ref:`memory type <syntax-memtype>` :math:`\limits_1` matches :math:`\limits_2
 .. math::
    ~\\[-1ex]
    \frac{
+     C \vdashnumtypematch \idxtype_1 \matchesnumtype \idxtype_2
+     \qquad
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
      C \vdashmemtypematch \limits_1 \matchesmemtype \limits_2
