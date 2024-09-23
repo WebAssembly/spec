@@ -526,17 +526,11 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI _e ->
-    (* (match e.it with
-    | YetE _ -> ctx
-    | _ ->
-      if is_true (eval_expr env e) then
-        ctx
-      else
-        fail_expr e "assertion fail"
-    ) *)
-    ctx
-
+  | AssertI e ->
+    if is_true (eval_expr env e) then
+      ctx
+    else
+      fail_expr e "assertion fail"
   | PushI e ->
     (match eval_expr env e with
     | CaseV ("FRAME_", _) as v -> WasmContext.push_context (v, [], [])
