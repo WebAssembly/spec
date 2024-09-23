@@ -569,7 +569,7 @@ enum IndexType {
   "i64",
 };
 
-typedef ([EnforceRange] unsigned long long or bigint) IndexValue;
+typedef ([EnforceRange] unsigned long or bigint) IndexValue;
 
 dictionary ModuleExportDescriptor {
   required USVString name;
@@ -683,7 +683,7 @@ dictionary MemoryDescriptor {
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Memory {
   constructor(MemoryDescriptor descriptor);
-  unsigned long grow(IndexValue delta);
+  IndexValue grow(IndexValue delta);
   ArrayBuffer toFixedLengthBuffer();
   ArrayBuffer toResizableBuffer();
   readonly attribute ArrayBuffer buffer;
@@ -792,7 +792,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |indextype| be the [=index type=] in [=mem_type=](|store|, |memaddr|).
     1. Let |delta64| be [=?=] [=IndexValueToU64=](|delta|, |indextype|).
-    1. Return the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta64|.
+    1. Let |ret| be the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta64|.
+    1. Return [=U64ToIndexValue=](|ret|, |indextype|).
 </div>
 
 Immediately after a WebAssembly [=memory.grow=] instruction executes, perform the following steps:
@@ -1364,7 +1365,9 @@ The algorithm <dfn>IndexValueToU64</dfn>(|v|, |indextype|) asserts that a JavaSc
     1. Otherwise, [=throw=] a {{TypeError}}.
 1. Else if |indextype| is "i64",
     1. If |v| [=is a BigInt=],
-        1. If |v| is not equal to [=!=] [$ToBigUint64$](|v|), [=throw=] a {{RangeError}}.
+        1. If |v| is not equal to [=!=] [$ToBigUint64$](|v|), [=throw=] a {{TypeError}}.
+
+            Note: This operation is designed to mirror [=[EnforceRange]=], which [=throws=] a {{TypeError}} for out-of-range numeric values.
         1. Return [=ℝ=](|v|) as a WebAssembly [=u64=].
     1. Otherwise, [=throw=] a {{TypeError}}.
 1. Assert: This step is not reached.
