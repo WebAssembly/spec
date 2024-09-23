@@ -679,9 +679,7 @@ watsup 0.4 generator
 ......................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
@@ -3160,11 +3158,10 @@ Step_pure/if t? instr_1* instr_2*
   a. Execute the instruction (BLOCK t? instr_2*).
 
 Step_pure/label
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop all values val* from the top of the stack.
-3. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-4. Pop the current LABEL_ context from the stack.
-5. Push the values val* to the stack.
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
+3. Pop the current LABEL_ context from the stack.
+4. Push the values val* to the stack.
 
 Step_pure/br n_u0
 1. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
@@ -5192,9 +5189,7 @@ watsup 0.4 generator
 ......................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
@@ -10173,11 +10168,10 @@ Step_pure/if bt instr_1* instr_2*
   a. Execute the instruction (BLOCK bt instr_2*).
 
 Step_pure/label
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop all values val* from the top of the stack.
-3. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-4. Pop the current LABEL_ context from the stack.
-5. Push the values val* to the stack.
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
+3. Pop the current LABEL_ context from the stack.
+4. Push the values val* to the stack.
 
 Step_pure/br n_u0
 1. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
@@ -14458,9 +14452,7 @@ watsup 0.4 generator
 ......................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
@@ -14670,9 +14662,7 @@ watsup 0.4 generator
 ........................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{handler}`.
 
@@ -23514,11 +23504,10 @@ Step_pure/if bt instr_1* instr_2*
   a. Execute the instruction (BLOCK bt instr_2*).
 
 Step_pure/label
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop all values val* from the top of the stack.
-3. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-4. Pop the current LABEL_ context from the stack.
-5. Push the values val* to the stack.
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
+3. Pop the current LABEL_ context from the stack.
+4. Push the values val* to the stack.
 
 Step_pure/br l
 1. If the first non-value entry of the stack is a LABEL_, then:
@@ -23614,11 +23603,10 @@ Step_pure/return
   d. Execute the instruction RETURN.
 
 Step_pure/handler
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop all values val* from the top of the stack.
-3. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
-4. Pop the current HANDLER_ context from the stack.
-5. Push the values val* to the stack.
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
+3. Pop the current HANDLER_ context from the stack.
+4. Push the values val* to the stack.
 
 Step_pure/unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
