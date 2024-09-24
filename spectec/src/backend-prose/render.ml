@@ -291,8 +291,8 @@ and al_to_el_record record =
 (* Operators *)
 
 let render_prose_cmpop = function
-  | Eq -> ""
-  | Ne -> " not"
+  | Eq -> " equal to"
+  | Ne -> " not equal to"
   | Lt -> " less than"
   | Gt -> " greater than"
   | Le -> " less than or equal to"
