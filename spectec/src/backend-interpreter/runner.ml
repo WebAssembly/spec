@@ -164,9 +164,9 @@ let test_assertion assertion =
       fail
     with Exception.Trap -> success
   )
-  | AssertUninstantiable (def, re) -> (
+  | AssertUninstantiable (var_opt, re) -> (
     try
-      def |> module_of_def |> instantiate |> ignore;
+      Modules.find (Modules.get_module_name var_opt) |> instantiate |> ignore;
       Run.assert_message assertion.at "instantiation" "module instance" re;
       fail
     with Exception.Trap -> success
@@ -198,8 +198,12 @@ let run_command' command =
   | Module (var_opt, def) ->
     def
     |> module_of_def
+    |> Modules.add_with_var var_opt;
+    success
+  | Instance (var1_opt, var2_opt) ->
+    Modules.find (Modules.get_module_name var2_opt)
     |> instantiate
-    |> Register.add_with_var var_opt;
+    |> Register.add_with_var var1_opt;
     success
   | Register (modulename, var_opt) ->
     let moduleinst = Register.find (Register.get_module_name var_opt) in

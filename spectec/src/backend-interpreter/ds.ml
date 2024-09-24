@@ -153,6 +153,29 @@ module Register = struct
 end
 
 
+module Modules = struct
+  let _register : Reference_interpreter.Ast.module_ Map.t ref = ref Map.empty
+  let _latest = ""
+
+  let add name module_ = _register := Map.add name module_ !_register
+
+  let add_with_var var module_ =
+    let open Reference_interpreter.Source in
+    add _latest module_;
+    match var with
+    | Some name -> add name.it module_
+    | _ -> ()
+
+  let find name = Map.find name !_register
+
+  let get_module_name var =
+    let open Reference_interpreter.Source in
+    match var with
+    | Some name -> name.it
+    | None -> _latest
+end
+
+
 (* AL Context *)
 
 module AlContext = struct

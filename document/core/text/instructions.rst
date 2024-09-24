@@ -950,6 +950,7 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-shape>` descri
      \text{i32x4.all\_true} &\Rightarrow& \I32X4.\VALLTRUE\\ &&|&
      \text{i32x4.bitmask} &\Rightarrow& \I32X4.\VBITMASK\\ &&|&
      \text{i32x4.extadd\_pairwise\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
+     \text{i32x4.extadd\_pairwise\_i16x8\_u} &\Rightarrow& \I32X4.\VEXTADDPAIRWISE\K{\_i16x8\_u}\\ &&|&
      \text{i32x4.extend\_low\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_high\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_low\_i16x8\_u} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u}\\ &&|&

@@ -30,6 +30,13 @@ module Register : sig
   val get_module_name : Reference_interpreter.Script.var option -> string
 end
 
+module Modules : sig
+  val add : string -> Reference_interpreter.Ast.module_ -> unit
+  val add_with_var : Reference_interpreter.Script.var option -> Reference_interpreter.Ast.module_ -> unit
+  val find : string -> Reference_interpreter.Ast.module_
+  val get_module_name : Reference_interpreter.Script.var option -> string
+end
+
 module AlContext : sig
   type mode =
     (* Al context *)

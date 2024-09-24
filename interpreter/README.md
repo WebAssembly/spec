@@ -426,8 +426,9 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                   ;; define, validate, and initialize module
-  ( register <string> <name>? )              ;; register module for imports
+  <module>                                   ;; define, validate, and possibly instantiate module
+  <instance>
+  ( register <string> <name>? )              ;; register module instance for imports
   <action>                                   ;; perform action and print results
   <assertion>                                ;; assert result of an action
   <meta>                                     ;; meta command
@@ -436,6 +437,10 @@ module:
   ...
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
+  ( module definition <name>? binary ... )   ;; uninstantiated module
+
+instance:
+  ( module instance <name>? <name>? )        ;; instantiate latter module to former instance
 
 action:
   ( invoke <name>? <string> <const>* )       ;; invoke function export
@@ -455,8 +460,8 @@ assertion:
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
-  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+  ( assert_unlinkable <instance> <failure> ) ;; assert module fails to link
+  ( assert_trap <instance> <failure> )       ;; assert module traps on instantiation
 
 result_pat:
   ( <num_type>.const <num_pat> )
@@ -485,6 +490,11 @@ The script format supports additional syntax for defining modules.
 A module of the form `(module binary <string>*)` is given in binary form and will be decoded from the (concatenation of the) strings.
 A module of the form `(module quote <string>*)` is given in textual form and will be parsed from the (concatenation of the) strings. In both cases, decoding/parsing happens when the command is executed, not when the script is parsed, so that meta commands like `assert_malformed` can be used to check expected errors.
 
+Usually, a module declaration implicitly instantiates the module,
+that is, it defines both a module and an instance (of the same name).
+Instantiation can be suppressed by adding the keyword `definition`.
+A module declared as a definition only can then be instantiated explicitly, and multiple times, using the separate form `(module instance <inst_var> <module_name>)`.
+
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
@@ -492,6 +502,7 @@ The `input` and `output` meta commands determine the requested file format from 
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
+In that mode, execution may fail with a "crash" error message.
 
 
 ### Spectest host module
@@ -537,6 +548,10 @@ cmd:
 
 module:
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
+  ( module definition <name>? binary ... )   ;; uninstantiated module
+
+instance:
+  ( module instance <name>? <name>? )        ;; instantiate latter module to former instance
 
 action:
   ( invoke <name>? <string> <const>* )       ;; invoke function export
@@ -549,8 +564,8 @@ assertion:
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
-  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+  ( assert_unlinkable <instance> <failure> ) ;; assert module fails to link
+  ( assert_trap <instance> <failure> )       ;; assert module traps on instantiation
 
 result_pat:
   ( <num_type>.const <num_pat> )
