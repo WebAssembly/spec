@@ -320,7 +320,7 @@ let lookup category map x_opt at =
 
 let lookup_script = lookup "script" scripts
 let lookup_module = lookup "module" modules
-let lookup_instance = lookup "module" instances
+let lookup_instance = lookup "module instance" instances
 
 let lookup_registry module_name item_name _t =
   match Instance.export (Map.find module_name !registry) item_name with
@@ -487,9 +487,9 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected custom validation error"
     )
 
-  | AssertUnlinkable (def, re) ->
+  | AssertUnlinkable (x_opt, re) ->
     trace "Asserting unlinkable...";
-    let m, cs = run_definition def in
+    let m, cs = lookup_module x_opt ass.at in
     if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
     (match
       let imports = Import.link m in
@@ -500,9 +500,9 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected linking error"
     )
 
-  | AssertUninstantiable (def, re) ->
+  | AssertUninstantiable (x_opt, re) ->
     trace "Asserting trap...";
-    let m, cs = run_definition def in
+    let m, cs = lookup_module x_opt ass.at in
     if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
     (match
       let imports = Import.link m in
@@ -554,12 +554,16 @@ let rec run_command cmd =
       end
     end;
     bind "module" modules x_opt (m, cs);
-    bind "script" scripts x_opt [cmd];
+    bind "script" scripts x_opt [cmd]
+
+  | Instance (x1_opt, x2_opt) ->
+    quote := cmd :: !quote;
+    let m, cs = lookup_module x2_opt cmd.at in
     if not !Flags.dry then begin
       trace "Initializing...";
       let imports = Import.link m in
       let inst = Eval.init m imports in
-      bind "instance" instances x_opt inst
+      bind "instance" instances x1_opt inst
     end
 
   | Register (name, x_opt) ->

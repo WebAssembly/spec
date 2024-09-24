@@ -12,6 +12,7 @@ DOWNLOADDIR   = _download
 NAME          = WebAssembly
 DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
+DEADLINE      = $(shell date -d "+30 days" +%Y-%m-%d 2>/dev/null || date -v +30d +%Y-%m-%d)
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -155,7 +156,7 @@ bikeshed: $(GENERATED)
 	@echo
 	@echo =========================================================================
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
-	bikeshed spec --md-status=$(W3C_STATUS) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
