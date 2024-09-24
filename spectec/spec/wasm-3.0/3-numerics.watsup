@@ -30,15 +30,14 @@ def $relop_(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
 def $cvtop__(numtype_1, numtype_2, cvtop__(numtype_1, numtype_2), num_(numtype_1)) : num_(numtype_2)*
     hint(show %3#$__(%1,%2,%4))
 
-;; TODO(2, rossberg): support suffix to express superscript arg, e.g., $extend'__(sx, M, N, ...)
 def $wrap__(M, N, iN(M)) : iN(N)
-def $extend__(M, N, sx, iN(M)) : iN(N)                hint(show $extend_((%,%))^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)?                hint(show $trunc_((%,%))^(%)#((%)))
-def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?            hint(show $trunc__sat_((%,%))^(%)#((%)))
+def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend_((%,%))^(%)#((%)))
+def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc_((%,%))^(%)#((%)))
+def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat_((%,%))^(%)#((%)))
 def $demote__(M, N, fN(M)) : fN(N)*
 def $promote__(M, N, fN(M)) : fN(N)*
-def $convert__(M, N, sx, iN(M)) : fN(N)               hint(show $convert_((%,%))^(%)#((%)))
-def $narrow__(M, N, sx, iN(M)) : iN(N)                hint(show $narrow_((%,%))^(%)#(%))
+def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert_((%,%))^(%)#((%)))
+def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow_((%,%))^(%)#(%))
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
 
 def $ibits_(N, iN(N)) : bit*                         hint(show $bits_($IN(%),%))

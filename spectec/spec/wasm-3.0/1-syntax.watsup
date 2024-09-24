@@ -2,7 +2,7 @@
 ;; Lists
 ;;
 
-;; TODO(2, rossberg): enable writing X^n
+;; TODO(3, rossberg): enable writing X^n
 syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 
 

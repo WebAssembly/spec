@@ -2,7 +2,7 @@
 ;; Addresses
 ;;
 
-syntax addr hint(desc "address") = nat  ;; TODO(2, rossberg): allow 0 | 1 | 2 | ...
+syntax addr hint(desc "address") = nat
 syntax funcaddr hint(desc "function address") = addr
 syntax globaladdr hint(desc "global address") = addr
 syntax tableaddr hint(desc "table address") = addr

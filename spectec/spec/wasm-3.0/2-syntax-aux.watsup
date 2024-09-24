@@ -656,7 +656,7 @@ rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fi
 
 ;; Projections
 
-;; TODO(2, rossberg): add built-in notation for comprehensions
+;; TODO(2, rossberg): add built-in notation for comprehensions?
 
 def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "funcsxx")
 def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")

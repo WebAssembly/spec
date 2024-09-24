@@ -219,7 +219,7 @@ rule Step_pure/return-handler:
 ;; Exceptions
 
 rule Step/throw:
-  ;; TODO: Appropriate variable name for execption instance `exn`
+  ;; TODO(2, rossberg): Appropriate variable name for exception instance `exn`
   z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
   -- Expand: $tag(z, x).TYPE ~~ FUNC (t^n -> eps)
   -- if a = |$exninst(z)|
@@ -841,7 +841,7 @@ rule Step/table.set-val:
 
 rule Step_read/table.size:
   z; (TABLE.SIZE x)  ~>  (CONST I32 n)
-  -- if |$table(z, x).REFS| = n  ;; TODO(2, rossberg): inline this?
+  -- if |$table(z, x).REFS| = n
 
 
 rule Step/table.grow-succeed:
