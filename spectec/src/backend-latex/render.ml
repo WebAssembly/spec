@@ -1131,6 +1131,10 @@ and render_nottyp env t : table =
     render_typcon env tcon
   | RangeT tes ->
     render_nl_list env (`H, "~|~") render_typenum tes
+  | NumT NatT ->
+    [Row [Col "0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
+  | NumT IntT ->
+    [Row [Col "\\dots ~|~ {-2} ~|~ {-1} ~|~ 0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
   | _ ->
     [Row [Col (render_typ env t)]]
 
