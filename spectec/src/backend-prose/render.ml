@@ -523,7 +523,7 @@ let render_expr_with_type env e =
 (* Instructions *)
 
 let rec render_stmt env depth stmt =
-  let prefix = "* " in
+  let prefix = if depth = 0 then "\n\n" else "* " in
   let rec render_stmt' stmt =
     let render_block = function
       | [s] -> " " ^ render_stmt' s
