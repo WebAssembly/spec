@@ -2227,11 +2227,11 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup --latex)
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& N & ::= & \mathbb{N} \\
-& M & ::= & \mathbb{N} \\
-& K & ::= & \mathbb{N} \\
-& n & ::= & \mathbb{N} \\
-& m & ::= & \mathbb{N} \\
+& N & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+& M & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+& K & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+& n & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+& m & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
 \end{array}
 $$
 
@@ -4660,7 +4660,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(address)} & {\mathit{addr}} & ::= & \mathbb{N} \\
+\mbox{(address)} & {\mathit{addr}} & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
 \mbox{(function address)} & {\mathit{funcaddr}} & ::= & {\mathit{addr}} \\
 \mbox{(global address)} & {\mathit{globaladdr}} & ::= & {\mathit{addr}} \\
 \mbox{(table address)} & {\mathit{tableaddr}} & ::= & {\mathit{addr}} \\
@@ -10566,7 +10566,7 @@ $$
 & & | & \mathtt{0x02}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{block}~{\mathit{bt}}~{{\mathit{in}}^\ast} \\
 & & | & \mathtt{0x03}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{loop}~{\mathit{bt}}~{{\mathit{in}}^\ast} \\
 & & | & \mathtt{0x04}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{if}~{\mathit{bt}}~{{\mathit{in}}^\ast}~\mathsf{else}~\epsilon \\
-& & | & \mathtt{0x04}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}_1{:}{\mathtt{instr}})^\ast}~~ \\[0.8ex]
+& & | & \mathtt{0x04}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}_1{:}{\mathtt{instr}})^\ast} \\
   &&& \mathtt{0x05}~~{({\mathit{in}}_2{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{if}~{\mathit{bt}}~{{\mathit{in}}_1^\ast}~\mathsf{else}~{{\mathit{in}}_2^\ast} \\
 & & | & \mathtt{0x08}~~x{:}{\mathtt{tagidx}} & \quad\Rightarrow\quad{} & \mathsf{throw}~x \\
 & & | & \mathtt{0x0A} & \quad\Rightarrow\quad{} & \mathsf{throw\_ref} \\
@@ -10578,12 +10578,7 @@ $$
 & & | & \mathtt{0x11}~~y{:}{\mathtt{typeidx}}~~x{:}{\mathtt{tableidx}} & \quad\Rightarrow\quad{} & \mathsf{call\_indirect}~x~y \\
 & & | & \mathtt{0x12}~~x{:}{\mathtt{funcidx}} & \quad\Rightarrow\quad{} & \mathsf{return\_call}~x \\
 & & | & \mathtt{0x13}~~y{:}{\mathtt{typeidx}}~~x{:}{\mathtt{tableidx}} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_indirect}~x~y \\
-& & | & \mathtt{0x1F}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{c^\ast}{:}{\mathtt{list}}({\mathtt{catch}})~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & & \\
-&&& \multicolumn{4}{@{}l@{}}{\quad
-\begin{array}[t]{@{}l@{}}
-\mathsf{try\_table}~{\mathit{bt}}~{c^\ast}~{{\mathit{in}}^\ast} \\
-\end{array}
-} \\
+& & | & \mathtt{0x1F}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{c^\ast}{:}{\mathtt{list}}({\mathtt{catch}})~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{try\_table}~{\mathit{bt}}~{c^\ast}~{{\mathit{in}}^\ast} \\
 & & | & \dots \\
 & {\mathtt{catch}} & ::= & \mathtt{0x00}~~x{:}{\mathtt{tagidx}}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch}~x~l \\
 & & | & \mathtt{0x01}~~x{:}{\mathtt{tagidx}}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch\_ref}~x~l \\
@@ -10638,9 +10633,9 @@ $$
 & & | & \mathtt{0xFB}~~21{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
 & & | & \mathtt{0xFB}~~22{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~{\mathit{ht}}) \\
 & & | & \mathtt{0xFB}~~23{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
-& & | & \mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}}~~ \\[0.8ex]
+& & | & \mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\
   &&& l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\
-& & | & \mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}}~~ \\[0.8ex]
+& & | & \mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\
   &&& l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\
 & & | & \mathtt{0xFB}~~26{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{any{.}convert\_extern} \\
 & & | & \mathtt{0xFB}~~27{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{extern{.}convert\_any} \\
@@ -11413,8 +11408,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& A & ::= & \mathbb{N} \\
-& B & ::= & \mathbb{N} \\
+& A & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+& B & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
 & {\mathit{sym}} & ::= & A_1 ~|~ \ldots ~|~ A_n \\
 & {\mathit{sym}} & ::= & A_1 ~|~ A_2 \\
 & & ::= & () \\
@@ -11429,7 +11424,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& T & ::= & \mathbb{N} \\
+& T & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
 \end{array}
 $$
 

@@ -7043,7 +7043,7 @@ grammar Blaneidx : laneidx
 ;; A-binary.watsup
 rec {
 
-;; A-binary.watsup:981.1-991.66
+;; A-binary.watsup:971.1-981.66
 grammar Binstr : instr
   ;; A-binary.watsup:214.5-214.24
   prod 0x00 => UNREACHABLE_instr
@@ -7055,947 +7055,947 @@ grammar Binstr : instr
   prod{bt : blocktype, `in*` : instr*} {0x03 bt:Bblocktype in:Binstr*{in <- `in*`} 0x0B} => LOOP_instr(bt, in*{in <- `in*`})
   ;; A-binary.watsup:218.5-218.63
   prod{bt : blocktype, `in*` : instr*} {0x04 bt:Bblocktype in:Binstr*{in <- `in*`} 0x0B} => `IF%%ELSE%`_instr(bt, in*{in <- `in*`}, [])
-  ;; A-binary.watsup:219.5-223.55
+  ;; A-binary.watsup:219.5-220.55
   prod{bt : blocktype, `in_1*` : instr*, `in_2*` : instr*} {0x04 bt:Bblocktype in_1:Binstr*{in_1 <- `in_1*`} 0x05 in_2:Binstr*{in_2 <- `in_2*`} 0x0B} => `IF%%ELSE%`_instr(bt, in_1*{in_1 <- `in_1*`}, in_2*{in_2 <- `in_2*`})
-  ;; A-binary.watsup:224.5-224.30
+  ;; A-binary.watsup:221.5-221.30
   prod{x : idx} {0x08 x:Btagidx} => THROW_instr(x)
-  ;; A-binary.watsup:225.5-225.22
+  ;; A-binary.watsup:222.5-222.22
   prod 0x0A => THROW_REF_instr
-  ;; A-binary.watsup:226.5-226.29
+  ;; A-binary.watsup:223.5-223.29
   prod{l : labelidx} {0x0C l:Blabelidx} => BR_instr(l)
-  ;; A-binary.watsup:227.5-227.32
+  ;; A-binary.watsup:224.5-224.32
   prod{l : labelidx} {0x0D l:Blabelidx} => BR_IF_instr(l)
-  ;; A-binary.watsup:228.5-228.62
+  ;; A-binary.watsup:225.5-225.62
   prod{`l*` : labelidx*, l_n : labelidx} {0x0E l*{l <- `l*`}:Blist(syntax labelidx, grammar Blabelidx) l_n:Blabelidx} => BR_TABLE_instr(l*{l <- `l*`}, l_n)
-  ;; A-binary.watsup:229.5-229.19
+  ;; A-binary.watsup:226.5-226.19
   prod 0x0F => RETURN_instr
-  ;; A-binary.watsup:230.5-230.30
+  ;; A-binary.watsup:227.5-227.30
   prod{x : idx} {0x10 x:Bfuncidx} => CALL_instr(x)
-  ;; A-binary.watsup:231.5-231.60
+  ;; A-binary.watsup:228.5-228.60
   prod{y : idx, x : idx} {0x11 y:Btypeidx x:Btableidx} => CALL_INDIRECT_instr(x, _IDX_typeuse(y))
-  ;; A-binary.watsup:232.5-232.37
+  ;; A-binary.watsup:229.5-229.37
   prod{x : idx} {0x12 x:Bfuncidx} => RETURN_CALL_instr(x)
-  ;; A-binary.watsup:233.5-233.67
+  ;; A-binary.watsup:230.5-230.67
   prod{y : idx, x : idx} {0x13 y:Btypeidx x:Btableidx} => RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y))
-  ;; A-binary.watsup:234.5-235.26
+  ;; A-binary.watsup:231.5-231.81
   prod{bt : blocktype, `c*` : catch*, `in*` : instr*} {0x1F bt:Bblocktype c*{c <- `c*`}:Blist(syntax catch, grammar Bcatch) in:Binstr*{in <- `in*`} 0x0B} => TRY_TABLE_instr(bt, `%`_list(c*{c <- `c*`}), in*{in <- `in*`})
-  ;; A-binary.watsup:256.5-256.37
+  ;; A-binary.watsup:252.5-252.37
   prod{ht : heaptype} {0xD0 ht:Bheaptype} => REF.NULL_instr(ht)
-  ;; A-binary.watsup:257.5-257.24
+  ;; A-binary.watsup:253.5-253.24
   prod 0xD1 => REF.IS_NULL_instr
-  ;; A-binary.watsup:258.5-258.34
+  ;; A-binary.watsup:254.5-254.34
   prod{x : idx} {0xD2 x:Bfuncidx} => REF.FUNC_instr(x)
-  ;; A-binary.watsup:259.5-259.19
+  ;; A-binary.watsup:255.5-255.19
   prod 0xD3 => REF.EQ_instr
-  ;; A-binary.watsup:260.5-260.28
+  ;; A-binary.watsup:256.5-256.28
   prod 0xD4 => REF.AS_NON_NULL_instr
-  ;; A-binary.watsup:261.5-261.37
+  ;; A-binary.watsup:257.5-257.37
   prod{l : labelidx} {0xD5 l:Blabelidx} => BR_ON_NULL_instr(l)
-  ;; A-binary.watsup:262.5-262.41
+  ;; A-binary.watsup:258.5-258.41
   prod{l : labelidx} {0xD6 l:Blabelidx} => BR_ON_NON_NULL_instr(l)
-  ;; A-binary.watsup:266.5-266.43
+  ;; A-binary.watsup:262.5-262.43
   prod{x : idx} {0xFB `%`_u32(0):Bu32 x:Btypeidx} => STRUCT.NEW_instr(x)
-  ;; A-binary.watsup:267.5-267.51
+  ;; A-binary.watsup:263.5-263.51
   prod{x : idx} {0xFB `%`_u32(1):Bu32 x:Btypeidx} => STRUCT.NEW_DEFAULT_instr(x)
-  ;; A-binary.watsup:268.5-268.52
+  ;; A-binary.watsup:264.5-264.52
   prod{x : idx, i : nat} {0xFB `%`_u32(2):Bu32 x:Btypeidx `%`_u32(i):Bu32} => STRUCT.GET_instr(?(), x, `%`_u32(i))
-  ;; A-binary.watsup:269.5-269.54
+  ;; A-binary.watsup:265.5-265.54
   prod{x : idx, i : nat} {0xFB `%`_u32(3):Bu32 x:Btypeidx `%`_u32(i):Bu32} => STRUCT.GET_instr(?(S_sx), x, `%`_u32(i))
-  ;; A-binary.watsup:270.5-270.54
+  ;; A-binary.watsup:266.5-266.54
   prod{x : idx, i : nat} {0xFB `%`_u32(4):Bu32 x:Btypeidx `%`_u32(i):Bu32} => STRUCT.GET_instr(?(U_sx), x, `%`_u32(i))
-  ;; A-binary.watsup:271.5-271.52
+  ;; A-binary.watsup:267.5-267.52
   prod{x : idx, i : nat} {0xFB `%`_u32(5):Bu32 x:Btypeidx `%`_u32(i):Bu32} => STRUCT.SET_instr(x, `%`_u32(i))
-  ;; A-binary.watsup:275.5-275.42
+  ;; A-binary.watsup:271.5-271.42
   prod{x : idx} {0xFB `%`_u32(6):Bu32 x:Btypeidx} => ARRAY.NEW_instr(x)
-  ;; A-binary.watsup:276.5-276.50
+  ;; A-binary.watsup:272.5-272.50
   prod{x : idx} {0xFB `%`_u32(7):Bu32 x:Btypeidx} => ARRAY.NEW_DEFAULT_instr(x)
-  ;; A-binary.watsup:277.5-277.57
+  ;; A-binary.watsup:273.5-273.57
   prod{x : idx, n : n} {0xFB `%`_u32(8):Bu32 x:Btypeidx `%`_u32(n):Bu32} => ARRAY.NEW_FIXED_instr(x, `%`_u32(n))
-  ;; A-binary.watsup:278.5-278.60
+  ;; A-binary.watsup:274.5-274.60
   prod{x : idx, y : idx} {0xFB `%`_u32(9):Bu32 x:Btypeidx y:Bdataidx} => ARRAY.NEW_DATA_instr(x, y)
-  ;; A-binary.watsup:279.5-279.61
+  ;; A-binary.watsup:275.5-275.61
   prod{x : idx, y : idx} {0xFB `%`_u32(10):Bu32 x:Btypeidx y:Belemidx} => ARRAY.NEW_ELEM_instr(x, y)
-  ;; A-binary.watsup:280.5-280.43
+  ;; A-binary.watsup:276.5-276.43
   prod{x : idx} {0xFB `%`_u32(11):Bu32 x:Btypeidx} => ARRAY.GET_instr(?(), x)
-  ;; A-binary.watsup:281.5-281.45
+  ;; A-binary.watsup:277.5-277.45
   prod{x : idx} {0xFB `%`_u32(12):Bu32 x:Btypeidx} => ARRAY.GET_instr(?(S_sx), x)
-  ;; A-binary.watsup:282.5-282.45
+  ;; A-binary.watsup:278.5-278.45
   prod{x : idx} {0xFB `%`_u32(13):Bu32 x:Btypeidx} => ARRAY.GET_instr(?(U_sx), x)
-  ;; A-binary.watsup:283.5-283.43
+  ;; A-binary.watsup:279.5-279.43
   prod{x : idx} {0xFB `%`_u32(14):Bu32 x:Btypeidx} => ARRAY.SET_instr(x)
-  ;; A-binary.watsup:284.5-284.30
+  ;; A-binary.watsup:280.5-280.30
   prod {0xFB `%`_u32(15):Bu32} => ARRAY.LEN_instr
-  ;; A-binary.watsup:285.5-285.44
+  ;; A-binary.watsup:281.5-281.44
   prod{x : idx} {0xFB `%`_u32(16):Bu32 x:Btypeidx} => ARRAY.FILL_instr(x)
-  ;; A-binary.watsup:286.5-286.65
+  ;; A-binary.watsup:282.5-282.65
   prod{x_1 : idx, x_2 : idx} {0xFB `%`_u32(17):Bu32 x_1:Btypeidx x_2:Btypeidx} => ARRAY.COPY_instr(x_1, x_2)
-  ;; A-binary.watsup:287.5-287.62
+  ;; A-binary.watsup:283.5-283.62
   prod{x : idx, y : idx} {0xFB `%`_u32(18):Bu32 x:Btypeidx y:Bdataidx} => ARRAY.INIT_DATA_instr(x, y)
-  ;; A-binary.watsup:288.5-288.62
+  ;; A-binary.watsup:284.5-284.62
   prod{x : idx, y : idx} {0xFB `%`_u32(19):Bu32 x:Btypeidx y:Belemidx} => ARRAY.INIT_ELEM_instr(x, y)
-  ;; A-binary.watsup:292.5-292.51
+  ;; A-binary.watsup:288.5-288.51
   prod{ht : heaptype} {0xFB `%`_u32(20):Bu32 ht:Bheaptype} => REF.TEST_instr(REF_reftype(`NULL%?`_nul(?()), ht))
-  ;; A-binary.watsup:293.5-293.56
+  ;; A-binary.watsup:289.5-289.56
   prod{ht : heaptype} {0xFB `%`_u32(21):Bu32 ht:Bheaptype} => REF.TEST_instr(REF_reftype(`NULL%?`_nul(?(())), ht))
-  ;; A-binary.watsup:294.5-294.51
+  ;; A-binary.watsup:290.5-290.51
   prod{ht : heaptype} {0xFB `%`_u32(22):Bu32 ht:Bheaptype} => REF.CAST_instr(REF_reftype(`NULL%?`_nul(?()), ht))
-  ;; A-binary.watsup:295.5-295.56
+  ;; A-binary.watsup:291.5-291.56
   prod{ht : heaptype} {0xFB `%`_u32(23):Bu32 ht:Bheaptype} => REF.CAST_instr(REF_reftype(`NULL%?`_nul(?(())), ht))
-  ;; A-binary.watsup:296.5-300.94
+  ;; A-binary.watsup:292.5-293.94
   prod{nul1 : nul1, nul2 : nul2, l : labelidx, ht_1 : heaptype, ht_2 : heaptype} {0xFB `%`_u32(24):Bu32 (nul1, nul2):Bcastop l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype} => BR_ON_CAST_instr(l, REF_reftype(nul1, ht_1), REF_reftype(nul2, ht_2))
-  ;; A-binary.watsup:301.5-305.99
+  ;; A-binary.watsup:294.5-295.99
   prod{nul1 : nul1, nul2 : nul2, l : labelidx, ht_1 : heaptype, ht_2 : heaptype} {0xFB `%`_u32(25):Bu32 (nul1, nul2):Bcastop l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype} => BR_ON_CAST_FAIL_instr(l, REF_reftype(nul1, ht_1), REF_reftype(nul2, ht_2))
-  ;; A-binary.watsup:309.5-309.39
+  ;; A-binary.watsup:299.5-299.39
   prod {0xFB `%`_u32(26):Bu32} => ANY.CONVERT_EXTERN_instr
-  ;; A-binary.watsup:310.5-310.39
+  ;; A-binary.watsup:300.5-300.39
   prod {0xFB `%`_u32(27):Bu32} => EXTERN.CONVERT_ANY_instr
-  ;; A-binary.watsup:314.5-314.28
+  ;; A-binary.watsup:304.5-304.28
   prod {0xFB `%`_u32(28):Bu32} => REF.I31_instr
-  ;; A-binary.watsup:315.5-315.30
+  ;; A-binary.watsup:305.5-305.30
   prod {0xFB `%`_u32(29):Bu32} => I31.GET_instr(S_sx)
-  ;; A-binary.watsup:316.5-316.30
+  ;; A-binary.watsup:306.5-306.30
   prod {0xFB `%`_u32(30):Bu32} => I31.GET_instr(U_sx)
-  ;; A-binary.watsup:323.5-323.17
+  ;; A-binary.watsup:313.5-313.17
   prod 0x1A => DROP_instr
-  ;; A-binary.watsup:324.5-324.19
+  ;; A-binary.watsup:314.5-314.19
   prod 0x1B => `SELECT()%?`_instr(?())
-  ;; A-binary.watsup:325.5-325.41
+  ;; A-binary.watsup:315.5-315.41
   prod{ts : valtype} {0x1C [ts]:Blist(syntax valtype, grammar Bvaltype)} => `SELECT()%?`_instr(?([ts]))
-  ;; A-binary.watsup:332.5-332.36
+  ;; A-binary.watsup:322.5-322.36
   prod{x : idx} {0x20 x:Blocalidx} => LOCAL.GET_instr(x)
-  ;; A-binary.watsup:333.5-333.36
+  ;; A-binary.watsup:323.5-323.36
   prod{x : idx} {0x21 x:Blocalidx} => LOCAL.SET_instr(x)
-  ;; A-binary.watsup:334.5-334.36
+  ;; A-binary.watsup:324.5-324.36
   prod{x : idx} {0x22 x:Blocalidx} => LOCAL.TEE_instr(x)
-  ;; A-binary.watsup:338.5-338.38
+  ;; A-binary.watsup:328.5-328.38
   prod{x : idx} {0x23 x:Bglobalidx} => GLOBAL.GET_instr(x)
-  ;; A-binary.watsup:339.5-339.38
+  ;; A-binary.watsup:329.5-329.38
   prod{x : idx} {0x24 x:Bglobalidx} => GLOBAL.SET_instr(x)
-  ;; A-binary.watsup:346.5-346.36
+  ;; A-binary.watsup:336.5-336.36
   prod{x : idx} {0x25 x:Btableidx} => TABLE.GET_instr(x)
-  ;; A-binary.watsup:347.5-347.36
+  ;; A-binary.watsup:337.5-337.36
   prod{x : idx} {0x26 x:Btableidx} => TABLE.SET_instr(x)
-  ;; A-binary.watsup:348.5-348.58
+  ;; A-binary.watsup:338.5-338.58
   prod{y : idx, x : idx} {0xFC `%`_u32(12):Bu32 y:Belemidx x:Btableidx} => TABLE.INIT_instr(x, y)
-  ;; A-binary.watsup:349.5-349.43
+  ;; A-binary.watsup:339.5-339.43
   prod{x : idx} {0xFC `%`_u32(13):Bu32 x:Belemidx} => ELEM.DROP_instr(x)
-  ;; A-binary.watsup:350.5-350.67
+  ;; A-binary.watsup:340.5-340.67
   prod{x_1 : idx, x_2 : idx} {0xFC `%`_u32(14):Bu32 x_1:Btableidx x_2:Btableidx} => TABLE.COPY_instr(x_1, x_2)
-  ;; A-binary.watsup:351.5-351.45
+  ;; A-binary.watsup:341.5-341.45
   prod{x : idx} {0xFC `%`_u32(15):Bu32 x:Btableidx} => TABLE.GROW_instr(x)
-  ;; A-binary.watsup:352.5-352.45
+  ;; A-binary.watsup:342.5-342.45
   prod{x : idx} {0xFC `%`_u32(16):Bu32 x:Btableidx} => TABLE.SIZE_instr(x)
-  ;; A-binary.watsup:353.5-353.45
+  ;; A-binary.watsup:343.5-343.45
   prod{x : idx} {0xFC `%`_u32(17):Bu32 x:Btableidx} => TABLE.FILL_instr(x)
-  ;; A-binary.watsup:366.5-366.41
+  ;; A-binary.watsup:356.5-356.41
   prod{x : idx, ao : memarg} {0x28 (x, ao):Bmemarg} => LOAD_instr(I32_numtype, ?(), x, ao)
-  ;; A-binary.watsup:367.5-367.41
+  ;; A-binary.watsup:357.5-357.41
   prod{x : idx, ao : memarg} {0x29 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(), x, ao)
-  ;; A-binary.watsup:368.5-368.41
+  ;; A-binary.watsup:358.5-358.41
   prod{x : idx, ao : memarg} {0x2A (x, ao):Bmemarg} => LOAD_instr(F32_numtype, ?(), x, ao)
-  ;; A-binary.watsup:369.5-369.41
+  ;; A-binary.watsup:359.5-359.41
   prod{x : idx, ao : memarg} {0x2B (x, ao):Bmemarg} => LOAD_instr(F64_numtype, ?(), x, ao)
-  ;; A-binary.watsup:370.5-370.48
+  ;; A-binary.watsup:360.5-360.48
   prod{x : idx, ao : memarg} {0x2C (x, ao):Bmemarg} => LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(8), S_sx)), x, ao)
-  ;; A-binary.watsup:371.5-371.48
+  ;; A-binary.watsup:361.5-361.48
   prod{x : idx, ao : memarg} {0x2D (x, ao):Bmemarg} => LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(8), U_sx)), x, ao)
-  ;; A-binary.watsup:372.5-372.49
+  ;; A-binary.watsup:362.5-362.49
   prod{x : idx, ao : memarg} {0x2E (x, ao):Bmemarg} => LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(16), S_sx)), x, ao)
-  ;; A-binary.watsup:373.5-373.49
+  ;; A-binary.watsup:363.5-363.49
   prod{x : idx, ao : memarg} {0x2F (x, ao):Bmemarg} => LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(16), U_sx)), x, ao)
-  ;; A-binary.watsup:374.5-374.48
+  ;; A-binary.watsup:364.5-364.48
   prod{x : idx, ao : memarg} {0x30 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(`%%`_loadop_(`%`_sz(8), S_sx)), x, ao)
-  ;; A-binary.watsup:375.5-375.48
+  ;; A-binary.watsup:365.5-365.48
   prod{x : idx, ao : memarg} {0x31 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(`%%`_loadop_(`%`_sz(8), U_sx)), x, ao)
-  ;; A-binary.watsup:376.5-376.49
+  ;; A-binary.watsup:366.5-366.49
   prod{x : idx, ao : memarg} {0x32 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(`%%`_loadop_(`%`_sz(16), S_sx)), x, ao)
-  ;; A-binary.watsup:377.5-377.49
+  ;; A-binary.watsup:367.5-367.49
   prod{x : idx, ao : memarg} {0x33 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(`%%`_loadop_(`%`_sz(16), U_sx)), x, ao)
-  ;; A-binary.watsup:378.5-378.49
+  ;; A-binary.watsup:368.5-368.49
   prod{x : idx, ao : memarg} {0x34 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(`%%`_loadop_(`%`_sz(32), S_sx)), x, ao)
-  ;; A-binary.watsup:379.5-379.49
+  ;; A-binary.watsup:369.5-369.49
   prod{x : idx, ao : memarg} {0x35 (x, ao):Bmemarg} => LOAD_instr(I64_numtype, ?(`%%`_loadop_(`%`_sz(32), U_sx)), x, ao)
-  ;; A-binary.watsup:380.5-380.42
+  ;; A-binary.watsup:370.5-370.42
   prod{x : idx, ao : memarg} {0x36 (x, ao):Bmemarg} => STORE_instr(I32_numtype, ?(), x, ao)
-  ;; A-binary.watsup:381.5-381.42
+  ;; A-binary.watsup:371.5-371.42
   prod{x : idx, ao : memarg} {0x37 (x, ao):Bmemarg} => STORE_instr(I64_numtype, ?(), x, ao)
-  ;; A-binary.watsup:382.5-382.42
+  ;; A-binary.watsup:372.5-372.42
   prod{x : idx, ao : memarg} {0x38 (x, ao):Bmemarg} => STORE_instr(F32_numtype, ?(), x, ao)
-  ;; A-binary.watsup:383.5-383.42
+  ;; A-binary.watsup:373.5-373.42
   prod{x : idx, ao : memarg} {0x39 (x, ao):Bmemarg} => STORE_instr(F64_numtype, ?(), x, ao)
-  ;; A-binary.watsup:384.5-384.45
+  ;; A-binary.watsup:374.5-374.45
   prod{x : idx, ao : memarg} {0x3A (x, ao):Bmemarg} => STORE_instr(I32_numtype, ?(`%`_sz(8)), x, ao)
-  ;; A-binary.watsup:385.5-385.46
+  ;; A-binary.watsup:375.5-375.46
   prod{x : idx, ao : memarg} {0x3B (x, ao):Bmemarg} => STORE_instr(I32_numtype, ?(`%`_sz(16)), x, ao)
-  ;; A-binary.watsup:386.5-386.45
+  ;; A-binary.watsup:376.5-376.45
   prod{x : idx, ao : memarg} {0x3C (x, ao):Bmemarg} => STORE_instr(I64_numtype, ?(`%`_sz(8)), x, ao)
-  ;; A-binary.watsup:387.5-387.46
+  ;; A-binary.watsup:377.5-377.46
   prod{x : idx, ao : memarg} {0x3D (x, ao):Bmemarg} => STORE_instr(I64_numtype, ?(`%`_sz(16)), x, ao)
-  ;; A-binary.watsup:388.5-388.46
+  ;; A-binary.watsup:378.5-378.46
   prod{x : idx, ao : memarg} {0x3E (x, ao):Bmemarg} => STORE_instr(I64_numtype, ?(`%`_sz(32)), x, ao)
-  ;; A-binary.watsup:389.5-389.36
+  ;; A-binary.watsup:379.5-379.36
   prod{x : idx} {0x3F x:Bmemidx} => MEMORY.SIZE_instr(x)
-  ;; A-binary.watsup:390.5-390.36
+  ;; A-binary.watsup:380.5-380.36
   prod{x : idx} {0x40 x:Bmemidx} => MEMORY.GROW_instr(x)
-  ;; A-binary.watsup:391.5-391.56
+  ;; A-binary.watsup:381.5-381.56
   prod{y : idx, x : idx} {0xFC `%`_u32(8):Bu32 y:Bdataidx x:Bmemidx} => MEMORY.INIT_instr(x, y)
-  ;; A-binary.watsup:392.5-392.42
+  ;; A-binary.watsup:382.5-382.42
   prod{x : idx} {0xFC `%`_u32(9):Bu32 x:Bdataidx} => DATA.DROP_instr(x)
-  ;; A-binary.watsup:393.5-393.64
+  ;; A-binary.watsup:383.5-383.64
   prod{x_1 : idx, x_2 : idx} {0xFC `%`_u32(10):Bu32 x_1:Bmemidx x_2:Bmemidx} => MEMORY.COPY_instr(x_1, x_2)
-  ;; A-binary.watsup:394.5-394.44
+  ;; A-binary.watsup:384.5-384.44
   prod{x : idx} {0xFC `%`_u32(11):Bu32 x:Bmemidx} => MEMORY.FILL_instr(x)
-  ;; A-binary.watsup:402.5-402.31
+  ;; A-binary.watsup:392.5-392.31
   prod{n : n} {0x41 `%`_u32(n):Bu32} => CONST_instr(I32_numtype, `%`_num_(n))
-  ;; A-binary.watsup:403.5-403.31
+  ;; A-binary.watsup:393.5-393.31
   prod{n : n} {0x42 `%`_u64(n):Bu64} => CONST_instr(I64_numtype, `%`_num_(n))
-  ;; A-binary.watsup:404.5-404.31
+  ;; A-binary.watsup:394.5-394.31
   prod{p : f32} {0x43 p:Bf32} => CONST_instr(F32_numtype, p)
-  ;; A-binary.watsup:405.5-405.31
+  ;; A-binary.watsup:395.5-395.31
   prod{p : f64} {0x44 p:Bf64} => CONST_instr(F64_numtype, p)
-  ;; A-binary.watsup:409.5-409.27
+  ;; A-binary.watsup:399.5-399.27
   prod 0x45 => TESTOP_instr(I32_numtype, EQZ_testop_)
-  ;; A-binary.watsup:413.5-413.25
+  ;; A-binary.watsup:403.5-403.25
   prod 0x46 => RELOP_instr(I32_numtype, EQ_relop_)
-  ;; A-binary.watsup:414.5-414.25
+  ;; A-binary.watsup:404.5-404.25
   prod 0x47 => RELOP_instr(I32_numtype, NE_relop_)
-  ;; A-binary.watsup:415.5-415.29
+  ;; A-binary.watsup:405.5-405.29
   prod 0x48 => RELOP_instr(I32_numtype, LT_relop_(S_sx))
-  ;; A-binary.watsup:416.5-416.29
+  ;; A-binary.watsup:406.5-406.29
   prod 0x49 => RELOP_instr(I32_numtype, LT_relop_(U_sx))
-  ;; A-binary.watsup:417.5-417.29
+  ;; A-binary.watsup:407.5-407.29
   prod 0x4A => RELOP_instr(I32_numtype, GT_relop_(S_sx))
-  ;; A-binary.watsup:418.5-418.29
+  ;; A-binary.watsup:408.5-408.29
   prod 0x4B => RELOP_instr(I32_numtype, GT_relop_(U_sx))
-  ;; A-binary.watsup:419.5-419.29
+  ;; A-binary.watsup:409.5-409.29
   prod 0x4C => RELOP_instr(I32_numtype, LE_relop_(S_sx))
-  ;; A-binary.watsup:420.5-420.29
+  ;; A-binary.watsup:410.5-410.29
   prod 0x4D => RELOP_instr(I32_numtype, LE_relop_(U_sx))
-  ;; A-binary.watsup:421.5-421.29
+  ;; A-binary.watsup:411.5-411.29
   prod 0x4E => RELOP_instr(I32_numtype, GE_relop_(S_sx))
-  ;; A-binary.watsup:422.5-422.29
+  ;; A-binary.watsup:412.5-412.29
   prod 0x4F => RELOP_instr(I32_numtype, GE_relop_(U_sx))
-  ;; A-binary.watsup:426.5-426.27
+  ;; A-binary.watsup:416.5-416.27
   prod 0x50 => TESTOP_instr(I64_numtype, EQZ_testop_)
-  ;; A-binary.watsup:430.5-430.25
+  ;; A-binary.watsup:420.5-420.25
   prod 0x51 => RELOP_instr(I64_numtype, EQ_relop_)
-  ;; A-binary.watsup:431.5-431.25
+  ;; A-binary.watsup:421.5-421.25
   prod 0x52 => RELOP_instr(I64_numtype, NE_relop_)
-  ;; A-binary.watsup:432.5-432.29
+  ;; A-binary.watsup:422.5-422.29
   prod 0x53 => RELOP_instr(I64_numtype, LT_relop_(S_sx))
-  ;; A-binary.watsup:433.5-433.29
+  ;; A-binary.watsup:423.5-423.29
   prod 0x54 => RELOP_instr(I64_numtype, LT_relop_(U_sx))
-  ;; A-binary.watsup:434.5-434.29
+  ;; A-binary.watsup:424.5-424.29
   prod 0x55 => RELOP_instr(I64_numtype, GT_relop_(S_sx))
-  ;; A-binary.watsup:435.5-435.29
+  ;; A-binary.watsup:425.5-425.29
   prod 0x56 => RELOP_instr(I64_numtype, GT_relop_(U_sx))
-  ;; A-binary.watsup:436.5-436.29
+  ;; A-binary.watsup:426.5-426.29
   prod 0x57 => RELOP_instr(I64_numtype, LE_relop_(S_sx))
-  ;; A-binary.watsup:437.5-437.29
+  ;; A-binary.watsup:427.5-427.29
   prod 0x58 => RELOP_instr(I64_numtype, LE_relop_(U_sx))
-  ;; A-binary.watsup:438.5-438.29
+  ;; A-binary.watsup:428.5-428.29
   prod 0x59 => RELOP_instr(I64_numtype, GE_relop_(S_sx))
-  ;; A-binary.watsup:439.5-439.29
+  ;; A-binary.watsup:429.5-429.29
   prod 0x5A => RELOP_instr(I64_numtype, GE_relop_(U_sx))
-  ;; A-binary.watsup:443.5-443.25
+  ;; A-binary.watsup:433.5-433.25
   prod 0x5B => RELOP_instr(F32_numtype, EQ_relop_)
-  ;; A-binary.watsup:444.5-444.25
+  ;; A-binary.watsup:434.5-434.25
   prod 0x5C => RELOP_instr(F32_numtype, NE_relop_)
-  ;; A-binary.watsup:445.5-445.25
+  ;; A-binary.watsup:435.5-435.25
   prod 0x5D => RELOP_instr(F32_numtype, LT_relop_)
-  ;; A-binary.watsup:446.5-446.25
+  ;; A-binary.watsup:436.5-436.25
   prod 0x5E => RELOP_instr(F32_numtype, GT_relop_)
-  ;; A-binary.watsup:447.5-447.25
+  ;; A-binary.watsup:437.5-437.25
   prod 0x5F => RELOP_instr(F32_numtype, LE_relop_)
-  ;; A-binary.watsup:448.5-448.25
+  ;; A-binary.watsup:438.5-438.25
   prod 0x60 => RELOP_instr(F32_numtype, GE_relop_)
-  ;; A-binary.watsup:452.5-452.25
+  ;; A-binary.watsup:442.5-442.25
   prod 0x61 => RELOP_instr(F64_numtype, EQ_relop_)
-  ;; A-binary.watsup:453.5-453.25
+  ;; A-binary.watsup:443.5-443.25
   prod 0x62 => RELOP_instr(F64_numtype, NE_relop_)
-  ;; A-binary.watsup:454.5-454.25
+  ;; A-binary.watsup:444.5-444.25
   prod 0x63 => RELOP_instr(F64_numtype, LT_relop_)
-  ;; A-binary.watsup:455.5-455.25
+  ;; A-binary.watsup:445.5-445.25
   prod 0x64 => RELOP_instr(F64_numtype, GT_relop_)
-  ;; A-binary.watsup:456.5-456.25
+  ;; A-binary.watsup:446.5-446.25
   prod 0x65 => RELOP_instr(F64_numtype, LE_relop_)
-  ;; A-binary.watsup:457.5-457.25
+  ;; A-binary.watsup:447.5-447.25
   prod 0x66 => RELOP_instr(F64_numtype, GE_relop_)
-  ;; A-binary.watsup:461.5-461.25
+  ;; A-binary.watsup:451.5-451.25
   prod 0x67 => UNOP_instr(I32_numtype, CLZ_unop_)
-  ;; A-binary.watsup:462.5-462.25
+  ;; A-binary.watsup:452.5-452.25
   prod 0x68 => UNOP_instr(I32_numtype, CTZ_unop_)
-  ;; A-binary.watsup:463.5-463.28
+  ;; A-binary.watsup:453.5-453.28
   prod 0x69 => UNOP_instr(I32_numtype, POPCNT_unop_)
-  ;; A-binary.watsup:467.5-467.26
+  ;; A-binary.watsup:457.5-457.26
   prod 0x6A => BINOP_instr(I32_numtype, ADD_binop_)
-  ;; A-binary.watsup:468.5-468.26
+  ;; A-binary.watsup:458.5-458.26
   prod 0x6B => BINOP_instr(I32_numtype, SUB_binop_)
-  ;; A-binary.watsup:469.5-469.26
+  ;; A-binary.watsup:459.5-459.26
   prod 0x6C => BINOP_instr(I32_numtype, MUL_binop_)
-  ;; A-binary.watsup:470.5-470.30
+  ;; A-binary.watsup:460.5-460.30
   prod 0x6D => BINOP_instr(I32_numtype, DIV_binop_(S_sx))
-  ;; A-binary.watsup:471.5-471.30
+  ;; A-binary.watsup:461.5-461.30
   prod 0x6E => BINOP_instr(I32_numtype, DIV_binop_(U_sx))
-  ;; A-binary.watsup:472.5-472.30
+  ;; A-binary.watsup:462.5-462.30
   prod 0x6F => BINOP_instr(I32_numtype, REM_binop_(S_sx))
-  ;; A-binary.watsup:473.5-473.30
+  ;; A-binary.watsup:463.5-463.30
   prod 0x70 => BINOP_instr(I32_numtype, REM_binop_(U_sx))
-  ;; A-binary.watsup:474.5-474.26
+  ;; A-binary.watsup:464.5-464.26
   prod 0x71 => BINOP_instr(I32_numtype, AND_binop_)
-  ;; A-binary.watsup:475.5-475.25
+  ;; A-binary.watsup:465.5-465.25
   prod 0x72 => BINOP_instr(I32_numtype, OR_binop_)
-  ;; A-binary.watsup:476.5-476.26
+  ;; A-binary.watsup:466.5-466.26
   prod 0x73 => BINOP_instr(I32_numtype, XOR_binop_)
-  ;; A-binary.watsup:477.5-477.26
+  ;; A-binary.watsup:467.5-467.26
   prod 0x74 => BINOP_instr(I32_numtype, SHL_binop_)
-  ;; A-binary.watsup:478.5-478.30
+  ;; A-binary.watsup:468.5-468.30
   prod 0x75 => BINOP_instr(I32_numtype, SHR_binop_(S_sx))
-  ;; A-binary.watsup:479.5-479.30
+  ;; A-binary.watsup:469.5-469.30
   prod 0x76 => BINOP_instr(I32_numtype, SHR_binop_(U_sx))
-  ;; A-binary.watsup:480.5-480.27
+  ;; A-binary.watsup:470.5-470.27
   prod 0x77 => BINOP_instr(I32_numtype, ROTL_binop_)
-  ;; A-binary.watsup:481.5-481.27
+  ;; A-binary.watsup:471.5-471.27
   prod 0x78 => BINOP_instr(I32_numtype, ROTR_binop_)
-  ;; A-binary.watsup:485.5-485.25
+  ;; A-binary.watsup:475.5-475.25
   prod 0x79 => UNOP_instr(I64_numtype, CLZ_unop_)
-  ;; A-binary.watsup:486.5-486.25
+  ;; A-binary.watsup:476.5-476.25
   prod 0x7A => UNOP_instr(I64_numtype, CTZ_unop_)
-  ;; A-binary.watsup:487.5-487.28
+  ;; A-binary.watsup:477.5-477.28
   prod 0x7B => UNOP_instr(I64_numtype, POPCNT_unop_)
-  ;; A-binary.watsup:491.5-491.33
+  ;; A-binary.watsup:481.5-481.33
   prod 0xC0 => UNOP_instr(I32_numtype, EXTEND_unop_(`%`_sz(8)))
-  ;; A-binary.watsup:492.5-492.34
+  ;; A-binary.watsup:482.5-482.34
   prod 0xC1 => UNOP_instr(I32_numtype, EXTEND_unop_(`%`_sz(16)))
-  ;; A-binary.watsup:496.5-496.33
+  ;; A-binary.watsup:486.5-486.33
   prod 0xC2 => UNOP_instr(I64_numtype, EXTEND_unop_(`%`_sz(8)))
-  ;; A-binary.watsup:497.5-497.34
+  ;; A-binary.watsup:487.5-487.34
   prod 0xC3 => UNOP_instr(I64_numtype, EXTEND_unop_(`%`_sz(16)))
-  ;; A-binary.watsup:498.5-498.34
+  ;; A-binary.watsup:488.5-488.34
   prod 0xC4 => UNOP_instr(I64_numtype, EXTEND_unop_(`%`_sz(32)))
-  ;; A-binary.watsup:502.5-502.26
+  ;; A-binary.watsup:492.5-492.26
   prod 0x7C => BINOP_instr(I64_numtype, ADD_binop_)
-  ;; A-binary.watsup:503.5-503.26
+  ;; A-binary.watsup:493.5-493.26
   prod 0x7D => BINOP_instr(I64_numtype, SUB_binop_)
-  ;; A-binary.watsup:504.5-504.26
+  ;; A-binary.watsup:494.5-494.26
   prod 0x7E => BINOP_instr(I64_numtype, MUL_binop_)
-  ;; A-binary.watsup:505.5-505.30
+  ;; A-binary.watsup:495.5-495.30
   prod 0x7F => BINOP_instr(I64_numtype, DIV_binop_(S_sx))
-  ;; A-binary.watsup:506.5-506.30
+  ;; A-binary.watsup:496.5-496.30
   prod 0x80 => BINOP_instr(I64_numtype, DIV_binop_(U_sx))
-  ;; A-binary.watsup:507.5-507.30
+  ;; A-binary.watsup:497.5-497.30
   prod 0x81 => BINOP_instr(I64_numtype, REM_binop_(S_sx))
-  ;; A-binary.watsup:508.5-508.30
+  ;; A-binary.watsup:498.5-498.30
   prod 0x82 => BINOP_instr(I64_numtype, REM_binop_(U_sx))
-  ;; A-binary.watsup:509.5-509.26
+  ;; A-binary.watsup:499.5-499.26
   prod 0x83 => BINOP_instr(I64_numtype, AND_binop_)
-  ;; A-binary.watsup:510.5-510.25
+  ;; A-binary.watsup:500.5-500.25
   prod 0x84 => BINOP_instr(I64_numtype, OR_binop_)
-  ;; A-binary.watsup:511.5-511.26
+  ;; A-binary.watsup:501.5-501.26
   prod 0x85 => BINOP_instr(I64_numtype, XOR_binop_)
-  ;; A-binary.watsup:512.5-512.26
+  ;; A-binary.watsup:502.5-502.26
   prod 0x86 => BINOP_instr(I64_numtype, SHL_binop_)
-  ;; A-binary.watsup:513.5-513.30
+  ;; A-binary.watsup:503.5-503.30
   prod 0x87 => BINOP_instr(I64_numtype, SHR_binop_(S_sx))
-  ;; A-binary.watsup:514.5-514.30
+  ;; A-binary.watsup:504.5-504.30
   prod 0x88 => BINOP_instr(I64_numtype, SHR_binop_(U_sx))
-  ;; A-binary.watsup:515.5-515.27
+  ;; A-binary.watsup:505.5-505.27
   prod 0x89 => BINOP_instr(I64_numtype, ROTL_binop_)
-  ;; A-binary.watsup:516.5-516.27
+  ;; A-binary.watsup:506.5-506.27
   prod 0x8A => BINOP_instr(I64_numtype, ROTR_binop_)
-  ;; A-binary.watsup:520.5-520.25
+  ;; A-binary.watsup:510.5-510.25
   prod 0x8B => UNOP_instr(F32_numtype, ABS_unop_)
-  ;; A-binary.watsup:521.5-521.25
+  ;; A-binary.watsup:511.5-511.25
   prod 0x8C => UNOP_instr(F32_numtype, NEG_unop_)
-  ;; A-binary.watsup:522.5-522.26
+  ;; A-binary.watsup:512.5-512.26
   prod 0x8D => UNOP_instr(F32_numtype, CEIL_unop_)
-  ;; A-binary.watsup:523.5-523.27
+  ;; A-binary.watsup:513.5-513.27
   prod 0x8E => UNOP_instr(F32_numtype, FLOOR_unop_)
-  ;; A-binary.watsup:524.5-524.27
+  ;; A-binary.watsup:514.5-514.27
   prod 0x8F => UNOP_instr(F32_numtype, TRUNC_unop_)
-  ;; A-binary.watsup:525.5-525.29
+  ;; A-binary.watsup:515.5-515.29
   prod 0x90 => UNOP_instr(F32_numtype, NEAREST_unop_)
-  ;; A-binary.watsup:526.5-526.26
+  ;; A-binary.watsup:516.5-516.26
   prod 0x91 => UNOP_instr(F32_numtype, SQRT_unop_)
-  ;; A-binary.watsup:530.5-530.26
+  ;; A-binary.watsup:520.5-520.26
   prod 0x92 => BINOP_instr(F32_numtype, ADD_binop_)
-  ;; A-binary.watsup:531.5-531.26
+  ;; A-binary.watsup:521.5-521.26
   prod 0x93 => BINOP_instr(F32_numtype, SUB_binop_)
-  ;; A-binary.watsup:532.5-532.26
+  ;; A-binary.watsup:522.5-522.26
   prod 0x94 => BINOP_instr(F32_numtype, MUL_binop_)
-  ;; A-binary.watsup:533.5-533.26
+  ;; A-binary.watsup:523.5-523.26
   prod 0x95 => BINOP_instr(F32_numtype, DIV_binop_)
-  ;; A-binary.watsup:534.5-534.26
+  ;; A-binary.watsup:524.5-524.26
   prod 0x96 => BINOP_instr(F32_numtype, MIN_binop_)
-  ;; A-binary.watsup:535.5-535.26
+  ;; A-binary.watsup:525.5-525.26
   prod 0x97 => BINOP_instr(F32_numtype, MAX_binop_)
-  ;; A-binary.watsup:536.5-536.31
+  ;; A-binary.watsup:526.5-526.31
   prod 0x98 => BINOP_instr(F32_numtype, COPYSIGN_binop_)
-  ;; A-binary.watsup:540.5-540.25
+  ;; A-binary.watsup:530.5-530.25
   prod 0x99 => UNOP_instr(F64_numtype, ABS_unop_)
-  ;; A-binary.watsup:541.5-541.25
+  ;; A-binary.watsup:531.5-531.25
   prod 0x9A => UNOP_instr(F64_numtype, NEG_unop_)
-  ;; A-binary.watsup:542.5-542.26
+  ;; A-binary.watsup:532.5-532.26
   prod 0x9B => UNOP_instr(F64_numtype, CEIL_unop_)
-  ;; A-binary.watsup:543.5-543.27
+  ;; A-binary.watsup:533.5-533.27
   prod 0x9C => UNOP_instr(F64_numtype, FLOOR_unop_)
-  ;; A-binary.watsup:544.5-544.27
+  ;; A-binary.watsup:534.5-534.27
   prod 0x9D => UNOP_instr(F64_numtype, TRUNC_unop_)
-  ;; A-binary.watsup:545.5-545.29
+  ;; A-binary.watsup:535.5-535.29
   prod 0x9E => UNOP_instr(F64_numtype, NEAREST_unop_)
-  ;; A-binary.watsup:546.5-546.26
+  ;; A-binary.watsup:536.5-536.26
   prod 0x9F => UNOP_instr(F64_numtype, SQRT_unop_)
-  ;; A-binary.watsup:550.5-550.26
+  ;; A-binary.watsup:540.5-540.26
   prod 0xA0 => BINOP_instr(F64_numtype, ADD_binop_)
-  ;; A-binary.watsup:551.5-551.26
+  ;; A-binary.watsup:541.5-541.26
   prod 0xA1 => BINOP_instr(F64_numtype, SUB_binop_)
-  ;; A-binary.watsup:552.5-552.26
+  ;; A-binary.watsup:542.5-542.26
   prod 0xA2 => BINOP_instr(F64_numtype, MUL_binop_)
-  ;; A-binary.watsup:553.5-553.26
+  ;; A-binary.watsup:543.5-543.26
   prod 0xA3 => BINOP_instr(F64_numtype, DIV_binop_)
-  ;; A-binary.watsup:554.5-554.26
+  ;; A-binary.watsup:544.5-544.26
   prod 0xA4 => BINOP_instr(F64_numtype, MIN_binop_)
-  ;; A-binary.watsup:555.5-555.26
+  ;; A-binary.watsup:545.5-545.26
   prod 0xA5 => BINOP_instr(F64_numtype, MAX_binop_)
-  ;; A-binary.watsup:556.5-556.31
+  ;; A-binary.watsup:546.5-546.31
   prod 0xA6 => BINOP_instr(F64_numtype, COPYSIGN_binop_)
-  ;; A-binary.watsup:561.5-561.31
+  ;; A-binary.watsup:551.5-551.31
   prod 0xA7 => CVTOP_instr(I32_numtype, I64_numtype, WRAP_cvtop__)
-  ;; A-binary.watsup:562.5-562.36
+  ;; A-binary.watsup:552.5-552.36
   prod 0xA8 => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(S_sx))
-  ;; A-binary.watsup:563.5-563.36
+  ;; A-binary.watsup:553.5-553.36
   prod 0xA9 => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(U_sx))
-  ;; A-binary.watsup:564.5-564.36
+  ;; A-binary.watsup:554.5-554.36
   prod 0xAA => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(S_sx))
-  ;; A-binary.watsup:565.5-565.36
+  ;; A-binary.watsup:555.5-555.36
   prod 0xAB => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(U_sx))
-  ;; A-binary.watsup:566.5-566.37
+  ;; A-binary.watsup:556.5-556.37
   prod 0xAC => CVTOP_instr(I64_numtype, I32_numtype, EXTEND_cvtop__(S_sx))
-  ;; A-binary.watsup:567.5-567.37
+  ;; A-binary.watsup:557.5-557.37
   prod 0xAD => CVTOP_instr(I64_numtype, I32_numtype, EXTEND_cvtop__(U_sx))
-  ;; A-binary.watsup:568.5-568.36
+  ;; A-binary.watsup:558.5-558.36
   prod 0xAE => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(S_sx))
-  ;; A-binary.watsup:569.5-569.36
+  ;; A-binary.watsup:559.5-559.36
   prod 0xAF => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(U_sx))
-  ;; A-binary.watsup:570.5-570.36
+  ;; A-binary.watsup:560.5-560.36
   prod 0xB0 => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(S_sx))
-  ;; A-binary.watsup:571.5-571.36
+  ;; A-binary.watsup:561.5-561.36
   prod 0xB1 => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(U_sx))
-  ;; A-binary.watsup:572.5-572.38
+  ;; A-binary.watsup:562.5-562.38
   prod 0xB2 => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(S_sx))
-  ;; A-binary.watsup:573.5-573.38
+  ;; A-binary.watsup:563.5-563.38
   prod 0xB3 => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(U_sx))
-  ;; A-binary.watsup:574.5-574.38
+  ;; A-binary.watsup:564.5-564.38
   prod 0xB4 => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(S_sx))
-  ;; A-binary.watsup:575.5-575.38
+  ;; A-binary.watsup:565.5-565.38
   prod 0xB5 => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(U_sx))
-  ;; A-binary.watsup:576.5-576.33
+  ;; A-binary.watsup:566.5-566.33
   prod 0xB6 => CVTOP_instr(F32_numtype, F64_numtype, DEMOTE_cvtop__)
-  ;; A-binary.watsup:577.5-577.38
+  ;; A-binary.watsup:567.5-567.38
   prod 0xB7 => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(S_sx))
-  ;; A-binary.watsup:578.5-578.38
+  ;; A-binary.watsup:568.5-568.38
   prod 0xB8 => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(U_sx))
-  ;; A-binary.watsup:579.5-579.38
+  ;; A-binary.watsup:569.5-569.38
   prod 0xB9 => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(S_sx))
-  ;; A-binary.watsup:580.5-580.38
+  ;; A-binary.watsup:570.5-570.38
   prod 0xBA => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(U_sx))
-  ;; A-binary.watsup:581.5-581.34
+  ;; A-binary.watsup:571.5-571.34
   prod 0xBB => CVTOP_instr(F32_numtype, F64_numtype, PROMOTE_cvtop__)
-  ;; A-binary.watsup:582.5-582.38
+  ;; A-binary.watsup:572.5-572.38
   prod 0xBC => CVTOP_instr(I32_numtype, F32_numtype, REINTERPRET_cvtop__)
-  ;; A-binary.watsup:583.5-583.38
+  ;; A-binary.watsup:573.5-573.38
   prod 0xBD => CVTOP_instr(I64_numtype, F64_numtype, REINTERPRET_cvtop__)
-  ;; A-binary.watsup:584.5-584.38
+  ;; A-binary.watsup:574.5-574.38
   prod 0xBE => CVTOP_instr(F32_numtype, I32_numtype, REINTERPRET_cvtop__)
-  ;; A-binary.watsup:585.5-585.38
+  ;; A-binary.watsup:575.5-575.38
   prod 0xBF => CVTOP_instr(F64_numtype, I64_numtype, REINTERPRET_cvtop__)
-  ;; A-binary.watsup:589.5-589.47
+  ;; A-binary.watsup:579.5-579.47
   prod {0xFC `%`_u32(0):Bu32} => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx))
-  ;; A-binary.watsup:590.5-590.47
+  ;; A-binary.watsup:580.5-580.47
   prod {0xFC `%`_u32(1):Bu32} => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx))
-  ;; A-binary.watsup:591.5-591.47
+  ;; A-binary.watsup:581.5-581.47
   prod {0xFC `%`_u32(2):Bu32} => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx))
-  ;; A-binary.watsup:592.5-592.47
+  ;; A-binary.watsup:582.5-582.47
   prod {0xFC `%`_u32(3):Bu32} => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx))
-  ;; A-binary.watsup:593.5-593.47
+  ;; A-binary.watsup:583.5-583.47
   prod {0xFC `%`_u32(4):Bu32} => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx))
-  ;; A-binary.watsup:594.5-594.47
+  ;; A-binary.watsup:584.5-584.47
   prod {0xFC `%`_u32(5):Bu32} => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx))
-  ;; A-binary.watsup:595.5-595.47
+  ;; A-binary.watsup:585.5-585.47
   prod {0xFC `%`_u32(6):Bu32} => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx))
-  ;; A-binary.watsup:596.5-596.47
+  ;; A-binary.watsup:586.5-586.47
   prod {0xFC `%`_u32(7):Bu32} => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx))
-  ;; A-binary.watsup:606.5-606.50
+  ;; A-binary.watsup:596.5-596.50
   prod{x : idx, ao : memarg} {0xFD `%`_u32(0):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(), x, ao)
-  ;; A-binary.watsup:607.5-607.68
+  ;; A-binary.watsup:597.5-597.68
   prod{x : idx, ao : memarg} {0xFD `%`_u32(1):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(8), 8, S_sx)), x, ao)
-  ;; A-binary.watsup:608.5-608.68
+  ;; A-binary.watsup:598.5-598.68
   prod{x : idx, ao : memarg} {0xFD `%`_u32(2):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(8), 8, U_sx)), x, ao)
-  ;; A-binary.watsup:609.5-609.69
+  ;; A-binary.watsup:599.5-599.69
   prod{x : idx, ao : memarg} {0xFD `%`_u32(3):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(16), 4, S_sx)), x, ao)
-  ;; A-binary.watsup:610.5-610.69
+  ;; A-binary.watsup:600.5-600.69
   prod{x : idx, ao : memarg} {0xFD `%`_u32(4):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(16), 4, U_sx)), x, ao)
-  ;; A-binary.watsup:611.5-611.69
+  ;; A-binary.watsup:601.5-601.69
   prod{x : idx, ao : memarg} {0xFD `%`_u32(5):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(32), 2, S_sx)), x, ao)
-  ;; A-binary.watsup:612.5-612.69
+  ;; A-binary.watsup:602.5-602.69
   prod{x : idx, ao : memarg} {0xFD `%`_u32(6):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(32), 2, U_sx)), x, ao)
-  ;; A-binary.watsup:613.5-613.61
+  ;; A-binary.watsup:603.5-603.61
   prod{x : idx, ao : memarg} {0xFD `%`_u32(7):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8))), x, ao)
-  ;; A-binary.watsup:614.5-614.62
+  ;; A-binary.watsup:604.5-604.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(8):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(16))), x, ao)
-  ;; A-binary.watsup:615.5-615.62
+  ;; A-binary.watsup:605.5-605.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(9):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(32))), x, ao)
-  ;; A-binary.watsup:616.5-616.63
+  ;; A-binary.watsup:606.5-606.63
   prod{x : idx, ao : memarg} {0xFD `%`_u32(10):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(64))), x, ao)
-  ;; A-binary.watsup:617.5-617.52
+  ;; A-binary.watsup:607.5-607.52
   prod{x : idx, ao : memarg} {0xFD `%`_u32(11):Bu32 (x, ao):Bmemarg} => VSTORE_instr(V128_vectype, x, ao)
-  ;; A-binary.watsup:618.5-618.72
+  ;; A-binary.watsup:608.5-608.72
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:619.5-619.73
+  ;; A-binary.watsup:609.5-609.73
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:620.5-620.73
+  ;; A-binary.watsup:610.5-610.73
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:621.5-621.73
+  ;; A-binary.watsup:611.5-611.73
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:622.5-622.73
+  ;; A-binary.watsup:612.5-612.73
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:623.5-623.74
+  ;; A-binary.watsup:613.5-613.74
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:624.5-624.74
+  ;; A-binary.watsup:614.5-614.74
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:625.5-625.74
+  ;; A-binary.watsup:615.5-615.74
   prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:626.5-626.62
+  ;; A-binary.watsup:616.5-616.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(92):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(32))), x, ao)
-  ;; A-binary.watsup:627.5-627.62
+  ;; A-binary.watsup:617.5-617.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(93):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(64))), x, ao)
-  ;; A-binary.watsup:631.5-631.71
+  ;; A-binary.watsup:621.5-621.71
   prod{`b*` : byte*} {0xFD `%`_u32(12):Bu32 b:Bbyte^16{b <- `b*`}} => VCONST_instr(V128_vectype, $invibytes_(128, b^16{b <- `b*`}))
-  ;; A-binary.watsup:635.5-635.58
+  ;; A-binary.watsup:625.5-625.58
   prod{l : labelidx} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), [`%`_uN(l!`%`_labelidx.0)])
-  ;; A-binary.watsup:636.5-636.40
+  ;; A-binary.watsup:626.5-626.40
   prod {0xFD `%`_u32(14):Bu32} => VSWIZZLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:640.5-640.38
+  ;; A-binary.watsup:630.5-630.38
   prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
-  ;; A-binary.watsup:641.5-641.38
+  ;; A-binary.watsup:631.5-631.38
   prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
-  ;; A-binary.watsup:642.5-642.38
+  ;; A-binary.watsup:632.5-632.38
   prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
-  ;; A-binary.watsup:643.5-643.38
+  ;; A-binary.watsup:633.5-633.38
   prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
-  ;; A-binary.watsup:644.5-644.38
+  ;; A-binary.watsup:634.5-634.38
   prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
-  ;; A-binary.watsup:645.5-645.38
+  ;; A-binary.watsup:635.5-635.38
   prod {0xFD `%`_u32(20):Bu32} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)))
-  ;; A-binary.watsup:649.5-649.60
+  ;; A-binary.watsup:639.5-639.60
   prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:650.5-650.60
+  ;; A-binary.watsup:640.5-640.60
   prod{l : labelidx} {0xFD `%`_u32(22):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:651.5-651.58
+  ;; A-binary.watsup:641.5-641.58
   prod{l : labelidx} {0xFD `%`_u32(23):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:652.5-652.60
+  ;; A-binary.watsup:642.5-642.60
   prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:653.5-653.60
+  ;; A-binary.watsup:643.5-643.60
   prod{l : labelidx} {0xFD `%`_u32(25):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:654.5-654.58
+  ;; A-binary.watsup:644.5-644.58
   prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:655.5-655.58
+  ;; A-binary.watsup:645.5-645.58
   prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:656.5-656.58
+  ;; A-binary.watsup:646.5-646.58
   prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:657.5-657.58
+  ;; A-binary.watsup:647.5-647.58
   prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:658.5-658.58
+  ;; A-binary.watsup:648.5-648.58
   prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:659.5-659.58
+  ;; A-binary.watsup:649.5-649.58
   prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:660.5-660.58
+  ;; A-binary.watsup:650.5-650.58
   prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:661.5-661.58
+  ;; A-binary.watsup:651.5-651.58
   prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:662.5-662.58
+  ;; A-binary.watsup:652.5-652.58
   prod{l : labelidx} {0xFD `%`_u32(34):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:666.5-666.41
+  ;; A-binary.watsup:656.5-656.41
   prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
-  ;; A-binary.watsup:667.5-667.41
+  ;; A-binary.watsup:657.5-657.41
   prod {0xFD `%`_u32(36):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NE_vrelop_)
-  ;; A-binary.watsup:668.5-668.45
+  ;; A-binary.watsup:658.5-658.45
   prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:669.5-669.45
+  ;; A-binary.watsup:659.5-659.45
   prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
-  ;; A-binary.watsup:670.5-670.45
+  ;; A-binary.watsup:660.5-660.45
   prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:671.5-671.45
+  ;; A-binary.watsup:661.5-661.45
   prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
-  ;; A-binary.watsup:672.5-672.45
+  ;; A-binary.watsup:662.5-662.45
   prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:673.5-673.45
+  ;; A-binary.watsup:663.5-663.45
   prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
-  ;; A-binary.watsup:674.5-674.45
+  ;; A-binary.watsup:664.5-664.45
   prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:675.5-675.45
+  ;; A-binary.watsup:665.5-665.45
   prod {0xFD `%`_u32(44):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:679.5-679.41
+  ;; A-binary.watsup:669.5-669.41
   prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
-  ;; A-binary.watsup:680.5-680.41
+  ;; A-binary.watsup:670.5-670.41
   prod {0xFD `%`_u32(46):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NE_vrelop_)
-  ;; A-binary.watsup:681.5-681.45
+  ;; A-binary.watsup:671.5-671.45
   prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:682.5-682.45
+  ;; A-binary.watsup:672.5-672.45
   prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
-  ;; A-binary.watsup:683.5-683.45
+  ;; A-binary.watsup:673.5-673.45
   prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:684.5-684.45
+  ;; A-binary.watsup:674.5-674.45
   prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
-  ;; A-binary.watsup:685.5-685.45
+  ;; A-binary.watsup:675.5-675.45
   prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:686.5-686.45
+  ;; A-binary.watsup:676.5-676.45
   prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
-  ;; A-binary.watsup:687.5-687.45
+  ;; A-binary.watsup:677.5-677.45
   prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:688.5-688.45
+  ;; A-binary.watsup:678.5-678.45
   prod {0xFD `%`_u32(54):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:692.5-692.41
+  ;; A-binary.watsup:682.5-682.41
   prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
-  ;; A-binary.watsup:693.5-693.41
+  ;; A-binary.watsup:683.5-683.41
   prod {0xFD `%`_u32(56):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NE_vrelop_)
-  ;; A-binary.watsup:694.5-694.45
+  ;; A-binary.watsup:684.5-684.45
   prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:695.5-695.45
+  ;; A-binary.watsup:685.5-685.45
   prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
-  ;; A-binary.watsup:696.5-696.45
+  ;; A-binary.watsup:686.5-686.45
   prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:697.5-697.45
+  ;; A-binary.watsup:687.5-687.45
   prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
-  ;; A-binary.watsup:698.5-698.45
+  ;; A-binary.watsup:688.5-688.45
   prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:699.5-699.45
+  ;; A-binary.watsup:689.5-689.45
   prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
-  ;; A-binary.watsup:700.5-700.45
+  ;; A-binary.watsup:690.5-690.45
   prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:701.5-701.45
+  ;; A-binary.watsup:691.5-691.45
   prod {0xFD `%`_u32(64):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:705.5-705.41
+  ;; A-binary.watsup:695.5-695.41
   prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
-  ;; A-binary.watsup:706.5-706.41
+  ;; A-binary.watsup:696.5-696.41
   prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
-  ;; A-binary.watsup:707.5-707.41
+  ;; A-binary.watsup:697.5-697.41
   prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
-  ;; A-binary.watsup:708.5-708.41
+  ;; A-binary.watsup:698.5-698.41
   prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
-  ;; A-binary.watsup:709.5-709.41
+  ;; A-binary.watsup:699.5-699.41
   prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
-  ;; A-binary.watsup:710.5-710.41
+  ;; A-binary.watsup:700.5-700.41
   prod {0xFD `%`_u32(70):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GE_vrelop_)
-  ;; A-binary.watsup:714.5-714.41
+  ;; A-binary.watsup:704.5-704.41
   prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
-  ;; A-binary.watsup:715.5-715.41
+  ;; A-binary.watsup:705.5-705.41
   prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
-  ;; A-binary.watsup:716.5-716.41
+  ;; A-binary.watsup:706.5-706.41
   prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
-  ;; A-binary.watsup:717.5-717.41
+  ;; A-binary.watsup:707.5-707.41
   prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
-  ;; A-binary.watsup:718.5-718.41
+  ;; A-binary.watsup:708.5-708.41
   prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
-  ;; A-binary.watsup:719.5-719.41
+  ;; A-binary.watsup:709.5-709.41
   prod {0xFD `%`_u32(76):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GE_vrelop_)
-  ;; A-binary.watsup:723.5-723.36
+  ;; A-binary.watsup:713.5-713.36
   prod {0xFD `%`_u32(77):Bu32} => VVUNOP_instr(V128_vectype, NOT_vvunop)
-  ;; A-binary.watsup:727.5-727.37
+  ;; A-binary.watsup:717.5-717.37
   prod {0xFD `%`_u32(78):Bu32} => VVBINOP_instr(V128_vectype, AND_vvbinop)
-  ;; A-binary.watsup:728.5-728.40
+  ;; A-binary.watsup:718.5-718.40
   prod {0xFD `%`_u32(79):Bu32} => VVBINOP_instr(V128_vectype, ANDNOT_vvbinop)
-  ;; A-binary.watsup:729.5-729.36
+  ;; A-binary.watsup:719.5-719.36
   prod {0xFD `%`_u32(80):Bu32} => VVBINOP_instr(V128_vectype, OR_vvbinop)
-  ;; A-binary.watsup:730.5-730.37
+  ;; A-binary.watsup:720.5-720.37
   prod {0xFD `%`_u32(81):Bu32} => VVBINOP_instr(V128_vectype, XOR_vvbinop)
-  ;; A-binary.watsup:734.5-734.44
+  ;; A-binary.watsup:724.5-724.44
   prod {0xFD `%`_u32(82):Bu32} => VVTERNOP_instr(V128_vectype, BITSELECT_vvternop)
-  ;; A-binary.watsup:738.5-738.43
+  ;; A-binary.watsup:728.5-728.43
   prod {0xFD `%`_u32(83):Bu32} => VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)
-  ;; A-binary.watsup:742.5-742.41
+  ;; A-binary.watsup:732.5-732.41
   prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
-  ;; A-binary.watsup:743.5-743.41
+  ;; A-binary.watsup:733.5-733.41
   prod {0xFD `%`_u32(97):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NEG_vunop_)
-  ;; A-binary.watsup:744.5-744.44
+  ;; A-binary.watsup:734.5-734.44
   prod {0xFD `%`_u32(98):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), POPCNT_vunop_)
-  ;; A-binary.watsup:748.5-748.48
+  ;; A-binary.watsup:738.5-738.48
   prod {0xFD `%`_u32(99):Bu32} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:752.5-752.41
+  ;; A-binary.watsup:742.5-742.41
   prod {0xFD `%`_u32(100):Bu32} => VBITMASK_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:756.5-756.53
+  ;; A-binary.watsup:746.5-746.53
   prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
-  ;; A-binary.watsup:757.5-757.53
+  ;; A-binary.watsup:747.5-747.53
   prod {0xFD `%`_u32(102):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), U_sx)
-  ;; A-binary.watsup:761.5-761.45
+  ;; A-binary.watsup:751.5-751.45
   prod {0xFD `%`_u32(107):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHL_vshiftop_)
-  ;; A-binary.watsup:762.5-762.49
+  ;; A-binary.watsup:752.5-752.49
   prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:763.5-763.49
+  ;; A-binary.watsup:753.5-753.49
   prod {0xFD `%`_u32(109):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:767.5-767.43
+  ;; A-binary.watsup:757.5-757.43
   prod {0xFD `%`_u32(110):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_vbinop_)
-  ;; A-binary.watsup:768.5-768.51
+  ;; A-binary.watsup:758.5-758.51
   prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:769.5-769.51
+  ;; A-binary.watsup:759.5-759.51
   prod {0xFD `%`_u32(112):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:770.5-770.43
+  ;; A-binary.watsup:760.5-760.43
   prod {0xFD `%`_u32(113):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_vbinop_)
-  ;; A-binary.watsup:771.5-771.51
+  ;; A-binary.watsup:761.5-761.51
   prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:772.5-772.51
+  ;; A-binary.watsup:762.5-762.51
   prod {0xFD `%`_u32(115):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:773.5-773.47
+  ;; A-binary.watsup:763.5-763.47
   prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:774.5-774.47
+  ;; A-binary.watsup:764.5-764.47
   prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:775.5-775.47
+  ;; A-binary.watsup:765.5-765.47
   prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
-  ;; A-binary.watsup:776.5-776.47
+  ;; A-binary.watsup:766.5-766.47
   prod {0xFD `%`_u32(121):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:777.5-777.48
+  ;; A-binary.watsup:767.5-767.48
   prod {0xFD `%`_u32(123):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:781.5-781.72
+  ;; A-binary.watsup:771.5-771.72
   prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
-  ;; A-binary.watsup:782.5-782.72
+  ;; A-binary.watsup:772.5-772.72
   prod {0xFD `%`_u32(125):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:786.5-786.42
+  ;; A-binary.watsup:776.5-776.42
   prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
-  ;; A-binary.watsup:787.5-787.42
+  ;; A-binary.watsup:777.5-777.42
   prod {0xFD `%`_u32(129):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NEG_vunop_)
-  ;; A-binary.watsup:791.5-791.55
+  ;; A-binary.watsup:781.5-781.55
   prod {0xFD `%`_u32(130):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `Q15MULR_SATS`_vbinop_)
-  ;; A-binary.watsup:795.5-795.49
+  ;; A-binary.watsup:785.5-785.49
   prod {0xFD `%`_u32(131):Bu32} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:799.5-799.41
+  ;; A-binary.watsup:789.5-789.41
   prod {0xFD `%`_u32(132):Bu32} => VBITMASK_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)))
-  ;; A-binary.watsup:803.5-803.53
+  ;; A-binary.watsup:793.5-793.53
   prod {0xFD `%`_u32(133):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), S_sx)
-  ;; A-binary.watsup:804.5-804.53
+  ;; A-binary.watsup:794.5-794.53
   prod {0xFD `%`_u32(134):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), U_sx)
-  ;; A-binary.watsup:808.5-808.65
+  ;; A-binary.watsup:798.5-798.65
   prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:809.5-809.66
+  ;; A-binary.watsup:799.5-799.66
   prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:810.5-810.65
+  ;; A-binary.watsup:800.5-800.65
   prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:811.5-811.66
+  ;; A-binary.watsup:801.5-801.66
   prod {0xFD `%`_u32(138):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:815.5-815.45
+  ;; A-binary.watsup:805.5-805.45
   prod {0xFD `%`_u32(139):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHL_vshiftop_)
-  ;; A-binary.watsup:816.5-816.49
+  ;; A-binary.watsup:806.5-806.49
   prod {0xFD `%`_u32(140):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:817.5-817.49
+  ;; A-binary.watsup:807.5-807.49
   prod {0xFD `%`_u32(141):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:821.5-821.43
+  ;; A-binary.watsup:811.5-811.43
   prod {0xFD `%`_u32(142):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_vbinop_)
-  ;; A-binary.watsup:822.5-822.51
+  ;; A-binary.watsup:812.5-812.51
   prod {0xFD `%`_u32(143):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:823.5-823.51
+  ;; A-binary.watsup:813.5-813.51
   prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:824.5-824.43
+  ;; A-binary.watsup:814.5-814.43
   prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
-  ;; A-binary.watsup:825.5-825.51
+  ;; A-binary.watsup:815.5-815.51
   prod {0xFD `%`_u32(146):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:826.5-826.51
+  ;; A-binary.watsup:816.5-816.51
   prod {0xFD `%`_u32(147):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:827.5-827.43
+  ;; A-binary.watsup:817.5-817.43
   prod {0xFD `%`_u32(149):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MUL_vbinop_)
-  ;; A-binary.watsup:828.5-828.47
+  ;; A-binary.watsup:818.5-818.47
   prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:829.5-829.47
+  ;; A-binary.watsup:819.5-819.47
   prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:830.5-830.47
+  ;; A-binary.watsup:820.5-820.47
   prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
-  ;; A-binary.watsup:831.5-831.47
+  ;; A-binary.watsup:821.5-821.47
   prod {0xFD `%`_u32(153):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:832.5-832.48
+  ;; A-binary.watsup:822.5-822.48
   prod {0xFD `%`_u32(155):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:836.5-836.68
+  ;; A-binary.watsup:826.5-826.68
   prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:837.5-837.69
+  ;; A-binary.watsup:827.5-827.69
   prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:838.5-838.68
+  ;; A-binary.watsup:828.5-828.68
   prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:839.5-839.69
+  ;; A-binary.watsup:829.5-829.69
   prod {0xFD `%`_u32(159):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:843.5-843.72
+  ;; A-binary.watsup:833.5-833.72
   prod {0xFD `%`_u32(126):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(S_sx))
-  ;; A-binary.watsup:844.5-844.72
+  ;; A-binary.watsup:834.5-834.72
   prod {0xFD `%`_u32(127):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:848.5-848.42
+  ;; A-binary.watsup:838.5-838.42
   prod {0xFD `%`_u32(160):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:849.5-849.42
+  ;; A-binary.watsup:839.5-839.42
   prod {0xFD `%`_u32(161):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:853.5-853.49
+  ;; A-binary.watsup:843.5-843.49
   prod {0xFD `%`_u32(163):Bu32} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:857.5-857.41
+  ;; A-binary.watsup:847.5-847.41
   prod {0xFD `%`_u32(164):Bu32} => VBITMASK_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)))
-  ;; A-binary.watsup:861.5-861.65
+  ;; A-binary.watsup:851.5-851.65
   prod {0xFD `%`_u32(167):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:862.5-862.66
+  ;; A-binary.watsup:852.5-852.66
   prod {0xFD `%`_u32(168):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:863.5-863.65
+  ;; A-binary.watsup:853.5-853.65
   prod {0xFD `%`_u32(169):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:864.5-864.66
+  ;; A-binary.watsup:854.5-854.66
   prod {0xFD `%`_u32(170):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:868.5-868.45
+  ;; A-binary.watsup:858.5-858.45
   prod {0xFD `%`_u32(171):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHL_vshiftop_)
-  ;; A-binary.watsup:869.5-869.49
+  ;; A-binary.watsup:859.5-859.49
   prod {0xFD `%`_u32(172):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:870.5-870.49
+  ;; A-binary.watsup:860.5-860.49
   prod {0xFD `%`_u32(173):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:874.5-874.43
+  ;; A-binary.watsup:864.5-864.43
   prod {0xFD `%`_u32(174):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:875.5-875.43
+  ;; A-binary.watsup:865.5-865.43
   prod {0xFD `%`_u32(177):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:876.5-876.43
+  ;; A-binary.watsup:866.5-866.43
   prod {0xFD `%`_u32(181):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MUL_vbinop_)
-  ;; A-binary.watsup:877.5-877.47
+  ;; A-binary.watsup:867.5-867.47
   prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:878.5-878.47
+  ;; A-binary.watsup:868.5-868.47
   prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:879.5-879.47
+  ;; A-binary.watsup:869.5-869.47
   prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
-  ;; A-binary.watsup:880.5-880.47
+  ;; A-binary.watsup:870.5-870.47
   prod {0xFD `%`_u32(185):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:884.5-884.61
+  ;; A-binary.watsup:874.5-874.61
   prod {0xFD `%`_u32(186):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `DOTS`_vextbinop__)
-  ;; A-binary.watsup:885.5-885.68
+  ;; A-binary.watsup:875.5-875.68
   prod {0xFD `%`_u32(188):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:886.5-886.69
+  ;; A-binary.watsup:876.5-876.69
   prod {0xFD `%`_u32(189):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:887.5-887.68
+  ;; A-binary.watsup:877.5-877.68
   prod {0xFD `%`_u32(190):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:888.5-888.69
+  ;; A-binary.watsup:878.5-878.69
   prod {0xFD `%`_u32(191):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:892.5-892.42
+  ;; A-binary.watsup:882.5-882.42
   prod {0xFD `%`_u32(192):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:893.5-893.42
+  ;; A-binary.watsup:883.5-883.42
   prod {0xFD `%`_u32(193):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:897.5-897.49
+  ;; A-binary.watsup:887.5-887.49
   prod {0xFD `%`_u32(195):Bu32} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:901.5-901.41
+  ;; A-binary.watsup:891.5-891.41
   prod {0xFD `%`_u32(196):Bu32} => VBITMASK_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)))
-  ;; A-binary.watsup:905.5-905.65
+  ;; A-binary.watsup:895.5-895.65
   prod {0xFD `%`_u32(199):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:906.5-906.66
+  ;; A-binary.watsup:896.5-896.66
   prod {0xFD `%`_u32(200):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:907.5-907.65
+  ;; A-binary.watsup:897.5-897.65
   prod {0xFD `%`_u32(201):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:908.5-908.66
+  ;; A-binary.watsup:898.5-898.66
   prod {0xFD `%`_u32(202):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:912.5-912.45
+  ;; A-binary.watsup:902.5-902.45
   prod {0xFD `%`_u32(203):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHL_vshiftop_)
-  ;; A-binary.watsup:913.5-913.49
+  ;; A-binary.watsup:903.5-903.49
   prod {0xFD `%`_u32(204):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:914.5-914.49
+  ;; A-binary.watsup:904.5-904.49
   prod {0xFD `%`_u32(205):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:918.5-918.43
+  ;; A-binary.watsup:908.5-908.43
   prod {0xFD `%`_u32(206):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:919.5-919.43
+  ;; A-binary.watsup:909.5-909.43
   prod {0xFD `%`_u32(209):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:920.5-920.43
+  ;; A-binary.watsup:910.5-910.43
   prod {0xFD `%`_u32(213):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:924.5-924.42
+  ;; A-binary.watsup:914.5-914.42
   prod {0xFD `%`_u32(214):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), EQ_vrelop_)
-  ;; A-binary.watsup:925.5-925.42
+  ;; A-binary.watsup:915.5-915.42
   prod {0xFD `%`_u32(215):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NE_vrelop_)
-  ;; A-binary.watsup:926.5-926.46
+  ;; A-binary.watsup:916.5-916.46
   prod {0xFD `%`_u32(216):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:927.5-927.46
+  ;; A-binary.watsup:917.5-917.46
   prod {0xFD `%`_u32(217):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:928.5-928.46
+  ;; A-binary.watsup:918.5-918.46
   prod {0xFD `%`_u32(218):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:929.5-929.46
+  ;; A-binary.watsup:919.5-919.46
   prod {0xFD `%`_u32(219):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:933.5-933.68
+  ;; A-binary.watsup:923.5-923.68
   prod {0xFD `%`_u32(220):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:934.5-934.69
+  ;; A-binary.watsup:924.5-924.69
   prod {0xFD `%`_u32(221):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:935.5-935.68
+  ;; A-binary.watsup:925.5-925.68
   prod {0xFD `%`_u32(222):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:936.5-936.69
+  ;; A-binary.watsup:926.5-926.69
   prod {0xFD `%`_u32(223):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:940.5-940.43
+  ;; A-binary.watsup:930.5-930.43
   prod {0xFD `%`_u32(103):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), CEIL_vunop_)
-  ;; A-binary.watsup:941.5-941.44
+  ;; A-binary.watsup:931.5-931.44
   prod {0xFD `%`_u32(104):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), FLOOR_vunop_)
-  ;; A-binary.watsup:942.5-942.44
+  ;; A-binary.watsup:932.5-932.44
   prod {0xFD `%`_u32(105):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_vunop_)
-  ;; A-binary.watsup:943.5-943.46
+  ;; A-binary.watsup:933.5-933.46
   prod {0xFD `%`_u32(106):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEAREST_vunop_)
-  ;; A-binary.watsup:944.5-944.42
+  ;; A-binary.watsup:934.5-934.42
   prod {0xFD `%`_u32(224):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:945.5-945.42
+  ;; A-binary.watsup:935.5-935.42
   prod {0xFD `%`_u32(225):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:946.5-946.43
+  ;; A-binary.watsup:936.5-936.43
   prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
-  ;; A-binary.watsup:950.5-950.43
+  ;; A-binary.watsup:940.5-940.43
   prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:951.5-951.43
+  ;; A-binary.watsup:941.5-941.43
   prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:952.5-952.43
+  ;; A-binary.watsup:942.5-942.43
   prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
-  ;; A-binary.watsup:953.5-953.43
+  ;; A-binary.watsup:943.5-943.43
   prod {0xFD `%`_u32(231):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), DIV_vbinop_)
-  ;; A-binary.watsup:954.5-954.43
+  ;; A-binary.watsup:944.5-944.43
   prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
-  ;; A-binary.watsup:955.5-955.43
+  ;; A-binary.watsup:945.5-945.43
   prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
-  ;; A-binary.watsup:956.5-956.44
+  ;; A-binary.watsup:946.5-946.44
   prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
-  ;; A-binary.watsup:957.5-957.44
+  ;; A-binary.watsup:947.5-947.44
   prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
-  ;; A-binary.watsup:961.5-961.43
+  ;; A-binary.watsup:951.5-951.43
   prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
-  ;; A-binary.watsup:962.5-962.44
+  ;; A-binary.watsup:952.5-952.44
   prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
-  ;; A-binary.watsup:963.5-963.44
+  ;; A-binary.watsup:953.5-953.44
   prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
-  ;; A-binary.watsup:964.5-964.46
+  ;; A-binary.watsup:954.5-954.46
   prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
-  ;; A-binary.watsup:965.5-965.42
+  ;; A-binary.watsup:955.5-955.42
   prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:966.5-966.42
+  ;; A-binary.watsup:956.5-956.42
   prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:967.5-967.43
+  ;; A-binary.watsup:957.5-957.43
   prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
-  ;; A-binary.watsup:971.5-971.43
+  ;; A-binary.watsup:961.5-961.43
   prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:972.5-972.43
+  ;; A-binary.watsup:962.5-962.43
   prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:973.5-973.43
+  ;; A-binary.watsup:963.5-963.43
   prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:974.5-974.43
+  ;; A-binary.watsup:964.5-964.43
   prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
-  ;; A-binary.watsup:975.5-975.43
+  ;; A-binary.watsup:965.5-965.43
   prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
-  ;; A-binary.watsup:976.5-976.43
+  ;; A-binary.watsup:966.5-966.43
   prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
-  ;; A-binary.watsup:977.5-977.44
+  ;; A-binary.watsup:967.5-967.44
   prod {0xFD `%`_u32(246):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMIN_vbinop_)
-  ;; A-binary.watsup:978.5-978.44
+  ;; A-binary.watsup:968.5-968.44
   prod {0xFD `%`_u32(247):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMAX_vbinop_)
-  ;; A-binary.watsup:982.5-982.61
+  ;; A-binary.watsup:972.5-972.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__, ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:983.5-983.61
+  ;; A-binary.watsup:973.5-973.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), PROMOTE_vcvtop__, ?(LOW_half__), ?())
-  ;; A-binary.watsup:984.5-984.64
+  ;; A-binary.watsup:974.5-974.64
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:985.5-985.64
+  ;; A-binary.watsup:975.5-975.64
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:986.5-986.62
+  ;; A-binary.watsup:976.5-976.62
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:987.5-987.62
+  ;; A-binary.watsup:977.5-977.62
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:988.5-988.69
+  ;; A-binary.watsup:978.5-978.69
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:989.5-989.69
+  ;; A-binary.watsup:979.5-979.69
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:990.5-990.66
+  ;; A-binary.watsup:980.5-980.66
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:991.5-991.66
+  ;; A-binary.watsup:981.5-981.66
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(LOW_half__), ?())
 }
 
