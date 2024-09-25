@@ -4787,7 +4787,7 @@ The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
   * Or:
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
@@ -13760,9 +13760,9 @@ The reference type :math:`(\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\s
 
   * Either:
 
-    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
-    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
   * Or:
 
@@ -13902,9 +13902,9 @@ The field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}
 
   * Either:
 
-    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
-    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
   * Or:
 
@@ -14299,9 +14299,9 @@ The global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?
 
   * Either:
 
-    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
-    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
   * Or:
 
@@ -14607,7 +14607,7 @@ The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1
 
   * Or:
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
     * :math:`t` matches the value type :math:`{t'}`.
 
@@ -15528,7 +15528,7 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0
 
     * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{nt}}`.
 
-    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is absent.
 
     * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathit{nt}}`.
 
@@ -15558,7 +15558,7 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0
 
     * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{nt}}`.
 
-    * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`\epsilon`.
+    * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
     * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{nt}}`.
 
@@ -15586,7 +15586,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
   * Either:
 
-    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
     * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -16009,13 +16009,13 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
     * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{set}`.
 
-    * The value :math:`{{\mathrm{default}}}_{t}` is not equal to :math:`\epsilon`.
+    * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
 
   * Or:
 
     * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{unset}`.
 
-    * :math:`{{\mathrm{default}}}_{t}` is equal to :math:`\epsilon`.
+    * :math:`{{\mathrm{default}}}_{t}` is absent.
 
 
 
@@ -16023,7 +16023,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}~t)` if:
 
 
-  * The value :math:`{{\mathrm{default}}}_{t}` is not equal to :math:`\epsilon`.
+  * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
 
 
 
@@ -16031,7 +16031,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}~t)` if:
 
 
-  * The value :math:`{{\mathrm{default}}}_{t}` is equal to :math:`\epsilon`.
+  * The value :math:`{{\mathrm{default}}}_{t}` is absent.
 
 
 

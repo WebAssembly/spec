@@ -537,6 +537,12 @@ let rec render_stmt env depth stmt =
     | CondS e ->
       sprintf "%s."
         (render_expr env e)
+    | CmpS (e1, Eq, { it = Al.Ast.OptE None; _ }) ->
+      sprintf "%s is absent."
+        (render_expr_with_type env e1)
+    | CmpS (e1, Ne, { it = Al.Ast.OptE None; _ }) ->
+      sprintf "%s is not absent."
+        (render_expr_with_type env e1)
     | CmpS (e1, cmpop, e2) ->
       sprintf "%s is%s %s."
         (render_expr_with_type env e1)
