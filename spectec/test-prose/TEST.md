@@ -17,7 +17,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 
-* :math:`(n, m)` is valid with type :math:`k` if and only if:
+* :math:`({}[~n~..~m~])` is valid with type :math:`k` if and only if:
 
 
    * :math:`n` must be less than or equal to :math:`m`.
@@ -67,7 +67,7 @@ watsup 0.4 generator
       * :math:`{\mathit{memtype}}` is valid.
 
 
-* :math:`(n_{11}, n_{12})` matches :math:`(n_{21}, n_{22})` if and only if:
+* :math:`({}[~n_{11}~..~n_{12}~])` matches :math:`({}[~n_{21}~..~n_{22}~])` if and only if:
 
 
    * :math:`n_{11}` must be greater than or equal to :math:`n_{21}`.
@@ -2257,13 +2257,13 @@ watsup 0.4 generator
 ..............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{refs}~{a^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{refs}~{a^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
 
 #. Let :math:`{i'}` be :math:`{|{a^\ast}|} + n`.
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
+   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~]),\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
 
    #. Return :math:`{\mathit{ti}'}`.
 
@@ -2272,13 +2272,13 @@ watsup 0.4 generator
 ...............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~]),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -2439,11 +2439,11 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}((i, j))`
-.....................................
+:math:`{\mathrm{alloctable}}(({}[~i~..~j~]))`
+.............................................
 
 
-1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -2469,11 +2469,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}((i, j))`
-...................................
+:math:`{\mathrm{allocmem}}(({}[~i~..~j~]))`
+...........................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -2762,7 +2762,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Limits_ok
-- the limits (n, m) is valid with the nat k if and only if:
+- the limits ([ n .. m ]) is valid with the nat k if and only if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
@@ -2796,7 +2796,7 @@ Externtype_ok
     - the memory type memtype is valid.
 
 Limits_sub
-- the limits (n_11, n_12) matches the limits (n_21, n_22) if and only if:
+- the limits ([ n_11 .. n_12 ]) matches the limits ([ n_21 .. n_22 ]) if and only if:
   - n_11 is greater than or equal to n_21.
   - n_12 is less than or equal to n_22.
 
@@ -3908,17 +3908,17 @@ with_meminst x mi
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
 growtable ti n
-1. Let { TYPE: (i, j); REFS: ?(a)*; } be ti.
+1. Let { TYPE: ([ i .. j ]); REFS: ?(a)*; } be ti.
 2. Let i' be (|a*| + n).
 3. If (i' ≤ j), then:
-  a. Let ti' be { TYPE: (i', j); REFS: ?(a)* :: ?()^n; }.
+  a. Let ti' be { TYPE: ([ i' .. j ]); REFS: ?(a)* :: ?()^n; }.
   b. Return ti'.
 
 growmemory mi n
-1. Let { TYPE: (i, j); BYTES: b*; } be mi.
+1. Let { TYPE: ([ i .. j ]); BYTES: b*; } be mi.
 2. Let i' be ((|b*| / (64 · $Ki())) + n).
 3. If (i' ≤ j), then:
-  a. Let mi' be { TYPE: (i', j); BYTES: b* :: 0^(n · (64 · $Ki())); }.
+  a. Let mi' be { TYPE: ([ i' .. j ]); BYTES: b* :: 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
 funcs externaddr_u0*
@@ -3995,8 +3995,8 @@ allocglobals globaltype_u0* val_u1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable (i, j)
-1. Let ti be { TYPE: (i, j); REFS: ?()^i; }.
+alloctable ([ i .. j ])
+1. Let ti be { TYPE: ([ i .. j ]); REFS: ?()^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
@@ -4009,8 +4009,8 @@ alloctables tabletype_u0*
 4. Let ta'* be $alloctables(tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem (i, j)
-1. Let mi be { TYPE: (i, j); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem ([ i .. j ])
+1. Let mi be { TYPE: ([ i .. j ]); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -4157,7 +4157,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 
-* :math:`(n, m)` is valid with type :math:`k` if and only if:
+* :math:`({}[~n~..~m~])` is valid with type :math:`k` if and only if:
 
 
    * :math:`n` must be less than or equal to :math:`m`.
@@ -4229,7 +4229,7 @@ watsup 0.4 generator
       * :math:`t_1` matches :math:`t_2`.
 
 
-* :math:`(n_{11}, n_{12})` matches :math:`(n_{21}, n_{22})` if and only if:
+* :math:`({}[~n_{11}~..~n_{12}~])` matches :math:`({}[~n_{21}~..~n_{22}~])` if and only if:
 
 
    * :math:`n_{11}` must be greater than or equal to :math:`n_{21}`.
@@ -8920,13 +8920,13 @@ watsup 0.4 generator
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
    #. Return :math:`{\mathit{ti}'}`.
 
@@ -8935,13 +8935,13 @@ watsup 0.4 generator
 ...............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -9127,11 +9127,11 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}))`
-......................................................
+:math:`{\mathrm{alloctable}}((({}[~i~..~j~]), {\mathit{rt}}))`
+..............................................................
 
 
-1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -9157,11 +9157,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(((i, j)~\mathsf{page}))`
-...................................................
+:math:`{\mathrm{allocmem}}((({}[~i~..~j~])~\mathsf{page}))`
+...........................................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -9528,7 +9528,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Limits_ok
-- the limits (n, m) is valid with the nat k if and only if:
+- the limits ([ n .. m ]) is valid with the nat k if and only if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
@@ -9575,7 +9575,7 @@ Resulttype_sub
     - the value type t_1 matches the value type t_2.
 
 Limits_sub
-- the limits (n_11, n_12) matches the limits (n_21, n_22) if and only if:
+- the limits ([ n_11 .. n_12 ]) matches the limits ([ n_21 .. n_22 ]) if and only if:
   - n_11 is greater than or equal to n_21.
   - n_12 is less than or equal to n_22.
 
@@ -11954,17 +11954,17 @@ with_data x b*
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 growtable ti n r
-1. Let { TYPE: ((i, j), rt); REFS: r'*; } be ti.
+1. Let { TYPE: (([ i .. j ]), rt); REFS: r'*; } be ti.
 2. Let i' be (|r'*| + n).
 3. If (i' ≤ j), then:
-  a. Let ti' be { TYPE: ((i', j), rt); REFS: r'* :: r^n; }.
+  a. Let ti' be { TYPE: (([ i' .. j ]), rt); REFS: r'* :: r^n; }.
   b. Return ti'.
 
 growmemory mi n
-1. Let { TYPE: ((i, j) PAGE); BYTES: b*; } be mi.
+1. Let { TYPE: (([ i .. j ]) PAGE); BYTES: b*; } be mi.
 2. Let i' be ((|b*| / (64 · $Ki())) + n).
 3. If (i' ≤ j), then:
-  a. Let mi' be { TYPE: ((i', j) PAGE); BYTES: b* :: 0^(n · (64 · $Ki())); }.
+  a. Let mi' be { TYPE: (([ i' .. j ]) PAGE); BYTES: b* :: 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
 blocktype z blocktype_u1
@@ -12053,8 +12053,8 @@ allocglobals globaltype_u0* val_u1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ((i, j), rt)
-1. Let ti be { TYPE: ((i, j), rt); REFS: (REF.NULL rt)^i; }.
+alloctable (([ i .. j ]), rt)
+1. Let ti be { TYPE: (([ i .. j ]), rt); REFS: (REF.NULL rt)^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
@@ -12067,8 +12067,8 @@ alloctables tabletype_u0*
 4. Let ta'* be $alloctables(tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem ((i, j) PAGE)
-1. Let mi be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem (([ i .. j ]) PAGE)
+1. Let mi be { TYPE: (([ i .. j ]) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -12760,7 +12760,7 @@ watsup 0.4 generator
    * :math:`i` must be less than :math:`n`.
 
 
-* :math:`(n, m)` is valid with type :math:`k` if and only if:
+* :math:`({}[~n~..~m~])` is valid with type :math:`k` if and only if:
 
 
    * :math:`n` must be less than or equal to :math:`m`.
@@ -12846,7 +12846,7 @@ watsup 0.4 generator
       * :math:`C{.}\mathsf{locals}{}[x]` must be equal to :math:`(\mathsf{set}, t)`.
 
 
-* :math:`(n_1, m_1)` matches :math:`(n_2, m_2)` if and only if:
+* :math:`({}[~n_1~..~m_1~])` matches :math:`({}[~n_2~..~m_2~])` if and only if:
 
 
    * :math:`n_1` must be greater than or equal to :math:`n_2`.
@@ -21481,13 +21481,13 @@ watsup 0.4 generator
 ........................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
 
 #. If :math:`{|{{r'}^\ast}|} + n` is less than or equal to :math:`j`, then:
 
    a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-   #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+   #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
    #. Return :math:`{\mathit{tableinst}'}`.
 
@@ -21496,13 +21496,13 @@ watsup 0.4 generator
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
 
 #. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n` is less than or equal to :math:`j`, then:
 
    a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{meminst}'}`.
 
@@ -21633,11 +21633,11 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}), {\mathit{ref}})`
-......................................................................
+:math:`{\mathrm{alloctable}}((({}[~i~..~j~]), {\mathit{rt}}), {\mathit{ref}})`
+..............................................................................
 
 
-1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -21669,11 +21669,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(((i, j)~\mathsf{page}))`
-...................................................
+:math:`{\mathrm{allocmem}}((({}[~i~..~j~])~\mathsf{page}))`
+...........................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -22480,7 +22480,7 @@ Deftype_ok
   - i is less than n.
 
 Limits_ok
-- the limits (n, m) is valid with the nat k if and only if:
+- the limits ([ n .. m ]) is valid with the nat k if and only if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
@@ -22533,7 +22533,7 @@ Instrtype_sub
     - C.LOCALS[x] is (SET, t).
 
 Limits_sub
-- the limits (n_1, m_1) matches the limits (n_2, m_2) if and only if:
+- the limits ([ n_1 .. m_1 ]) matches the limits ([ n_2 .. m_2 ]) if and only if:
   - n_1 is greater than or equal to n_2.
   - m_1 is less than or equal to m_2.
 
@@ -26841,17 +26841,17 @@ add_exninst exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
-1. Let { TYPE: ((i, j), rt); REFS: r'*; } be tableinst.
+1. Let { TYPE: (([ i .. j ]), rt); REFS: r'*; } be tableinst.
 2. If ((|r'*| + n) ≤ j), then:
   a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: ((i', j), rt); REFS: r'* :: r^n; }.
+  b. Let tableinst' be { TYPE: (([ i' .. j ]), rt); REFS: r'* :: r^n; }.
   c. Return tableinst'.
 
 growmem meminst n
-1. Let { TYPE: ((i, j) PAGE); BYTES: b*; } be meminst.
+1. Let { TYPE: (([ i .. j ]) PAGE); BYTES: b*; } be meminst.
 2. If (((|b*| / (64 · $Ki())) + n) ≤ j), then:
   a. Let i' be ((|b*| / (64 · $Ki())) + n).
-  b. Let meminst' be { TYPE: ((i', j) PAGE); BYTES: b* :: 0^(n · (64 · $Ki())); }.
+  b. Let meminst' be { TYPE: (([ i' .. j ]) PAGE); BYTES: b* :: 0^(n · (64 · $Ki())); }.
   c. Return meminst'.
 
 blocktype_ z blocktype_u0
@@ -26914,8 +26914,8 @@ allocglobals globaltype_u0* val_u1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ((i, j), rt) ref
-1. Let tableinst be { TYPE: ((i, j), rt); REFS: ref^i; }.
+alloctable (([ i .. j ]), rt) ref
+1. Let tableinst be { TYPE: (([ i .. j ]), rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.
@@ -26931,8 +26931,8 @@ alloctables tabletype_u0* ref_u1*
 7. Let ta'* be $alloctables(tabletype'*, ref'*).
 8. Return [ta] :: ta'*.
 
-allocmem ((i, j) PAGE)
-1. Let meminst be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem (([ i .. j ]) PAGE)
+1. Let meminst be { TYPE: (([ i .. j ]) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append meminst to the s.MEMS.
 4. Return a.

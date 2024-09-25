@@ -192,7 +192,7 @@ let al_to_block_type: value -> block_type = function
   | v -> error_value "block type" v
 
 let al_to_limits (default: int64): value -> int32 limits = function
-  | TupV [ min; max ] ->
+  | CaseV ("[", [ min; max ]) ->
     let max' =
       match al_to_int64 max with
       | i64 when default = i64 -> None
@@ -1266,7 +1266,7 @@ let al_of_limits default limits =
     | None -> al_of_int64 default
   in
 
-  tupV [ al_of_int32 limits.min; max ]
+  CaseV ("[", [ al_of_int32 limits.min; max ]) (* TODO: Something better tan this is needed *)
 
 let al_of_global_type = function
   | GlobalT (mut, vt) -> tupV [ al_of_mut mut; al_of_val_type vt ]

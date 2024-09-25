@@ -78,14 +78,14 @@ let builtin () =
   let tables = [
     "table",
     listV nulls
-    |> create_tableinst (TupV [ TupV [ numV (Z.of_int 10); numV (Z.of_int 20) ]; funcref ]);
+    |> create_tableinst (TupV [ CaseV ("[", [ numV (Z.of_int 10); numV (Z.of_int 20) ]); funcref ]);
   ] in
   (* Builtin memories *)
   let zeros = numV Z.zero |> Array.make 0x10000 in
   let memories = [
     "memory",
     listV zeros
-    |> create_meminst (CaseV ("PAGE", [ TupV [ numV Z.one; numV (Z.of_int 2) ] ]));
+    |> create_meminst (CaseV ("PAGE", [ CaseV ("[", [ numV Z.one; numV (Z.of_int 2) ]) ]));
   ] in
   let tags = [] in
 
