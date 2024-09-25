@@ -553,10 +553,25 @@ and valid_expr env (expr: expr) : unit =
     List.iter (valid_expr env) exprs;
     check_tuple source exprs expr.note;
   | CaseE (op, exprs) ->
+    let is_evalctx_id id =
+      let source = "" $ no_region in
+      let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
+        let atom = mixop |> List.hd |> List.hd in
+        match atom.it with
+        | El.Atom.Atom s -> Some s
+        | _ -> None
+      ) (get_typcases source evalctxT) in
+      List.mem id evalctx_ids
+    in
+    (match op with
+    | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
+      check_case source exprs (TupT [] $ no_region)
+    | _ -> 
     List.iter (valid_expr env) exprs;
     let tcs = get_typcases source expr.note in
     let _binds, typ, _prems = find_case source tcs op in
     check_case source exprs typ;
+)
   | CallE (id, args) ->
     List.iter (valid_arg env) args;
     check_call source id args expr.note;
@@ -632,7 +647,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
   | EnterI (expr1, expr2, il) ->
     valid_expr env expr1;
     valid_expr env expr2;
-    check_context source expr1.note;
+    check_evalctx source expr1.note;
     check_instr source expr2.note;
     valid_instrs env il
   | AssertI expr ->

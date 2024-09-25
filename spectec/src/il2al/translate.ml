@@ -471,26 +471,25 @@ and translate_context_instrs e' =
   | { it = Il.ListE [ctx]; _ } when is_context ctx ->
     (e'', translate_context_rhs ctx)
   | { it = Il.CatE (ve, ie); _ } ->
-    (catE (translate_exp ie, e'') ~note:ie.note, [pushI (translate_exp ve)])
+    (catE (translate_exp ie, e'') ~note:ie.note, [pushI (translate_exp ve |> subst_instr_typ)])
   | { it = Il.ListE [ve; ie]; _ } ->
-    (listE [translate_exp ie; e'] ~note:ie.note, [pushI (translate_exp ve)])
+    (listE [translate_exp ie; e'] ~note:ie.note, [pushI (translate_exp ve |> subst_instr_typ)])
   | instrs ->
     (catE (translate_exp instrs, e'') ~note:instrs.note, [])
 
 and translate_context_rhs exp =
   let at = exp.at in
-  let note = exp.note in
 
   let case = case_of_case exp in
   let atom = case |> List.hd |> List.hd in
   let args = args_of_case exp in
   let case', _ = Lib.List.split_last case in
   let args, instrs = Lib.List.split_last args in
-
   let args' = List.map translate_exp args in
-  let e' = caseE ([[atom]], []) ~at:instrs.at ~note:instrs.note in
+
+  let e' = caseE ([[atom]], []) ~at:instrs.at ~note:instrT in
   let instrs', al = translate_context_instrs e' instrs in
-  let ectx = caseE (case', args') ~at:at ~note:note in
+  let ectx = caseE (case', args') ~at:at ~note:evalctxT in
   [
     enterI (ectx, instrs', al) ~at:at;
   ]
