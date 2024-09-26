@@ -997,7 +997,7 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Push the value :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
 
 #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -3309,7 +3309,7 @@ Step_read/call_addr a
 8. Assert: Due to validation, local_0 is of the case LOCAL*.
 9. Let (LOCAL t)* be local_0*.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
-11. Push the value (FRAME_ n { f }) to the stack.
+11. Push the evaluation context (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/local.get x
@@ -5951,7 +5951,7 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Push the value :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
 
 #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -10531,7 +10531,7 @@ Step_read/call_addr a
 8. Assert: Due to validation, local_0 is of the case LOCAL*.
 9. Let (LOCAL t)* be local_0*.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
-11. Push the value (FRAME_ n { f }) to the stack.
+11. Push the evaluation context (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.func x
@@ -15485,7 +15485,7 @@ watsup 0.4 generator
 
          #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-         #) Push the value :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
+         #) Push the evaluation context :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
 
          #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{m}}{\{}~\epsilon~\})`.
 
@@ -15664,7 +15664,7 @@ watsup 0.4 generator
 
                #. Pop the current :math:`\mathsf{handler}` context from the stack.
 
-               #. Push the value :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+               #. Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
                #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -15704,7 +15704,7 @@ watsup 0.4 generator
 
                   #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-                  #) Push the value :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -15720,7 +15720,7 @@ watsup 0.4 generator
 
                   #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-                  #) Push the value :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -15732,7 +15732,7 @@ watsup 0.4 generator
 
                   #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-                  #) Push the value :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -15764,7 +15764,7 @@ watsup 0.4 generator
 
                   #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-                  #) Push the value :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -15793,7 +15793,7 @@ watsup 0.4 generator
 
 #. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
 
-#. Push the value :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})` to the stack.
 
 #. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -23995,7 +23995,7 @@ Step_read/call_ref yy
       e) Assert: Due to validation, there are at least n values on the top of the stack.
       f) Pop the values val^n from the stack.
       g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
-      h) Push the value (FRAME_ m { f }) to the stack.
+      h) Push the evaluation context (FRAME_ m { f }) to the stack.
       i) Enter instr* with label (LABEL_ m { [] }).
 
 Step_read/return_call x
@@ -24081,7 +24081,7 @@ Step_read/throw_ref
       c) Else if catch_0 is not of the case CATCH_ALL_REF, then:
         1. Let [catch] :: catch'* be catch_u1*.
         2. Pop the current HANDLER_ context from the stack.
-        3. Push the value (HANDLER_ n { catch'* }) to the stack.
+        3. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
         5. Execute the instruction THROW_REF.
       d) Else:
@@ -24101,7 +24101,7 @@ Step_read/throw_ref
         3. Else:
           a. Let [catch] :: catch'* be catch_u1*.
           b. Pop the current HANDLER_ context from the stack.
-          c. Push the value (HANDLER_ n { catch'* }) to the stack.
+          c. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
       d) Else if catch_0 is of the case CATCH_REF, then:
@@ -24109,13 +24109,13 @@ Step_read/throw_ref
         2. If (x ≥ |$tagaddr(z)|), then:
           a. Let [catch] :: catch'* be catch_u1*.
           b. Pop the current HANDLER_ context from the stack.
-          c. Push the value (HANDLER_ n { catch'* }) to the stack.
+          c. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         3. Else if ($exninst(z)[a].TAG is not $tagaddr(z)[x]), then:
           a. Let [catch] :: catch'* be catch_u1*.
           b. Pop the current HANDLER_ context from the stack.
-          c. Push the value (HANDLER_ n { catch'* }) to the stack.
+          c. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         4. Else:
@@ -24130,7 +24130,7 @@ Step_read/throw_ref
       f) Else if catch_0 is not of the case CATCH_ALL_REF, then:
         1. Let [catch] :: catch'* be catch_u1*.
         2. Pop the current HANDLER_ context from the stack.
-        3. Push the value (HANDLER_ n { catch'* }) to the stack.
+        3. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
         5. Execute the instruction THROW_REF.
       g) Else:
@@ -24144,7 +24144,7 @@ Step_read/try_table bt catch* instr*
 2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
-5. Push the value (HANDLER_ n { catch* }) to the stack.
+5. Push the evaluation context (HANDLER_ n { catch* }) to the stack.
 6. Enter val^m :: instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.null (_IDX x)
