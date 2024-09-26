@@ -525,13 +525,28 @@ Relaxed Vector Instructions
 
 Added new *relaxed* vector instructions, which are vector instructions whose behaviour is non-deterministic and implementation-dependent. [#proposal-relaxed]_
 
-* New binary :ref:`vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`, :math:`\K{i16x8.relaxed\_q15mulr\_s}`, :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
+* New binary :ref:`vector instruction <syntax-instr-relaxed>`:
 
-* New ternary :ref:`vector instruction <syntax-instr-relaxed>`: :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`, :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`
+  - :math:`\K{i16x8.relaxed\_q15mulr\_s}`
+  - :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
 
-* New conversion :ref:`vector instructions <syntax-instr-relaxed>`::math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`, :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
+* New ternary :ref:`vector instruction <syntax-instr-relaxed>`:
 
-* New byte reordering :ref:`vector instruction <syntax-instr-relaxed>`: :math:`\K{i8x16.relaxed\_swizzle}`
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`
+  - :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`
+  - :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
+
+* New conversion :ref:`vector instructions <syntax-instr-relaxed>`:
+
+  - :math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`
+  - :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
+
+* New byte reordering :ref:`vector instruction <syntax-instr-relaxed>`:
+
+  - :math:`\K{i8x16.relaxed\_swizzle}`
 
 
 .. index:: determinism, non-determinism, profiles
