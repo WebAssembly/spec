@@ -913,6 +913,20 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
+.. _valid-relaxed_swizzle:
+
+:math:`\K{i8x16.}\RELAXEDSWIZZLE`
+.................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i8x16.}\RELAXEDSWIZZLE : [\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-vec-shuffle:
 
 :math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
@@ -1007,6 +1021,34 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
    }{
      C \vdashinstr \shape\K{.}\vbinop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vternop:
+
+:math:`\shape\K{.}\vternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-relaxed_laneselect:
+
+:math:`\shape\K{.}\RELAXEDLANESELECT`
+.....................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\RELAXEDLANESELECT : [\V128~\V128~\V128] \to [\V128]
    }
 
 
@@ -1105,6 +1147,31 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
    }{
      C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-relaxed_dot:
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s}`
+.......................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s} : [\V128~\V128] \to [\V128]
+   }
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_add\_\_s}`
+..............................................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_add\_\_s} : [\V128~\V128~\V128] \to [\V128]
    }
 
 

@@ -1053,6 +1053,31 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallyreallyreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i16x8.relaxed\_swizzle} &\Rightarrow& \I16X8.\RELAXEDSWIZZLE \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_s} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_u} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_s\_zero} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_u\_zero} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
+     \text{f32x4.relaxed\_madd} &\Rightarrow& \F32X4.\RELAXEDMADD \\ &&|&
+     \text{f32x4.relaxed\_nmadd} &\Rightarrow& \F32X4.\RELAXEDNMADD \\ &&|&
+     \text{f64x2.relaxed\_madd} &\Rightarrow& \F64X2.\RELAXEDMADD \\ &&|&
+     \text{f64x2.relaxed\_nmadd} &\Rightarrow& \F64X2.\RELAXEDNMADD \\ &&|&
+     \text{i8x16.relaxed\_laneselect} &\Rightarrow& \I8X16.\RELAXEDLANESELECT \\ &&|&
+     \text{i16x8.relaxed\_laneselect} &\Rightarrow& \I16X8.\RELAXEDLANESELECT \\ &&|&
+     \text{i32x4.relaxed\_laneselect} &\Rightarrow& \I32X4.\RELAXEDLANESELECT \\ &&|&
+     \text{i64x2.relaxed\_laneselect} &\Rightarrow& \I64X2.\RELAXEDLANESELECT \\ &&|&
+     \text{f32x4.relaxed\_min} &\Rightarrow& \F32X4.\RELAXEDMIN \\ &&|&
+     \text{f32x4.relaxed\_max} &\Rightarrow& \F32X4.\RELAXEDMAX \\ &&|&
+     \text{f64x2.relaxed\_min} &\Rightarrow& \F64X2.\RELAXEDMIN \\ &&|&
+     \text{f64x2.relaxed\_max} &\Rightarrow& \F64X2.\RELAXEDMAX \\ &&|&
+     \text{i16x8.relaxed\_q15mulr\_s} &\Rightarrow& \I16X8.\RELAXEDQ15MULRS \\ &&|&
+     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_s} \\ &&|&
+     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_add\_s} &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s}
+   \end{array}
+
 
 .. index:: ! folded instruction, S-expression
 .. _text-foldedinstr:

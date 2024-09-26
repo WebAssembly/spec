@@ -104,9 +104,15 @@ struct
 
   let index_of x = index_where ((=) x)
 
-  let rec pairwise f = function
+  let rec map3 f xs ys zs =
+    match xs, ys, zs with
+    | [], [], [] -> []
+    | x::xs', y::ys', z::zs' -> f x y z :: map3 f xs' ys' zs'
+    | _ -> raise (Invalid_argument "Lib.List.map3")
+
+  let rec map_pairwise f = function
     | [] -> []
-    | x1::x2::xs -> f x1 x2 :: pairwise f xs
+    | x1::x2::xs -> f x1 x2 :: map_pairwise f xs
     | _ -> failwith "pairwise"
 end
 

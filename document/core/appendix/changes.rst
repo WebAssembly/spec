@@ -518,6 +518,48 @@ Added managed reference types. [#proposal-gc]_
   - |EXTERNCONVERTANY|
 
 
+.. index:: instruction, vector instruction, SIMD
+
+Relaxed Vector Instructions
+...........................
+
+Added new *relaxed* vector instructions,
+whose behaviour is non-deterministic and implementation-dependent. [#proposal-relaxed]_
+
+* New binary :ref:`vector instruction <syntax-instr-relaxed>`:
+
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`
+  - :math:`\K{i16x8.relaxed\_q15mulr\_s}`
+  - :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
+
+* New ternary :ref:`vector instruction <syntax-instr-relaxed>`:
+
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`
+  - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`
+  - :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`
+  - :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
+
+* New conversion :ref:`vector instructions <syntax-instr-relaxed>`:
+
+  - :math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`
+  - :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
+
+* New byte reordering :ref:`vector instruction <syntax-instr-relaxed>`:
+
+  - :math:`\K{i8x16.relaxed\_swizzle}`
+
+
+.. index:: determinism, non-determinism, profiles
+
+Profiles
+........
+
+Introduced the concept of :ref:`profile <profiles>` for specifying language subsets.
+
+* A new profile defining a :ref:`deterministic <profile-deterministic>` mode of execution.
+
+
 .. index:: text format, annotation, custom section, identifier, module, type, function, local, structure field
 
 Custom Annotations
@@ -542,7 +584,7 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
 
 
 .. [#proposal-extconst]
-   https://github.com/WebAssembly/extended-const/blob/main/proposals/extended-const/
+   https://github.com/WebAssembly/spec/blob/main/proposals/extended-const/
 
 .. [#proposal-tailcall]
    https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
@@ -551,13 +593,16 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/
 
 .. [#proposal-multimem]
-   https://github.com/WebAssembly/multi-memory/blob/main/proposals/multi-memory/
+   https://github.com/WebAssembly/spec/blob/main/proposals/multi-memory/
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
 
 .. [#proposal-gc]
    https://github.com/WebAssembly/spec/tree/main/proposals/gc/
+
+.. [#proposal-relaxed]
+   https://github.com/WebAssembly/spec/tree/main/proposals/relaxed-simd/
 
 .. [#proposal-annot]
    https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
