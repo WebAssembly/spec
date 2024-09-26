@@ -523,7 +523,8 @@ Added managed reference types. [#proposal-gc]_
 Relaxed Vector Instructions
 ...........................
 
-Added new *relaxed* vector instructions, which are vector instructions whose behaviour is non-deterministic and implementation-dependent. [#proposal-relaxed]_
+Added new *relaxed* vector instructions,
+whose behaviour is non-deterministic and implementation-dependent. [#proposal-relaxed]_
 
 * New binary :ref:`vector instruction <syntax-instr-relaxed>`:
 
@@ -554,7 +555,7 @@ Added new *relaxed* vector instructions, which are vector instructions whose beh
 Profiles
 ........
 
-Added the notion of :ref:`profile <profiles>` for specifying language subsets.
+Introduced the concept of :ref:`profile <profiles>` for specifying language subsets.
 
 * A new profile defining a :ref:`deterministic <profile-deterministic>` mode of execution.
 
