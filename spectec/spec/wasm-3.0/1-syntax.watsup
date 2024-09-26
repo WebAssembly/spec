@@ -1,4 +1,11 @@
 ;;
+;; Profiles
+;;
+
+def $ND : bool  ;; non-determinism
+
+
+;;
 ;; Lists
 ;;
 
@@ -397,6 +404,13 @@ syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2) hint(macro 
 def $dim(shape) : dim     hint(macro "shdim")
 def $shsize(shape) : nat  hint(show |%|)
 
+syntax half__(shape_1, shape_2)
+syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
+syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
+
+syntax zero__(shape_1, shape_2)
+syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
+
 syntax vvunop hint(macro "%" "V%") = NOT
 syntax vvbinop hint(macro "%" "V%") = AND | ANDNOT | OR | XOR
 syntax vvternop hint(macro "%" "V%") = BITSELECT
@@ -418,7 +432,10 @@ syntax vbinop_(Jnn X M) =
   | Q15MULR_SAT S hint(show Q15MULR_SAT#_#%) -- if $lsizenn(Jnn) = `16
   | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
-syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX | RELAXED_MIN | RELAXED_MAX
+
+syntax vternop_(shape) hint(macro "%" "V%")
+syntax vternop_(Fnn X M) = RELAXED_MADD | RELAXED_NMADD
 
 syntax vtestop_(shape) hint(macro "%" "V%")
 syntax vtestop_(Jnn X M) = ALL_TRUE
@@ -443,16 +460,14 @@ syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
 syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
   | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
     -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+  | RELAXED_TRUNC sx hint(show RELAXED_TRUNC#_#%)
+    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
 syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
   | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
   | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
-syntax half__(shape_1, shape_2)
-syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
-syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
-
-syntax zero__(shape_1, shape_2)
-syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
+syntax vswizzlop_(ishape) hint(macro "%" "V%")
+syntax vswizzlop_(I8 X `16) = SWIZZLE | RELAXED_SWIZZLE
 
 syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
@@ -560,12 +575,12 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VVTESTOP vectype vvtestop           hint(show %.##%)
   | VUNOP shape vunop_(shape)           hint(show ##%.##%)
   | VBINOP shape vbinop_(shape)         hint(show ##%.##%)
+  | VTERNOP shape vternop_(shape)       hint(show ##%.##%)
   | VTESTOP shape vtestop_(shape)       hint(show ##%.##%)
   | VRELOP shape vrelop_(shape)         hint(show ##%.##%)
   | VSHIFTOP ishape vshiftop_(ishape)   hint(show ##%.##%)
   | VBITMASK ishape                     hint(show ##%.BITMASK)   hint(macro "VBITMASK")
-  | VSWIZZLE ishape                     hint(show ##%.SWIZZLE)   hint(macro "VSWIZZLE")
-    -- if ishape = I8 X `16
+  | VSWIZZLOP ishape vswizzlop_(ishape) hint(show ##%.##%)
   | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
     -- if ishape = I8 X `16 /\ |laneidx*| = `16
     ;; TODO(3, rossberg): enable ^16 in type

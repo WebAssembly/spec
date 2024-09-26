@@ -356,15 +356,18 @@ $${grammar: {
 
 .. _binary-vfunop:
 .. _binary-vfbinop:
+.. _binary-vfternop:
 
 $${grammar: {
   Binstr/vec-un-f32x4
   Binstr/vec-bin-f32x4
+  Binstr/vec-tern-f32x4
 }}
 
 $${grammar: {
   Binstr/vec-un-f64x2
   Binstr/vec-bin-f64x2
+  Binstr/vec-tern-f64x2
 }}
 
 $${grammar: {Binstr/vec-cvt}}

@@ -692,6 +692,15 @@ rule Step_pure/vbinop-trap:
   -- if $vbinop_(sh, vbinop, c_1, c_2) = eps
 
 
+rule Step_pure/vternop-val:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VTERNOP sh vternop)  ~>  (VCONST V128 c)
+  -- if c <- $vternop_(sh, vternop, c_1, c_2, c_3)
+
+rule Step_pure/vternop-trap:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VTERNOP sh vternop)  ~>  TRAP
+  -- if $vternop_(sh, vternop, c_1, c_2, c_3) = eps
+
+
 ;; TODO(2, rossberg): introduce $vitestop for uniformity
 rule Step_pure/vtestop-true:
   (VCONST V128 c) (VTESTOP (Jnn X M) ALL_TRUE) ~> (CONST I32 1)
@@ -725,8 +734,9 @@ rule Step_pure/vbitmask:
   -- if $ibits_(32, ci) = $ilt_($lsize(Jnn), S, ci_1, 0)*
 
 
-rule Step_pure/vswizzle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (Pnn X M)) ~> (VCONST V128 c)
+;; TODO(0, rossberg): add relaxed_swizzleop
+rule Step_pure/vswizzlop:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP (Pnn X M) vswizzlop) ~> (VCONST V128 c)
   -- var c' : iN($lsize(Pnn))
   -- if ci* = $lanes_(Pnn X M, c_2)
   -- if c'* = $lanes_(Pnn X M, c_1) 0^(256 - M)

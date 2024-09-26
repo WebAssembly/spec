@@ -34,6 +34,7 @@ def $wrap__(M, N, iN(M)) : iN(N)
 def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend_((%,%))^(%)#((%)))
 def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc_((%,%))^(%)#((%)))
 def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat_((%,%))^(%)#((%)))
+def $relaxed_trunc__(M, N, sx, fN(M)) : iN(N)?       hint(show $relaxed__trunc_((%,%))^(%)#((%)))
 def $demote__(M, N, fN(M)) : fN(N)*
 def $promote__(M, N, fN(M)) : fN(N)*
 def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert_((%,%))^(%)#((%)))
@@ -99,6 +100,8 @@ def $fmin_(N, fN(N), fN(N)) : fN(N)*
 def $fmax_(N, fN(N), fN(N)) : fN(N)*
 def $fpmin_(N, fN(N), fN(N)) : fN(N)*
 def $fpmax_(N, fN(N), fN(N)) : fN(N)*
+def $frelaxed_min_(N, fN(N), fN(N)) : fN(N)*    hint(show $frelaxed__min_(%,%,%))
+def $frelaxed_max_(N, fN(N), fN(N)) : fN(N)*    hint(show $frelaxed__max_(%,%,%))
 def $fcopysign_(N, fN(N), fN(N)) : fN(N)*
 def $fabs_(N, fN(N)) : fN(N)*
 def $fneg_(N, fN(N)) : fN(N)*
@@ -113,6 +116,8 @@ def $flt_(N, fN(N), fN(N)) : u32
 def $fgt_(N, fN(N), fN(N)) : u32
 def $fle_(N, fN(N), fN(N)) : u32
 def $fge_(N, fN(N), fN(N)) : u32
+def $frelaxed_madd_(N, fN(N), fN(N), fN(N)) : fN(N)    hint(show $frelaxed__madd_(%,%,%))
+def $frelaxed_nmadd_(N, fN(N), fN(N), fN(N)) : fN(N)   hint(show $frelaxed__nmadd_(%,%,%))
 
 def $binop_(Inn, ADD, iN_1, iN_2) = $iadd_($sizenn(Inn), iN_1, iN_2)
 def $binop_(Inn, SUB, iN_1, iN_2) = $isub_($sizenn(Inn), iN_1, iN_2)
@@ -230,6 +235,8 @@ def $vunop_(shape, vunop_(shape), vec_(V128)) : vec_(V128)*
     hint(show %2#$_(%1,%3))
 def $vbinop_(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
     hint(show %2#$_(%1,%3,%4))
+def $vternop_(shape, vternop_(shape), vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
+    hint(show %2#$_(%1,%3,%4,%5))
 def $vrelop_(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1,%3,%4))
 def $vcvtop__(shape_1, shape_2, vcvtop__(shape_1, shape_2), lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
@@ -312,6 +319,18 @@ def $vbinop_(Fnn X M, MIN, vN_1, vN_2) = $fvbinop_(Fnn X M, $fmin_, vN_1, vN_2)
 def $vbinop_(Fnn X M, MAX, vN_1, vN_2) = $fvbinop_(Fnn X M, $fmax_, vN_1, vN_2)
 def $vbinop_(Fnn X M, PMIN, vN_1, vN_2) = $fvbinop_(Fnn X M, $fpmin_, vN_1, vN_2)
 def $vbinop_(Fnn X M, PMAX, vN_1, vN_2) = $fvbinop_(Fnn X M, $fpmax_, vN_1, vN_2)
+def $vbinop_(Fnn X M, RELAXED_MIN, vN_1, vN_2) = $fvbinop_(Fnn X M, $frelaxed_min_, vN_1, vN_2)
+def $vbinop_(Fnn X M, RELAXED_MAX, vN_1, vN_2) = $fvbinop_(Fnn X M, $frelaxed_max_, vN_1, vN_2)
+
+def $fvternop_(shape, def $f_(N, fN(N), fN(N), fN(N)) : fN(N)*, vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
+def $fvternop_(Fnn X M, def $f_, vN_1, vN_2, vN_3) = $invlanes_(Fnn X M, c*)*
+    -- if c_1* = $lanes_(Fnn X M, vN_1)
+    -- if c_2* = $lanes_(Fnn X M, vN_2)
+    -- if c_3* = $lanes_(Fnn X M, vN_3)
+    -- if c** = $setproduct_(lane_(Fnn), $f_($sizenn(Fnn), c_1, c_2, c_3)*)
+
+def $vternop_(Fnn X M, RELAXED_MADD, vN_1, vN_2, vN_3) = $fvternop_(Fnn X M, $frelaxed_madd_, vN_1, vN_2, vN_3)
+def $vternop_(Fnn X M, RELAXED_NMADD, vN_1, vN_2, vN_3) = $fvternop_(Fnn X M, $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 def $fvrelop_(shape, def $f_(N, fN(N), fN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 def $fvrelop_(Fnn X M, def $f_, vN_1, vN_2) = $invlanes_(Inn X M, c*)
@@ -333,6 +352,8 @@ def $vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, iN_1) = fN_2
     -- if fN_2 = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1)
 def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, fN_1) = $list_(lane_(Inn_2), iN_2?)
     -- if iN_2? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1)
+def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx, fN_1) = $list_(lane_(Inn_2), iN_2?)
+    -- if iN_2? = $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1)
 def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, fN_1) = fN_2*
     -- if fN_2* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1)
 def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, fN_1) = fN_2*

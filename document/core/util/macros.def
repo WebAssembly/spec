@@ -769,6 +769,7 @@
 .. |vextunop| mathdef:: \xref{syntax/instructions}{syntax-vextunop}{\X{vextunop}}
 .. |vextbinop| mathdef:: \xref{syntax/instructions}{syntax-vextbinop}{\X{vextbinop}}
 .. |vshiftop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vshiftop}}
+.. |vswizzlop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vswizzlop}}
 
 .. |viunop| mathdef:: \xref{syntax/instructions}{syntax-vunop}{\X{viunop}}
 .. |vibinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{vibinop}}
