@@ -234,6 +234,7 @@ let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
+<<<<<<< HEAD
 let type_of_result r =
   let open Types in
   match r.it with
@@ -244,6 +245,8 @@ let type_of_result r =
   | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
   | RefResult (NullPat) -> RefT (Null, ExternHT)
 
+=======
+>>>>>>> upstream/wasm-3.0
 let string_of_num_pat (p : num_pat) =
   match p with
   | NumPat n -> Value.string_of_num n.it
@@ -263,15 +266,41 @@ let string_of_ref_pat (p : ref_pat) =
   | RefTypePat t -> Types.string_of_heap_type t
   | NullPat -> "null"
 
+<<<<<<< HEAD
 let string_of_result r =
+=======
+let rec string_of_result r =
+>>>>>>> upstream/wasm-3.0
   match r.it with
   | NumResult np -> string_of_num_pat np
   | VecResult vp -> string_of_vec_pat vp
   | RefResult rp -> string_of_ref_pat rp
+  | EitherResult rs ->
+    "(" ^ String.concat " | " (List.map string_of_result rs) ^ ")"
 
 let string_of_results = function
   | [r] -> string_of_result r
   | rs -> "[" ^ String.concat " " (List.map string_of_result rs) ^ "]"
+
+let rec type_of_result r =
+  let open Types in
+  match r.it with
+  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
+  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
+  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
+  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
+  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
+  | RefResult (NullPat) -> RefT (Null, ExternHT)
+  | EitherResult rs ->
+    let ts = List.map type_of_result rs in
+    List.fold_left (fun t1 t2 ->
+      if Match.match_val_type [] t1 t2 then t2 else
+      if Match.match_val_type [] t2 t1 then t1 else
+      if Match.(top_of_val_type [] t1 = top_of_val_type [] t2) then
+        Match.top_of_val_type [] t1
+      else
+        BotT  (* should really be Top, but we don't have that :) *)
+    ) (List.hd ts) ts
 
 let print_results rs =
   let ts = List.map type_of_result rs in
@@ -406,18 +435,23 @@ let assert_ref_pat r p =
   | NullPat, Value.NullRef _ -> true
   | _ -> false
 
-let assert_pat v r =
+let rec assert_result v r =
   let open Value in
-  match v, r with
+  match v, r.it with
   | Num n, NumResult np -> assert_num_pat n np
   | Vec v, VecResult vp -> assert_vec_pat v vp
   | Ref r, RefResult rp -> assert_ref_pat r rp
+  | _, EitherResult rs -> List.exists (assert_result v) rs
   | _, _ -> false
 
-let assert_result at got expect =
+let assert_results at got expect =
   if
     List.length got <> List.length expect ||
+<<<<<<< HEAD
     List.exists2 (fun v r -> not (assert_pat v r.it)) got expect
+=======
+    not (List.for_all2 assert_result got expect)
+>>>>>>> upstream/wasm-3.0
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;
@@ -502,8 +536,13 @@ let run_assertion ass =
 
   | AssertReturn (act, rs) ->
     trace ("Asserting return...");
+<<<<<<< HEAD
     let vs = run_action act in
     assert_result ass.at vs rs
+=======
+    let got_vs = run_action act in
+    assert_results ass.at got_vs rs
+>>>>>>> upstream/wasm-3.0
 
   | AssertException act ->
     trace ("Asserting exception...");

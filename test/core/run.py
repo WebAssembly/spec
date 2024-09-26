@@ -33,9 +33,10 @@ sys.argv = sys.argv[:1]
 main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
 # Other test files are in subdirectories
 simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
+relaxed_simd_test_files = glob.glob(os.path.join(inputDir, "relaxed-simd", "*.wast"))
 gc_test_files = glob.glob(os.path.join(inputDir, "gc", "*.wast"))
 multi_memory_test_files = glob.glob(os.path.join(inputDir, "multi-memory", "*.wast"))
-all_test_files = main_test_files + simd_test_files + gc_test_files + multi_memory_test_files
+all_test_files = main_test_files + simd_test_files + relaxed_simd_test_files + gc_test_files + multi_memory_test_files
 
 wasmExec = arguments.wasm
 wasmCommand = wasmExec + " " + arguments.opts

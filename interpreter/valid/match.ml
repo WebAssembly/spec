@@ -26,6 +26,12 @@ and top_of_heap_type c = function
   | VarHT (StatX x) -> top_of_str_type c (expand_def_type (lookup c x))
   | VarHT (RecX _) | BotHT -> assert false
 
+let top_of_val_type c = function
+  | NumT _ as t -> t
+  | VecT _ as t -> t
+  | RefT (_, ht) -> RefT (Null, top_of_heap_type c ht)
+  | BotT -> BotT (* well.. *)
+
 let rec bot_of_str_type c st =
   bot_of_heap_type c (abs_of_str_type c st)
 

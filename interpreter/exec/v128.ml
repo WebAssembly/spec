@@ -191,6 +191,8 @@ sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
+  val fma : t -> t -> t -> t
+  val fnma : t -> t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
   val pmin : t -> t -> t
@@ -233,6 +235,9 @@ struct
   let sub = binop FXX.sub
   let mul = binop FXX.mul
   let div = binop FXX.div
+  let fma x y z =
+    of_lanes (Lib.List.map3 FXX.fma (to_lanes x) (to_lanes y) (to_lanes z))
+  let fnma x y z = fma (unop FXX.neg x) y z
   let min = binop FXX.min
   let max = binop FXX.max
   let pmin = binop (fun x y -> if FXX.lt y x then y else x)
@@ -381,9 +386,20 @@ struct
 
   let extadd ext x y = Int32.add (ext x) (ext y)
   let extadd_pairwise_s x =
-    I16x8.of_lanes (Lib.List.pairwise (extadd ext_s) (I8x16.to_lanes x))
+    I16x8.of_lanes (Lib.List.map_pairwise (extadd ext_s) (I8x16.to_lanes x))
   let extadd_pairwise_u x =
-    I16x8.of_lanes (Lib.List.pairwise (extadd ext_u) (I8x16.to_lanes x))
+    I16x8.of_lanes (Lib.List.map_pairwise (extadd ext_u) (I8x16.to_lanes x))
+
+  let dot_s x y =
+    let xs = I8x16.to_lanes x in
+    let ys = I8x16.to_lanes y in
+    let rec dot xs ys =
+      match xs, ys with
+      | x1::x2::xs', y1::y2::ys' ->
+        Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xs' ys'
+      | [], [] -> []
+      | _, _ -> assert false
+    in I16x8.of_lanes (dot xs ys)
 end
 
 module I32x4_convert =
@@ -418,6 +434,20 @@ struct
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
 
+  let dot_s_accum x y z =
+    let xs = I8x16.to_lanes x in
+    let ys = I8x16.to_lanes y in
+    let rec dot xs ys =
+      match xs, ys with
+      | x1::x2::x3::x4::xs', y1::y2::y3::y4::ys' ->
+        Int32.(add
+          (add (mul x1 y1) (mul x2 y2))
+          (add (mul x3 y3) (mul x4 y4)))
+        :: dot xs' ys'
+      | [], [] -> []
+      | _, _ -> assert false
+    in I32x4.add (I32x4.of_lanes (dot xs ys)) z
+
   let extmul_low_s x y = I32x4.mul (extend_low_s x) (extend_low_s y)
   let extmul_high_s x y = I32x4.mul (extend_high_s x) (extend_high_s y)
   let extmul_low_u x y = I32x4.mul (extend_low_u x) (extend_low_u y)
@@ -425,9 +455,9 @@ struct
 
   let extadd ext x y = Int32.add (ext x) (ext y)
   let extadd_pairwise_s x =
-    I32x4.of_lanes (Lib.List.pairwise (extadd ext_s) (I16x8.to_lanes x))
+    I32x4.of_lanes (Lib.List.map_pairwise (extadd ext_s) (I16x8.to_lanes x))
   let extadd_pairwise_u x =
-    I32x4.of_lanes (Lib.List.pairwise (extadd ext_u) (I16x8.to_lanes x))
+    I32x4.of_lanes (Lib.List.map_pairwise (extadd ext_u) (I16x8.to_lanes x))
 end
 
 module I64x2_convert =

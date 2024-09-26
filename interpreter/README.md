@@ -471,6 +471,7 @@ result_pat:
   ( ref.func )
   ( ref.extern )
   ( ref.<castop> )
+  ( either <result_pat>+ )                   ;; alternative results
 
 num_pat:
   <num>                                      ;; literal result
@@ -574,6 +575,7 @@ result_pat:
   ( ref.func )
   ( ref.extern )
   ( ref.<castop> )
+  ( either <result_pat>+ )                   ;; alternative results
 
 num_pat:
   <value>                                    ;; literal result

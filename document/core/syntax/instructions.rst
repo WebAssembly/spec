@@ -103,10 +103,12 @@ For the other integer instructions, the use of two's complement for the signed i
 .. _syntax-vshiftop:
 .. _syntax-vunop:
 .. _syntax-vbinop:
+.. _syntax-vternop:
 .. _syntax-vextunop:
 .. _syntax-vextbinop:
 .. _syntax-vcvtop:
 .. _syntax-instr-vec:
+.. _syntax-instr-vec-relaxed:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -117,7 +119,7 @@ $${syntax: {lanetype dim shape ishape} half__ zero__ laneidx instr/vec}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop__ vextbinop__ vcvtop__
+  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vshiftop_ vextunop__ vextbinop__ vcvtop__
 }
 
 Vector instructions have a naming convention involving a *shape* prefix that

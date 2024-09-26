@@ -773,6 +773,20 @@ $${rule: Instr_ok/vunop}
 $${rule: Instr_ok/vbinop}
 
 
+.. _valid-vternop:
+
+:math:`\shape\K{.}\vternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-vtestop:
 
 :math:`\shape\K{.}\vtestop`

@@ -7,6 +7,7 @@ Appendix
    :maxdepth: 2
 
    embedding
+   profiles
    implementation
    properties
    algorithm
