@@ -48,6 +48,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: ℤ; url: #ℤ
         text: SameValue; url: sec-samevalue
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
+    text: embedding interface; url: appending/embedding.html
+    text: scope; url: intro/introduction.html#scope
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
@@ -174,7 +176,16 @@ emu-const {
 }
 </style>
 
-This API provides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
+<h2 id="intro">Introduction</h2>
+
+By design, the [=scope=] of the WebAssembly [[WEBASSEMBLY]] core specification does not include a description of how WebAssembly programs interact
+with their surrounding execution environment. Instead it defines an abstract [=embedding interface=] between WebAssembly and its environment,
+(called the *embedder*). It is only through this interface that an embedder interacts with the semantics of WebAssembly, and the embedder
+implements the connection between its host environment and the embedding API.
+This document describes the embedding of WebAssembly into JavaScript [[ECMASCRIPT]] environments, including how WebAssembly modules
+can be constructed and instantiated, how imported and exported functions are called, how data is exchanged, and how errors are handled.
+When the JavaScript environment is itself embedded in a Web browser, the Web API spec describes additional behavior relevant to the Web environment.
+
 
 <h2 id="sample">Sample API Usage</h2>
 

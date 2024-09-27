@@ -76,7 +76,11 @@ spec:fetch; type:dfn; text:get
 spec:webidl; type:dfn; text:resolve
 </pre>
 
+
+<h2 id="intro">Introduction</h2>
 This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
+It describes the integration of WebAssembly into the broader Web platform, for example with
+additional APIs that are implemented by Web user agents but are outside the scope of JavaScript [[ECMA-262]] itself.
 
 <h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
 
