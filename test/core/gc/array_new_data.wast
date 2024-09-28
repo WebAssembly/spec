@@ -51,3 +51,18 @@
 
 ;; Data segments are interpreted as little-endian.
 (assert_return (invoke "array-new-data-little-endian") (i32.const 0xddccbbaa))
+
+(module
+  (type $arr (array (mut i16)))
+
+  (data $d "\00\11\22")
+
+  (func (export "array-new-data-unaligned") (result i32)
+    (array.get_u $arr
+                 (array.new_data $arr $d (i32.const 1) (i32.const 1))
+                 (i32.const 0))
+  )
+)
+
+;; Data inside the segment doesn't need to be aligned to the element size.
+(assert_return (invoke "array-new-data-unaligned") (i32.const 0x2211))
