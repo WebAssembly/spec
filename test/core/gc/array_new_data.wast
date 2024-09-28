@@ -17,6 +17,9 @@
 ;; Out-of-bounds data segment accesses.
 (assert_trap (invoke "array-new-data" (i32.const 0) (i32.const 5)) "out of bounds memory access")
 (assert_trap (invoke "array-new-data" (i32.const 5) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "array-new-data" (i32.const 1) (i32.const 4)) "out of bounds memory access")
+(assert_trap (invoke "array-new-data" (i32.const 4) (i32.const 1)) "out of bounds memory access")
+
 
 (module
   (type $arr (array (mut i8)))
