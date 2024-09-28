@@ -235,8 +235,8 @@ JavaScript.
 
 <h2 id="mediaType">Media-type Registration</h2>
 
-This section will be submitted to the Internet Engineering Steering Group (IESG) for
-review, approval, and registration with IANA.
+The media type `application/wasm` has been registered with the IANA media type database [[IANA-MEDIA-TYPES]],
+with the following <a href="https://www.iana.org/assignments/media-types/application/wasm">registration template</a>:
 
 application/wasm
 
