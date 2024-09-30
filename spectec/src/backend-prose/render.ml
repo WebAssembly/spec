@@ -93,6 +93,11 @@ let al_invcalle_to_al_bine e id nl al =
   in
   elhs, erhs
 
+let render_type_desc t =
+  match Prose_util.extract_desc t with
+  | "" -> None
+  | desc -> Some desc
+
 (* Translation from Al exp to El exp *)
 
 let (let*) = Option.bind
@@ -463,7 +468,8 @@ and render_expr' env expr =
     sprintf "%s is of the case %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    sprintf "the type of %s is %s" se (Il.Print.string_of_typ t)
+    let st = Option.value (render_type_desc t) ~default:(Il.Print.string_of_typ t) in
+    sprintf "the type of %s is %s" se st
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se
@@ -543,6 +549,16 @@ let rec render_stmt env depth stmt =
     | CmpS (e1, Ne, { it = Al.Ast.OptE None; _ }) ->
       sprintf "%s is not absent."
         (render_expr_with_type env e1)
+    | CmpS (e1, cmpop, ({ it = Al.Ast.SubE (id, t); _ } as e2)) when (Il.Print.string_of_typ_name t) = id ->
+      let rhs =
+        match render_type_desc t with
+        | None -> render_expr env e2
+        | Some desc -> desc
+      in
+      sprintf "%s is%s %s."
+        (render_expr_with_type env e1)
+        (render_prose_cmpop cmpop)
+        rhs
     | CmpS (e1, cmpop, e2) ->
       sprintf "%s is%s %s."
         (render_expr_with_type env e1)

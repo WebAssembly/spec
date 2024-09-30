@@ -162,7 +162,7 @@ let transpile_expr =
     >> recover_optional_singleton_constructor
     >> remove_empty_arrow_sub
   in
-  let walk_expr walker expr = 
+  let walk_expr walker expr =
     let expr1 = Al.Walk.base_walker.walk_expr walker expr in
     post_expr expr1
   in
@@ -201,6 +201,7 @@ let rec if_expr_to_instrs e =
         (* ~P \/ Q is equivalent to P -> Q *)
         IfS (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
       | [ CmpS (e1, Eq, e2) ], [ CmpS (e3, Eq, e4) ] when Al.Eq.eq_expr e1 e3 ->
+        (* TODO: Change this not to use a set notation *)
         CondS (memE (e1, listE [e2; e4] ~note:(iterT e2.note List)) ~note:boolT)
       | _ ->
         CondS (exp_to_expr e)]
@@ -327,7 +328,7 @@ let proses_of_rel mk_concl def =
       List.map (fun r -> prose_of_rules (rel_id.it ^ "/" ^ name_of_rule r) mk_concl [r]) rules
     in
 
-    merged_prose :: unmerged_proses  
+    merged_prose :: unmerged_proses
   | _ -> assert false
 
 (** 1. C |- expr : OK *)
