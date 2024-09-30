@@ -18,12 +18,6 @@ Date: now
 
 <pre class='biblio'>
 {
-  "ECMA-262": {
-    "href": "https://tc39.github.io/ecma262",
-    "title": "ECMAScript® Language Specification",
-    "publisher": "ECMA TC39",
-    "status": "Current Editor's Draft"
-  },
   "WEBASSEMBLY": {
     "href": "https://webassembly.github.io/spec/core/",
     "title": "WebAssembly Core Specification",
@@ -40,7 +34,7 @@ Date: now
 </pre>
 
 <pre class="anchors">
-urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
+urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
     type: exception; for: ECMAScript
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
     type: interface
@@ -71,7 +65,7 @@ url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;t
 </pre>
 
 <pre class='link-defaults'>
-spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
+spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:fetch; type:dfn; text:get
 spec:webidl; type:dfn; text:resolve
 </pre>
@@ -80,7 +74,7 @@ spec:webidl; type:dfn; text:resolve
 <h2 id="intro">Introduction</h2>
 This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
 It describes the integration of WebAssembly into the broader Web platform, for example with
-additional APIs that are implemented by Web user agents but are outside the scope of JavaScript [[ECMA-262]] itself.
+additional APIs that are implemented by Web user agents but are outside the scope of JavaScript [[ECMASCRIPT]] itself.
 
 <h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
 

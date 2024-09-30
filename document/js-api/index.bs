@@ -23,6 +23,12 @@ Date: now
     "title": "WebAssembly Core Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
+  },
+  "WASMWEB": {
+    "href": "https://webassembly.github.io/spec/js-api/",
+    "title": "WebAssembly Web API Specification",
+    "publisher": "W3C WebAssembly Community Group",
+    "status": "Draft"
   }
 }
 </pre>
@@ -178,13 +184,11 @@ emu-const {
 
 <h2 id="intro">Introduction</h2>
 
-By design, the [=scope=] of the WebAssembly [[WEBASSEMBLY]] core specification does not include a description of how WebAssembly programs interact
-with their surrounding execution environment. Instead it defines an abstract [=embedding interface=] between WebAssembly and its environment,
-(called the *embedder*). It is only through this interface that an embedder interacts with the semantics of WebAssembly, and the embedder
-implements the connection between its host environment and the embedding API.
-This document describes the embedding of WebAssembly into JavaScript [[ECMASCRIPT]] environments, including how WebAssembly modules
-can be constructed and instantiated, how imported and exported functions are called, how data is exchanged, and how errors are handled.
-When the JavaScript environment is itself embedded in a Web browser, the Web API spec describes additional behavior relevant to the Web environment.
+By design, the [=scope=] of the WebAssembly core specification [[WEBASSEMBLY]] does not include a description of how WebAssembly programs interact with their surrounding execution environment.
+Instead it defines an abstract [=embedding interface=] between WebAssembly and its environment, (called the *embedder*).
+It is only through this interface that an embedder interacts with the semantics of WebAssembly, and the embedder implements the connection between its host environment and the embedding API.
+This document describes the embedding of WebAssembly into JavaScript [[ECMASCRIPT]] environments, including how WebAssembly modules can be constructed and instantiated, how imported and exported functions are called, how data is exchanged, and how errors are handled.
+When the JavaScript environment is itself embedded in a Web browser, the Web API spec [[WASMWEB]] describes additional behavior relevant to the Web environment.
 
 
 <h2 id="sample">Sample API Usage</h2>
