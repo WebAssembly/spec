@@ -234,19 +234,6 @@ let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
-<<<<<<< HEAD
-let type_of_result r =
-  let open Types in
-  match r.it with
-  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
-  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
-  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
-  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
-  | RefResult (NullPat) -> RefT (Null, ExternHT)
-
-=======
->>>>>>> upstream/wasm-3.0
 let string_of_num_pat (p : num_pat) =
   match p with
   | NumPat n -> Value.string_of_num n.it
@@ -266,11 +253,7 @@ let string_of_ref_pat (p : ref_pat) =
   | RefTypePat t -> Types.string_of_heap_type t
   | NullPat -> "null"
 
-<<<<<<< HEAD
-let string_of_result r =
-=======
 let rec string_of_result r =
->>>>>>> upstream/wasm-3.0
   match r.it with
   | NumResult np -> string_of_num_pat np
   | VecResult vp -> string_of_vec_pat vp
@@ -447,11 +430,7 @@ let rec assert_result v r =
 let assert_results at got expect =
   if
     List.length got <> List.length expect ||
-<<<<<<< HEAD
-    List.exists2 (fun v r -> not (assert_pat v r.it)) got expect
-=======
     not (List.for_all2 assert_result got expect)
->>>>>>> upstream/wasm-3.0
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;
@@ -536,13 +515,8 @@ let run_assertion ass =
 
   | AssertReturn (act, rs) ->
     trace ("Asserting return...");
-<<<<<<< HEAD
     let vs = run_action act in
-    assert_result ass.at vs rs
-=======
-    let got_vs = run_action act in
-    assert_results ass.at got_vs rs
->>>>>>> upstream/wasm-3.0
+    assert_results ass.at vs rs
 
   | AssertException act ->
     trace ("Asserting exception...");
