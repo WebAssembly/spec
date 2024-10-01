@@ -2163,11 +2163,11 @@ This is an auxiliary operator for the specification of |RELAXEDDOT|.
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
 
-* Return :math:`\relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), extends_{M,N}), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ]`.
+* Return :math:`\relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ]`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \irelaxeddotmul_{M,N}(i_1, i_2) &=& \relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), extends_{M,N}), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ] \\
+   \irelaxeddotmul_{M,N}(i_1, i_2) &=& \relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ] \\
    \end{array}
 
 .. note::
