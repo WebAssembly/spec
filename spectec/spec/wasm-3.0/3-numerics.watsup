@@ -91,6 +91,7 @@ def $iadd_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $iadd__sat_(%)^(%)#((%
 def $isub_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $isub__sat_(%)^(%)#((%,%)))
 def $iavgr_(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr_(%)^(%)#((%,%)))
 def $iq15mulr_sat_(N, sx, iN(N), iN(N)) : iN(N) hint(show $iq15mulr__sat_(%)^(%)#((%,%)))
+def $irelaxed_q15mulr_sat_(N, sx, iN(N), iN(N)) : iN(N) hint(show $relaxed__iq15mulr__sat_(%)^(%)#((%,%)))
 
 def $fadd_(N, fN(N), fN(N)) : fN(N)*
 def $fsub_(N, fN(N), fN(N)) : fN(N)*
@@ -272,6 +273,7 @@ def $vbinop_(Jnn X M, MIN sx, vN_1, vN_2) = $ivbinopsx_(Jnn X M, $imin_, sx, vN_
 def $vbinop_(Jnn X M, MAX sx, vN_1, vN_2) = $ivbinopsx_(Jnn X M, $imax_, sx, vN_1, vN_2)
 def $vbinop_(Jnn X M, AVGR U, vN_1, vN_2) = $ivbinopsx_(Jnn X M, $iavgr_, U, vN_1, vN_2)
 def $vbinop_(Jnn X M, Q15MULR_SAT S, vN_1, vN_2) = $ivbinopsx_(Jnn X M, $iq15mulr_sat_, S, vN_1, vN_2)
+def $vbinop_(Jnn X M, RELAXED_Q15MULR_SAT S, vN_1, vN_2) = $ivbinopsx_(Jnn X M, $irelaxed_q15mulr_sat_, S, vN_1, vN_2)
 
 def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 def $ivrelop_(Jnn X M, def $f_, vN_1, vN_2) = $invlanes_(Jnn X M, c*)

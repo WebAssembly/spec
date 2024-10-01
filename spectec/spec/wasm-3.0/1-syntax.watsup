@@ -430,6 +430,7 @@ syntax vbinop_(Jnn X M) =
   | MUL                                      -- if $lsizenn(Jnn) >= `16
   | AVGR U hint(show AVGR#_#%)               -- if $lsizenn(Jnn) <= `16
   | Q15MULR_SAT S hint(show Q15MULR_SAT#_#%) -- if $lsizenn(Jnn) = `16
+  | RELAXED_Q15MULR_SAT S hint(show RELAXED_Q15MULR_SAT#_#%) -- if $lsizenn(Jnn) = `16
   | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX | RELAXED_MIN | RELAXED_MAX
