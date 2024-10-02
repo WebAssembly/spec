@@ -20,4 +20,3 @@ jobs:
           # Usually, you want the following set too...
           W3C_BUILD_OVERRIDE: |
             shortName: wasm-js-api
-            specStatus: ED
