@@ -3,7 +3,7 @@ name: specprod-validate
 on:
   pull_request: {}
   push:
-    branches: [main]
+    branches: [main, specprod]
 jobs:
   main:
     name: Build JS API
