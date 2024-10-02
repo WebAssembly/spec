@@ -140,6 +140,11 @@ let listv_nth l n =
   | ListV arr_ref -> Array.get !arr_ref n
   | v -> fail_value "listv_nth" v
 
+let listv_singleton l =
+  match l with
+  | ListV arr_ref when Array.length !arr_ref = 1 -> Array.get !arr_ref 0
+  | v -> fail_value "listv_singleton" v
+
 let strv_access field = function
   | StrV r -> Record.find field r
   | v -> fail_value "strv_access" v

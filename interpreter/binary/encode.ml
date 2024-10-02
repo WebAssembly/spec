@@ -813,7 +813,7 @@ struct
     | VecTernary (V128 (I16x8 V128Op.RelaxedLaneselect)) -> vecop 0x10al
     | VecTernary (V128 (I32x4 V128Op.RelaxedLaneselect)) -> vecop 0x10bl
     | VecTernary (V128 (I64x2 V128Op.RelaxedLaneselect)) -> vecop 0x10cl
-    | VecTernary (V128 (I32x4 V128Op.RelaxedDotAccum)) -> vecop 0x113l
+    | VecTernary (V128 (I32x4 V128Op.RelaxedDotAdd)) -> vecop 0x113l
     | VecTernary (V128 _) ->
       error e.at "illegal ternary vector instruction"
 

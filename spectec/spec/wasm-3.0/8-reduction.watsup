@@ -715,11 +715,6 @@ rule Step_pure/vtestop-false:
 rule Step_pure/vrelop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VRELOP sh vrelop)  ~>  (VCONST V128 c)
   -- if $vrelop_(sh, vrelop, c_1, c_2) = c
-(; TODO(3, rossberg): this should be implemented at the same level as other pointwise ops
-  -- if c'_1* = $lanes_(Lnn X M, c_1)
-  -- if c'_2* = $lanes_(Lnn X M, c_2)
-  -- if c = $invlanes_($IN($lsize(Lnn)) X M, $extend__(1, $lsize(Lnn), S, $vrelop_(Lnn X M, vrelop, c'_1, c'_2))*)
-;)
 
 
 rule Step_pure/vshiftop:
@@ -734,13 +729,20 @@ rule Step_pure/vbitmask:
   -- if $ibits_(32, ci) = $ilt_($lsize(Jnn), S, ci_1, 0)*
 
 
-;; TODO(0, rossberg): add relaxed_swizzleop
-rule Step_pure/vswizzlop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP (Pnn X M) vswizzlop) ~> (VCONST V128 c)
-  -- var c' : iN($lsize(Pnn))
-  -- if ci* = $lanes_(Pnn X M, c_2)
-  -- if c'* = $lanes_(Pnn X M, c_1) 0^(256 - M)
-  -- if c = $invlanes_(Pnn X M, c'*[$(ci*[k])]^(k<M))
+rule Step_pure/vswizzlop-swizzle:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP (I8 X M) SWIZZLE) ~> (VCONST V128 c)
+  -- var c' : iN(8)
+  -- if ci* = $lanes_(I8 X M, c_2)
+  -- if c'* = $lanes_(I8 X M, c_1) 0^(256 - M)
+  -- if c = $invlanes_(I8 X M, c'*[$(ci*[k])]^(k<M))
+
+;; TODO(0, rossberg): add non-determinism
+rule Step_pure/vswizzlop-relaxed_swizzle:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP (I8 X M) RELAXED_SWIZZLE) ~> (VCONST V128 c)
+  -- var c' : iN(8)
+  -- if ci* = $lanes_(I8 X M, c_2)
+  -- if c'* = $lanes_(I8 X M, c_1) 0^(256 - M)
+  -- if c = $invlanes_(I8 X M, c'*[$(ci*[k])]^(k<M))
 
 
 rule Step_pure/vshuffle:
@@ -777,6 +779,11 @@ rule Step_pure/vextunop:
 rule Step_pure/vextbinop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop) ~> (VCONST V128 c)
   -- if $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c
+
+
+rule Step_pure/vextternop:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VEXTTERNOP sh_2 sh_1 vextternop) ~> (VCONST V128 c)
+  -- if $vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c
 
 
 rule Step_pure/vnarrow:

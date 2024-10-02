@@ -179,7 +179,7 @@ sig
   val extend_low_u : t -> t
   val extend_high_u : t -> t
   val dot_s : t -> t -> t
-  val dot_s_accum : t -> t -> t -> t
+  val dot_s_add : t -> t -> t -> t
   val extmul_low_s : t -> t -> t
   val extmul_high_s : t -> t -> t
   val extmul_low_u : t -> t -> t

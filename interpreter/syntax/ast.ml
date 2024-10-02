@@ -67,7 +67,7 @@ struct
               | RelaxedSwizzle | RelaxedQ15MulRS | RelaxedDot
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | RelaxedMin | RelaxedMax
-  type iternop = RelaxedLaneselect | RelaxedDotAccum
+  type iternop = RelaxedLaneselect | RelaxedDotAdd
   type fternop = RelaxedMadd | RelaxedNmadd
   type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type frelop = Eq | Ne | Lt | Le | Gt | Ge

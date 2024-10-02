@@ -109,7 +109,7 @@ let module_ok = function
       in
 
       CaseV ("->", [ externtypes; externidxs ])
-    with _ -> raise Exception.Invalid
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ()))
     )
 
   | vs -> Numerics.error_values "$Module_ok" vs
@@ -129,7 +129,7 @@ let externaddr_type = function
       in
       let extern_type = Construct.al_to_extern_type t in
       boolV (Match.match_extern_type [] externaddr_type extern_type)
-    with _ -> raise Exception.Invalid)
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Externaddr_type" vs
 
 let val_type = function
@@ -138,7 +138,7 @@ let val_type = function
     let val_type = Construct.al_to_val_type t in
     (try
       boolV (Match.match_val_type [] (Value.type_of_value value) val_type)
-    with _ -> raise Exception.Invalid)
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Val_type" vs
 
 let manual_map =

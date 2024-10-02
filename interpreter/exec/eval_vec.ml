@@ -135,7 +135,7 @@ struct
       | I16x8 RelaxedLaneselect -> V128.V1x128.bitselect
       | I32x4 RelaxedLaneselect -> V128.V1x128.bitselect
       | I64x2 RelaxedLaneselect -> V128.V1x128.bitselect
-      | I32x4 RelaxedDotAccum -> V128.I32x4_convert.dot_s_accum
+      | I32x4 RelaxedDotAdd -> V128.I32x4_convert.dot_s_add
       | _ -> assert false
     in fun v1 v2 v3 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2) (of_vec 3 v3))
 

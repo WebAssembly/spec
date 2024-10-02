@@ -1,5 +1,4 @@
 ;; Tests for f32x4.relaxed_madd, f32x4.relaxed_nmadd, f64x2.relaxed_madd, and f64x2.relaxed_nmadd.
-;; `either` comes from https://github.com/WebAssembly/threads.
 
 (module
     (func (export "f32x4.relaxed_madd") (param v128 v128 v128) (result v128) (f32x4.relaxed_madd (local.get 0) (local.get 1) (local.get 2)))

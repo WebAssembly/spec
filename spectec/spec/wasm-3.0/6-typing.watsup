@@ -984,6 +984,9 @@ rule Instr_ok/vextunop:
 rule Instr_ok/vextbinop:
   C |- VEXTBINOP sh_1 sh_2 vextbinop : V128 V128 -> V128
 
+rule Instr_ok/vextternop:
+  C |- VEXTTERNOP sh_1 sh_2 vextternop : V128 V128 V128 -> V128
+
 rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
 

@@ -434,7 +434,7 @@ struct
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
 
-  let dot_s_accum x y z =
+  let dot_s_add x y z =
     let xs = I8x16.to_lanes x in
     let ys = I8x16.to_lanes y in
     let rec dot xs ys =

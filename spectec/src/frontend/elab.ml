@@ -1025,10 +1025,16 @@ and infer_exp' env e : Il.exp' * typ =
     let ps, t, _ = find "definition" env.defs id in
     let as', s = elab_args `Rhs env as_ ps e.at in
     Il.CallE (id, as'), Subst.subst_typ s t
+  | EpsE -> error e.at "cannot infer type of empty sequence"
   | SeqE [] ->  (* empty tuples *)
     Il.TupE [], TupT [] $ e.at
-  | EpsE -> error e.at "cannot infer type of empty sequence"
-  | SeqE _ -> error e.at "cannot infer type of expression sequence"
+  | SeqE es ->
+    let es', ts = List.split (List.map (infer_exp env) es) in
+    let t = List.hd ts in
+    if List.for_all (equiv_typ env t) (List.tl ts) then
+      Il.ListE es', IterT (t, List) $ e.at
+    else
+      error e.at "cannot infer type of expression sequence"
   | InfixE _ -> error e.at "cannot infer type of infix expression"
   | BrackE _ -> error e.at "cannot infer type of bracket expression"
   | IterE (e1, iter) ->

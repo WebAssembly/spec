@@ -1,4 +1,4 @@
-exception Invalid
+exception Invalid of exn * Printexc.raw_backtrace
 exception Trap
 exception Throw
 exception OutOfMemory

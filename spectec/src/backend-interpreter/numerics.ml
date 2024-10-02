@@ -40,6 +40,41 @@ let catch_ixx_exception f = try f() |> someV with
   | Ixx.Overflow
   | Ixx.InvalidConversion -> noneV
 
+
+let profile name b : numerics =
+  {
+    name;
+    f =
+      (function
+      | [] -> al_of_bool b
+      | vs -> error_values name vs
+      )
+  }
+
+let profile_nd = profile "ND" false
+
+
+let relaxed name i : numerics =
+  {
+    name;
+    f =
+      (function
+      | [] -> al_of_int i
+      | vs -> error_values name vs
+      )
+  }
+
+let r_fmadd = relaxed "R_fmadd" 0
+let r_fmin = relaxed "R_fmin" 0
+let r_fmax = relaxed "R_fmax" 0
+let r_idot = relaxed "R_idot" 0
+let r_iq15mulr = relaxed "R_iq15mulr" 0
+let r_trunc_u = relaxed "R_trunc_u" 0
+let r_trunc_s = relaxed "R_trunc_s" 0
+let r_swizzle = relaxed "R_swizzle" 0
+let r_laneselect = relaxed "R_laneselect" 0
+
+
 let signed : numerics =
   {
     name = "signed";
@@ -480,8 +515,20 @@ let iq15mulr_sat : numerics =
       | vs -> error_values "iq15mulr_sat" vs
       );
   }
+let irelaxed_q15mulr : numerics =
+  {
+    name = "irelaxed_q15mulr";
+    f =
+      (function
+      | [ NumV _ as z; sx; NumV _ as m; NumV _ as n ] ->
+        iq15mulr_sat.f [z; sx; m; n]  (* use deterministic behaviour *)
+      | vs -> error_values "irelaxed_q15mulr" vs
+      );
+  }
 
 let list_f f x = f x |> singleton
+let unlist_f f x = f x |> listv_singleton
+
 let fadd : numerics =
   {
     name = "fadd";
@@ -742,6 +789,47 @@ let fpmax : numerics =
       | vs -> error_values "fpmax" vs
       );
   }
+let frelaxed_min : numerics =
+  {
+    name = "frelaxed_min";
+    f =
+      (function
+      | [ NumV _ as z; CaseV _ as f1; CaseV _ as f2; ] ->
+        fmin.f [ z; f1; f2 ]  (* use deterministic behaviour *)
+      | vs -> error_values "frelaxed_min" vs
+      );
+  }
+let frelaxed_max : numerics =
+  {
+    name = "frelaxed_max";
+    f =
+      (function
+      | [ NumV _ as z; CaseV _ as f1; CaseV _ as f2; ] ->
+        fmax.f [ z; f1; f2 ]  (* use deterministic behaviour *)
+      | vs -> error_values "frelaxed_max" vs
+      );
+  }
+
+let frelaxed_madd : numerics =
+  {
+    name = "frelaxed_madd";
+    f =
+      (function
+      | [ NumV _ as z; CaseV _ as f1; CaseV _ as f2; CaseV _ as f3 ] ->
+        fadd.f [ z; unlist_f fmul.f [ z; f1; f2 ]; f3 ]  (* use deterministic behaviour *)
+      | vs -> error_values "frelaxed_madd" vs
+      );
+  }
+let frelaxed_nmadd : numerics =
+  {
+    name = "frelaxed_nmadd";
+    f =
+      (function
+      | [ NumV _ as z; CaseV _ as f1; CaseV _ as f2; CaseV _ as f3 ] ->
+        frelaxed_madd.f [ z; unlist_f fneg.f [ z; f1 ]; f2; f3 ]  (* use deterministic behaviour *)
+      | vs -> error_values "frelaxed_nmadd" vs
+      );
+  }
 
 let extend : numerics =
   {
@@ -803,6 +891,17 @@ let trunc_sat : numerics =
       | [ NumV m; NumV n; CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
         (fun _ -> i |> al_to_float64 |> I64_convert.trunc_sat_f64_s |> al_of_int64) |> catch_ixx_exception
       | vs -> error_values "trunc_sat" vs
+      );
+  }
+
+let relaxed_trunc : numerics =
+  {
+    name = "relaxed_trunc";
+    f =
+      (function
+      | [ NumV _ as m; NumV _ as n; sx; CaseV _ as i ] ->
+        trunc_sat.f [m; n; sx; i]  (* use deterministic behaviour *)
+      | vs -> error_values "relaxed_trunc" vs
       );
   }
 
@@ -1148,6 +1247,16 @@ let inverse_of_concatn : numerics =
   }
 
 let numerics_list : numerics list = [
+  profile_nd;
+  r_fmadd;
+  r_fmin;
+  r_fmax;
+  r_idot;
+  r_iq15mulr;
+  r_trunc_u;
+  r_trunc_s;
+  r_swizzle;
+  r_laneselect;
   ibytes;
   inverse_of_ibytes;
   nbytes;
@@ -1196,6 +1305,7 @@ let numerics_list : numerics list = [
   isub_sat;
   iavgr;
   iq15mulr_sat;
+  irelaxed_q15mulr;
   fadd;
   fsub;
   fmul;
@@ -1218,10 +1328,15 @@ let numerics_list : numerics list = [
   fge;
   fpmin;
   fpmax;
+  frelaxed_min;
+  frelaxed_max;
+  frelaxed_madd;
+  frelaxed_nmadd;
   extend;
   wrap;
   trunc;
   trunc_sat;
+  relaxed_trunc;
   narrow;
   promote;
   demote;
