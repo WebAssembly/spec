@@ -1335,8 +1335,8 @@ The following sections provide an overview of what has changed.</p>
 Multiple values can be returned from WebAssembly functions into JavaScript as an [=Array=] object.
 
 <h4 class="no-toc heading settled">BigInt Integration</h4>
-Wasm [=i64=] values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as [=BigInt=] objects.
+WebAssembly [=i64=] values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as [=BigInt=] objects.
 
 <h4 class="no-toc heading settled">Reference types</h4>
-References to JavaScript objects can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as [=externref=] values.
+JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as [=externref=] values.
 Multiple tables can be exported and imported to and from JavaScript.
