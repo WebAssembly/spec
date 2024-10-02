@@ -303,3 +303,15 @@ application/wasm
  <dt>Author/Change Controller:</dt>
  <dd>W3C</dd>
 </dl></dd>
+
+
+<h2 id="change-history">Change History</h2>
+
+<p><em>This section is non-normative.</em></p>
+
+<p>Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
+The following sections provide an overview of what has changed.</p>
+
+<h3 id="release-20">Release 2.0</h3>
+<h4 class="no-toc heading settled">Media-type Registraton Completed</h4>
+The registration for the `application/wasm` media type has been successfully completed.

@@ -53,6 +53,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: 𝔽; url: #𝔽
         text: ℤ; url: #ℤ
         text: SameValue; url: sec-samevalue
+        text: Array; url: sec-array-exotic-objects
+        text: BigInt; url: sec-ecmascript-language-types-bigint-type
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     text: embedding interface; url: appending/embedding.html
     text: scope; url: intro/introduction.html#scope
@@ -1319,3 +1321,22 @@ In practice, an implementation may run out of resources for valid modules below 
 <p><em>This section is non-normative.</em></p>
 
 This document defines a host environment for WebAssembly. It enables a WebAssembly instance to [=import=] JavaScript objects and functions from an [=read the imports|import object=], but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bound to the same constraints as JavaScript.
+
+<h2 id="change-history">Change History</h2>
+
+<p><em>This section is non-normative.</em></p>
+
+<p>Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
+The following sections provide an overview of what has changed.</p>
+
+<h3 id="release-20">Release 2.0</h3>
+
+<h4 class="no-toc heading settled">Multiple Values</h4>
+Multiple values can be returned from WebAssembly functions into JavaScript as an [=Array=] object.
+
+<h4 class="no-toc heading settled">BigInt Integration</h4>
+WebAssembly [=i64=] values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as [=BigInt=] objects.
+
+<h4 class="no-toc heading settled">Reference types</h4>
+JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as [=externref=] values.
+Multiple tables can be exported and imported to and from JavaScript.
