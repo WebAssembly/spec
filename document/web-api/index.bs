@@ -313,5 +313,5 @@ application/wasm
 The following sections provide an overview of what has changed.</p>
 
 <h3 id="release-20">Release 2.0</h3>
-<h4 class="no-toc heading settled">Media-type Registraton Completed</h4>
+<h4 id="changes-registration" class="no-toc heading settled">Media-type Registraton Completed</h4>
 The registration for the `application/wasm` media type has been successfully completed.
