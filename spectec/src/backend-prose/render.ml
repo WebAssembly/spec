@@ -513,18 +513,19 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
-let render_type_visit = ref []
-let init_render_type () = render_type_visit := []
-let render_expr_with_type env e =
+let render_type_visit = ref Map.empty
+let init_render_type () = render_type_visit := Map.empty
+let render_expr_with_type ?(always = false) env e =
   let s = render_expr env e in
-  if List.mem s !render_type_visit then s else (
-    render_type_visit := s :: !render_type_visit;
+  match (Map.find_opt s !render_type_visit) with
+  | Some t -> if always && t <> "" then "the " ^ t ^ " " ^ s else s
+  | None ->
     let t = Prose_util.extract_desc e.note in
+    render_type_visit := Map.add s t !render_type_visit;
     if t = "" then
       render_expr env e
     else
-      "the " ^ t ^ " " ^ render_expr env e
-  )
+      "the " ^ t ^ " " ^ s
 
 (* Instructions *)
 
@@ -574,8 +575,8 @@ let rec render_stmt env depth stmt =
         (render_expr_with_type env e1)
     | MatchesS (e1, e2) ->
       sprintf "%s matches %s."
-        (render_expr_with_type env e1)
-        (render_expr_with_type env e2)
+        (render_expr_with_type env e1 ~always:true)
+        (render_expr_with_type env e2 ~always:true)
     | IsConstS (c_opt, e) ->
       sprintf "%s%s is const."
         (render_opt "under the context " (render_expr_with_type env) ", " c_opt)
