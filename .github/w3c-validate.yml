@@ -1,0 +1,56 @@
+name: Validate spec
+
+on:
+  pull_request: {}
+  push:
+    branches: [ main, specprod ]
+    paths: [ .github/**, document/** ]
+
+  # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
+  # or REST API. THe w3c-status options correspond to the valid options for
+  # Bikeshed's --md-status flag, and refer to the W3C rec-track document
+  # stages described in https://www.w3.org/policies/process/#maturity-stages
+  # (Editor's Draft, Working Draft, Candidiate Recommendation Draft, and
+  # Candidate Recommendation Snapshot).
+  workflow_dispatch:
+    inputs:
+      w3c-status:
+        required: true
+        type: choice
+        description: W3C Document Status
+        options:
+          - ED
+          - WD
+          - CRD
+          - CR
+
+jobs:
+  w3c-validate:
+    if: github.repository == 'dschuff/spec'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Setup Bikeshed
+        run: pip install bikeshed && bikeshed update
+      - name: Setup TexLive
+        run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Setup Sphinx
+        run: pip install six && pip install sphinx==5.1.0
+      - name: Publish all specs to their https://www.w3.org/TR/ URLs
+        run: cd js-api && make -e WD-echidna-CI
+        env:
+          W3C_STATUS: ${{ github.event_name == 'push' && 'WD' || inputs.w3c-status }}
+          W3C_USERNAME: ${{ secrets.W3C_USER }}
+          W3C_PASSWORD: ${{ secrets.W3C_PWD }}
+          ECHIDNA_DRYRUN: true
+          #W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
+          #W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
+          #W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
