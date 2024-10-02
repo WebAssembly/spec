@@ -161,8 +161,12 @@ and al_to_el_expr expr =
   let exp' =
     match expr.it with
     | Al.Ast.NumE i ->
-      let eli = El.Ast.NatE (El.Ast.DecOp, i) in
-      Some eli
+      let natop = 
+        match expr.note.it with
+        | Il.Ast.VarT (id, []) when id.it = "byte" -> El.Ast.HexOp
+        | _ -> El.Ast.DecOp
+      in
+      Some (El.Ast.NatE (natop, i))
     | Al.Ast.UnE (op, e) ->
       let* elop = al_to_el_unop op in
       let* ele = al_to_el_expr e in

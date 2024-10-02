@@ -209,7 +209,7 @@ let preprocess_def (def: def) : def =
   | GramD (id, ps, t, prods) ->
     Al.Valid.il_env := Env.bind_gram !Al.Valid.il_env id (ps, t, prods); def'
   | RecD _ -> assert (false);
-  | HintD _ -> def'
+  | HintD hintdef -> hintdefs := hintdef :: !hintdefs; def'
 
 let flatten_rec def =
   match def.it with

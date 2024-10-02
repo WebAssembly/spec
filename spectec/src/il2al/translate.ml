@@ -285,7 +285,7 @@ and translate_exp exp =
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     (* TODO: type *)
-    | [ []; [] ], [ e1 ] -> translate_exp e1
+    | [ []; [] ], [ e1 ] -> { (translate_exp e1) with note=note }
     | [ []; []; [] ], [ e1; e2 ]
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ]
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
@@ -501,10 +501,11 @@ and translate_context_rhs exp =
 let lhs_id_ref = ref 0
 (* let lhs_prefix = "y_" *)
 let init_lhs_id () = lhs_id_ref := 0
-let get_lhs_name e =
+let get_lhs_var_expr e =
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
-  varE (typ_to_var_name e.note ^ "_" ^ string_of_int lhs_id) ~note:e.note
+  let exp = Il2al_util.typ_to_var_exp e.note ~post_fix:("_" ^ string_of_int lhs_id) in
+  { (translate_exp exp) with note = e.note}
 
 
 (* Helper functions *)
@@ -517,16 +518,8 @@ let extract_non_names =
   List.fold_left_map (fun acc e ->
     if contains_name e then acc, e
     else
-      let fresh = get_lhs_name e in
-      let name = match fresh.it with
-        | VarE id -> id
-        | _ -> assert false
-      in
-      match e.it with
-      | IterE (_, (iter, _)) ->
-        let fresh' = iter_var name iter e.note in
-        [ e, fresh' ] @ acc, fresh'
-      | _ -> [ e, fresh ] @ acc, fresh
+      let fresh = get_lhs_var_expr e in
+      [ e, fresh ] @ acc, fresh
   ) []
 
 let contains_diff target_ns e =
@@ -549,7 +542,7 @@ let handle_partial_bindings lhs rhs ids =
       if not (contains_diff target_ns e) then
         e
       else (
-        let new_e = get_lhs_name e in
+        let new_e = get_lhs_var_expr e in
         conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % boolT ];
         new_e
       )
@@ -676,15 +669,23 @@ and handle_call_lhs lhs rhs free_ids =
           )
     in
 
-    let base_typ, map_iters =  get_base_typ_and_iters lhs.note rhs.note in
-    let var_name = typ_to_var_name base_typ in
-    let var_expr = VarE var_name $$ no_region % base_typ in
+    let base_typ, map_iters = get_base_typ_and_iters lhs.note rhs.note in
+    let var_expr = Il2al_util.typ_to_var_exp base_typ |> translate_exp in
+    let rec name_of_var_expr e = match e.it with
+      | VarE x -> x
+      | IterE (e', (iter, _)) ->
+        let x = name_of_var_expr e' in
+        x ^ Print.string_of_iter iter
+      | _ -> assert false
+    in
     let to_iter_expr e =
       List.fold_right
         (fun iter (e, ex) ->
           let x, ex' =
             match ex.it with
-            | VarE x -> x, {ex with it = VarE (x ^ Il.Print.string_of_iter iter)}
+            | VarE _ | IterE _ ->
+              let x = name_of_var_expr ex in
+              x, {ex with it = VarE (x ^ Il.Print.string_of_iter iter)}
             | _ -> assert false
           in
           let iter_typ = Il.IterT (e.note, iter) $ no_region in
@@ -697,7 +698,8 @@ and handle_call_lhs lhs rhs free_ids =
     let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs var_expr free_ids in
     (* Introduce new variable for map *)
     let let_instr = letI (to_iter_expr var_expr, rhs) in
-    let_instr :: handle_special_lhs new_lhs (to_iter_expr new_rhs) free_ids
+    let new_rhs = to_iter_expr new_rhs in
+    let_instr :: handle_special_lhs new_lhs new_rhs free_ids
 
 and handle_iter_lhs lhs rhs free_ids =
 
@@ -831,7 +833,7 @@ and handle_special_lhs lhs rhs free_ids =
           [] );
      ]
   | OptE (Some e) ->
-    let fresh = get_lhs_name e in
+    let fresh = get_lhs_var_expr e in
     [
       ifI
         ( isDefinedE rhs ~note:boolT,

@@ -1241,15 +1241,15 @@ watsup 0.4 generator
 #. Return :math:`w`.
 
 
-:math:`{\mathrm{concat}}({X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...........................................................................
+:math:`{\mathrm{concat}}({{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+..................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{w^\ast}~{\mathrm{concat}}({{{w'}^\ast}^\ast})`.
 
@@ -2278,7 +2278,7 @@ watsup 0.4 generator
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({i'}, j),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -2473,7 +2473,7 @@ watsup 0.4 generator
 ...................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -2542,19 +2542,19 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^{n_{\mathit{mem}}}}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^{n_{\mathit{mem}}}}`.
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^{n_{\mathit{table}}}}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^{n_{\mathit{table}}}}`.
+#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^{n_{\mathit{global}}}}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^{n_{\mathit{global}}}}`.
+#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
@@ -2572,36 +2572,36 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast}` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast}` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast}` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast}` is :math:`{{\mathit{ma}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...............................................................................................................................................................................................................
+:math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+......................................................................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}|}` is greater than or equal to :math:`1`.
 
-#. Let :math:`{a^\ast}~{{{a'}^\ast}^\ast}` be :math:`{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+#. Let :math:`{a^\ast}~{{{a'}^\ast}^\ast}` be :math:`{{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -2614,17 +2614,17 @@ watsup 0.4 generator
 #. Return.
 
 
-:math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...........................................................................................................................................................................................................
+:math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+..................................................................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}|}` is greater than or equal to :math:`1`.
 
-#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -3425,10 +3425,10 @@ list_ X X_u0?
 2. Let ?(w) be X_u0?.
 3. Return [w].
 
-concat_ X X_u0*
-1. If (X_u0* is []), then:
+concat_ X X_u0**
+1. If (X_u0** is []), then:
   a. Return [].
-2. Let [w*] :: w'** be X_u0*.
+2. Let [w*] :: w'** be X_u0**.
 3. Return w* :: $concat_(X, w'**).
 
 signif N_u0
@@ -4043,13 +4043,13 @@ allocmodule module externaddr* val*
 3. Let ma_ex* be $mems(externaddr*).
 4. Let ta_ex* be $tables(externaddr*).
 5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem* data* start? export*) be module.
-7. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
-8. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
-9. Assert: Due to validation, table_2 is of the case TABLE^n_table.
-10. Let (TABLE tabletype)^n_table be table_2^n_table.
-11. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
-12. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+6. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem* data* start? export*) be module.
+7. Assert: Due to validation, mem_3 is of the case MEMORY*.
+8. Let (MEMORY memtype)^n_mem be mem_3*.
+9. Assert: Due to validation, table_2 is of the case TABLE*.
+10. Let (TABLE tabletype)^n_table be table_2*.
+11. Assert: Due to validation, global_1 is of the case GLOBAL*.
+12. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
 13. Assert: Due to validation, type_0 is of the case TYPE*.
 14. Let (TYPE ft)* be type_0*.
 15. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
@@ -4058,32 +4058,32 @@ allocmodule module externaddr* val*
 18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
 19. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
 20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi*; }.
-21. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
-22. Assert: Due to validation, (funcaddr_0 is fa*).
-23. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
-24. Assert: Due to validation, (globaladdr_0 is ga*).
-25. Let tableaddr_0 be $alloctables(tabletype^n_table).
-26. Assert: Due to validation, (tableaddr_0 is ta*).
-27. Let memaddr_0 be $allocmems(memtype^n_mem).
-28. Assert: Due to validation, (memaddr_0 is ma*).
+21. Let funcaddr_0* be $allocfuncs(moduleinst, func^n_func).
+22. Assert: Due to validation, (funcaddr_0* is fa*).
+23. Let globaladdr_0* be $allocglobals(globaltype^n_global, val*).
+24. Assert: Due to validation, (globaladdr_0* is ga*).
+25. Let tableaddr_0* be $alloctables(tabletype^n_table).
+26. Assert: Due to validation, (tableaddr_0* is ta*).
+27. Let memaddr_0* be $allocmems(memtype^n_mem).
+28. Assert: Due to validation, (memaddr_0* is ma*).
 29. Return moduleinst.
 
-initelem moduleinst u32_u0* funcaddr_u1*
-1. If ((u32_u0* is []) and (funcaddr_u1* is [])), then:
+initelem moduleinst u32_u0* funcaddr_u1**
+1. If ((u32_u0* is []) and (funcaddr_u1** is [])), then:
   a. Return.
-2. Assert: Due to validation, (|funcaddr_u1*| ≥ 1).
-3. Let [a*] :: a'** be funcaddr_u1*.
+2. Assert: Due to validation, (|funcaddr_u1**| ≥ 1).
+3. Let [a*] :: a'** be funcaddr_u1**.
 4. Assert: Due to validation, (|u32_u0*| ≥ 1).
 5. Let [i] :: i'* be u32_u0*.
 6. Replace s.TABLES[moduleinst.TABLES[0]].REFS[i : |a*|] with ?(a)*.
 7. Perform $initelem(moduleinst, i'*, a'**).
 8. Return.
 
-initdata moduleinst u32_u0* byte_u1*
-1. If ((u32_u0* is []) and (byte_u1* is [])), then:
+initdata moduleinst u32_u0* byte_u1**
+1. If ((u32_u0* is []) and (byte_u1** is [])), then:
   a. Return.
-2. Assert: Due to validation, (|byte_u1*| ≥ 1).
-3. Let [b*] :: b'** be byte_u1*.
+2. Assert: Due to validation, (|byte_u1**| ≥ 1).
+3. Let [b*] :: b'** be byte_u1**.
 4. Assert: Due to validation, (|u32_u0*| ≥ 1).
 5. Let [i] :: i'* be u32_u0*.
 6. Replace s.MEMS[moduleinst.MEMS[0]].BYTES[i : |b*|] with b*.
@@ -4320,16 +4320,16 @@ watsup 0.4 generator
 * :math:`\mathsf{drop}` is valid with type :math:`(t~\rightarrow~\epsilon)`.
 
 
-* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)` if and only if:
+* :math:`({({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)` if and only if:
 
 
    * Either:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`t`.
+      * :math:`{({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})^?}` must be equal to :math:`t`.
 
    * Or:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})^?}` must be equal to :math:`\epsilon`.
 
       * :math:`t` matches :math:`{t'}`.
 
@@ -6772,28 +6772,28 @@ watsup 0.4 generator
 #. Return :math:`w`.
 
 
-:math:`{\mathrm{concat}}({X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...........................................................................
+:math:`{\mathrm{concat}}({{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+..................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{w^\ast}~{\mathrm{concat}}({{{w'}^\ast}^\ast})`.
 
 
-:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...................................................................................................................................
+:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+..........................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`w_1~{{w'}^\ast}~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {{w^\ast}^\ast})`.
 
@@ -6811,15 +6811,15 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {{w^\ast}^\ast})~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}({{w'}^\ast}, {{w^\ast}^\ast})`.
 
 
-:math:`\Large\times~{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`
-.....................................................................
+:math:`\Large\times~{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`
+............................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}({w_1^\ast}, \Large\times~{{w^\ast}^\ast})`.
 
@@ -7025,15 +7025,15 @@ watsup 0.4 generator
 1. Return :math:`{|{\mathsf{i}}{n}|} \cdot N`.
 
 
-:math:`{\mathrm{concat}}({{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.........................................................................................
+:math:`{\mathrm{concat}}({{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+................................................................................................
 
 
-1. If :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{b^\ast}~{\mathrm{concat}}({{{b'}^\ast}^\ast})`.
 
@@ -8941,7 +8941,7 @@ watsup 0.4 generator
 
 #. If :math:`{i'}` is less than or equal to :math:`j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -8956,11 +8956,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case , then:
 
-   a. Let :math:`{\mathit{valtype}}_0` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   a. Let :math:`{{\mathit{valtype}}_0^?}` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{valtype}}_0` is defined, then:
+   #. If :math:`{{\mathit{valtype}}_0^?}` is defined, then:
 
-      1) Let :math:`t` be :math:`{\mathit{valtype}}_0`.
+      1) Let :math:`t` be :math:`{{\mathit{valtype}}_0^?}`.
 
       #) Return :math:`(\epsilon~\rightarrow~t)`.
 
@@ -9161,7 +9161,7 @@ watsup 0.4 generator
 ...................................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -9200,17 +9200,17 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}({{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...............................................................................................................................................................
+:math:`{\mathrm{allocelems}}({{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+......................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}|}` is greater than or equal to :math:`1`.
 
-#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -9236,15 +9236,15 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}({{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
+:math:`{\mathrm{allocdatas}}({{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+....................................................................................................
 
 
-1. If :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}({{\mathit{byte}}^\ast})`.
 
@@ -9296,27 +9296,27 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}_4^{n_{\mathit{elem}}}}~{{\mathit{data}}_5^{n_{\mathit{data}}}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}_4^\ast}~{{\mathit{data}}_5^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}}_5)^{n_{\mathit{data}}}}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{data}}_5)^\ast}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
 
-#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^{n_{\mathit{data}}}}`.
+#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}}_4)^{n_{\mathit{elem}}}}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{elem}}_4)^\ast}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^{n_{\mathit{elem}}}}`.
+#. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^{n_{\mathit{mem}}}}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^{n_{\mathit{mem}}}}`.
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^{n_{\mathit{table}}}}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^{n_{\mathit{table}}}}`.
+#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^{n_{\mathit{global}}}}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^{n_{\mathit{global}}}}`.
+#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
@@ -9338,29 +9338,29 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast}` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast}` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast}` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast}` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{\mathit{elemaddr}}_0` be :math:`{\mathrm{allocelems}}({{\mathit{rt}}^{n_{\mathit{elem}}}}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{\mathrm{allocelems}}({{\mathit{rt}}^{n_{\mathit{elem}}}}, {{{\mathit{ref}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemaddr}}_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{elemaddr}}_0^\ast}` is :math:`{{\mathit{ea}}^\ast}`.
 
-#. Let :math:`{\mathit{dataaddr}}_0` be :math:`{\mathrm{allocdatas}}({({{\mathit{byte}}^\ast})^{n_{\mathit{data}}}})`.
+#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{\mathrm{allocdatas}}({({{\mathit{byte}}^\ast})^{n_{\mathit{data}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{dataaddr}}_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{dataaddr}}_0^\ast}` is :math:`{{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -9396,9 +9396,9 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`.
 
-#. Let :math:`(\mathsf{active}~n_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+#. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`0`.
+#. Assert: Due to validation, :math:`{\mathit{memidx}}_0` is :math:`0`.
 
 #. Let :math:`n` be :math:`{|{{\mathit{byte}}^\ast}|}`.
 
@@ -9635,11 +9635,11 @@ Instr_ok/drop
 - the instr DROP is valid with the function type ([t] -> []).
 
 Instr_ok/select
-- the instr (SELECT() valtype_u0? ?) is valid with the function type ([t, t, I32] -> [t]) if and only if:
+- the instr (SELECT() valtype_u0*? ?) is valid with the function type ([t, t, I32] -> [t]) if and only if:
   - Either:
-    - valtype_u0? is ?([t]).
+    - valtype_u0*? is ?([t]).
   - Or:
-    - valtype_u0? is ?().
+    - valtype_u0*? is ?().
     - the value type t matches the value type t'.
     - Either:
       - t' is numtype.
@@ -9979,7 +9979,7 @@ Instrs_ok
     - the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
 Expr_ok
-- the expression instr* is valid with the value type sequence t* if and only if:
+- the expression instr* is valid with the result type t* if and only if:
   - the instr sequence instr* is valid with the function type ([] -> t*).
 
 Instr_const
@@ -10010,7 +10010,7 @@ Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2*) if and only if:
   - |C.TYPES| is greater than x.
   - C.TYPES[x] is (t_1* -> t_2*).
-  - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
+  - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
@@ -10927,16 +10927,16 @@ list_ X X_u0?
 2. Let ?(w) be X_u0?.
 3. Return [w].
 
-concat_ X X_u0*
-1. If (X_u0* is []), then:
+concat_ X X_u0**
+1. If (X_u0** is []), then:
   a. Return [].
-2. Let [w*] :: w'** be X_u0*.
+2. Let [w*] :: w'** be X_u0**.
 3. Return w* :: $concat_(X, w'**).
 
-setproduct2_ X w_1 X_u0*
-1. If (X_u0* is []), then:
+setproduct2_ X w_1 X_u0**
+1. If (X_u0** is []), then:
   a. Return [].
-2. Let [w'*] :: w** be X_u0*.
+2. Let [w'*] :: w** be X_u0**.
 3. Return [[w_1] :: w'*] :: $setproduct2_(X, w_1, w**).
 
 setproduct1_ X X_u0* w**
@@ -10945,10 +10945,10 @@ setproduct1_ X X_u0* w**
 2. Let [w_1] :: w'* be X_u0*.
 3. Return $setproduct2_(X, w_1, w**) :: $setproduct1_(X, w'*, w**).
 
-setproduct_ X X_u0*
-1. If (X_u0* is []), then:
+setproduct_ X X_u0**
+1. If (X_u0** is []), then:
   a. Return [[]].
-2. Let [w_1*] :: w** be X_u0*.
+2. Let [w_1*] :: w** be X_u0**.
 3. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
 
 signif N_u0
@@ -11041,10 +11041,10 @@ dim (Lnn X N)
 shsize (Lnn X N)
 1. Return ($lsize(Lnn) · N).
 
-concat_bytes byte_u0*
-1. If (byte_u0* is []), then:
+concat_bytes byte_u0**
+1. If (byte_u0** is []), then:
   a. Return [].
-2. Let [b*] :: b'** be byte_u0*.
+2. Let [b*] :: b'** be byte_u0**.
 3. Return b* :: $concat_bytes(b'**).
 
 unpack lanetype_u0
@@ -11971,9 +11971,9 @@ blocktype z blocktype_u1
 1. If (blocktype_u1 is (_RESULT ?())), then:
   a. Return ([] -> []).
 2. If blocktype_u1 is of the case _RESULT, then:
-  a. Let (_RESULT valtype_0) be blocktype_u1.
-  b. If valtype_0 is defined, then:
-    1) Let ?(t) be valtype_0.
+  a. Let (_RESULT valtype_0?) be blocktype_u1.
+  b. If valtype_0? is defined, then:
+    1) Let ?(t) be valtype_0?.
     2) Return ([] -> [t]).
 3. Assert: Due to validation, blocktype_u1 is of the case _IDX.
 4. Let (_IDX x) be blocktype_u1.
@@ -12087,11 +12087,11 @@ allocelem rt ref*
 3. Append ei to the s.ELEMS.
 4. Return a.
 
-allocelems reftype_u0* ref_u1*
-1. If ((reftype_u0* is []) and (ref_u1* is [])), then:
+allocelems reftype_u0* ref_u1**
+1. If ((reftype_u0* is []) and (ref_u1** is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_u1*| ≥ 1).
-3. Let [ref*] :: ref'** be ref_u1*.
+2. Assert: Due to validation, (|ref_u1**| ≥ 1).
+3. Let [ref*] :: ref'** be ref_u1**.
 4. Assert: Due to validation, (|reftype_u0*| ≥ 1).
 5. Let [rt] :: rt'* be reftype_u0*.
 6. Let ea be $allocelem(rt, ref*).
@@ -12104,10 +12104,10 @@ allocdata byte*
 3. Append di to the s.DATAS.
 4. Return a.
 
-allocdatas byte_u0*
-1. If (byte_u0* is []), then:
+allocdatas byte_u0**
+1. If (byte_u0** is []), then:
   a. Return [].
-2. Let [byte*] :: byte'** be byte_u0*.
+2. Let [byte*] :: byte'** be byte_u0**.
 3. Let da be $allocdata(byte*).
 4. Let da'* be $allocdatas(byte'**).
 5. Return [da] :: da'*.
@@ -12132,17 +12132,17 @@ allocmodule module externaddr* val* ref**
 3. Let ma_ex* be $mems(externaddr*).
 4. Let ta_ex* be $tables(externaddr*).
 5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem_4^n_elem data_5^n_data start? export*) be module.
-7. Assert: Due to validation, data_5 is of the case DATA^n_data.
-8. Let (DATA byte* datamode)^n_data be data_5^n_data.
-9. Assert: Due to validation, elem_4 is of the case ELEM^n_elem.
-10. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4^n_elem.
-11. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
-12. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
-13. Assert: Due to validation, table_2 is of the case TABLE^n_table.
-14. Let (TABLE tabletype)^n_table be table_2^n_table.
-15. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
-16. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+6. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem_4* data_5* start? export*) be module.
+7. Assert: Due to validation, data_5 is of the case DATA*.
+8. Let (DATA byte* datamode)^n_data be data_5*.
+9. Assert: Due to validation, elem_4 is of the case ELEM*.
+10. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4*.
+11. Assert: Due to validation, mem_3 is of the case MEMORY*.
+12. Let (MEMORY memtype)^n_mem be mem_3*.
+13. Assert: Due to validation, table_2 is of the case TABLE*.
+14. Let (TABLE tabletype)^n_table be table_2*.
+15. Assert: Due to validation, global_1 is of the case GLOBAL*.
+16. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
 17. Assert: Due to validation, type_0 is of the case TYPE*.
 18. Let (TYPE ft)* be type_0*.
 19. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
@@ -12153,18 +12153,18 @@ allocmodule module externaddr* val* ref**
 24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
 25. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
 26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-27. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
-28. Assert: Due to validation, (funcaddr_0 is fa*).
-29. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
-30. Assert: Due to validation, (globaladdr_0 is ga*).
-31. Let tableaddr_0 be $alloctables(tabletype^n_table).
-32. Assert: Due to validation, (tableaddr_0 is ta*).
-33. Let memaddr_0 be $allocmems(memtype^n_mem).
-34. Assert: Due to validation, (memaddr_0 is ma*).
-35. Let elemaddr_0 be $allocelems(rt^n_elem, ref**).
-36. Assert: Due to validation, (elemaddr_0 is ea*).
-37. Let dataaddr_0 be $allocdatas(byte*^n_data).
-38. Assert: Due to validation, (dataaddr_0 is da*).
+27. Let funcaddr_0* be $allocfuncs(moduleinst, func^n_func).
+28. Assert: Due to validation, (funcaddr_0* is fa*).
+29. Let globaladdr_0* be $allocglobals(globaltype^n_global, val*).
+30. Assert: Due to validation, (globaladdr_0* is ga*).
+31. Let tableaddr_0* be $alloctables(tabletype^n_table).
+32. Assert: Due to validation, (tableaddr_0* is ta*).
+33. Let memaddr_0* be $allocmems(memtype^n_mem).
+34. Assert: Due to validation, (memaddr_0* is ma*).
+35. Let elemaddr_0* be $allocelems(rt^n_elem, ref**).
+36. Assert: Due to validation, (elemaddr_0* is ea*).
+37. Let dataaddr_0* be $allocdatas(byte*^n_data).
+38. Assert: Due to validation, (dataaddr_0* is da*).
 39. Return moduleinst.
 
 runelem (ELEM reftype expr* elemmode_u0) i
@@ -12181,8 +12181,8 @@ rundata (DATA byte* datamode_u0) i
 1. If (datamode_u0 is PASSIVE), then:
   a. Return [].
 2. Assert: Due to validation, datamode_u0 is of the case ACTIVE.
-3. Let (ACTIVE n_0 instr*) be datamode_u0.
-4. Assert: Due to validation, (n_0 is 0).
+3. Let (ACTIVE memidx_0 instr*) be datamode_u0.
+4. Assert: Due to validation, (memidx_0 is 0).
 5. Let n be |byte*|.
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
@@ -13013,18 +13013,18 @@ watsup 0.4 generator
    * :math:`t` is valid.
 
 
-* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,t)` if and only if:
+* :math:`({({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,t)` if and only if:
 
 
    * :math:`t` is valid.
 
    * Either:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`t`.
+      * :math:`{({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})^?}` must be equal to :math:`t`.
 
    * Or:
 
-      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})^?}` must be equal to :math:`\epsilon`.
 
       * :math:`t` matches :math:`{t'}`.
 
@@ -15866,9 +15866,9 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
 #. Assert: Due to validation, :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`.
 
@@ -15905,9 +15905,9 @@ watsup 0.4 generator
 
       1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-      #) Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+      #) Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
       #) If :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -15992,9 +15992,9 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, the length of :math:`({\mathit{fresh}}_1)` for which :math:`{\bigoplus}\, {\mathit{fresh}}_1` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]` is :math:`n`.
 
-#. Let :math:`{{\mathit{byte}}^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{byte}}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
+#. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the result for which :math:`{\bigoplus}\, {{{\mathit{byte}}^\ast}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
 
-#. Let :math:`{c^\ast}` be the result for which for all :math:`{({\mathit{byte}})^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{\mathit{byte}}`.
+#. Let :math:`{c^\ast}` be the result for which for all :math:`{({\mathit{byte*}})^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{{\mathit{byte}}^\ast}`.
 
 #. Push the values :math:`{{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)^{n}}` to the stack.
 
@@ -16935,9 +16935,9 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
 
-#. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
+#. Let :math:`({t^{n}}~\rightarrow~{\mathit{resulttype}}_1)` be :math:`{\mathit{functype}}_0`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
+#. Assert: Due to validation, :math:`{\mathit{resulttype}}_1` is :math:`\epsilon`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16962,9 +16962,9 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^{n}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{{\mathit{fieldtype}}_0^{n}}`.
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{\mathit{structtype}}_0`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17001,9 +17001,9 @@ watsup 0.4 generator
 
    #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-   #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+   #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
    #. If :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -17361,28 +17361,28 @@ watsup 0.4 generator
 #. Return :math:`w`.
 
 
-:math:`{\bigoplus}\, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`
-......................................................................
+:math:`{\bigoplus}\, {{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`
+.............................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{w^\ast}~{\bigoplus}\, {{{w'}^\ast}^\ast}`.
 
 
-:math:`{\bigoplus}\, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`
-......................................................................
+:math:`{\bigoplus}\, {{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`
+.............................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^{n}}~{({{w'}^{n}})^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{w^{n}}~{({{w'}^{n}})^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{w^{n}}~{\bigoplus}\, {({{w'}^{n}})^\ast}`.
 
@@ -17430,15 +17430,15 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}(w_1, {w^\ast})~{{w'}^\ast} \setminus {w^\ast}`.
 
 
-:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...................................................................................................................................
+:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+..........................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`w_1~{{w'}^\ast}~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {{w^\ast}^\ast})`.
 
@@ -17456,15 +17456,15 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{{\mathit{TODO}}}(w_1, {{w^\ast}^\ast})~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}({{w'}^\ast}, {{w^\ast}^\ast})`.
 
 
-:math:`\Large\times~{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`
-.....................................................................
+:math:`\Large\times~{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`
+............................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}({w_1^\ast}, \Large\times~{{w^\ast}^\ast})`.
 
@@ -18398,9 +18398,9 @@ watsup 0.4 generator
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`n_0~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{u{\kern-0.1em\scriptstyle 32}}}_0~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`n_0` is :math:`0`, then:
+#. If :math:`{\mathit{u{\kern-0.1em\scriptstyle 32}}}_0` is :math:`0`, then:
 
    a. Return :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast})`.
 
@@ -18920,9 +18920,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{load}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{\mathit{loadop\_{\scriptstyle 0}}}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 0}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is defined, then:
+   #. If :math:`{{\mathit{loadop\_{\scriptstyle 0}}}^?}` is defined, then:
 
       1) Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
@@ -21019,13 +21019,13 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref}`.
 
-#. Let :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_0~{\mathit{ht}})` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+#. Let :math:`(\mathsf{ref}~{\mathit{NULL}}_{{\mathit{opt}}_0}~{\mathit{ht}})` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. If :math:`{{\mathsf{null}^?}}_0` is :math:`(\mathsf{null}~()~{}^?)`, then:
+#. If :math:`{\mathit{NULL}}_{{\mathit{opt}}_0}` is :math:`(\mathsf{null}~()~{}^?)`, then:
 
    a. Return :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
-#. Assert: Due to validation, :math:`{{\mathsf{null}^?}}_0` is :math:`(\mathsf{null}~\epsilon~{}^?)`.
+#. Assert: Due to validation, :math:`{\mathit{NULL}}_{{\mathit{opt}}_0}` is :math:`(\mathsf{null}~\epsilon~{}^?)`.
 
 #. Return :math:`\epsilon`.
 
@@ -21502,7 +21502,7 @@ watsup 0.4 generator
 
    a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({i'}, j)~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{meminst}'}`.
 
@@ -21564,13 +21564,13 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})`
-........................................................................................................................................................................................................................................
+:math:`{\mathrm{allocfuncs}}({{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{code}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})`
+......................................................................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+   a. Assert: Due to validation, :math:`{{\mathit{code}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
 
    #. Assert: Due to validation, :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is :math:`\epsilon`.
 
@@ -21580,9 +21580,9 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+   #. Assert: Due to validation, :math:`{|{{\mathit{code}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
 
-   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{\mathit{code}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
    #. Assert: Due to validation, :math:`{|{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -21673,7 +21673,7 @@ watsup 0.4 generator
 ...................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -21742,17 +21742,17 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}({{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-................................................................................................................................................................
+:math:`{\mathrm{allocelems}}({{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+.......................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}|}` is greater than or equal to :math:`1`.
 
-#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -21778,17 +21778,17 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}({{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-.................................................................................................................................................................
+:math:`{\mathrm{allocdatas}}({{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+........................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}|}` is greater than or equal to :math:`1`.
 
-#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`.
 
@@ -21909,33 +21909,33 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{aa}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ea}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -22209,7 +22209,7 @@ Valtype_ok
     - valtype_u0 is BOT.
 
 Resulttype_ok
-- the value type sequence t* is valid if and only if:
+- the result type t* is valid if and only if:
   - For all t in t*,
     - the value type t is valid.
 
@@ -22218,8 +22218,8 @@ Instrtype_ok
   - |x*| is |lct*|.
   - For all x in x*,
     - |C.LOCALS| is greater than x.
-  - the value type sequence t_1* is valid.
-  - the value type sequence t_2* is valid.
+  - the result type t_1* is valid.
+  - the result type t_2* is valid.
   - For all lct in lct* and x in x*,
     - C.LOCALS[x] is lct.
 
@@ -22241,8 +22241,8 @@ Fieldtype_ok
 
 Functype_ok
 - the function type (t_1* -> t_2*) is valid if and only if:
-  - the value type sequence t_1* is valid.
-  - the value type sequence t_2* is valid.
+  - the result type t_1* is valid.
+  - the result type t_2* is valid.
 
 Comptype_ok
 - the composite type comptype_u0 is valid if and only if:
@@ -22633,12 +22633,12 @@ Instr_ok/drop
   - the value type t is valid.
 
 Instr_ok/select
-- the instr (SELECT() valtype_u0? ?) is valid with the instruction type ([t, t, I32] ->_ [] [t]) if and only if:
+- the instr (SELECT() valtype_u0*? ?) is valid with the instruction type ([t, t, I32] ->_ [] [t]) if and only if:
   - the value type t is valid.
   - Either:
-    - valtype_u0? is ?([t]).
+    - valtype_u0*? is ?([t]).
   - Or:
-    - valtype_u0? is ?().
+    - valtype_u0*? is ?().
     - the value type t matches the value type t'.
     - Either:
       - t' is numtype.
@@ -23217,10 +23217,10 @@ Instrs_ok
     - instr_u0* is instr*.
     - instrtype_u4 is (t* :: t_1* ->_ x* t* :: t_2*).
     - the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
-    - the value type sequence t* is valid.
+    - the result type t* is valid.
 
 Expr_ok
-- the expression instr* is valid with the value type sequence t* if and only if:
+- the expression instr* is valid with the result type t* if and only if:
   - the instr sequence instr* is valid with the instruction type ([] ->_ [] t*).
 
 Instr_const
@@ -23287,7 +23287,7 @@ Func_ok
   - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
   - For all lct in lct* and local in local*,
     - the local local is valid with the local type lct.
-  - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
+  - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if and only if:
@@ -24178,8 +24178,8 @@ Step_read/ref.cast rt
 Step_read/struct.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-3. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be fieldtype_0*.
+3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+4. Let (mut, zt)* be structtype_0.
 5. Assert: Due to validation, (|mut*| is |zt*|).
 6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 7. Let ?(val)* be $default_($unpack(zt))*.
@@ -24197,8 +24197,8 @@ Step_read/struct.get sx? x i
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-    2) Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be fieldtype_0*.
+    2) Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt)* be structtype_0.
     4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -24239,8 +24239,8 @@ Step_read/array.new_data x y
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
 10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
-11. Let byte* be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
-12. Let c* be $zbytes__1^-1(zt, byte)*.
+11. Let byte** be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+12. Let c* be $zbytes__1^-1(zt, byte*)*.
 13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
 14. Execute the instruction (ARRAY.NEW_FIXED x n).
 
@@ -24699,8 +24699,8 @@ Step/throw x
 3. Let a be |$exninst(z)|.
 4. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
 5. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
-6. Let (t^n -> valtype_1) be functype_0.
-7. Assert: Due to validation, (valtype_1 is []).
+6. Let (t^n -> resulttype_1) be functype_0.
+7. Assert: Due to validation, (resulttype_1 is []).
 8. Assert: Due to validation, there are at least n values on the top of the stack.
 9. Pop the values val^n from the stack.
 10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
@@ -24712,8 +24712,8 @@ Step/struct.new x
 1. Let z be the current state.
 2. Let a be |$structinst(z)|.
 3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-4. Let (STRUCT fieldtype_0^n) be $expanddt($type(z, x)).
-5. Let (mut, zt)^n be fieldtype_0^n.
+4. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+5. Let (mut, zt)^n be structtype_0.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
@@ -24731,8 +24731,8 @@ Step/struct.set x i
 7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-  c. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be fieldtype_0*.
+  c. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+  d. Let (mut, zt)* be structtype_0.
   e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
@@ -24903,16 +24903,16 @@ list_ X X_u0?
 2. Let ?(w) be X_u0?.
 3. Return [w].
 
-concat_ X X_u0*
-1. If (X_u0* is []), then:
+concat_ X X_u0**
+1. If (X_u0** is []), then:
   a. Return [].
-2. Let [w*] :: w'** be X_u0*.
+2. Let [w*] :: w'** be X_u0**.
 3. Return w* :: $concat_(X, w'**).
 
-concatn_ X X_u0* n
-1. If (X_u0* is []), then:
+concatn_ X X_u0** n
+1. If (X_u0** is []), then:
   a. Return [].
-2. Let [w^n] :: w'^n* be X_u0*.
+2. Let [w^n] :: w'^n* be X_u0**.
 3. Return w^n :: $concatn_(X, w'^n*, n).
 
 disjoint_ X X_u0*
@@ -24935,10 +24935,10 @@ setminus_ X X_u0* w*
 2. Let [w_1] :: w'* be X_u0*.
 3. Return $setminus1_(X, w_1, w*) :: $setminus_(X, w'*, w*).
 
-setproduct2_ X w_1 X_u0*
-1. If (X_u0* is []), then:
+setproduct2_ X w_1 X_u0**
+1. If (X_u0** is []), then:
   a. Return [].
-2. Let [w'*] :: w** be X_u0*.
+2. Let [w'*] :: w** be X_u0**.
 3. Return [[w_1] :: w'*] :: $setproduct2_(X, w_1, w**).
 
 setproduct1_ X X_u0* w**
@@ -24947,10 +24947,10 @@ setproduct1_ X X_u0* w**
 2. Let [w_1] :: w'* be X_u0*.
 3. Return $setproduct2_(X, w_1, w**) :: $setproduct1_(X, w'*, w**).
 
-setproduct_ X X_u0*
-1. If (X_u0* is []), then:
+setproduct_ X X_u0**
+1. If (X_u0** is []), then:
   a. Return [[]].
-2. Let [w_1*] :: w** be X_u0*.
+2. Let [w_1*] :: w** be X_u0**.
 3. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
 
 signif N_u0
@@ -25373,8 +25373,8 @@ free_shape (lanetype X dim)
 shift_labelidxs labelidx_u0*
 1. If (labelidx_u0* is []), then:
   a. Return [].
-2. Let [n_0] :: labelidx'* be labelidx_u0*.
-3. If (n_0 is 0), then:
+2. Let [u32_0] :: labelidx'* be labelidx_u0*.
+3. If (u32_0 is 0), then:
   a. Return $shift_labelidxs(labelidx'*).
 4. Let [labelidx] :: labelidx'* be labelidx_u0*.
 5. Return [(labelidx - 1)] :: $shift_labelidxs(labelidx'*).
@@ -25633,8 +25633,8 @@ free_instr instr_u0
   a. Let (ELEM.DROP elemidx) be instr_u0.
   b. Return $free_elemidx(elemidx).
 88. If instr_u0 is of the case LOAD, then:
-  a. Let (LOAD numtype loadop__0 memidx memarg) be instr_u0.
-  b. If loadop__0 is defined, then:
+  a. Let (LOAD numtype loadop__0? memidx memarg) be instr_u0.
+  b. If loadop__0? is defined, then:
     1) Return $free_numtype(numtype) ++ $free_memidx(memidx).
 89. If instr_u0 is of the case STORE, then:
   a. Let (STORE numtype sz? memidx memarg) be instr_u0.
@@ -26632,10 +26632,10 @@ default_ valtype_u0
   a. Let Vnn be valtype_u0.
   b. Return ?((Vnn.CONST 0)).
 4. Assert: Due to validation, valtype_u0 is of the case REF.
-5. Let (REF nul_0 ht) be valtype_u0.
-6. If (nul_0 is (NULL ?(()) ?)), then:
+5. Let (REF NULL_opt_0 ht) be valtype_u0.
+6. If (NULL_opt_0 is (NULL ?(()) ?)), then:
   a. Return ?((REF.NULL ht)).
-7. Assert: Due to validation, (nul_0 is (NULL ?() ?)).
+7. Assert: Due to validation, (NULL_opt_0 is (NULL ?() ?)).
 8. Return ?().
 
 packfield_ storagetype_u0 val_u1
@@ -26881,15 +26881,15 @@ allocfunc deftype funccode moduleinst
 3. Append funcinst to the s.FUNCS.
 4. Return a.
 
-allocfuncs deftype_u0* funccode_u1* moduleinst_u2*
+allocfuncs deftype_u0* code_u1* moduleinst_u2*
 1. If (deftype_u0* is []), then:
-  a. Assert: Due to validation, (funccode_u1* is []).
+  a. Assert: Due to validation, (code_u1* is []).
   b. Assert: Due to validation, (moduleinst_u2* is []).
   c. Return [].
 2. Else:
   a. Let [dt] :: dt'* be deftype_u0*.
-  b. Assert: Due to validation, (|funccode_u1*| ≥ 1).
-  c. Let [funccode] :: funccode'* be funccode_u1*.
+  b. Assert: Due to validation, (|code_u1*| ≥ 1).
+  c. Let [funccode] :: funccode'* be code_u1*.
   d. Assert: Due to validation, (|moduleinst_u2*| ≥ 1).
   e. Let [moduleinst] :: moduleinst'* be moduleinst_u2*.
   f. Let fa be $allocfunc(dt, funccode, moduleinst).
@@ -26965,11 +26965,11 @@ allocelem elemtype ref*
 3. Append eleminst to the s.ELEMS.
 4. Return a.
 
-allocelems elemtype_u0* ref_u1*
-1. If ((elemtype_u0* is []) and (ref_u1* is [])), then:
+allocelems elemtype_u0* ref_u1**
+1. If ((elemtype_u0* is []) and (ref_u1** is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_u1*| ≥ 1).
-3. Let [ref*] :: ref'** be ref_u1*.
+2. Assert: Due to validation, (|ref_u1**| ≥ 1).
+3. Let [ref*] :: ref'** be ref_u1**.
 4. Assert: Due to validation, (|elemtype_u0*| ≥ 1).
 5. Let [rt] :: rt'* be elemtype_u0*.
 6. Let ea be $allocelem(rt, ref*).
@@ -26982,11 +26982,11 @@ allocdata OK byte*
 3. Append datainst to the s.DATAS.
 4. Return a.
 
-allocdatas datatype_u0* byte_u1*
-1. If ((datatype_u0* is []) and (byte_u1* is [])), then:
+allocdatas datatype_u0* byte_u1**
+1. If ((datatype_u0* is []) and (byte_u1** is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|byte_u1*| ≥ 1).
-3. Let [b*] :: b'** be byte_u1*.
+2. Assert: Due to validation, (|byte_u1**| ≥ 1).
+3. Let [b*] :: b'** be byte_u1**.
 4. Assert: Due to validation, (|datatype_u0*| ≥ 1).
 5. Let [ok] :: ok'* be datatype_u0*.
 6. Let da be $allocdata(ok, b*).
@@ -27045,20 +27045,20 @@ allocmodule module externaddr* val_G* ref_T* ref_E**
 29. Let (FUNC x local* expr_F)* be func*.
 30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
 31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-32. Let n_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-33. Assert: Due to validation, (n_0 is fa*).
-34. Let n_0 be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
-35. Assert: Due to validation, (n_0 is ga*).
-36. Let n_0 be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
-37. Assert: Due to validation, (n_0 is ta*).
-38. Let n_0 be $allocmems($subst_all_memtype(memtype, dt*)*).
-39. Assert: Due to validation, (n_0 is ma*).
-40. Let n_0 be $alloctags(dt*[y]*).
-41. Assert: Due to validation, (n_0 is aa*).
-42. Let n_0 be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
-43. Assert: Due to validation, (n_0 is ea*).
-44. Let n_0 be $allocdatas(OK^|data*|, byte**).
-45. Assert: Due to validation, (n_0 is da*).
+32. Let n_0* be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+33. Assert: Due to validation, (n_0* is fa*).
+34. Let n_0* be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
+35. Assert: Due to validation, (n_0* is ga*).
+36. Let n_0* be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
+37. Assert: Due to validation, (n_0* is ta*).
+38. Let n_0* be $allocmems($subst_all_memtype(memtype, dt*)*).
+39. Assert: Due to validation, (n_0* is ma*).
+40. Let n_0* be $alloctags(dt*[y]*).
+41. Assert: Due to validation, (n_0* is aa*).
+42. Let n_0* be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
+43. Assert: Due to validation, (n_0* is ea*).
+44. Let n_0* be $allocdatas(OK^|data*|, byte**).
+45. Assert: Due to validation, (n_0* is da*).
 46. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemmode_u0)

@@ -25,19 +25,27 @@ let soft_init_unified_idx () =
   | None -> _unified_idx_cache := Some (!_unified_idx)
   | Some n -> _unified_idx := n
 let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
-let gen_new_unified ty = (Al.Al_util.typ_to_var_name ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
+let gen_new_unified ty = Il2al_util.typ_to_var_exp ty ~post_fix:("_" ^ unified_prefix ^ (string_of_int (get_unified_idx())))
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
+let rec is_unified_exp e = match e.it with
+  | IterE (e', _) -> is_unified_exp e'
+  | VarE id -> is_unified_id id.it
+  | _ -> false
+let rec get_unified_id e = match e.it with
+  | IterE (e', _) -> get_unified_id e'
+  | VarE id -> id
+  | _ -> assert (false)
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
   match e1.it, e2.it with
     (* Already unified *)
-    | VarE id, _ when is_unified_id id.it ->
+    | VarE _, _ when is_unified_exp e1 ->
       e1
-    | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
+    | IterE _, _ when is_unified_exp e1 ->
       let t = overlap_typ e1.note e2.note in
-      { e1 with it = IterE (e, i); note = t }
+      { e1 with note = t }
     (* Not unified *)
     | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
       UnE (unop1, overlap e1 e2) |> replace_it
@@ -90,14 +98,8 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
     | _, CatE ({ it = IterE (_, (ListN _, _)); _ } as e2', _) -> overlap { e1 with it = CatE (e2', e1) } e2
     | _ ->
       let ty = overlap_typ e1.note e2.note in
-      let id = gen_new_unified ty in
-      let it =
-        match ty.it with
-        | IterT (ty1, iter) ->
-          IterE (VarE id $$ no_region % ty1, (iter, [(id, VarE id $$ no_region % ty)]))
-        | _ -> VarE id
-      in
-      { e1 with it; note = ty }
+      let exp = gen_new_unified ty in
+      { e1 with it = exp.it; note = ty }
 
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
@@ -123,11 +125,11 @@ let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if eq_exp template e then [], [] else
   match template.it, e.it with
-    | VarE id, _
-    | IterE ({ it = VarE id; _}, _) , _
-      when is_unified_id id.it ->
+    | VarE _, _
+    | IterE _ , _
+      when is_unified_exp template ->
       [IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
-      [ExpB (id, template.note) $ e.at]
+      [ExpB (get_unified_id template, template.note) $ e.at]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
