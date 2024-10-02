@@ -15,6 +15,7 @@ jobs:
           SOURCE: document/js-api/index.bs
           TOOLCHAIN: bikeshed
           VALIDATE_PUBRULES: true
+          W3C_API_KEY: abc
           #W3C_ECHIDNA_TOKEN: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           # Replace following with appropriate value. See options.md for details.
           #W3C_WG_DECISION_URL: https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
