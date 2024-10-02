@@ -156,6 +156,9 @@ def $setproduct_(syntax X, X**) : X**
 }
 
 ;; 1-syntax.watsup
+def $ND : bool
+
+;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{`X*` : X*}(X*{X <- `X*`} : X*)
     -- if (|X*{X <- `X*`}| < (2 ^ 32))
@@ -281,7 +284,7 @@ def $cont(byte : byte) : nat
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:87.1-87.25
+;; 1-syntax.watsup:94.1-94.25
 def $utf8(char*) : byte*
   ;; A-binary.watsup:53.1-53.44
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
@@ -405,13 +408,13 @@ syntax fin =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:155.1-156.26
+;; 1-syntax.watsup:162.1-163.26
 syntax typeuse =
   | _IDX{typeidx : typeidx}(typeidx : typeidx)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
   | REC{n : n}(n : n)
 
-;; 1-syntax.watsup:158.1-159.26
+;; 1-syntax.watsup:165.1-166.26
 syntax heaptype =
   | ANY
   | EQ
@@ -430,7 +433,7 @@ syntax heaptype =
   | REC{n : n}(n : n)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
 
-;; 1-syntax.watsup:166.1-167.14
+;; 1-syntax.watsup:173.1-174.14
 syntax valtype =
   | I32
   | I64
@@ -440,10 +443,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:196.1-197.16
+;; 1-syntax.watsup:203.1-204.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:204.1-204.66
+;; 1-syntax.watsup:211.1-211.66
 syntax storagetype =
   | BOT
   | I32
@@ -455,31 +458,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:220.1-220.60
+;; 1-syntax.watsup:227.1-227.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:222.1-222.90
+;; 1-syntax.watsup:229.1-229.90
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:223.1-223.64
+;; 1-syntax.watsup:230.1-230.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:224.1-224.54
+;; 1-syntax.watsup:231.1-231.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:226.1-229.18
+;; 1-syntax.watsup:233.1-236.18
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:231.1-232.30
+;; 1-syntax.watsup:238.1-239.30
 syntax subtype =
   | SUB{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse <- `typeuse*`} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:234.1-235.22
+;; 1-syntax.watsup:241.1-242.22
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -930,6 +933,26 @@ def $shsize(shape : shape) : nat
   def $shsize{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = ($lsize(Lnn) * N)
 
 ;; 1-syntax.watsup
+syntax half__(shape_1 : shape, shape_2 : shape)
+  ;; 1-syntax.watsup
+  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+  | HIGH
+    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
+
+
+  ;; 1-syntax.watsup
+  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
+
+
+;; 1-syntax.watsup
+syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
+  | ZERO
+    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+
+;; 1-syntax.watsup
 syntax vvunop =
   | NOT
 
@@ -985,6 +1008,8 @@ syntax vbinop_(shape : shape)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | `Q15MULR_SATS`
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
+  | `RELAXED_Q15MULRS`
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
@@ -1001,6 +1026,21 @@ syntax vbinop_(shape : shape)
   | MAX
   | PMIN
   | PMAX
+  | RELAXED_MIN
+  | RELAXED_MAX
+
+
+;; 1-syntax.watsup
+syntax vternop_(shape : shape)
+  ;; 1-syntax.watsup
+  syntax vternop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_LANESELECT
+
+
+  ;; 1-syntax.watsup
+  syntax vternop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_MADD
+  | RELAXED_NMADD
 
 
 ;; 1-syntax.watsup
@@ -1051,6 +1091,8 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
   syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
   | TRUNC_SAT{sx : sx}(sx : sx)
     -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | RELAXED_TRUNC{sx : sx}(sx : sx)
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -1062,24 +1104,9 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
 
 
 ;; 1-syntax.watsup
-syntax half__(shape_1 : shape, shape_2 : shape)
-  ;; 1-syntax.watsup
-  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-  | HIGH
-    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
-
-
-  ;; 1-syntax.watsup
-  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
-
-
-;; 1-syntax.watsup
-syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
-  | ZERO
-    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+syntax vswizzlop_{M : M}(`%X%`_ishape(I8_Jnn, `%`_dim(M))) =
+  | SWIZZLE
+  | RELAXED_SWIZZLE
 
 ;; 1-syntax.watsup
 syntax vshiftop_{Jnn : Jnn, M : M}(`%X%`_ishape(Jnn, `%`_dim(M))) =
@@ -1097,6 +1124,13 @@ syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) >= 16))
   | `DOTS`
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | `RELAXED_DOTS`
+    -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 16))
+
+;; 1-syntax.watsup
+syntax vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2))) =
+  | `RELAXED_DOT_ADDS`
+    -- if (((4 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -1271,20 +1305,20 @@ syntax instr =
   | VVTESTOP{vectype : vectype, vvtestop : vvtestop}(vectype : vectype, vvtestop : vvtestop)
   | VUNOP{shape : shape, vunop_ : vunop_(shape)}(shape : shape, vunop_ : vunop_(shape))
   | VBINOP{shape : shape, vbinop_ : vbinop_(shape)}(shape : shape, vbinop_ : vbinop_(shape))
+  | VTERNOP{shape : shape, vternop_ : vternop_(shape)}(shape : shape, vternop_ : vternop_(shape))
   | VTESTOP{shape : shape, vtestop_ : vtestop_(shape)}(shape : shape, vtestop_ : vtestop_(shape))
   | VRELOP{shape : shape, vrelop_ : vrelop_(shape)}(shape : shape, vrelop_ : vrelop_(shape))
   | VSHIFTOP{ishape : ishape, vshiftop_ : vshiftop_(ishape)}(ishape : ishape, vshiftop_ : vshiftop_(ishape))
   | VBITMASK{ishape : ishape}(ishape : ishape)
-  | VSWIZZLE{ishape : ishape}(ishape : ishape)
-    -- if (ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16)))
+  | VSWIZZLOP{ishape : ishape, vswizzlop_ : vswizzlop_(ishape)}(ishape : ishape, vswizzlop_ : vswizzlop_(ishape))
   | VSHUFFLE{ishape : ishape, `laneidx*` : laneidx*}(ishape : ishape, laneidx*{laneidx <- `laneidx*`} : laneidx*)
     -- if ((ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16))) /\ (|laneidx*{laneidx <- `laneidx*`}| = 16))
   | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1))
   | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1))
+  | VEXTTERNOP{ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1))
   | VNARROW{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(ishape_1 : ishape, ishape_2 : ishape, sx : sx)
     -- if (($lsize($lanetype((ishape_2 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_1 : ishape <: shape))))) /\ ((2 * $lsize($lanetype((ishape_1 : ishape <: shape)))) <= 32))
   | VCVTOP{shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), `half__?` : half__(shape_2, shape_1)?, `zero__?` : zero__(shape_2, shape_1)?}(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), half__?{half__ <- `half__?`} : half__(shape_2, shape_1)?, zero__?{zero__ <- `zero__?`} : zero__(shape_2, shape_1)?)
-    -- if ($lanetype(shape_1) =/= $lanetype(shape_2))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, `sx?` : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx <- `sx?`} : sx?, laneidx : laneidx)
     -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
@@ -1789,13 +1823,13 @@ def $free_shape(shape : shape) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:443.1-443.44
+;; 2-syntax-aux.watsup:444.1-444.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; 2-syntax-aux.watsup:444.1-444.32
+  ;; 2-syntax-aux.watsup:445.1-445.32
   def $shift_labelidxs([]) = []
-  ;; 2-syntax-aux.watsup:445.1-445.66
+  ;; 2-syntax-aux.watsup:446.1-446.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_uN(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; 2-syntax-aux.watsup:446.1-446.91
+  ;; 2-syntax-aux.watsup:447.1-447.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_uN((labelidx!`%`_labelidx.0 - 1))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
@@ -1804,7 +1838,7 @@ rec {
 
 ;; 2-syntax-aux.watsup:299.1-299.31
 def $free_block(instr*) : free
-  ;; 2-syntax-aux.watsup:449.1-450.47
+  ;; 2-syntax-aux.watsup:450.1-451.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 
@@ -1879,134 +1913,136 @@ def $free_instr(instr : instr) : free
   ;; 2-syntax-aux.watsup:347.1-347.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
   ;; 2-syntax-aux.watsup:348.1-348.60
+  def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
+  ;; 2-syntax-aux.watsup:349.1-349.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:349.1-349.58
+  ;; 2-syntax-aux.watsup:350.1-350.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:350.1-350.64
+  ;; 2-syntax-aux.watsup:351.1-351.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:351.1-351.55
-  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
   ;; 2-syntax-aux.watsup:352.1-352.55
-  def $free_instr{ishape : ishape}(VSWIZZLE_instr(ishape)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:353.1-353.64
+  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:353.1-353.66
+  def $free_instr{ishape : ishape, vswizzlop : vswizzlop_(ishape)}(VSWIZZLOP_instr(ishape, vswizzlop)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:354.1-354.64
   def $free_instr{ishape : ishape, `laneidx*` : laneidx*}(VSHUFFLE_instr(ishape, laneidx*{laneidx <- `laneidx*`})) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:354.1-355.49
+  ;; 2-syntax-aux.watsup:355.1-356.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:356.1-357.49
+  ;; 2-syntax-aux.watsup:357.1-358.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:358.1-359.49
+  ;; 2-syntax-aux.watsup:359.1-360.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:360.1-361.47
+  ;; 2-syntax-aux.watsup:361.1-362.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1), `half?` : half__(shape_2, shape_1)?, `zero?` : zero__(shape_2, shape_1)?}(VCVTOP_instr(shape_1, shape_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`})) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; 2-syntax-aux.watsup:362.1-362.51
+  ;; 2-syntax-aux.watsup:363.1-363.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:363.1-363.70
+  ;; 2-syntax-aux.watsup:364.1-364.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:364.1-364.66
+  ;; 2-syntax-aux.watsup:365.1-365.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:366.1-366.62
+  ;; 2-syntax-aux.watsup:367.1-367.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; 2-syntax-aux.watsup:367.1-367.34
+  ;; 2-syntax-aux.watsup:368.1-368.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:368.1-368.38
+  ;; 2-syntax-aux.watsup:369.1-369.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:369.1-369.29
+  ;; 2-syntax-aux.watsup:370.1-370.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:370.1-370.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:371.1-371.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:372.1-372.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; 2-syntax-aux.watsup:373.1-373.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:373.1-373.30
+  ;; 2-syntax-aux.watsup:374.1-374.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:375.1-375.33
+  ;; 2-syntax-aux.watsup:376.1-376.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:377.1-377.41
+  ;; 2-syntax-aux.watsup:378.1-378.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:378.1-378.69
-  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
   ;; 2-syntax-aux.watsup:379.1-379.69
+  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
+  ;; 2-syntax-aux.watsup:380.1-380.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:380.1-380.65
+  ;; 2-syntax-aux.watsup:381.1-381.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:382.1-382.60
+  ;; 2-syntax-aux.watsup:383.1-383.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:383.1-383.68
+  ;; 2-syntax-aux.watsup:384.1-384.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:384.1-384.70
+  ;; 2-syntax-aux.watsup:385.1-385.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:385.1-386.51
+  ;; 2-syntax-aux.watsup:386.1-387.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:387.1-388.51
+  ;; 2-syntax-aux.watsup:388.1-389.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:389.1-389.64
+  ;; 2-syntax-aux.watsup:390.1-390.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:390.1-390.60
+  ;; 2-syntax-aux.watsup:391.1-391.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:391.1-391.32
+  ;; 2-syntax-aux.watsup:392.1-392.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:392.1-392.61
+  ;; 2-syntax-aux.watsup:393.1-393.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:393.1-394.55
+  ;; 2-syntax-aux.watsup:394.1-395.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; 2-syntax-aux.watsup:395.1-396.51
+  ;; 2-syntax-aux.watsup:396.1-397.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:397.1-398.51
+  ;; 2-syntax-aux.watsup:398.1-399.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:400.1-400.41
-  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
   ;; 2-syntax-aux.watsup:401.1-401.41
+  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
+  ;; 2-syntax-aux.watsup:402.1-402.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:403.1-403.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:404.1-404.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:405.1-405.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; 2-syntax-aux.watsup:406.1-406.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:407.1-407.67
-  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
   ;; 2-syntax-aux.watsup:408.1-408.67
+  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
+  ;; 2-syntax-aux.watsup:409.1-409.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; 2-syntax-aux.watsup:410.1-410.63
-  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:411.1-411.63
+  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:412.1-412.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:412.1-412.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:413.1-413.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:414.1-414.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:415.1-415.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:415.1-416.59
+  ;; 2-syntax-aux.watsup:416.1-417.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; 2-syntax-aux.watsup:417.1-418.53
+  ;; 2-syntax-aux.watsup:418.1-419.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:419.1-419.60
+  ;; 2-syntax-aux.watsup:420.1-420.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:421.1-422.49
+  ;; 2-syntax-aux.watsup:422.1-423.49
   def $free_instr{numtype : numtype, loadop : loadop_(numtype), memidx : memidx, memarg : memarg}(LOAD_instr(numtype, ?(loadop), memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:423.1-424.49
+  ;; 2-syntax-aux.watsup:424.1-425.49
   def $free_instr{numtype : numtype, `sz?` : sz?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, sz?{sz <- `sz?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:425.1-426.49
+  ;; 2-syntax-aux.watsup:426.1-427.49
   def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:427.1-428.49
+  ;; 2-syntax-aux.watsup:428.1-429.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:429.1-430.49
+  ;; 2-syntax-aux.watsup:430.1-431.49
   def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:431.1-432.49
+  ;; 2-syntax-aux.watsup:432.1-433.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:433.1-433.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:434.1-434.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:435.1-435.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; 2-syntax-aux.watsup:436.1-436.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:436.1-437.51
+  ;; 2-syntax-aux.watsup:437.1-438.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; 2-syntax-aux.watsup:438.1-439.49
+  ;; 2-syntax-aux.watsup:439.1-440.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:440.1-440.60
+  ;; 2-syntax-aux.watsup:441.1-441.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 }
 
@@ -2109,14 +2145,14 @@ def $dataidx_funcs(func*) : dataidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:532.1-532.112
+;; 2-syntax-aux.watsup:533.1-533.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:559.1-559.38
+  ;; 2-syntax-aux.watsup:560.1-560.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 2-syntax-aux.watsup:560.1-560.95
+  ;; 2-syntax-aux.watsup:561.1-561.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 2-syntax-aux.watsup:561.1-561.92
+  ;; 2-syntax-aux.watsup:562.1-562.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -2139,78 +2175,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:533.1-533.112
+;; 2-syntax-aux.watsup:534.1-534.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:563.1-563.66
+  ;; 2-syntax-aux.watsup:564.1-564.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 2-syntax-aux.watsup:564.1-564.64
+  ;; 2-syntax-aux.watsup:565.1-565.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 2-syntax-aux.watsup:537.1-537.112
+;; 2-syntax-aux.watsup:538.1-538.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 2-syntax-aux.watsup:569.1-569.67
+  ;; 2-syntax-aux.watsup:570.1-570.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 2-syntax-aux.watsup:570.1-570.65
+  ;; 2-syntax-aux.watsup:571.1-571.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 2-syntax-aux.watsup:571.1-571.53
+  ;; 2-syntax-aux.watsup:572.1-572.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 2-syntax-aux.watsup:538.1-538.112
+;; 2-syntax-aux.watsup:539.1-539.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 2-syntax-aux.watsup:573.1-573.83
+  ;; 2-syntax-aux.watsup:574.1-574.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:539.1-539.112
+;; 2-syntax-aux.watsup:540.1-540.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 2-syntax-aux.watsup:575.1-575.64
-  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:576.1-576.64
-  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:577.1-577.64
+  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  ;; 2-syntax-aux.watsup:578.1-578.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 2-syntax-aux.watsup:578.1-578.40
+  ;; 2-syntax-aux.watsup:579.1-579.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 2-syntax-aux.watsup:542.1-542.112
+;; 2-syntax-aux.watsup:543.1-543.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 2-syntax-aux.watsup:582.1-582.66
+  ;; 2-syntax-aux.watsup:583.1-583.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 2-syntax-aux.watsup:583.1-583.69
+  ;; 2-syntax-aux.watsup:584.1-584.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 2-syntax-aux.watsup:543.1-543.112
+;; 2-syntax-aux.watsup:544.1-544.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 2-syntax-aux.watsup:585.1-585.80
+  ;; 2-syntax-aux.watsup:586.1-586.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:545.1-545.112
+;; 2-syntax-aux.watsup:546.1-546.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 2-syntax-aux.watsup:587.1-587.85
+  ;; 2-syntax-aux.watsup:588.1-588.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 2-syntax-aux.watsup:588.1-588.81
+  ;; 2-syntax-aux.watsup:589.1-589.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 2-syntax-aux.watsup:589.1-589.78
+  ;; 2-syntax-aux.watsup:590.1-590.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:546.1-546.112
+;; 2-syntax-aux.watsup:547.1-547.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 2-syntax-aux.watsup:591.1-592.71
+  ;; 2-syntax-aux.watsup:592.1-593.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:547.1-547.112
+;; 2-syntax-aux.watsup:548.1-548.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 2-syntax-aux.watsup:594.1-594.76
+  ;; 2-syntax-aux.watsup:595.1-595.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 2-syntax-aux.watsup:548.1-548.112
+;; 2-syntax-aux.watsup:549.1-549.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 2-syntax-aux.watsup:596.1-596.78
+  ;; 2-syntax-aux.watsup:597.1-597.78
   def $subst_deftype{qt : rectype, i : nat, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 2-syntax-aux.watsup:551.1-551.112
+;; 2-syntax-aux.watsup:552.1-552.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 2-syntax-aux.watsup:599.1-599.113
+  ;; 2-syntax-aux.watsup:600.1-600.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -2283,11 +2319,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:627.1-627.98
+;; 2-syntax-aux.watsup:628.1-628.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 2-syntax-aux.watsup:628.1-628.40
+  ;; 2-syntax-aux.watsup:629.1-629.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 2-syntax-aux.watsup:629.1-629.101
+  ;; 2-syntax-aux.watsup:630.1-630.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -2331,13 +2367,13 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:661.1-661.86
+;; 2-syntax-aux.watsup:662.1-662.86
 def $funcsxx(externidx*) : typeidx*
-  ;; 2-syntax-aux.watsup:667.1-667.24
+  ;; 2-syntax-aux.watsup:668.1-668.24
   def $funcsxx([]) = []
-  ;; 2-syntax-aux.watsup:668.1-668.45
+  ;; 2-syntax-aux.watsup:669.1-669.45
   def $funcsxx{x : idx, `xx*` : externidx*}([FUNC_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:669.1-669.58
+  ;; 2-syntax-aux.watsup:670.1-670.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -2345,13 +2381,13 @@ def $funcsxx(externidx*) : typeidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:662.1-662.88
+;; 2-syntax-aux.watsup:663.1-663.88
 def $globalsxx(externidx*) : globalidx*
-  ;; 2-syntax-aux.watsup:671.1-671.26
+  ;; 2-syntax-aux.watsup:672.1-672.26
   def $globalsxx([]) = []
-  ;; 2-syntax-aux.watsup:672.1-672.51
+  ;; 2-syntax-aux.watsup:673.1-673.51
   def $globalsxx{x : idx, `xx*` : externidx*}([GLOBAL_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:673.1-673.62
+  ;; 2-syntax-aux.watsup:674.1-674.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -2359,13 +2395,13 @@ def $globalsxx(externidx*) : globalidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:663.1-663.87
+;; 2-syntax-aux.watsup:664.1-664.87
 def $tablesxx(externidx*) : tableidx*
-  ;; 2-syntax-aux.watsup:675.1-675.25
+  ;; 2-syntax-aux.watsup:676.1-676.25
   def $tablesxx([]) = []
-  ;; 2-syntax-aux.watsup:676.1-676.48
+  ;; 2-syntax-aux.watsup:677.1-677.48
   def $tablesxx{x : idx, `xx*` : externidx*}([TABLE_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:677.1-677.60
+  ;; 2-syntax-aux.watsup:678.1-678.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -2373,13 +2409,13 @@ def $tablesxx(externidx*) : tableidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:664.1-664.85
+;; 2-syntax-aux.watsup:665.1-665.85
 def $memsxx(externidx*) : memidx*
-  ;; 2-syntax-aux.watsup:679.1-679.23
+  ;; 2-syntax-aux.watsup:680.1-680.23
   def $memsxx([]) = []
-  ;; 2-syntax-aux.watsup:680.1-680.42
+  ;; 2-syntax-aux.watsup:681.1-681.42
   def $memsxx{x : idx, `xx*` : externidx*}([MEM_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:681.1-681.56
+  ;; 2-syntax-aux.watsup:682.1-682.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -2387,13 +2423,13 @@ def $memsxx(externidx*) : memidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:665.1-665.85
+;; 2-syntax-aux.watsup:666.1-666.85
 def $tagsxx(externidx*) : tagidx*
-  ;; 2-syntax-aux.watsup:683.1-683.23
+  ;; 2-syntax-aux.watsup:684.1-684.23
   def $tagsxx([]) = []
-  ;; 2-syntax-aux.watsup:684.1-684.42
+  ;; 2-syntax-aux.watsup:685.1-685.42
   def $tagsxx{x : idx, `xx*` : externidx*}([TAG_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:685.1-685.56
+  ;; 2-syntax-aux.watsup:686.1-686.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -2401,13 +2437,13 @@ def $tagsxx(externidx*) : tagidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:688.1-688.88
+;; 2-syntax-aux.watsup:689.1-689.88
 def $funcsxt(externtype*) : deftype*
-  ;; 2-syntax-aux.watsup:694.1-694.24
+  ;; 2-syntax-aux.watsup:695.1-695.24
   def $funcsxt([]) = []
-  ;; 2-syntax-aux.watsup:695.1-695.47
+  ;; 2-syntax-aux.watsup:696.1-696.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:696.1-696.59
+  ;; 2-syntax-aux.watsup:697.1-697.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -2415,13 +2451,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:689.1-689.90
+;; 2-syntax-aux.watsup:690.1-690.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 2-syntax-aux.watsup:698.1-698.26
+  ;; 2-syntax-aux.watsup:699.1-699.26
   def $globalsxt([]) = []
-  ;; 2-syntax-aux.watsup:699.1-699.53
+  ;; 2-syntax-aux.watsup:700.1-700.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:700.1-700.63
+  ;; 2-syntax-aux.watsup:701.1-701.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -2429,13 +2465,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:690.1-690.89
+;; 2-syntax-aux.watsup:691.1-691.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 2-syntax-aux.watsup:702.1-702.25
+  ;; 2-syntax-aux.watsup:703.1-703.25
   def $tablesxt([]) = []
-  ;; 2-syntax-aux.watsup:703.1-703.50
+  ;; 2-syntax-aux.watsup:704.1-704.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:704.1-704.61
+  ;; 2-syntax-aux.watsup:705.1-705.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -2443,13 +2479,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:691.1-691.87
+;; 2-syntax-aux.watsup:692.1-692.87
 def $memsxt(externtype*) : memtype*
-  ;; 2-syntax-aux.watsup:706.1-706.23
+  ;; 2-syntax-aux.watsup:707.1-707.23
   def $memsxt([]) = []
-  ;; 2-syntax-aux.watsup:707.1-707.44
+  ;; 2-syntax-aux.watsup:708.1-708.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:708.1-708.57
+  ;; 2-syntax-aux.watsup:709.1-709.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -2457,13 +2493,13 @@ def $memsxt(externtype*) : memtype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:692.1-692.87
+;; 2-syntax-aux.watsup:693.1-693.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 2-syntax-aux.watsup:710.1-710.23
+  ;; 2-syntax-aux.watsup:711.1-711.23
   def $tagsxt([]) = []
-  ;; 2-syntax-aux.watsup:711.1-711.44
+  ;; 2-syntax-aux.watsup:712.1-712.44
   def $tagsxt{at : tagtype, `xt*` : externtype*}([TAG_externtype((at : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [at] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:712.1-712.57
+  ;; 2-syntax-aux.watsup:713.1-713.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -2472,6 +2508,61 @@ def $tagsxt(externtype*) : tagtype*
 def $memarg0 : memarg
   ;; 2-syntax-aux.watsup
   def $memarg0 = {ALIGN `%`_u32(0), OFFSET `%`_u32(0)}
+
+;; 3-numerics.watsup
+syntax relaxed2 =
+  | `%`{i : nat}(i : nat)
+    -- if ((i = 0) \/ (i = 1))
+
+;; 3-numerics.watsup
+syntax relaxed4 =
+  | `%`{i : nat}(i : nat)
+    -- if ((((i = 0) \/ (i = 1)) \/ (i = 2)) \/ (i = 3))
+
+;; 3-numerics.watsup
+def $relaxed2(relaxed2 : relaxed2, syntax X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $relaxed4(relaxed4 : relaxed4, syntax X, X : X, X : X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $R_fmadd : relaxed2
+
+;; 3-numerics.watsup
+def $R_fmin : relaxed4
+
+;; 3-numerics.watsup
+def $R_fmax : relaxed4
+
+;; 3-numerics.watsup
+def $R_idot : relaxed2
+
+;; 3-numerics.watsup
+def $R_iq15mulr : relaxed2
+
+;; 3-numerics.watsup
+def $R_trunc_u : relaxed4
+
+;; 3-numerics.watsup
+def $R_trunc_s : relaxed2
+
+;; 3-numerics.watsup
+def $R_swizzle : relaxed2
+
+;; 3-numerics.watsup
+def $R_laneselect : relaxed2
 
 ;; 3-numerics.watsup
 def $s33_to_u32(s33 : s33) : u32
@@ -2492,246 +2583,34 @@ def $invsigned_(N : N, int : int) : nat
     -- if ($signed_(N, j) = (i : nat <: int))
 
 ;; 3-numerics.watsup
-def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $sat_u_(N : N, nat : nat) : nat
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = 0
+    -- if (i < 0)
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = ((2 ^ N) - 1)
+    -- if (i > ((2 ^ N) - 1))
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = i
+    -- otherwise
 
 ;; 3-numerics.watsup
-def $fabs_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fceil_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ffloor_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fnearest_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fneg_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iclz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ictz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+def $sat_s_(N : N, int : int) : int
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = - ((2 ^ (N - 1)) : nat <: int)
+    -- if ((i : nat <: int) < - ((2 ^ (N - 1)) : nat <: int))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (((2 ^ (N - 1)) - 1) : nat <: int)
+    -- if (i > ((2 ^ (N - 1)) - 1))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (i : nat <: int)
+    -- otherwise
 
 ;; 3-numerics.watsup
 def $wrap__(M : M, N : N, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
-def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
-
-;; 3-numerics.watsup
-def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $ieqz_(N : N, iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
-
-;; 3-numerics.watsup
-def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
-
-;; 3-numerics.watsup
-def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
+def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
 def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
@@ -2740,30 +2619,22 @@ def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 def $trunc_sat__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 
 ;; 3-numerics.watsup
-def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
-    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
-    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+def $relaxed_trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+
+;; 3-numerics.watsup
+def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
 
 ;; 3-numerics.watsup
 def $narrow__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+
+;; 3-numerics.watsup
+def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
 
 ;; 3-numerics.watsup
 def $ibits_(N : N, iN : iN(N)) : bit*
@@ -2802,13 +2673,82 @@ def $invfbytes_(N : N, byte*) : fN(N)
     -- if ($fbytes_(N, p) = b*{b <- `b*`})
 
 ;; 3-numerics.watsup
+def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
+def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
 def $inot_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
 def $iandnot_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iclz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ictz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ieqz_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ibitselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irelaxed_laneselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*
 
 ;; 3-numerics.watsup
 def $iabs_(N : N, iN : iN(N)) : iN(N)
@@ -2835,10 +2775,85 @@ def $iavgr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 def $iq15mulr_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $irelaxed_q15mulr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*
+
+;; 3-numerics.watsup
+def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
 def $fpmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $fpmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_min_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_max_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fabs_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fneg_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fceil_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ffloor_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fnearest_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $frelaxed_madd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_nmadd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $lpacknum_(lanetype : lanetype, num_ : num_($lunpack(lanetype))) : lane_(lanetype)
@@ -2887,6 +2902,127 @@ def $half__(shape_1 : shape, shape_2 : shape, half__ : half__(shape_1, shape_2),
   def $half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, i : nat, j : nat}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), LOW_half__, i, j) = i
 
 ;; 3-numerics.watsup
+def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
+
+;; 3-numerics.watsup
+def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
+
+;; 3-numerics.watsup
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
+    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
+    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+
+;; 3-numerics.watsup
 def $vvunop_(vectype : vectype, vvunop : vvunop, vec_ : vec_(vectype)) : vec_(vectype)*
   ;; 3-numerics.watsup
   def $vvunop_{v128 : vec_(V128_Vnn)}(V128_vectype, NOT_vvunop, v128) = [$inot_($vsize(V128_vectype), v128)]
@@ -2924,12 +3060,6 @@ def $ivunop_(shape : shape, def $f_(N : N, iN : iN(N)) : iN(N), vec_ : vec_(V128
 ;; 3-numerics.watsup
 def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
-  ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fabs_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fneg_, vN_1)
@@ -2943,6 +3073,12 @@ def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), TRUNC_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $ftrunc_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEAREST_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fnearest_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
 
 ;; 3-numerics.watsup
 def $fvbinop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
@@ -2969,6 +3105,14 @@ def $ivbinopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) :
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; 3-numerics.watsup
+def $ivbinopsxnd_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivbinopsxnd_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, vN_1, vN_2) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`}))
+
+;; 3-numerics.watsup
 def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iadd_, vN_1, vN_2)
@@ -2989,6 +3133,8 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `Q15MULR_SATS`_vbinop_, vN_1, vN_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iq15mulr_sat_, S_sx, vN_1, vN_2)
   ;; 3-numerics.watsup
+  def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `RELAXED_Q15MULRS`_vbinop_, vN_1, vN_2) = $ivbinopsxnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_q15mulr_, S_sx, vN_1, vN_2)
+  ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fadd_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), SUB_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fsub_, vN_1, vN_2)
@@ -3004,6 +3150,37 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmin_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmax_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_min_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_max_, vN_1, vN_2)
+
+;; 3-numerics.watsup
+def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $fvternop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $ivternopnd_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivternopnd_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $vternop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), RELAXED_LANESELECT_vternop_, vN_1, vN_2, vN_3) = $ivternopnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_laneselect_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -3069,6 +3246,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
     -- if (iN_2?{iN_2 <- `iN_2?`} = $trunc_sat__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
   ;; 3-numerics.watsup
+  def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
+    -- if (iN_2?{iN_2 <- `iN_2?`} = $relaxed_trunc__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
+  ;; 3-numerics.watsup
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `fN_2*` : lane_($lanetype(`%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__, fN_1) = fN_2*{fN_2 <- `fN_2*`}
     -- if (fN_2*{fN_2 <- `fN_2*`} = $demote__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), fN_1))
   ;; 3-numerics.watsup
@@ -3091,11 +3271,38 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2)[$half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), half, 0, M_2) : M_2])
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`}))
   ;; 3-numerics.watsup
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
-    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`})
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+  ;; 3-numerics.watsup
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOTS`_vextbinop__, c_1, c_2) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_sat_($lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+
+;; 3-numerics.watsup
+def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
+  ;; 3-numerics.watsup
+  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_3*` : lane_($lanetype(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))))*, Jnn : Jnn, `ci'_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOT_ADDS`_vextternop__, c_1, c_2, c_3) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci_3*{ci_3 <- `ci_3*`} = $lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c_3))
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [`%`_uN(cj_1!`%`_iN.0) `%`_uN(cj_2!`%`_iN.0)]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn((Jnn : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [ck_1 ck_2]*{ck_1 <- `ck_1*`, ck_2 <- `ck_2*`}) = $iadd_sat_($lsizenn((Jnn : Jnn <: lanetype)), S_sx, `%`_iN(cj_1!`%`_iN.0), `%`_iN(cj_2!`%`_iN.0))*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`})
+    -- if (ck'_1*{ck'_1 <- `ck'_1*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_1)*{ck_1 <- `ck_1*`})
+    -- if (ck'_2*{ck'_2 <- `ck'_2*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_2)*{ck_2 <- `ck_2*`})
+    -- if (ck*{ck <- `ck*`} = $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck'_1, ck'_2)*{ck'_1 <- `ck'_1*`, ck'_2 <- `ck'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck, ci_3)*{ci_3 <- `ci_3*`, ck <- `ck*`}))
 
 ;; 3-numerics.watsup
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -4623,224 +4830,232 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:948.1-949.40
+  ;; 6-typing.watsup:948.1-949.51
+  rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
+    `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:951.1-952.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:951.1-952.44
+  ;; 6-typing.watsup:954.1-955.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:954.1-955.47
+  ;; 6-typing.watsup:957.1-958.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:957.1-958.33
+  ;; 6-typing.watsup:960.1-961.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:960.1-961.39
-  rule vswizzle{C : context, sh : ishape}:
-    `%|-%:%`(C, VSWIZZLE_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+  ;; 6-typing.watsup:963.1-964.50
+  rule vswizzlop{C : context, sh : ishape, vswizzlop : vswizzlop_(sh)}:
+    `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:963.1-965.29
+  ;; 6-typing.watsup:966.1-968.29
   rule vshuffle{C : context, sh : ishape, `i*` : nat*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, `%`_laneidx(i)*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i < (2 * $dim((sh : ishape <: shape))!`%`_dim.0)))*{i <- `i*`}
 
-  ;; 6-typing.watsup:967.1-968.44
+  ;; 6-typing.watsup:970.1-971.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:970.1-972.21
+  ;; 6-typing.watsup:973.1-975.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : nat}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:974.1-976.21
+  ;; 6-typing.watsup:977.1-979.21
   rule vreplace_lane{C : context, sh : shape, i : nat}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:978.1-979.50
+  ;; 6-typing.watsup:981.1-982.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:981.1-982.57
+  ;; 6-typing.watsup:984.1-985.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:984.1-985.48
+  ;; 6-typing.watsup:987.1-988.64
+  rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
+    `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:990.1-991.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:987.1-988.58
+  ;; 6-typing.watsup:993.1-994.58
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1), `half?` : half__(sh_2, sh_1)?, `zero?` : zero__(sh_2, sh_1)?}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:993.1-995.28
+  ;; 6-typing.watsup:999.1-1001.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; 6-typing.watsup:997.1-999.29
+  ;; 6-typing.watsup:1003.1-1005.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1001.1-1003.29
+  ;; 6-typing.watsup:1007.1-1009.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1008.1-1010.29
+  ;; 6-typing.watsup:1014.1-1016.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; 6-typing.watsup:1012.1-1014.29
+  ;; 6-typing.watsup:1018.1-1020.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(`MUT%?`_mut(?(())), t))
 
-  ;; 6-typing.watsup:1019.1-1021.29
+  ;; 6-typing.watsup:1025.1-1027.29
   rule table.get{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1023.1-1025.29
+  ;; 6-typing.watsup:1029.1-1031.29
   rule table.set{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1027.1-1029.29
+  ;; 6-typing.watsup:1033.1-1035.29
   rule table.size{C : context, x : idx, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1031.1-1033.29
+  ;; 6-typing.watsup:1037.1-1039.29
   rule table.grow{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1035.1-1037.29
+  ;; 6-typing.watsup:1041.1-1043.29
   rule table.fill{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1039.1-1043.36
+  ;; 6-typing.watsup:1045.1-1049.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x_1!`%`_idx.0] = `%%`_tabletype(lim_1, rt_1))
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%`_tabletype(lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1045.1-1049.36
+  ;; 6-typing.watsup:1051.1-1055.36
   rule table.init{C : context, x : idx, y : idx, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt_1))
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1051.1-1053.24
+  ;; 6-typing.watsup:1057.1-1059.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; 6-typing.watsup:1058.1-1060.23
+  ;; 6-typing.watsup:1064.1-1066.23
   rule memory.size{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1062.1-1064.23
+  ;; 6-typing.watsup:1068.1-1070.23
   rule memory.grow{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1066.1-1068.23
+  ;; 6-typing.watsup:1072.1-1074.23
   rule memory.fill{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1070.1-1073.27
+  ;; 6-typing.watsup:1076.1-1079.27
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, mt_1 : memtype, mt_2 : memtype}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x_1!`%`_idx.0] = mt_1)
     -- if (C.MEMS_context[x_2!`%`_idx.0] = mt_2)
 
-  ;; 6-typing.watsup:1075.1-1078.24
+  ;; 6-typing.watsup:1081.1-1084.24
   rule memory.init{C : context, x : idx, y : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1080.1-1082.24
+  ;; 6-typing.watsup:1086.1-1088.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1093.1-1096.43
+  ;; 6-typing.watsup:1099.1-1102.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1098.1-1101.35
+  ;; 6-typing.watsup:1104.1-1107.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1112.1-1115.43
+  ;; 6-typing.watsup:1118.1-1121.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1117.1-1120.35
+  ;; 6-typing.watsup:1123.1-1126.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_sz(M)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1122.1-1125.46
+  ;; 6-typing.watsup:1128.1-1131.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1127.1-1130.39
+  ;; 6-typing.watsup:1133.1-1136.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ((M / 8) * N))
 
-  ;; 6-typing.watsup:1132.1-1135.35
+  ;; 6-typing.watsup:1138.1-1141.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1137.1-1140.35
+  ;; 6-typing.watsup:1143.1-1146.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1142.1-1146.21
+  ;; 6-typing.watsup:1148.1-1152.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
-  ;; 6-typing.watsup:1148.1-1151.46
+  ;; 6-typing.watsup:1154.1-1157.46
   rule vstore{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1153.1-1157.21
+  ;; 6-typing.watsup:1159.1-1163.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
@@ -5115,13 +5330,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1358.1-1358.100
+;; 6-typing.watsup:1364.1-1364.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1402.1-1403.17
+  ;; 6-typing.watsup:1408.1-1409.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1405.1-1408.54
+  ;; 6-typing.watsup:1411.1-1414.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -5131,13 +5346,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1357.1-1357.98
+;; 6-typing.watsup:1363.1-1363.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1394.1-1395.17
+  ;; 6-typing.watsup:1400.1-1401.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1397.1-1400.49
+  ;; 6-typing.watsup:1403.1-1406.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
@@ -5574,6 +5789,16 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vbinop_(sh, vbinop, c_1, c_2) = [])
 
   ;; 8-reduction.watsup
+  rule `vternop-val`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [VCONST_instr(V128_vectype, c)])
+    -- if c <- $vternop_(sh, vternop, c_1, c_2, c_3)
+
+  ;; 8-reduction.watsup
+  rule `vternop-trap`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [TRAP_instr])
+    -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
+
+  ;; 8-reduction.watsup
   rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
     `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
@@ -5602,11 +5827,18 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($ibits_(32, ci) = `%`_bit($ilt_($lsize((Jnn : Jnn <: lanetype)), S_sx, ci_1, `%`_iN(0))!`%`_u32.0)*{ci_1 <- `ci_1*`})
 
   ;; 8-reduction.watsup
-  rule vswizzle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `ci*` : lane_($lanetype(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M))))*, `k*` : nat*}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLE_instr(`%X%`_ishape((Pnn : Pnn <: Jnn), `%`_dim(M)))], [VCONST_instr(V128_vectype, c)])
-    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_2))
-    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
-    -- if (c = $invlanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+  rule `vswizzlop-swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+
+  ;; 8-reduction.watsup
+  rule `vswizzlop-relaxed_swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), RELAXED_SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
 
   ;; 8-reduction.watsup
   rule vshuffle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, `i*` : nat*, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `k*` : nat*}:
@@ -5643,6 +5875,11 @@ relation Step_pure: `%~>%`(instr*, instr*)
   rule vextbinop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextbinop : vextbinop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VEXTBINOP_instr(sh_2, sh_1, vextbinop)], [VCONST_instr(V128_vectype, c)])
     -- if ($vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c)
+
+  ;; 8-reduction.watsup
+  rule vextternop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextternop : vextternop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VEXTTERNOP_instr(sh_2, sh_1, vextternop)], [VCONST_instr(V128_vectype, c)])
+    -- if ($vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c)
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Jnn_2 : Jnn, M_2 : M, Jnn_1 : Jnn, M_1 : M, sx : sx, c : vec_(V128_Vnn), `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*}:
@@ -6301,89 +6538,89 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config($with_array(z, a, i, $packfield_(zt, val)), []))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 8-reduction.watsup:806.1-807.56
+  ;; 8-reduction.watsup:823.1-824.56
   rule local.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) LOCAL.SET_instr(x)]), `%;%`_config($with_local(z, x, val), []))
 
-  ;; 8-reduction.watsup:819.1-820.58
+  ;; 8-reduction.watsup:836.1-837.58
   rule global.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) GLOBAL.SET_instr(x)]), `%;%`_config($with_global(z, x, val), []))
 
-  ;; 8-reduction.watsup:833.1-835.33
+  ;; 8-reduction.watsup:850.1-852.33
   rule `table.set-oob`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i >= |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:837.1-839.32
+  ;; 8-reduction.watsup:854.1-856.32
   rule `table.set-val`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:847.1-850.46
+  ;; 8-reduction.watsup:864.1-867.46
   rule `table.grow-succeed`{z : state, ref : ref, n : n, x : idx, ti : tableinst}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr(I32_numtype, `%`_num_(|$table(z, x).REFS_tableinst|))]))
     -- if (ti = $growtable($table(z, x), n, ref))
 
-  ;; 8-reduction.watsup:852.1-853.81
+  ;; 8-reduction.watsup:869.1-870.81
   rule `table.grow-fail`{z : state, ref : ref, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:913.1-914.51
+  ;; 8-reduction.watsup:930.1-931.51
   rule elem.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [ELEM.DROP_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
-  ;; 8-reduction.watsup:997.1-1000.60
+  ;; 8-reduction.watsup:1014.1-1017.60
   rule `store-num-oob`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1002.1-1006.29
+  ;; 8-reduction.watsup:1019.1-1023.29
   rule `store-num-val`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $nbytes_(nt, c))
 
-  ;; 8-reduction.watsup:1008.1-1011.52
+  ;; 8-reduction.watsup:1025.1-1028.52
   rule `store-pack-oob`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1013.1-1017.52
+  ;; 8-reduction.watsup:1030.1-1034.52
   rule `store-pack-val`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $ibytes_(n, $wrap__($size((Inn : Inn <: numtype)), n, c)))
 
-  ;; 8-reduction.watsup:1019.1-1021.63
+  ;; 8-reduction.watsup:1036.1-1038.63
   rule `vstore-oob`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1023.1-1025.31
+  ;; 8-reduction.watsup:1040.1-1042.31
   rule `vstore-val`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $vbytes_(V128_vectype, c))
 
-  ;; 8-reduction.watsup:1028.1-1030.50
+  ;; 8-reduction.watsup:1045.1-1047.50
   rule `vstore_lane-oob`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1032.1-1036.49
+  ;; 8-reduction.watsup:1049.1-1053.49
   rule `vstore_lane-val`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, `b*` : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b <- `b*`}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
     -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:1044.1-1047.37
+  ;; 8-reduction.watsup:1061.1-1064.37
   rule `memory.grow-succeed`{z : state, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
     -- if (mi = $growmem($mem(z, x), n))
 
-  ;; 8-reduction.watsup:1049.1-1050.78
+  ;; 8-reduction.watsup:1066.1-1067.78
   rule `memory.grow-fail`{z : state, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:1110.1-1111.51
+  ;; 8-reduction.watsup:1127.1-1128.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }
@@ -7033,7 +7270,7 @@ grammar Blaneidx : laneidx
 ;; A-binary.watsup
 rec {
 
-;; A-binary.watsup:971.1-981.66
+;; A-binary.watsup:992.1-1006.73
 grammar Binstr : instr
   ;; A-binary.watsup:214.5-214.24
   prod 0x00 => UNREACHABLE_instr
@@ -7563,430 +7800,462 @@ grammar Binstr : instr
   prod{`b*` : byte*} {0xFD `%`_u32(12):Bu32 b:Bbyte^16{b <- `b*`}} => VCONST_instr(V128_vectype, $invibytes_(128, b^16{b <- `b*`}))
   ;; A-binary.watsup:625.5-625.58
   prod{l : labelidx} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), [`%`_uN(l!`%`_labelidx.0)])
-  ;; A-binary.watsup:626.5-626.40
-  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:630.5-630.38
-  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
+  ;; A-binary.watsup:626.5-626.49
+  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SWIZZLE_vswizzlop_)
+  ;; A-binary.watsup:627.5-627.58
+  prod {0xFD `%`_u32(256):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), RELAXED_SWIZZLE_vswizzlop_)
   ;; A-binary.watsup:631.5-631.38
-  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
+  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
   ;; A-binary.watsup:632.5-632.38
-  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
   ;; A-binary.watsup:633.5-633.38
-  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
+  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
   ;; A-binary.watsup:634.5-634.38
-  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
   ;; A-binary.watsup:635.5-635.38
+  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  ;; A-binary.watsup:636.5-636.38
   prod {0xFD `%`_u32(20):Bu32} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)))
-  ;; A-binary.watsup:639.5-639.60
-  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:640.5-640.60
+  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:641.5-641.60
   prod{l : labelidx} {0xFD `%`_u32(22):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:641.5-641.58
+  ;; A-binary.watsup:642.5-642.58
   prod{l : labelidx} {0xFD `%`_u32(23):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:642.5-642.60
-  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:643.5-643.60
+  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:644.5-644.60
   prod{l : labelidx} {0xFD `%`_u32(25):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:644.5-644.58
-  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:645.5-645.58
-  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:646.5-646.58
-  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:647.5-647.58
-  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:648.5-648.58
-  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:649.5-649.58
-  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:650.5-650.58
-  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:651.5-651.58
-  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:652.5-652.58
+  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:653.5-653.58
   prod{l : labelidx} {0xFD `%`_u32(34):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:656.5-656.41
-  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
   ;; A-binary.watsup:657.5-657.41
+  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
+  ;; A-binary.watsup:658.5-658.41
   prod {0xFD `%`_u32(36):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NE_vrelop_)
-  ;; A-binary.watsup:658.5-658.45
-  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:659.5-659.45
-  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:660.5-660.45
-  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:661.5-661.45
-  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:662.5-662.45
-  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:663.5-663.45
-  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:664.5-664.45
-  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:665.5-665.45
+  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:666.5-666.45
   prod {0xFD `%`_u32(44):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:669.5-669.41
-  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
   ;; A-binary.watsup:670.5-670.41
+  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
+  ;; A-binary.watsup:671.5-671.41
   prod {0xFD `%`_u32(46):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NE_vrelop_)
-  ;; A-binary.watsup:671.5-671.45
-  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:672.5-672.45
-  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:673.5-673.45
-  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:674.5-674.45
-  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:675.5-675.45
-  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:676.5-676.45
-  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:677.5-677.45
-  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:678.5-678.45
+  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:679.5-679.45
   prod {0xFD `%`_u32(54):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:682.5-682.41
-  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:683.5-683.41
+  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
+  ;; A-binary.watsup:684.5-684.41
   prod {0xFD `%`_u32(56):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NE_vrelop_)
-  ;; A-binary.watsup:684.5-684.45
-  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:685.5-685.45
-  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:686.5-686.45
-  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:687.5-687.45
-  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:688.5-688.45
-  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:689.5-689.45
-  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:690.5-690.45
-  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:691.5-691.45
+  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:692.5-692.45
   prod {0xFD `%`_u32(64):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:695.5-695.41
-  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:696.5-696.41
-  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
+  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:697.5-697.41
-  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
+  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
   ;; A-binary.watsup:698.5-698.41
-  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
+  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
   ;; A-binary.watsup:699.5-699.41
-  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
   ;; A-binary.watsup:700.5-700.41
+  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  ;; A-binary.watsup:701.5-701.41
   prod {0xFD `%`_u32(70):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GE_vrelop_)
-  ;; A-binary.watsup:704.5-704.41
-  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:705.5-705.41
-  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
+  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:706.5-706.41
-  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
+  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
   ;; A-binary.watsup:707.5-707.41
-  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
+  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
   ;; A-binary.watsup:708.5-708.41
-  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
   ;; A-binary.watsup:709.5-709.41
+  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  ;; A-binary.watsup:710.5-710.41
   prod {0xFD `%`_u32(76):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GE_vrelop_)
-  ;; A-binary.watsup:713.5-713.36
+  ;; A-binary.watsup:714.5-714.36
   prod {0xFD `%`_u32(77):Bu32} => VVUNOP_instr(V128_vectype, NOT_vvunop)
-  ;; A-binary.watsup:717.5-717.37
+  ;; A-binary.watsup:718.5-718.37
   prod {0xFD `%`_u32(78):Bu32} => VVBINOP_instr(V128_vectype, AND_vvbinop)
-  ;; A-binary.watsup:718.5-718.40
+  ;; A-binary.watsup:719.5-719.40
   prod {0xFD `%`_u32(79):Bu32} => VVBINOP_instr(V128_vectype, ANDNOT_vvbinop)
-  ;; A-binary.watsup:719.5-719.36
+  ;; A-binary.watsup:720.5-720.36
   prod {0xFD `%`_u32(80):Bu32} => VVBINOP_instr(V128_vectype, OR_vvbinop)
-  ;; A-binary.watsup:720.5-720.37
+  ;; A-binary.watsup:721.5-721.37
   prod {0xFD `%`_u32(81):Bu32} => VVBINOP_instr(V128_vectype, XOR_vvbinop)
-  ;; A-binary.watsup:724.5-724.44
+  ;; A-binary.watsup:725.5-725.44
   prod {0xFD `%`_u32(82):Bu32} => VVTERNOP_instr(V128_vectype, BITSELECT_vvternop)
-  ;; A-binary.watsup:728.5-728.43
+  ;; A-binary.watsup:729.5-729.43
   prod {0xFD `%`_u32(83):Bu32} => VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)
-  ;; A-binary.watsup:732.5-732.41
-  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
   ;; A-binary.watsup:733.5-733.41
+  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
+  ;; A-binary.watsup:734.5-734.41
   prod {0xFD `%`_u32(97):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NEG_vunop_)
-  ;; A-binary.watsup:734.5-734.44
+  ;; A-binary.watsup:735.5-735.44
   prod {0xFD `%`_u32(98):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), POPCNT_vunop_)
-  ;; A-binary.watsup:738.5-738.48
+  ;; A-binary.watsup:739.5-739.48
   prod {0xFD `%`_u32(99):Bu32} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:742.5-742.41
+  ;; A-binary.watsup:743.5-743.41
   prod {0xFD `%`_u32(100):Bu32} => VBITMASK_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:746.5-746.53
-  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
   ;; A-binary.watsup:747.5-747.53
+  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
+  ;; A-binary.watsup:748.5-748.53
   prod {0xFD `%`_u32(102):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), U_sx)
-  ;; A-binary.watsup:751.5-751.45
+  ;; A-binary.watsup:752.5-752.45
   prod {0xFD `%`_u32(107):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHL_vshiftop_)
-  ;; A-binary.watsup:752.5-752.49
-  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
   ;; A-binary.watsup:753.5-753.49
+  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
+  ;; A-binary.watsup:754.5-754.49
   prod {0xFD `%`_u32(109):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:757.5-757.43
+  ;; A-binary.watsup:758.5-758.43
   prod {0xFD `%`_u32(110):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_vbinop_)
-  ;; A-binary.watsup:758.5-758.51
-  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:759.5-759.51
+  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:760.5-760.51
   prod {0xFD `%`_u32(112):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:760.5-760.43
+  ;; A-binary.watsup:761.5-761.43
   prod {0xFD `%`_u32(113):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_vbinop_)
-  ;; A-binary.watsup:761.5-761.51
-  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:762.5-762.51
+  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:763.5-763.51
   prod {0xFD `%`_u32(115):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:763.5-763.47
-  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:764.5-764.47
-  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
+  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:765.5-765.47
-  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:766.5-766.47
+  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:767.5-767.47
   prod {0xFD `%`_u32(121):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:767.5-767.48
+  ;; A-binary.watsup:768.5-768.48
   prod {0xFD `%`_u32(123):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:771.5-771.72
-  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
   ;; A-binary.watsup:772.5-772.72
+  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
+  ;; A-binary.watsup:773.5-773.72
   prod {0xFD `%`_u32(125):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:776.5-776.42
-  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
   ;; A-binary.watsup:777.5-777.42
+  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
+  ;; A-binary.watsup:778.5-778.42
   prod {0xFD `%`_u32(129):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NEG_vunop_)
-  ;; A-binary.watsup:781.5-781.55
+  ;; A-binary.watsup:782.5-782.55
   prod {0xFD `%`_u32(130):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `Q15MULR_SATS`_vbinop_)
-  ;; A-binary.watsup:785.5-785.49
+  ;; A-binary.watsup:783.5-783.59
+  prod {0xFD `%`_u32(273):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `RELAXED_Q15MULRS`_vbinop_)
+  ;; A-binary.watsup:787.5-787.49
   prod {0xFD `%`_u32(131):Bu32} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:789.5-789.41
+  ;; A-binary.watsup:791.5-791.41
   prod {0xFD `%`_u32(132):Bu32} => VBITMASK_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)))
-  ;; A-binary.watsup:793.5-793.53
+  ;; A-binary.watsup:795.5-795.53
   prod {0xFD `%`_u32(133):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), S_sx)
-  ;; A-binary.watsup:794.5-794.53
+  ;; A-binary.watsup:796.5-796.53
   prod {0xFD `%`_u32(134):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), U_sx)
-  ;; A-binary.watsup:798.5-798.65
-  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:799.5-799.66
-  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
   ;; A-binary.watsup:800.5-800.65
-  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
   ;; A-binary.watsup:801.5-801.66
+  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
+  ;; A-binary.watsup:802.5-802.65
+  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:803.5-803.66
   prod {0xFD `%`_u32(138):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:805.5-805.45
+  ;; A-binary.watsup:807.5-807.45
   prod {0xFD `%`_u32(139):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHL_vshiftop_)
-  ;; A-binary.watsup:806.5-806.49
+  ;; A-binary.watsup:808.5-808.49
   prod {0xFD `%`_u32(140):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:807.5-807.49
+  ;; A-binary.watsup:809.5-809.49
   prod {0xFD `%`_u32(141):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:811.5-811.43
+  ;; A-binary.watsup:813.5-813.43
   prod {0xFD `%`_u32(142):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_vbinop_)
-  ;; A-binary.watsup:812.5-812.51
+  ;; A-binary.watsup:814.5-814.51
   prod {0xFD `%`_u32(143):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:813.5-813.51
-  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:814.5-814.43
-  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
   ;; A-binary.watsup:815.5-815.51
+  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
+  ;; A-binary.watsup:816.5-816.43
+  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
+  ;; A-binary.watsup:817.5-817.51
   prod {0xFD `%`_u32(146):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:816.5-816.51
+  ;; A-binary.watsup:818.5-818.51
   prod {0xFD `%`_u32(147):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:817.5-817.43
+  ;; A-binary.watsup:819.5-819.43
   prod {0xFD `%`_u32(149):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MUL_vbinop_)
-  ;; A-binary.watsup:818.5-818.47
-  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:819.5-819.47
-  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:820.5-820.47
-  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:821.5-821.47
+  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:822.5-822.47
+  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:823.5-823.47
   prod {0xFD `%`_u32(153):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:822.5-822.48
+  ;; A-binary.watsup:824.5-824.48
   prod {0xFD `%`_u32(155):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:826.5-826.68
-  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:827.5-827.69
-  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
   ;; A-binary.watsup:828.5-828.68
-  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
   ;; A-binary.watsup:829.5-829.69
+  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
+  ;; A-binary.watsup:830.5-830.68
+  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  ;; A-binary.watsup:831.5-831.69
   prod {0xFD `%`_u32(159):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:833.5-833.72
+  ;; A-binary.watsup:832.5-832.69
+  prod {0xFD `%`_u32(274):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), `RELAXED_DOTS`_vextbinop__)
+  ;; A-binary.watsup:836.5-836.72
   prod {0xFD `%`_u32(126):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(S_sx))
-  ;; A-binary.watsup:834.5-834.72
+  ;; A-binary.watsup:837.5-837.72
   prod {0xFD `%`_u32(127):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:838.5-838.42
+  ;; A-binary.watsup:841.5-841.42
   prod {0xFD `%`_u32(160):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:839.5-839.42
+  ;; A-binary.watsup:842.5-842.42
   prod {0xFD `%`_u32(161):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:843.5-843.49
+  ;; A-binary.watsup:846.5-846.49
   prod {0xFD `%`_u32(163):Bu32} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:847.5-847.41
+  ;; A-binary.watsup:850.5-850.41
   prod {0xFD `%`_u32(164):Bu32} => VBITMASK_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)))
-  ;; A-binary.watsup:851.5-851.65
+  ;; A-binary.watsup:854.5-854.65
   prod {0xFD `%`_u32(167):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:852.5-852.66
+  ;; A-binary.watsup:855.5-855.66
   prod {0xFD `%`_u32(168):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:853.5-853.65
+  ;; A-binary.watsup:856.5-856.65
   prod {0xFD `%`_u32(169):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:854.5-854.66
+  ;; A-binary.watsup:857.5-857.66
   prod {0xFD `%`_u32(170):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:858.5-858.45
+  ;; A-binary.watsup:861.5-861.45
   prod {0xFD `%`_u32(171):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHL_vshiftop_)
-  ;; A-binary.watsup:859.5-859.49
+  ;; A-binary.watsup:862.5-862.49
   prod {0xFD `%`_u32(172):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:860.5-860.49
+  ;; A-binary.watsup:863.5-863.49
   prod {0xFD `%`_u32(173):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:864.5-864.43
+  ;; A-binary.watsup:867.5-867.43
   prod {0xFD `%`_u32(174):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:865.5-865.43
+  ;; A-binary.watsup:868.5-868.43
   prod {0xFD `%`_u32(177):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:866.5-866.43
+  ;; A-binary.watsup:869.5-869.43
   prod {0xFD `%`_u32(181):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MUL_vbinop_)
-  ;; A-binary.watsup:867.5-867.47
-  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:868.5-868.47
-  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:869.5-869.47
-  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
   ;; A-binary.watsup:870.5-870.47
+  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
+  ;; A-binary.watsup:871.5-871.47
+  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:872.5-872.47
+  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:873.5-873.47
   prod {0xFD `%`_u32(185):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:874.5-874.61
+  ;; A-binary.watsup:877.5-877.61
   prod {0xFD `%`_u32(186):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `DOTS`_vextbinop__)
-  ;; A-binary.watsup:875.5-875.68
+  ;; A-binary.watsup:878.5-878.68
   prod {0xFD `%`_u32(188):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:876.5-876.69
+  ;; A-binary.watsup:879.5-879.69
   prod {0xFD `%`_u32(189):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:877.5-877.68
+  ;; A-binary.watsup:880.5-880.68
   prod {0xFD `%`_u32(190):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:878.5-878.69
+  ;; A-binary.watsup:881.5-881.69
   prod {0xFD `%`_u32(191):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:882.5-882.42
+  ;; A-binary.watsup:885.5-885.74
+  prod {0xFD `%`_u32(275):Bu32} => VEXTTERNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `RELAXED_DOT_ADDS`_vextternop__)
+  ;; A-binary.watsup:889.5-889.42
   prod {0xFD `%`_u32(192):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:883.5-883.42
+  ;; A-binary.watsup:890.5-890.42
   prod {0xFD `%`_u32(193):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:887.5-887.49
+  ;; A-binary.watsup:894.5-894.49
   prod {0xFD `%`_u32(195):Bu32} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:891.5-891.41
+  ;; A-binary.watsup:898.5-898.41
   prod {0xFD `%`_u32(196):Bu32} => VBITMASK_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)))
-  ;; A-binary.watsup:895.5-895.65
+  ;; A-binary.watsup:902.5-902.65
   prod {0xFD `%`_u32(199):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:896.5-896.66
+  ;; A-binary.watsup:903.5-903.66
   prod {0xFD `%`_u32(200):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:897.5-897.65
+  ;; A-binary.watsup:904.5-904.65
   prod {0xFD `%`_u32(201):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:898.5-898.66
+  ;; A-binary.watsup:905.5-905.66
   prod {0xFD `%`_u32(202):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:902.5-902.45
+  ;; A-binary.watsup:909.5-909.45
   prod {0xFD `%`_u32(203):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHL_vshiftop_)
-  ;; A-binary.watsup:903.5-903.49
+  ;; A-binary.watsup:910.5-910.49
   prod {0xFD `%`_u32(204):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:904.5-904.49
+  ;; A-binary.watsup:911.5-911.49
   prod {0xFD `%`_u32(205):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:908.5-908.43
+  ;; A-binary.watsup:915.5-915.43
   prod {0xFD `%`_u32(206):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:909.5-909.43
+  ;; A-binary.watsup:916.5-916.43
   prod {0xFD `%`_u32(209):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:910.5-910.43
+  ;; A-binary.watsup:917.5-917.43
   prod {0xFD `%`_u32(213):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:914.5-914.42
+  ;; A-binary.watsup:921.5-921.42
   prod {0xFD `%`_u32(214):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), EQ_vrelop_)
-  ;; A-binary.watsup:915.5-915.42
+  ;; A-binary.watsup:922.5-922.42
   prod {0xFD `%`_u32(215):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NE_vrelop_)
-  ;; A-binary.watsup:916.5-916.46
+  ;; A-binary.watsup:923.5-923.46
   prod {0xFD `%`_u32(216):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:917.5-917.46
+  ;; A-binary.watsup:924.5-924.46
   prod {0xFD `%`_u32(217):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:918.5-918.46
+  ;; A-binary.watsup:925.5-925.46
   prod {0xFD `%`_u32(218):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:919.5-919.46
+  ;; A-binary.watsup:926.5-926.46
   prod {0xFD `%`_u32(219):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:923.5-923.68
+  ;; A-binary.watsup:930.5-930.68
   prod {0xFD `%`_u32(220):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:924.5-924.69
+  ;; A-binary.watsup:931.5-931.69
   prod {0xFD `%`_u32(221):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:925.5-925.68
+  ;; A-binary.watsup:932.5-932.68
   prod {0xFD `%`_u32(222):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:926.5-926.69
+  ;; A-binary.watsup:933.5-933.69
   prod {0xFD `%`_u32(223):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:930.5-930.43
+  ;; A-binary.watsup:937.5-937.43
   prod {0xFD `%`_u32(103):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), CEIL_vunop_)
-  ;; A-binary.watsup:931.5-931.44
+  ;; A-binary.watsup:938.5-938.44
   prod {0xFD `%`_u32(104):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), FLOOR_vunop_)
-  ;; A-binary.watsup:932.5-932.44
+  ;; A-binary.watsup:939.5-939.44
   prod {0xFD `%`_u32(105):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_vunop_)
-  ;; A-binary.watsup:933.5-933.46
+  ;; A-binary.watsup:940.5-940.46
   prod {0xFD `%`_u32(106):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEAREST_vunop_)
-  ;; A-binary.watsup:934.5-934.42
+  ;; A-binary.watsup:941.5-941.42
   prod {0xFD `%`_u32(224):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:935.5-935.42
+  ;; A-binary.watsup:942.5-942.42
   prod {0xFD `%`_u32(225):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:936.5-936.43
-  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
-  ;; A-binary.watsup:940.5-940.43
-  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:941.5-941.43
-  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:942.5-942.43
-  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
   ;; A-binary.watsup:943.5-943.43
+  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
+  ;; A-binary.watsup:947.5-947.43
+  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
+  ;; A-binary.watsup:948.5-948.43
+  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
+  ;; A-binary.watsup:949.5-949.43
+  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
+  ;; A-binary.watsup:950.5-950.43
   prod {0xFD `%`_u32(231):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), DIV_vbinop_)
-  ;; A-binary.watsup:944.5-944.43
-  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
-  ;; A-binary.watsup:945.5-945.43
-  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
-  ;; A-binary.watsup:946.5-946.44
-  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
-  ;; A-binary.watsup:947.5-947.44
-  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
   ;; A-binary.watsup:951.5-951.43
-  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
-  ;; A-binary.watsup:952.5-952.44
-  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
+  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
+  ;; A-binary.watsup:952.5-952.43
+  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
   ;; A-binary.watsup:953.5-953.44
-  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
-  ;; A-binary.watsup:954.5-954.46
-  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
-  ;; A-binary.watsup:955.5-955.42
-  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:956.5-956.42
-  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:957.5-957.43
-  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
-  ;; A-binary.watsup:961.5-961.43
-  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:962.5-962.43
-  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:963.5-963.43
-  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:964.5-964.43
-  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
+  ;; A-binary.watsup:954.5-954.44
+  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
+  ;; A-binary.watsup:955.5-955.51
+  prod {0xFD `%`_u32(269):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:956.5-956.51
+  prod {0xFD `%`_u32(270):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:960.5-960.53
+  prod {0xFD `%`_u32(261):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:961.5-961.54
+  prod {0xFD `%`_u32(262):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_NMADD_vternop_)
   ;; A-binary.watsup:965.5-965.43
-  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
-  ;; A-binary.watsup:966.5-966.43
-  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
+  ;; A-binary.watsup:966.5-966.44
+  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
   ;; A-binary.watsup:967.5-967.44
+  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
+  ;; A-binary.watsup:968.5-968.46
+  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
+  ;; A-binary.watsup:969.5-969.42
+  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
+  ;; A-binary.watsup:970.5-970.42
+  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
+  ;; A-binary.watsup:971.5-971.43
+  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
+  ;; A-binary.watsup:975.5-975.43
+  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
+  ;; A-binary.watsup:976.5-976.43
+  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
+  ;; A-binary.watsup:977.5-977.43
+  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
+  ;; A-binary.watsup:978.5-978.43
+  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  ;; A-binary.watsup:979.5-979.43
+  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
+  ;; A-binary.watsup:980.5-980.43
+  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  ;; A-binary.watsup:981.5-981.44
   prod {0xFD `%`_u32(246):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMIN_vbinop_)
-  ;; A-binary.watsup:968.5-968.44
+  ;; A-binary.watsup:982.5-982.44
   prod {0xFD `%`_u32(247):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMAX_vbinop_)
-  ;; A-binary.watsup:972.5-972.61
+  ;; A-binary.watsup:983.5-983.51
+  prod {0xFD `%`_u32(271):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:984.5-984.51
+  prod {0xFD `%`_u32(272):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:988.5-988.53
+  prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:989.5-989.54
+  prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
+  ;; A-binary.watsup:993.5-993.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__, ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:973.5-973.61
+  ;; A-binary.watsup:994.5-994.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), PROMOTE_vcvtop__, ?(LOW_half__), ?())
-  ;; A-binary.watsup:974.5-974.64
+  ;; A-binary.watsup:995.5-995.64
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:975.5-975.64
+  ;; A-binary.watsup:996.5-996.64
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:976.5-976.62
+  ;; A-binary.watsup:997.5-997.62
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:977.5-977.62
+  ;; A-binary.watsup:998.5-998.62
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:978.5-978.69
+  ;; A-binary.watsup:999.5-999.69
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:979.5-979.69
+  ;; A-binary.watsup:1000.5-1000.69
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:980.5-980.66
+  ;; A-binary.watsup:1001.5-1001.66
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:981.5-981.66
+  ;; A-binary.watsup:1002.5-1002.66
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:1003.5-1003.68
+  prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?())
+  ;; A-binary.watsup:1004.5-1004.68
+  prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?())
+  ;; A-binary.watsup:1005.5-1005.73
+  prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
+  ;; A-binary.watsup:1006.5-1006.73
+  prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
 }
 
 ;; A-binary.watsup
@@ -8497,6 +8766,9 @@ def $setproduct_(syntax X, X**) : X**
 }
 
 ;; 1-syntax.watsup
+def $ND : bool
+
+;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{`X*` : X*}(X*{X <- `X*`} : X*)
     -- if (|X*{X <- `X*`}| < (2 ^ 32))
@@ -8622,7 +8894,7 @@ def $cont(byte : byte) : nat
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:87.1-87.25
+;; 1-syntax.watsup:94.1-94.25
 def $utf8(char*) : byte*
   ;; A-binary.watsup:53.1-53.44
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
@@ -8746,13 +9018,13 @@ syntax fin =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:155.1-156.26
+;; 1-syntax.watsup:162.1-163.26
 syntax typeuse =
   | _IDX{typeidx : typeidx}(typeidx : typeidx)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
   | REC{n : n}(n : n)
 
-;; 1-syntax.watsup:158.1-159.26
+;; 1-syntax.watsup:165.1-166.26
 syntax heaptype =
   | ANY
   | EQ
@@ -8771,7 +9043,7 @@ syntax heaptype =
   | REC{n : n}(n : n)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
 
-;; 1-syntax.watsup:166.1-167.14
+;; 1-syntax.watsup:173.1-174.14
 syntax valtype =
   | I32
   | I64
@@ -8781,10 +9053,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:196.1-197.16
+;; 1-syntax.watsup:203.1-204.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:204.1-204.66
+;; 1-syntax.watsup:211.1-211.66
 syntax storagetype =
   | BOT
   | I32
@@ -8796,31 +9068,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:220.1-220.60
+;; 1-syntax.watsup:227.1-227.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:222.1-222.90
+;; 1-syntax.watsup:229.1-229.90
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:223.1-223.64
+;; 1-syntax.watsup:230.1-230.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:224.1-224.54
+;; 1-syntax.watsup:231.1-231.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:226.1-229.18
+;; 1-syntax.watsup:233.1-236.18
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:231.1-232.30
+;; 1-syntax.watsup:238.1-239.30
 syntax subtype =
   | SUB{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse <- `typeuse*`} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:234.1-235.22
+;; 1-syntax.watsup:241.1-242.22
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -9271,6 +9543,26 @@ def $shsize(shape : shape) : nat
   def $shsize{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = ($lsize(Lnn) * N)
 
 ;; 1-syntax.watsup
+syntax half__(shape_1 : shape, shape_2 : shape)
+  ;; 1-syntax.watsup
+  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+  | HIGH
+    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
+
+
+  ;; 1-syntax.watsup
+  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
+
+
+;; 1-syntax.watsup
+syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
+  | ZERO
+    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+
+;; 1-syntax.watsup
 syntax vvunop =
   | NOT
 
@@ -9326,6 +9618,8 @@ syntax vbinop_(shape : shape)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | `Q15MULR_SATS`
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
+  | `RELAXED_Q15MULRS`
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
@@ -9342,6 +9636,21 @@ syntax vbinop_(shape : shape)
   | MAX
   | PMIN
   | PMAX
+  | RELAXED_MIN
+  | RELAXED_MAX
+
+
+;; 1-syntax.watsup
+syntax vternop_(shape : shape)
+  ;; 1-syntax.watsup
+  syntax vternop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_LANESELECT
+
+
+  ;; 1-syntax.watsup
+  syntax vternop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_MADD
+  | RELAXED_NMADD
 
 
 ;; 1-syntax.watsup
@@ -9392,6 +9701,8 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
   syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
   | TRUNC_SAT{sx : sx}(sx : sx)
     -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | RELAXED_TRUNC{sx : sx}(sx : sx)
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -9403,24 +9714,9 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
 
 
 ;; 1-syntax.watsup
-syntax half__(shape_1 : shape, shape_2 : shape)
-  ;; 1-syntax.watsup
-  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-  | HIGH
-    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
-
-
-  ;; 1-syntax.watsup
-  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
-
-
-;; 1-syntax.watsup
-syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
-  | ZERO
-    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+syntax vswizzlop_{M : M}(`%X%`_ishape(I8_Jnn, `%`_dim(M))) =
+  | SWIZZLE
+  | RELAXED_SWIZZLE
 
 ;; 1-syntax.watsup
 syntax vshiftop_{Jnn : Jnn, M : M}(`%X%`_ishape(Jnn, `%`_dim(M))) =
@@ -9438,6 +9734,13 @@ syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) >= 16))
   | `DOTS`
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | `RELAXED_DOTS`
+    -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 16))
+
+;; 1-syntax.watsup
+syntax vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2))) =
+  | `RELAXED_DOT_ADDS`
+    -- if (((4 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -9612,20 +9915,20 @@ syntax instr =
   | VVTESTOP{vectype : vectype, vvtestop : vvtestop}(vectype : vectype, vvtestop : vvtestop)
   | VUNOP{shape : shape, vunop_ : vunop_(shape)}(shape : shape, vunop_ : vunop_(shape))
   | VBINOP{shape : shape, vbinop_ : vbinop_(shape)}(shape : shape, vbinop_ : vbinop_(shape))
+  | VTERNOP{shape : shape, vternop_ : vternop_(shape)}(shape : shape, vternop_ : vternop_(shape))
   | VTESTOP{shape : shape, vtestop_ : vtestop_(shape)}(shape : shape, vtestop_ : vtestop_(shape))
   | VRELOP{shape : shape, vrelop_ : vrelop_(shape)}(shape : shape, vrelop_ : vrelop_(shape))
   | VSHIFTOP{ishape : ishape, vshiftop_ : vshiftop_(ishape)}(ishape : ishape, vshiftop_ : vshiftop_(ishape))
   | VBITMASK{ishape : ishape}(ishape : ishape)
-  | VSWIZZLE{ishape : ishape}(ishape : ishape)
-    -- if (ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16)))
+  | VSWIZZLOP{ishape : ishape, vswizzlop_ : vswizzlop_(ishape)}(ishape : ishape, vswizzlop_ : vswizzlop_(ishape))
   | VSHUFFLE{ishape : ishape, `laneidx*` : laneidx*}(ishape : ishape, laneidx*{laneidx <- `laneidx*`} : laneidx*)
     -- if ((ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16))) /\ (|laneidx*{laneidx <- `laneidx*`}| = 16))
   | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1))
   | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1))
+  | VEXTTERNOP{ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1))
   | VNARROW{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(ishape_1 : ishape, ishape_2 : ishape, sx : sx)
     -- if (($lsize($lanetype((ishape_2 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_1 : ishape <: shape))))) /\ ((2 * $lsize($lanetype((ishape_1 : ishape <: shape)))) <= 32))
   | VCVTOP{shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), `half__?` : half__(shape_2, shape_1)?, `zero__?` : zero__(shape_2, shape_1)?}(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), half__?{half__ <- `half__?`} : half__(shape_2, shape_1)?, zero__?{zero__ <- `zero__?`} : zero__(shape_2, shape_1)?)
-    -- if ($lanetype(shape_1) =/= $lanetype(shape_2))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, `sx?` : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx <- `sx?`} : sx?, laneidx : laneidx)
     -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
@@ -10133,13 +10436,13 @@ def $free_shape(shape : shape) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:443.1-443.44
+;; 2-syntax-aux.watsup:444.1-444.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; 2-syntax-aux.watsup:444.1-444.32
+  ;; 2-syntax-aux.watsup:445.1-445.32
   def $shift_labelidxs([]) = []
-  ;; 2-syntax-aux.watsup:445.1-445.66
+  ;; 2-syntax-aux.watsup:446.1-446.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_uN(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; 2-syntax-aux.watsup:446.1-446.91
+  ;; 2-syntax-aux.watsup:447.1-447.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_uN((labelidx!`%`_labelidx.0 - 1))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
@@ -10148,7 +10451,7 @@ rec {
 
 ;; 2-syntax-aux.watsup:299.1-299.31
 def $free_block(instr*) : free
-  ;; 2-syntax-aux.watsup:449.1-450.47
+  ;; 2-syntax-aux.watsup:450.1-451.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 
@@ -10223,134 +10526,136 @@ def $free_instr(instr : instr) : free
   ;; 2-syntax-aux.watsup:347.1-347.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
   ;; 2-syntax-aux.watsup:348.1-348.60
+  def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
+  ;; 2-syntax-aux.watsup:349.1-349.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:349.1-349.58
+  ;; 2-syntax-aux.watsup:350.1-350.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:350.1-350.64
+  ;; 2-syntax-aux.watsup:351.1-351.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:351.1-351.55
-  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
   ;; 2-syntax-aux.watsup:352.1-352.55
-  def $free_instr{ishape : ishape}(VSWIZZLE_instr(ishape)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:353.1-353.64
+  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:353.1-353.66
+  def $free_instr{ishape : ishape, vswizzlop : vswizzlop_(ishape)}(VSWIZZLOP_instr(ishape, vswizzlop)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:354.1-354.64
   def $free_instr{ishape : ishape, `laneidx*` : laneidx*}(VSHUFFLE_instr(ishape, laneidx*{laneidx <- `laneidx*`})) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:354.1-355.49
+  ;; 2-syntax-aux.watsup:355.1-356.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:356.1-357.49
+  ;; 2-syntax-aux.watsup:357.1-358.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:358.1-359.49
+  ;; 2-syntax-aux.watsup:359.1-360.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:360.1-361.47
+  ;; 2-syntax-aux.watsup:361.1-362.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1), `half?` : half__(shape_2, shape_1)?, `zero?` : zero__(shape_2, shape_1)?}(VCVTOP_instr(shape_1, shape_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`})) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; 2-syntax-aux.watsup:362.1-362.51
+  ;; 2-syntax-aux.watsup:363.1-363.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:363.1-363.70
+  ;; 2-syntax-aux.watsup:364.1-364.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:364.1-364.66
+  ;; 2-syntax-aux.watsup:365.1-365.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:366.1-366.62
+  ;; 2-syntax-aux.watsup:367.1-367.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; 2-syntax-aux.watsup:367.1-367.34
+  ;; 2-syntax-aux.watsup:368.1-368.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:368.1-368.38
+  ;; 2-syntax-aux.watsup:369.1-369.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:369.1-369.29
+  ;; 2-syntax-aux.watsup:370.1-370.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:370.1-370.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:371.1-371.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:372.1-372.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; 2-syntax-aux.watsup:373.1-373.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:373.1-373.30
+  ;; 2-syntax-aux.watsup:374.1-374.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:375.1-375.33
+  ;; 2-syntax-aux.watsup:376.1-376.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:377.1-377.41
+  ;; 2-syntax-aux.watsup:378.1-378.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:378.1-378.69
-  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
   ;; 2-syntax-aux.watsup:379.1-379.69
+  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
+  ;; 2-syntax-aux.watsup:380.1-380.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:380.1-380.65
+  ;; 2-syntax-aux.watsup:381.1-381.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:382.1-382.60
+  ;; 2-syntax-aux.watsup:383.1-383.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:383.1-383.68
+  ;; 2-syntax-aux.watsup:384.1-384.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:384.1-384.70
+  ;; 2-syntax-aux.watsup:385.1-385.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:385.1-386.51
+  ;; 2-syntax-aux.watsup:386.1-387.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:387.1-388.51
+  ;; 2-syntax-aux.watsup:388.1-389.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:389.1-389.64
+  ;; 2-syntax-aux.watsup:390.1-390.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:390.1-390.60
+  ;; 2-syntax-aux.watsup:391.1-391.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:391.1-391.32
+  ;; 2-syntax-aux.watsup:392.1-392.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:392.1-392.61
+  ;; 2-syntax-aux.watsup:393.1-393.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:393.1-394.55
+  ;; 2-syntax-aux.watsup:394.1-395.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; 2-syntax-aux.watsup:395.1-396.51
+  ;; 2-syntax-aux.watsup:396.1-397.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:397.1-398.51
+  ;; 2-syntax-aux.watsup:398.1-399.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:400.1-400.41
-  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
   ;; 2-syntax-aux.watsup:401.1-401.41
+  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
+  ;; 2-syntax-aux.watsup:402.1-402.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:403.1-403.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:404.1-404.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:405.1-405.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; 2-syntax-aux.watsup:406.1-406.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:407.1-407.67
-  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
   ;; 2-syntax-aux.watsup:408.1-408.67
+  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
+  ;; 2-syntax-aux.watsup:409.1-409.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; 2-syntax-aux.watsup:410.1-410.63
-  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:411.1-411.63
+  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:412.1-412.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:412.1-412.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:413.1-413.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:414.1-414.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:415.1-415.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:415.1-416.59
+  ;; 2-syntax-aux.watsup:416.1-417.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; 2-syntax-aux.watsup:417.1-418.53
+  ;; 2-syntax-aux.watsup:418.1-419.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:419.1-419.60
+  ;; 2-syntax-aux.watsup:420.1-420.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:421.1-422.49
+  ;; 2-syntax-aux.watsup:422.1-423.49
   def $free_instr{numtype : numtype, loadop : loadop_(numtype), memidx : memidx, memarg : memarg}(LOAD_instr(numtype, ?(loadop), memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:423.1-424.49
+  ;; 2-syntax-aux.watsup:424.1-425.49
   def $free_instr{numtype : numtype, `sz?` : sz?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, sz?{sz <- `sz?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:425.1-426.49
+  ;; 2-syntax-aux.watsup:426.1-427.49
   def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:427.1-428.49
+  ;; 2-syntax-aux.watsup:428.1-429.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:429.1-430.49
+  ;; 2-syntax-aux.watsup:430.1-431.49
   def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:431.1-432.49
+  ;; 2-syntax-aux.watsup:432.1-433.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:433.1-433.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:434.1-434.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:435.1-435.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; 2-syntax-aux.watsup:436.1-436.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:436.1-437.51
+  ;; 2-syntax-aux.watsup:437.1-438.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; 2-syntax-aux.watsup:438.1-439.49
+  ;; 2-syntax-aux.watsup:439.1-440.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:440.1-440.60
+  ;; 2-syntax-aux.watsup:441.1-441.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 }
 
@@ -10453,14 +10758,14 @@ def $dataidx_funcs(func*) : dataidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:532.1-532.112
+;; 2-syntax-aux.watsup:533.1-533.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:559.1-559.38
+  ;; 2-syntax-aux.watsup:560.1-560.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 2-syntax-aux.watsup:560.1-560.95
+  ;; 2-syntax-aux.watsup:561.1-561.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 2-syntax-aux.watsup:561.1-561.92
+  ;; 2-syntax-aux.watsup:562.1-562.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -10483,78 +10788,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:533.1-533.112
+;; 2-syntax-aux.watsup:534.1-534.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:563.1-563.66
+  ;; 2-syntax-aux.watsup:564.1-564.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 2-syntax-aux.watsup:564.1-564.64
+  ;; 2-syntax-aux.watsup:565.1-565.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 2-syntax-aux.watsup:537.1-537.112
+;; 2-syntax-aux.watsup:538.1-538.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 2-syntax-aux.watsup:569.1-569.67
+  ;; 2-syntax-aux.watsup:570.1-570.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 2-syntax-aux.watsup:570.1-570.65
+  ;; 2-syntax-aux.watsup:571.1-571.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 2-syntax-aux.watsup:571.1-571.53
+  ;; 2-syntax-aux.watsup:572.1-572.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 2-syntax-aux.watsup:538.1-538.112
+;; 2-syntax-aux.watsup:539.1-539.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 2-syntax-aux.watsup:573.1-573.83
+  ;; 2-syntax-aux.watsup:574.1-574.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:539.1-539.112
+;; 2-syntax-aux.watsup:540.1-540.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 2-syntax-aux.watsup:575.1-575.64
-  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:576.1-576.64
-  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:577.1-577.64
+  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  ;; 2-syntax-aux.watsup:578.1-578.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 2-syntax-aux.watsup:578.1-578.40
+  ;; 2-syntax-aux.watsup:579.1-579.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 2-syntax-aux.watsup:542.1-542.112
+;; 2-syntax-aux.watsup:543.1-543.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 2-syntax-aux.watsup:582.1-582.66
+  ;; 2-syntax-aux.watsup:583.1-583.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 2-syntax-aux.watsup:583.1-583.69
+  ;; 2-syntax-aux.watsup:584.1-584.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 2-syntax-aux.watsup:543.1-543.112
+;; 2-syntax-aux.watsup:544.1-544.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 2-syntax-aux.watsup:585.1-585.80
+  ;; 2-syntax-aux.watsup:586.1-586.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:545.1-545.112
+;; 2-syntax-aux.watsup:546.1-546.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 2-syntax-aux.watsup:587.1-587.85
+  ;; 2-syntax-aux.watsup:588.1-588.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 2-syntax-aux.watsup:588.1-588.81
+  ;; 2-syntax-aux.watsup:589.1-589.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 2-syntax-aux.watsup:589.1-589.78
+  ;; 2-syntax-aux.watsup:590.1-590.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:546.1-546.112
+;; 2-syntax-aux.watsup:547.1-547.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 2-syntax-aux.watsup:591.1-592.71
+  ;; 2-syntax-aux.watsup:592.1-593.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:547.1-547.112
+;; 2-syntax-aux.watsup:548.1-548.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 2-syntax-aux.watsup:594.1-594.76
+  ;; 2-syntax-aux.watsup:595.1-595.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 2-syntax-aux.watsup:548.1-548.112
+;; 2-syntax-aux.watsup:549.1-549.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 2-syntax-aux.watsup:596.1-596.78
+  ;; 2-syntax-aux.watsup:597.1-597.78
   def $subst_deftype{qt : rectype, i : nat, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 2-syntax-aux.watsup:551.1-551.112
+;; 2-syntax-aux.watsup:552.1-552.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 2-syntax-aux.watsup:599.1-599.113
+  ;; 2-syntax-aux.watsup:600.1-600.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -10627,11 +10932,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:627.1-627.98
+;; 2-syntax-aux.watsup:628.1-628.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 2-syntax-aux.watsup:628.1-628.40
+  ;; 2-syntax-aux.watsup:629.1-629.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 2-syntax-aux.watsup:629.1-629.101
+  ;; 2-syntax-aux.watsup:630.1-630.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -10675,13 +10980,13 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:661.1-661.86
+;; 2-syntax-aux.watsup:662.1-662.86
 def $funcsxx(externidx*) : typeidx*
-  ;; 2-syntax-aux.watsup:667.1-667.24
+  ;; 2-syntax-aux.watsup:668.1-668.24
   def $funcsxx([]) = []
-  ;; 2-syntax-aux.watsup:668.1-668.45
+  ;; 2-syntax-aux.watsup:669.1-669.45
   def $funcsxx{x : idx, `xx*` : externidx*}([FUNC_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:669.1-669.58
+  ;; 2-syntax-aux.watsup:670.1-670.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -10689,13 +10994,13 @@ def $funcsxx(externidx*) : typeidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:662.1-662.88
+;; 2-syntax-aux.watsup:663.1-663.88
 def $globalsxx(externidx*) : globalidx*
-  ;; 2-syntax-aux.watsup:671.1-671.26
+  ;; 2-syntax-aux.watsup:672.1-672.26
   def $globalsxx([]) = []
-  ;; 2-syntax-aux.watsup:672.1-672.51
+  ;; 2-syntax-aux.watsup:673.1-673.51
   def $globalsxx{x : idx, `xx*` : externidx*}([GLOBAL_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:673.1-673.62
+  ;; 2-syntax-aux.watsup:674.1-674.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -10703,13 +11008,13 @@ def $globalsxx(externidx*) : globalidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:663.1-663.87
+;; 2-syntax-aux.watsup:664.1-664.87
 def $tablesxx(externidx*) : tableidx*
-  ;; 2-syntax-aux.watsup:675.1-675.25
+  ;; 2-syntax-aux.watsup:676.1-676.25
   def $tablesxx([]) = []
-  ;; 2-syntax-aux.watsup:676.1-676.48
+  ;; 2-syntax-aux.watsup:677.1-677.48
   def $tablesxx{x : idx, `xx*` : externidx*}([TABLE_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:677.1-677.60
+  ;; 2-syntax-aux.watsup:678.1-678.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -10717,13 +11022,13 @@ def $tablesxx(externidx*) : tableidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:664.1-664.85
+;; 2-syntax-aux.watsup:665.1-665.85
 def $memsxx(externidx*) : memidx*
-  ;; 2-syntax-aux.watsup:679.1-679.23
+  ;; 2-syntax-aux.watsup:680.1-680.23
   def $memsxx([]) = []
-  ;; 2-syntax-aux.watsup:680.1-680.42
+  ;; 2-syntax-aux.watsup:681.1-681.42
   def $memsxx{x : idx, `xx*` : externidx*}([MEM_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:681.1-681.56
+  ;; 2-syntax-aux.watsup:682.1-682.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -10731,13 +11036,13 @@ def $memsxx(externidx*) : memidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:665.1-665.85
+;; 2-syntax-aux.watsup:666.1-666.85
 def $tagsxx(externidx*) : tagidx*
-  ;; 2-syntax-aux.watsup:683.1-683.23
+  ;; 2-syntax-aux.watsup:684.1-684.23
   def $tagsxx([]) = []
-  ;; 2-syntax-aux.watsup:684.1-684.42
+  ;; 2-syntax-aux.watsup:685.1-685.42
   def $tagsxx{x : idx, `xx*` : externidx*}([TAG_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:685.1-685.56
+  ;; 2-syntax-aux.watsup:686.1-686.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -10745,13 +11050,13 @@ def $tagsxx(externidx*) : tagidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:688.1-688.88
+;; 2-syntax-aux.watsup:689.1-689.88
 def $funcsxt(externtype*) : deftype*
-  ;; 2-syntax-aux.watsup:694.1-694.24
+  ;; 2-syntax-aux.watsup:695.1-695.24
   def $funcsxt([]) = []
-  ;; 2-syntax-aux.watsup:695.1-695.47
+  ;; 2-syntax-aux.watsup:696.1-696.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:696.1-696.59
+  ;; 2-syntax-aux.watsup:697.1-697.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -10759,13 +11064,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:689.1-689.90
+;; 2-syntax-aux.watsup:690.1-690.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 2-syntax-aux.watsup:698.1-698.26
+  ;; 2-syntax-aux.watsup:699.1-699.26
   def $globalsxt([]) = []
-  ;; 2-syntax-aux.watsup:699.1-699.53
+  ;; 2-syntax-aux.watsup:700.1-700.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:700.1-700.63
+  ;; 2-syntax-aux.watsup:701.1-701.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -10773,13 +11078,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:690.1-690.89
+;; 2-syntax-aux.watsup:691.1-691.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 2-syntax-aux.watsup:702.1-702.25
+  ;; 2-syntax-aux.watsup:703.1-703.25
   def $tablesxt([]) = []
-  ;; 2-syntax-aux.watsup:703.1-703.50
+  ;; 2-syntax-aux.watsup:704.1-704.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:704.1-704.61
+  ;; 2-syntax-aux.watsup:705.1-705.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -10787,13 +11092,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:691.1-691.87
+;; 2-syntax-aux.watsup:692.1-692.87
 def $memsxt(externtype*) : memtype*
-  ;; 2-syntax-aux.watsup:706.1-706.23
+  ;; 2-syntax-aux.watsup:707.1-707.23
   def $memsxt([]) = []
-  ;; 2-syntax-aux.watsup:707.1-707.44
+  ;; 2-syntax-aux.watsup:708.1-708.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:708.1-708.57
+  ;; 2-syntax-aux.watsup:709.1-709.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -10801,13 +11106,13 @@ def $memsxt(externtype*) : memtype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:692.1-692.87
+;; 2-syntax-aux.watsup:693.1-693.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 2-syntax-aux.watsup:710.1-710.23
+  ;; 2-syntax-aux.watsup:711.1-711.23
   def $tagsxt([]) = []
-  ;; 2-syntax-aux.watsup:711.1-711.44
+  ;; 2-syntax-aux.watsup:712.1-712.44
   def $tagsxt{at : tagtype, `xt*` : externtype*}([TAG_externtype((at : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [at] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:712.1-712.57
+  ;; 2-syntax-aux.watsup:713.1-713.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -10816,6 +11121,61 @@ def $tagsxt(externtype*) : tagtype*
 def $memarg0 : memarg
   ;; 2-syntax-aux.watsup
   def $memarg0 = {ALIGN `%`_u32(0), OFFSET `%`_u32(0)}
+
+;; 3-numerics.watsup
+syntax relaxed2 =
+  | `%`{i : nat}(i : nat)
+    -- if ((i = 0) \/ (i = 1))
+
+;; 3-numerics.watsup
+syntax relaxed4 =
+  | `%`{i : nat}(i : nat)
+    -- if ((((i = 0) \/ (i = 1)) \/ (i = 2)) \/ (i = 3))
+
+;; 3-numerics.watsup
+def $relaxed2(relaxed2 : relaxed2, syntax X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $relaxed4(relaxed4 : relaxed4, syntax X, X : X, X : X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $R_fmadd : relaxed2
+
+;; 3-numerics.watsup
+def $R_fmin : relaxed4
+
+;; 3-numerics.watsup
+def $R_fmax : relaxed4
+
+;; 3-numerics.watsup
+def $R_idot : relaxed2
+
+;; 3-numerics.watsup
+def $R_iq15mulr : relaxed2
+
+;; 3-numerics.watsup
+def $R_trunc_u : relaxed4
+
+;; 3-numerics.watsup
+def $R_trunc_s : relaxed2
+
+;; 3-numerics.watsup
+def $R_swizzle : relaxed2
+
+;; 3-numerics.watsup
+def $R_laneselect : relaxed2
 
 ;; 3-numerics.watsup
 def $s33_to_u32(s33 : s33) : u32
@@ -10836,246 +11196,34 @@ def $invsigned_(N : N, int : int) : nat
     -- if ($signed_(N, j) = (i : nat <: int))
 
 ;; 3-numerics.watsup
-def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $sat_u_(N : N, nat : nat) : nat
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = 0
+    -- if (i < 0)
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = ((2 ^ N) - 1)
+    -- if (i > ((2 ^ N) - 1))
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = i
+    -- otherwise
 
 ;; 3-numerics.watsup
-def $fabs_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fceil_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ffloor_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fnearest_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fneg_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iclz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ictz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+def $sat_s_(N : N, int : int) : int
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = - ((2 ^ (N - 1)) : nat <: int)
+    -- if ((i : nat <: int) < - ((2 ^ (N - 1)) : nat <: int))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (((2 ^ (N - 1)) - 1) : nat <: int)
+    -- if (i > ((2 ^ (N - 1)) - 1))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (i : nat <: int)
+    -- otherwise
 
 ;; 3-numerics.watsup
 def $wrap__(M : M, N : N, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
-def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
-
-;; 3-numerics.watsup
-def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $ieqz_(N : N, iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
-
-;; 3-numerics.watsup
-def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
-
-;; 3-numerics.watsup
-def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
+def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
 def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
@@ -11084,30 +11232,22 @@ def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 def $trunc_sat__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 
 ;; 3-numerics.watsup
-def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
-    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
-    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+def $relaxed_trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+
+;; 3-numerics.watsup
+def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
 
 ;; 3-numerics.watsup
 def $narrow__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+
+;; 3-numerics.watsup
+def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
 
 ;; 3-numerics.watsup
 def $ibits_(N : N, iN : iN(N)) : bit*
@@ -11146,13 +11286,82 @@ def $invfbytes_(N : N, byte*) : fN(N)
     -- if ($fbytes_(N, p) = b*{b <- `b*`})
 
 ;; 3-numerics.watsup
+def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
+def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
 def $inot_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
 def $iandnot_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iclz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ictz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ieqz_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ibitselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irelaxed_laneselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*
 
 ;; 3-numerics.watsup
 def $iabs_(N : N, iN : iN(N)) : iN(N)
@@ -11179,10 +11388,85 @@ def $iavgr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 def $iq15mulr_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $irelaxed_q15mulr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*
+
+;; 3-numerics.watsup
+def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
 def $fpmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $fpmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_min_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_max_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fabs_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fneg_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fceil_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ffloor_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fnearest_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $frelaxed_madd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_nmadd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $lpacknum_(lanetype : lanetype, num_ : num_($lunpack(lanetype))) : lane_(lanetype)
@@ -11231,6 +11515,127 @@ def $half__(shape_1 : shape, shape_2 : shape, half__ : half__(shape_1, shape_2),
   def $half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, i : nat, j : nat}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), LOW_half__, i, j) = i
 
 ;; 3-numerics.watsup
+def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
+
+;; 3-numerics.watsup
+def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
+
+;; 3-numerics.watsup
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
+    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
+    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+
+;; 3-numerics.watsup
 def $vvunop_(vectype : vectype, vvunop : vvunop, vec_ : vec_(vectype)) : vec_(vectype)*
   ;; 3-numerics.watsup
   def $vvunop_{v128 : vec_(V128_Vnn)}(V128_vectype, NOT_vvunop, v128) = [$inot_($vsize(V128_vectype), v128)]
@@ -11268,12 +11673,6 @@ def $ivunop_(shape : shape, def $f_(N : N, iN : iN(N)) : iN(N), vec_ : vec_(V128
 ;; 3-numerics.watsup
 def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
-  ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fabs_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fneg_, vN_1)
@@ -11287,6 +11686,12 @@ def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), TRUNC_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $ftrunc_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEAREST_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fnearest_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
 
 ;; 3-numerics.watsup
 def $fvbinop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
@@ -11313,6 +11718,14 @@ def $ivbinopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) :
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; 3-numerics.watsup
+def $ivbinopsxnd_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivbinopsxnd_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, vN_1, vN_2) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`}))
+
+;; 3-numerics.watsup
 def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iadd_, vN_1, vN_2)
@@ -11333,6 +11746,8 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `Q15MULR_SATS`_vbinop_, vN_1, vN_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iq15mulr_sat_, S_sx, vN_1, vN_2)
   ;; 3-numerics.watsup
+  def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `RELAXED_Q15MULRS`_vbinop_, vN_1, vN_2) = $ivbinopsxnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_q15mulr_, S_sx, vN_1, vN_2)
+  ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fadd_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), SUB_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fsub_, vN_1, vN_2)
@@ -11348,6 +11763,37 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmin_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmax_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_min_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_max_, vN_1, vN_2)
+
+;; 3-numerics.watsup
+def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $fvternop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $ivternopnd_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivternopnd_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $vternop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), RELAXED_LANESELECT_vternop_, vN_1, vN_2, vN_3) = $ivternopnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_laneselect_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -11413,6 +11859,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
     -- if (iN_2?{iN_2 <- `iN_2?`} = $trunc_sat__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
   ;; 3-numerics.watsup
+  def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
+    -- if (iN_2?{iN_2 <- `iN_2?`} = $relaxed_trunc__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
+  ;; 3-numerics.watsup
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `fN_2*` : lane_($lanetype(`%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__, fN_1) = fN_2*{fN_2 <- `fN_2*`}
     -- if (fN_2*{fN_2 <- `fN_2*`} = $demote__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), fN_1))
   ;; 3-numerics.watsup
@@ -11435,11 +11884,38 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2)[$half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), half, 0, M_2) : M_2])
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`}))
   ;; 3-numerics.watsup
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
-    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`})
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+  ;; 3-numerics.watsup
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOTS`_vextbinop__, c_1, c_2) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_sat_($lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+
+;; 3-numerics.watsup
+def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
+  ;; 3-numerics.watsup
+  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_3*` : lane_($lanetype(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))))*, Jnn : Jnn, `ci'_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOT_ADDS`_vextternop__, c_1, c_2, c_3) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci_3*{ci_3 <- `ci_3*`} = $lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c_3))
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [`%`_uN(cj_1!`%`_iN.0) `%`_uN(cj_2!`%`_iN.0)]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn((Jnn : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [ck_1 ck_2]*{ck_1 <- `ck_1*`, ck_2 <- `ck_2*`}) = $iadd_sat_($lsizenn((Jnn : Jnn <: lanetype)), S_sx, `%`_iN(cj_1!`%`_iN.0), `%`_iN(cj_2!`%`_iN.0))*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`})
+    -- if (ck'_1*{ck'_1 <- `ck'_1*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_1)*{ck_1 <- `ck_1*`})
+    -- if (ck'_2*{ck'_2 <- `ck'_2*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_2)*{ck_2 <- `ck_2*`})
+    -- if (ck*{ck <- `ck*`} = $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck'_1, ck'_2)*{ck'_1 <- `ck'_1*`, ck'_2 <- `ck'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck, ci_3)*{ci_3 <- `ci_3*`, ck <- `ck*`}))
 
 ;; 3-numerics.watsup
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -12969,224 +13445,232 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:948.1-949.40
+  ;; 6-typing.watsup:948.1-949.51
+  rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
+    `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:951.1-952.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:951.1-952.44
+  ;; 6-typing.watsup:954.1-955.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:954.1-955.47
+  ;; 6-typing.watsup:957.1-958.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:957.1-958.33
+  ;; 6-typing.watsup:960.1-961.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:960.1-961.39
-  rule vswizzle{C : context, sh : ishape}:
-    `%|-%:%`(C, VSWIZZLE_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+  ;; 6-typing.watsup:963.1-964.50
+  rule vswizzlop{C : context, sh : ishape, vswizzlop : vswizzlop_(sh)}:
+    `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:963.1-965.29
+  ;; 6-typing.watsup:966.1-968.29
   rule vshuffle{C : context, sh : ishape, `i*` : nat*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, `%`_laneidx(i)*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i < (2 * $dim((sh : ishape <: shape))!`%`_dim.0)))*{i <- `i*`}
 
-  ;; 6-typing.watsup:967.1-968.44
+  ;; 6-typing.watsup:970.1-971.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:970.1-972.21
+  ;; 6-typing.watsup:973.1-975.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : nat}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:974.1-976.21
+  ;; 6-typing.watsup:977.1-979.21
   rule vreplace_lane{C : context, sh : shape, i : nat}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:978.1-979.50
+  ;; 6-typing.watsup:981.1-982.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:981.1-982.57
+  ;; 6-typing.watsup:984.1-985.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:984.1-985.48
+  ;; 6-typing.watsup:987.1-988.64
+  rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
+    `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:990.1-991.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:987.1-988.58
+  ;; 6-typing.watsup:993.1-994.58
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1), `half?` : half__(sh_2, sh_1)?, `zero?` : zero__(sh_2, sh_1)?}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:993.1-995.28
+  ;; 6-typing.watsup:999.1-1001.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; 6-typing.watsup:997.1-999.29
+  ;; 6-typing.watsup:1003.1-1005.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1001.1-1003.29
+  ;; 6-typing.watsup:1007.1-1009.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1008.1-1010.29
+  ;; 6-typing.watsup:1014.1-1016.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; 6-typing.watsup:1012.1-1014.29
+  ;; 6-typing.watsup:1018.1-1020.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(`MUT%?`_mut(?(())), t))
 
-  ;; 6-typing.watsup:1019.1-1021.29
+  ;; 6-typing.watsup:1025.1-1027.29
   rule table.get{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1023.1-1025.29
+  ;; 6-typing.watsup:1029.1-1031.29
   rule table.set{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1027.1-1029.29
+  ;; 6-typing.watsup:1033.1-1035.29
   rule table.size{C : context, x : idx, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1031.1-1033.29
+  ;; 6-typing.watsup:1037.1-1039.29
   rule table.grow{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1035.1-1037.29
+  ;; 6-typing.watsup:1041.1-1043.29
   rule table.fill{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1039.1-1043.36
+  ;; 6-typing.watsup:1045.1-1049.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x_1!`%`_idx.0] = `%%`_tabletype(lim_1, rt_1))
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%`_tabletype(lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1045.1-1049.36
+  ;; 6-typing.watsup:1051.1-1055.36
   rule table.init{C : context, x : idx, y : idx, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt_1))
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1051.1-1053.24
+  ;; 6-typing.watsup:1057.1-1059.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; 6-typing.watsup:1058.1-1060.23
+  ;; 6-typing.watsup:1064.1-1066.23
   rule memory.size{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1062.1-1064.23
+  ;; 6-typing.watsup:1068.1-1070.23
   rule memory.grow{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1066.1-1068.23
+  ;; 6-typing.watsup:1072.1-1074.23
   rule memory.fill{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1070.1-1073.27
+  ;; 6-typing.watsup:1076.1-1079.27
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, mt_1 : memtype, mt_2 : memtype}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x_1!`%`_idx.0] = mt_1)
     -- if (C.MEMS_context[x_2!`%`_idx.0] = mt_2)
 
-  ;; 6-typing.watsup:1075.1-1078.24
+  ;; 6-typing.watsup:1081.1-1084.24
   rule memory.init{C : context, x : idx, y : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1080.1-1082.24
+  ;; 6-typing.watsup:1086.1-1088.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1093.1-1096.43
+  ;; 6-typing.watsup:1099.1-1102.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1098.1-1101.35
+  ;; 6-typing.watsup:1104.1-1107.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1112.1-1115.43
+  ;; 6-typing.watsup:1118.1-1121.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1117.1-1120.35
+  ;; 6-typing.watsup:1123.1-1126.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_sz(M)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1122.1-1125.46
+  ;; 6-typing.watsup:1128.1-1131.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1127.1-1130.39
+  ;; 6-typing.watsup:1133.1-1136.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ((M / 8) * N))
 
-  ;; 6-typing.watsup:1132.1-1135.35
+  ;; 6-typing.watsup:1138.1-1141.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1137.1-1140.35
+  ;; 6-typing.watsup:1143.1-1146.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1142.1-1146.21
+  ;; 6-typing.watsup:1148.1-1152.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
-  ;; 6-typing.watsup:1148.1-1151.46
+  ;; 6-typing.watsup:1154.1-1157.46
   rule vstore{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1153.1-1157.21
+  ;; 6-typing.watsup:1159.1-1163.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
@@ -13461,13 +13945,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1358.1-1358.100
+;; 6-typing.watsup:1364.1-1364.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1402.1-1403.17
+  ;; 6-typing.watsup:1408.1-1409.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1405.1-1408.54
+  ;; 6-typing.watsup:1411.1-1414.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -13477,13 +13961,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1357.1-1357.98
+;; 6-typing.watsup:1363.1-1363.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1394.1-1395.17
+  ;; 6-typing.watsup:1400.1-1401.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1397.1-1400.49
+  ;; 6-typing.watsup:1403.1-1406.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
@@ -13920,6 +14404,16 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vbinop_(sh, vbinop, c_1, c_2) = [])
 
   ;; 8-reduction.watsup
+  rule `vternop-val`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [VCONST_instr(V128_vectype, c)])
+    -- if c <- $vternop_(sh, vternop, c_1, c_2, c_3)
+
+  ;; 8-reduction.watsup
+  rule `vternop-trap`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [TRAP_instr])
+    -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
+
+  ;; 8-reduction.watsup
   rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
     `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
@@ -13948,11 +14442,18 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($ibits_(32, ci) = `%`_bit($ilt_($lsize((Jnn : Jnn <: lanetype)), S_sx, ci_1, `%`_iN(0))!`%`_u32.0)*{ci_1 <- `ci_1*`})
 
   ;; 8-reduction.watsup
-  rule vswizzle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `ci*` : lane_($lanetype(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M))))*, `k*` : nat*}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLE_instr(`%X%`_ishape((Pnn : Pnn <: Jnn), `%`_dim(M)))], [VCONST_instr(V128_vectype, c)])
-    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_2))
-    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
-    -- if (c = $invlanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+  rule `vswizzlop-swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+
+  ;; 8-reduction.watsup
+  rule `vswizzlop-relaxed_swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), RELAXED_SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
 
   ;; 8-reduction.watsup
   rule vshuffle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, `i*` : nat*, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `k*` : nat*}:
@@ -13989,6 +14490,11 @@ relation Step_pure: `%~>%`(instr*, instr*)
   rule vextbinop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextbinop : vextbinop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VEXTBINOP_instr(sh_2, sh_1, vextbinop)], [VCONST_instr(V128_vectype, c)])
     -- if ($vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c)
+
+  ;; 8-reduction.watsup
+  rule vextternop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextternop : vextternop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VEXTTERNOP_instr(sh_2, sh_1, vextternop)], [VCONST_instr(V128_vectype, c)])
+    -- if ($vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c)
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Jnn_2 : Jnn, M_2 : M, Jnn_1 : Jnn, M_1 : M, sx : sx, c : vec_(V128_Vnn), `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*}:
@@ -14647,89 +15153,89 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config($with_array(z, a, i, $packfield_(zt, val)), []))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 8-reduction.watsup:806.1-807.56
+  ;; 8-reduction.watsup:823.1-824.56
   rule local.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) LOCAL.SET_instr(x)]), `%;%`_config($with_local(z, x, val), []))
 
-  ;; 8-reduction.watsup:819.1-820.58
+  ;; 8-reduction.watsup:836.1-837.58
   rule global.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) GLOBAL.SET_instr(x)]), `%;%`_config($with_global(z, x, val), []))
 
-  ;; 8-reduction.watsup:833.1-835.33
+  ;; 8-reduction.watsup:850.1-852.33
   rule `table.set-oob`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i >= |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:837.1-839.32
+  ;; 8-reduction.watsup:854.1-856.32
   rule `table.set-val`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:847.1-850.46
+  ;; 8-reduction.watsup:864.1-867.46
   rule `table.grow-succeed`{z : state, ref : ref, n : n, x : idx, ti : tableinst}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr(I32_numtype, `%`_num_(|$table(z, x).REFS_tableinst|))]))
     -- if (ti = !($growtable($table(z, x), n, ref)))
 
-  ;; 8-reduction.watsup:852.1-853.81
+  ;; 8-reduction.watsup:869.1-870.81
   rule `table.grow-fail`{z : state, ref : ref, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:913.1-914.51
+  ;; 8-reduction.watsup:930.1-931.51
   rule elem.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [ELEM.DROP_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
-  ;; 8-reduction.watsup:997.1-1000.60
+  ;; 8-reduction.watsup:1014.1-1017.60
   rule `store-num-oob`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1002.1-1006.29
+  ;; 8-reduction.watsup:1019.1-1023.29
   rule `store-num-val`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $nbytes_(nt, c))
 
-  ;; 8-reduction.watsup:1008.1-1011.52
+  ;; 8-reduction.watsup:1025.1-1028.52
   rule `store-pack-oob`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1013.1-1017.52
+  ;; 8-reduction.watsup:1030.1-1034.52
   rule `store-pack-val`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $ibytes_(n, $wrap__($size((Inn : Inn <: numtype)), n, c)))
 
-  ;; 8-reduction.watsup:1019.1-1021.63
+  ;; 8-reduction.watsup:1036.1-1038.63
   rule `vstore-oob`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1023.1-1025.31
+  ;; 8-reduction.watsup:1040.1-1042.31
   rule `vstore-val`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $vbytes_(V128_vectype, c))
 
-  ;; 8-reduction.watsup:1028.1-1030.50
+  ;; 8-reduction.watsup:1045.1-1047.50
   rule `vstore_lane-oob`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1032.1-1036.49
+  ;; 8-reduction.watsup:1049.1-1053.49
   rule `vstore_lane-val`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, `b*` : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b <- `b*`}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
     -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:1044.1-1047.37
+  ;; 8-reduction.watsup:1061.1-1064.37
   rule `memory.grow-succeed`{z : state, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
     -- if (mi = !($growmem($mem(z, x), n)))
 
-  ;; 8-reduction.watsup:1049.1-1050.78
+  ;; 8-reduction.watsup:1066.1-1067.78
   rule `memory.grow-fail`{z : state, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:1110.1-1111.51
+  ;; 8-reduction.watsup:1127.1-1128.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }
@@ -15379,7 +15885,7 @@ grammar Blaneidx : laneidx
 ;; A-binary.watsup
 rec {
 
-;; A-binary.watsup:971.1-981.66
+;; A-binary.watsup:992.1-1006.73
 grammar Binstr : instr
   ;; A-binary.watsup:214.5-214.24
   prod 0x00 => UNREACHABLE_instr
@@ -15909,430 +16415,462 @@ grammar Binstr : instr
   prod{`b*` : byte*} {0xFD `%`_u32(12):Bu32 b:Bbyte^16{b <- `b*`}} => VCONST_instr(V128_vectype, $invibytes_(128, b^16{b <- `b*`}))
   ;; A-binary.watsup:625.5-625.58
   prod{l : labelidx} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), [`%`_uN(l!`%`_labelidx.0)])
-  ;; A-binary.watsup:626.5-626.40
-  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:630.5-630.38
-  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
+  ;; A-binary.watsup:626.5-626.49
+  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SWIZZLE_vswizzlop_)
+  ;; A-binary.watsup:627.5-627.58
+  prod {0xFD `%`_u32(256):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), RELAXED_SWIZZLE_vswizzlop_)
   ;; A-binary.watsup:631.5-631.38
-  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
+  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
   ;; A-binary.watsup:632.5-632.38
-  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
   ;; A-binary.watsup:633.5-633.38
-  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
+  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
   ;; A-binary.watsup:634.5-634.38
-  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
   ;; A-binary.watsup:635.5-635.38
+  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  ;; A-binary.watsup:636.5-636.38
   prod {0xFD `%`_u32(20):Bu32} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)))
-  ;; A-binary.watsup:639.5-639.60
-  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:640.5-640.60
+  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:641.5-641.60
   prod{l : labelidx} {0xFD `%`_u32(22):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:641.5-641.58
+  ;; A-binary.watsup:642.5-642.58
   prod{l : labelidx} {0xFD `%`_u32(23):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:642.5-642.60
-  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:643.5-643.60
+  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:644.5-644.60
   prod{l : labelidx} {0xFD `%`_u32(25):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:644.5-644.58
-  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:645.5-645.58
-  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:646.5-646.58
-  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:647.5-647.58
-  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:648.5-648.58
-  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:649.5-649.58
-  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:650.5-650.58
-  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:651.5-651.58
-  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:652.5-652.58
+  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:653.5-653.58
   prod{l : labelidx} {0xFD `%`_u32(34):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:656.5-656.41
-  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
   ;; A-binary.watsup:657.5-657.41
+  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
+  ;; A-binary.watsup:658.5-658.41
   prod {0xFD `%`_u32(36):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NE_vrelop_)
-  ;; A-binary.watsup:658.5-658.45
-  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:659.5-659.45
-  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:660.5-660.45
-  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:661.5-661.45
-  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:662.5-662.45
-  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:663.5-663.45
-  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:664.5-664.45
-  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:665.5-665.45
+  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:666.5-666.45
   prod {0xFD `%`_u32(44):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:669.5-669.41
-  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
   ;; A-binary.watsup:670.5-670.41
+  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
+  ;; A-binary.watsup:671.5-671.41
   prod {0xFD `%`_u32(46):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NE_vrelop_)
-  ;; A-binary.watsup:671.5-671.45
-  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:672.5-672.45
-  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:673.5-673.45
-  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:674.5-674.45
-  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:675.5-675.45
-  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:676.5-676.45
-  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:677.5-677.45
-  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:678.5-678.45
+  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:679.5-679.45
   prod {0xFD `%`_u32(54):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:682.5-682.41
-  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:683.5-683.41
+  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
+  ;; A-binary.watsup:684.5-684.41
   prod {0xFD `%`_u32(56):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NE_vrelop_)
-  ;; A-binary.watsup:684.5-684.45
-  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:685.5-685.45
-  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:686.5-686.45
-  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:687.5-687.45
-  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:688.5-688.45
-  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:689.5-689.45
-  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:690.5-690.45
-  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:691.5-691.45
+  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:692.5-692.45
   prod {0xFD `%`_u32(64):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:695.5-695.41
-  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:696.5-696.41
-  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
+  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:697.5-697.41
-  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
+  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
   ;; A-binary.watsup:698.5-698.41
-  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
+  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
   ;; A-binary.watsup:699.5-699.41
-  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
   ;; A-binary.watsup:700.5-700.41
+  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  ;; A-binary.watsup:701.5-701.41
   prod {0xFD `%`_u32(70):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GE_vrelop_)
-  ;; A-binary.watsup:704.5-704.41
-  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:705.5-705.41
-  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
+  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:706.5-706.41
-  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
+  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
   ;; A-binary.watsup:707.5-707.41
-  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
+  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
   ;; A-binary.watsup:708.5-708.41
-  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
   ;; A-binary.watsup:709.5-709.41
+  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  ;; A-binary.watsup:710.5-710.41
   prod {0xFD `%`_u32(76):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GE_vrelop_)
-  ;; A-binary.watsup:713.5-713.36
+  ;; A-binary.watsup:714.5-714.36
   prod {0xFD `%`_u32(77):Bu32} => VVUNOP_instr(V128_vectype, NOT_vvunop)
-  ;; A-binary.watsup:717.5-717.37
+  ;; A-binary.watsup:718.5-718.37
   prod {0xFD `%`_u32(78):Bu32} => VVBINOP_instr(V128_vectype, AND_vvbinop)
-  ;; A-binary.watsup:718.5-718.40
+  ;; A-binary.watsup:719.5-719.40
   prod {0xFD `%`_u32(79):Bu32} => VVBINOP_instr(V128_vectype, ANDNOT_vvbinop)
-  ;; A-binary.watsup:719.5-719.36
+  ;; A-binary.watsup:720.5-720.36
   prod {0xFD `%`_u32(80):Bu32} => VVBINOP_instr(V128_vectype, OR_vvbinop)
-  ;; A-binary.watsup:720.5-720.37
+  ;; A-binary.watsup:721.5-721.37
   prod {0xFD `%`_u32(81):Bu32} => VVBINOP_instr(V128_vectype, XOR_vvbinop)
-  ;; A-binary.watsup:724.5-724.44
+  ;; A-binary.watsup:725.5-725.44
   prod {0xFD `%`_u32(82):Bu32} => VVTERNOP_instr(V128_vectype, BITSELECT_vvternop)
-  ;; A-binary.watsup:728.5-728.43
+  ;; A-binary.watsup:729.5-729.43
   prod {0xFD `%`_u32(83):Bu32} => VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)
-  ;; A-binary.watsup:732.5-732.41
-  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
   ;; A-binary.watsup:733.5-733.41
+  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
+  ;; A-binary.watsup:734.5-734.41
   prod {0xFD `%`_u32(97):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NEG_vunop_)
-  ;; A-binary.watsup:734.5-734.44
+  ;; A-binary.watsup:735.5-735.44
   prod {0xFD `%`_u32(98):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), POPCNT_vunop_)
-  ;; A-binary.watsup:738.5-738.48
+  ;; A-binary.watsup:739.5-739.48
   prod {0xFD `%`_u32(99):Bu32} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:742.5-742.41
+  ;; A-binary.watsup:743.5-743.41
   prod {0xFD `%`_u32(100):Bu32} => VBITMASK_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:746.5-746.53
-  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
   ;; A-binary.watsup:747.5-747.53
+  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
+  ;; A-binary.watsup:748.5-748.53
   prod {0xFD `%`_u32(102):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), U_sx)
-  ;; A-binary.watsup:751.5-751.45
+  ;; A-binary.watsup:752.5-752.45
   prod {0xFD `%`_u32(107):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHL_vshiftop_)
-  ;; A-binary.watsup:752.5-752.49
-  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
   ;; A-binary.watsup:753.5-753.49
+  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
+  ;; A-binary.watsup:754.5-754.49
   prod {0xFD `%`_u32(109):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:757.5-757.43
+  ;; A-binary.watsup:758.5-758.43
   prod {0xFD `%`_u32(110):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_vbinop_)
-  ;; A-binary.watsup:758.5-758.51
-  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:759.5-759.51
+  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:760.5-760.51
   prod {0xFD `%`_u32(112):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:760.5-760.43
+  ;; A-binary.watsup:761.5-761.43
   prod {0xFD `%`_u32(113):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_vbinop_)
-  ;; A-binary.watsup:761.5-761.51
-  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:762.5-762.51
+  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:763.5-763.51
   prod {0xFD `%`_u32(115):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:763.5-763.47
-  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:764.5-764.47
-  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
+  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:765.5-765.47
-  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:766.5-766.47
+  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:767.5-767.47
   prod {0xFD `%`_u32(121):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:767.5-767.48
+  ;; A-binary.watsup:768.5-768.48
   prod {0xFD `%`_u32(123):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:771.5-771.72
-  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
   ;; A-binary.watsup:772.5-772.72
+  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
+  ;; A-binary.watsup:773.5-773.72
   prod {0xFD `%`_u32(125):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:776.5-776.42
-  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
   ;; A-binary.watsup:777.5-777.42
+  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
+  ;; A-binary.watsup:778.5-778.42
   prod {0xFD `%`_u32(129):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NEG_vunop_)
-  ;; A-binary.watsup:781.5-781.55
+  ;; A-binary.watsup:782.5-782.55
   prod {0xFD `%`_u32(130):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `Q15MULR_SATS`_vbinop_)
-  ;; A-binary.watsup:785.5-785.49
+  ;; A-binary.watsup:783.5-783.59
+  prod {0xFD `%`_u32(273):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `RELAXED_Q15MULRS`_vbinop_)
+  ;; A-binary.watsup:787.5-787.49
   prod {0xFD `%`_u32(131):Bu32} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:789.5-789.41
+  ;; A-binary.watsup:791.5-791.41
   prod {0xFD `%`_u32(132):Bu32} => VBITMASK_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)))
-  ;; A-binary.watsup:793.5-793.53
+  ;; A-binary.watsup:795.5-795.53
   prod {0xFD `%`_u32(133):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), S_sx)
-  ;; A-binary.watsup:794.5-794.53
+  ;; A-binary.watsup:796.5-796.53
   prod {0xFD `%`_u32(134):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), U_sx)
-  ;; A-binary.watsup:798.5-798.65
-  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:799.5-799.66
-  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
   ;; A-binary.watsup:800.5-800.65
-  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
   ;; A-binary.watsup:801.5-801.66
+  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
+  ;; A-binary.watsup:802.5-802.65
+  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:803.5-803.66
   prod {0xFD `%`_u32(138):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:805.5-805.45
+  ;; A-binary.watsup:807.5-807.45
   prod {0xFD `%`_u32(139):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHL_vshiftop_)
-  ;; A-binary.watsup:806.5-806.49
+  ;; A-binary.watsup:808.5-808.49
   prod {0xFD `%`_u32(140):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:807.5-807.49
+  ;; A-binary.watsup:809.5-809.49
   prod {0xFD `%`_u32(141):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:811.5-811.43
+  ;; A-binary.watsup:813.5-813.43
   prod {0xFD `%`_u32(142):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_vbinop_)
-  ;; A-binary.watsup:812.5-812.51
+  ;; A-binary.watsup:814.5-814.51
   prod {0xFD `%`_u32(143):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:813.5-813.51
-  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:814.5-814.43
-  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
   ;; A-binary.watsup:815.5-815.51
+  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
+  ;; A-binary.watsup:816.5-816.43
+  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
+  ;; A-binary.watsup:817.5-817.51
   prod {0xFD `%`_u32(146):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:816.5-816.51
+  ;; A-binary.watsup:818.5-818.51
   prod {0xFD `%`_u32(147):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:817.5-817.43
+  ;; A-binary.watsup:819.5-819.43
   prod {0xFD `%`_u32(149):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MUL_vbinop_)
-  ;; A-binary.watsup:818.5-818.47
-  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:819.5-819.47
-  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:820.5-820.47
-  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:821.5-821.47
+  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:822.5-822.47
+  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:823.5-823.47
   prod {0xFD `%`_u32(153):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:822.5-822.48
+  ;; A-binary.watsup:824.5-824.48
   prod {0xFD `%`_u32(155):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:826.5-826.68
-  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:827.5-827.69
-  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
   ;; A-binary.watsup:828.5-828.68
-  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
   ;; A-binary.watsup:829.5-829.69
+  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
+  ;; A-binary.watsup:830.5-830.68
+  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  ;; A-binary.watsup:831.5-831.69
   prod {0xFD `%`_u32(159):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:833.5-833.72
+  ;; A-binary.watsup:832.5-832.69
+  prod {0xFD `%`_u32(274):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), `RELAXED_DOTS`_vextbinop__)
+  ;; A-binary.watsup:836.5-836.72
   prod {0xFD `%`_u32(126):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(S_sx))
-  ;; A-binary.watsup:834.5-834.72
+  ;; A-binary.watsup:837.5-837.72
   prod {0xFD `%`_u32(127):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:838.5-838.42
+  ;; A-binary.watsup:841.5-841.42
   prod {0xFD `%`_u32(160):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:839.5-839.42
+  ;; A-binary.watsup:842.5-842.42
   prod {0xFD `%`_u32(161):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:843.5-843.49
+  ;; A-binary.watsup:846.5-846.49
   prod {0xFD `%`_u32(163):Bu32} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:847.5-847.41
+  ;; A-binary.watsup:850.5-850.41
   prod {0xFD `%`_u32(164):Bu32} => VBITMASK_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)))
-  ;; A-binary.watsup:851.5-851.65
+  ;; A-binary.watsup:854.5-854.65
   prod {0xFD `%`_u32(167):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:852.5-852.66
+  ;; A-binary.watsup:855.5-855.66
   prod {0xFD `%`_u32(168):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:853.5-853.65
+  ;; A-binary.watsup:856.5-856.65
   prod {0xFD `%`_u32(169):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:854.5-854.66
+  ;; A-binary.watsup:857.5-857.66
   prod {0xFD `%`_u32(170):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:858.5-858.45
+  ;; A-binary.watsup:861.5-861.45
   prod {0xFD `%`_u32(171):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHL_vshiftop_)
-  ;; A-binary.watsup:859.5-859.49
+  ;; A-binary.watsup:862.5-862.49
   prod {0xFD `%`_u32(172):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:860.5-860.49
+  ;; A-binary.watsup:863.5-863.49
   prod {0xFD `%`_u32(173):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:864.5-864.43
+  ;; A-binary.watsup:867.5-867.43
   prod {0xFD `%`_u32(174):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:865.5-865.43
+  ;; A-binary.watsup:868.5-868.43
   prod {0xFD `%`_u32(177):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:866.5-866.43
+  ;; A-binary.watsup:869.5-869.43
   prod {0xFD `%`_u32(181):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MUL_vbinop_)
-  ;; A-binary.watsup:867.5-867.47
-  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:868.5-868.47
-  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:869.5-869.47
-  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
   ;; A-binary.watsup:870.5-870.47
+  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
+  ;; A-binary.watsup:871.5-871.47
+  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:872.5-872.47
+  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:873.5-873.47
   prod {0xFD `%`_u32(185):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:874.5-874.61
+  ;; A-binary.watsup:877.5-877.61
   prod {0xFD `%`_u32(186):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `DOTS`_vextbinop__)
-  ;; A-binary.watsup:875.5-875.68
+  ;; A-binary.watsup:878.5-878.68
   prod {0xFD `%`_u32(188):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:876.5-876.69
+  ;; A-binary.watsup:879.5-879.69
   prod {0xFD `%`_u32(189):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:877.5-877.68
+  ;; A-binary.watsup:880.5-880.68
   prod {0xFD `%`_u32(190):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:878.5-878.69
+  ;; A-binary.watsup:881.5-881.69
   prod {0xFD `%`_u32(191):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:882.5-882.42
+  ;; A-binary.watsup:885.5-885.74
+  prod {0xFD `%`_u32(275):Bu32} => VEXTTERNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `RELAXED_DOT_ADDS`_vextternop__)
+  ;; A-binary.watsup:889.5-889.42
   prod {0xFD `%`_u32(192):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:883.5-883.42
+  ;; A-binary.watsup:890.5-890.42
   prod {0xFD `%`_u32(193):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:887.5-887.49
+  ;; A-binary.watsup:894.5-894.49
   prod {0xFD `%`_u32(195):Bu32} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:891.5-891.41
+  ;; A-binary.watsup:898.5-898.41
   prod {0xFD `%`_u32(196):Bu32} => VBITMASK_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)))
-  ;; A-binary.watsup:895.5-895.65
+  ;; A-binary.watsup:902.5-902.65
   prod {0xFD `%`_u32(199):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:896.5-896.66
+  ;; A-binary.watsup:903.5-903.66
   prod {0xFD `%`_u32(200):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:897.5-897.65
+  ;; A-binary.watsup:904.5-904.65
   prod {0xFD `%`_u32(201):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:898.5-898.66
+  ;; A-binary.watsup:905.5-905.66
   prod {0xFD `%`_u32(202):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:902.5-902.45
+  ;; A-binary.watsup:909.5-909.45
   prod {0xFD `%`_u32(203):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHL_vshiftop_)
-  ;; A-binary.watsup:903.5-903.49
+  ;; A-binary.watsup:910.5-910.49
   prod {0xFD `%`_u32(204):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:904.5-904.49
+  ;; A-binary.watsup:911.5-911.49
   prod {0xFD `%`_u32(205):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:908.5-908.43
+  ;; A-binary.watsup:915.5-915.43
   prod {0xFD `%`_u32(206):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:909.5-909.43
+  ;; A-binary.watsup:916.5-916.43
   prod {0xFD `%`_u32(209):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:910.5-910.43
+  ;; A-binary.watsup:917.5-917.43
   prod {0xFD `%`_u32(213):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:914.5-914.42
+  ;; A-binary.watsup:921.5-921.42
   prod {0xFD `%`_u32(214):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), EQ_vrelop_)
-  ;; A-binary.watsup:915.5-915.42
+  ;; A-binary.watsup:922.5-922.42
   prod {0xFD `%`_u32(215):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NE_vrelop_)
-  ;; A-binary.watsup:916.5-916.46
+  ;; A-binary.watsup:923.5-923.46
   prod {0xFD `%`_u32(216):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:917.5-917.46
+  ;; A-binary.watsup:924.5-924.46
   prod {0xFD `%`_u32(217):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:918.5-918.46
+  ;; A-binary.watsup:925.5-925.46
   prod {0xFD `%`_u32(218):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:919.5-919.46
+  ;; A-binary.watsup:926.5-926.46
   prod {0xFD `%`_u32(219):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:923.5-923.68
+  ;; A-binary.watsup:930.5-930.68
   prod {0xFD `%`_u32(220):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:924.5-924.69
+  ;; A-binary.watsup:931.5-931.69
   prod {0xFD `%`_u32(221):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:925.5-925.68
+  ;; A-binary.watsup:932.5-932.68
   prod {0xFD `%`_u32(222):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:926.5-926.69
+  ;; A-binary.watsup:933.5-933.69
   prod {0xFD `%`_u32(223):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:930.5-930.43
+  ;; A-binary.watsup:937.5-937.43
   prod {0xFD `%`_u32(103):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), CEIL_vunop_)
-  ;; A-binary.watsup:931.5-931.44
+  ;; A-binary.watsup:938.5-938.44
   prod {0xFD `%`_u32(104):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), FLOOR_vunop_)
-  ;; A-binary.watsup:932.5-932.44
+  ;; A-binary.watsup:939.5-939.44
   prod {0xFD `%`_u32(105):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_vunop_)
-  ;; A-binary.watsup:933.5-933.46
+  ;; A-binary.watsup:940.5-940.46
   prod {0xFD `%`_u32(106):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEAREST_vunop_)
-  ;; A-binary.watsup:934.5-934.42
+  ;; A-binary.watsup:941.5-941.42
   prod {0xFD `%`_u32(224):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:935.5-935.42
+  ;; A-binary.watsup:942.5-942.42
   prod {0xFD `%`_u32(225):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:936.5-936.43
-  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
-  ;; A-binary.watsup:940.5-940.43
-  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:941.5-941.43
-  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:942.5-942.43
-  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
   ;; A-binary.watsup:943.5-943.43
+  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
+  ;; A-binary.watsup:947.5-947.43
+  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
+  ;; A-binary.watsup:948.5-948.43
+  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
+  ;; A-binary.watsup:949.5-949.43
+  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
+  ;; A-binary.watsup:950.5-950.43
   prod {0xFD `%`_u32(231):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), DIV_vbinop_)
-  ;; A-binary.watsup:944.5-944.43
-  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
-  ;; A-binary.watsup:945.5-945.43
-  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
-  ;; A-binary.watsup:946.5-946.44
-  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
-  ;; A-binary.watsup:947.5-947.44
-  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
   ;; A-binary.watsup:951.5-951.43
-  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
-  ;; A-binary.watsup:952.5-952.44
-  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
+  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
+  ;; A-binary.watsup:952.5-952.43
+  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
   ;; A-binary.watsup:953.5-953.44
-  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
-  ;; A-binary.watsup:954.5-954.46
-  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
-  ;; A-binary.watsup:955.5-955.42
-  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:956.5-956.42
-  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:957.5-957.43
-  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
-  ;; A-binary.watsup:961.5-961.43
-  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:962.5-962.43
-  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:963.5-963.43
-  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:964.5-964.43
-  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
+  ;; A-binary.watsup:954.5-954.44
+  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
+  ;; A-binary.watsup:955.5-955.51
+  prod {0xFD `%`_u32(269):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:956.5-956.51
+  prod {0xFD `%`_u32(270):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:960.5-960.53
+  prod {0xFD `%`_u32(261):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:961.5-961.54
+  prod {0xFD `%`_u32(262):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_NMADD_vternop_)
   ;; A-binary.watsup:965.5-965.43
-  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
-  ;; A-binary.watsup:966.5-966.43
-  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
+  ;; A-binary.watsup:966.5-966.44
+  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
   ;; A-binary.watsup:967.5-967.44
+  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
+  ;; A-binary.watsup:968.5-968.46
+  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
+  ;; A-binary.watsup:969.5-969.42
+  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
+  ;; A-binary.watsup:970.5-970.42
+  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
+  ;; A-binary.watsup:971.5-971.43
+  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
+  ;; A-binary.watsup:975.5-975.43
+  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
+  ;; A-binary.watsup:976.5-976.43
+  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
+  ;; A-binary.watsup:977.5-977.43
+  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
+  ;; A-binary.watsup:978.5-978.43
+  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  ;; A-binary.watsup:979.5-979.43
+  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
+  ;; A-binary.watsup:980.5-980.43
+  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  ;; A-binary.watsup:981.5-981.44
   prod {0xFD `%`_u32(246):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMIN_vbinop_)
-  ;; A-binary.watsup:968.5-968.44
+  ;; A-binary.watsup:982.5-982.44
   prod {0xFD `%`_u32(247):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMAX_vbinop_)
-  ;; A-binary.watsup:972.5-972.61
+  ;; A-binary.watsup:983.5-983.51
+  prod {0xFD `%`_u32(271):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:984.5-984.51
+  prod {0xFD `%`_u32(272):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:988.5-988.53
+  prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:989.5-989.54
+  prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
+  ;; A-binary.watsup:993.5-993.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__, ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:973.5-973.61
+  ;; A-binary.watsup:994.5-994.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), PROMOTE_vcvtop__, ?(LOW_half__), ?())
-  ;; A-binary.watsup:974.5-974.64
+  ;; A-binary.watsup:995.5-995.64
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:975.5-975.64
+  ;; A-binary.watsup:996.5-996.64
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:976.5-976.62
+  ;; A-binary.watsup:997.5-997.62
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:977.5-977.62
+  ;; A-binary.watsup:998.5-998.62
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:978.5-978.69
+  ;; A-binary.watsup:999.5-999.69
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:979.5-979.69
+  ;; A-binary.watsup:1000.5-1000.69
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:980.5-980.66
+  ;; A-binary.watsup:1001.5-1001.66
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:981.5-981.66
+  ;; A-binary.watsup:1002.5-1002.66
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:1003.5-1003.68
+  prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?())
+  ;; A-binary.watsup:1004.5-1004.68
+  prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?())
+  ;; A-binary.watsup:1005.5-1005.73
+  prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
+  ;; A-binary.watsup:1006.5-1006.73
+  prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
 }
 
 ;; A-binary.watsup
@@ -16843,6 +17381,9 @@ def $setproduct_(syntax X, X**) : X**
 }
 
 ;; 1-syntax.watsup
+def $ND : bool
+
+;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{`X*` : X*}(X*{X <- `X*`} : X*)
     -- if (|X*{X <- `X*`}| < (2 ^ 32))
@@ -16968,7 +17509,7 @@ def $cont(byte : byte) : nat
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:87.1-87.25
+;; 1-syntax.watsup:94.1-94.25
 def $utf8(char*) : byte*
   ;; A-binary.watsup:53.1-53.44
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
@@ -17092,13 +17633,13 @@ syntax fin =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:155.1-156.26
+;; 1-syntax.watsup:162.1-163.26
 syntax typeuse =
   | _IDX{typeidx : typeidx}(typeidx : typeidx)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
   | REC{n : n}(n : n)
 
-;; 1-syntax.watsup:158.1-159.26
+;; 1-syntax.watsup:165.1-166.26
 syntax heaptype =
   | ANY
   | EQ
@@ -17117,7 +17658,7 @@ syntax heaptype =
   | REC{n : n}(n : n)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
 
-;; 1-syntax.watsup:166.1-167.14
+;; 1-syntax.watsup:173.1-174.14
 syntax valtype =
   | I32
   | I64
@@ -17127,10 +17668,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:196.1-197.16
+;; 1-syntax.watsup:203.1-204.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:204.1-204.66
+;; 1-syntax.watsup:211.1-211.66
 syntax storagetype =
   | BOT
   | I32
@@ -17142,31 +17683,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:220.1-220.60
+;; 1-syntax.watsup:227.1-227.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:222.1-222.90
+;; 1-syntax.watsup:229.1-229.90
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:223.1-223.64
+;; 1-syntax.watsup:230.1-230.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:224.1-224.54
+;; 1-syntax.watsup:231.1-231.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:226.1-229.18
+;; 1-syntax.watsup:233.1-236.18
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:231.1-232.30
+;; 1-syntax.watsup:238.1-239.30
 syntax subtype =
   | SUB{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse <- `typeuse*`} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:234.1-235.22
+;; 1-syntax.watsup:241.1-242.22
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -17617,6 +18158,26 @@ def $shsize(shape : shape) : nat
   def $shsize{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = ($lsize(Lnn) * N)
 
 ;; 1-syntax.watsup
+syntax half__(shape_1 : shape, shape_2 : shape)
+  ;; 1-syntax.watsup
+  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+  | HIGH
+    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
+
+
+  ;; 1-syntax.watsup
+  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
+
+
+;; 1-syntax.watsup
+syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
+  | ZERO
+    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+
+;; 1-syntax.watsup
 syntax vvunop =
   | NOT
 
@@ -17672,6 +18233,8 @@ syntax vbinop_(shape : shape)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | `Q15MULR_SATS`
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
+  | `RELAXED_Q15MULRS`
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
@@ -17688,6 +18251,21 @@ syntax vbinop_(shape : shape)
   | MAX
   | PMIN
   | PMAX
+  | RELAXED_MIN
+  | RELAXED_MAX
+
+
+;; 1-syntax.watsup
+syntax vternop_(shape : shape)
+  ;; 1-syntax.watsup
+  syntax vternop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_LANESELECT
+
+
+  ;; 1-syntax.watsup
+  syntax vternop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_MADD
+  | RELAXED_NMADD
 
 
 ;; 1-syntax.watsup
@@ -17738,6 +18316,8 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
   syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
   | TRUNC_SAT{sx : sx}(sx : sx)
     -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | RELAXED_TRUNC{sx : sx}(sx : sx)
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -17749,24 +18329,9 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
 
 
 ;; 1-syntax.watsup
-syntax half__(shape_1 : shape, shape_2 : shape)
-  ;; 1-syntax.watsup
-  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-  | HIGH
-    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
-
-
-  ;; 1-syntax.watsup
-  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
-
-
-;; 1-syntax.watsup
-syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
-  | ZERO
-    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+syntax vswizzlop_{M : M}(`%X%`_ishape(I8_Jnn, `%`_dim(M))) =
+  | SWIZZLE
+  | RELAXED_SWIZZLE
 
 ;; 1-syntax.watsup
 syntax vshiftop_{Jnn : Jnn, M : M}(`%X%`_ishape(Jnn, `%`_dim(M))) =
@@ -17784,6 +18349,13 @@ syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) >= 16))
   | `DOTS`
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | `RELAXED_DOTS`
+    -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 16))
+
+;; 1-syntax.watsup
+syntax vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2))) =
+  | `RELAXED_DOT_ADDS`
+    -- if (((4 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -17958,20 +18530,20 @@ syntax instr =
   | VVTESTOP{vectype : vectype, vvtestop : vvtestop}(vectype : vectype, vvtestop : vvtestop)
   | VUNOP{shape : shape, vunop_ : vunop_(shape)}(shape : shape, vunop_ : vunop_(shape))
   | VBINOP{shape : shape, vbinop_ : vbinop_(shape)}(shape : shape, vbinop_ : vbinop_(shape))
+  | VTERNOP{shape : shape, vternop_ : vternop_(shape)}(shape : shape, vternop_ : vternop_(shape))
   | VTESTOP{shape : shape, vtestop_ : vtestop_(shape)}(shape : shape, vtestop_ : vtestop_(shape))
   | VRELOP{shape : shape, vrelop_ : vrelop_(shape)}(shape : shape, vrelop_ : vrelop_(shape))
   | VSHIFTOP{ishape : ishape, vshiftop_ : vshiftop_(ishape)}(ishape : ishape, vshiftop_ : vshiftop_(ishape))
   | VBITMASK{ishape : ishape}(ishape : ishape)
-  | VSWIZZLE{ishape : ishape}(ishape : ishape)
-    -- if (ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16)))
+  | VSWIZZLOP{ishape : ishape, vswizzlop_ : vswizzlop_(ishape)}(ishape : ishape, vswizzlop_ : vswizzlop_(ishape))
   | VSHUFFLE{ishape : ishape, `laneidx*` : laneidx*}(ishape : ishape, laneidx*{laneidx <- `laneidx*`} : laneidx*)
     -- if ((ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16))) /\ (|laneidx*{laneidx <- `laneidx*`}| = 16))
   | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1))
   | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1))
+  | VEXTTERNOP{ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1))
   | VNARROW{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(ishape_1 : ishape, ishape_2 : ishape, sx : sx)
     -- if (($lsize($lanetype((ishape_2 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_1 : ishape <: shape))))) /\ ((2 * $lsize($lanetype((ishape_1 : ishape <: shape)))) <= 32))
   | VCVTOP{shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), `half__?` : half__(shape_2, shape_1)?, `zero__?` : zero__(shape_2, shape_1)?}(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), half__?{half__ <- `half__?`} : half__(shape_2, shape_1)?, zero__?{zero__ <- `zero__?`} : zero__(shape_2, shape_1)?)
-    -- if ($lanetype(shape_1) =/= $lanetype(shape_2))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, `sx?` : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx <- `sx?`} : sx?, laneidx : laneidx)
     -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
@@ -18479,13 +19051,13 @@ def $free_shape(shape : shape) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:443.1-443.44
+;; 2-syntax-aux.watsup:444.1-444.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; 2-syntax-aux.watsup:444.1-444.32
+  ;; 2-syntax-aux.watsup:445.1-445.32
   def $shift_labelidxs([]) = []
-  ;; 2-syntax-aux.watsup:445.1-445.66
+  ;; 2-syntax-aux.watsup:446.1-446.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_uN(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; 2-syntax-aux.watsup:446.1-446.91
+  ;; 2-syntax-aux.watsup:447.1-447.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_uN((labelidx!`%`_labelidx.0 - 1))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
@@ -18494,7 +19066,7 @@ rec {
 
 ;; 2-syntax-aux.watsup:299.1-299.31
 def $free_block(instr*) : free
-  ;; 2-syntax-aux.watsup:449.1-450.47
+  ;; 2-syntax-aux.watsup:450.1-451.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 
@@ -18569,134 +19141,136 @@ def $free_instr(instr : instr) : free
   ;; 2-syntax-aux.watsup:347.1-347.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
   ;; 2-syntax-aux.watsup:348.1-348.60
+  def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
+  ;; 2-syntax-aux.watsup:349.1-349.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:349.1-349.58
+  ;; 2-syntax-aux.watsup:350.1-350.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:350.1-350.64
+  ;; 2-syntax-aux.watsup:351.1-351.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:351.1-351.55
-  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
   ;; 2-syntax-aux.watsup:352.1-352.55
-  def $free_instr{ishape : ishape}(VSWIZZLE_instr(ishape)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:353.1-353.64
+  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:353.1-353.66
+  def $free_instr{ishape : ishape, vswizzlop : vswizzlop_(ishape)}(VSWIZZLOP_instr(ishape, vswizzlop)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:354.1-354.64
   def $free_instr{ishape : ishape, `laneidx*` : laneidx*}(VSHUFFLE_instr(ishape, laneidx*{laneidx <- `laneidx*`})) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:354.1-355.49
+  ;; 2-syntax-aux.watsup:355.1-356.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:356.1-357.49
+  ;; 2-syntax-aux.watsup:357.1-358.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:358.1-359.49
+  ;; 2-syntax-aux.watsup:359.1-360.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:360.1-361.47
+  ;; 2-syntax-aux.watsup:361.1-362.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1), `half?` : half__(shape_2, shape_1)?, `zero?` : zero__(shape_2, shape_1)?}(VCVTOP_instr(shape_1, shape_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`})) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; 2-syntax-aux.watsup:362.1-362.51
+  ;; 2-syntax-aux.watsup:363.1-363.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:363.1-363.70
+  ;; 2-syntax-aux.watsup:364.1-364.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:364.1-364.66
+  ;; 2-syntax-aux.watsup:365.1-365.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:366.1-366.62
+  ;; 2-syntax-aux.watsup:367.1-367.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; 2-syntax-aux.watsup:367.1-367.34
+  ;; 2-syntax-aux.watsup:368.1-368.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:368.1-368.38
+  ;; 2-syntax-aux.watsup:369.1-369.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:369.1-369.29
+  ;; 2-syntax-aux.watsup:370.1-370.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:370.1-370.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:371.1-371.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:372.1-372.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; 2-syntax-aux.watsup:373.1-373.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:373.1-373.30
+  ;; 2-syntax-aux.watsup:374.1-374.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:375.1-375.33
+  ;; 2-syntax-aux.watsup:376.1-376.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:377.1-377.41
+  ;; 2-syntax-aux.watsup:378.1-378.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:378.1-378.69
-  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
   ;; 2-syntax-aux.watsup:379.1-379.69
+  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
+  ;; 2-syntax-aux.watsup:380.1-380.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:380.1-380.65
+  ;; 2-syntax-aux.watsup:381.1-381.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:382.1-382.60
+  ;; 2-syntax-aux.watsup:383.1-383.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:383.1-383.68
+  ;; 2-syntax-aux.watsup:384.1-384.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:384.1-384.70
+  ;; 2-syntax-aux.watsup:385.1-385.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:385.1-386.51
+  ;; 2-syntax-aux.watsup:386.1-387.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:387.1-388.51
+  ;; 2-syntax-aux.watsup:388.1-389.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:389.1-389.64
+  ;; 2-syntax-aux.watsup:390.1-390.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:390.1-390.60
+  ;; 2-syntax-aux.watsup:391.1-391.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:391.1-391.32
+  ;; 2-syntax-aux.watsup:392.1-392.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:392.1-392.61
+  ;; 2-syntax-aux.watsup:393.1-393.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:393.1-394.55
+  ;; 2-syntax-aux.watsup:394.1-395.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; 2-syntax-aux.watsup:395.1-396.51
+  ;; 2-syntax-aux.watsup:396.1-397.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:397.1-398.51
+  ;; 2-syntax-aux.watsup:398.1-399.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:400.1-400.41
-  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
   ;; 2-syntax-aux.watsup:401.1-401.41
+  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
+  ;; 2-syntax-aux.watsup:402.1-402.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:403.1-403.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:404.1-404.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:405.1-405.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; 2-syntax-aux.watsup:406.1-406.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:407.1-407.67
-  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
   ;; 2-syntax-aux.watsup:408.1-408.67
+  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
+  ;; 2-syntax-aux.watsup:409.1-409.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; 2-syntax-aux.watsup:410.1-410.63
-  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:411.1-411.63
+  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:412.1-412.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:412.1-412.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:413.1-413.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:414.1-414.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:415.1-415.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:415.1-416.59
+  ;; 2-syntax-aux.watsup:416.1-417.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; 2-syntax-aux.watsup:417.1-418.53
+  ;; 2-syntax-aux.watsup:418.1-419.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:419.1-419.60
+  ;; 2-syntax-aux.watsup:420.1-420.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:421.1-422.49
+  ;; 2-syntax-aux.watsup:422.1-423.49
   def $free_instr{numtype : numtype, loadop : loadop_(numtype), memidx : memidx, memarg : memarg}(LOAD_instr(numtype, ?(loadop), memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:423.1-424.49
+  ;; 2-syntax-aux.watsup:424.1-425.49
   def $free_instr{numtype : numtype, `sz?` : sz?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, sz?{sz <- `sz?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:425.1-426.49
+  ;; 2-syntax-aux.watsup:426.1-427.49
   def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:427.1-428.49
+  ;; 2-syntax-aux.watsup:428.1-429.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:429.1-430.49
+  ;; 2-syntax-aux.watsup:430.1-431.49
   def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:431.1-432.49
+  ;; 2-syntax-aux.watsup:432.1-433.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:433.1-433.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:434.1-434.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:435.1-435.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; 2-syntax-aux.watsup:436.1-436.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:436.1-437.51
+  ;; 2-syntax-aux.watsup:437.1-438.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; 2-syntax-aux.watsup:438.1-439.49
+  ;; 2-syntax-aux.watsup:439.1-440.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:440.1-440.60
+  ;; 2-syntax-aux.watsup:441.1-441.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 }
 
@@ -18799,14 +19373,14 @@ def $dataidx_funcs(func*) : dataidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:532.1-532.112
+;; 2-syntax-aux.watsup:533.1-533.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:559.1-559.38
+  ;; 2-syntax-aux.watsup:560.1-560.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 2-syntax-aux.watsup:560.1-560.95
+  ;; 2-syntax-aux.watsup:561.1-561.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 2-syntax-aux.watsup:561.1-561.92
+  ;; 2-syntax-aux.watsup:562.1-562.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -18829,78 +19403,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:533.1-533.112
+;; 2-syntax-aux.watsup:534.1-534.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:563.1-563.66
+  ;; 2-syntax-aux.watsup:564.1-564.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 2-syntax-aux.watsup:564.1-564.64
+  ;; 2-syntax-aux.watsup:565.1-565.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 2-syntax-aux.watsup:537.1-537.112
+;; 2-syntax-aux.watsup:538.1-538.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 2-syntax-aux.watsup:569.1-569.67
+  ;; 2-syntax-aux.watsup:570.1-570.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 2-syntax-aux.watsup:570.1-570.65
+  ;; 2-syntax-aux.watsup:571.1-571.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 2-syntax-aux.watsup:571.1-571.53
+  ;; 2-syntax-aux.watsup:572.1-572.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 2-syntax-aux.watsup:538.1-538.112
+;; 2-syntax-aux.watsup:539.1-539.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 2-syntax-aux.watsup:573.1-573.83
+  ;; 2-syntax-aux.watsup:574.1-574.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:539.1-539.112
+;; 2-syntax-aux.watsup:540.1-540.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 2-syntax-aux.watsup:575.1-575.64
-  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:576.1-576.64
-  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:577.1-577.64
+  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  ;; 2-syntax-aux.watsup:578.1-578.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 2-syntax-aux.watsup:578.1-578.40
+  ;; 2-syntax-aux.watsup:579.1-579.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 2-syntax-aux.watsup:542.1-542.112
+;; 2-syntax-aux.watsup:543.1-543.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 2-syntax-aux.watsup:582.1-582.66
+  ;; 2-syntax-aux.watsup:583.1-583.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 2-syntax-aux.watsup:583.1-583.69
+  ;; 2-syntax-aux.watsup:584.1-584.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 2-syntax-aux.watsup:543.1-543.112
+;; 2-syntax-aux.watsup:544.1-544.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 2-syntax-aux.watsup:585.1-585.80
+  ;; 2-syntax-aux.watsup:586.1-586.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:545.1-545.112
+;; 2-syntax-aux.watsup:546.1-546.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 2-syntax-aux.watsup:587.1-587.85
+  ;; 2-syntax-aux.watsup:588.1-588.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 2-syntax-aux.watsup:588.1-588.81
+  ;; 2-syntax-aux.watsup:589.1-589.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 2-syntax-aux.watsup:589.1-589.78
+  ;; 2-syntax-aux.watsup:590.1-590.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:546.1-546.112
+;; 2-syntax-aux.watsup:547.1-547.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 2-syntax-aux.watsup:591.1-592.71
+  ;; 2-syntax-aux.watsup:592.1-593.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:547.1-547.112
+;; 2-syntax-aux.watsup:548.1-548.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 2-syntax-aux.watsup:594.1-594.76
+  ;; 2-syntax-aux.watsup:595.1-595.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 2-syntax-aux.watsup:548.1-548.112
+;; 2-syntax-aux.watsup:549.1-549.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 2-syntax-aux.watsup:596.1-596.78
+  ;; 2-syntax-aux.watsup:597.1-597.78
   def $subst_deftype{qt : rectype, i : nat, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 2-syntax-aux.watsup:551.1-551.112
+;; 2-syntax-aux.watsup:552.1-552.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 2-syntax-aux.watsup:599.1-599.113
+  ;; 2-syntax-aux.watsup:600.1-600.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -18973,11 +19547,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:627.1-627.98
+;; 2-syntax-aux.watsup:628.1-628.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 2-syntax-aux.watsup:628.1-628.40
+  ;; 2-syntax-aux.watsup:629.1-629.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 2-syntax-aux.watsup:629.1-629.101
+  ;; 2-syntax-aux.watsup:630.1-630.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -19021,13 +19595,13 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:661.1-661.86
+;; 2-syntax-aux.watsup:662.1-662.86
 def $funcsxx(externidx*) : typeidx*
-  ;; 2-syntax-aux.watsup:667.1-667.24
+  ;; 2-syntax-aux.watsup:668.1-668.24
   def $funcsxx([]) = []
-  ;; 2-syntax-aux.watsup:668.1-668.45
+  ;; 2-syntax-aux.watsup:669.1-669.45
   def $funcsxx{x : idx, `xx*` : externidx*}([FUNC_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:669.1-669.58
+  ;; 2-syntax-aux.watsup:670.1-670.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -19035,13 +19609,13 @@ def $funcsxx(externidx*) : typeidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:662.1-662.88
+;; 2-syntax-aux.watsup:663.1-663.88
 def $globalsxx(externidx*) : globalidx*
-  ;; 2-syntax-aux.watsup:671.1-671.26
+  ;; 2-syntax-aux.watsup:672.1-672.26
   def $globalsxx([]) = []
-  ;; 2-syntax-aux.watsup:672.1-672.51
+  ;; 2-syntax-aux.watsup:673.1-673.51
   def $globalsxx{x : idx, `xx*` : externidx*}([GLOBAL_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:673.1-673.62
+  ;; 2-syntax-aux.watsup:674.1-674.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -19049,13 +19623,13 @@ def $globalsxx(externidx*) : globalidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:663.1-663.87
+;; 2-syntax-aux.watsup:664.1-664.87
 def $tablesxx(externidx*) : tableidx*
-  ;; 2-syntax-aux.watsup:675.1-675.25
+  ;; 2-syntax-aux.watsup:676.1-676.25
   def $tablesxx([]) = []
-  ;; 2-syntax-aux.watsup:676.1-676.48
+  ;; 2-syntax-aux.watsup:677.1-677.48
   def $tablesxx{x : idx, `xx*` : externidx*}([TABLE_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:677.1-677.60
+  ;; 2-syntax-aux.watsup:678.1-678.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -19063,13 +19637,13 @@ def $tablesxx(externidx*) : tableidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:664.1-664.85
+;; 2-syntax-aux.watsup:665.1-665.85
 def $memsxx(externidx*) : memidx*
-  ;; 2-syntax-aux.watsup:679.1-679.23
+  ;; 2-syntax-aux.watsup:680.1-680.23
   def $memsxx([]) = []
-  ;; 2-syntax-aux.watsup:680.1-680.42
+  ;; 2-syntax-aux.watsup:681.1-681.42
   def $memsxx{x : idx, `xx*` : externidx*}([MEM_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:681.1-681.56
+  ;; 2-syntax-aux.watsup:682.1-682.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -19077,13 +19651,13 @@ def $memsxx(externidx*) : memidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:665.1-665.85
+;; 2-syntax-aux.watsup:666.1-666.85
 def $tagsxx(externidx*) : tagidx*
-  ;; 2-syntax-aux.watsup:683.1-683.23
+  ;; 2-syntax-aux.watsup:684.1-684.23
   def $tagsxx([]) = []
-  ;; 2-syntax-aux.watsup:684.1-684.42
+  ;; 2-syntax-aux.watsup:685.1-685.42
   def $tagsxx{x : idx, `xx*` : externidx*}([TAG_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:685.1-685.56
+  ;; 2-syntax-aux.watsup:686.1-686.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -19091,13 +19665,13 @@ def $tagsxx(externidx*) : tagidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:688.1-688.88
+;; 2-syntax-aux.watsup:689.1-689.88
 def $funcsxt(externtype*) : deftype*
-  ;; 2-syntax-aux.watsup:694.1-694.24
+  ;; 2-syntax-aux.watsup:695.1-695.24
   def $funcsxt([]) = []
-  ;; 2-syntax-aux.watsup:695.1-695.47
+  ;; 2-syntax-aux.watsup:696.1-696.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:696.1-696.59
+  ;; 2-syntax-aux.watsup:697.1-697.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -19105,13 +19679,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:689.1-689.90
+;; 2-syntax-aux.watsup:690.1-690.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 2-syntax-aux.watsup:698.1-698.26
+  ;; 2-syntax-aux.watsup:699.1-699.26
   def $globalsxt([]) = []
-  ;; 2-syntax-aux.watsup:699.1-699.53
+  ;; 2-syntax-aux.watsup:700.1-700.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:700.1-700.63
+  ;; 2-syntax-aux.watsup:701.1-701.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -19119,13 +19693,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:690.1-690.89
+;; 2-syntax-aux.watsup:691.1-691.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 2-syntax-aux.watsup:702.1-702.25
+  ;; 2-syntax-aux.watsup:703.1-703.25
   def $tablesxt([]) = []
-  ;; 2-syntax-aux.watsup:703.1-703.50
+  ;; 2-syntax-aux.watsup:704.1-704.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:704.1-704.61
+  ;; 2-syntax-aux.watsup:705.1-705.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -19133,13 +19707,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:691.1-691.87
+;; 2-syntax-aux.watsup:692.1-692.87
 def $memsxt(externtype*) : memtype*
-  ;; 2-syntax-aux.watsup:706.1-706.23
+  ;; 2-syntax-aux.watsup:707.1-707.23
   def $memsxt([]) = []
-  ;; 2-syntax-aux.watsup:707.1-707.44
+  ;; 2-syntax-aux.watsup:708.1-708.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:708.1-708.57
+  ;; 2-syntax-aux.watsup:709.1-709.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -19147,13 +19721,13 @@ def $memsxt(externtype*) : memtype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:692.1-692.87
+;; 2-syntax-aux.watsup:693.1-693.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 2-syntax-aux.watsup:710.1-710.23
+  ;; 2-syntax-aux.watsup:711.1-711.23
   def $tagsxt([]) = []
-  ;; 2-syntax-aux.watsup:711.1-711.44
+  ;; 2-syntax-aux.watsup:712.1-712.44
   def $tagsxt{at : tagtype, `xt*` : externtype*}([TAG_externtype((at : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [at] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:712.1-712.57
+  ;; 2-syntax-aux.watsup:713.1-713.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -19162,6 +19736,61 @@ def $tagsxt(externtype*) : tagtype*
 def $memarg0 : memarg
   ;; 2-syntax-aux.watsup
   def $memarg0 = {ALIGN `%`_u32(0), OFFSET `%`_u32(0)}
+
+;; 3-numerics.watsup
+syntax relaxed2 =
+  | `%`{i : nat}(i : nat)
+    -- if ((i = 0) \/ (i = 1))
+
+;; 3-numerics.watsup
+syntax relaxed4 =
+  | `%`{i : nat}(i : nat)
+    -- if ((((i = 0) \/ (i = 1)) \/ (i = 2)) \/ (i = 3))
+
+;; 3-numerics.watsup
+def $relaxed2(relaxed2 : relaxed2, syntax X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $relaxed4(relaxed4 : relaxed4, syntax X, X : X, X : X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $R_fmadd : relaxed2
+
+;; 3-numerics.watsup
+def $R_fmin : relaxed4
+
+;; 3-numerics.watsup
+def $R_fmax : relaxed4
+
+;; 3-numerics.watsup
+def $R_idot : relaxed2
+
+;; 3-numerics.watsup
+def $R_iq15mulr : relaxed2
+
+;; 3-numerics.watsup
+def $R_trunc_u : relaxed4
+
+;; 3-numerics.watsup
+def $R_trunc_s : relaxed2
+
+;; 3-numerics.watsup
+def $R_swizzle : relaxed2
+
+;; 3-numerics.watsup
+def $R_laneselect : relaxed2
 
 ;; 3-numerics.watsup
 def $s33_to_u32(s33 : s33) : u32
@@ -19182,246 +19811,34 @@ def $invsigned_(N : N, int : int) : nat
     -- if ($signed_(N, j) = (i : nat <: int))
 
 ;; 3-numerics.watsup
-def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $sat_u_(N : N, nat : nat) : nat
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = 0
+    -- if (i < 0)
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = ((2 ^ N) - 1)
+    -- if (i > ((2 ^ N) - 1))
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = i
+    -- otherwise
 
 ;; 3-numerics.watsup
-def $fabs_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fceil_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ffloor_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fnearest_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fneg_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iclz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ictz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+def $sat_s_(N : N, int : int) : int
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = - ((2 ^ (N - 1)) : nat <: int)
+    -- if ((i : nat <: int) < - ((2 ^ (N - 1)) : nat <: int))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (((2 ^ (N - 1)) - 1) : nat <: int)
+    -- if (i > ((2 ^ (N - 1)) - 1))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (i : nat <: int)
+    -- otherwise
 
 ;; 3-numerics.watsup
 def $wrap__(M : M, N : N, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
-def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
-
-;; 3-numerics.watsup
-def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $ieqz_(N : N, iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
-
-;; 3-numerics.watsup
-def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
-
-;; 3-numerics.watsup
-def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
+def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
 def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
@@ -19430,30 +19847,22 @@ def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 def $trunc_sat__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 
 ;; 3-numerics.watsup
-def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
-    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
-    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+def $relaxed_trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+
+;; 3-numerics.watsup
+def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
 
 ;; 3-numerics.watsup
 def $narrow__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+
+;; 3-numerics.watsup
+def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
 
 ;; 3-numerics.watsup
 def $ibits_(N : N, iN : iN(N)) : bit*
@@ -19492,13 +19901,82 @@ def $invfbytes_(N : N, byte*) : fN(N)
     -- if ($fbytes_(N, p) = b*{b <- `b*`})
 
 ;; 3-numerics.watsup
+def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
+def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
 def $inot_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
 def $iandnot_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iclz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ictz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ieqz_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ibitselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irelaxed_laneselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*
 
 ;; 3-numerics.watsup
 def $iabs_(N : N, iN : iN(N)) : iN(N)
@@ -19525,10 +20003,85 @@ def $iavgr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 def $iq15mulr_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $irelaxed_q15mulr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*
+
+;; 3-numerics.watsup
+def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
 def $fpmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $fpmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_min_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_max_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fabs_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fneg_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fceil_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ffloor_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fnearest_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $frelaxed_madd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_nmadd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $lpacknum_(lanetype : lanetype, num_ : num_($lunpack(lanetype))) : lane_(lanetype)
@@ -19577,6 +20130,127 @@ def $half__(shape_1 : shape, shape_2 : shape, half__ : half__(shape_1, shape_2),
   def $half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, i : nat, j : nat}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), LOW_half__, i, j) = i
 
 ;; 3-numerics.watsup
+def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
+
+;; 3-numerics.watsup
+def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
+
+;; 3-numerics.watsup
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
+    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
+    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+
+;; 3-numerics.watsup
 def $vvunop_(vectype : vectype, vvunop : vvunop, vec_ : vec_(vectype)) : vec_(vectype)*
   ;; 3-numerics.watsup
   def $vvunop_{v128 : vec_(V128_Vnn)}(V128_vectype, NOT_vvunop, v128) = [$inot_($vsize(V128_vectype), v128)]
@@ -19614,12 +20288,6 @@ def $ivunop_(shape : shape, def $f_(N : N, iN : iN(N)) : iN(N), vec_ : vec_(V128
 ;; 3-numerics.watsup
 def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
-  ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fabs_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fneg_, vN_1)
@@ -19633,6 +20301,12 @@ def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), TRUNC_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $ftrunc_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEAREST_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fnearest_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
 
 ;; 3-numerics.watsup
 def $fvbinop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
@@ -19659,6 +20333,14 @@ def $ivbinopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) :
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; 3-numerics.watsup
+def $ivbinopsxnd_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivbinopsxnd_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, vN_1, vN_2) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`}))
+
+;; 3-numerics.watsup
 def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iadd_, vN_1, vN_2)
@@ -19679,6 +20361,8 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `Q15MULR_SATS`_vbinop_, vN_1, vN_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iq15mulr_sat_, S_sx, vN_1, vN_2)
   ;; 3-numerics.watsup
+  def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `RELAXED_Q15MULRS`_vbinop_, vN_1, vN_2) = $ivbinopsxnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_q15mulr_, S_sx, vN_1, vN_2)
+  ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fadd_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), SUB_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fsub_, vN_1, vN_2)
@@ -19694,6 +20378,37 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmin_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmax_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_min_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_max_, vN_1, vN_2)
+
+;; 3-numerics.watsup
+def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $fvternop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $ivternopnd_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivternopnd_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $vternop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), RELAXED_LANESELECT_vternop_, vN_1, vN_2, vN_3) = $ivternopnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_laneselect_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -19759,6 +20474,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
     -- if (iN_2?{iN_2 <- `iN_2?`} = $trunc_sat__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
   ;; 3-numerics.watsup
+  def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
+    -- if (iN_2?{iN_2 <- `iN_2?`} = $relaxed_trunc__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
+  ;; 3-numerics.watsup
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `fN_2*` : lane_($lanetype(`%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__, fN_1) = fN_2*{fN_2 <- `fN_2*`}
     -- if (fN_2*{fN_2 <- `fN_2*`} = $demote__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), fN_1))
   ;; 3-numerics.watsup
@@ -19781,11 +20499,38 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2)[$half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), half, 0, M_2) : M_2])
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`}))
   ;; 3-numerics.watsup
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
-    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`})
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+  ;; 3-numerics.watsup
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOTS`_vextbinop__, c_1, c_2) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_sat_($lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+
+;; 3-numerics.watsup
+def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
+  ;; 3-numerics.watsup
+  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_3*` : lane_($lanetype(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))))*, Jnn : Jnn, `ci'_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOT_ADDS`_vextternop__, c_1, c_2, c_3) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci_3*{ci_3 <- `ci_3*`} = $lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c_3))
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [`%`_uN(cj_1!`%`_iN.0) `%`_uN(cj_2!`%`_iN.0)]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn((Jnn : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [ck_1 ck_2]*{ck_1 <- `ck_1*`, ck_2 <- `ck_2*`}) = $iadd_sat_($lsizenn((Jnn : Jnn <: lanetype)), S_sx, `%`_iN(cj_1!`%`_iN.0), `%`_iN(cj_2!`%`_iN.0))*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`})
+    -- if (ck'_1*{ck'_1 <- `ck'_1*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_1)*{ck_1 <- `ck_1*`})
+    -- if (ck'_2*{ck'_2 <- `ck'_2*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_2)*{ck_2 <- `ck_2*`})
+    -- if (ck*{ck <- `ck*`} = $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck'_1, ck'_2)*{ck'_1 <- `ck'_1*`, ck'_2 <- `ck'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck, ci_3)*{ci_3 <- `ci_3*`, ck <- `ck*`}))
 
 ;; 3-numerics.watsup
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -21315,224 +22060,232 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:948.1-949.40
+  ;; 6-typing.watsup:948.1-949.51
+  rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
+    `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:951.1-952.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:951.1-952.44
+  ;; 6-typing.watsup:954.1-955.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:954.1-955.47
+  ;; 6-typing.watsup:957.1-958.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:957.1-958.33
+  ;; 6-typing.watsup:960.1-961.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:960.1-961.39
-  rule vswizzle{C : context, sh : ishape}:
-    `%|-%:%`(C, VSWIZZLE_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+  ;; 6-typing.watsup:963.1-964.50
+  rule vswizzlop{C : context, sh : ishape, vswizzlop : vswizzlop_(sh)}:
+    `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:963.1-965.29
+  ;; 6-typing.watsup:966.1-968.29
   rule vshuffle{C : context, sh : ishape, `i*` : nat*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, `%`_laneidx(i)*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i < (2 * $dim((sh : ishape <: shape))!`%`_dim.0)))*{i <- `i*`}
 
-  ;; 6-typing.watsup:967.1-968.44
+  ;; 6-typing.watsup:970.1-971.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:970.1-972.21
+  ;; 6-typing.watsup:973.1-975.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : nat}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:974.1-976.21
+  ;; 6-typing.watsup:977.1-979.21
   rule vreplace_lane{C : context, sh : shape, i : nat}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:978.1-979.50
+  ;; 6-typing.watsup:981.1-982.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:981.1-982.57
+  ;; 6-typing.watsup:984.1-985.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:984.1-985.48
+  ;; 6-typing.watsup:987.1-988.64
+  rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
+    `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:990.1-991.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:987.1-988.58
+  ;; 6-typing.watsup:993.1-994.58
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1), `half?` : half__(sh_2, sh_1)?, `zero?` : zero__(sh_2, sh_1)?}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:993.1-995.28
+  ;; 6-typing.watsup:999.1-1001.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; 6-typing.watsup:997.1-999.29
+  ;; 6-typing.watsup:1003.1-1005.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1001.1-1003.29
+  ;; 6-typing.watsup:1007.1-1009.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1008.1-1010.29
+  ;; 6-typing.watsup:1014.1-1016.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; 6-typing.watsup:1012.1-1014.29
+  ;; 6-typing.watsup:1018.1-1020.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(`MUT%?`_mut(?(())), t))
 
-  ;; 6-typing.watsup:1019.1-1021.29
+  ;; 6-typing.watsup:1025.1-1027.29
   rule table.get{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1023.1-1025.29
+  ;; 6-typing.watsup:1029.1-1031.29
   rule table.set{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1027.1-1029.29
+  ;; 6-typing.watsup:1033.1-1035.29
   rule table.size{C : context, x : idx, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1031.1-1033.29
+  ;; 6-typing.watsup:1037.1-1039.29
   rule table.grow{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1035.1-1037.29
+  ;; 6-typing.watsup:1041.1-1043.29
   rule table.fill{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1039.1-1043.36
+  ;; 6-typing.watsup:1045.1-1049.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x_1!`%`_idx.0] = `%%`_tabletype(lim_1, rt_1))
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%`_tabletype(lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1045.1-1049.36
+  ;; 6-typing.watsup:1051.1-1055.36
   rule table.init{C : context, x : idx, y : idx, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt_1))
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1051.1-1053.24
+  ;; 6-typing.watsup:1057.1-1059.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; 6-typing.watsup:1058.1-1060.23
+  ;; 6-typing.watsup:1064.1-1066.23
   rule memory.size{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1062.1-1064.23
+  ;; 6-typing.watsup:1068.1-1070.23
   rule memory.grow{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1066.1-1068.23
+  ;; 6-typing.watsup:1072.1-1074.23
   rule memory.fill{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1070.1-1073.27
+  ;; 6-typing.watsup:1076.1-1079.27
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, mt_1 : memtype, mt_2 : memtype}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x_1!`%`_idx.0] = mt_1)
     -- if (C.MEMS_context[x_2!`%`_idx.0] = mt_2)
 
-  ;; 6-typing.watsup:1075.1-1078.24
+  ;; 6-typing.watsup:1081.1-1084.24
   rule memory.init{C : context, x : idx, y : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1080.1-1082.24
+  ;; 6-typing.watsup:1086.1-1088.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1093.1-1096.43
+  ;; 6-typing.watsup:1099.1-1102.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1098.1-1101.35
+  ;; 6-typing.watsup:1104.1-1107.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1112.1-1115.43
+  ;; 6-typing.watsup:1118.1-1121.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1117.1-1120.35
+  ;; 6-typing.watsup:1123.1-1126.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_sz(M)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1122.1-1125.46
+  ;; 6-typing.watsup:1128.1-1131.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1127.1-1130.39
+  ;; 6-typing.watsup:1133.1-1136.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ((M / 8) * N))
 
-  ;; 6-typing.watsup:1132.1-1135.35
+  ;; 6-typing.watsup:1138.1-1141.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1137.1-1140.35
+  ;; 6-typing.watsup:1143.1-1146.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1142.1-1146.21
+  ;; 6-typing.watsup:1148.1-1152.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
-  ;; 6-typing.watsup:1148.1-1151.46
+  ;; 6-typing.watsup:1154.1-1157.46
   rule vstore{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1153.1-1157.21
+  ;; 6-typing.watsup:1159.1-1163.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
@@ -21807,13 +22560,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1358.1-1358.100
+;; 6-typing.watsup:1364.1-1364.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1402.1-1403.17
+  ;; 6-typing.watsup:1408.1-1409.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1405.1-1408.54
+  ;; 6-typing.watsup:1411.1-1414.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -21823,13 +22576,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1357.1-1357.98
+;; 6-typing.watsup:1363.1-1363.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1394.1-1395.17
+  ;; 6-typing.watsup:1400.1-1401.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1397.1-1400.49
+  ;; 6-typing.watsup:1403.1-1406.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
@@ -22266,6 +23019,16 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vbinop_(sh, vbinop, c_1, c_2) = [])
 
   ;; 8-reduction.watsup
+  rule `vternop-val`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [VCONST_instr(V128_vectype, c)])
+    -- if c <- $vternop_(sh, vternop, c_1, c_2, c_3)
+
+  ;; 8-reduction.watsup
+  rule `vternop-trap`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [TRAP_instr])
+    -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
+
+  ;; 8-reduction.watsup
   rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
     `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
@@ -22294,11 +23057,18 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($ibits_(32, ci) = `%`_bit($ilt_($lsize((Jnn : Jnn <: lanetype)), S_sx, ci_1, `%`_iN(0))!`%`_u32.0)*{ci_1 <- `ci_1*`})
 
   ;; 8-reduction.watsup
-  rule vswizzle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `ci*` : lane_($lanetype(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M))))*, `k*` : nat*}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLE_instr(`%X%`_ishape((Pnn : Pnn <: Jnn), `%`_dim(M)))], [VCONST_instr(V128_vectype, c)])
-    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_2))
-    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
-    -- if (c = $invlanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+  rule `vswizzlop-swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+
+  ;; 8-reduction.watsup
+  rule `vswizzlop-relaxed_swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), RELAXED_SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
 
   ;; 8-reduction.watsup
   rule vshuffle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, `i*` : nat*, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `k*` : nat*}:
@@ -22335,6 +23105,11 @@ relation Step_pure: `%~>%`(instr*, instr*)
   rule vextbinop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextbinop : vextbinop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VEXTBINOP_instr(sh_2, sh_1, vextbinop)], [VCONST_instr(V128_vectype, c)])
     -- if ($vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c)
+
+  ;; 8-reduction.watsup
+  rule vextternop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextternop : vextternop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VEXTTERNOP_instr(sh_2, sh_1, vextternop)], [VCONST_instr(V128_vectype, c)])
+    -- if ($vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c)
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Jnn_2 : Jnn, M_2 : M, Jnn_1 : Jnn, M_1 : M, sx : sx, c : vec_(V128_Vnn), `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*}:
@@ -22993,89 +23768,89 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config($with_array(z, a, i, $packfield_(zt, val)), []))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 8-reduction.watsup:806.1-807.56
+  ;; 8-reduction.watsup:823.1-824.56
   rule local.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) LOCAL.SET_instr(x)]), `%;%`_config($with_local(z, x, val), []))
 
-  ;; 8-reduction.watsup:819.1-820.58
+  ;; 8-reduction.watsup:836.1-837.58
   rule global.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) GLOBAL.SET_instr(x)]), `%;%`_config($with_global(z, x, val), []))
 
-  ;; 8-reduction.watsup:833.1-835.33
+  ;; 8-reduction.watsup:850.1-852.33
   rule `table.set-oob`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i >= |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:837.1-839.32
+  ;; 8-reduction.watsup:854.1-856.32
   rule `table.set-val`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:847.1-850.46
+  ;; 8-reduction.watsup:864.1-867.46
   rule `table.grow-succeed`{z : state, ref : ref, n : n, x : idx, ti : tableinst}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr(I32_numtype, `%`_num_(|$table(z, x).REFS_tableinst|))]))
     -- if (ti = !($growtable($table(z, x), n, ref)))
 
-  ;; 8-reduction.watsup:852.1-853.81
+  ;; 8-reduction.watsup:869.1-870.81
   rule `table.grow-fail`{z : state, ref : ref, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:913.1-914.51
+  ;; 8-reduction.watsup:930.1-931.51
   rule elem.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [ELEM.DROP_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
-  ;; 8-reduction.watsup:997.1-1000.60
+  ;; 8-reduction.watsup:1014.1-1017.60
   rule `store-num-oob`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1002.1-1006.29
+  ;; 8-reduction.watsup:1019.1-1023.29
   rule `store-num-val`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $nbytes_(nt, c))
 
-  ;; 8-reduction.watsup:1008.1-1011.52
+  ;; 8-reduction.watsup:1025.1-1028.52
   rule `store-pack-oob`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1013.1-1017.52
+  ;; 8-reduction.watsup:1030.1-1034.52
   rule `store-pack-val`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $ibytes_(n, $wrap__($size((Inn : Inn <: numtype)), n, c)))
 
-  ;; 8-reduction.watsup:1019.1-1021.63
+  ;; 8-reduction.watsup:1036.1-1038.63
   rule `vstore-oob`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1023.1-1025.31
+  ;; 8-reduction.watsup:1040.1-1042.31
   rule `vstore-val`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $vbytes_(V128_vectype, c))
 
-  ;; 8-reduction.watsup:1028.1-1030.50
+  ;; 8-reduction.watsup:1045.1-1047.50
   rule `vstore_lane-oob`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1032.1-1036.49
+  ;; 8-reduction.watsup:1049.1-1053.49
   rule `vstore_lane-val`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, `b*` : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b <- `b*`}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
     -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:1044.1-1047.37
+  ;; 8-reduction.watsup:1061.1-1064.37
   rule `memory.grow-succeed`{z : state, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
     -- if (mi = !($growmem($mem(z, x), n)))
 
-  ;; 8-reduction.watsup:1049.1-1050.78
+  ;; 8-reduction.watsup:1066.1-1067.78
   rule `memory.grow-fail`{z : state, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:1110.1-1111.51
+  ;; 8-reduction.watsup:1127.1-1128.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }
@@ -23725,7 +24500,7 @@ grammar Blaneidx : laneidx
 ;; A-binary.watsup
 rec {
 
-;; A-binary.watsup:971.1-981.66
+;; A-binary.watsup:992.1-1006.73
 grammar Binstr : instr
   ;; A-binary.watsup:214.5-214.24
   prod 0x00 => UNREACHABLE_instr
@@ -24255,430 +25030,462 @@ grammar Binstr : instr
   prod{`b*` : byte*} {0xFD `%`_u32(12):Bu32 b:Bbyte^16{b <- `b*`}} => VCONST_instr(V128_vectype, $invibytes_(128, b^16{b <- `b*`}))
   ;; A-binary.watsup:625.5-625.58
   prod{l : labelidx} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), [`%`_uN(l!`%`_labelidx.0)])
-  ;; A-binary.watsup:626.5-626.40
-  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:630.5-630.38
-  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
+  ;; A-binary.watsup:626.5-626.49
+  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SWIZZLE_vswizzlop_)
+  ;; A-binary.watsup:627.5-627.58
+  prod {0xFD `%`_u32(256):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), RELAXED_SWIZZLE_vswizzlop_)
   ;; A-binary.watsup:631.5-631.38
-  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
+  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
   ;; A-binary.watsup:632.5-632.38
-  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
   ;; A-binary.watsup:633.5-633.38
-  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
+  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
   ;; A-binary.watsup:634.5-634.38
-  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
   ;; A-binary.watsup:635.5-635.38
+  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  ;; A-binary.watsup:636.5-636.38
   prod {0xFD `%`_u32(20):Bu32} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)))
-  ;; A-binary.watsup:639.5-639.60
-  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:640.5-640.60
+  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:641.5-641.60
   prod{l : labelidx} {0xFD `%`_u32(22):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:641.5-641.58
+  ;; A-binary.watsup:642.5-642.58
   prod{l : labelidx} {0xFD `%`_u32(23):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:642.5-642.60
-  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:643.5-643.60
+  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:644.5-644.60
   prod{l : labelidx} {0xFD `%`_u32(25):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:644.5-644.58
-  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:645.5-645.58
-  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:646.5-646.58
-  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:647.5-647.58
-  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:648.5-648.58
-  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:649.5-649.58
-  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:650.5-650.58
-  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:651.5-651.58
-  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:652.5-652.58
+  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:653.5-653.58
   prod{l : labelidx} {0xFD `%`_u32(34):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:656.5-656.41
-  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
   ;; A-binary.watsup:657.5-657.41
+  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
+  ;; A-binary.watsup:658.5-658.41
   prod {0xFD `%`_u32(36):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NE_vrelop_)
-  ;; A-binary.watsup:658.5-658.45
-  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:659.5-659.45
-  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:660.5-660.45
-  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:661.5-661.45
-  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:662.5-662.45
-  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:663.5-663.45
-  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:664.5-664.45
-  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:665.5-665.45
+  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:666.5-666.45
   prod {0xFD `%`_u32(44):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:669.5-669.41
-  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
   ;; A-binary.watsup:670.5-670.41
+  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
+  ;; A-binary.watsup:671.5-671.41
   prod {0xFD `%`_u32(46):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NE_vrelop_)
-  ;; A-binary.watsup:671.5-671.45
-  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:672.5-672.45
-  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:673.5-673.45
-  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:674.5-674.45
-  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:675.5-675.45
-  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:676.5-676.45
-  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:677.5-677.45
-  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:678.5-678.45
+  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:679.5-679.45
   prod {0xFD `%`_u32(54):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:682.5-682.41
-  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:683.5-683.41
+  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
+  ;; A-binary.watsup:684.5-684.41
   prod {0xFD `%`_u32(56):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NE_vrelop_)
-  ;; A-binary.watsup:684.5-684.45
-  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:685.5-685.45
-  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:686.5-686.45
-  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:687.5-687.45
-  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:688.5-688.45
-  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:689.5-689.45
-  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:690.5-690.45
-  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:691.5-691.45
+  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:692.5-692.45
   prod {0xFD `%`_u32(64):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:695.5-695.41
-  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:696.5-696.41
-  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
+  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:697.5-697.41
-  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
+  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
   ;; A-binary.watsup:698.5-698.41
-  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
+  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
   ;; A-binary.watsup:699.5-699.41
-  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
   ;; A-binary.watsup:700.5-700.41
+  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  ;; A-binary.watsup:701.5-701.41
   prod {0xFD `%`_u32(70):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GE_vrelop_)
-  ;; A-binary.watsup:704.5-704.41
-  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:705.5-705.41
-  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
+  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:706.5-706.41
-  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
+  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
   ;; A-binary.watsup:707.5-707.41
-  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
+  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
   ;; A-binary.watsup:708.5-708.41
-  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
   ;; A-binary.watsup:709.5-709.41
+  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  ;; A-binary.watsup:710.5-710.41
   prod {0xFD `%`_u32(76):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GE_vrelop_)
-  ;; A-binary.watsup:713.5-713.36
+  ;; A-binary.watsup:714.5-714.36
   prod {0xFD `%`_u32(77):Bu32} => VVUNOP_instr(V128_vectype, NOT_vvunop)
-  ;; A-binary.watsup:717.5-717.37
+  ;; A-binary.watsup:718.5-718.37
   prod {0xFD `%`_u32(78):Bu32} => VVBINOP_instr(V128_vectype, AND_vvbinop)
-  ;; A-binary.watsup:718.5-718.40
+  ;; A-binary.watsup:719.5-719.40
   prod {0xFD `%`_u32(79):Bu32} => VVBINOP_instr(V128_vectype, ANDNOT_vvbinop)
-  ;; A-binary.watsup:719.5-719.36
+  ;; A-binary.watsup:720.5-720.36
   prod {0xFD `%`_u32(80):Bu32} => VVBINOP_instr(V128_vectype, OR_vvbinop)
-  ;; A-binary.watsup:720.5-720.37
+  ;; A-binary.watsup:721.5-721.37
   prod {0xFD `%`_u32(81):Bu32} => VVBINOP_instr(V128_vectype, XOR_vvbinop)
-  ;; A-binary.watsup:724.5-724.44
+  ;; A-binary.watsup:725.5-725.44
   prod {0xFD `%`_u32(82):Bu32} => VVTERNOP_instr(V128_vectype, BITSELECT_vvternop)
-  ;; A-binary.watsup:728.5-728.43
+  ;; A-binary.watsup:729.5-729.43
   prod {0xFD `%`_u32(83):Bu32} => VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)
-  ;; A-binary.watsup:732.5-732.41
-  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
   ;; A-binary.watsup:733.5-733.41
+  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
+  ;; A-binary.watsup:734.5-734.41
   prod {0xFD `%`_u32(97):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NEG_vunop_)
-  ;; A-binary.watsup:734.5-734.44
+  ;; A-binary.watsup:735.5-735.44
   prod {0xFD `%`_u32(98):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), POPCNT_vunop_)
-  ;; A-binary.watsup:738.5-738.48
+  ;; A-binary.watsup:739.5-739.48
   prod {0xFD `%`_u32(99):Bu32} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:742.5-742.41
+  ;; A-binary.watsup:743.5-743.41
   prod {0xFD `%`_u32(100):Bu32} => VBITMASK_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:746.5-746.53
-  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
   ;; A-binary.watsup:747.5-747.53
+  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
+  ;; A-binary.watsup:748.5-748.53
   prod {0xFD `%`_u32(102):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), U_sx)
-  ;; A-binary.watsup:751.5-751.45
+  ;; A-binary.watsup:752.5-752.45
   prod {0xFD `%`_u32(107):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHL_vshiftop_)
-  ;; A-binary.watsup:752.5-752.49
-  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
   ;; A-binary.watsup:753.5-753.49
+  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
+  ;; A-binary.watsup:754.5-754.49
   prod {0xFD `%`_u32(109):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:757.5-757.43
+  ;; A-binary.watsup:758.5-758.43
   prod {0xFD `%`_u32(110):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_vbinop_)
-  ;; A-binary.watsup:758.5-758.51
-  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:759.5-759.51
+  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:760.5-760.51
   prod {0xFD `%`_u32(112):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:760.5-760.43
+  ;; A-binary.watsup:761.5-761.43
   prod {0xFD `%`_u32(113):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_vbinop_)
-  ;; A-binary.watsup:761.5-761.51
-  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:762.5-762.51
+  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:763.5-763.51
   prod {0xFD `%`_u32(115):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:763.5-763.47
-  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:764.5-764.47
-  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
+  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:765.5-765.47
-  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:766.5-766.47
+  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:767.5-767.47
   prod {0xFD `%`_u32(121):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:767.5-767.48
+  ;; A-binary.watsup:768.5-768.48
   prod {0xFD `%`_u32(123):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:771.5-771.72
-  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
   ;; A-binary.watsup:772.5-772.72
+  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
+  ;; A-binary.watsup:773.5-773.72
   prod {0xFD `%`_u32(125):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:776.5-776.42
-  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
   ;; A-binary.watsup:777.5-777.42
+  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
+  ;; A-binary.watsup:778.5-778.42
   prod {0xFD `%`_u32(129):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NEG_vunop_)
-  ;; A-binary.watsup:781.5-781.55
+  ;; A-binary.watsup:782.5-782.55
   prod {0xFD `%`_u32(130):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `Q15MULR_SATS`_vbinop_)
-  ;; A-binary.watsup:785.5-785.49
+  ;; A-binary.watsup:783.5-783.59
+  prod {0xFD `%`_u32(273):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `RELAXED_Q15MULRS`_vbinop_)
+  ;; A-binary.watsup:787.5-787.49
   prod {0xFD `%`_u32(131):Bu32} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:789.5-789.41
+  ;; A-binary.watsup:791.5-791.41
   prod {0xFD `%`_u32(132):Bu32} => VBITMASK_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)))
-  ;; A-binary.watsup:793.5-793.53
+  ;; A-binary.watsup:795.5-795.53
   prod {0xFD `%`_u32(133):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), S_sx)
-  ;; A-binary.watsup:794.5-794.53
+  ;; A-binary.watsup:796.5-796.53
   prod {0xFD `%`_u32(134):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), U_sx)
-  ;; A-binary.watsup:798.5-798.65
-  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:799.5-799.66
-  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
   ;; A-binary.watsup:800.5-800.65
-  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
   ;; A-binary.watsup:801.5-801.66
+  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
+  ;; A-binary.watsup:802.5-802.65
+  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:803.5-803.66
   prod {0xFD `%`_u32(138):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:805.5-805.45
+  ;; A-binary.watsup:807.5-807.45
   prod {0xFD `%`_u32(139):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHL_vshiftop_)
-  ;; A-binary.watsup:806.5-806.49
+  ;; A-binary.watsup:808.5-808.49
   prod {0xFD `%`_u32(140):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:807.5-807.49
+  ;; A-binary.watsup:809.5-809.49
   prod {0xFD `%`_u32(141):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:811.5-811.43
+  ;; A-binary.watsup:813.5-813.43
   prod {0xFD `%`_u32(142):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_vbinop_)
-  ;; A-binary.watsup:812.5-812.51
+  ;; A-binary.watsup:814.5-814.51
   prod {0xFD `%`_u32(143):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:813.5-813.51
-  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:814.5-814.43
-  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
   ;; A-binary.watsup:815.5-815.51
+  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
+  ;; A-binary.watsup:816.5-816.43
+  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
+  ;; A-binary.watsup:817.5-817.51
   prod {0xFD `%`_u32(146):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:816.5-816.51
+  ;; A-binary.watsup:818.5-818.51
   prod {0xFD `%`_u32(147):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:817.5-817.43
+  ;; A-binary.watsup:819.5-819.43
   prod {0xFD `%`_u32(149):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MUL_vbinop_)
-  ;; A-binary.watsup:818.5-818.47
-  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:819.5-819.47
-  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:820.5-820.47
-  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:821.5-821.47
+  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:822.5-822.47
+  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:823.5-823.47
   prod {0xFD `%`_u32(153):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:822.5-822.48
+  ;; A-binary.watsup:824.5-824.48
   prod {0xFD `%`_u32(155):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:826.5-826.68
-  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:827.5-827.69
-  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
   ;; A-binary.watsup:828.5-828.68
-  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
   ;; A-binary.watsup:829.5-829.69
+  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
+  ;; A-binary.watsup:830.5-830.68
+  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  ;; A-binary.watsup:831.5-831.69
   prod {0xFD `%`_u32(159):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:833.5-833.72
+  ;; A-binary.watsup:832.5-832.69
+  prod {0xFD `%`_u32(274):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), `RELAXED_DOTS`_vextbinop__)
+  ;; A-binary.watsup:836.5-836.72
   prod {0xFD `%`_u32(126):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(S_sx))
-  ;; A-binary.watsup:834.5-834.72
+  ;; A-binary.watsup:837.5-837.72
   prod {0xFD `%`_u32(127):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:838.5-838.42
+  ;; A-binary.watsup:841.5-841.42
   prod {0xFD `%`_u32(160):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:839.5-839.42
+  ;; A-binary.watsup:842.5-842.42
   prod {0xFD `%`_u32(161):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:843.5-843.49
+  ;; A-binary.watsup:846.5-846.49
   prod {0xFD `%`_u32(163):Bu32} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:847.5-847.41
+  ;; A-binary.watsup:850.5-850.41
   prod {0xFD `%`_u32(164):Bu32} => VBITMASK_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)))
-  ;; A-binary.watsup:851.5-851.65
+  ;; A-binary.watsup:854.5-854.65
   prod {0xFD `%`_u32(167):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:852.5-852.66
+  ;; A-binary.watsup:855.5-855.66
   prod {0xFD `%`_u32(168):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:853.5-853.65
+  ;; A-binary.watsup:856.5-856.65
   prod {0xFD `%`_u32(169):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:854.5-854.66
+  ;; A-binary.watsup:857.5-857.66
   prod {0xFD `%`_u32(170):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:858.5-858.45
+  ;; A-binary.watsup:861.5-861.45
   prod {0xFD `%`_u32(171):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHL_vshiftop_)
-  ;; A-binary.watsup:859.5-859.49
+  ;; A-binary.watsup:862.5-862.49
   prod {0xFD `%`_u32(172):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:860.5-860.49
+  ;; A-binary.watsup:863.5-863.49
   prod {0xFD `%`_u32(173):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:864.5-864.43
+  ;; A-binary.watsup:867.5-867.43
   prod {0xFD `%`_u32(174):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:865.5-865.43
+  ;; A-binary.watsup:868.5-868.43
   prod {0xFD `%`_u32(177):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:866.5-866.43
+  ;; A-binary.watsup:869.5-869.43
   prod {0xFD `%`_u32(181):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MUL_vbinop_)
-  ;; A-binary.watsup:867.5-867.47
-  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:868.5-868.47
-  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:869.5-869.47
-  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
   ;; A-binary.watsup:870.5-870.47
+  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
+  ;; A-binary.watsup:871.5-871.47
+  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:872.5-872.47
+  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:873.5-873.47
   prod {0xFD `%`_u32(185):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:874.5-874.61
+  ;; A-binary.watsup:877.5-877.61
   prod {0xFD `%`_u32(186):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `DOTS`_vextbinop__)
-  ;; A-binary.watsup:875.5-875.68
+  ;; A-binary.watsup:878.5-878.68
   prod {0xFD `%`_u32(188):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:876.5-876.69
+  ;; A-binary.watsup:879.5-879.69
   prod {0xFD `%`_u32(189):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:877.5-877.68
+  ;; A-binary.watsup:880.5-880.68
   prod {0xFD `%`_u32(190):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:878.5-878.69
+  ;; A-binary.watsup:881.5-881.69
   prod {0xFD `%`_u32(191):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:882.5-882.42
+  ;; A-binary.watsup:885.5-885.74
+  prod {0xFD `%`_u32(275):Bu32} => VEXTTERNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `RELAXED_DOT_ADDS`_vextternop__)
+  ;; A-binary.watsup:889.5-889.42
   prod {0xFD `%`_u32(192):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:883.5-883.42
+  ;; A-binary.watsup:890.5-890.42
   prod {0xFD `%`_u32(193):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:887.5-887.49
+  ;; A-binary.watsup:894.5-894.49
   prod {0xFD `%`_u32(195):Bu32} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:891.5-891.41
+  ;; A-binary.watsup:898.5-898.41
   prod {0xFD `%`_u32(196):Bu32} => VBITMASK_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)))
-  ;; A-binary.watsup:895.5-895.65
+  ;; A-binary.watsup:902.5-902.65
   prod {0xFD `%`_u32(199):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:896.5-896.66
+  ;; A-binary.watsup:903.5-903.66
   prod {0xFD `%`_u32(200):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:897.5-897.65
+  ;; A-binary.watsup:904.5-904.65
   prod {0xFD `%`_u32(201):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:898.5-898.66
+  ;; A-binary.watsup:905.5-905.66
   prod {0xFD `%`_u32(202):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:902.5-902.45
+  ;; A-binary.watsup:909.5-909.45
   prod {0xFD `%`_u32(203):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHL_vshiftop_)
-  ;; A-binary.watsup:903.5-903.49
+  ;; A-binary.watsup:910.5-910.49
   prod {0xFD `%`_u32(204):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:904.5-904.49
+  ;; A-binary.watsup:911.5-911.49
   prod {0xFD `%`_u32(205):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:908.5-908.43
+  ;; A-binary.watsup:915.5-915.43
   prod {0xFD `%`_u32(206):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:909.5-909.43
+  ;; A-binary.watsup:916.5-916.43
   prod {0xFD `%`_u32(209):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:910.5-910.43
+  ;; A-binary.watsup:917.5-917.43
   prod {0xFD `%`_u32(213):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:914.5-914.42
+  ;; A-binary.watsup:921.5-921.42
   prod {0xFD `%`_u32(214):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), EQ_vrelop_)
-  ;; A-binary.watsup:915.5-915.42
+  ;; A-binary.watsup:922.5-922.42
   prod {0xFD `%`_u32(215):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NE_vrelop_)
-  ;; A-binary.watsup:916.5-916.46
+  ;; A-binary.watsup:923.5-923.46
   prod {0xFD `%`_u32(216):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:917.5-917.46
+  ;; A-binary.watsup:924.5-924.46
   prod {0xFD `%`_u32(217):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:918.5-918.46
+  ;; A-binary.watsup:925.5-925.46
   prod {0xFD `%`_u32(218):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:919.5-919.46
+  ;; A-binary.watsup:926.5-926.46
   prod {0xFD `%`_u32(219):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:923.5-923.68
+  ;; A-binary.watsup:930.5-930.68
   prod {0xFD `%`_u32(220):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:924.5-924.69
+  ;; A-binary.watsup:931.5-931.69
   prod {0xFD `%`_u32(221):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:925.5-925.68
+  ;; A-binary.watsup:932.5-932.68
   prod {0xFD `%`_u32(222):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:926.5-926.69
+  ;; A-binary.watsup:933.5-933.69
   prod {0xFD `%`_u32(223):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:930.5-930.43
+  ;; A-binary.watsup:937.5-937.43
   prod {0xFD `%`_u32(103):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), CEIL_vunop_)
-  ;; A-binary.watsup:931.5-931.44
+  ;; A-binary.watsup:938.5-938.44
   prod {0xFD `%`_u32(104):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), FLOOR_vunop_)
-  ;; A-binary.watsup:932.5-932.44
+  ;; A-binary.watsup:939.5-939.44
   prod {0xFD `%`_u32(105):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_vunop_)
-  ;; A-binary.watsup:933.5-933.46
+  ;; A-binary.watsup:940.5-940.46
   prod {0xFD `%`_u32(106):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEAREST_vunop_)
-  ;; A-binary.watsup:934.5-934.42
+  ;; A-binary.watsup:941.5-941.42
   prod {0xFD `%`_u32(224):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:935.5-935.42
+  ;; A-binary.watsup:942.5-942.42
   prod {0xFD `%`_u32(225):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:936.5-936.43
-  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
-  ;; A-binary.watsup:940.5-940.43
-  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:941.5-941.43
-  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:942.5-942.43
-  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
   ;; A-binary.watsup:943.5-943.43
+  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
+  ;; A-binary.watsup:947.5-947.43
+  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
+  ;; A-binary.watsup:948.5-948.43
+  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
+  ;; A-binary.watsup:949.5-949.43
+  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
+  ;; A-binary.watsup:950.5-950.43
   prod {0xFD `%`_u32(231):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), DIV_vbinop_)
-  ;; A-binary.watsup:944.5-944.43
-  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
-  ;; A-binary.watsup:945.5-945.43
-  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
-  ;; A-binary.watsup:946.5-946.44
-  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
-  ;; A-binary.watsup:947.5-947.44
-  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
   ;; A-binary.watsup:951.5-951.43
-  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
-  ;; A-binary.watsup:952.5-952.44
-  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
+  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
+  ;; A-binary.watsup:952.5-952.43
+  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
   ;; A-binary.watsup:953.5-953.44
-  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
-  ;; A-binary.watsup:954.5-954.46
-  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
-  ;; A-binary.watsup:955.5-955.42
-  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:956.5-956.42
-  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:957.5-957.43
-  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
-  ;; A-binary.watsup:961.5-961.43
-  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:962.5-962.43
-  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:963.5-963.43
-  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:964.5-964.43
-  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
+  ;; A-binary.watsup:954.5-954.44
+  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
+  ;; A-binary.watsup:955.5-955.51
+  prod {0xFD `%`_u32(269):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:956.5-956.51
+  prod {0xFD `%`_u32(270):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:960.5-960.53
+  prod {0xFD `%`_u32(261):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:961.5-961.54
+  prod {0xFD `%`_u32(262):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_NMADD_vternop_)
   ;; A-binary.watsup:965.5-965.43
-  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
-  ;; A-binary.watsup:966.5-966.43
-  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
+  ;; A-binary.watsup:966.5-966.44
+  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
   ;; A-binary.watsup:967.5-967.44
+  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
+  ;; A-binary.watsup:968.5-968.46
+  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
+  ;; A-binary.watsup:969.5-969.42
+  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
+  ;; A-binary.watsup:970.5-970.42
+  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
+  ;; A-binary.watsup:971.5-971.43
+  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
+  ;; A-binary.watsup:975.5-975.43
+  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
+  ;; A-binary.watsup:976.5-976.43
+  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
+  ;; A-binary.watsup:977.5-977.43
+  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
+  ;; A-binary.watsup:978.5-978.43
+  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  ;; A-binary.watsup:979.5-979.43
+  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
+  ;; A-binary.watsup:980.5-980.43
+  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  ;; A-binary.watsup:981.5-981.44
   prod {0xFD `%`_u32(246):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMIN_vbinop_)
-  ;; A-binary.watsup:968.5-968.44
+  ;; A-binary.watsup:982.5-982.44
   prod {0xFD `%`_u32(247):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMAX_vbinop_)
-  ;; A-binary.watsup:972.5-972.61
+  ;; A-binary.watsup:983.5-983.51
+  prod {0xFD `%`_u32(271):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:984.5-984.51
+  prod {0xFD `%`_u32(272):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:988.5-988.53
+  prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:989.5-989.54
+  prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
+  ;; A-binary.watsup:993.5-993.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__, ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:973.5-973.61
+  ;; A-binary.watsup:994.5-994.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), PROMOTE_vcvtop__, ?(LOW_half__), ?())
-  ;; A-binary.watsup:974.5-974.64
+  ;; A-binary.watsup:995.5-995.64
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:975.5-975.64
+  ;; A-binary.watsup:996.5-996.64
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:976.5-976.62
+  ;; A-binary.watsup:997.5-997.62
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:977.5-977.62
+  ;; A-binary.watsup:998.5-998.62
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:978.5-978.69
+  ;; A-binary.watsup:999.5-999.69
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:979.5-979.69
+  ;; A-binary.watsup:1000.5-1000.69
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:980.5-980.66
+  ;; A-binary.watsup:1001.5-1001.66
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:981.5-981.66
+  ;; A-binary.watsup:1002.5-1002.66
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:1003.5-1003.68
+  prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?())
+  ;; A-binary.watsup:1004.5-1004.68
+  prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?())
+  ;; A-binary.watsup:1005.5-1005.73
+  prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
+  ;; A-binary.watsup:1006.5-1006.73
+  prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
 }
 
 ;; A-binary.watsup
@@ -25189,6 +25996,9 @@ def $setproduct_(syntax X, X**) : X**
 }
 
 ;; 1-syntax.watsup
+def $ND : bool
+
+;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{`X*` : X*}(X*{X <- `X*`} : X*)
     -- if (|X*{X <- `X*`}| < (2 ^ 32))
@@ -25314,7 +26124,7 @@ def $cont(byte : byte) : nat
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:87.1-87.25
+;; 1-syntax.watsup:94.1-94.25
 def $utf8(char*) : byte*
   ;; A-binary.watsup:53.1-53.44
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
@@ -25438,13 +26248,13 @@ syntax fin =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:155.1-156.26
+;; 1-syntax.watsup:162.1-163.26
 syntax typeuse =
   | _IDX{typeidx : typeidx}(typeidx : typeidx)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
   | REC{n : n}(n : n)
 
-;; 1-syntax.watsup:158.1-159.26
+;; 1-syntax.watsup:165.1-166.26
 syntax heaptype =
   | ANY
   | EQ
@@ -25463,7 +26273,7 @@ syntax heaptype =
   | REC{n : n}(n : n)
   | DEF{rectype : rectype, n : n}(rectype : rectype, n : n)
 
-;; 1-syntax.watsup:166.1-167.14
+;; 1-syntax.watsup:173.1-174.14
 syntax valtype =
   | I32
   | I64
@@ -25473,10 +26283,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:196.1-197.16
+;; 1-syntax.watsup:203.1-204.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:204.1-204.66
+;; 1-syntax.watsup:211.1-211.66
 syntax storagetype =
   | BOT
   | I32
@@ -25488,31 +26298,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:220.1-220.60
+;; 1-syntax.watsup:227.1-227.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:222.1-222.90
+;; 1-syntax.watsup:229.1-229.90
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:223.1-223.64
+;; 1-syntax.watsup:230.1-230.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:224.1-224.54
+;; 1-syntax.watsup:231.1-231.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:226.1-229.18
+;; 1-syntax.watsup:233.1-236.18
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:231.1-232.30
+;; 1-syntax.watsup:238.1-239.30
 syntax subtype =
   | SUB{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse <- `typeuse*`} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:234.1-235.22
+;; 1-syntax.watsup:241.1-242.22
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -25963,6 +26773,26 @@ def $shsize(shape : shape) : nat
   def $shsize{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = ($lsize(Lnn) * N)
 
 ;; 1-syntax.watsup
+syntax half__(shape_1 : shape, shape_2 : shape)
+  ;; 1-syntax.watsup
+  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+  | HIGH
+    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
+
+
+  ;; 1-syntax.watsup
+  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
+  | LOW
+    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
+
+
+;; 1-syntax.watsup
+syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
+  | ZERO
+    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+
+;; 1-syntax.watsup
 syntax vvunop =
   | NOT
 
@@ -26018,6 +26848,8 @@ syntax vbinop_(shape : shape)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | `Q15MULR_SATS`
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
+  | `RELAXED_Q15MULRS`
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
     -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
@@ -26034,6 +26866,21 @@ syntax vbinop_(shape : shape)
   | MAX
   | PMIN
   | PMAX
+  | RELAXED_MIN
+  | RELAXED_MAX
+
+
+;; 1-syntax.watsup
+syntax vternop_(shape : shape)
+  ;; 1-syntax.watsup
+  syntax vternop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_LANESELECT
+
+
+  ;; 1-syntax.watsup
+  syntax vternop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  | RELAXED_MADD
+  | RELAXED_NMADD
 
 
 ;; 1-syntax.watsup
@@ -26084,6 +26931,8 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
   syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
   | TRUNC_SAT{sx : sx}(sx : sx)
     -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | RELAXED_TRUNC{sx : sx}(sx : sx)
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -26095,24 +26944,9 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
 
 
 ;; 1-syntax.watsup
-syntax half__(shape_1 : shape, shape_2 : shape)
-  ;; 1-syntax.watsup
-  syntax half__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-  | HIGH
-    -- if ((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn1((Jnn_2 : Jnn <: lanetype)))
-
-
-  ;; 1-syntax.watsup
-  syntax half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
-  | LOW
-    -- if (((2 * $lsizenn1(Lnn_1)) = $sizenn1((Fnn_2 : Fnn <: numtype))) /\ ($sizenn1((Fnn_2 : Fnn <: numtype)) = 64))
-
-
-;; 1-syntax.watsup
-syntax zero__{Fnn_1 : Fnn, M_1 : M, Lnn_2 : Lnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))) =
-  | ZERO
-    -- if (((2 * $lsizenn2(Lnn_2)) = $sizenn1((Fnn_1 : Fnn <: numtype))) /\ ($sizenn1((Fnn_1 : Fnn <: numtype)) = 64))
+syntax vswizzlop_{M : M}(`%X%`_ishape(I8_Jnn, `%`_dim(M))) =
+  | SWIZZLE
+  | RELAXED_SWIZZLE
 
 ;; 1-syntax.watsup
 syntax vshiftop_{Jnn : Jnn, M : M}(`%X%`_ishape(Jnn, `%`_dim(M))) =
@@ -26130,6 +26964,13 @@ syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) >= 16))
   | `DOTS`
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
+  | `RELAXED_DOTS`
+    -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 16))
+
+;; 1-syntax.watsup
+syntax vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2))) =
+  | `RELAXED_DOT_ADDS`
+    -- if (((4 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -26304,20 +27145,20 @@ syntax instr =
   | VVTESTOP{vectype : vectype, vvtestop : vvtestop}(vectype : vectype, vvtestop : vvtestop)
   | VUNOP{shape : shape, vunop_ : vunop_(shape)}(shape : shape, vunop_ : vunop_(shape))
   | VBINOP{shape : shape, vbinop_ : vbinop_(shape)}(shape : shape, vbinop_ : vbinop_(shape))
+  | VTERNOP{shape : shape, vternop_ : vternop_(shape)}(shape : shape, vternop_ : vternop_(shape))
   | VTESTOP{shape : shape, vtestop_ : vtestop_(shape)}(shape : shape, vtestop_ : vtestop_(shape))
   | VRELOP{shape : shape, vrelop_ : vrelop_(shape)}(shape : shape, vrelop_ : vrelop_(shape))
   | VSHIFTOP{ishape : ishape, vshiftop_ : vshiftop_(ishape)}(ishape : ishape, vshiftop_ : vshiftop_(ishape))
   | VBITMASK{ishape : ishape}(ishape : ishape)
-  | VSWIZZLE{ishape : ishape}(ishape : ishape)
-    -- if (ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16)))
+  | VSWIZZLOP{ishape : ishape, vswizzlop_ : vswizzlop_(ishape)}(ishape : ishape, vswizzlop_ : vswizzlop_(ishape))
   | VSHUFFLE{ishape : ishape, `laneidx*` : laneidx*}(ishape : ishape, laneidx*{laneidx <- `laneidx*`} : laneidx*)
     -- if ((ishape = `%X%`_ishape(I8_Jnn, `%`_dim(16))) /\ (|laneidx*{laneidx <- `laneidx*`}| = 16))
   | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_2, ishape_1))
   | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_2, ishape_1))
+  | VEXTTERNOP{ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1)}(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_2, ishape_1))
   | VNARROW{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(ishape_1 : ishape, ishape_2 : ishape, sx : sx)
     -- if (($lsize($lanetype((ishape_2 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_1 : ishape <: shape))))) /\ ((2 * $lsize($lanetype((ishape_1 : ishape <: shape)))) <= 32))
   | VCVTOP{shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), `half__?` : half__(shape_2, shape_1)?, `zero__?` : zero__(shape_2, shape_1)?}(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_2, shape_1), half__?{half__ <- `half__?`} : half__(shape_2, shape_1)?, zero__?{zero__ <- `zero__?`} : zero__(shape_2, shape_1)?)
-    -- if ($lanetype(shape_1) =/= $lanetype(shape_2))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, `sx?` : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx <- `sx?`} : sx?, laneidx : laneidx)
     -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
@@ -26825,13 +27666,13 @@ def $free_shape(shape : shape) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:443.1-443.44
+;; 2-syntax-aux.watsup:444.1-444.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; 2-syntax-aux.watsup:444.1-444.32
+  ;; 2-syntax-aux.watsup:445.1-445.32
   def $shift_labelidxs([]) = []
-  ;; 2-syntax-aux.watsup:445.1-445.66
+  ;; 2-syntax-aux.watsup:446.1-446.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_uN(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; 2-syntax-aux.watsup:446.1-446.91
+  ;; 2-syntax-aux.watsup:447.1-447.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_uN((labelidx!`%`_labelidx.0 - 1))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
@@ -26840,7 +27681,7 @@ rec {
 
 ;; 2-syntax-aux.watsup:299.1-299.31
 def $free_block(instr*) : free
-  ;; 2-syntax-aux.watsup:449.1-450.47
+  ;; 2-syntax-aux.watsup:450.1-451.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 
@@ -26915,134 +27756,136 @@ def $free_instr(instr : instr) : free
   ;; 2-syntax-aux.watsup:347.1-347.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
   ;; 2-syntax-aux.watsup:348.1-348.60
+  def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
+  ;; 2-syntax-aux.watsup:349.1-349.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:349.1-349.58
+  ;; 2-syntax-aux.watsup:350.1-350.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:350.1-350.64
+  ;; 2-syntax-aux.watsup:351.1-351.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:351.1-351.55
-  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
   ;; 2-syntax-aux.watsup:352.1-352.55
-  def $free_instr{ishape : ishape}(VSWIZZLE_instr(ishape)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:353.1-353.64
+  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:353.1-353.66
+  def $free_instr{ishape : ishape, vswizzlop : vswizzlop_(ishape)}(VSWIZZLOP_instr(ishape, vswizzlop)) = $free_shape((ishape : ishape <: shape))
+  ;; 2-syntax-aux.watsup:354.1-354.64
   def $free_instr{ishape : ishape, `laneidx*` : laneidx*}(VSHUFFLE_instr(ishape, laneidx*{laneidx <- `laneidx*`})) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:354.1-355.49
+  ;; 2-syntax-aux.watsup:355.1-356.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:356.1-357.49
+  ;; 2-syntax-aux.watsup:357.1-358.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:358.1-359.49
+  ;; 2-syntax-aux.watsup:359.1-360.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape((ishape_1 : ishape <: shape)) +++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:360.1-361.47
+  ;; 2-syntax-aux.watsup:361.1-362.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1), `half?` : half__(shape_2, shape_1)?, `zero?` : zero__(shape_2, shape_1)?}(VCVTOP_instr(shape_1, shape_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`})) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; 2-syntax-aux.watsup:362.1-362.51
+  ;; 2-syntax-aux.watsup:363.1-363.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:363.1-363.70
+  ;; 2-syntax-aux.watsup:364.1-364.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:364.1-364.66
+  ;; 2-syntax-aux.watsup:365.1-365.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:366.1-366.62
+  ;; 2-syntax-aux.watsup:367.1-367.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; 2-syntax-aux.watsup:367.1-367.34
+  ;; 2-syntax-aux.watsup:368.1-368.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:368.1-368.38
+  ;; 2-syntax-aux.watsup:369.1-369.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:369.1-369.29
+  ;; 2-syntax-aux.watsup:370.1-370.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:370.1-370.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:371.1-371.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
   ;; 2-syntax-aux.watsup:372.1-372.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; 2-syntax-aux.watsup:373.1-373.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:373.1-373.30
+  ;; 2-syntax-aux.watsup:374.1-374.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:375.1-375.33
+  ;; 2-syntax-aux.watsup:376.1-376.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:377.1-377.41
+  ;; 2-syntax-aux.watsup:378.1-378.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:378.1-378.69
-  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
   ;; 2-syntax-aux.watsup:379.1-379.69
+  def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
+  ;; 2-syntax-aux.watsup:380.1-380.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:380.1-380.65
+  ;; 2-syntax-aux.watsup:381.1-381.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:382.1-382.60
+  ;; 2-syntax-aux.watsup:383.1-383.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:383.1-383.68
+  ;; 2-syntax-aux.watsup:384.1-384.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:384.1-384.70
+  ;; 2-syntax-aux.watsup:385.1-385.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:385.1-386.51
+  ;; 2-syntax-aux.watsup:386.1-387.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:387.1-388.51
+  ;; 2-syntax-aux.watsup:388.1-389.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:389.1-389.64
+  ;; 2-syntax-aux.watsup:390.1-390.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:390.1-390.60
+  ;; 2-syntax-aux.watsup:391.1-391.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:391.1-391.32
+  ;; 2-syntax-aux.watsup:392.1-392.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:392.1-392.61
+  ;; 2-syntax-aux.watsup:393.1-393.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:393.1-394.55
+  ;; 2-syntax-aux.watsup:394.1-395.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; 2-syntax-aux.watsup:395.1-396.51
+  ;; 2-syntax-aux.watsup:396.1-397.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:397.1-398.51
+  ;; 2-syntax-aux.watsup:398.1-399.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:400.1-400.41
-  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
   ;; 2-syntax-aux.watsup:401.1-401.41
+  def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
+  ;; 2-syntax-aux.watsup:402.1-402.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:403.1-403.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:404.1-404.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
   ;; 2-syntax-aux.watsup:405.1-405.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; 2-syntax-aux.watsup:406.1-406.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:407.1-407.67
-  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
   ;; 2-syntax-aux.watsup:408.1-408.67
+  def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
+  ;; 2-syntax-aux.watsup:409.1-409.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; 2-syntax-aux.watsup:410.1-410.63
-  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:411.1-411.63
+  def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:412.1-412.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:412.1-412.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:413.1-413.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
   ;; 2-syntax-aux.watsup:414.1-414.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; 2-syntax-aux.watsup:415.1-415.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:415.1-416.59
+  ;; 2-syntax-aux.watsup:416.1-417.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; 2-syntax-aux.watsup:417.1-418.53
+  ;; 2-syntax-aux.watsup:418.1-419.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:419.1-419.60
+  ;; 2-syntax-aux.watsup:420.1-420.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:421.1-422.49
+  ;; 2-syntax-aux.watsup:422.1-423.49
   def $free_instr{numtype : numtype, loadop : loadop_(numtype), memidx : memidx, memarg : memarg}(LOAD_instr(numtype, ?(loadop), memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:423.1-424.49
+  ;; 2-syntax-aux.watsup:424.1-425.49
   def $free_instr{numtype : numtype, `sz?` : sz?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, sz?{sz <- `sz?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:425.1-426.49
+  ;; 2-syntax-aux.watsup:426.1-427.49
   def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:427.1-428.49
+  ;; 2-syntax-aux.watsup:428.1-429.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:429.1-430.49
+  ;; 2-syntax-aux.watsup:430.1-431.49
   def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:431.1-432.49
+  ;; 2-syntax-aux.watsup:432.1-433.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:433.1-433.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:434.1-434.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
   ;; 2-syntax-aux.watsup:435.1-435.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; 2-syntax-aux.watsup:436.1-436.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:436.1-437.51
+  ;; 2-syntax-aux.watsup:437.1-438.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; 2-syntax-aux.watsup:438.1-439.49
+  ;; 2-syntax-aux.watsup:439.1-440.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:440.1-440.60
+  ;; 2-syntax-aux.watsup:441.1-441.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 }
 
@@ -27145,14 +27988,14 @@ def $dataidx_funcs(func*) : dataidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:532.1-532.112
+;; 2-syntax-aux.watsup:533.1-533.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:559.1-559.38
+  ;; 2-syntax-aux.watsup:560.1-560.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 2-syntax-aux.watsup:560.1-560.95
+  ;; 2-syntax-aux.watsup:561.1-561.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 2-syntax-aux.watsup:561.1-561.92
+  ;; 2-syntax-aux.watsup:562.1-562.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -27175,78 +28018,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:533.1-533.112
+;; 2-syntax-aux.watsup:534.1-534.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:563.1-563.66
+  ;; 2-syntax-aux.watsup:564.1-564.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 2-syntax-aux.watsup:564.1-564.64
+  ;; 2-syntax-aux.watsup:565.1-565.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 2-syntax-aux.watsup:537.1-537.112
+;; 2-syntax-aux.watsup:538.1-538.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 2-syntax-aux.watsup:569.1-569.67
+  ;; 2-syntax-aux.watsup:570.1-570.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 2-syntax-aux.watsup:570.1-570.65
+  ;; 2-syntax-aux.watsup:571.1-571.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 2-syntax-aux.watsup:571.1-571.53
+  ;; 2-syntax-aux.watsup:572.1-572.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 2-syntax-aux.watsup:538.1-538.112
+;; 2-syntax-aux.watsup:539.1-539.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 2-syntax-aux.watsup:573.1-573.83
+  ;; 2-syntax-aux.watsup:574.1-574.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:539.1-539.112
+;; 2-syntax-aux.watsup:540.1-540.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 2-syntax-aux.watsup:575.1-575.64
-  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:576.1-576.64
-  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:577.1-577.64
+  def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
+  ;; 2-syntax-aux.watsup:578.1-578.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 2-syntax-aux.watsup:578.1-578.40
+  ;; 2-syntax-aux.watsup:579.1-579.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 2-syntax-aux.watsup:542.1-542.112
+;; 2-syntax-aux.watsup:543.1-543.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 2-syntax-aux.watsup:582.1-582.66
+  ;; 2-syntax-aux.watsup:583.1-583.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 2-syntax-aux.watsup:583.1-583.69
+  ;; 2-syntax-aux.watsup:584.1-584.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 2-syntax-aux.watsup:543.1-543.112
+;; 2-syntax-aux.watsup:544.1-544.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 2-syntax-aux.watsup:585.1-585.80
+  ;; 2-syntax-aux.watsup:586.1-586.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:545.1-545.112
+;; 2-syntax-aux.watsup:546.1-546.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 2-syntax-aux.watsup:587.1-587.85
+  ;; 2-syntax-aux.watsup:588.1-588.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 2-syntax-aux.watsup:588.1-588.81
+  ;; 2-syntax-aux.watsup:589.1-589.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 2-syntax-aux.watsup:589.1-589.78
+  ;; 2-syntax-aux.watsup:590.1-590.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:546.1-546.112
+;; 2-syntax-aux.watsup:547.1-547.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 2-syntax-aux.watsup:591.1-592.71
+  ;; 2-syntax-aux.watsup:592.1-593.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 2-syntax-aux.watsup:547.1-547.112
+;; 2-syntax-aux.watsup:548.1-548.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 2-syntax-aux.watsup:594.1-594.76
+  ;; 2-syntax-aux.watsup:595.1-595.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 2-syntax-aux.watsup:548.1-548.112
+;; 2-syntax-aux.watsup:549.1-549.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 2-syntax-aux.watsup:596.1-596.78
+  ;; 2-syntax-aux.watsup:597.1-597.78
   def $subst_deftype{qt : rectype, i : nat, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 2-syntax-aux.watsup:551.1-551.112
+;; 2-syntax-aux.watsup:552.1-552.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 2-syntax-aux.watsup:599.1-599.113
+  ;; 2-syntax-aux.watsup:600.1-600.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -27319,11 +28162,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:627.1-627.98
+;; 2-syntax-aux.watsup:628.1-628.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 2-syntax-aux.watsup:628.1-628.40
+  ;; 2-syntax-aux.watsup:629.1-629.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 2-syntax-aux.watsup:629.1-629.101
+  ;; 2-syntax-aux.watsup:630.1-630.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -27367,13 +28210,13 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:661.1-661.86
+;; 2-syntax-aux.watsup:662.1-662.86
 def $funcsxx(externidx*) : typeidx*
-  ;; 2-syntax-aux.watsup:667.1-667.24
+  ;; 2-syntax-aux.watsup:668.1-668.24
   def $funcsxx([]) = []
-  ;; 2-syntax-aux.watsup:668.1-668.45
+  ;; 2-syntax-aux.watsup:669.1-669.45
   def $funcsxx{x : idx, `xx*` : externidx*}([FUNC_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:669.1-669.58
+  ;; 2-syntax-aux.watsup:670.1-670.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -27381,13 +28224,13 @@ def $funcsxx(externidx*) : typeidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:662.1-662.88
+;; 2-syntax-aux.watsup:663.1-663.88
 def $globalsxx(externidx*) : globalidx*
-  ;; 2-syntax-aux.watsup:671.1-671.26
+  ;; 2-syntax-aux.watsup:672.1-672.26
   def $globalsxx([]) = []
-  ;; 2-syntax-aux.watsup:672.1-672.51
+  ;; 2-syntax-aux.watsup:673.1-673.51
   def $globalsxx{x : idx, `xx*` : externidx*}([GLOBAL_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:673.1-673.62
+  ;; 2-syntax-aux.watsup:674.1-674.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -27395,13 +28238,13 @@ def $globalsxx(externidx*) : globalidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:663.1-663.87
+;; 2-syntax-aux.watsup:664.1-664.87
 def $tablesxx(externidx*) : tableidx*
-  ;; 2-syntax-aux.watsup:675.1-675.25
+  ;; 2-syntax-aux.watsup:676.1-676.25
   def $tablesxx([]) = []
-  ;; 2-syntax-aux.watsup:676.1-676.48
+  ;; 2-syntax-aux.watsup:677.1-677.48
   def $tablesxx{x : idx, `xx*` : externidx*}([TABLE_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:677.1-677.60
+  ;; 2-syntax-aux.watsup:678.1-678.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -27409,13 +28252,13 @@ def $tablesxx(externidx*) : tableidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:664.1-664.85
+;; 2-syntax-aux.watsup:665.1-665.85
 def $memsxx(externidx*) : memidx*
-  ;; 2-syntax-aux.watsup:679.1-679.23
+  ;; 2-syntax-aux.watsup:680.1-680.23
   def $memsxx([]) = []
-  ;; 2-syntax-aux.watsup:680.1-680.42
+  ;; 2-syntax-aux.watsup:681.1-681.42
   def $memsxx{x : idx, `xx*` : externidx*}([MEM_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:681.1-681.56
+  ;; 2-syntax-aux.watsup:682.1-682.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -27423,13 +28266,13 @@ def $memsxx(externidx*) : memidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:665.1-665.85
+;; 2-syntax-aux.watsup:666.1-666.85
 def $tagsxx(externidx*) : tagidx*
-  ;; 2-syntax-aux.watsup:683.1-683.23
+  ;; 2-syntax-aux.watsup:684.1-684.23
   def $tagsxx([]) = []
-  ;; 2-syntax-aux.watsup:684.1-684.42
+  ;; 2-syntax-aux.watsup:685.1-685.42
   def $tagsxx{x : idx, `xx*` : externidx*}([TAG_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
-  ;; 2-syntax-aux.watsup:685.1-685.56
+  ;; 2-syntax-aux.watsup:686.1-686.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -27437,13 +28280,13 @@ def $tagsxx(externidx*) : tagidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:688.1-688.88
+;; 2-syntax-aux.watsup:689.1-689.88
 def $funcsxt(externtype*) : deftype*
-  ;; 2-syntax-aux.watsup:694.1-694.24
+  ;; 2-syntax-aux.watsup:695.1-695.24
   def $funcsxt([]) = []
-  ;; 2-syntax-aux.watsup:695.1-695.47
+  ;; 2-syntax-aux.watsup:696.1-696.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:696.1-696.59
+  ;; 2-syntax-aux.watsup:697.1-697.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -27451,13 +28294,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:689.1-689.90
+;; 2-syntax-aux.watsup:690.1-690.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 2-syntax-aux.watsup:698.1-698.26
+  ;; 2-syntax-aux.watsup:699.1-699.26
   def $globalsxt([]) = []
-  ;; 2-syntax-aux.watsup:699.1-699.53
+  ;; 2-syntax-aux.watsup:700.1-700.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:700.1-700.63
+  ;; 2-syntax-aux.watsup:701.1-701.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -27465,13 +28308,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:690.1-690.89
+;; 2-syntax-aux.watsup:691.1-691.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 2-syntax-aux.watsup:702.1-702.25
+  ;; 2-syntax-aux.watsup:703.1-703.25
   def $tablesxt([]) = []
-  ;; 2-syntax-aux.watsup:703.1-703.50
+  ;; 2-syntax-aux.watsup:704.1-704.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:704.1-704.61
+  ;; 2-syntax-aux.watsup:705.1-705.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -27479,13 +28322,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:691.1-691.87
+;; 2-syntax-aux.watsup:692.1-692.87
 def $memsxt(externtype*) : memtype*
-  ;; 2-syntax-aux.watsup:706.1-706.23
+  ;; 2-syntax-aux.watsup:707.1-707.23
   def $memsxt([]) = []
-  ;; 2-syntax-aux.watsup:707.1-707.44
+  ;; 2-syntax-aux.watsup:708.1-708.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:708.1-708.57
+  ;; 2-syntax-aux.watsup:709.1-709.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -27493,13 +28336,13 @@ def $memsxt(externtype*) : memtype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:692.1-692.87
+;; 2-syntax-aux.watsup:693.1-693.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 2-syntax-aux.watsup:710.1-710.23
+  ;; 2-syntax-aux.watsup:711.1-711.23
   def $tagsxt([]) = []
-  ;; 2-syntax-aux.watsup:711.1-711.44
+  ;; 2-syntax-aux.watsup:712.1-712.44
   def $tagsxt{at : tagtype, `xt*` : externtype*}([TAG_externtype((at : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [at] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 2-syntax-aux.watsup:712.1-712.57
+  ;; 2-syntax-aux.watsup:713.1-713.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -27508,6 +28351,61 @@ def $tagsxt(externtype*) : tagtype*
 def $memarg0 : memarg
   ;; 2-syntax-aux.watsup
   def $memarg0 = {ALIGN `%`_u32(0), OFFSET `%`_u32(0)}
+
+;; 3-numerics.watsup
+syntax relaxed2 =
+  | `%`{i : nat}(i : nat)
+    -- if ((i = 0) \/ (i = 1))
+
+;; 3-numerics.watsup
+syntax relaxed4 =
+  | `%`{i : nat}(i : nat)
+    -- if ((((i = 0) \/ (i = 1)) \/ (i = 2)) \/ (i = 3))
+
+;; 3-numerics.watsup
+def $relaxed2(relaxed2 : relaxed2, syntax X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed2{i : nat, syntax X, X_1 : X, X_2 : X}(`%`_relaxed2(i), syntax X, X_1, X_2) = [X_1 X_2][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $relaxed4(relaxed4 : relaxed4, syntax X, X : X, X : X, X : X, X : X) : X
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][i]
+    -- if $ND
+  ;; 3-numerics.watsup
+  def $relaxed4{i : nat, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(`%`_relaxed4(i), syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][0]
+    -- otherwise
+
+;; 3-numerics.watsup
+def $R_fmadd : relaxed2
+
+;; 3-numerics.watsup
+def $R_fmin : relaxed4
+
+;; 3-numerics.watsup
+def $R_fmax : relaxed4
+
+;; 3-numerics.watsup
+def $R_idot : relaxed2
+
+;; 3-numerics.watsup
+def $R_iq15mulr : relaxed2
+
+;; 3-numerics.watsup
+def $R_trunc_u : relaxed4
+
+;; 3-numerics.watsup
+def $R_trunc_s : relaxed2
+
+;; 3-numerics.watsup
+def $R_swizzle : relaxed2
+
+;; 3-numerics.watsup
+def $R_laneselect : relaxed2
 
 ;; 3-numerics.watsup
 def $s33_to_u32(s33 : s33) : u32
@@ -27528,246 +28426,34 @@ def $invsigned_(N : N, int : int) : nat
     -- if ($signed_(N, j) = (i : nat <: int))
 
 ;; 3-numerics.watsup
-def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $sat_u_(N : N, nat : nat) : nat
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = 0
+    -- if (i < 0)
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = ((2 ^ N) - 1)
+    -- if (i > ((2 ^ N) - 1))
+  ;; 3-numerics.watsup
+  def $sat_u_{N : N, i : nat}(N, i) = i
+    -- otherwise
 
 ;; 3-numerics.watsup
-def $fabs_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fceil_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ffloor_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fnearest_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fneg_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iclz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ictz_(N : N, iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+def $sat_s_(N : N, int : int) : int
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = - ((2 ^ (N - 1)) : nat <: int)
+    -- if ((i : nat <: int) < - ((2 ^ (N - 1)) : nat <: int))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (((2 ^ (N - 1)) - 1) : nat <: int)
+    -- if (i > ((2 ^ (N - 1)) - 1))
+  ;; 3-numerics.watsup
+  def $sat_s_{N : N, i : nat}(N, (i : nat <: int)) = (i : nat <: int)
+    -- otherwise
 
 ;; 3-numerics.watsup
 def $wrap__(M : M, N : N, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
-def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
-  ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
-  ;; 3-numerics.watsup
-  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
-
-;; 3-numerics.watsup
-def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
-
-;; 3-numerics.watsup
-def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
-
-;; 3-numerics.watsup
-def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
-
-;; 3-numerics.watsup
-def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
-
-;; 3-numerics.watsup
-def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $ieqz_(N : N, iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
-
-;; 3-numerics.watsup
-def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
-
-;; 3-numerics.watsup
-def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
-
-;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-  ;; 3-numerics.watsup
-  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
-
-;; 3-numerics.watsup
-def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
-
-;; 3-numerics.watsup
-def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
-
-;; 3-numerics.watsup
-def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
+def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
 def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
@@ -27776,30 +28462,22 @@ def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 def $trunc_sat__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
 
 ;; 3-numerics.watsup
-def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
-  ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
-    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
-  ;; 3-numerics.watsup
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
-    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+def $relaxed_trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+
+;; 3-numerics.watsup
+def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
+
+;; 3-numerics.watsup
+def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
 
 ;; 3-numerics.watsup
 def $narrow__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+
+;; 3-numerics.watsup
+def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
 
 ;; 3-numerics.watsup
 def $ibits_(N : N, iN : iN(N)) : bit*
@@ -27838,13 +28516,82 @@ def $invfbytes_(N : N, byte*) : fN(N)
     -- if ($fbytes_(N, p) = b*{b <- `b*`})
 
 ;; 3-numerics.watsup
+def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
+def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+
+;; 3-numerics.watsup
 def $inot_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iand_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
 def $iandnot_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+
+;; 3-numerics.watsup
+def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irotr_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $iclz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ictz_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $ieqz_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
+def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ibitselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)
+
+;; 3-numerics.watsup
+def $irelaxed_laneselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*
 
 ;; 3-numerics.watsup
 def $iabs_(N : N, iN : iN(N)) : iN(N)
@@ -27871,10 +28618,85 @@ def $iavgr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 def $iq15mulr_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 3-numerics.watsup
+def $irelaxed_q15mulr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*
+
+;; 3-numerics.watsup
+def $fadd_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsub_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmul_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fdiv_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
 def $fpmin_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $fpmax_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_min_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_max_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fcopysign_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fabs_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fneg_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fsqrt_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fceil_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ffloor_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $ftrunc_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $fnearest_(N : N, fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $feq_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fne_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $flt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fgt_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fle_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $fge_(N : N, fN : fN(N), fN : fN(N)) : u32
+
+;; 3-numerics.watsup
+def $frelaxed_madd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
+
+;; 3-numerics.watsup
+def $frelaxed_nmadd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; 3-numerics.watsup
 def $lpacknum_(lanetype : lanetype, num_ : num_($lunpack(lanetype))) : lane_(lanetype)
@@ -27923,6 +28745,127 @@ def $half__(shape_1 : shape, shape_2 : shape, half__ : half__(shape_1, shape_2),
   def $half__{Lnn_1 : Lnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, i : nat, j : nat}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), LOW_half__, i, j) = i
 
 ;; 3-numerics.watsup
+def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CLZ_unop_, iN) = [$iclz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), CTZ_unop_, iN) = [$ictz_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), iN)]
+  ;; 3-numerics.watsup
+  def $unop_{Inn : Inn, M : M, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), iN) = [$extend__(M, $sizenn((Inn : Inn <: numtype)), S_sx, $wrap__($sizenn((Inn : Inn <: numtype)), M, iN))]
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = $fabs_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEG_unop_, fN) = $fneg_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SQRT_unop_, fN) = $fsqrt_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), CEIL_unop_, fN) = $fceil_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), FLOOR_unop_, fN) = $ffloor_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), TRUNC_unop_, fN) = $ftrunc_($sizenn((Fnn : Fnn <: numtype)), fN)
+  ;; 3-numerics.watsup
+  def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NEAREST_unop_, fN) = $fnearest_($sizenn((Fnn : Fnn <: numtype)), fN)
+
+;; 3-numerics.watsup
+def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(numtype)*
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ADD_binop_, iN_1, iN_2) = [$iadd_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SUB_binop_, iN_1, iN_2) = [$isub_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, iN_1, iN_2) = [$imul_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $idiv_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), iN_1, iN_2) = $list_(syntax num_((Inn : Inn <: numtype)), $irem_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2))
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, iN_1, iN_2) = [$iand_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), OR_binop_, iN_1, iN_2) = [$ior_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, iN_1, iN_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, iN_1, iN_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), iN_1, iN_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, iN_1, `%`_u32(iN_2!`%`_num_.0))]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, iN_1, iN_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTR_binop_, iN_1, iN_2) = [$irotr_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)]
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ADD_binop_, fN_1, fN_2) = $fadd_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), SUB_binop_, fN_1, fN_2) = $fsub_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MUL_binop_, fN_1, fN_2) = $fmul_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), DIV_binop_, fN_1, fN_2) = $fdiv_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MIN_binop_, fN_1, fN_2) = $fmin_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), MAX_binop_, fN_1, fN_2) = $fmax_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
+
+;; 3-numerics.watsup
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, iN_1, iN_2) = $ine_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), iN_1, iN_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), iN_1, iN_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), iN_1, iN_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Inn : Inn, sx : sx, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), iN_1, iN_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, iN_1, iN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, fN_1, fN_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), NE_relop_, fN_1, fN_2) = $fne_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LT_relop_, fN_1, fN_2) = $flt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GT_relop_, fN_1, fN_2) = $fgt_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), LE_relop_, fN_1, fN_2) = $fle_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+  ;; 3-numerics.watsup
+  def $relop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), GE_relop_, fN_1, fN_2) = $fge_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
+
+;; 3-numerics.watsup
+def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), fN_1) = $list_(syntax num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, fN_1))
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), iN_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, iN_1)]
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, fN_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), DEMOTE_cvtop__, fN_1) = $demote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), fN_1)
+  ;; 3-numerics.watsup
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), REINTERPRET_cvtop__, iN_1) = [$reinterpret__((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), iN_1)]
+    -- if ($size((Inn_1 : Inn <: numtype)) = $size((Fnn_2 : Fnn <: numtype)))
+  ;; 3-numerics.watsup
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, fN_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), REINTERPRET_cvtop__, fN_1) = [$reinterpret__((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), fN_1)]
+    -- if ($size((Fnn_1 : Fnn <: numtype)) = $size((Inn_2 : Inn <: numtype)))
+
+;; 3-numerics.watsup
 def $vvunop_(vectype : vectype, vvunop : vvunop, vec_ : vec_(vectype)) : vec_(vectype)*
   ;; 3-numerics.watsup
   def $vvunop_{v128 : vec_(V128_Vnn)}(V128_vectype, NOT_vvunop, v128) = [$inot_($vsize(V128_vectype), v128)]
@@ -27960,12 +28903,6 @@ def $ivunop_(shape : shape, def $f_(N : N, iN : iN(N)) : iN(N), vec_ : vec_(V128
 ;; 3-numerics.watsup
 def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
-  ;; 3-numerics.watsup
-  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
-  ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fabs_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fneg_, vN_1)
@@ -27979,6 +28916,12 @@ def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), TRUNC_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $ftrunc_, vN_1)
   ;; 3-numerics.watsup
   def $vunop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEAREST_vunop_, vN_1) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fnearest_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, vN_1)
+  ;; 3-numerics.watsup
+  def $vunop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, vN_1) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, vN_1)
 
 ;; 3-numerics.watsup
 def $fvbinop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
@@ -28005,6 +28948,14 @@ def $ivbinopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) :
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; 3-numerics.watsup
+def $ivbinopsxnd_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivbinopsxnd_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, vN_1, vN_2) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`}))
+
+;; 3-numerics.watsup
 def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iadd_, vN_1, vN_2)
@@ -28025,6 +28976,8 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   ;; 3-numerics.watsup
   def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `Q15MULR_SATS`_vbinop_, vN_1, vN_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iq15mulr_sat_, S_sx, vN_1, vN_2)
   ;; 3-numerics.watsup
+  def $vbinop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `RELAXED_Q15MULRS`_vbinop_, vN_1, vN_2) = $ivbinopsxnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_q15mulr_, S_sx, vN_1, vN_2)
+  ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ADD_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fadd_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), SUB_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fsub_, vN_1, vN_2)
@@ -28040,6 +28993,37 @@ def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmin_, vN_1, vN_2)
   ;; 3-numerics.watsup
   def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmax_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MIN_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_min_, vN_1, vN_2)
+  ;; 3-numerics.watsup
+  def $vbinop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MAX_vbinop_, vN_1, vN_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_max_, vN_1, vN_2)
+
+;; 3-numerics.watsup
+def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $fvternop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $ivternopnd_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $ivternopnd_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn), `c**` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2, vN_3) = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_3))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
+
+;; 3-numerics.watsup
+def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
+  ;; 3-numerics.watsup
+  def $vternop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), RELAXED_LANESELECT_vternop_, vN_1, vN_2, vN_3) = $ivternopnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_laneselect_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, vN_1, vN_2, vN_3)
+  ;; 3-numerics.watsup
+  def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -28105,6 +29089,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
     -- if (iN_2?{iN_2 <- `iN_2?`} = $trunc_sat__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
   ;; 3-numerics.watsup
+  def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `iN_2?` : lane_((Inn_2 : Inn <: lanetype))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx), fN_1) = $list_(syntax lane_((Inn_2 : Inn <: lanetype)), iN_2?{iN_2 <- `iN_2?`})
+    -- if (iN_2?{iN_2 <- `iN_2?`} = $relaxed_trunc__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, fN_1))
+  ;; 3-numerics.watsup
   def $vcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, fN_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `fN_2*` : lane_($lanetype(`%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__, fN_1) = fN_2*{fN_2 <- `fN_2*`}
     -- if (fN_2*{fN_2 <- `fN_2*`} = $demote__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), fN_1))
   ;; 3-numerics.watsup
@@ -28127,11 +29114,38 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2)[$half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), half, 0, M_2) : M_2])
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`}))
   ;; 3-numerics.watsup
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `DOTS`_vextbinop__, c_1, c_2) = c
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
     -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
-    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1), $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2))*{ci_1 <- `ci_1*`, ci_2 <- `ci_2*`})
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+  ;; 3-numerics.watsup
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOTS`_vextbinop__, c_1, c_2) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_sat_($lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, cj_1, cj_2)*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}))
+
+;; 3-numerics.watsup
+def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
+  ;; 3-numerics.watsup
+  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_3*` : lane_($lanetype(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))))*, Jnn : Jnn, `ci'_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ci'_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_1*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck_2*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `ck'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `ck*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_ishape(Jnn_1, `%`_dim(M_1)), `%X%`_ishape(Jnn_2, `%`_dim(M_2)), `RELAXED_DOT_ADDS`_vextternop__, c_1, c_2, c_3) = c
+    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_1))
+    -- if (ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), c_2))
+    -- if (ci_3*{ci_3 <- `ci_3*`} = $lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c_3))
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
+    -- if (ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), S_sx, ci_1)*{ci_1 <- `ci_1*`})
+    -- if (ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn((Jnn : Jnn <: lanetype)), $relaxed2($R_idot, syntax sx, S_sx, U_sx), ci_2)*{ci_2 <- `ci_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [`%`_uN(cj_1!`%`_iN.0) `%`_uN(cj_2!`%`_iN.0)]*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`}) = $imul_($lsizenn((Jnn : Jnn <: lanetype)), ci'_1, ci'_2)*{ci'_1 <- `ci'_1*`, ci'_2 <- `ci'_2*`})
+    -- if ($concat_(syntax iN($lsizenn((Jnn : Jnn <: lanetype))), [ck_1 ck_2]*{ck_1 <- `ck_1*`, ck_2 <- `ck_2*`}) = $iadd_sat_($lsizenn((Jnn : Jnn <: lanetype)), S_sx, `%`_iN(cj_1!`%`_iN.0), `%`_iN(cj_2!`%`_iN.0))*{cj_1 <- `cj_1*`, cj_2 <- `cj_2*`})
+    -- if (ck'_1*{ck'_1 <- `ck'_1*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_1)*{ck_1 <- `ck_1*`})
+    -- if (ck'_2*{ck'_2 <- `ck'_2*`} = $extend__($lsizenn((Jnn : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ck_2)*{ck_2 <- `ck_2*`})
+    -- if (ck*{ck <- `ck*`} = $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck'_1, ck'_2)*{ck'_1 <- `ck'_1*`, ck'_2 <- `ck'_2*`})
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), $iadd_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ck, ci_3)*{ci_3 <- `ci_3*`, ck <- `ck*`}))
 
 ;; 3-numerics.watsup
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -29731,122 +30745,130 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:948.1-949.40
+  ;; 6-typing.watsup:948.1-949.51
+  rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
+    `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:951.1-952.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:951.1-952.44
+  ;; 6-typing.watsup:954.1-955.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:954.1-955.47
+  ;; 6-typing.watsup:957.1-958.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:957.1-958.33
+  ;; 6-typing.watsup:960.1-961.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:960.1-961.39
-  rule vswizzle{C : context, sh : ishape}:
-    `%|-%:%`(C, VSWIZZLE_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+  ;; 6-typing.watsup:963.1-964.50
+  rule vswizzlop{C : context, sh : ishape, vswizzlop : vswizzlop_(sh)}:
+    `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:963.1-965.29
+  ;; 6-typing.watsup:966.1-968.29
   rule vshuffle{C : context, sh : ishape, `i*` : nat*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, `%`_laneidx(i)*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i < (2 * $dim((sh : ishape <: shape))!`%`_dim.0)))*{i <- `i*`}
 
-  ;; 6-typing.watsup:967.1-968.44
+  ;; 6-typing.watsup:970.1-971.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:970.1-972.21
+  ;; 6-typing.watsup:973.1-975.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : nat}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:974.1-976.21
+  ;; 6-typing.watsup:977.1-979.21
   rule vreplace_lane{C : context, sh : shape, i : nat}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i < $dim(sh)!`%`_dim.0)
 
-  ;; 6-typing.watsup:978.1-979.50
+  ;; 6-typing.watsup:981.1-982.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:981.1-982.57
+  ;; 6-typing.watsup:984.1-985.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:984.1-985.48
+  ;; 6-typing.watsup:987.1-988.64
+  rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
+    `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+
+  ;; 6-typing.watsup:990.1-991.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:987.1-988.58
+  ;; 6-typing.watsup:993.1-994.58
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1), `half?` : half__(sh_2, sh_1)?, `zero?` : zero__(sh_2, sh_1)?}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop, half?{half <- `half?`}, zero?{zero <- `zero?`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:993.1-995.28
+  ;; 6-typing.watsup:999.1-1001.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (x!`%`_idx.0 < |C.LOCALS_context|)
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; 6-typing.watsup:997.1-999.29
+  ;; 6-typing.watsup:1003.1-1005.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.LOCALS_context|)
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1001.1-1003.29
+  ;; 6-typing.watsup:1007.1-1009.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (x!`%`_idx.0 < |C.LOCALS_context|)
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:1008.1-1010.29
+  ;; 6-typing.watsup:1014.1-1016.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (x!`%`_idx.0 < |C.GLOBALS_context|)
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; 6-typing.watsup:1012.1-1014.29
+  ;; 6-typing.watsup:1018.1-1020.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.GLOBALS_context|)
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(`MUT%?`_mut(?(())), t))
 
-  ;; 6-typing.watsup:1019.1-1021.29
+  ;; 6-typing.watsup:1025.1-1027.29
   rule table.get{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1023.1-1025.29
+  ;; 6-typing.watsup:1029.1-1031.29
   rule table.set{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1027.1-1029.29
+  ;; 6-typing.watsup:1033.1-1035.29
   rule table.size{C : context, x : idx, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1031.1-1033.29
+  ;; 6-typing.watsup:1037.1-1039.29
   rule table.grow{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1035.1-1037.29
+  ;; 6-typing.watsup:1041.1-1043.29
   rule table.fill{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype) I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:1039.1-1043.36
+  ;; 6-typing.watsup:1045.1-1049.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x_1!`%`_idx.0 < |C.TABLES_context|)
@@ -29855,7 +30877,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%`_tabletype(lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1045.1-1049.36
+  ;; 6-typing.watsup:1051.1-1055.36
   rule table.init{C : context, x : idx, y : idx, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
@@ -29864,31 +30886,31 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:1051.1-1053.24
+  ;; 6-typing.watsup:1057.1-1059.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.ELEMS_context|)
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; 6-typing.watsup:1058.1-1060.23
+  ;; 6-typing.watsup:1064.1-1066.23
   rule memory.size{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([I32_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1062.1-1064.23
+  ;; 6-typing.watsup:1068.1-1070.23
   rule memory.grow{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([I32_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1066.1-1068.23
+  ;; 6-typing.watsup:1072.1-1074.23
   rule memory.fill{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:1070.1-1073.27
+  ;; 6-typing.watsup:1076.1-1079.27
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, mt_1 : memtype, mt_2 : memtype}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x_1!`%`_idx.0 < |C.MEMS_context|)
@@ -29896,7 +30918,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.MEMS_context[x_1!`%`_idx.0] = mt_1)
     -- if (C.MEMS_context[x_2!`%`_idx.0] = mt_2)
 
-  ;; 6-typing.watsup:1075.1-1078.24
+  ;; 6-typing.watsup:1081.1-1084.24
   rule memory.init{C : context, x : idx, y : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
@@ -29904,69 +30926,69 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1080.1-1082.24
+  ;; 6-typing.watsup:1086.1-1088.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.DATAS_context|)
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1093.1-1096.43
+  ;; 6-typing.watsup:1099.1-1102.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1098.1-1101.35
+  ;; 6-typing.watsup:1104.1-1107.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1112.1-1115.43
+  ;; 6-typing.watsup:1118.1-1121.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
 
-  ;; 6-typing.watsup:1117.1-1120.35
+  ;; 6-typing.watsup:1123.1-1126.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_sz(M)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
 
-  ;; 6-typing.watsup:1122.1-1125.46
+  ;; 6-typing.watsup:1128.1-1131.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1127.1-1130.39
+  ;; 6-typing.watsup:1133.1-1136.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ((M / 8) * N))
 
-  ;; 6-typing.watsup:1132.1-1135.35
+  ;; 6-typing.watsup:1138.1-1141.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1137.1-1140.35
+  ;; 6-typing.watsup:1143.1-1146.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1142.1-1146.21
+  ;; 6-typing.watsup:1148.1-1152.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
@@ -29974,14 +30996,14 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
-  ;; 6-typing.watsup:1148.1-1151.46
+  ;; 6-typing.watsup:1154.1-1157.46
   rule vstore{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1153.1-1157.21
+  ;; 6-typing.watsup:1159.1-1163.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
@@ -30274,13 +31296,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1358.1-1358.100
+;; 6-typing.watsup:1364.1-1364.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1402.1-1403.17
+  ;; 6-typing.watsup:1408.1-1409.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1405.1-1408.54
+  ;; 6-typing.watsup:1411.1-1414.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -30290,13 +31312,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1357.1-1357.98
+;; 6-typing.watsup:1363.1-1363.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1394.1-1395.17
+  ;; 6-typing.watsup:1400.1-1401.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1397.1-1400.49
+  ;; 6-typing.watsup:1403.1-1406.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
@@ -30758,6 +31780,17 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vbinop_(sh, vbinop, c_1, c_2) = [])
 
   ;; 8-reduction.watsup
+  rule `vternop-val`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [VCONST_instr(V128_vectype, c)])
+    -- if (|$vternop_(sh, vternop, c_1, c_2, c_3)| > 0)
+    -- if c <- $vternop_(sh, vternop, c_1, c_2, c_3)
+
+  ;; 8-reduction.watsup
+  rule `vternop-trap`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh : shape, vternop : vternop_(sh)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VTERNOP_instr(sh, vternop)], [TRAP_instr])
+    -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
+
+  ;; 8-reduction.watsup
   rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
     `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
     -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
@@ -30786,13 +31819,22 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($ibits_(32, ci) = `%`_bit($ilt_($lsize((Jnn : Jnn <: lanetype)), S_sx, ci_1, `%`_iN(0))!`%`_u32.0)*{ci_1 <- `ci_1*`})
 
   ;; 8-reduction.watsup
-  rule vswizzle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `ci*` : lane_($lanetype(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M))))*, `k*` : nat*}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLE_instr(`%X%`_ishape((Pnn : Pnn <: Jnn), `%`_dim(M)))], [VCONST_instr(V128_vectype, c)])
+  rule `vswizzlop-swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
     -- (if (ci*{ci <- `ci*`}[k]!`%`_lane_.0 < |c'*{c' <- `c'*`}|))^(k<M){k <- `k*`}
     -- (if (k < |ci*{ci <- `ci*`}|))^(k<M){k <- `k*`}
-    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_2))
-    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
-    -- if (c = $invlanes_(`%X%`_shape((Pnn : Pnn <: lanetype), `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
+
+  ;; 8-reduction.watsup
+  rule `vswizzlop-relaxed_swizzle`{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), M : M, c : vec_(V128_Vnn), `c'*` : iN(8)*, `ci*` : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(M))))*, `k*` : nat*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(M)), RELAXED_SWIZZLE_vswizzlop_)], [VCONST_instr(V128_vectype, c)])
+    -- (if (ci*{ci <- `ci*`}[k]!`%`_lane_.0 < |c'*{c' <- `c'*`}|))^(k<M){k <- `k*`}
+    -- (if (k < |ci*{ci <- `ci*`}|))^(k<M){k <- `k*`}
+    -- if (ci*{ci <- `ci*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_2))
+    -- if (c'*{c' <- `c'*`} = $lanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c_1) ++ `%`_iN(0)^(256 - M){})
+    -- if (c = $invlanes_(`%X%`_shape(I8_lanetype, `%`_dim(M)), c'*{c' <- `c'*`}[ci*{ci <- `ci*`}[k]!`%`_lane_.0]^(k<M){k <- `k*`}))
 
   ;; 8-reduction.watsup
   rule vshuffle{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Pnn : Pnn, M : M, `i*` : nat*, c : vec_(V128_Vnn), `c'*` : iN($lsize((Pnn : Pnn <: lanetype)))*, `k*` : nat*}:
@@ -30833,6 +31875,11 @@ relation Step_pure: `%~>%`(instr*, instr*)
   rule vextbinop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextbinop : vextbinop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VEXTBINOP_instr(sh_2, sh_1, vextbinop)], [VCONST_instr(V128_vectype, c)])
     -- if ($vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c)
+
+  ;; 8-reduction.watsup
+  rule vextternop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextternop : vextternop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VCONST_instr(V128_vectype, c_2) VCONST_instr(V128_vectype, c_3) VEXTTERNOP_instr(sh_2, sh_1, vextternop)], [VCONST_instr(V128_vectype, c)])
+    -- if ($vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c)
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), Jnn_2 : Jnn, M_2 : M, Jnn_1 : Jnn, M_1 : M, sx : sx, c : vec_(V128_Vnn), `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `ci_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `cj_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `cj_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*}:
@@ -31529,74 +32576,74 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config($with_array(z, a, i, $packfield_(zt, val)), []))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 8-reduction.watsup:806.1-807.56
+  ;; 8-reduction.watsup:823.1-824.56
   rule local.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) LOCAL.SET_instr(x)]), `%;%`_config($with_local(z, x, val), []))
 
-  ;; 8-reduction.watsup:819.1-820.58
+  ;; 8-reduction.watsup:836.1-837.58
   rule global.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) GLOBAL.SET_instr(x)]), `%;%`_config($with_global(z, x, val), []))
 
-  ;; 8-reduction.watsup:833.1-835.33
+  ;; 8-reduction.watsup:850.1-852.33
   rule `table.set-oob`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i >= |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:837.1-839.32
+  ;; 8-reduction.watsup:854.1-856.32
   rule `table.set-val`{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:847.1-850.46
+  ;; 8-reduction.watsup:864.1-867.46
   rule `table.grow-succeed`{z : state, ref : ref, n : n, x : idx, ti : tableinst}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr(I32_numtype, `%`_num_(|$table(z, x).REFS_tableinst|))]))
     -- if ($growtable($table(z, x), n, ref) =/= ?())
     -- if (ti = !($growtable($table(z, x), n, ref)))
 
-  ;; 8-reduction.watsup:852.1-853.81
+  ;; 8-reduction.watsup:869.1-870.81
   rule `table.grow-fail`{z : state, ref : ref, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:913.1-914.51
+  ;; 8-reduction.watsup:930.1-931.51
   rule elem.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [ELEM.DROP_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
-  ;; 8-reduction.watsup:997.1-1000.60
+  ;; 8-reduction.watsup:1014.1-1017.60
   rule `store-num-oob`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1002.1-1006.29
+  ;; 8-reduction.watsup:1019.1-1023.29
   rule `store-num-val`{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $nbytes_(nt, c))
 
-  ;; 8-reduction.watsup:1008.1-1011.52
+  ;; 8-reduction.watsup:1025.1-1028.52
   rule `store-pack-oob`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1013.1-1017.52
+  ;; 8-reduction.watsup:1030.1-1034.52
   rule `store-pack-val`{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $ibytes_(n, $wrap__($size((Inn : Inn <: numtype)), n, c)))
 
-  ;; 8-reduction.watsup:1019.1-1021.63
+  ;; 8-reduction.watsup:1036.1-1038.63
   rule `vstore-oob`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1023.1-1025.31
+  ;; 8-reduction.watsup:1040.1-1042.31
   rule `vstore-val`{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg, `b*` : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $vbytes_(V128_vectype, c))
 
-  ;; 8-reduction.watsup:1028.1-1030.50
+  ;; 8-reduction.watsup:1045.1-1047.50
   rule `vstore_lane-oob`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1032.1-1036.49
+  ;; 8-reduction.watsup:1049.1-1053.49
   rule `vstore_lane-val`{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, `b*` : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b <- `b*`}), []))
     -- if (j < |$lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)|)
@@ -31604,17 +32651,17 @@ relation Step: `%~>%`(config, config)
     -- if (M = (128 / N))
     -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:1044.1-1047.37
+  ;; 8-reduction.watsup:1061.1-1064.37
   rule `memory.grow-succeed`{z : state, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
     -- if ($growmem($mem(z, x), n) =/= ?())
     -- if (mi = !($growmem($mem(z, x), n)))
 
-  ;; 8-reduction.watsup:1049.1-1050.78
+  ;; 8-reduction.watsup:1066.1-1067.78
   rule `memory.grow-fail`{z : state, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:1110.1-1111.51
+  ;; 8-reduction.watsup:1127.1-1128.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }
@@ -32264,7 +33311,7 @@ grammar Blaneidx : laneidx
 ;; A-binary.watsup
 rec {
 
-;; A-binary.watsup:971.1-981.66
+;; A-binary.watsup:992.1-1006.73
 grammar Binstr : instr
   ;; A-binary.watsup:214.5-214.24
   prod 0x00 => UNREACHABLE_instr
@@ -32794,430 +33841,462 @@ grammar Binstr : instr
   prod{`b*` : byte*} {0xFD `%`_u32(12):Bu32 b:Bbyte^16{b <- `b*`}} => VCONST_instr(V128_vectype, $invibytes_(128, b^16{b <- `b*`}))
   ;; A-binary.watsup:625.5-625.58
   prod{l : labelidx} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), [`%`_uN(l!`%`_labelidx.0)])
-  ;; A-binary.watsup:626.5-626.40
-  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:630.5-630.38
-  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
+  ;; A-binary.watsup:626.5-626.49
+  prod {0xFD `%`_u32(14):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SWIZZLE_vswizzlop_)
+  ;; A-binary.watsup:627.5-627.58
+  prod {0xFD `%`_u32(256):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), RELAXED_SWIZZLE_vswizzlop_)
   ;; A-binary.watsup:631.5-631.38
-  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
+  prod {0xFD `%`_u32(15):Bu32} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
   ;; A-binary.watsup:632.5-632.38
-  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(16):Bu32} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
   ;; A-binary.watsup:633.5-633.38
-  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
+  prod {0xFD `%`_u32(17):Bu32} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
   ;; A-binary.watsup:634.5-634.38
-  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  prod {0xFD `%`_u32(18):Bu32} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
   ;; A-binary.watsup:635.5-635.38
+  prod {0xFD `%`_u32(19):Bu32} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
+  ;; A-binary.watsup:636.5-636.38
   prod {0xFD `%`_u32(20):Bu32} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)))
-  ;; A-binary.watsup:639.5-639.60
-  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:640.5-640.60
+  prod{l : labelidx} {0xFD `%`_u32(21):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:641.5-641.60
   prod{l : labelidx} {0xFD `%`_u32(22):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:641.5-641.58
+  ;; A-binary.watsup:642.5-642.58
   prod{l : labelidx} {0xFD `%`_u32(23):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:642.5-642.60
-  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:643.5-643.60
+  prod{l : labelidx} {0xFD `%`_u32(24):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:644.5-644.60
   prod{l : labelidx} {0xFD `%`_u32(25):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(U_sx), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:644.5-644.58
-  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:645.5-645.58
-  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(26):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:646.5-646.58
-  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(27):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:647.5-647.58
-  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(28):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:648.5-648.58
-  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(29):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:649.5-649.58
-  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(30):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:650.5-650.58
-  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(31):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:651.5-651.58
-  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  prod{l : labelidx} {0xFD `%`_u32(32):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx(l!`%`_labelidx.0))
   ;; A-binary.watsup:652.5-652.58
+  prod{l : labelidx} {0xFD `%`_u32(33):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx(l!`%`_labelidx.0))
+  ;; A-binary.watsup:653.5-653.58
   prod{l : labelidx} {0xFD `%`_u32(34):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VREPLACE_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%`_laneidx(l!`%`_labelidx.0))
-  ;; A-binary.watsup:656.5-656.41
-  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
   ;; A-binary.watsup:657.5-657.41
+  prod {0xFD `%`_u32(35):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), EQ_vrelop_)
+  ;; A-binary.watsup:658.5-658.41
   prod {0xFD `%`_u32(36):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NE_vrelop_)
-  ;; A-binary.watsup:658.5-658.45
-  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:659.5-659.45
-  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(37):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:660.5-660.45
-  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(38):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:661.5-661.45
-  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(39):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:662.5-662.45
-  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(40):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:663.5-663.45
-  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(41):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:664.5-664.45
-  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(42):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:665.5-665.45
+  prod {0xFD `%`_u32(43):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:666.5-666.45
   prod {0xFD `%`_u32(44):Bu32} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:669.5-669.41
-  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
   ;; A-binary.watsup:670.5-670.41
+  prod {0xFD `%`_u32(45):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), EQ_vrelop_)
+  ;; A-binary.watsup:671.5-671.41
   prod {0xFD `%`_u32(46):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NE_vrelop_)
-  ;; A-binary.watsup:671.5-671.45
-  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:672.5-672.45
-  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(47):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:673.5-673.45
-  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(48):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:674.5-674.45
-  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(49):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:675.5-675.45
-  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(50):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:676.5-676.45
-  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(51):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:677.5-677.45
-  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(52):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:678.5-678.45
+  prod {0xFD `%`_u32(53):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:679.5-679.45
   prod {0xFD `%`_u32(54):Bu32} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:682.5-682.41
-  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:683.5-683.41
+  prod {0xFD `%`_u32(55):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), EQ_vrelop_)
+  ;; A-binary.watsup:684.5-684.41
   prod {0xFD `%`_u32(56):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NE_vrelop_)
-  ;; A-binary.watsup:684.5-684.45
-  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:685.5-685.45
-  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(57):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(S_sx))
   ;; A-binary.watsup:686.5-686.45
-  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
+  prod {0xFD `%`_u32(58):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LT_vrelop_(U_sx))
   ;; A-binary.watsup:687.5-687.45
-  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
+  prod {0xFD `%`_u32(59):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(S_sx))
   ;; A-binary.watsup:688.5-688.45
-  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(60):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GT_vrelop_(U_sx))
   ;; A-binary.watsup:689.5-689.45
-  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
+  prod {0xFD `%`_u32(61):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(S_sx))
   ;; A-binary.watsup:690.5-690.45
-  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  prod {0xFD `%`_u32(62):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), LE_vrelop_(U_sx))
   ;; A-binary.watsup:691.5-691.45
+  prod {0xFD `%`_u32(63):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(S_sx))
+  ;; A-binary.watsup:692.5-692.45
   prod {0xFD `%`_u32(64):Bu32} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), GE_vrelop_(U_sx))
-  ;; A-binary.watsup:695.5-695.41
-  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:696.5-696.41
-  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
+  prod {0xFD `%`_u32(65):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), EQ_vrelop_)
   ;; A-binary.watsup:697.5-697.41
-  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
+  prod {0xFD `%`_u32(66):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NE_vrelop_)
   ;; A-binary.watsup:698.5-698.41
-  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
+  prod {0xFD `%`_u32(67):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LT_vrelop_)
   ;; A-binary.watsup:699.5-699.41
-  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  prod {0xFD `%`_u32(68):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GT_vrelop_)
   ;; A-binary.watsup:700.5-700.41
+  prod {0xFD `%`_u32(69):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), LE_vrelop_)
+  ;; A-binary.watsup:701.5-701.41
   prod {0xFD `%`_u32(70):Bu32} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), GE_vrelop_)
-  ;; A-binary.watsup:704.5-704.41
-  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:705.5-705.41
-  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
+  prod {0xFD `%`_u32(71):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), EQ_vrelop_)
   ;; A-binary.watsup:706.5-706.41
-  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
+  prod {0xFD `%`_u32(72):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NE_vrelop_)
   ;; A-binary.watsup:707.5-707.41
-  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
+  prod {0xFD `%`_u32(73):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LT_vrelop_)
   ;; A-binary.watsup:708.5-708.41
-  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  prod {0xFD `%`_u32(74):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GT_vrelop_)
   ;; A-binary.watsup:709.5-709.41
+  prod {0xFD `%`_u32(75):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), LE_vrelop_)
+  ;; A-binary.watsup:710.5-710.41
   prod {0xFD `%`_u32(76):Bu32} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), GE_vrelop_)
-  ;; A-binary.watsup:713.5-713.36
+  ;; A-binary.watsup:714.5-714.36
   prod {0xFD `%`_u32(77):Bu32} => VVUNOP_instr(V128_vectype, NOT_vvunop)
-  ;; A-binary.watsup:717.5-717.37
+  ;; A-binary.watsup:718.5-718.37
   prod {0xFD `%`_u32(78):Bu32} => VVBINOP_instr(V128_vectype, AND_vvbinop)
-  ;; A-binary.watsup:718.5-718.40
+  ;; A-binary.watsup:719.5-719.40
   prod {0xFD `%`_u32(79):Bu32} => VVBINOP_instr(V128_vectype, ANDNOT_vvbinop)
-  ;; A-binary.watsup:719.5-719.36
+  ;; A-binary.watsup:720.5-720.36
   prod {0xFD `%`_u32(80):Bu32} => VVBINOP_instr(V128_vectype, OR_vvbinop)
-  ;; A-binary.watsup:720.5-720.37
+  ;; A-binary.watsup:721.5-721.37
   prod {0xFD `%`_u32(81):Bu32} => VVBINOP_instr(V128_vectype, XOR_vvbinop)
-  ;; A-binary.watsup:724.5-724.44
+  ;; A-binary.watsup:725.5-725.44
   prod {0xFD `%`_u32(82):Bu32} => VVTERNOP_instr(V128_vectype, BITSELECT_vvternop)
-  ;; A-binary.watsup:728.5-728.43
+  ;; A-binary.watsup:729.5-729.43
   prod {0xFD `%`_u32(83):Bu32} => VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)
-  ;; A-binary.watsup:732.5-732.41
-  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
   ;; A-binary.watsup:733.5-733.41
+  prod {0xFD `%`_u32(96):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ABS_vunop_)
+  ;; A-binary.watsup:734.5-734.41
   prod {0xFD `%`_u32(97):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), NEG_vunop_)
-  ;; A-binary.watsup:734.5-734.44
+  ;; A-binary.watsup:735.5-735.44
   prod {0xFD `%`_u32(98):Bu32} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), POPCNT_vunop_)
-  ;; A-binary.watsup:738.5-738.48
+  ;; A-binary.watsup:739.5-739.48
   prod {0xFD `%`_u32(99):Bu32} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:742.5-742.41
+  ;; A-binary.watsup:743.5-743.41
   prod {0xFD `%`_u32(100):Bu32} => VBITMASK_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)))
-  ;; A-binary.watsup:746.5-746.53
-  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
   ;; A-binary.watsup:747.5-747.53
+  prod {0xFD `%`_u32(101):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), S_sx)
+  ;; A-binary.watsup:748.5-748.53
   prod {0xFD `%`_u32(102):Bu32} => VNARROW_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), U_sx)
-  ;; A-binary.watsup:751.5-751.45
+  ;; A-binary.watsup:752.5-752.45
   prod {0xFD `%`_u32(107):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHL_vshiftop_)
-  ;; A-binary.watsup:752.5-752.49
-  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
   ;; A-binary.watsup:753.5-753.49
+  prod {0xFD `%`_u32(108):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(S_sx))
+  ;; A-binary.watsup:754.5-754.49
   prod {0xFD `%`_u32(109):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:757.5-757.43
+  ;; A-binary.watsup:758.5-758.43
   prod {0xFD `%`_u32(110):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_vbinop_)
-  ;; A-binary.watsup:758.5-758.51
-  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:759.5-759.51
+  prod {0xFD `%`_u32(111):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:760.5-760.51
   prod {0xFD `%`_u32(112):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:760.5-760.43
+  ;; A-binary.watsup:761.5-761.43
   prod {0xFD `%`_u32(113):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_vbinop_)
-  ;; A-binary.watsup:761.5-761.51
-  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
   ;; A-binary.watsup:762.5-762.51
+  prod {0xFD `%`_u32(114):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(S_sx))
+  ;; A-binary.watsup:763.5-763.51
   prod {0xFD `%`_u32(115):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:763.5-763.47
-  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:764.5-764.47
-  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
+  prod {0xFD `%`_u32(118):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:765.5-765.47
-  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(119):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:766.5-766.47
+  prod {0xFD `%`_u32(120):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:767.5-767.47
   prod {0xFD `%`_u32(121):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:767.5-767.48
+  ;; A-binary.watsup:768.5-768.48
   prod {0xFD `%`_u32(123):Bu32} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:771.5-771.72
-  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
   ;; A-binary.watsup:772.5-772.72
+  prod {0xFD `%`_u32(124):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(S_sx))
+  ;; A-binary.watsup:773.5-773.72
   prod {0xFD `%`_u32(125):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:776.5-776.42
-  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
   ;; A-binary.watsup:777.5-777.42
+  prod {0xFD `%`_u32(128):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ABS_vunop_)
+  ;; A-binary.watsup:778.5-778.42
   prod {0xFD `%`_u32(129):Bu32} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), NEG_vunop_)
-  ;; A-binary.watsup:781.5-781.55
+  ;; A-binary.watsup:782.5-782.55
   prod {0xFD `%`_u32(130):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `Q15MULR_SATS`_vbinop_)
-  ;; A-binary.watsup:785.5-785.49
+  ;; A-binary.watsup:783.5-783.59
+  prod {0xFD `%`_u32(273):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `RELAXED_Q15MULRS`_vbinop_)
+  ;; A-binary.watsup:787.5-787.49
   prod {0xFD `%`_u32(131):Bu32} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:789.5-789.41
+  ;; A-binary.watsup:791.5-791.41
   prod {0xFD `%`_u32(132):Bu32} => VBITMASK_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)))
-  ;; A-binary.watsup:793.5-793.53
+  ;; A-binary.watsup:795.5-795.53
   prod {0xFD `%`_u32(133):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), S_sx)
-  ;; A-binary.watsup:794.5-794.53
+  ;; A-binary.watsup:796.5-796.53
   prod {0xFD `%`_u32(134):Bu32} => VNARROW_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), U_sx)
-  ;; A-binary.watsup:798.5-798.65
-  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:799.5-799.66
-  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
   ;; A-binary.watsup:800.5-800.65
-  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  prod {0xFD `%`_u32(135):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
   ;; A-binary.watsup:801.5-801.66
+  prod {0xFD `%`_u32(136):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
+  ;; A-binary.watsup:802.5-802.65
+  prod {0xFD `%`_u32(137):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:803.5-803.66
   prod {0xFD `%`_u32(138):Bu32} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:805.5-805.45
+  ;; A-binary.watsup:807.5-807.45
   prod {0xFD `%`_u32(139):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHL_vshiftop_)
-  ;; A-binary.watsup:806.5-806.49
+  ;; A-binary.watsup:808.5-808.49
   prod {0xFD `%`_u32(140):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:807.5-807.49
+  ;; A-binary.watsup:809.5-809.49
   prod {0xFD `%`_u32(141):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:811.5-811.43
+  ;; A-binary.watsup:813.5-813.43
   prod {0xFD `%`_u32(142):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_vbinop_)
-  ;; A-binary.watsup:812.5-812.51
+  ;; A-binary.watsup:814.5-814.51
   prod {0xFD `%`_u32(143):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:813.5-813.51
-  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:814.5-814.43
-  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
   ;; A-binary.watsup:815.5-815.51
+  prod {0xFD `%`_u32(144):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ADD_SAT_vbinop_(U_sx))
+  ;; A-binary.watsup:816.5-816.43
+  prod {0xFD `%`_u32(145):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_vbinop_)
+  ;; A-binary.watsup:817.5-817.51
   prod {0xFD `%`_u32(146):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(S_sx))
-  ;; A-binary.watsup:816.5-816.51
+  ;; A-binary.watsup:818.5-818.51
   prod {0xFD `%`_u32(147):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), SUB_SAT_vbinop_(U_sx))
-  ;; A-binary.watsup:817.5-817.43
+  ;; A-binary.watsup:819.5-819.43
   prod {0xFD `%`_u32(149):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MUL_vbinop_)
-  ;; A-binary.watsup:818.5-818.47
-  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:819.5-819.47
-  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
   ;; A-binary.watsup:820.5-820.47
-  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  prod {0xFD `%`_u32(150):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(S_sx))
   ;; A-binary.watsup:821.5-821.47
+  prod {0xFD `%`_u32(151):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:822.5-822.47
+  prod {0xFD `%`_u32(152):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:823.5-823.47
   prod {0xFD `%`_u32(153):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:822.5-822.48
+  ;; A-binary.watsup:824.5-824.48
   prod {0xFD `%`_u32(155):Bu32} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `AVGRU`_vbinop_)
-  ;; A-binary.watsup:826.5-826.68
-  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:827.5-827.69
-  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
   ;; A-binary.watsup:828.5-828.68
-  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  prod {0xFD `%`_u32(156):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, LOW_half__))
   ;; A-binary.watsup:829.5-829.69
+  prod {0xFD `%`_u32(157):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
+  ;; A-binary.watsup:830.5-830.68
+  prod {0xFD `%`_u32(158):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, LOW_half__))
+  ;; A-binary.watsup:831.5-831.69
   prod {0xFD `%`_u32(159):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:833.5-833.72
+  ;; A-binary.watsup:832.5-832.69
+  prod {0xFD `%`_u32(274):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I16_Jnn, `%`_dim(8)), `%X%`_ishape(I8_Jnn, `%`_dim(16)), `RELAXED_DOTS`_vextbinop__)
+  ;; A-binary.watsup:836.5-836.72
   prod {0xFD `%`_u32(126):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(S_sx))
-  ;; A-binary.watsup:834.5-834.72
+  ;; A-binary.watsup:837.5-837.72
   prod {0xFD `%`_u32(127):Bu32} => VEXTUNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTADD_PAIRWISE_vextunop__(U_sx))
-  ;; A-binary.watsup:838.5-838.42
+  ;; A-binary.watsup:841.5-841.42
   prod {0xFD `%`_u32(160):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:839.5-839.42
+  ;; A-binary.watsup:842.5-842.42
   prod {0xFD `%`_u32(161):Bu32} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:843.5-843.49
+  ;; A-binary.watsup:846.5-846.49
   prod {0xFD `%`_u32(163):Bu32} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:847.5-847.41
+  ;; A-binary.watsup:850.5-850.41
   prod {0xFD `%`_u32(164):Bu32} => VBITMASK_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)))
-  ;; A-binary.watsup:851.5-851.65
+  ;; A-binary.watsup:854.5-854.65
   prod {0xFD `%`_u32(167):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:852.5-852.66
+  ;; A-binary.watsup:855.5-855.66
   prod {0xFD `%`_u32(168):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:853.5-853.65
+  ;; A-binary.watsup:856.5-856.65
   prod {0xFD `%`_u32(169):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:854.5-854.66
+  ;; A-binary.watsup:857.5-857.66
   prod {0xFD `%`_u32(170):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:858.5-858.45
+  ;; A-binary.watsup:861.5-861.45
   prod {0xFD `%`_u32(171):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHL_vshiftop_)
-  ;; A-binary.watsup:859.5-859.49
+  ;; A-binary.watsup:862.5-862.49
   prod {0xFD `%`_u32(172):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:860.5-860.49
+  ;; A-binary.watsup:863.5-863.49
   prod {0xFD `%`_u32(173):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:864.5-864.43
+  ;; A-binary.watsup:867.5-867.43
   prod {0xFD `%`_u32(174):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:865.5-865.43
+  ;; A-binary.watsup:868.5-868.43
   prod {0xFD `%`_u32(177):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:866.5-866.43
+  ;; A-binary.watsup:869.5-869.43
   prod {0xFD `%`_u32(181):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MUL_vbinop_)
-  ;; A-binary.watsup:867.5-867.47
-  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
-  ;; A-binary.watsup:868.5-868.47
-  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
-  ;; A-binary.watsup:869.5-869.47
-  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
   ;; A-binary.watsup:870.5-870.47
+  prod {0xFD `%`_u32(182):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(S_sx))
+  ;; A-binary.watsup:871.5-871.47
+  prod {0xFD `%`_u32(183):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MIN_vbinop_(U_sx))
+  ;; A-binary.watsup:872.5-872.47
+  prod {0xFD `%`_u32(184):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(S_sx))
+  ;; A-binary.watsup:873.5-873.47
   prod {0xFD `%`_u32(185):Bu32} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), MAX_vbinop_(U_sx))
-  ;; A-binary.watsup:874.5-874.61
+  ;; A-binary.watsup:877.5-877.61
   prod {0xFD `%`_u32(186):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `DOTS`_vextbinop__)
-  ;; A-binary.watsup:875.5-875.68
+  ;; A-binary.watsup:878.5-878.68
   prod {0xFD `%`_u32(188):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:876.5-876.69
+  ;; A-binary.watsup:879.5-879.69
   prod {0xFD `%`_u32(189):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:877.5-877.68
+  ;; A-binary.watsup:880.5-880.68
   prod {0xFD `%`_u32(190):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:878.5-878.69
+  ;; A-binary.watsup:881.5-881.69
   prod {0xFD `%`_u32(191):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:882.5-882.42
+  ;; A-binary.watsup:885.5-885.74
+  prod {0xFD `%`_u32(275):Bu32} => VEXTTERNOP_instr(`%X%`_ishape(I32_Jnn, `%`_dim(4)), `%X%`_ishape(I16_Jnn, `%`_dim(8)), `RELAXED_DOT_ADDS`_vextternop__)
+  ;; A-binary.watsup:889.5-889.42
   prod {0xFD `%`_u32(192):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:883.5-883.42
+  ;; A-binary.watsup:890.5-890.42
   prod {0xFD `%`_u32(193):Bu32} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:887.5-887.49
+  ;; A-binary.watsup:894.5-894.49
   prod {0xFD `%`_u32(195):Bu32} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ALL_TRUE_vtestop_)
-  ;; A-binary.watsup:891.5-891.41
+  ;; A-binary.watsup:898.5-898.41
   prod {0xFD `%`_u32(196):Bu32} => VBITMASK_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)))
-  ;; A-binary.watsup:895.5-895.65
+  ;; A-binary.watsup:902.5-902.65
   prod {0xFD `%`_u32(199):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:896.5-896.66
+  ;; A-binary.watsup:903.5-903.66
   prod {0xFD `%`_u32(200):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(S_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:897.5-897.65
+  ;; A-binary.watsup:904.5-904.65
   prod {0xFD `%`_u32(201):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:898.5-898.66
+  ;; A-binary.watsup:905.5-905.66
   prod {0xFD `%`_u32(202):Bu32} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), EXTEND_vcvtop__(U_sx), ?(HIGH_half__), ?())
-  ;; A-binary.watsup:902.5-902.45
+  ;; A-binary.watsup:909.5-909.45
   prod {0xFD `%`_u32(203):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHL_vshiftop_)
-  ;; A-binary.watsup:903.5-903.49
+  ;; A-binary.watsup:910.5-910.49
   prod {0xFD `%`_u32(204):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(S_sx))
-  ;; A-binary.watsup:904.5-904.49
+  ;; A-binary.watsup:911.5-911.49
   prod {0xFD `%`_u32(205):Bu32} => VSHIFTOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), SHR_vshiftop_(U_sx))
-  ;; A-binary.watsup:908.5-908.43
+  ;; A-binary.watsup:915.5-915.43
   prod {0xFD `%`_u32(206):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:909.5-909.43
+  ;; A-binary.watsup:916.5-916.43
   prod {0xFD `%`_u32(209):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:910.5-910.43
+  ;; A-binary.watsup:917.5-917.43
   prod {0xFD `%`_u32(213):Bu32} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:914.5-914.42
+  ;; A-binary.watsup:921.5-921.42
   prod {0xFD `%`_u32(214):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), EQ_vrelop_)
-  ;; A-binary.watsup:915.5-915.42
+  ;; A-binary.watsup:922.5-922.42
   prod {0xFD `%`_u32(215):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), NE_vrelop_)
-  ;; A-binary.watsup:916.5-916.46
+  ;; A-binary.watsup:923.5-923.46
   prod {0xFD `%`_u32(216):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LT_vrelop_(S_sx))
-  ;; A-binary.watsup:917.5-917.46
+  ;; A-binary.watsup:924.5-924.46
   prod {0xFD `%`_u32(217):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GT_vrelop_(S_sx))
-  ;; A-binary.watsup:918.5-918.46
+  ;; A-binary.watsup:925.5-925.46
   prod {0xFD `%`_u32(218):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), LE_vrelop_(S_sx))
-  ;; A-binary.watsup:919.5-919.46
+  ;; A-binary.watsup:926.5-926.46
   prod {0xFD `%`_u32(219):Bu32} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), GE_vrelop_(S_sx))
-  ;; A-binary.watsup:923.5-923.68
+  ;; A-binary.watsup:930.5-930.68
   prod {0xFD `%`_u32(220):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, LOW_half__))
-  ;; A-binary.watsup:924.5-924.69
+  ;; A-binary.watsup:931.5-931.69
   prod {0xFD `%`_u32(221):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(S_sx, HIGH_half__))
-  ;; A-binary.watsup:925.5-925.68
+  ;; A-binary.watsup:932.5-932.68
   prod {0xFD `%`_u32(222):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, LOW_half__))
-  ;; A-binary.watsup:926.5-926.69
+  ;; A-binary.watsup:933.5-933.69
   prod {0xFD `%`_u32(223):Bu32} => VEXTBINOP_instr(`%X%`_ishape(I64_Jnn, `%`_dim(2)), `%X%`_ishape(I32_Jnn, `%`_dim(4)), EXTMUL_vextbinop__(U_sx, HIGH_half__))
-  ;; A-binary.watsup:930.5-930.43
+  ;; A-binary.watsup:937.5-937.43
   prod {0xFD `%`_u32(103):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), CEIL_vunop_)
-  ;; A-binary.watsup:931.5-931.44
+  ;; A-binary.watsup:938.5-938.44
   prod {0xFD `%`_u32(104):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), FLOOR_vunop_)
-  ;; A-binary.watsup:932.5-932.44
+  ;; A-binary.watsup:939.5-939.44
   prod {0xFD `%`_u32(105):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_vunop_)
-  ;; A-binary.watsup:933.5-933.46
+  ;; A-binary.watsup:940.5-940.46
   prod {0xFD `%`_u32(106):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEAREST_vunop_)
-  ;; A-binary.watsup:934.5-934.42
+  ;; A-binary.watsup:941.5-941.42
   prod {0xFD `%`_u32(224):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ABS_vunop_)
-  ;; A-binary.watsup:935.5-935.42
+  ;; A-binary.watsup:942.5-942.42
   prod {0xFD `%`_u32(225):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), NEG_vunop_)
-  ;; A-binary.watsup:936.5-936.43
-  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
-  ;; A-binary.watsup:940.5-940.43
-  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
-  ;; A-binary.watsup:941.5-941.43
-  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
-  ;; A-binary.watsup:942.5-942.43
-  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
   ;; A-binary.watsup:943.5-943.43
+  prod {0xFD `%`_u32(227):Bu32} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SQRT_vunop_)
+  ;; A-binary.watsup:947.5-947.43
+  prod {0xFD `%`_u32(228):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ADD_vbinop_)
+  ;; A-binary.watsup:948.5-948.43
+  prod {0xFD `%`_u32(229):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), SUB_vbinop_)
+  ;; A-binary.watsup:949.5-949.43
+  prod {0xFD `%`_u32(230):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MUL_vbinop_)
+  ;; A-binary.watsup:950.5-950.43
   prod {0xFD `%`_u32(231):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), DIV_vbinop_)
-  ;; A-binary.watsup:944.5-944.43
-  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
-  ;; A-binary.watsup:945.5-945.43
-  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
-  ;; A-binary.watsup:946.5-946.44
-  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
-  ;; A-binary.watsup:947.5-947.44
-  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
   ;; A-binary.watsup:951.5-951.43
-  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
-  ;; A-binary.watsup:952.5-952.44
-  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
+  prod {0xFD `%`_u32(232):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MIN_vbinop_)
+  ;; A-binary.watsup:952.5-952.43
+  prod {0xFD `%`_u32(233):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), MAX_vbinop_)
   ;; A-binary.watsup:953.5-953.44
-  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
-  ;; A-binary.watsup:954.5-954.46
-  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
-  ;; A-binary.watsup:955.5-955.42
-  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
-  ;; A-binary.watsup:956.5-956.42
-  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
-  ;; A-binary.watsup:957.5-957.43
-  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
-  ;; A-binary.watsup:961.5-961.43
-  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
-  ;; A-binary.watsup:962.5-962.43
-  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
-  ;; A-binary.watsup:963.5-963.43
-  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
-  ;; A-binary.watsup:964.5-964.43
-  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  prod {0xFD `%`_u32(234):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMIN_vbinop_)
+  ;; A-binary.watsup:954.5-954.44
+  prod {0xFD `%`_u32(235):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), PMAX_vbinop_)
+  ;; A-binary.watsup:955.5-955.51
+  prod {0xFD `%`_u32(269):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:956.5-956.51
+  prod {0xFD `%`_u32(270):Bu32} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:960.5-960.53
+  prod {0xFD `%`_u32(261):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:961.5-961.54
+  prod {0xFD `%`_u32(262):Bu32} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_NMADD_vternop_)
   ;; A-binary.watsup:965.5-965.43
-  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
-  ;; A-binary.watsup:966.5-966.43
-  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  prod {0xFD `%`_u32(116):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), CEIL_vunop_)
+  ;; A-binary.watsup:966.5-966.44
+  prod {0xFD `%`_u32(117):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), FLOOR_vunop_)
   ;; A-binary.watsup:967.5-967.44
+  prod {0xFD `%`_u32(122):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_vunop_)
+  ;; A-binary.watsup:968.5-968.46
+  prod {0xFD `%`_u32(148):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEAREST_vunop_)
+  ;; A-binary.watsup:969.5-969.42
+  prod {0xFD `%`_u32(236):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ABS_vunop_)
+  ;; A-binary.watsup:970.5-970.42
+  prod {0xFD `%`_u32(237):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), NEG_vunop_)
+  ;; A-binary.watsup:971.5-971.43
+  prod {0xFD `%`_u32(239):Bu32} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SQRT_vunop_)
+  ;; A-binary.watsup:975.5-975.43
+  prod {0xFD `%`_u32(240):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ADD_vbinop_)
+  ;; A-binary.watsup:976.5-976.43
+  prod {0xFD `%`_u32(241):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), SUB_vbinop_)
+  ;; A-binary.watsup:977.5-977.43
+  prod {0xFD `%`_u32(242):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MUL_vbinop_)
+  ;; A-binary.watsup:978.5-978.43
+  prod {0xFD `%`_u32(243):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), DIV_vbinop_)
+  ;; A-binary.watsup:979.5-979.43
+  prod {0xFD `%`_u32(244):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MIN_vbinop_)
+  ;; A-binary.watsup:980.5-980.43
+  prod {0xFD `%`_u32(245):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), MAX_vbinop_)
+  ;; A-binary.watsup:981.5-981.44
   prod {0xFD `%`_u32(246):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMIN_vbinop_)
-  ;; A-binary.watsup:968.5-968.44
+  ;; A-binary.watsup:982.5-982.44
   prod {0xFD `%`_u32(247):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), PMAX_vbinop_)
-  ;; A-binary.watsup:972.5-972.61
+  ;; A-binary.watsup:983.5-983.51
+  prod {0xFD `%`_u32(271):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MIN_vbinop_)
+  ;; A-binary.watsup:984.5-984.51
+  prod {0xFD `%`_u32(272):Bu32} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MAX_vbinop_)
+  ;; A-binary.watsup:988.5-988.53
+  prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
+  ;; A-binary.watsup:989.5-989.54
+  prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
+  ;; A-binary.watsup:993.5-993.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__, ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:973.5-973.61
+  ;; A-binary.watsup:994.5-994.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), PROMOTE_vcvtop__, ?(LOW_half__), ?())
-  ;; A-binary.watsup:974.5-974.64
+  ;; A-binary.watsup:995.5-995.64
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:975.5-975.64
+  ;; A-binary.watsup:996.5-996.64
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:976.5-976.62
+  ;; A-binary.watsup:997.5-997.62
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(), ?())
-  ;; A-binary.watsup:977.5-977.62
+  ;; A-binary.watsup:998.5-998.62
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(), ?())
-  ;; A-binary.watsup:978.5-978.69
+  ;; A-binary.watsup:999.5-999.69
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:979.5-979.69
+  ;; A-binary.watsup:1000.5-1000.69
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
-  ;; A-binary.watsup:980.5-980.66
+  ;; A-binary.watsup:1001.5-1001.66
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(S_sx), ?(LOW_half__), ?())
-  ;; A-binary.watsup:981.5-981.66
+  ;; A-binary.watsup:1002.5-1002.66
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(U_sx), ?(LOW_half__), ?())
+  ;; A-binary.watsup:1003.5-1003.68
+  prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?())
+  ;; A-binary.watsup:1004.5-1004.68
+  prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?())
+  ;; A-binary.watsup:1005.5-1005.73
+  prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx), ?(), ?(ZERO_zero__))
+  ;; A-binary.watsup:1006.5-1006.73
+  prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx), ?(), ?(ZERO_zero__))
 }
 
 ;; A-binary.watsup

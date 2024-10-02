@@ -469,6 +469,7 @@ let al_to_float_vbinop : value -> V128Op.fbinop = function
 let al_to_vbinop : value list -> vec_binop = al_to_vop al_to_int_vbinop al_to_float_vbinop
 
 let al_to_int_vternop : value -> V128Op.iternop = function
+  | CaseV ("RELAXED_LANESELECT", []) -> V128Op.RelaxedLaneselect
   | v -> error_value "integer vternop" v
 
 let al_to_float_vternop : value -> V128Op.fternop = function
@@ -1609,6 +1610,7 @@ let al_of_float_vbinop_opt : V128Op.fbinop -> value option = function
 let al_of_vbinop_opt = al_of_vop_opt al_of_int_vbinop_opt al_of_float_vbinop_opt
 
 let al_of_int_vternop_opt : V128Op.iternop -> value option = function
+  | V128Op.RelaxedLaneselect -> Some (nullary "RELAXED_LANESELECT")
   | _ -> None
 
 let al_of_float_vternop_opt : V128Op.fternop -> value option = function

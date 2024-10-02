@@ -437,6 +437,7 @@ syntax vbinop_(Jnn X M) =
 syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX | RELAXED_MIN | RELAXED_MAX
 
 syntax vternop_(shape) hint(macro "%" "V%")
+syntax vternop_(Jnn X M) = RELAXED_LANESELECT
 syntax vternop_(Fnn X M) = RELAXED_MADD | RELAXED_NMADD
 
 syntax vtestop_(shape) hint(macro "%" "V%")

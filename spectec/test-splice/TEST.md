@@ -8,7 +8,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-../spec/wasm-3.0/6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
+../spec/wasm-3.0/6-typing.watsup:1386.9-1386.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -435,6 +435,8 @@ warning: syntax `recorddots` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
 warning: syntax `reftype` was never spliced
+warning: syntax `relaxed2` was never spliced
+warning: syntax `relaxed4` was never spliced
 warning: syntax `relop_` was never spliced
 warning: syntax `relop_` was never spliced
 warning: syntax `result` was never spliced
@@ -495,11 +497,15 @@ warning: syntax `vec` was never spliced
 warning: syntax `vec_` was never spliced
 warning: syntax `vectype` was never spliced
 warning: syntax `vextbinop__` was never spliced
+warning: syntax `vextternop__` was never spliced
 warning: syntax `vextunop__` was never spliced
 warning: syntax `vloadop_` was never spliced
 warning: syntax `vrelop_` was never spliced
 warning: syntax `vrelop_` was never spliced
 warning: syntax `vshiftop_` was never spliced
+warning: syntax `vswizzlop_` was never spliced
+warning: syntax `vternop_` was never spliced
+warning: syntax `vternop_` was never spliced
 warning: syntax `vtestop_` was never spliced
 warning: syntax `vunop_` was never spliced
 warning: syntax `vunop_` was never spliced
@@ -616,6 +622,7 @@ warning: grammar `Binstr/vec-ext-i32x4` was never spliced
 warning: grammar `Binstr/vec-shift-i32x4` was never spliced
 warning: grammar `Binstr/vec-bin-i32x4` was never spliced
 warning: grammar `Binstr/vec-extbin-i32x4` was never spliced
+warning: grammar `Binstr/vec-exttern-i32x4` was never spliced
 warning: grammar `Binstr/vec-un-i64x2` was never spliced
 warning: grammar `Binstr/vec-test-i64x2` was never spliced
 warning: grammar `Binstr/vec-bitmask-i64x2` was never spliced
@@ -626,8 +633,10 @@ warning: grammar `Binstr/vec-rel-i64x2` was never spliced
 warning: grammar `Binstr/vec-extbin-i64x2` was never spliced
 warning: grammar `Binstr/vec-un-f32x4` was never spliced
 warning: grammar `Binstr/vec-bin-f32x4` was never spliced
+warning: grammar `Binstr/vec-tern-f32x4` was never spliced
 warning: grammar `Binstr/vec-un-f64x2` was never spliced
 warning: grammar `Binstr/vec-bin-f64x2` was never spliced
+warning: grammar `Binstr/vec-tern-f64x2` was never spliced
 warning: grammar `Binstr/vec-cvt` was never spliced
 warning: grammar `Blabelidx` was never spliced
 warning: grammar `Blaneidx` was never spliced
@@ -831,17 +840,19 @@ warning: rule `Instr_ok/vvternop` was never spliced
 warning: rule `Instr_ok/vvtestop` was never spliced
 warning: rule `Instr_ok/vunop` was never spliced
 warning: rule `Instr_ok/vbinop` was never spliced
+warning: rule `Instr_ok/vternop` was never spliced
 warning: rule `Instr_ok/vtestop` was never spliced
 warning: rule `Instr_ok/vrelop` was never spliced
 warning: rule `Instr_ok/vshiftop` was never spliced
 warning: rule `Instr_ok/vbitmask` was never spliced
-warning: rule `Instr_ok/vswizzle` was never spliced
+warning: rule `Instr_ok/vswizzlop` was never spliced
 warning: rule `Instr_ok/vshuffle` was never spliced
 warning: rule `Instr_ok/vsplat` was never spliced
 warning: rule `Instr_ok/vextract_lane` was never spliced
 warning: rule `Instr_ok/vreplace_lane` was never spliced
 warning: rule `Instr_ok/vextunop` was never spliced
 warning: rule `Instr_ok/vextbinop` was never spliced
+warning: rule `Instr_ok/vextternop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok/local.get` was never spliced
@@ -1006,12 +1017,15 @@ warning: rule `Step_pure/vunop-val` was never spliced
 warning: rule `Step_pure/vunop-trap` was never spliced
 warning: rule `Step_pure/vbinop-val` was never spliced
 warning: rule `Step_pure/vbinop-trap` was never spliced
+warning: rule `Step_pure/vternop-val` was never spliced
+warning: rule `Step_pure/vternop-trap` was never spliced
 warning: rule `Step_pure/vtestop-true` was never spliced
 warning: rule `Step_pure/vtestop-false` was never spliced
 warning: rule `Step_pure/vrelop` was never spliced
 warning: rule `Step_pure/vshiftop` was never spliced
 warning: rule `Step_pure/vbitmask` was never spliced
-warning: rule `Step_pure/vswizzle` was never spliced
+warning: rule `Step_pure/vswizzlop-swizzle` was never spliced
+warning: rule `Step_pure/vswizzlop-relaxed_swizzle` was never spliced
 warning: rule `Step_pure/vshuffle` was never spliced
 warning: rule `Step_pure/vsplat` was never spliced
 warning: rule `Step_pure/vextract_lane-num` was never spliced
@@ -1019,6 +1033,7 @@ warning: rule `Step_pure/vextract_lane-pack` was never spliced
 warning: rule `Step_pure/vreplace_lane` was never spliced
 warning: rule `Step_pure/vextunop` was never spliced
 warning: rule `Step_pure/vextbinop` was never spliced
+warning: rule `Step_pure/vextternop` was never spliced
 warning: rule `Step_pure/vnarrow` was never spliced
 warning: rule `Step_pure/vcvtop-full` was never spliced
 warning: rule `Step_pure/vcvtop-half` was never spliced
@@ -1170,9 +1185,19 @@ warning: definition `IN` was never spliced
 warning: definition `JN` was never spliced
 warning: definition `Ki` was never spliced
 warning: definition `M` was never spliced
+warning: definition `ND` was never spliced
 warning: definition `NULLEXTERNREF` was never spliced
 warning: definition `NULLFUNCREF` was never spliced
 warning: definition `NULLREF` was never spliced
+warning: definition `R_fmadd` was never spliced
+warning: definition `R_fmax` was never spliced
+warning: definition `R_fmin` was never spliced
+warning: definition `R_idot` was never spliced
+warning: definition `R_iq15mulr` was never spliced
+warning: definition `R_laneselect` was never spliced
+warning: definition `R_swizzle` was never spliced
+warning: definition `R_trunc_s` was never spliced
+warning: definition `R_trunc_u` was never spliced
 warning: definition `STRUCTREF` was never spliced
 warning: definition `add_arrayinst` was never spliced
 warning: definition `add_exninst` was never spliced
@@ -1312,6 +1337,10 @@ warning: definition `free_typeidx` was never spliced
 warning: definition `free_typeuse` was never spliced
 warning: definition `free_valtype` was never spliced
 warning: definition `free_vectype` was never spliced
+warning: definition `frelaxed_madd_` was never spliced
+warning: definition `frelaxed_max_` was never spliced
+warning: definition `frelaxed_min_` was never spliced
+warning: definition `frelaxed_nmadd_` was never spliced
 warning: definition `fsqrt_` was never spliced
 warning: definition `fsub_` was never spliced
 warning: definition `ftrunc_` was never spliced
@@ -1322,6 +1351,7 @@ warning: definition `funcsxt` was never spliced
 warning: definition `funcsxx` was never spliced
 warning: definition `fvbinop_` was never spliced
 warning: definition `fvrelop_` was never spliced
+warning: definition `fvternop_` was never spliced
 warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
@@ -1371,6 +1401,8 @@ warning: definition `invsigned_` was never spliced
 warning: definition `ior_` was never spliced
 warning: definition `ipopcnt_` was never spliced
 warning: definition `iq15mulr_sat_` was never spliced
+warning: definition `irelaxed_laneselect_` was never spliced
+warning: definition `irelaxed_q15mulr_` was never spliced
 warning: definition `irem_` was never spliced
 warning: definition `irotl_` was never spliced
 warning: definition `irotr_` was never spliced
@@ -1381,8 +1413,10 @@ warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
 warning: definition `ivbinop_` was never spliced
 warning: definition `ivbinopsx_` was never spliced
+warning: definition `ivbinopsxnd_` was never spliced
 warning: definition `ivrelop_` was never spliced
 warning: definition `ivrelopsx_` was never spliced
+warning: definition `ivternopnd_` was never spliced
 warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
@@ -1413,12 +1447,17 @@ warning: definition `promote__` was never spliced
 warning: definition `psize` was never spliced
 warning: definition `psizenn` was never spliced
 warning: definition `reinterpret__` was never spliced
+warning: definition `relaxed2` was never spliced
+warning: definition `relaxed4` was never spliced
+warning: definition `relaxed_trunc__` was never spliced
 warning: definition `relop_` was never spliced
 warning: definition `rolldt` was never spliced
 warning: definition `rollrt` was never spliced
 warning: definition `rundata_` was never spliced
 warning: definition `runelem_` was never spliced
 warning: definition `s33_to_u32` was never spliced
+warning: definition `sat_s_` was never spliced
+warning: definition `sat_u_` was never spliced
 warning: definition `setminus1_` was never spliced
 warning: definition `setminus_` was never spliced
 warning: definition `setproduct1_` was never spliced
@@ -1490,10 +1529,12 @@ warning: definition `vbinop_` was never spliced
 warning: definition `vbytes_` was never spliced
 warning: definition `vcvtop__` was never spliced
 warning: definition `vextbinop__` was never spliced
+warning: definition `vextternop__` was never spliced
 warning: definition `vextunop__` was never spliced
 warning: definition `vrelop_` was never spliced
 warning: definition `vshiftop_` was never spliced
 warning: definition `vsize` was never spliced
+warning: definition `vternop_` was never spliced
 warning: definition `vunop_` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop_` was never spliced
@@ -1627,6 +1668,7 @@ warning: rule prose `Instr_ok/vconst` was never spliced
 warning: rule prose `Instr_ok/vcvtop` was never spliced
 warning: rule prose `Instr_ok/vextbinop` was never spliced
 warning: rule prose `Instr_ok/vextract_lane` was never spliced
+warning: rule prose `Instr_ok/vextternop` was never spliced
 warning: rule prose `Instr_ok/vextunop` was never spliced
 warning: rule prose `Instr_ok/vload` was never spliced
 warning: rule prose `Instr_ok/vload_lane` was never spliced
@@ -1638,7 +1680,8 @@ warning: rule prose `Instr_ok/vshuffle` was never spliced
 warning: rule prose `Instr_ok/vsplat` was never spliced
 warning: rule prose `Instr_ok/vstore` was never spliced
 warning: rule prose `Instr_ok/vstore_lane` was never spliced
-warning: rule prose `Instr_ok/vswizzle` was never spliced
+warning: rule prose `Instr_ok/vswizzlop` was never spliced
+warning: rule prose `Instr_ok/vternop` was never spliced
 warning: rule prose `Instr_ok/vtestop` was never spliced
 warning: rule prose `Instr_ok/vunop` was never spliced
 warning: rule prose `Instr_ok/vvbinop` was never spliced
@@ -1717,6 +1760,7 @@ warning: rule prose `Step_pure/vbitmask` was never spliced
 warning: rule prose `Step_pure/vcvtop` was never spliced
 warning: rule prose `Step_pure/vextbinop` was never spliced
 warning: rule prose `Step_pure/vextract_lane` was never spliced
+warning: rule prose `Step_pure/vextternop` was never spliced
 warning: rule prose `Step_pure/vextunop` was never spliced
 warning: rule prose `Step_pure/vnarrow` was never spliced
 warning: rule prose `Step_pure/vrelop` was never spliced
@@ -1724,7 +1768,8 @@ warning: rule prose `Step_pure/vreplace_lane` was never spliced
 warning: rule prose `Step_pure/vshiftop` was never spliced
 warning: rule prose `Step_pure/vshuffle` was never spliced
 warning: rule prose `Step_pure/vsplat` was never spliced
-warning: rule prose `Step_pure/vswizzle` was never spliced
+warning: rule prose `Step_pure/vswizzlop` was never spliced
+warning: rule prose `Step_pure/vternop` was never spliced
 warning: rule prose `Step_pure/vtestop` was never spliced
 warning: rule prose `Step_pure/vunop` was never spliced
 warning: rule prose `Step_pure/vvbinop` was never spliced
@@ -1919,6 +1964,7 @@ warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxx` was never spliced
 warning: definition prose `fvbinop_` was never spliced
 warning: definition prose `fvrelop_` was never spliced
+warning: definition prose `fvternop_` was never spliced
 warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
@@ -1942,8 +1988,10 @@ warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned_` was never spliced
 warning: definition prose `ivbinop_` was never spliced
 warning: definition prose `ivbinopsx_` was never spliced
+warning: definition prose `ivbinopsxnd_` was never spliced
 warning: definition prose `ivrelop_` was never spliced
 warning: definition prose `ivrelopsx_` was never spliced
+warning: definition prose `ivternopnd_` was never spliced
 warning: definition prose `ivunop_` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `list_` was never spliced
@@ -1968,11 +2016,15 @@ warning: definition prose `opt_` was never spliced
 warning: definition prose `packfield_` was never spliced
 warning: definition prose `psize` was never spliced
 warning: definition prose `psizenn` was never spliced
+warning: definition prose `relaxed2` was never spliced
+warning: definition prose `relaxed4` was never spliced
 warning: definition prose `relop_` was never spliced
 warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced
 warning: definition prose `rundata_` was never spliced
 warning: definition prose `runelem_` was never spliced
+warning: definition prose `sat_s_` was never spliced
+warning: definition prose `sat_u_` was never spliced
 warning: definition prose `setminus1_` was never spliced
 warning: definition prose `setminus_` was never spliced
 warning: definition prose `setproduct1_` was never spliced
@@ -2041,10 +2093,12 @@ warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
 warning: definition prose `vcvtop__` was never spliced
 warning: definition prose `vextbinop__` was never spliced
+warning: definition prose `vextternop__` was never spliced
 warning: definition prose `vextunop__` was never spliced
 warning: definition prose `vrelop_` was never spliced
 warning: definition prose `vshiftop_` was never spliced
 warning: definition prose `vsize` was never spliced
+warning: definition prose `vternop_` was never spliced
 warning: definition prose `vunop_` was never spliced
 warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop_` was never spliced

@@ -1163,6 +1163,27 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/ref_null.wast =====
 - 36/36 (100.00%)
 
+===== ../../test-interpreter/spec-test-3/relaxed-simd/i16x8_relaxed_q15mulr_s.wast =====
+- 4/4 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/relaxed-simd/i32x4_relaxed_trunc.wast =====
+- 18/18 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/relaxed-simd/i8x16_relaxed_swizzle.wast =====
+- 7/7 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/relaxed-simd/relaxed_dot_product.wast =====
+- 12/12 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/relaxed-simd/relaxed_laneselect.wast =====
+- 13/13 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/relaxed-simd/relaxed_madd_nmadd.wast =====
+- 21/21 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/relaxed-simd/relaxed_min_max.wast =====
+- 26/26 (100.00%)
+
 ===== ../../test-interpreter/spec-test-3/return.wast =====
 - 85/85 (100.00%)
 
@@ -1451,7 +1472,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [51220/51220] (100.00%)
+Total [51321/51321] (100.00%)
 
 == Complete.
 ```

@@ -40,6 +40,9 @@ let catch_ixx_exception f = try f() |> someV with
   | Ixx.Overflow
   | Ixx.InvalidConversion -> noneV
 
+let list_f f x = f x |> singleton
+let unlist_f f x = f x |> listv_singleton
+
 
 let profile name b : numerics =
   {
@@ -426,6 +429,16 @@ let ibitselect : numerics =
       | vs -> error_values "ibitselect" vs
       );
   }
+let irelaxed_laneselect : numerics =
+  {
+    name = "irelaxed_laneselect";
+    f = list_f
+      (function
+      | [ NumV _ as z; NumV _ as n1; NumV _ as n2; NumV _ as n3 ] ->
+        ibitselect.f [ z; n1; n2; n3 ]  (* use deterministic behaviour *)
+      | vs -> error_values "irelaxed_laneselect" vs
+      );
+  }
 let iabs : numerics =
   {
     name = "iabs";
@@ -518,16 +531,13 @@ let iq15mulr_sat : numerics =
 let irelaxed_q15mulr : numerics =
   {
     name = "irelaxed_q15mulr";
-    f =
+    f = list_f
       (function
       | [ NumV _ as z; sx; NumV _ as m; NumV _ as n ] ->
         iq15mulr_sat.f [z; sx; m; n]  (* use deterministic behaviour *)
       | vs -> error_values "irelaxed_q15mulr" vs
       );
   }
-
-let list_f f x = f x |> singleton
-let unlist_f f x = f x |> listv_singleton
 
 let fadd : numerics =
   {
@@ -1297,6 +1307,7 @@ let numerics_list : numerics list = [
   ile;
   ige;
   ibitselect;
+  irelaxed_laneselect;
   iabs;
   ineg;
   imin;
