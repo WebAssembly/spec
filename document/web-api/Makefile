@@ -35,7 +35,6 @@ diff: all
 # macOS tar has no “--transform” option (only GNU tar does), so on macOS,
 # do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
 WD-tar: all
-	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/html/index.html
 	$(TAR) -C $(BUILDDIR)/html --transform="s/index.html/Overview.html/" -cf $(BUILDDIR)/WD.tar index.html
 	@echo "Built $(BUILDDIR)/WD.tar."
 
