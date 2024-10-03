@@ -25,6 +25,10 @@ on:
           - CRD
           - CR
 
+env:
+  YARN_ENABLE_IMMUTABLE_INSTALLS: false
+  W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
+
 jobs:
   publish-to-w3c-TR:
     runs-on: ubuntu-latest
@@ -47,17 +51,13 @@ jobs:
         if: env.W3C_ECHIDNA_TOKEN_CORE
         run: cd document && make -e WD-echidna-CI
         env:
-          W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
           ECHIDNA_DRYRUN: ${{ github.event_name == 'pull_request' && github.repository == 'WebAssembly/spec'}}
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Validate all specs with Echidna
         if: env.W3C_USERNAME
         run: cd document && make -e WD-echidna
         env:
-          W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
           W3C_USERNAME: ${{ secrets.W3C_USERNAME }}
           W3C_PASSWORD: ${{ secrets.W3C_PASSWORD }}
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
