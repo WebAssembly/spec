@@ -13,6 +13,7 @@ NAME          = WebAssembly
 DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
 DEADLINE      = $(shell date -d "+30 days" +%Y-%m-%d 2>/dev/null || date -v +30d +%Y-%m-%d)
+ECHIDNA_DRYRUN = false
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -210,7 +211,10 @@ WD-echidna-CI: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
-		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+		-F "decision=$(DECISION_URL)" \
+		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	sleep 10
+	python3 ../util/check-echidna-status.py _build
 	@echo
 	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
