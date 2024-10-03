@@ -208,6 +208,8 @@ urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
     type: dfn
         text: create a namespace object; url: create-a-namespace-object
         text: [EnforceRange]; url: #EnforceRange
+        text: unsigned long; url: #idl-unsigned-long
+        text: js-unsigned-long; url: #js-unsigned-long
 urlPrefix: https://webassembly.github.io/js-types/js-api/; spec: WebAssembly JS API (JS Type Reflection)
     type: abstract-op; text: FromValueType; url: abstract-opdef-fromvaluetype
 urlPrefix: https://tc39.es/proposal-resizablearraybuffer/; spec: ResizableArrayBuffer proposal
@@ -569,7 +571,7 @@ enum IndexType {
   "i64",
 };
 
-typedef ([EnforceRange] unsigned long or bigint) IndexValue;
+typedef any IndexValue;
 
 dictionary ModuleExportDescriptor {
   required USVString name;
@@ -1356,20 +1358,19 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 </div>
 
 <div algorithm>
-The algorithm <dfn>IndexValueToU64</dfn>(|v|, |indextype|) asserts that a JavaScript value is the appropriate variant of {{IndexValue}} for an {{IndexType}}, and ensures that its value is in [=u64=] range for WebAssembly embedding operations, by performing the following steps:
+The algorithm <dfn>IndexValueToU64</dfn>(|v|, |indextype|) converts a JavaScript value to a WebAssembly [=u64=] for use in embedding operations. It is designed to act like [=[EnforceRange]=] [=unsigned long=] for {{IndexType}} "i32", and to extend these semantics to {{IndexType}} "i64", by performing the following steps:
 
 1. If |indextype| is "i32",
-    1. If |v| [=is a Number=],
-        1. Assert: Due to WebIDL types and [=[EnforceRange]=], 0 ≤ [=ℝ=](|v|) < 2<sup>64</sup>.
-        1. Return [=ℝ=](|v|) as a WebAssembly [=u64=].
-    1. Otherwise, [=throw=] a {{TypeError}}.
-1. Else if |indextype| is "i64",
-    1. If |v| [=is a BigInt=],
-        1. If |v| is not equal to [=!=] [$ToBigUint64$](|v|), [=throw=] a {{TypeError}}.
+    1. Let |n| be [=?=] [$ConvertToInt$](|v|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
 
-            Note: This operation is designed to mirror [=[EnforceRange]=], which [=throws=] a {{TypeError}} for out-of-range numeric values.
-        1. Return [=ℝ=](|v|) as a WebAssembly [=u64=].
-    1. Otherwise, [=throw=] a {{TypeError}}.
+        Note: This is equivalent to the [=js-unsigned-long|JS conversion rules=] for [=[EnforceRange]=] [=unsigned long=].
+    1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
+1. If |indextype| is "i64",
+    1. Let |n| be [=?=] [$ToBigInt$](|v|).
+    1. If |n| &lt; 0 or |n| &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
+
+        Note: This operation is designed to emulate [=[EnforceRange]=].
+    1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
 1. Assert: This step is not reached.
 
 </div>
