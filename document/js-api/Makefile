@@ -53,8 +53,7 @@ WD-echidna: WD-tar
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
-	sleep 10
-	python3 ../util/check-echidna-status.py _build
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
 
 .PHONY: WD-echidna-CI
 WD-echidna-CI: WD-tar
@@ -68,5 +67,6 @@ WD-echidna-CI: WD-tar
 		-F "token=$(W3C_ECHIDNA_TOKEN_JSAPI)" \
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
 	@echo
 	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"

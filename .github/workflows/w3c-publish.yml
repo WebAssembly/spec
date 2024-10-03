@@ -1,8 +1,10 @@
-name: Publish to W3C TR space
+name: Validate/Publish to W3C TR space
 
 on:
   push:
     branches: [ main ]
+    paths: [ .github/**, document/** ]
+  pull_request:
     paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
@@ -49,4 +51,5 @@ jobs:
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
+          ECHIDNA_DRYRUN: ${{ github.event_name == 'pull_request'}}
           YARN_ENABLE_IMMUTABLE_INSTALLS: false

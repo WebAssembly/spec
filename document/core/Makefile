@@ -197,7 +197,10 @@ WD-echidna: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		--user '$(W3C_USERNAME):$(W3C_PASSWORD)' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
-		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+		-F "decision=$(DECISION_URL)" \
+		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
+
 	@echo
 	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
@@ -211,10 +214,8 @@ WD-echidna-CI: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
-		-F "decision=$(DECISION_URL)" \
-		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
-	sleep 10
-	python3 ../util/check-echidna-status.py _build
+		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
 	@echo
 	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
