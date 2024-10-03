@@ -303,7 +303,7 @@ application/wasm
  <dt>Author/Change Controller:</dt>
  <dd>W3C</dd>
 </dl></dd>
-
+</dl>
 
 <h2 id="change-history">Change History</h2>
 
