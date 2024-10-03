@@ -2130,6 +2130,8 @@ The implementation-specific behaviour of this operation is determined by the glo
 
 
 .. _op-irelaxed_dot_mul:
+.. _op-irelaxed_dot:
+.. _op-irelaxed_dot_add:
 
 :math:`\irelaxeddotmul_{M,N}(i_1, i_2)`
 .......................................
