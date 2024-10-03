@@ -49,6 +49,7 @@ def main(argv):
     directory = os.getcwd() if len(argv) < 2 else argv[1]
     echidna_id = get_echidna_id(directory)
     print(f'Got echidna id {echidna_id}.')
+    time.sleep(5)
     if not get_echidna_result(echidna_id):
         sys.exit(1)
 
