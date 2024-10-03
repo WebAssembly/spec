@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 6270e4735, updated Tue Aug 6 12:12:30 2024 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="d5f586877a04971845a3dce2761fc087f71459b0" name="revision">
+  <meta content="97c2d67e8a2dee3f612020832ee56350162f1d42" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -743,7 +743,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-10-02">2 October 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-10-03">3 October 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2617,11 +2617,11 @@ In practice, an implementation may run out of resources for valid modules below 
    <p>Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
 The following sections provide an overview of what has changed.</p>
    <h3 class="heading settled" data-level="9.1" id="release-20"><span class="secno">9.1. </span><span class="content">Release 2.0</span><a class="self-link" href="#release-20"></a></h3>
-   <h4 class="no-toc heading settled">Multiple Values<a class="self-link" href="#"></a></h4>
+   <h4 class="no-toc heading settled" id="changes-multivalue">Multiple Values<a class="self-link" href="#changes-multivalue"></a></h4>
     Multiple values can be returned from WebAssembly functions into JavaScript as an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-array-exotic-objects" id="ref-for-sec-array-exotic-objects">Array</a> object. 
-   <h4 class="no-toc heading settled">BigInt Integration<a class="self-link" href="#"></a></h4>
+   <h4 class="no-toc heading settled" id="changes-bigint">BigInt Integration<a class="self-link" href="#changes-bigint"></a></h4>
     WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①④">i64</a> values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type" id="ref-for-sec-ecmascript-language-types-bigint-type">BigInt</a> objects. 
-   <h4 class="no-toc heading settled">Reference types<a class="self-link" href="#"></a></h4>
+   <h4 class="no-toc heading settled" id="changes-reftypes">Reference types<a class="self-link" href="#changes-reftypes"></a></h4>
     JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①⓪">externref</a> values.
 Multiple tables can be exported and imported to and from JavaScript. 
   </main>
