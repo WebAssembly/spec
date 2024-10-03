@@ -44,7 +44,7 @@ jobs:
       - name: Setup Sphinx
         run: pip install six && pip install sphinx==5.1.0
       - name: Publish all specs to their https://www.w3.org/TR/ URLs
-        if: secrets.W3C_ECHIDNA_TOKEN_CORE
+        if: github.repository == 'WebAssembly/spec'
         run: cd document && make -e WD-echidna-CI
         env:
           W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
@@ -54,7 +54,7 @@ jobs:
           ECHIDNA_DRYRUN: ${{ github.event_name == 'pull_request'}}
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
       - name: Validate all specs with Echidna
-        if: secrets.W3C_USERNAME
+        if: env.W3C_USERNAME
         run: cd document && make -e WD-echidna
         env:
           W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
