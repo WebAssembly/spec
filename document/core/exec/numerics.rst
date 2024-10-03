@@ -87,8 +87,8 @@ Conventions:
 
     .. math::
        \begin{array}{lll@{\qquad}l}
-       \satu_N(i) &=& 2^N-1 & (\iff i > 2^N-1)\\
        \satu_N(i) &=& 0 & (\iff i < 0) \\
+       \satu_N(i) &=& 2^N-1 & (\iff i > 2^N-1)\\
        \satu_N(i) &=& i & (\otherwise) \\
        \end{array}
 
@@ -96,8 +96,8 @@ Conventions:
 
   .. math::
      \begin{array}{lll@{\qquad}l}
-     \sats_N(i) &=& \signed_N^{-1}(-2^{N-1}) & (\iff i < -2^{N-1})\\
-     \sats_N(i) &=& \signed_N^{-1}(2^{N-1}-1) & (\iff i > 2^{N-1}-1)\\
+     \sats_N(i) &=& -2^{N-1} & (\iff i < -2^{N-1})\\
+     \sats_N(i) &=& 2^{N-1}-1 & (\iff i > 2^{N-1}-1)\\
      \sats_N(i) &=& i & (\otherwise)
      \end{array}
 
@@ -850,11 +850,11 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 * Let :math:`j` be the result of adding :math:`j_1` and :math:`j_2`.
 
-* Return :math:`\sats_N(j)`.
+* Return the value whose signed interpretation is :math:`\sats_N(j)`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \iaddsats_N(i_1, i_2) &=& \sats_N(\signed_N(i_1) + \signed_N(i_2))
+   \iaddsats_N(i_1, i_2) &=& \signed_N^{-1}(\sats_N(\signed_N(i_1) + \signed_N(i_2)))
    \end{array}
 
 
@@ -881,11 +881,11 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 * Let :math:`j` be the result of subtracting :math:`j_2` from :math:`j_1`.
 
-* Return :math:`\sats_N(j)`.
+* Return the value whose signed interpretation is :math:`\sats_N(j)`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \isubsats_N(i_1, i_2) &=& \sats_N(\signed_N(i_1) - \signed_N(i_2))
+   \isubsats_N(i_1, i_2) &=& \signed_N^{-1}(\sats_N(\signed_N(i_1) - \signed_N(i_2)))
    \end{array}
 
 
@@ -909,11 +909,11 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 :math:`\iq15mulrsats_N(i_1, i_2)`
 .................................
 
-* Return the result of :math:`\sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))`.
+* Return the whose signed interpretation is the result of :math:`\sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \iq15mulrsats_N(i_1, i_2) &=& \sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))
+   \iq15mulrsats_N(i_1, i_2) &=& \signed_N^{-1}(\sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15)))
    \end{array}
 
 
@@ -1882,14 +1882,14 @@ Conversions
 
 * Else if :math:`z` is positive infinity, then return :math:`2^{N-1} - 1`.
 
-* Else, return :math:`\sats_N(\truncz(z))`.
+* Else, return the value whose signed interpretation is :math:`\sats_N(\trunc(z))`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
    \truncsats_{M,N}(\pm \NAN(n)) &=& 0 \\
    \truncsats_{M,N}(- \infty) &=& -2^{N-1} \\
    \truncsats_{M,N}(+ \infty) &=& 2^{N-1}-1 \\
-   \truncsats_{M,N}(z) &=& \sats_N(\truncz(z)) \\
+   \truncsats_{M,N}(z) &=& \signed_N^{-1}(\sats_N(\trunc(z))) \\
    \end{array}
 
 
@@ -1984,11 +1984,11 @@ Conversions
 
 * Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i` of size :math:`M`.
 
-* Return :math:`\sats_N(j)`.
+* Return the value whose signed interpretation is :math:`\sats_N(j)`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \narrows_{M,N}(i) &=& \sats_N(\signed_M(i))
+   \narrows_{M,N}(i) &=& \signed_N^{-1}(\sats_N(\signed_M(i)))
    \end{array}
 
 :math:`\narrowu_{M,N}(i)`
@@ -2138,11 +2138,11 @@ This is an auxiliary operator for the specification of |VRELAXEDDOT| and |VRELAX
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
 
-* Return :math:`\relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), extends_{M,N}), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ]`.
+* Return :math:`\relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ]`.
 
 .. math::
    \begin{array}{@{}lcll}
-   \irelaxeddotmul_{M,N}(i_1, i_2) &=& \relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), extends_{M,N}), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ] \\
+   \irelaxeddotmul_{M,N}(i_1, i_2) &=& \relaxed(R_{\F{idot}})[ \imul_N(\extends_{M,N}(i_1), \extends_{M,N}(i_2)), \imul_N(\extends_{M,N}(i_1), \extendu_{M,N}(i_2)) ] \\
    \end{array}
 
 .. note::
@@ -2195,7 +2195,7 @@ The implementation-specific behaviour of this operation is determined by the glo
 .. note::
    Relaxed unsigned truncation is implementation-dependent for NaNs and out-of-range values.
    In the :ref:`deterministic profile <profile-deterministic>`,
-   it behaves like regular :math:`\truncu`.
+   it behaves like regular :math:`\truncsatu`.
 
 
 .. _op-relaxed_trunc_s:
@@ -2218,7 +2218,7 @@ The implementation-specific behaviour of this operation is determined by the glo
 .. note::
    Relaxed signed truncation is implementation-dependent for NaNs and out-of-range values.
    In the :ref:`deterministic profile <profile-deterministic>`,
-   it behaves like regular :math:`\truncs`.
+   it behaves like regular :math:`\truncsats`.
 
 
 .. _op-ivrelaxed_swizzle:
