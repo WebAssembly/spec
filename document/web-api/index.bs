@@ -305,6 +305,18 @@ application/wasm
 </dl></dd>
 </dl>
 
+<h2 id="security-considerations">Security and Privacy Considerations</h2>
+
+<p><em>This section is non-normative.</em></p>
+WebAssembly provides no access to the surrounding environment other than via the JavaScript API described in the [[WASMJS|JS API]] specification.
+Therefore, WebAssembly cannot collect or expose any information (personal, sensitive or otherwise) to Web sites or other parties beyond what can be collected, exposed or processed with JavaScript.
+WebAssembly memory has the same lifetime as the objects in the surrounding JavaScript environment and is not persisted or serialized (other than by copying it out to JavaScript and using existing serialization APIs).
+No access is provided to the underlying platform or hardware, or to other devices, or to the user agent’s native UI.
+
+WebAssembly is an additional program execution mechanism, and can be executed wherever JavaScript can be executed.
+Therefore the threat model is essentially the same as for JavaScript code, and has similar considerations for delivery (e.g. WebAssembly code should be protected in transit from active and passive network attackers)
+and policy (e.g. some loading mechanisms or execution are restricted via mechanisms such as the same-origin policy or Content Security Policy).
+
 <h2 id="change-history">Change History</h2>
 
 <p><em>This section is non-normative.</em></p>
