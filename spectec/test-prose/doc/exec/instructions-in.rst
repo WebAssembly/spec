@@ -151,7 +151,7 @@ $${rule-prose: Step_pure/vtestop}
 
 \
 
-$${rule+: Step_pure/vtestop-*}
+$${rule+: Step_pure/vtestop}
 
 .. _exec-vbitmask:
 

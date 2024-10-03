@@ -104,6 +104,7 @@ def $iclz_(N, iN(N)) : iN(N)
 def $ictz_(N, iN(N)) : iN(N)
 def $ipopcnt_(N, iN(N)) : iN(N)
 def $ieqz_(N, iN(N)) : u32
+def $inez_(N, iN(N)) : u32
 def $ieq_(N, iN(N), iN(N)) : u32
 def $ine_(N, iN(N), iN(N)) : u32
 def $ilt_(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_(%)^(%)#((%,%)))
@@ -196,9 +197,9 @@ def $unop_(numtype, unop_(numtype), num_(numtype)) : num_(numtype)*
     hint(show %2#$_(%1,%3))
 def $binop_(numtype, binop_(numtype), num_(numtype), num_(numtype)) : num_(numtype)*
     hint(show %2#$_(%1,%3, %4))
-def $testop_(numtype, testop_(numtype), num_(numtype)) : num_(I32)
+def $testop_(numtype, testop_(numtype), num_(numtype)) : u32
     hint(show %2#$_(%1,%3))
-def $relop_(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
+def $relop_(numtype, relop_(numtype), num_(numtype), num_(numtype)) : u32
     hint(show %2#$_(%1,%3, %4))
 def $cvtop__(numtype_1, numtype_2, cvtop__(numtype_1, numtype_2), num_(numtype_1)) : num_(numtype_2)*
     hint(show %3#$__(%1,%2,%4))
@@ -273,13 +274,14 @@ def $vvbinop_(vectype, vvbinop, vec_(vectype), vec_(vectype)) : vec_(vectype)*
 def $vvternop_(vectype, vvternop, vec_(vectype), vec_(vectype), vec_(vectype)) : vec_(vectype)*
     hint(show %2#$_(%1,%3,%4,%5))
 
-;; TODO(2, rossberg): rename these to mapunop etc?
 def $vunop_(shape, vunop_(shape), vec_(V128)) : vec_(V128)*
     hint(show %2#$_(%1,%3))
 def $vbinop_(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
     hint(show %2#$_(%1,%3,%4))
 def $vternop_(shape, vternop_(shape), vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
     hint(show %2#$_(%1,%3,%4,%5))
+def $vtestop_(shape, vtestop_(shape), vec_(V128)) : u32
+    hint(show %2#$_(%1,%3))
 def $vrelop_(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1,%3,%4))
 
@@ -292,7 +294,6 @@ def $vextbinop__(ishape_1, ishape_2, vextbinop__(ishape_1, ishape_2), vec_(V128)
     hint(show %3#$__(%1,%2,%4,%5))
 def $vextternop__(ishape_1, ishape_2, vextternop__(ishape_1, ishape_2), vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$__(%1,%2,%4,%5,%6))
-
 
 def $vshiftop_(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
     hint(show %2#$_(%1)#(%3, %4))
@@ -398,6 +399,20 @@ def $vternop_(Fnn X M, RELAXED_MADD, vN_1, vN_2, vN_3) = $fvternop_(Fnn X M, $fr
 def $vternop_(Fnn X M, RELAXED_NMADD, vN_1, vN_2, vN_3) = $fvternop_(Fnn X M, $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 
+;; TODO(1, rossberg): this is not lane-wise, lump with shape shifters
+def $ivtestop_(shape, def $f_(N, iN(N)) : u32, vec_(V128)) : u32
+def $ivtestop_(Jnn X M, def $f_, vN_1) = $prod(c*)
+    -- if c_1* = $lanes_(Jnn X M, vN_1)
+    -- if c* = $f_($lsizenn(Jnn), c_1)*
+
+def $fvtestop_(shape, def $f_(N, fN(N)) : u32, vec_(V128)) : u32
+def $fvtestop_(Fnn X M, def $f_, vN_1) = $prod(c*)
+    -- if c_1* = $lanes_(Fnn X M, vN_1)
+    -- if c* = $f_($sizenn(Fnn), c_1)*
+
+def $vtestop_(Jnn X M, ALL_TRUE, vN_1) = $ivtestop_(Jnn X M, $inez_, vN_1)
+
+
 def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 def $ivrelop_(Jnn X M, def $f_, vN_1, vN_2) = $invlanes_(Jnn X M, c*)
     -- if c_1* = $lanes_(Jnn X M, vN_1)
@@ -432,6 +447,7 @@ def $vrelop_(Fnn X M, LE, vN_1, vN_2) = $fvrelop_(Fnn X M, $fle_, vN_1, vN_2)
 def $vrelop_(Fnn X M, GE, vN_1, vN_2) = $fvrelop_(Fnn X M, $fge_, vN_1, vN_2)
 
 
+;; TODO(1, rossberg): these don't need the shape, should be part of cvtop
 def $vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND sx, iN_1) = iN_2
     -- if iN_2 = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1)
 def $vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, iN_1) = fN_2
@@ -495,6 +511,6 @@ def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = 
   -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), ck, ci_3)*)
 
 
-;; TODO(3, rossberg): refactor for consistency?
+;; TODO(1, rossberg): refactor for consistency
 def $vshiftop_(Jnn X M, SHL, lane, n) = $ishl_($lsizenn(Jnn), lane, n)
 def $vshiftop_(Jnn X M, SHR sx, lane, n) = $ishr_($lsizenn(Jnn), sx, lane, n)

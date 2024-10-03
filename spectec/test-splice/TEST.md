@@ -1019,8 +1019,7 @@ warning: rule `Step_pure/vbinop-val` was never spliced
 warning: rule `Step_pure/vbinop-trap` was never spliced
 warning: rule `Step_pure/vternop-val` was never spliced
 warning: rule `Step_pure/vternop-trap` was never spliced
-warning: rule `Step_pure/vtestop-true` was never spliced
-warning: rule `Step_pure/vtestop-false` was never spliced
+warning: rule `Step_pure/vtestop` was never spliced
 warning: rule `Step_pure/vrelop` was never spliced
 warning: rule `Step_pure/vshiftop` was never spliced
 warning: rule `Step_pure/vbitmask` was never spliced
@@ -1352,6 +1351,7 @@ warning: definition `funcsxx` was never spliced
 warning: definition `fvbinop_` was never spliced
 warning: definition `fvrelop_` was never spliced
 warning: definition `fvternop_` was never spliced
+warning: definition `fvtestop_` was never spliced
 warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
@@ -1385,6 +1385,7 @@ warning: definition `imin_` was never spliced
 warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
+warning: definition `inez_` was never spliced
 warning: definition `inot_` was never spliced
 warning: definition `inst_globaltype` was never spliced
 warning: definition `inst_memtype` was never spliced
@@ -1417,6 +1418,7 @@ warning: definition `ivbinopsxnd_` was never spliced
 warning: definition `ivrelop_` was never spliced
 warning: definition `ivrelopsx_` was never spliced
 warning: definition `ivternopnd_` was never spliced
+warning: definition `ivtestop_` was never spliced
 warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
@@ -1443,6 +1445,7 @@ warning: definition `nbytes_` was never spliced
 warning: definition `nunpack` was never spliced
 warning: definition `opt_` was never spliced
 warning: definition `packfield_` was never spliced
+warning: definition `prod` was never spliced
 warning: definition `promote__` was never spliced
 warning: definition `psize` was never spliced
 warning: definition `psizenn` was never spliced
@@ -1535,6 +1538,7 @@ warning: definition `vrelop_` was never spliced
 warning: definition `vshiftop_` was never spliced
 warning: definition `vsize` was never spliced
 warning: definition `vternop_` was never spliced
+warning: definition `vtestop_` was never spliced
 warning: definition `vunop_` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop_` was never spliced
@@ -1965,6 +1969,7 @@ warning: definition prose `funcsxx` was never spliced
 warning: definition prose `fvbinop_` was never spliced
 warning: definition prose `fvrelop_` was never spliced
 warning: definition prose `fvternop_` was never spliced
+warning: definition prose `fvtestop_` was never spliced
 warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
@@ -1992,6 +1997,7 @@ warning: definition prose `ivbinopsxnd_` was never spliced
 warning: definition prose `ivrelop_` was never spliced
 warning: definition prose `ivrelopsx_` was never spliced
 warning: definition prose `ivternopnd_` was never spliced
+warning: definition prose `ivtestop_` was never spliced
 warning: definition prose `ivunop_` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `list_` was never spliced
@@ -2014,6 +2020,7 @@ warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
 warning: definition prose `opt_` was never spliced
 warning: definition prose `packfield_` was never spliced
+warning: definition prose `prod` was never spliced
 warning: definition prose `psize` was never spliced
 warning: definition prose `psizenn` was never spliced
 warning: definition prose `relaxed2` was never spliced
@@ -2099,6 +2106,7 @@ warning: definition prose `vrelop_` was never spliced
 warning: definition prose `vshiftop_` was never spliced
 warning: definition prose `vsize` was never spliced
 warning: definition prose `vternop_` was never spliced
+warning: definition prose `vtestop_` was never spliced
 warning: definition prose `vunop_` was never spliced
 warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop_` was never spliced

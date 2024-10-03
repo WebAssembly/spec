@@ -258,6 +258,7 @@ The ${:CONST} instruction for vectors is followed by 16 immediate bytes, which a
 
 $${grammar: Binstr/vec-const}
 
+.. _binary-vswizzlop:
 .. _binary-vshuffle:
 
 The ${:SHUFFLE} instruction is also followed by the encoding of 16 ${:laneidx} immediates.
@@ -309,6 +310,10 @@ $${grammar: {
 .. _binary-vshiftop:
 .. _binary-viunop:
 .. _binary-vibinop:
+.. _binary-viternop:
+.. _binary-viextunop:
+.. _binary-viextbinop:
+.. _binary-viextternop:
 .. _binary-viminmaxop:
 .. _binary-vsatbinop:
 
@@ -342,6 +347,7 @@ $${grammar: {
   Binstr/vec-shift-i32x4
   Binstr/vec-bin-i32x4
   Binstr/vec-extbin-i32x4
+  Binstr/vec-exttern-i32x4
 }}
 
 $${grammar: {
@@ -375,26 +381,26 @@ $${grammar: {Binstr/vec-cvt}}
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
-     \hex{FD}~~256{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDSWIZZLE \\ &&|&
-     \hex{FD}~~257{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s} \\ &&|&
-     \hex{FD}~~258{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u} \\ &&|&
-     \hex{FD}~~259{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
-     \hex{FD}~~260{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
-     \hex{FD}~~261{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDMADD \\ &&|&
-     \hex{FD}~~262{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDNMADD \\ &&|&
-     \hex{FD}~~263{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDMADD \\ &&|&
-     \hex{FD}~~264{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDNMADD \\ &&|&
-     \hex{FD}~~265{:}\Bu32 &\Rightarrow& \I8X16.\RELAXEDLANESELECT \\ &&|&
-     \hex{FD}~~266{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDLANESELECT \\ &&|&
-     \hex{FD}~~267{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDLANESELECT \\ &&|&
-     \hex{FD}~~268{:}\Bu32 &\Rightarrow& \I64X2.\RELAXEDLANESELECT \\ &&|&
-     \hex{FD}~~269{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDMIN \\ &&|&
-     \hex{FD}~~270{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDMAX \\ &&|&
-     \hex{FD}~~271{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDMIN \\ &&|&
-     \hex{FD}~~272{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDMAX \\ &&|&
-     \hex{FD}~~273{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDQ15MULRS \\ &&|&
-     \hex{FD}~~274{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_s} \\ &&|&
-     \hex{FD}~~275{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} \\
+     \hex{FD}~~256{:}\Bu32 &\Rightarrow& \I16X8.\VRELAXEDSWIZZLE \\ &&|&
+     \hex{FD}~~257{:}\Bu32 &\Rightarrow& \I32X4.\VRELAXEDTRUNC\K{\_f32x4\_s} \\ &&|&
+     \hex{FD}~~258{:}\Bu32 &\Rightarrow& \I32X4.\VRELAXEDTRUNC\K{\_f32x4\_u} \\ &&|&
+     \hex{FD}~~259{:}\Bu32 &\Rightarrow& \I32X4.\VRELAXEDTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
+     \hex{FD}~~260{:}\Bu32 &\Rightarrow& \I32X4.\VRELAXEDTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
+     \hex{FD}~~261{:}\Bu32 &\Rightarrow& \F32X4.\VRELAXEDMADD \\ &&|&
+     \hex{FD}~~262{:}\Bu32 &\Rightarrow& \F32X4.\VRELAXEDNMADD \\ &&|&
+     \hex{FD}~~263{:}\Bu32 &\Rightarrow& \F64X2.\VRELAXEDMADD \\ &&|&
+     \hex{FD}~~264{:}\Bu32 &\Rightarrow& \F64X2.\VRELAXEDNMADD \\ &&|&
+     \hex{FD}~~265{:}\Bu32 &\Rightarrow& \I8X16.\VRELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~266{:}\Bu32 &\Rightarrow& \I16X8.\VRELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~267{:}\Bu32 &\Rightarrow& \I32X4.\VRELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~268{:}\Bu32 &\Rightarrow& \I64X2.\VRELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~269{:}\Bu32 &\Rightarrow& \F32X4.\VRELAXEDMIN \\ &&|&
+     \hex{FD}~~270{:}\Bu32 &\Rightarrow& \F32X4.\VRELAXEDMAX \\ &&|&
+     \hex{FD}~~271{:}\Bu32 &\Rightarrow& \F64X2.\VRELAXEDMIN \\ &&|&
+     \hex{FD}~~272{:}\Bu32 &\Rightarrow& \F64X2.\VRELAXEDMAX \\ &&|&
+     \hex{FD}~~273{:}\Bu32 &\Rightarrow& \I16X8.\VRELAXEDQ15MULR\K{\_s} \\ &&|&
+     \hex{FD}~~274{:}\Bu32 &\Rightarrow& \I16X8.\VRELAXEDDOT\K{\_i8x16\_i7x16\_s} \\ &&|&
+     \hex{FD}~~275{:}\Bu32 &\Rightarrow& \I16X8.\VRELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} \\
    \end{array}
 
 

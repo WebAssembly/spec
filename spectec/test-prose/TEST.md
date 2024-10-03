@@ -15047,23 +15047,17 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} \mathsf{all\_true}`
-...............................................................
+:math:`{\mathit{sh}} {.} {\mathit{vtestop}}`
+............................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
+#. Let :math:`i` be :math:`{{\mathit{vtestop}}}{{}_{{\mathit{sh}}}(c_1)}`.
 
-#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
 
 :math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
@@ -17395,6 +17389,19 @@ watsup 0.4 generator
 #. Let :math:`n~{{n'}^\ast}` be :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`n + {\Sigma}\, {{n'}^\ast}`.
+
+
+:math:`{\Pi}\, {n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`
+................................................................
+
+
+1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`1`.
+
+#. Let :math:`n~{{n'}^\ast}` be :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`n \cdot {\Pi}\, {{n'}^\ast}`.
 
 
 :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`
@@ -20886,6 +20893,24 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{fvternop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{frelaxed}}_{{\mathit{nmadd}}}, {\mathit{vN}}_1, {\mathit{vN}}_2, {\mathit{vN}}_3)`.
 
 
+:math:`{{\mathrm{ivtestop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1)`
+.................................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+
+#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
+
+#. Return :math:`{\Pi}\, {c^\ast}`.
+
+
+:math:`{\mathsf{all\_true}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)}`
+......................................................................................
+
+
+1. Return :math:`{{\mathrm{ivtestop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{inez}}, {\mathit{vN}}_1)`.
+
+
 :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`
 .................................................................................................................
 
@@ -21217,6 +21242,17 @@ watsup 0.4 generator
 #. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
 #. Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}, n)}`.
+
+
+:math:`{{\mathrm{fvtestop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{vN}}_1)`
+.................................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathit{vN}}_1)`.
+
+#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
+
+#. Return :math:`{\Pi}\, {c^\ast}`.
 
 
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}(t)`
@@ -24058,14 +24094,11 @@ Step_pure/vternop sh vternop
 8. Let c be an element of $vternop_(sh, vternop, c_1, c_2, c_3).
 9. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vtestop (Jnn X M) ALL_TRUE
+Step_pure/vtestop sh vtestop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
-4. If (ci_1 is not 0)*, then:
-  a. Push the value (I32.CONST 1) to the stack.
-5. Else:
-  a. Push the value (I32.CONST 0) to the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let i be $vtestop_(sh, vtestop, c_1).
+4. Push the value (I32.CONST i) to the stack.
 
 Step_pure/vrelop sh vrelop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -25192,6 +25225,12 @@ sum n_u0*
   a. Return 0.
 2. Let [n] :: n'* be n_u0*.
 3. Return (n + $sum(n'*)).
+
+prod n_u0*
+1. If (n_u0* is []), then:
+  a. Return 1.
+2. Let [n] :: n'* be n_u0*.
+3. Return (n · $prod(n'*)).
 
 opt_ X X_u0*
 1. If (X_u0* is []), then:
@@ -26840,6 +26879,14 @@ vternop_ (lanetype_u0 X M) vternop__u2 vN_1 vN_2 vN_3
 5. Let Fnn be lanetype_u0.
 6. Return $fvternop_((Fnn X M), $frelaxed_nmadd_, vN_1, vN_2, vN_3).
 
+ivtestop_ (Jnn X M) $f_ vN_1
+1. Let c_1* be $lanes_((Jnn X M), vN_1).
+2. Let c* be $f_($lsizenn(Jnn), c_1)*.
+3. Return $prod(c*).
+
+vtestop_ (Jnn X M) ALL_TRUE vN_1
+1. Return $ivtestop_((Jnn X M), $inez_, vN_1).
+
 fvrelop_ (Fnn X M) $f_ vN_1 vN_2
 1. Let c_1* be $lanes_((Fnn X M), vN_1).
 2. Let c_2* be $lanes_((Fnn X M), vN_2).
@@ -27001,6 +27048,11 @@ vshiftop_ (Jnn X M) vshiftop__u0 lane n
 2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
 3. Let (SHR sx) be vshiftop__u0.
 4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
+
+fvtestop_ (Fnn X M) $f_ vN_1
+1. Let c_1* be $lanes_((Fnn X M), vN_1).
+2. Let c* be $f_($sizenn(Fnn), c_1)*.
+3. Return $prod(c*).
 
 inst_valtype moduleinst t
 1. Let dt* be moduleinst.TYPES.

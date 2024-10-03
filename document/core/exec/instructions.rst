@@ -994,14 +994,14 @@ $${rule: {Step_pure/extern.convert_any-*}}
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector instructions that operate bitwise are handled as integer operations of respective width.
+Vector instructions that operate bitwise are handled as integer operations of respective bit width.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
    \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
    \end{array}
 
-Most other vector instructions are defined in terms of numeric operators that are applied lane-wise according to the given :ref:`shape <syntax-shape>`.
+Most other vector instructions are defined in terms of :ref:`numeric operators <exec-numeric>` that are applied lane-wise according to the given :ref:`shape <syntax-shape>`.
 
 .. math::
    \begin{array}{llll}
@@ -1016,6 +1016,21 @@ Most other vector instructions are defined in terms of numeric operators that ar
    where :math:`i_1^\ast` and :math:`i_2^\ast` are sequences resulting from invoking
    :math:`\lanes_{\K{i32x4}}(v_1)` and :math:`\lanes_{\K{i32x4}}(v_2)`
    respectively.
+
+For non-deterministic operators this definition is generalized to sets:
+
+.. math::
+   \begin{array}{lll}
+   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
+     \{ \lanes^{-1}_{t\K{x}N}(i^\ast) ~|~ i^\ast \in \Large\times\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast \land i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \} \\
+   \end{array}
+
+where :math:`\Large\times \{x^\ast\}^N` transforms a sequence of :math:`N` sets of values into a set of sequences of :math:`N` values by computing the set product:
+
+.. math::
+   \begin{array}{lll}
+   \Large\times (S_1 \dots S_N) &=& \{ x_1 \dots x_N ~|~ x_1 \in S_1 \land \dots \land x_N \in S_N \}
+   \end{array}
 
 
 .. _exec-vconst:
@@ -1084,46 +1099,15 @@ $${rule: {Step_pure/vternop-*}}
 
 $${rule-prose: Step_pure/vtestop}
 
-$${rule: {Step_pure/vtestop-*}}
+$${rule: {Step_pure/vtestop}}
 
 
 .. _exec-vrelop:
 
 $${rule-prose: Step_pure/vrelop}
 
-.. todo::
-   Below is the actual prose.
-
-1. Assert: due to :ref:`validation <valid-vrelop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
-
-2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
-
-3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
-
-4. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{t\K{x}N}(c_1)`.
-
-5. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{t\K{x}N}(c_2)`.
-
-6. Let :math:`i^\ast` be the result of computing :math:`\vrelop_t(i_1^\ast, i_2^\ast)`.
-
-7. Let :math:`j^\ast` be the result of computing :math:`\extends_{1,|t|}(i^\ast)`.
-
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(j^\ast)`.
-
-9. Push the value :math:`\V128.\VCONST~c` to the stack.
-
 $${rule: {Step_pure/vrelop}}
 
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t\K{x}N\K{.}\vrelop &\stepto& (\V128\K{.}\VCONST~c)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff c = \lanes^{-1}_{t\K{x}N}(\extends_{1,|t|}(\vrelop_t(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2)))))
-     \end{array}
-   \end{array}
 
 .. _exec-vshiftop:
 
@@ -1196,9 +1180,9 @@ $${rule: {Step_pure/vbitmask}}
    \end{array}
 
 
-.. _exec-vswizzle:
+.. _exec-vswizzlop:
 
-$${rule-prose: Step_pure/vswizzle}
+$${rule-prose: Step_pure/vswizzlop}
 
 .. todo::
    Below is the actual prose.
@@ -1219,7 +1203,7 @@ $${rule-prose: Step_pure/vswizzle}
 
 8. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
-$${rule: {Step_pure/vswizzle}}
+$${rule: {Step_pure/vswizzlop-*}}
 
 .. math::
    \begin{array}{l}
@@ -1231,36 +1215,6 @@ $${rule: {Step_pure/vswizzle}}
       (\iff & i^\ast = \lanes_{\I8X16}(c_2) \\
       \wedge & c^\ast = \lanes_{\I8X16}(c_1)~0^{240} \\
       \wedge & c' = \lanes^{-1}_{\I8X16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
-     \end{array}
-   \end{array}
-
-
-.. _exec-relaxed_swizzle:
-
-$${rule-prose: Step_pure/vrelaxedswizzle}
-
-.. todo:: align the implementation of swizzle and relaxed_swizzle
-
-1. Assert: due to :ref:`validation <valid-vbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
-
-2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
-
-3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
-
-4. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(\irelaxedswizzle(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)))`.
-
-5. Push the value :math:`\V128.\VCONST~c'` onto the stack.
-
-$${rule: {Step_pure/vrelaxedswizzle}}
-
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\irelaxedswizzle &\stepto& (\V128\K{.}\VCONST~c')
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & c' = \lanes^{-1}_{\I8X16}(\irelaxedswizzle(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)))
      \end{array}
    \end{array}
 
@@ -1407,41 +1361,6 @@ $${rule: {Step_pure/vreplace_lane}}
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & i^\ast = \lanes_{\shape}(c_1) \\
        \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_2))
-     \end{array}
-   \end{array}
-
-
-.. _exec-relaxed_laneselect:
-
-$${rule-prose: Step_pure/vrelaxed_laneselect}
-
-.. todo::
-   Below is the actual prose.
-
-1. Assert: due to :ref:`validation <valid-relaxed_laneselect>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
-
-2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
-
-3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
-
-4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
-
-5. Let :math:`N` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
-
-6. Let :math:`c` be the result of computing :math:`\irelaxedlaneselect_{t\K{x}N}(c_1, c_2, c_3)`.
-
-7. Push the value :math:`\V128.\VCONST~c` to the stack.
-
-$${rule: Step_pure/vrelaxed_laneselect}
-
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\RELAXEDLANESELECT &\stepto& (\V128\K{.}\VCONST~c) & \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff c = \irelaxedlaneselect_{t\K{x}N}(c_1, c_2, c_3)^\ast \\
      \end{array}
    \end{array}
 
@@ -1636,13 +1555,11 @@ $${rule: {Step_pure/vnarrow}}
    \end{array}
 
 
-.. _exec-relaxed_dot:
-
-$${rule-prose: Step_pure/vrelaxeddot}
+.. _exec-vrelaxed_dot:
 
 .. todo:: move more of this to numerics
 
-1. Assert: due to :ref:`validation <valid-relaxed_dot>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vextbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
@@ -1650,35 +1567,31 @@ $${rule-prose: Step_pure/vrelaxeddot}
 
 4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
-5. Let :math:`j^8` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
+5. Let :math:`j^8` be the result of computing :math:`\iaddsats_{16}(i_1, i_2)^8`.
 
 6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I16X8}(j^8)`.
 
 7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
-$${rule: Step_pure/vrelaxeddot}
-
 .. math::
    \begin{array}{l}
    \begin{array}{llcl@{\qquad}l}
-   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i16x8.}\RELAXEDDOT\K{\_i8x16\_i7x16\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i16x8.}\VRELAXEDDOT\K{\_i8x16\_i7x16\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^8 = \irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
-     \wedge & j^8 = \sats_{16}(i_1, i_2)^8 \\
+     \wedge & j^8 = \iaddsats_{16}(i_1, i_2)^8 \\
      \wedge & c = \lanes^{-1}_{\I16X8}(j^8))
      \end{array}
    \end{array}
 
 
-.. _exec-relaxed_dot_add:
-
-$${rule-prose: Step_pure/vrelaxeddotadd}
+.. _exec-vrelaxed_dot_add:
 
 .. todo:: move more of this to numerics
 
-1. Assert: due to :ref:`validation <valid-relaxed_dot>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
+1. Assert: due to :ref:`validation <valid-vextternop>`, three values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
 2. Pop the value :math:`\V128.\VCONST~c_3` from the stack.
 
@@ -1688,7 +1601,7 @@ $${rule-prose: Step_pure/vrelaxeddotadd}
 
 5. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
-6. Let :math:`(j_1~j_2)^4` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
+6. Let :math:`(j_1~j_2)^4` be the result of computing :math:`\iaddsats_{16}(i_1, i_2)^8`.
 
 7. Let :math:`j^4` be the result of computing :math:`\iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4`.
 
@@ -1700,18 +1613,16 @@ $${rule-prose: Step_pure/vrelaxeddotadd}
 
 11. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
-$${rule: Step_pure/vrelaxeddotadd}
-
 .. math::
    \begin{array}{l}
    \begin{array}{llcl@{\qquad}l}
-   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\K{i32x4.}\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   & (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\K{i32x4.}\VRELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^8 = \irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
-     \wedge & (j_1~j_2)^4 = \sats_{16}(i_1 + i_2)^8 \\
-     \wedge & j^4 = \iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4 \\
+     \wedge & (j_1~j_2)^4 = \iaddsats_{16}(i_1, i_2)^8 \\
+     \wedge & j^4 = \iadd_{32}(\extends_{16,32}(j_1), \extends_{16,32}(j_2))^4 \\
      \wedge & k^4 = \lanes_{\I32X4}(c_3) \\
      \wedge & l^4 = \iadd_{32}(j, k)^4 \\
      \wedge & c = \lanes^{-1}_{\I32X4}(l^4))

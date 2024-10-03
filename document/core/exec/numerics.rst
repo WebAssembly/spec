@@ -565,6 +565,19 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
    \end{array}
 
 
+.. _op-inez:
+
+:math:`\inez_N(i)`
+..................
+
+* Return :math:`0` if :math:`i` is zero, :math:`1` otherwise.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \inez_N(i) &=& \tobool(i =/= 0)
+   \end{array}
+
+
 .. _op-ieq:
 
 :math:`\ieq_N(i_1, i_2)`
@@ -2121,7 +2134,7 @@ The implementation-specific behaviour of this operation is determined by the glo
 :math:`\irelaxeddotmul_{M,N}(i_1, i_2)`
 .......................................
 
-This is an auxiliary operator for the specification of |RELAXEDDOT|.
+This is an auxiliary operator for the specification of |VRELAXEDDOT| and |VRELAXEDDOTADD|.
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
 
@@ -2208,15 +2221,15 @@ The implementation-specific behaviour of this operation is determined by the glo
    it behaves like regular :math:`\truncs`.
 
 
-.. _op-irelaxed_swizzle:
-.. _op-irelaxed_swizzle_lane:
+.. _op-ivrelaxed_swizzle:
+.. _op-ivrelaxed_swizzle_lane:
 
-:math:`\irelaxedswizzle(i^n, j^n)`
-..................................
+:math:`\ivrelaxedswizzle(i^n, j^n)`
+...................................
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{swizzle}} \in \{0, 1\}`.
 
-* For each :math:`j_k` in :math:`j^n`, let :math:`r_k` be the value :math:`\irelaxedswizzlelane(i^n, j_k)`.
+* For each :math:`j_k` in :math:`j^n`, let :math:`r_k` be the value :math:`\ivrelaxedswizzlelane(i^n, j_k)`.
 
 * Let :math:`r^n` be the concatenation of all :math:`r_k`.
 
@@ -2224,23 +2237,23 @@ The implementation-specific behaviour of this operation is determined by the glo
 
 .. math::
    \begin{array}{@{}lcl}
-   \irelaxedswizzle(i^n, j^n) &=& \irelaxedswizzlelane(i^n, j)^n \\
+   \ivrelaxedswizzle(i^n, j^n) &=& \ivrelaxedswizzlelane(i^n, j)^n \\
    \end{array}
 
 where:
 
 .. math::
    \begin{array}{@{}lcll}
-   \irelaxedswizzlelane(i^n, j) &=& i[j] & (\iff j < 16) \\
-   \irelaxedswizzlelane(i^n, j) &=& 0 & (\iff \signed_8(j) < 0) \\
-   \irelaxedswizzlelane(i^n, j) &=& \relaxed(R_{\F{swizzle}})[ 0, i[j \mod n] ] & (\otherwise) \\
+   \ivrelaxedswizzlelane(i^n, j) &=& i[j] & (\iff j < 16) \\
+   \ivrelaxedswizzlelane(i^n, j) &=& 0 & (\iff \signed_8(j) < 0) \\
+   \ivrelaxedswizzlelane(i^n, j) &=& \relaxed(R_{\F{swizzle}})[ 0, i[j \mod n] ] & (\otherwise) \\
    \end{array}
 
 .. note::
    Relaxed swizzle is implementation-dependent
    if the signed interpretation of any of the 8-bit indices in :math:`j^n` is larger than or equal to 16.
    In the :ref:`deterministic profile <profile-deterministic>`,
-   it behaves like regular :math:`\SWIZZLE`.
+   it behaves like regular :math:`\VSWIZZLE`.
 
 
 .. _op-irelaxed_laneselect:

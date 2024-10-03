@@ -827,14 +827,14 @@ $${rule: Instr_ok/vshiftop}
 $${rule: Instr_ok/vbitmask}
 
 
-.. _valid-vswizzle:
+.. _valid-vswizzlop:
 
-:math:`\K{i8x16.}\VSWIZZLE`
-...........................
+:math:`\K{i8x16.}\viswizzlop`
+.............................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-$${rule: Instr_ok/vswizzle}
+$${rule: Instr_ok/vswizzlop}
 
 
 .. _valid-vshuffle:
@@ -907,6 +907,16 @@ $${rule: Instr_ok/vextunop}
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 $${rule: Instr_ok/vextbinop}
+
+
+.. _valid-vextternop:
+
+:math:`\ishape_1\K{.}\VRELAXEDDOTADD\K{\_}\ishape_2\K{\_}\ishape_3`
+...................................................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+$${rule: Instr_ok/vextternop}
 
 
 .. _valid-vnarrow:

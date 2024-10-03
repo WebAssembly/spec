@@ -701,15 +701,9 @@ rule Step_pure/vternop-trap:
   -- if $vternop_(sh, vternop, c_1, c_2, c_3) = eps
 
 
-;; TODO(2, rossberg): introduce $vitestop for uniformity
-rule Step_pure/vtestop-true:
-  (VCONST V128 c) (VTESTOP (Jnn X M) ALL_TRUE) ~> (CONST I32 1)
-  -- if ci_1* = $lanes_(Jnn X M, c)
-  -- (if $(ci_1 =/= 0))*  ;; TODO(3, rossberg): enable same line
-
-rule Step_pure/vtestop-false:
-  (VCONST V128 c) (VTESTOP (Jnn X M) ALL_TRUE) ~> (CONST I32 0)
-  -- otherwise
+rule Step_pure/vtestop:
+  (VCONST V128 c_1) (VTESTOP sh vtestop) ~> (CONST I32 i)
+  -- if $vtestop_(sh, vtestop, c_1) = i
 
 
 rule Step_pure/vrelop:
@@ -717,18 +711,21 @@ rule Step_pure/vrelop:
   -- if $vrelop_(sh, vrelop, c_1, c_2) = c
 
 
+;; TODO(1, rossberg): abstract to numerics
 rule Step_pure/vshiftop:
   (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP (Jnn X M) vshiftop) ~> (VCONST V128 c)
   -- if c'* = $lanes_(Jnn X M, c_1)
   -- if c = $invlanes_(Jnn X M, $vshiftop_(Jnn X M, vshiftop, c', n)*)
 
 
+;; TODO(1, rossberg): abstract to numerics
 rule Step_pure/vbitmask:
   (VCONST V128 c) (VBITMASK (Jnn X M)) ~> (CONST I32 ci)
   -- if ci_1* = $lanes_(Jnn X M, c)
   -- if $ibits_(32, ci) = $ilt_($lsize(Jnn), S, ci_1, 0)*
 
 
+;; TODO(1, rossberg): abstract to numerics
 rule Step_pure/vswizzlop-swizzle:
   (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP (I8 X M) SWIZZLE) ~> (VCONST V128 c)
   -- var c' : iN(8)
@@ -736,7 +733,7 @@ rule Step_pure/vswizzlop-swizzle:
   -- if c'* = $lanes_(I8 X M, c_1) 0^(256 - M)
   -- if c = $invlanes_(I8 X M, c'*[$(ci*[k])]^(k<M))
 
-;; TODO(0, rossberg): add non-determinism
+;; TODO(1, rossberg): add non-determinism
 rule Step_pure/vswizzlop-relaxed_swizzle:
   (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP (I8 X M) RELAXED_SWIZZLE) ~> (VCONST V128 c)
   -- var c' : iN(8)
@@ -745,6 +742,7 @@ rule Step_pure/vswizzlop-relaxed_swizzle:
   -- if c = $invlanes_(I8 X M, c'*[$(ci*[k])]^(k<M))
 
 
+;; TODO(1, rossberg): abstract to numerics
 rule Step_pure/vshuffle:
   (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (Pnn X M) i*) ~> (VCONST V128 c)
   -- var c' : iN($lsize(Pnn))
@@ -786,6 +784,7 @@ rule Step_pure/vextternop:
   -- if $vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c
 
 
+;; TODO(1, rossberg): abstract to numerics
 rule Step_pure/vnarrow:
   (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx) ~> (VCONST V128 c)
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
@@ -795,6 +794,7 @@ rule Step_pure/vnarrow:
   -- if c = $invlanes_(Jnn_2 X M_2, cj_1* cj_2*)
 
 
+;; TODO(1, rossberg): abstract to numerics
 rule Step_pure/vcvtop-full:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop) ~> (VCONST V128 c)
   -- if ci* = $lanes_(Lnn_1 X M, c_1)

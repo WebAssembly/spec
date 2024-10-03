@@ -50,6 +50,17 @@ def $sum(nat*) : nat
 }
 
 ;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:37.1-37.57
+def $prod(nat*) : nat
+  ;; 0-aux.watsup:38.1-38.19
+  def $prod([]) = 1
+  ;; 0-aux.watsup:39.1-39.37
+  def $prod{n : n, `n'*` : n*}([n] ++ n'*{n' <- `n'*`}) = (n * $prod(n'*{n' <- `n'*`}))
+}
+
+;; 0-aux.watsup
 def $opt_(syntax X, X*) : X?
   ;; 0-aux.watsup
   def $opt_{syntax X}(syntax X, []) = ?()
@@ -66,47 +77,47 @@ def $list_(syntax X, X?) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:49.1-49.55
+;; 0-aux.watsup:53.1-53.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:50.1-50.34
+  ;; 0-aux.watsup:54.1-54.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:51.1-51.64
+  ;; 0-aux.watsup:55.1-55.64
   def $concat_{syntax X, `w*` : X*, `w'**` : X**}(syntax X, [w*{w <- `w*`}] ++ w'*{w' <- `w'*`}*{`w'*` <- `w'**`}) = w*{w <- `w*`} ++ $concat_(syntax X, w'*{w' <- `w'*`}*{`w'*` <- `w'**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:53.1-53.61
+;; 0-aux.watsup:57.1-57.61
 def $concatn_(syntax X, X**, nat : nat) : X*
-  ;; 0-aux.watsup:54.1-54.38
+  ;; 0-aux.watsup:58.1-58.38
   def $concatn_{syntax X, n : n}(syntax X, [], n) = []
-  ;; 0-aux.watsup:55.1-55.73
+  ;; 0-aux.watsup:59.1-59.73
   def $concatn_{syntax X, `w*` : X*, n : n, `w'**` : X**}(syntax X, [w^n{w <- `w*`}] ++ w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n) = w^n{w <- `w*`} ++ $concatn_(syntax X, w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n)
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:57.1-57.78
+;; 0-aux.watsup:61.1-61.78
 def $disjoint_(syntax X, X*) : bool
-  ;; 0-aux.watsup:58.1-58.37
+  ;; 0-aux.watsup:62.1-62.37
   def $disjoint_{syntax X}(syntax X, []) = true
-  ;; 0-aux.watsup:59.1-59.68
+  ;; 0-aux.watsup:63.1-63.68
   def $disjoint_{syntax X, w : X, `w'*` : X*}(syntax X, [w] ++ w'*{w' <- `w'*`}) = (~ w <- w'*{w' <- `w'*`} /\ $disjoint_(syntax X, w'*{w' <- `w'*`}))
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:62.1-62.38
+;; 0-aux.watsup:66.1-66.38
 def $setminus1_(syntax X, X : X, X*) : X*
-  ;; 0-aux.watsup:66.1-66.38
+  ;; 0-aux.watsup:70.1-70.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
-  ;; 0-aux.watsup:67.1-67.78
+  ;; 0-aux.watsup:71.1-71.78
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = []
     -- if (w = w_1)
-  ;; 0-aux.watsup:68.1-68.77
+  ;; 0-aux.watsup:72.1-72.77
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = $setminus1_(syntax X, w, w'*{w' <- `w'*`})
     -- otherwise
 }
@@ -114,44 +125,44 @@ def $setminus1_(syntax X, X : X, X*) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:61.1-61.56
+;; 0-aux.watsup:65.1-65.56
 def $setminus_(syntax X, X*, X*) : X*
-  ;; 0-aux.watsup:64.1-64.40
+  ;; 0-aux.watsup:68.1-68.40
   def $setminus_{syntax X, `w*` : X*}(syntax X, [], w*{w <- `w*`}) = []
-  ;; 0-aux.watsup:65.1-65.90
+  ;; 0-aux.watsup:69.1-69.90
   def $setminus_{syntax X, w_1 : X, `w'*` : X*, `w*` : X*}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}) = $setminus1_(syntax X, w_1, w*{w <- `w*`}) ++ $setminus_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:73.1-73.46
+;; 0-aux.watsup:77.1-77.46
 def $setproduct2_(syntax X, X : X, X**) : X**
-  ;; 0-aux.watsup:79.1-79.44
+  ;; 0-aux.watsup:83.1-83.44
   def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
-  ;; 0-aux.watsup:80.1-80.90
+  ;; 0-aux.watsup:84.1-84.90
   def $setproduct2_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, w_1, [w'*{w' <- `w'*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = [[w_1] ++ w'*{w' <- `w'*`}] ++ $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:72.1-72.47
+;; 0-aux.watsup:76.1-76.47
 def $setproduct1_(syntax X, X*, X**) : X**
-  ;; 0-aux.watsup:77.1-77.46
+  ;; 0-aux.watsup:81.1-81.46
   def $setproduct1_{syntax X, `w**` : X**}(syntax X, [], w*{w <- `w*`}*{`w*` <- `w**`}) = []
-  ;; 0-aux.watsup:78.1-78.107
+  ;; 0-aux.watsup:82.1-82.107
   def $setproduct1_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`}) ++ $setproduct1_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:71.1-71.82
+;; 0-aux.watsup:75.1-75.82
 def $setproduct_(syntax X, X**) : X**
-  ;; 0-aux.watsup:75.1-75.40
+  ;; 0-aux.watsup:79.1-79.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
-  ;; 0-aux.watsup:76.1-76.90
+  ;; 0-aux.watsup:80.1-80.90
   def $setproduct_{syntax X, `w_1*` : X*, `w**` : X**}(syntax X, [w_1*{w_1 <- `w_1*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct1_(syntax X, w_1*{w_1 <- `w_1*`}, $setproduct_(syntax X, w*{w <- `w*`}*{`w*` <- `w**`}))
 }
 
@@ -2727,6 +2738,9 @@ def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
 def $ieqz_(N : N, iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
+def $inez_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
@@ -2968,12 +2982,12 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
 
 ;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
 
 ;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
   ;; 3-numerics.watsup
@@ -3183,6 +3197,18 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
+def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
+
+;; 3-numerics.watsup
+def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $vtestop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, vN_1) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $inez_, vN_1)
+
+;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; 3-numerics.watsup
   def $fvrelop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), Inn : Inn, `c*` : lane_($lanetype(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M))))*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2) = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -3310,6 +3336,13 @@ def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($la
   def $vshiftop_{Jnn : Jnn, M : M, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHL_vshiftop_, lane, `%`_u32(n)) = $ishl_($lsizenn((Jnn : Jnn <: lanetype)), lane, `%`_u32(n))
   ;; 3-numerics.watsup
   def $vshiftop_{Jnn : Jnn, M : M, sx : sx, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHR_vshiftop_(sx), lane, `%`_u32(n)) = $ishr_($lsizenn((Jnn : Jnn <: lanetype)), sx, lane, `%`_u32(n))
+
+;; 3-numerics.watsup
+def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
 
 ;; 4-runtime.watsup
 syntax num =
@@ -5799,15 +5832,9 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; 8-reduction.watsup
-  rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
-    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
-    -- (if (ci_1 =/= `%`_lane_(0)))*{ci_1 <- `ci_1*`}
-
-  ;; 8-reduction.watsup
-  rule `vtestop-false`{c : vec_(V128_Vnn), Jnn : Jnn, M : M}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(0))])
-    -- otherwise
+  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : nat}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, `%`_num_(i))])
+    -- if ($vtestop_(sh, vtestop, c_1) = `%`_u32(i))
 
   ;; 8-reduction.watsup
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:
@@ -8660,6 +8687,17 @@ def $sum(nat*) : nat
 }
 
 ;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:37.1-37.57
+def $prod(nat*) : nat
+  ;; 0-aux.watsup:38.1-38.19
+  def $prod([]) = 1
+  ;; 0-aux.watsup:39.1-39.37
+  def $prod{n : n, `n'*` : n*}([n] ++ n'*{n' <- `n'*`}) = (n * $prod(n'*{n' <- `n'*`}))
+}
+
+;; 0-aux.watsup
 def $opt_(syntax X, X*) : X?
   ;; 0-aux.watsup
   def $opt_{syntax X}(syntax X, []) = ?()
@@ -8676,47 +8714,47 @@ def $list_(syntax X, X?) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:49.1-49.55
+;; 0-aux.watsup:53.1-53.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:50.1-50.34
+  ;; 0-aux.watsup:54.1-54.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:51.1-51.64
+  ;; 0-aux.watsup:55.1-55.64
   def $concat_{syntax X, `w*` : X*, `w'**` : X**}(syntax X, [w*{w <- `w*`}] ++ w'*{w' <- `w'*`}*{`w'*` <- `w'**`}) = w*{w <- `w*`} ++ $concat_(syntax X, w'*{w' <- `w'*`}*{`w'*` <- `w'**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:53.1-53.61
+;; 0-aux.watsup:57.1-57.61
 def $concatn_(syntax X, X**, nat : nat) : X*
-  ;; 0-aux.watsup:54.1-54.38
+  ;; 0-aux.watsup:58.1-58.38
   def $concatn_{syntax X, n : n}(syntax X, [], n) = []
-  ;; 0-aux.watsup:55.1-55.73
+  ;; 0-aux.watsup:59.1-59.73
   def $concatn_{syntax X, `w*` : X*, n : n, `w'**` : X**}(syntax X, [w^n{w <- `w*`}] ++ w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n) = w^n{w <- `w*`} ++ $concatn_(syntax X, w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n)
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:57.1-57.78
+;; 0-aux.watsup:61.1-61.78
 def $disjoint_(syntax X, X*) : bool
-  ;; 0-aux.watsup:58.1-58.37
+  ;; 0-aux.watsup:62.1-62.37
   def $disjoint_{syntax X}(syntax X, []) = true
-  ;; 0-aux.watsup:59.1-59.68
+  ;; 0-aux.watsup:63.1-63.68
   def $disjoint_{syntax X, w : X, `w'*` : X*}(syntax X, [w] ++ w'*{w' <- `w'*`}) = (~ w <- w'*{w' <- `w'*`} /\ $disjoint_(syntax X, w'*{w' <- `w'*`}))
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:62.1-62.38
+;; 0-aux.watsup:66.1-66.38
 def $setminus1_(syntax X, X : X, X*) : X*
-  ;; 0-aux.watsup:66.1-66.38
+  ;; 0-aux.watsup:70.1-70.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
-  ;; 0-aux.watsup:67.1-67.78
+  ;; 0-aux.watsup:71.1-71.78
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = []
     -- if (w = w_1)
-  ;; 0-aux.watsup:68.1-68.77
+  ;; 0-aux.watsup:72.1-72.77
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = $setminus1_(syntax X, w, w'*{w' <- `w'*`})
     -- otherwise
 }
@@ -8724,44 +8762,44 @@ def $setminus1_(syntax X, X : X, X*) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:61.1-61.56
+;; 0-aux.watsup:65.1-65.56
 def $setminus_(syntax X, X*, X*) : X*
-  ;; 0-aux.watsup:64.1-64.40
+  ;; 0-aux.watsup:68.1-68.40
   def $setminus_{syntax X, `w*` : X*}(syntax X, [], w*{w <- `w*`}) = []
-  ;; 0-aux.watsup:65.1-65.90
+  ;; 0-aux.watsup:69.1-69.90
   def $setminus_{syntax X, w_1 : X, `w'*` : X*, `w*` : X*}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}) = $setminus1_(syntax X, w_1, w*{w <- `w*`}) ++ $setminus_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:73.1-73.46
+;; 0-aux.watsup:77.1-77.46
 def $setproduct2_(syntax X, X : X, X**) : X**
-  ;; 0-aux.watsup:79.1-79.44
+  ;; 0-aux.watsup:83.1-83.44
   def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
-  ;; 0-aux.watsup:80.1-80.90
+  ;; 0-aux.watsup:84.1-84.90
   def $setproduct2_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, w_1, [w'*{w' <- `w'*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = [[w_1] ++ w'*{w' <- `w'*`}] ++ $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:72.1-72.47
+;; 0-aux.watsup:76.1-76.47
 def $setproduct1_(syntax X, X*, X**) : X**
-  ;; 0-aux.watsup:77.1-77.46
+  ;; 0-aux.watsup:81.1-81.46
   def $setproduct1_{syntax X, `w**` : X**}(syntax X, [], w*{w <- `w*`}*{`w*` <- `w**`}) = []
-  ;; 0-aux.watsup:78.1-78.107
+  ;; 0-aux.watsup:82.1-82.107
   def $setproduct1_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`}) ++ $setproduct1_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:71.1-71.82
+;; 0-aux.watsup:75.1-75.82
 def $setproduct_(syntax X, X**) : X**
-  ;; 0-aux.watsup:75.1-75.40
+  ;; 0-aux.watsup:79.1-79.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
-  ;; 0-aux.watsup:76.1-76.90
+  ;; 0-aux.watsup:80.1-80.90
   def $setproduct_{syntax X, `w_1*` : X*, `w**` : X**}(syntax X, [w_1*{w_1 <- `w_1*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct1_(syntax X, w_1*{w_1 <- `w_1*`}, $setproduct_(syntax X, w*{w <- `w*`}*{`w*` <- `w**`}))
 }
 
@@ -11340,6 +11378,9 @@ def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
 def $ieqz_(N : N, iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
+def $inez_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
@@ -11581,12 +11622,12 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
 
 ;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
 
 ;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
   ;; 3-numerics.watsup
@@ -11796,6 +11837,18 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
+def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
+
+;; 3-numerics.watsup
+def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $vtestop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, vN_1) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $inez_, vN_1)
+
+;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; 3-numerics.watsup
   def $fvrelop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), Inn : Inn, `c*` : lane_($lanetype(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M))))*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2) = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -11923,6 +11976,13 @@ def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($la
   def $vshiftop_{Jnn : Jnn, M : M, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHL_vshiftop_, lane, `%`_u32(n)) = $ishl_($lsizenn((Jnn : Jnn <: lanetype)), lane, `%`_u32(n))
   ;; 3-numerics.watsup
   def $vshiftop_{Jnn : Jnn, M : M, sx : sx, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHR_vshiftop_(sx), lane, `%`_u32(n)) = $ishr_($lsizenn((Jnn : Jnn <: lanetype)), sx, lane, `%`_u32(n))
+
+;; 3-numerics.watsup
+def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
 
 ;; 4-runtime.watsup
 syntax num =
@@ -14414,15 +14474,9 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; 8-reduction.watsup
-  rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
-    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
-    -- (if (ci_1 =/= `%`_lane_(0)))*{ci_1 <- `ci_1*`}
-
-  ;; 8-reduction.watsup
-  rule `vtestop-false`{c : vec_(V128_Vnn), Jnn : Jnn, M : M}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(0))])
-    -- otherwise
+  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : nat}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, `%`_num_(i))])
+    -- if ($vtestop_(sh, vtestop, c_1) = `%`_u32(i))
 
   ;; 8-reduction.watsup
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:
@@ -17275,6 +17329,17 @@ def $sum(nat*) : nat
 }
 
 ;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:37.1-37.57
+def $prod(nat*) : nat
+  ;; 0-aux.watsup:38.1-38.19
+  def $prod([]) = 1
+  ;; 0-aux.watsup:39.1-39.37
+  def $prod{n : n, `n'*` : n*}([n] ++ n'*{n' <- `n'*`}) = (n * $prod(n'*{n' <- `n'*`}))
+}
+
+;; 0-aux.watsup
 def $opt_(syntax X, X*) : X?
   ;; 0-aux.watsup
   def $opt_{syntax X}(syntax X, []) = ?()
@@ -17291,47 +17356,47 @@ def $list_(syntax X, X?) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:49.1-49.55
+;; 0-aux.watsup:53.1-53.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:50.1-50.34
+  ;; 0-aux.watsup:54.1-54.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:51.1-51.64
+  ;; 0-aux.watsup:55.1-55.64
   def $concat_{syntax X, `w*` : X*, `w'**` : X**}(syntax X, [w*{w <- `w*`}] ++ w'*{w' <- `w'*`}*{`w'*` <- `w'**`}) = w*{w <- `w*`} ++ $concat_(syntax X, w'*{w' <- `w'*`}*{`w'*` <- `w'**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:53.1-53.61
+;; 0-aux.watsup:57.1-57.61
 def $concatn_(syntax X, X**, nat : nat) : X*
-  ;; 0-aux.watsup:54.1-54.38
+  ;; 0-aux.watsup:58.1-58.38
   def $concatn_{syntax X, n : n}(syntax X, [], n) = []
-  ;; 0-aux.watsup:55.1-55.73
+  ;; 0-aux.watsup:59.1-59.73
   def $concatn_{syntax X, `w*` : X*, n : n, `w'**` : X**}(syntax X, [w^n{w <- `w*`}] ++ w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n) = w^n{w <- `w*`} ++ $concatn_(syntax X, w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n)
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:57.1-57.78
+;; 0-aux.watsup:61.1-61.78
 def $disjoint_(syntax X, X*) : bool
-  ;; 0-aux.watsup:58.1-58.37
+  ;; 0-aux.watsup:62.1-62.37
   def $disjoint_{syntax X}(syntax X, []) = true
-  ;; 0-aux.watsup:59.1-59.68
+  ;; 0-aux.watsup:63.1-63.68
   def $disjoint_{syntax X, w : X, `w'*` : X*}(syntax X, [w] ++ w'*{w' <- `w'*`}) = (~ w <- w'*{w' <- `w'*`} /\ $disjoint_(syntax X, w'*{w' <- `w'*`}))
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:62.1-62.38
+;; 0-aux.watsup:66.1-66.38
 def $setminus1_(syntax X, X : X, X*) : X*
-  ;; 0-aux.watsup:66.1-66.38
+  ;; 0-aux.watsup:70.1-70.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
-  ;; 0-aux.watsup:67.1-67.78
+  ;; 0-aux.watsup:71.1-71.78
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = []
     -- if (w = w_1)
-  ;; 0-aux.watsup:68.1-68.77
+  ;; 0-aux.watsup:72.1-72.77
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = $setminus1_(syntax X, w, w'*{w' <- `w'*`})
     -- otherwise
 }
@@ -17339,44 +17404,44 @@ def $setminus1_(syntax X, X : X, X*) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:61.1-61.56
+;; 0-aux.watsup:65.1-65.56
 def $setminus_(syntax X, X*, X*) : X*
-  ;; 0-aux.watsup:64.1-64.40
+  ;; 0-aux.watsup:68.1-68.40
   def $setminus_{syntax X, `w*` : X*}(syntax X, [], w*{w <- `w*`}) = []
-  ;; 0-aux.watsup:65.1-65.90
+  ;; 0-aux.watsup:69.1-69.90
   def $setminus_{syntax X, w_1 : X, `w'*` : X*, `w*` : X*}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}) = $setminus1_(syntax X, w_1, w*{w <- `w*`}) ++ $setminus_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:73.1-73.46
+;; 0-aux.watsup:77.1-77.46
 def $setproduct2_(syntax X, X : X, X**) : X**
-  ;; 0-aux.watsup:79.1-79.44
+  ;; 0-aux.watsup:83.1-83.44
   def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
-  ;; 0-aux.watsup:80.1-80.90
+  ;; 0-aux.watsup:84.1-84.90
   def $setproduct2_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, w_1, [w'*{w' <- `w'*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = [[w_1] ++ w'*{w' <- `w'*`}] ++ $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:72.1-72.47
+;; 0-aux.watsup:76.1-76.47
 def $setproduct1_(syntax X, X*, X**) : X**
-  ;; 0-aux.watsup:77.1-77.46
+  ;; 0-aux.watsup:81.1-81.46
   def $setproduct1_{syntax X, `w**` : X**}(syntax X, [], w*{w <- `w*`}*{`w*` <- `w**`}) = []
-  ;; 0-aux.watsup:78.1-78.107
+  ;; 0-aux.watsup:82.1-82.107
   def $setproduct1_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`}) ++ $setproduct1_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:71.1-71.82
+;; 0-aux.watsup:75.1-75.82
 def $setproduct_(syntax X, X**) : X**
-  ;; 0-aux.watsup:75.1-75.40
+  ;; 0-aux.watsup:79.1-79.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
-  ;; 0-aux.watsup:76.1-76.90
+  ;; 0-aux.watsup:80.1-80.90
   def $setproduct_{syntax X, `w_1*` : X*, `w**` : X**}(syntax X, [w_1*{w_1 <- `w_1*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct1_(syntax X, w_1*{w_1 <- `w_1*`}, $setproduct_(syntax X, w*{w <- `w*`}*{`w*` <- `w**`}))
 }
 
@@ -19955,6 +20020,9 @@ def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
 def $ieqz_(N : N, iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
+def $inez_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
@@ -20196,12 +20264,12 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
 
 ;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
 
 ;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
   ;; 3-numerics.watsup
@@ -20411,6 +20479,18 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
+def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
+
+;; 3-numerics.watsup
+def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $vtestop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, vN_1) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $inez_, vN_1)
+
+;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; 3-numerics.watsup
   def $fvrelop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), Inn : Inn, `c*` : lane_($lanetype(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M))))*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2) = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -20538,6 +20618,13 @@ def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($la
   def $vshiftop_{Jnn : Jnn, M : M, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHL_vshiftop_, lane, `%`_u32(n)) = $ishl_($lsizenn((Jnn : Jnn <: lanetype)), lane, `%`_u32(n))
   ;; 3-numerics.watsup
   def $vshiftop_{Jnn : Jnn, M : M, sx : sx, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHR_vshiftop_(sx), lane, `%`_u32(n)) = $ishr_($lsizenn((Jnn : Jnn <: lanetype)), sx, lane, `%`_u32(n))
+
+;; 3-numerics.watsup
+def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
 
 ;; 4-runtime.watsup
 syntax num =
@@ -23029,15 +23116,9 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; 8-reduction.watsup
-  rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
-    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
-    -- (if (ci_1 =/= `%`_lane_(0)))*{ci_1 <- `ci_1*`}
-
-  ;; 8-reduction.watsup
-  rule `vtestop-false`{c : vec_(V128_Vnn), Jnn : Jnn, M : M}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(0))])
-    -- otherwise
+  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : nat}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, `%`_num_(i))])
+    -- if ($vtestop_(sh, vtestop, c_1) = `%`_u32(i))
 
   ;; 8-reduction.watsup
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:
@@ -25890,6 +25971,17 @@ def $sum(nat*) : nat
 }
 
 ;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:37.1-37.57
+def $prod(nat*) : nat
+  ;; 0-aux.watsup:38.1-38.19
+  def $prod([]) = 1
+  ;; 0-aux.watsup:39.1-39.37
+  def $prod{n : n, `n'*` : n*}([n] ++ n'*{n' <- `n'*`}) = (n * $prod(n'*{n' <- `n'*`}))
+}
+
+;; 0-aux.watsup
 def $opt_(syntax X, X*) : X?
   ;; 0-aux.watsup
   def $opt_{syntax X}(syntax X, []) = ?()
@@ -25906,47 +25998,47 @@ def $list_(syntax X, X?) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:49.1-49.55
+;; 0-aux.watsup:53.1-53.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:50.1-50.34
+  ;; 0-aux.watsup:54.1-54.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:51.1-51.64
+  ;; 0-aux.watsup:55.1-55.64
   def $concat_{syntax X, `w*` : X*, `w'**` : X**}(syntax X, [w*{w <- `w*`}] ++ w'*{w' <- `w'*`}*{`w'*` <- `w'**`}) = w*{w <- `w*`} ++ $concat_(syntax X, w'*{w' <- `w'*`}*{`w'*` <- `w'**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:53.1-53.61
+;; 0-aux.watsup:57.1-57.61
 def $concatn_(syntax X, X**, nat : nat) : X*
-  ;; 0-aux.watsup:54.1-54.38
+  ;; 0-aux.watsup:58.1-58.38
   def $concatn_{syntax X, n : n}(syntax X, [], n) = []
-  ;; 0-aux.watsup:55.1-55.73
+  ;; 0-aux.watsup:59.1-59.73
   def $concatn_{syntax X, `w*` : X*, n : n, `w'**` : X**}(syntax X, [w^n{w <- `w*`}] ++ w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n) = w^n{w <- `w*`} ++ $concatn_(syntax X, w'^n{w' <- `w'*`}*{`w'*` <- `w'**`}, n)
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:57.1-57.78
+;; 0-aux.watsup:61.1-61.78
 def $disjoint_(syntax X, X*) : bool
-  ;; 0-aux.watsup:58.1-58.37
+  ;; 0-aux.watsup:62.1-62.37
   def $disjoint_{syntax X}(syntax X, []) = true
-  ;; 0-aux.watsup:59.1-59.68
+  ;; 0-aux.watsup:63.1-63.68
   def $disjoint_{syntax X, w : X, `w'*` : X*}(syntax X, [w] ++ w'*{w' <- `w'*`}) = (~ w <- w'*{w' <- `w'*`} /\ $disjoint_(syntax X, w'*{w' <- `w'*`}))
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:62.1-62.38
+;; 0-aux.watsup:66.1-66.38
 def $setminus1_(syntax X, X : X, X*) : X*
-  ;; 0-aux.watsup:66.1-66.38
+  ;; 0-aux.watsup:70.1-70.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
-  ;; 0-aux.watsup:67.1-67.78
+  ;; 0-aux.watsup:71.1-71.78
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = []
     -- if (w = w_1)
-  ;; 0-aux.watsup:68.1-68.77
+  ;; 0-aux.watsup:72.1-72.77
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = $setminus1_(syntax X, w, w'*{w' <- `w'*`})
     -- otherwise
 }
@@ -25954,44 +26046,44 @@ def $setminus1_(syntax X, X : X, X*) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:61.1-61.56
+;; 0-aux.watsup:65.1-65.56
 def $setminus_(syntax X, X*, X*) : X*
-  ;; 0-aux.watsup:64.1-64.40
+  ;; 0-aux.watsup:68.1-68.40
   def $setminus_{syntax X, `w*` : X*}(syntax X, [], w*{w <- `w*`}) = []
-  ;; 0-aux.watsup:65.1-65.90
+  ;; 0-aux.watsup:69.1-69.90
   def $setminus_{syntax X, w_1 : X, `w'*` : X*, `w*` : X*}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}) = $setminus1_(syntax X, w_1, w*{w <- `w*`}) ++ $setminus_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:73.1-73.46
+;; 0-aux.watsup:77.1-77.46
 def $setproduct2_(syntax X, X : X, X**) : X**
-  ;; 0-aux.watsup:79.1-79.44
+  ;; 0-aux.watsup:83.1-83.44
   def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
-  ;; 0-aux.watsup:80.1-80.90
+  ;; 0-aux.watsup:84.1-84.90
   def $setproduct2_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, w_1, [w'*{w' <- `w'*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = [[w_1] ++ w'*{w' <- `w'*`}] ++ $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:72.1-72.47
+;; 0-aux.watsup:76.1-76.47
 def $setproduct1_(syntax X, X*, X**) : X**
-  ;; 0-aux.watsup:77.1-77.46
+  ;; 0-aux.watsup:81.1-81.46
   def $setproduct1_{syntax X, `w**` : X**}(syntax X, [], w*{w <- `w*`}*{`w*` <- `w**`}) = []
-  ;; 0-aux.watsup:78.1-78.107
+  ;; 0-aux.watsup:82.1-82.107
   def $setproduct1_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`}) ++ $setproduct1_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:71.1-71.82
+;; 0-aux.watsup:75.1-75.82
 def $setproduct_(syntax X, X**) : X**
-  ;; 0-aux.watsup:75.1-75.40
+  ;; 0-aux.watsup:79.1-79.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
-  ;; 0-aux.watsup:76.1-76.90
+  ;; 0-aux.watsup:80.1-80.90
   def $setproduct_{syntax X, `w_1*` : X*, `w**` : X**}(syntax X, [w_1*{w_1 <- `w_1*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct1_(syntax X, w_1*{w_1 <- `w_1*`}, $setproduct_(syntax X, w*{w <- `w*`}*{`w*` <- `w**`}))
 }
 
@@ -28570,6 +28662,9 @@ def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
 def $ieqz_(N : N, iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
+def $inez_(N : N, iN : iN(N)) : u32
+
+;; 3-numerics.watsup
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
 
 ;; 3-numerics.watsup
@@ -28811,12 +28906,12 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   def $binop_{Fnn : Fnn, fN_1 : num_((Fnn : Fnn <: numtype)), fN_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), COPYSIGN_binop_, fN_1, fN_2) = $fcopysign_($sizenn((Fnn : Fnn <: numtype)), fN_1, fN_2)
 
 ;; 3-numerics.watsup
-def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $testop_(numtype : numtype, testop_ : testop_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $testop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQZ_testop_, iN) = $ieqz_($sizenn((Inn : Inn <: numtype)), iN)
 
 ;; 3-numerics.watsup
-def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : num_(I32_numtype)
+def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), num_ : num_(numtype)) : u32
   ;; 3-numerics.watsup
   def $relop_{Inn : Inn, iN_1 : num_((Inn : Inn <: numtype)), iN_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EQ_relop_, iN_1, iN_2) = $ieq_($sizenn((Inn : Inn <: numtype)), iN_1, iN_2)
   ;; 3-numerics.watsup
@@ -29026,6 +29121,18 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), vN_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, vN_1, vN_2, vN_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, vN_1, vN_2, vN_3)
 
 ;; 3-numerics.watsup
+def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
+
+;; 3-numerics.watsup
+def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $vtestop_{Jnn : Jnn, M : M, vN_1 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, vN_1) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $inez_, vN_1)
+
+;; 3-numerics.watsup
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; 3-numerics.watsup
   def $fvrelop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), vN_2 : vec_(V128_Vnn), Inn : Inn, `c*` : lane_($lanetype(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M))))*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1, vN_2) = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -29153,6 +29260,13 @@ def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($la
   def $vshiftop_{Jnn : Jnn, M : M, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHL_vshiftop_, lane, `%`_u32(n)) = $ishl_($lsizenn((Jnn : Jnn <: lanetype)), lane, `%`_u32(n))
   ;; 3-numerics.watsup
   def $vshiftop_{Jnn : Jnn, M : M, sx : sx, lane : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))), n : n}(`%X%`_ishape(Jnn, `%`_dim(M)), SHR_vshiftop_(sx), lane, `%`_u32(n)) = $ishr_($lsizenn((Jnn : Jnn <: lanetype)), sx, lane, `%`_u32(n))
+
+;; 3-numerics.watsup
+def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
+  ;; 3-numerics.watsup
+  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, vN_1 : vec_(V128_Vnn), `c*` : nat*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, vN_1) = `%`_u32($prod(c*{c <- `c*`}))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), vN_1))
+    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)!`%`_u32.0*{c_1 <- `c_1*`})
 
 ;; 4-runtime.watsup
 syntax num =
@@ -31791,15 +31905,9 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; 8-reduction.watsup
-  rule `vtestop-true`{c : vec_(V128_Vnn), Jnn : Jnn, M : M, `ci_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(1))])
-    -- if (ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c))
-    -- (if (ci_1 =/= `%`_lane_(0)))*{ci_1 <- `ci_1*`}
-
-  ;; 8-reduction.watsup
-  rule `vtestop-false`{c : vec_(V128_Vnn), Jnn : Jnn, M : M}:
-    `%~>%`([VCONST_instr(V128_vectype, c) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, `%`_num_(0))])
-    -- otherwise
+  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : nat}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, `%`_num_(i))])
+    -- if ($vtestop_(sh, vtestop, c_1) = `%`_u32(i))
 
   ;; 8-reduction.watsup
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:

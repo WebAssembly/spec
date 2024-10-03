@@ -65,7 +65,7 @@ This has the consequence that the respective rule is no longer applicable under 
 	   \\&&&
 	     \begin{array}[t]{@{}r@{~}l@{}}
 	     (\iff & F.\AMODULE.\MIMEMS[x] = a \\
-	     \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
+	     \wedge & \X{sz} = |S.\SMEMS[a].\MIDATAS|/64\,\F{Ki} \\
 	     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\[1ex]
 	     \end{array}
 	   \\[1ex]
@@ -123,7 +123,7 @@ It defines a sub-language that does not exhibit any incidental non-deterministic
 
 * All :ref:`NaN <syntax-nan>` values :ref:`generated <aux-nans>` by :ref:`floating-point instructions <syntax-instr-numeric>` are canonical and positive.
 
-* All :ref:`relaxed vector instructions <syntax-instr-relaxed>` have a fixed behaviour that does not depend on the implementation.
+* All :ref:`relaxed vector instructions <syntax-instr-vec-relaxed>` have a fixed behaviour that does not depend on the implementation.
 
 Even under this profile, the |MEMORYGROW| and |TABLEGROW| instructions technically remain :ref:`non-deterministic <exec-memory.grow>`, in order to be able to indicate resource exhaustion.
 

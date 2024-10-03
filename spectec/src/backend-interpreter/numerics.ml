@@ -349,6 +349,15 @@ let ieqz : numerics =
       | vs -> error_values "ieqz" vs
       );
   }
+let inez : numerics =
+  {
+    name = "inez";
+    f =
+      (function
+      | [ NumV _; NumV m ] -> m <> Z.zero |> al_of_bool
+      | vs -> error_values "inez" vs
+      );
+  }
 let ieq : numerics =
   {
     name = "ieq";
@@ -1300,6 +1309,7 @@ let numerics_list : numerics list = [
   ictz;
   ipopcnt;
   ieqz;
+  inez;
   ieq;
   ine;
   ilt;

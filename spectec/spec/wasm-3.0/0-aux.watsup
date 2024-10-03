@@ -34,6 +34,10 @@ def $sum(nat*) : nat  hint(show (+) %) hint(macro none)
 def $sum(eps) = 0
 def $sum(n n'*) = $(n + $sum(n'*))
 
+def $prod(nat*) : nat  hint(show (*) %) hint(macro none)
+def $prod(eps) = 1
+def $prod(n n'*) = $(n * $prod(n'*))
+
 
 ;; General sequence functions
 
