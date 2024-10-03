@@ -1601,6 +1601,21 @@ Most other vector instructions are defined in terms of numeric operators that ar
    :math:`\lanes_{\K{i32x4}}(v_1)` and :math:`\lanes_{\K{i32x4}}(v_2)`
    respectively.
 
+For non-deterministic operators this definition is generalized to sets:
+
+.. math::
+   \begin{array}{lll}
+   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
+     \{ \lanes^{-1}_{t\K{x}N}(i^\ast) ~|~ i^\ast \in \Large\times\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast \land i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \} \\
+   \end{array}
+
+where :math:`\Large\times \{x^\ast\}^N` transforms a sequence of :math:`N` sets of values into a set of sequences of :math:`N` values by computing the set product:
+
+.. math::
+   \begin{array}{lll}
+   \Large\times (S_1 \dots S_N) &=& \{ x_1 \dots x_N ~|~ x_1 \in S_1 \land \dots \land x_N \in S_N \}
+   \end{array}
+
 
 .. _exec-vconst:
 
@@ -2335,9 +2350,9 @@ where:
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+4. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
-5. Let :math:`j^8` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
+5. Let :math:`j^8` be the result of computing :math:`\iaddsats_{16}(i_1, i_2)^8`.
 
 6. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I16X8}(j^8)`.
 
@@ -2351,7 +2366,7 @@ where:
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^8 = \irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
-     \wedge & j^8 = \sats_{16}(i_1, i_2)^8 \\
+     \wedge & j^8 = \iaddsats_{16}(i_1, i_2)^8 \\
      \wedge & c = \lanes^{-1}_{\I16X8}(j^8))
      \end{array}
    \end{array}
@@ -2370,11 +2385,11 @@ where:
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8, 16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
+5. Let :math:`(i_1~i_2)^8` be the result of computing :math:`\irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2))`
 
-6. Let :math:`(j_1~j_2)^4` be the result of computing :math:`\sats_{16}(i_1 + i_2)^8`.
+6. Let :math:`(j_1~j_2)^4` be the result of computing :math:`\iaddsats_{16}(i_1, i_2)^8`.
 
-7. Let :math:`j^4` be the result of computing :math:`\iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4`.
+7. Let :math:`j^4` be the result of computing :math:`\iadd_{32}(\extends_{16,32}(j_1), \extends_{16,32}(j_2))^4`.
 
 8. Let :math:`k^4` be the result of computing :math:`\lanes_{\I32X4}(c_3)`.
 
@@ -2392,8 +2407,8 @@ where:
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^8 = \irelaxeddotmul_{8,16}(\lanes_{\I8X16}(c_1), \lanes_{\I8X16}(c_2)) \\
-     \wedge & (j_1~j_2)^4 = \sats_{16}(i_1 + i_2)^8 \\
-     \wedge & j^4 = \iadd_{32}(\extend^{s}_{16, 32}(j_1), \extend^{s}_{16, 32}(j_2))^4 \\
+     \wedge & (j_1~j_2)^4 = \iaddsats_{16}(i_1, i_2)^8 \\
+     \wedge & j^4 = \iadd_{32}(\extends_{16,32}(j_1), \extends_{16,32}(j_2))^4 \\
      \wedge & k^4 = \lanes_{\I32X4}(c_3) \\
      \wedge & l^4 = \iadd_{32}(j, k)^4 \\
      \wedge & c = \lanes^{-1}_{\I32X4}(l^4))
