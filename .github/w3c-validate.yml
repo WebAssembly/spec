@@ -4,7 +4,7 @@ on:
   pull_request: {}
   push:
     branches: [ main, specprod ]
-    paths: [ .github/**, document/** ]
+  # paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
   # or REST API. THe w3c-status options correspond to the valid options for
