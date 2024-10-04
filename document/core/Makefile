@@ -200,7 +200,6 @@ WD-echidna: WD-tar
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
 	python3 ../util/check-echidna-status.py $(BUILDDIR)
-
 	@echo
 	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
