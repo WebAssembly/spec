@@ -54,7 +54,7 @@ jobs:
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
-          ECHIDNA_DRYRUN: ${{ github.event_name == 'pull_request' && github.repository == 'WebAssembly/spec'}}
+          ECHIDNA_DRYRUN: ${{ !(github.event_name == 'push' && github.repository == 'WebAssembly/spec' && github.ref == 'refs/heads/main') }}
       - name: Validate all specs with Echidna
         if: env.W3C_USERNAME
         run: cd document && make -e WD-echidna
