@@ -1,8 +1,10 @@
-name: Publish to W3C TR space
+name: Validate/Publish to W3C TR space
 
 on:
   push:
     branches: [ main ]
+    paths: [ .github/**, document/** ]
+  pull_request:
     paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
@@ -23,9 +25,12 @@ on:
           - CRD
           - CR
 
+env:
+  YARN_ENABLE_IMMUTABLE_INSTALLS: false
+  W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
+
 jobs:
   publish-to-w3c-TR:
-    if: github.repository == 'WebAssembly/spec'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -43,10 +48,16 @@ jobs:
       - name: Setup Sphinx
         run: pip install six && pip install sphinx==5.1.0
       - name: Publish all specs to their https://www.w3.org/TR/ URLs
+        if: env.W3C_ECHIDNA_TOKEN_CORE
         run: cd document && make -e WD-echidna-CI
         env:
-          W3C_STATUS: ${{ github.event_name == 'push' && 'WD' || inputs.w3c-status }}
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+          ECHIDNA_DRYRUN: ${{ !(github.event_name == 'push' && github.repository == 'WebAssembly/spec' && github.ref == 'refs/heads/main') }}
+      - name: Validate all specs with Echidna
+        if: env.W3C_USERNAME
+        run: cd document && make -e WD-echidna
+        env:
+          W3C_USERNAME: ${{ secrets.W3C_USERNAME }}
+          W3C_PASSWORD: ${{ secrets.W3C_PASSWORD }}
