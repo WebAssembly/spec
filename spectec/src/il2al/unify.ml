@@ -354,13 +354,42 @@ let unify_rule_def (rule: rule_def) : rule_def =
   in
   (instr_name, rel_id, new_clauses) $ rule.at
 
+let has_substring str sub =
+  let len_s = String.length str in
+  let len_sub = String.length sub in
+  let rec aux i =
+    if i > len_s - len_sub then false
+    else if String.sub str i len_sub = sub then true
+    else aux (i + 1)
+  in
+  aux 0
+
+let reorder_unified_args args prems =
+  (* Helpers *)
+  let has_uarg_on_rhs p =
+    match p.it with
+    | LetPr (_, {it = VarE id; _}, _) -> is_unified_id id.it
+    | _ -> false
+  in
+  let on_rhs p a =
+    match a.it with
+    | ExpA e -> has_substring (e |> Il.Print.string_of_exp) (rhs_of_prem p |> Il.Print.string_of_exp)
+    | _ -> false
+  in
+  let index_of p = List.find_index (on_rhs p) args |> Option.get in
+  let cmp p1 p2 = index_of p1 - index_of p2 in
+
+  let uprems, prems = List.partition has_uarg_on_rhs prems in
+  let uprems' = List.sort cmp uprems in
+  uprems' @ prems
 
 let apply_template_to_def template def =
   match def.it with
   | DefD (binds, lhs, rhs, prems) ->
     let new_prems, new_binds = collect_unified_args template lhs in
     let animated_prems = Animate.animate_prems (free_list free_arg template) new_prems in
-    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ def.at
+    let reordered_prems = reorder_unified_args template animated_prems in
+    DefD (binds @ new_binds, template, rhs, (reordered_prems @ prems) |> prioritize_else) $ def.at
 
 let unify_defs defs =
   init_unified_idx();

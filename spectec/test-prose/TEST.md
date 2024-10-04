@@ -983,10 +983,6 @@ watsup 0.4 generator
 
 #. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
-#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
-
 #. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
@@ -994,6 +990,10 @@ watsup 0.4 generator
 #. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+
+#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
@@ -1455,85 +1455,55 @@ watsup 0.4 generator
 ........................................................................................................................................................................
 
 
-1. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
    #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{iclz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}`, then:
 
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{iclz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}`, then:
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Return :math:`{{\mathrm{ictz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-   #. Return :math:`{{\mathrm{ictz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}`, then:
 
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fabs}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fneg}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fceil}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
-
-#. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
+      1) Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
+
+   a. Return :math:`{{\mathrm{fabs}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
+
+   a. Return :math:`{{\mathrm{fneg}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}`, then:
+
+   a. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}`, then:
+
+   a. Return :math:`{{\mathrm{fceil}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}`, then:
+
+   a. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}`, then:
+
+   a. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+#. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
@@ -1542,7 +1512,7 @@ watsup 0.4 generator
 .......................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -1550,35 +1520,17 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iadd}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{iadd}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Return :math:`{{\mathrm{isub}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
 
-   #. Return :math:`{{\mathrm{isub}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
 
@@ -1592,53 +1544,21 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{iand}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}`, then:
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ior}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Return :math:`{{\mathrm{iand}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}`, then:
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{ixor}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ior}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ixor}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
 
@@ -1646,87 +1566,13 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{irotl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}`, then:
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{irotl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{irotr}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fadd}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fsub}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmul}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmin}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmax}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
+      1) Return :math:`{{\mathrm{irotr}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
@@ -1735,6 +1581,32 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
+
+   a. Return :math:`{{\mathrm{fadd}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
+
+   a. Return :math:`{{\mathrm{fsub}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
+
+   a. Return :math:`{{\mathrm{fmul}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}`, then:
+
+   a. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}`, then:
+
+   a. Return :math:`{{\mathrm{fmin}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}`, then:
+
+   a. Return :math:`{{\mathrm{fmax}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -1750,7 +1622,7 @@ watsup 0.4 generator
 .......................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -1758,25 +1630,13 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ieq}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
 
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{ieq}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
@@ -1802,58 +1662,6 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{ige}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{feq}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fne}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{flt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fgt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fle}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
-
 #. Assert: Due to validation, the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
@@ -1862,6 +1670,28 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 5}}}`.
 
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
+
+   a. Return :math:`{{\mathrm{feq}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
+
+   a. Return :math:`{{\mathrm{fne}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}`, then:
+
+   a. Return :math:`{{\mathrm{flt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}`, then:
+
+   a. Return :math:`{{\mathrm{fgt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}`, then:
+
+   a. Return :math:`{{\mathrm{fle}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
+
 #. Return :math:`{{\mathrm{fge}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 
@@ -1869,21 +1699,21 @@ watsup 0.4 generator
 ...............................................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+1. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
 
-   a. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+   a. Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
+   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
-      1) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
 
-      #) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
+      1) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
+
+#. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{i{\scriptstyle 64}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{wrap}`, then:
 
-   a. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
-
-   #. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
+   a. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
@@ -1893,35 +1723,31 @@ watsup 0.4 generator
 
       1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
-
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc}`, then:
 
          a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
+         #) Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+
          #) Return :math:`{{{{\mathrm{trunc}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})}`.
+
+#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{promote}`, then:
 
-   a. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
-
-   #. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{fN}})`.
+   a. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{fN}})`.
 
 #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{demote}`, then:
 
-   a. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+   a. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{fN}})`.
 
-   #. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{fN}})`.
+#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+      1) Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{convert}`, then:
 
@@ -1929,19 +1755,7 @@ watsup 0.4 generator
 
          #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathsf{i}}{n}|}, {|{\mathsf{f}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{reinterpret}`.
-
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
-
-      #) If :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`, then:
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{reinterpret}` and :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`, then:
 
          a) Return :math:`{{\mathrm{reinterpret}}}_{{\mathsf{i}}{n}, {\mathsf{f}}{n}}({\mathit{iN}})`.
 
@@ -1953,7 +1767,7 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_u{\kern-0.1em\scriptstyle 4}}}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{reinterpret}`.
 
 #. Assert: Due to validation, :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`.
 
@@ -2532,15 +2346,7 @@ watsup 0.4 generator
 ......................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
-
-#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
-
-#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
-
-#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
-
-#. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
+1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
@@ -2559,6 +2365,14 @@ watsup 0.4 generator
 #. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
+
+#. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
@@ -3302,12 +3116,12 @@ Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
 3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
-4. Assert: Due to validation, there are at least k values on the top of the stack.
-5. Pop the values val^k from the stack.
-6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0* instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL*.
-9. Let (LOCAL t)* be local_0*.
+4. Assert: Due to validation, func is of the case FUNC.
+5. Let (FUNC x local_0* instr*) be func.
+6. Assert: Due to validation, local_0 is of the case LOCAL*.
+7. Let (LOCAL t)* be local_0*.
+8. Assert: Due to validation, there are at least k values on the top of the stack.
+9. Pop the values val^k from the stack.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
 11. Push the evaluation context (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
@@ -3523,254 +3337,161 @@ invsigned_ N ii
 2. Return j.
 
 unop_ valtype_u1 unop__u0 val__u3
-1. If ((unop__u0 is CLZ) and the type of valtype_u1 is Inn), then:
+1. If the type of valtype_u1 is Inn, then:
   a. Let Inn be valtype_u1.
   b. Let iN be val__u3.
-  c. Return [$iclz_($size(Inn), iN)].
-2. If ((unop__u0 is CTZ) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN be val__u3.
-  c. Return [$ictz_($size(Inn), iN)].
-3. If ((unop__u0 is POPCNT) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN be val__u3.
-  c. Return [$ipopcnt_($size(Inn), iN)].
-4. If ((unop__u0 is ABS) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fabs_($size(Fnn), fN).
-5. If ((unop__u0 is NEG) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fneg_($size(Fnn), fN).
-6. If ((unop__u0 is SQRT) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fsqrt_($size(Fnn), fN).
-7. If ((unop__u0 is CEIL) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fceil_($size(Fnn), fN).
-8. If ((unop__u0 is FLOOR) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $ffloor_($size(Fnn), fN).
-9. If ((unop__u0 is TRUNC) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $ftrunc_($size(Fnn), fN).
-10. Assert: Due to validation, (unop__u0 is NEAREST).
-11. Assert: Due to validation, the type of valtype_u1 is Fnn.
-12. Let Fnn be valtype_u1.
-13. Let fN be val__u3.
-14. Return $fnearest_($size(Fnn), fN).
+  c. If (unop__u0 is CLZ), then:
+    1) Return [$iclz_($size(Inn), iN)].
+  d. If (unop__u0 is CTZ), then:
+    1) Return [$ictz_($size(Inn), iN)].
+  e. If (unop__u0 is POPCNT), then:
+    1) Return [$ipopcnt_($size(Inn), iN)].
+2. Assert: Due to validation, the type of valtype_u1 is Fnn.
+3. Let Fnn be valtype_u1.
+4. Let fN be val__u3.
+5. If (unop__u0 is ABS), then:
+  a. Return $fabs_($size(Fnn), fN).
+6. If (unop__u0 is NEG), then:
+  a. Return $fneg_($size(Fnn), fN).
+7. If (unop__u0 is SQRT), then:
+  a. Return $fsqrt_($size(Fnn), fN).
+8. If (unop__u0 is CEIL), then:
+  a. Return $fceil_($size(Fnn), fN).
+9. If (unop__u0 is FLOOR), then:
+  a. Return $ffloor_($size(Fnn), fN).
+10. If (unop__u0 is TRUNC), then:
+  a. Return $ftrunc_($size(Fnn), fN).
+11. Assert: Due to validation, (unop__u0 is NEAREST).
+12. Return $fnearest_($size(Fnn), fN).
 
 binop_ valtype_u1 binop__u0 val__u3 val__u5
-1. If ((binop__u0 is ADD) and the type of valtype_u1 is Inn), then:
+1. If the type of valtype_u1 is Inn, then:
   a. Let Inn be valtype_u1.
   b. Let iN_1 be val__u3.
   c. Let iN_2 be val__u5.
-  d. Return [$iadd_($size(Inn), iN_1, iN_2)].
-2. If ((binop__u0 is SUB) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$isub_($size(Inn), iN_1, iN_2)].
-3. If ((binop__u0 is MUL) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$imul_($size(Inn), iN_1, iN_2)].
-4. If the type of valtype_u1 is Inn, then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. If binop__u0 is of the case DIV, then:
+  d. If (binop__u0 is ADD), then:
+    1) Return [$iadd_($size(Inn), iN_1, iN_2)].
+  e. If (binop__u0 is SUB), then:
+    1) Return [$isub_($size(Inn), iN_1, iN_2)].
+  f. If (binop__u0 is MUL), then:
+    1) Return [$imul_($size(Inn), iN_1, iN_2)].
+  g. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
     2) Return $list_(val_((Inn : Inn <: valtype)), $idiv_($size(Inn), sx, iN_1, iN_2)).
-  e. If binop__u0 is of the case REM, then:
+  h. If binop__u0 is of the case REM, then:
     1) Let (REM sx) be binop__u0.
     2) Return $list_(val_((Inn : Inn <: valtype)), $irem_($size(Inn), sx, iN_1, iN_2)).
-5. If ((binop__u0 is AND) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$iand_($size(Inn), iN_1, iN_2)].
-6. If ((binop__u0 is OR) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$ior_($size(Inn), iN_1, iN_2)].
-7. If ((binop__u0 is XOR) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$ixor_($size(Inn), iN_1, iN_2)].
-8. If ((binop__u0 is SHL) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$ishl_($size(Inn), iN_1, iN_2)].
-9. If the type of valtype_u1 is Inn, then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. If binop__u0 is of the case SHR, then:
+  i. If (binop__u0 is AND), then:
+    1) Return [$iand_($size(Inn), iN_1, iN_2)].
+  j. If (binop__u0 is OR), then:
+    1) Return [$ior_($size(Inn), iN_1, iN_2)].
+  k. If (binop__u0 is XOR), then:
+    1) Return [$ixor_($size(Inn), iN_1, iN_2)].
+  l. If (binop__u0 is SHL), then:
+    1) Return [$ishl_($size(Inn), iN_1, iN_2)].
+  m. If binop__u0 is of the case SHR, then:
     1) Let (SHR sx) be binop__u0.
     2) Return [$ishr_($size(Inn), sx, iN_1, iN_2)].
-10. If ((binop__u0 is ROTL) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$irotl_($size(Inn), iN_1, iN_2)].
-11. If ((binop__u0 is ROTR) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$irotr_($size(Inn), iN_1, iN_2)].
-12. If ((binop__u0 is ADD) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fadd_($size(Fnn), fN_1, fN_2).
-13. If ((binop__u0 is SUB) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fsub_($size(Fnn), fN_1, fN_2).
-14. If ((binop__u0 is MUL) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fmul_($size(Fnn), fN_1, fN_2).
-15. If ((binop__u0 is DIV) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fdiv_($size(Fnn), fN_1, fN_2).
-16. If ((binop__u0 is MIN) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fmin_($size(Fnn), fN_1, fN_2).
-17. If ((binop__u0 is MAX) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fmax_($size(Fnn), fN_1, fN_2).
-18. Assert: Due to validation, (binop__u0 is COPYSIGN).
-19. Assert: Due to validation, the type of valtype_u1 is Fnn.
-20. Let Fnn be valtype_u1.
-21. Let fN_1 be val__u3.
-22. Let fN_2 be val__u5.
-23. Return $fcopysign_($size(Fnn), fN_1, fN_2).
+  n. If (binop__u0 is ROTL), then:
+    1) Return [$irotl_($size(Inn), iN_1, iN_2)].
+  o. If (binop__u0 is ROTR), then:
+    1) Return [$irotr_($size(Inn), iN_1, iN_2)].
+2. Assert: Due to validation, the type of valtype_u1 is Fnn.
+3. Let Fnn be valtype_u1.
+4. Let fN_1 be val__u3.
+5. Let fN_2 be val__u5.
+6. If (binop__u0 is ADD), then:
+  a. Return $fadd_($size(Fnn), fN_1, fN_2).
+7. If (binop__u0 is SUB), then:
+  a. Return $fsub_($size(Fnn), fN_1, fN_2).
+8. If (binop__u0 is MUL), then:
+  a. Return $fmul_($size(Fnn), fN_1, fN_2).
+9. If (binop__u0 is DIV), then:
+  a. Return $fdiv_($size(Fnn), fN_1, fN_2).
+10. If (binop__u0 is MIN), then:
+  a. Return $fmin_($size(Fnn), fN_1, fN_2).
+11. If (binop__u0 is MAX), then:
+  a. Return $fmax_($size(Fnn), fN_1, fN_2).
+12. Assert: Due to validation, (binop__u0 is COPYSIGN).
+13. Return $fcopysign_($size(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($size(Inn), iN).
 
 relop_ valtype_u1 relop__u0 val__u3 val__u5
-1. If ((relop__u0 is EQ) and the type of valtype_u1 is Inn), then:
+1. If the type of valtype_u1 is Inn, then:
   a. Let Inn be valtype_u1.
   b. Let iN_1 be val__u3.
   c. Let iN_2 be val__u5.
-  d. Return $ieq_($size(Inn), iN_1, iN_2).
-2. If ((relop__u0 is NE) and the type of valtype_u1 is Inn), then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return $ine_($size(Inn), iN_1, iN_2).
-3. If the type of valtype_u1 is Inn, then:
-  a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. If relop__u0 is of the case LT, then:
+  d. If (relop__u0 is EQ), then:
+    1) Return $ieq_($size(Inn), iN_1, iN_2).
+  e. If (relop__u0 is NE), then:
+    1) Return $ine_($size(Inn), iN_1, iN_2).
+  f. If relop__u0 is of the case LT, then:
     1) Let (LT sx) be relop__u0.
     2) Return $ilt_($size(Inn), sx, iN_1, iN_2).
-  e. If relop__u0 is of the case GT, then:
+  g. If relop__u0 is of the case GT, then:
     1) Let (GT sx) be relop__u0.
     2) Return $igt_($size(Inn), sx, iN_1, iN_2).
-  f. If relop__u0 is of the case LE, then:
+  h. If relop__u0 is of the case LE, then:
     1) Let (LE sx) be relop__u0.
     2) Return $ile_($size(Inn), sx, iN_1, iN_2).
-  g. If relop__u0 is of the case GE, then:
+  i. If relop__u0 is of the case GE, then:
     1) Let (GE sx) be relop__u0.
     2) Return $ige_($size(Inn), sx, iN_1, iN_2).
-4. If ((relop__u0 is EQ) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $feq_($size(Fnn), fN_1, fN_2).
-5. If ((relop__u0 is NE) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fne_($size(Fnn), fN_1, fN_2).
-6. If ((relop__u0 is LT) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $flt_($size(Fnn), fN_1, fN_2).
-7. If ((relop__u0 is GT) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fgt_($size(Fnn), fN_1, fN_2).
-8. If ((relop__u0 is LE) and the type of valtype_u1 is Fnn), then:
-  a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fle_($size(Fnn), fN_1, fN_2).
-9. Assert: Due to validation, (relop__u0 is GE).
-10. Assert: Due to validation, the type of valtype_u1 is Fnn.
-11. Let Fnn be valtype_u1.
-12. Let fN_1 be val__u3.
-13. Let fN_2 be val__u5.
-14. Return $fge_($size(Fnn), fN_1, fN_2).
+2. Assert: Due to validation, the type of valtype_u1 is Fnn.
+3. Let Fnn be valtype_u1.
+4. Let fN_1 be val__u3.
+5. Let fN_2 be val__u5.
+6. If (relop__u0 is EQ), then:
+  a. Return $feq_($size(Fnn), fN_1, fN_2).
+7. If (relop__u0 is NE), then:
+  a. Return $fne_($size(Fnn), fN_1, fN_2).
+8. If (relop__u0 is LT), then:
+  a. Return $flt_($size(Fnn), fN_1, fN_2).
+9. If (relop__u0 is GT), then:
+  a. Return $fgt_($size(Fnn), fN_1, fN_2).
+10. If (relop__u0 is LE), then:
+  a. Return $fle_($size(Fnn), fN_1, fN_2).
+11. Assert: Due to validation, (relop__u0 is GE).
+12. Return $fge_($size(Fnn), fN_1, fN_2).
 
 cvtop__ valtype_u0 valtype_u1 cvtop_u2 val__u4
-1. If ((valtype_u0 is I32) and (valtype_u1 is I64)), then:
-  a. Let iN be val__u4.
-  b. If cvtop_u2 is of the case EXTEND, then:
-    1) Let (EXTEND sx) be cvtop_u2.
-    2) Return [$extend__(32, 64, sx, iN)].
-2. If ((valtype_u0 is I64) and ((valtype_u1 is I32) and (cvtop_u2 is WRAP))), then:
-  a. Let iN be val__u4.
-  b. Return [$wrap__(64, 32, iN)].
-3. If the type of valtype_u0 is Fnn, then:
+1. If cvtop_u2 is of the case EXTEND, then:
+  a. Let (EXTEND sx) be cvtop_u2.
+  b. Let iN be val__u4.
+  c. If ((valtype_u0 is I32) and (valtype_u1 is I64)), then:
+    1) Return [$extend__(32, 64, sx, iN)].
+2. Let iN be val__u4.
+3. If ((valtype_u0 is I64) and ((valtype_u1 is I32) and (cvtop_u2 is WRAP))), then:
+  a. Return [$wrap__(64, 32, iN)].
+4. If the type of valtype_u0 is Fnn, then:
   a. Let Fnn be valtype_u0.
   b. If the type of valtype_u1 is Inn, then:
     1) Let Inn be valtype_u1.
-    2) Let fN be val__u4.
-    3) If cvtop_u2 is of the case TRUNC, then:
+    2) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
-      b) Return $list_(val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
-4. If ((valtype_u0 is F32) and ((valtype_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
-  a. Let fN be val__u4.
-  b. Return $promote__(32, 64, fN).
-5. If ((valtype_u0 is F64) and ((valtype_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
-  a. Let fN be val__u4.
-  b. Return $demote__(64, 32, fN).
-6. If the type of valtype_u1 is Fnn, then:
-  a. Let Fnn be valtype_u1.
-  b. If the type of valtype_u0 is Inn, then:
-    1) Let Inn be valtype_u0.
-    2) Let iN be val__u4.
-    3) If cvtop_u2 is of the case CONVERT, then:
+      b) Let fN be val__u4.
+      c) Return $list_(val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
+5. Let fN be val__u4.
+6. If ((valtype_u0 is F32) and ((valtype_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
+  a. Return $promote__(32, 64, fN).
+7. If ((valtype_u0 is F64) and ((valtype_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
+  a. Return $demote__(64, 32, fN).
+8. If the type of valtype_u0 is Inn, then:
+  a. Let Inn be valtype_u0.
+  b. If the type of valtype_u1 is Fnn, then:
+    1) Let Fnn be valtype_u1.
+    2) If cvtop_u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u2.
       b) Return [$convert__($size(Inn), $size(Fnn), sx, iN)].
-7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
-8. If the type of valtype_u1 is Fnn, then:
-  a. Let Fnn be valtype_u1.
-  b. If the type of valtype_u0 is Inn, then:
-    1) Let Inn be valtype_u0.
-    2) Let iN be val__u4.
-    3) If ($size(Inn) is $size(Fnn)), then:
+    3) If ((cvtop_u2 is REINTERPRET) and ($size(Inn) is $size(Fnn))), then:
       a) Return [$reinterpret__(Inn, Fnn, iN)].
 9. Assert: Due to validation, the type of valtype_u0 is Fnn.
 10. Let Fnn be valtype_u0.
 11. Assert: Due to validation, the type of valtype_u1 is Inn.
 12. Let Inn be valtype_u1.
-13. Let fN be val__u4.
+13. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
 14. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
 15. Return [$reinterpret__(Fnn, Inn, fN)].
 
@@ -4038,20 +3759,20 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
 allocmodule module externaddr* val*
-1. Let fa_ex* be $funcs(externaddr*).
-2. Let ga_ex* be $globals(externaddr*).
-3. Let ma_ex* be $mems(externaddr*).
-4. Let ta_ex* be $tables(externaddr*).
-5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem* data* start? export*) be module.
-7. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
-8. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
-9. Assert: Due to validation, table_2 is of the case TABLE^n_table.
-10. Let (TABLE tabletype)^n_table be table_2^n_table.
-11. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
-12. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
-13. Assert: Due to validation, type_0 is of the case TYPE*.
-14. Let (TYPE ft)* be type_0*.
+1. Assert: Due to validation, module is of the case MODULE.
+2. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem* data* start? export*) be module.
+3. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
+4. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
+5. Assert: Due to validation, table_2 is of the case TABLE^n_table.
+6. Let (TABLE tabletype)^n_table be table_2^n_table.
+7. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
+8. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+9. Assert: Due to validation, type_0 is of the case TYPE*.
+10. Let (TYPE ft)* be type_0*.
+11. Let fa_ex* be $funcs(externaddr*).
+12. Let ga_ex* be $globals(externaddr*).
+13. Let ma_ex* be $mems(externaddr*).
+14. Let ta_ex* be $tables(externaddr*).
 15. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
 16. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
 17. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
@@ -5937,10 +5658,6 @@ watsup 0.4 generator
 
 #. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
-#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
-
 #. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
@@ -5948,6 +5665,10 @@ watsup 0.4 generator
 #. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+
+#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
@@ -7238,97 +6959,61 @@ watsup 0.4 generator
 ........................................................................................................................................................................
 
 
-1. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
    #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}`, then:
 
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}`, then:
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
-   #. Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}`, then:
 
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
    #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`.
 
    #. Let :math:`(\mathsf{extend}~M)` be :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
    #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
-
-#. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
+
+   a. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
+
+   a. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}`, then:
+
+   a. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}`, then:
+
+   a. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}`, then:
+
+   a. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}`, then:
+
+   a. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
+
+#. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{fN}})`.
 
@@ -7337,7 +7022,7 @@ watsup 0.4 generator
 .......................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -7345,35 +7030,17 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
 
-   #. Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
 
@@ -7387,53 +7054,21 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}`, then:
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}`, then:
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
 
@@ -7441,87 +7076,13 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}`, then:
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
+      1) Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
@@ -7530,6 +7091,32 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
+
+   a. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
+
+   a. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
+
+   a. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}`, then:
+
+   a. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}`, then:
+
+   a. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}`, then:
+
+   a. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -7545,7 +7132,7 @@ watsup 0.4 generator
 .......................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -7553,25 +7140,13 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
 
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
@@ -7597,58 +7172,6 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
-
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
@@ -7656,6 +7179,28 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
+
+   a. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
+
+   a. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}`, then:
+
+   a. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}`, then:
+
+   a. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}`, then:
+
+   a. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -7672,25 +7217,19 @@ watsup 0.4 generator
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`, then:
 
          a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
          #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
-
-#. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{wrap}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
-
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
       #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{wrap}`, then:
+
+         a) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
@@ -7700,11 +7239,11 @@ watsup 0.4 generator
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc}`, then:
 
          a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
@@ -7712,25 +7251,27 @@ watsup 0.4 generator
 
          a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
+         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
          #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{convert}`, then:
 
          a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
          #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-#. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{promote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -7740,33 +7281,25 @@ watsup 0.4 generator
 
       #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{promote}`, then:
 
-#. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+         a) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{demote}`, then:
+
+         a) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
    #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
       1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-      #) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
-
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
-
-   a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-      1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
       #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{|{{\mathsf{i}}{n}}_1|}` is :math:`{|{{\mathsf{f}}{n}}_2|}`, then:
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{n}}_1|}` is :math:`{|{{\mathsf{f}}{n}}_2|}`, then:
 
          a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{n}}_1, {{\mathsf{f}}{n}}_2}({\mathit{iN}}_1)`.
 
@@ -7779,6 +7312,8 @@ watsup 0.4 generator
 #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathsf{f}}{n}}_1|}` is :math:`{|{{\mathsf{i}}{n}}_2|}`.
 
@@ -7894,41 +7429,41 @@ watsup 0.4 generator
 ............................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+   #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
@@ -7936,11 +7471,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
@@ -7948,11 +7481,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
@@ -7960,11 +7491,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
@@ -7972,11 +7501,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
@@ -7984,11 +7511,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
@@ -7997,10 +7522,6 @@ watsup 0.4 generator
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
-
-#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
-
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8015,33 +7536,29 @@ watsup 0.4 generator
 ..........................................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
-
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
    #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{min}`, then:
 
@@ -8091,47 +7608,43 @@ watsup 0.4 generator
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is , then:
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is , then:
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8141,11 +7654,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8155,11 +7666,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8169,11 +7678,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8183,11 +7690,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8197,11 +7702,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8211,11 +7714,9 @@ watsup 0.4 generator
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8226,10 +7727,6 @@ watsup 0.4 generator
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmax}`.
-
-#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
-
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8246,37 +7743,33 @@ watsup 0.4 generator
 ..........................................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+      1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
+      #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathit{lane}}_3^\ast})`.
 
-   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
-
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
    #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
@@ -8334,11 +7827,13 @@ watsup 0.4 generator
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
+
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8350,11 +7845,9 @@ watsup 0.4 generator
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8366,11 +7859,9 @@ watsup 0.4 generator
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8382,11 +7873,9 @@ watsup 0.4 generator
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8398,11 +7887,9 @@ watsup 0.4 generator
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8415,10 +7902,6 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
-
-#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
-
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{f}}{n}}{\mathsf{x}}{M})}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8445,77 +7928,61 @@ watsup 0.4 generator
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
-
       #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{extend}`, then:
 
          a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
 
          #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
          #) Return :math:`{\mathit{iN}}_2`.
 
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
+   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
-
-      1) Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
       #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{convert}`, then:
 
          a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+
          #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
          #) Return :math:`{\mathit{fN}}_2`.
 
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn, then:
-
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
-
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
-
-         a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-         #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
-
-         #) Return :math:`{{\mathit{iN}}_2^?}`.
-
-#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn, then:
-
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
-
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
-
-      #) Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
-
-      #) Return :math:`{{\mathit{fN}}_2^\ast}`.
-
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`.
-
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn.
 
 #. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+
+   a. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
+
+      1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+
+      #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+
+      #) Return :math:`{{\mathit{iN}}_2^?}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
 
 #. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 4}}}`.
+
+#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}`, then:
+
+   a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+
+   #. Return :math:`{{\mathit{fN}}_2^\ast}`.
+
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`.
 
 #. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
@@ -9286,15 +8753,7 @@ watsup 0.4 generator
 ....................................................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
-
-#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
-
-#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
-
-#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
-
-#. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
+1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}_4^{n_{\mathit{elem}}}}~{{\mathit{data}}_5^{n_{\mathit{data}}}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
@@ -9321,6 +8780,14 @@ watsup 0.4 generator
 #. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
+
+#. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
@@ -10524,12 +9991,12 @@ Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
 3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
-4. Assert: Due to validation, there are at least k values on the top of the stack.
-5. Pop the values val^k from the stack.
-6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0* instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL*.
-9. Let (LOCAL t)* be local_0*.
+4. Assert: Due to validation, func is of the case FUNC.
+5. Let (FUNC x local_0* instr*) be func.
+6. Assert: Due to validation, local_0 is of the case LOCAL*.
+7. Let (LOCAL t)* be local_0*.
+8. Assert: Due to validation, there are at least k values on the top of the stack.
+9. Pop the values val^k from the stack.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
 11. Push the evaluation context (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
@@ -11139,277 +10606,184 @@ invsigned_ N i
 2. Return j.
 
 unop_ numtype_u1 unop__u0 num__u3
-1. If ((unop__u0 is CLZ) and the type of numtype_u1 is Inn), then:
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
   b. Let iN be num__u3.
-  c. Return [$iclz_($sizenn(Inn), iN)].
-2. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ictz_($sizenn(Inn), iN)].
-3. If ((unop__u0 is POPCNT) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ipopcnt_($sizenn(Inn), iN)].
-4. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Assert: Due to validation, unop__u0 is of the case EXTEND.
-  c. Let (EXTEND M) be unop__u0.
-  d. Let iN be num__u3.
-  e. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
-5. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fabs_($sizenn(Fnn), fN).
-6. If ((unop__u0 is NEG) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fneg_($sizenn(Fnn), fN).
-7. If ((unop__u0 is SQRT) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fsqrt_($sizenn(Fnn), fN).
-8. If ((unop__u0 is CEIL) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fceil_($sizenn(Fnn), fN).
-9. If ((unop__u0 is FLOOR) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ffloor_($sizenn(Fnn), fN).
-10. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ftrunc_($sizenn(Fnn), fN).
+  c. If (unop__u0 is CLZ), then:
+    1) Return [$iclz_($sizenn(Inn), iN)].
+  d. If (unop__u0 is CTZ), then:
+    1) Return [$ictz_($sizenn(Inn), iN)].
+  e. If (unop__u0 is POPCNT), then:
+    1) Return [$ipopcnt_($sizenn(Inn), iN)].
+  f. Assert: Due to validation, unop__u0 is of the case EXTEND.
+  g. Let (EXTEND M) be unop__u0.
+  h. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
+2. Assert: Due to validation, the type of numtype_u1 is Fnn.
+3. Let Fnn be numtype_u1.
+4. Let fN be num__u3.
+5. If (unop__u0 is ABS), then:
+  a. Return $fabs_($sizenn(Fnn), fN).
+6. If (unop__u0 is NEG), then:
+  a. Return $fneg_($sizenn(Fnn), fN).
+7. If (unop__u0 is SQRT), then:
+  a. Return $fsqrt_($sizenn(Fnn), fN).
+8. If (unop__u0 is CEIL), then:
+  a. Return $fceil_($sizenn(Fnn), fN).
+9. If (unop__u0 is FLOOR), then:
+  a. Return $ffloor_($sizenn(Fnn), fN).
+10. If (unop__u0 is TRUNC), then:
+  a. Return $ftrunc_($sizenn(Fnn), fN).
 11. Assert: Due to validation, (unop__u0 is NEAREST).
-12. Assert: Due to validation, the type of numtype_u1 is Fnn.
-13. Let Fnn be numtype_u1.
-14. Let fN be num__u3.
-15. Return $fnearest_($sizenn(Fnn), fN).
+12. Return $fnearest_($sizenn(Fnn), fN).
 
 binop_ numtype_u1 binop__u0 num__u3 num__u5
-1. If ((binop__u0 is ADD) and the type of numtype_u1 is Inn), then:
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
-  d. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
-2. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
-3. If ((binop__u0 is MUL) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
-4. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case DIV, then:
+  d. If (binop__u0 is ADD), then:
+    1) Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
+  e. If (binop__u0 is SUB), then:
+    1) Return [$isub_($sizenn(Inn), iN_1, iN_2)].
+  f. If (binop__u0 is MUL), then:
+    1) Return [$imul_($sizenn(Inn), iN_1, iN_2)].
+  g. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
     2) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
-  e. If binop__u0 is of the case REM, then:
+  h. If binop__u0 is of the case REM, then:
     1) Let (REM sx) be binop__u0.
     2) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
-5. If ((binop__u0 is AND) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
-6. If ((binop__u0 is OR) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
-7. If ((binop__u0 is XOR) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
-8. If ((binop__u0 is SHL) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
-9. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case SHR, then:
+  i. If (binop__u0 is AND), then:
+    1) Return [$iand_($sizenn(Inn), iN_1, iN_2)].
+  j. If (binop__u0 is OR), then:
+    1) Return [$ior_($sizenn(Inn), iN_1, iN_2)].
+  k. If (binop__u0 is XOR), then:
+    1) Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
+  l. If (binop__u0 is SHL), then:
+    1) Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
+  m. If binop__u0 is of the case SHR, then:
     1) Let (SHR sx) be binop__u0.
     2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
-10. If ((binop__u0 is ROTL) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
-11. If ((binop__u0 is ROTR) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
-12. If ((binop__u0 is ADD) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
-13. If ((binop__u0 is SUB) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
-14. If ((binop__u0 is MUL) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
-15. If ((binop__u0 is DIV) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
-16. If ((binop__u0 is MIN) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
-17. If ((binop__u0 is MAX) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
-18. Assert: Due to validation, (binop__u0 is COPYSIGN).
-19. Assert: Due to validation, the type of numtype_u1 is Fnn.
-20. Let Fnn be numtype_u1.
-21. Let fN_1 be num__u3.
-22. Let fN_2 be num__u5.
-23. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
+  n. If (binop__u0 is ROTL), then:
+    1) Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
+  o. If (binop__u0 is ROTR), then:
+    1) Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
+2. Assert: Due to validation, the type of numtype_u1 is Fnn.
+3. Let Fnn be numtype_u1.
+4. Let fN_1 be num__u3.
+5. Let fN_2 be num__u5.
+6. If (binop__u0 is ADD), then:
+  a. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
+7. If (binop__u0 is SUB), then:
+  a. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
+8. If (binop__u0 is MUL), then:
+  a. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
+9. If (binop__u0 is DIV), then:
+  a. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
+10. If (binop__u0 is MIN), then:
+  a. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
+11. If (binop__u0 is MAX), then:
+  a. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
+12. Assert: Due to validation, (binop__u0 is COPYSIGN).
+13. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($sizenn(Inn), iN).
 
 relop_ numtype_u1 relop__u0 num__u3 num__u5
-1. If ((relop__u0 is EQ) and the type of numtype_u1 is Inn), then:
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
-  d. Return $ieq_($sizenn(Inn), iN_1, iN_2).
-2. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return $ine_($sizenn(Inn), iN_1, iN_2).
-3. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If relop__u0 is of the case LT, then:
+  d. If (relop__u0 is EQ), then:
+    1) Return $ieq_($sizenn(Inn), iN_1, iN_2).
+  e. If (relop__u0 is NE), then:
+    1) Return $ine_($sizenn(Inn), iN_1, iN_2).
+  f. If relop__u0 is of the case LT, then:
     1) Let (LT sx) be relop__u0.
     2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
-  e. If relop__u0 is of the case GT, then:
+  g. If relop__u0 is of the case GT, then:
     1) Let (GT sx) be relop__u0.
     2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
-  f. If relop__u0 is of the case LE, then:
+  h. If relop__u0 is of the case LE, then:
     1) Let (LE sx) be relop__u0.
     2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
-  g. If relop__u0 is of the case GE, then:
+  i. If relop__u0 is of the case GE, then:
     1) Let (GE sx) be relop__u0.
     2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
-4. If ((relop__u0 is EQ) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $feq_($sizenn(Fnn), fN_1, fN_2).
-5. If ((relop__u0 is NE) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fne_($sizenn(Fnn), fN_1, fN_2).
-6. If ((relop__u0 is LT) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $flt_($sizenn(Fnn), fN_1, fN_2).
-7. If ((relop__u0 is GT) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
-8. If ((relop__u0 is LE) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fle_($sizenn(Fnn), fN_1, fN_2).
-9. Assert: Due to validation, (relop__u0 is GE).
-10. Assert: Due to validation, the type of numtype_u1 is Fnn.
-11. Let Fnn be numtype_u1.
-12. Let fN_1 be num__u3.
-13. Let fN_2 be num__u5.
-14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
+2. Assert: Due to validation, the type of numtype_u1 is Fnn.
+3. Let Fnn be numtype_u1.
+4. Let fN_1 be num__u3.
+5. Let fN_2 be num__u5.
+6. If (relop__u0 is EQ), then:
+  a. Return $feq_($sizenn(Fnn), fN_1, fN_2).
+7. If (relop__u0 is NE), then:
+  a. Return $fne_($sizenn(Fnn), fN_1, fN_2).
+8. If (relop__u0 is LT), then:
+  a. Return $flt_($sizenn(Fnn), fN_1, fN_2).
+9. If (relop__u0 is GT), then:
+  a. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
+10. If (relop__u0 is LE), then:
+  a. Return $fle_($sizenn(Fnn), fN_1, fN_2).
+11. Assert: Due to validation, (relop__u0 is GE).
+12. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
 cvtop__ numtype_u1 numtype_u4 cvtop_u0 num__u3
 1. If the type of numtype_u1 is Inn, then:
   a. Let Inn_1 be numtype_u1.
   b. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) If cvtop_u0 is of the case EXTEND, then:
+    2) If cvtop_u0 is of the case EXTEND, then:
       a) Let (EXTEND sx) be cvtop_u0.
-      b) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
-2. If ((cvtop_u0 is WRAP) and the type of numtype_u1 is Inn), then:
-  a. Let Inn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
-    1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
-3. If the type of numtype_u1 is Fnn, then:
+      b) Let iN_1 be num__u3.
+      c) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+    3) Let iN_1 be num__u3.
+    4) If (cvtop_u0 is WRAP), then:
+      a) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+2. If the type of numtype_u1 is Fnn, then:
   a. Let Fnn_1 be numtype_u1.
   b. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) If cvtop_u0 is of the case TRUNC, then:
+    2) If cvtop_u0 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-    4) If cvtop_u0 is of the case TRUNC_SAT, then:
+      b) Let fN_1 be num__u3.
+      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    3) If cvtop_u0 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-4. If the type of numtype_u4 is Fnn, then:
-  a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
-    1) Let Inn_1 be numtype_u1.
-    2) Let iN_1 be num__u3.
-    3) If cvtop_u0 is of the case CONVERT, then:
+      b) Let fN_1 be num__u3.
+      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+3. If the type of numtype_u1 is Inn, then:
+  a. Let Inn_1 be numtype_u1.
+  b. If the type of numtype_u4 is Fnn, then:
+    1) Let Fnn_2 be numtype_u4.
+    2) If cvtop_u0 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u0.
-      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
-5. If ((cvtop_u0 is PROMOTE) and the type of numtype_u1 is Fnn), then:
+      b) Let iN_1 be num__u3.
+      c) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+4. If the type of numtype_u1 is Fnn, then:
   a. Let Fnn_1 be numtype_u1.
   b. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
     2) Let fN_1 be num__u3.
-    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-6. If ((cvtop_u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn_1 be numtype_u1.
+    3) If (cvtop_u0 is PROMOTE), then:
+      a) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+    4) If (cvtop_u0 is DEMOTE), then:
+      a) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+5. If the type of numtype_u1 is Inn, then:
+  a. Let Inn_1 be numtype_u1.
   b. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
-8. If the type of numtype_u4 is Fnn, then:
-  a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
-    1) Let Inn_1 be numtype_u1.
     2) Let iN_1 be num__u3.
-    3) If ($size(Inn_1) is $size(Fnn_2)), then:
+    3) If ((cvtop_u0 is REINTERPRET) and ($size(Inn_1) is $size(Fnn_2))), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
-9. Assert: Due to validation, the type of numtype_u1 is Fnn.
-10. Let Fnn_1 be numtype_u1.
-11. Assert: Due to validation, the type of numtype_u4 is Inn.
-12. Let Inn_2 be numtype_u4.
-13. Let fN_1 be num__u3.
-14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
-15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
+6. Assert: Due to validation, the type of numtype_u1 is Fnn.
+7. Let Fnn_1 be numtype_u1.
+8. Assert: Due to validation, the type of numtype_u4 is Inn.
+9. Let Inn_2 be numtype_u4.
+10. Let fN_1 be num__u3.
+11. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
+12. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
+13. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -11460,318 +10834,284 @@ vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return $ibitselect_($size(V128), v128_1, v128_2, v128_3).
 
 vunop_ (lanetype_u1 X M) vunop__u0 v128_1
-1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-2. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-3. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-4. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-5. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-6. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-7. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-8. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-9. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
+  b. If (vunop__u0 is ABS), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
+    3) Return [v128].
+  c. If (vunop__u0 is NEG), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
+    3) Return [v128].
+  d. If (vunop__u0 is POPCNT), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
+    3) Return [v128].
+2. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+3. Let Fnn be lanetype_u1.
+4. If (vunop__u0 is ABS), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
+  c. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Return v128*.
+5. If (vunop__u0 is NEG), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
+  c. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Return v128*.
+6. If (vunop__u0 is SQRT), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
+  c. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Return v128*.
+7. If (vunop__u0 is CEIL), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
+  c. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Return v128*.
+8. If (vunop__u0 is FLOOR), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
+  c. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Return v128*.
+9. If (vunop__u0 is TRUNC), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
+  c. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  d. Return v128*.
 10. Assert: Due to validation, (vunop__u0 is NEAREST).
-11. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-12. Let Fnn be lanetype_u1.
-13. Let lane_1* be $lanes_((Fnn X M), v128_1).
-14. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
-15. Let v128* be $invlanes_((Fnn X M), lane*)*.
-16. Return v128*.
+11. Let lane_1* be $lanes_((Fnn X M), v128_1).
+12. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
+13. Let v128* be $invlanes_((Fnn X M), lane*)*.
+14. Return v128*.
 
 vbinop_ (lanetype_u1 X M) vbinop__u0 v128_1 v128_2
-1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Jnn), then:
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-2. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-3. If the type of lanetype_u1 is Jnn, then:
-  a. Let Jnn be lanetype_u1.
-  b. If vbinop__u0 is of the case MIN, then:
+  b. If (vbinop__u0 is ADD), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
+    4) Return [v128].
+  c. If (vbinop__u0 is SUB), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
+    4) Return [v128].
+  d. If vbinop__u0 is of the case MIN, then:
     1) Let (MIN sx) be vbinop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  c. If vbinop__u0 is of the case MAX, then:
+  e. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  d. If vbinop__u0 is of the case ADD_SAT, then:
+  f. If vbinop__u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  e. If vbinop__u0 is of the case SUB_SAT, then:
+  g. If vbinop__u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-4. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
-  e. Return [v128].
-6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
-  e. Return [v128].
-7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-8. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-9. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-10. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-11. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-12. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-13. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-14. Assert: Due to validation, (vbinop__u0 is PMAX).
-15. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-16. Let Fnn be lanetype_u1.
-17. Let lane_1* be $lanes_((Fnn X M), v128_1).
-18. Let lane_2* be $lanes_((Fnn X M), v128_2).
-19. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
-20. Let v128* be $invlanes_((Fnn X M), lane*)*.
-21. Return v128*.
+  h. If (vbinop__u0 is MUL), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
+    4) Return [v128].
+  i. If (vbinop__u0 is (AVGRU)), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
+    4) Return [v128].
+  j. If (vbinop__u0 is (Q15MULR_SATS)), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
+    4) Return [v128].
+2. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+3. Let Fnn be lanetype_u1.
+4. If (vbinop__u0 is ADD), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+5. If (vbinop__u0 is SUB), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+6. If (vbinop__u0 is MUL), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+7. If (vbinop__u0 is DIV), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+8. If (vbinop__u0 is MIN), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+9. If (vbinop__u0 is MAX), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+10. If (vbinop__u0 is PMIN), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+11. Assert: Due to validation, (vbinop__u0 is PMAX).
+12. Let lane_1* be $lanes_((Fnn X M), v128_1).
+13. Let lane_2* be $lanes_((Fnn X M), v128_2).
+14. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
+15. Let v128* be $invlanes_((Fnn X M), lane*)*.
+16. Return v128*.
 
 vrelop_ (lanetype_u1 X M) vrelop__u0 v128_1 v128_2
-1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Jnn), then:
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
-  f. Return v128.
-2. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
-  f. Return v128.
-3. If the type of lanetype_u1 is Jnn, then:
-  a. Let Jnn be lanetype_u1.
-  b. If vrelop__u0 is of the case LT, then:
+  b. If (vrelop__u0 is EQ), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
+    4) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    5) Return v128.
+  c. If (vrelop__u0 is NE), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    2) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    3) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
+    4) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    5) Return v128.
+  d. If vrelop__u0 is of the case LT, then:
     1) Let (LT sx) be vrelop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
-  c. If vrelop__u0 is of the case GT, then:
+  e. If vrelop__u0 is of the case GT, then:
     1) Let (GT sx) be vrelop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
-  d. If vrelop__u0 is of the case LE, then:
+  f. If vrelop__u0 is of the case LE, then:
     1) Let (LE sx) be vrelop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
-  e. If vrelop__u0 is of the case GE, then:
+  g. If vrelop__u0 is of the case GE, then:
     1) Let (GE sx) be vrelop__u0.
     2) Let lane_1* be $lanes_((Jnn X M), v128_1).
     3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
-4. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
+2. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+3. Let Fnn be lanetype_u1.
+4. If (vrelop__u0 is EQ), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let Inn be $isize^-1($size(Fnn)).
+  d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Return v128.
+5. If (vrelop__u0 is NE), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let Inn be $isize^-1($size(Fnn)).
+  d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Return v128.
+6. If (vrelop__u0 is LT), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let Inn be $isize^-1($size(Fnn)).
+  d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Return v128.
+7. If (vrelop__u0 is GT), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let Inn be $isize^-1($size(Fnn)).
+  d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Return v128.
+8. If (vrelop__u0 is LE), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  b. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  c. Let Inn be $isize^-1($size(Fnn)).
+  d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Inn X M), lane_3*).
+  f. Return v128.
 9. Assert: Due to validation, (vrelop__u0 is GE).
-10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-11. Let Fnn be lanetype_u1.
-12. Let lane_1* be $lanes_((Fnn X M), v128_1).
-13. Let lane_2* be $lanes_((Fnn X M), v128_2).
-14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X M), lane_3*).
-17. Return v128.
+10. Let lane_1* be $lanes_((Fnn X M), v128_1).
+11. Let lane_2* be $lanes_((Fnn X M), v128_2).
+12. Let Inn be $isize^-1($size(Fnn)).
+13. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
+14. Let v128 be $invlanes_((Inn X M), lane_3*).
+15. Return v128.
 
 vcvtop__ (lanetype_u2 X M_1) (lanetype_u0 X M_2) vcvtop_u1 lane__u4
 1. If the type of lanetype_u2 is Jnn, then:
   a. Let Jnn_1 be lanetype_u2.
   b. If the type of lanetype_u0 is Jnn, then:
     1) Let Jnn_2 be lanetype_u0.
-    2) Let iN_1 be lane__u4.
-    3) If vcvtop_u1 is of the case EXTEND, then:
+    2) If vcvtop_u1 is of the case EXTEND, then:
       a) Let (EXTEND sx) be vcvtop_u1.
-      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
-      c) Return [iN_2].
-2. If the type of lanetype_u0 is Fnn, then:
-  a. Let Fnn_2 be lanetype_u0.
-  b. If the type of lanetype_u2 is Jnn, then:
-    1) Let Jnn_1 be lanetype_u2.
-    2) Let iN_1 be lane__u4.
-    3) If vcvtop_u1 is of the case CONVERT, then:
-      a) Let (CONVERT sx) be vcvtop_u1.
-      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
-      c) Return [fN_2].
-3. If the type of lanetype_u2 is Fnn, then:
-  a. Let Fnn_1 be lanetype_u2.
-  b. If the type of lanetype_u0 is Inn, then:
-    1) Let Inn_2 be lanetype_u0.
-    2) Let fN_1 be lane__u4.
-    3) If vcvtop_u1 is of the case TRUNC_SAT, then:
-      a) Let (TRUNC_SAT sx) be vcvtop_u1.
-      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
-      c) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
-4. If ((vcvtop_u1 is DEMOTE) and the type of lanetype_u2 is Fnn), then:
-  a. Let Fnn_1 be lanetype_u2.
-  b. If the type of lanetype_u0 is Fnn, then:
+      b) Let iN_1 be lane__u4.
+      c) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      d) Return [iN_2].
+  c. If the type of lanetype_u0 is Fnn, then:
     1) Let Fnn_2 be lanetype_u0.
+    2) If vcvtop_u1 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be vcvtop_u1.
+      b) Let iN_1 be lane__u4.
+      c) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      d) Return [fN_2].
+2. Assert: Due to validation, the type of lanetype_u2 is Fnn.
+3. Let Fnn_1 be lanetype_u2.
+4. If the type of lanetype_u0 is Inn, then:
+  a. Let Inn_2 be lanetype_u0.
+  b. If vcvtop_u1 is of the case TRUNC_SAT, then:
+    1) Let (TRUNC_SAT sx) be vcvtop_u1.
     2) Let fN_1 be lane__u4.
-    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-    4) Return fN_2*.
-5. Assert: Due to validation, (vcvtop_u1 is PROMOTE).
-6. Assert: Due to validation, the type of lanetype_u2 is Fnn.
-7. Let Fnn_1 be lanetype_u2.
-8. Assert: Due to validation, the type of lanetype_u0 is Fnn.
-9. Let Fnn_2 be lanetype_u0.
-10. Let fN_1 be lane__u4.
-11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-12. Return fN_2*.
+    3) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+    4) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
+5. Assert: Due to validation, the type of lanetype_u0 is Fnn.
+6. Let Fnn_2 be lanetype_u0.
+7. Let fN_1 be lane__u4.
+8. If (vcvtop_u1 is DEMOTE), then:
+  a. Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+  b. Return fN_2*.
+9. Assert: Due to validation, (vcvtop_u1 is PROMOTE).
+10. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+11. Return fN_2*.
 
 vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
@@ -12127,24 +11467,24 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
 allocmodule module externaddr* val* ref**
-1. Let fa_ex* be $funcs(externaddr*).
-2. Let ga_ex* be $globals(externaddr*).
-3. Let ma_ex* be $mems(externaddr*).
-4. Let ta_ex* be $tables(externaddr*).
-5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem_4^n_elem data_5^n_data start? export*) be module.
-7. Assert: Due to validation, data_5 is of the case DATA^n_data.
-8. Let (DATA byte* datamode)^n_data be data_5^n_data.
-9. Assert: Due to validation, elem_4 is of the case ELEM^n_elem.
-10. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4^n_elem.
-11. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
-12. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
-13. Assert: Due to validation, table_2 is of the case TABLE^n_table.
-14. Let (TABLE tabletype)^n_table be table_2^n_table.
-15. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
-16. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
-17. Assert: Due to validation, type_0 is of the case TYPE*.
-18. Let (TYPE ft)* be type_0*.
+1. Assert: Due to validation, module is of the case MODULE.
+2. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem_4^n_elem data_5^n_data start? export*) be module.
+3. Assert: Due to validation, data_5 is of the case DATA^n_data.
+4. Let (DATA byte* datamode)^n_data be data_5^n_data.
+5. Assert: Due to validation, elem_4 is of the case ELEM^n_elem.
+6. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4^n_elem.
+7. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
+8. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
+9. Assert: Due to validation, table_2 is of the case TABLE^n_table.
+10. Let (TABLE tabletype)^n_table be table_2^n_table.
+11. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
+12. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+13. Assert: Due to validation, type_0 is of the case TYPE*.
+14. Let (TYPE ft)* be type_0*.
+15. Let fa_ex* be $funcs(externaddr*).
+16. Let ga_ex* be $globals(externaddr*).
+17. Let ma_ex* be $mems(externaddr*).
+18. Let ta_ex* be $tables(externaddr*).
 19. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
 20. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
 21. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
@@ -15541,11 +14881,11 @@ watsup 0.4 generator
 
       #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
-      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
       #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-         a) Pop the current :math:`\mathsf{frame}` context from the stack.
+         a) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+         #) Pop the current :math:`\mathsf{frame}` context from the stack.
 
          #) Trap.
 
@@ -15590,53 +14930,43 @@ watsup 0.4 generator
 
    a. Trap.
 
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon` and :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
 
    a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+   #. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
 
-#. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
+      1) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   #. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
-      #) Pop the current :math:`\mathsf{label}` context from the stack.
+      1) Pop the current :math:`\mathsf{label}` context from the stack.
 
       #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
       #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-#. Else:
+   #. Else:
 
-   a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
+      1) If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-      1) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
-
-         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-         #) Pop the current :math:`\mathsf{frame}` context from the stack.
+         a) Pop the current :math:`\mathsf{frame}` context from the stack.
 
          #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
          #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-   #. Else if not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
+      #) Else if not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
-      1) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
+         a) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
 
-   #. Else:
+      #) Else:
 
-      1) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current :math:`\mathsf{handler}` context.
-
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
-
-         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+         a) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current :math:`\mathsf{handler}` context.
 
          #) If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
@@ -15779,6 +15109,10 @@ watsup 0.4 generator
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
                   #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+#. Else if not the first non-value entry of the stack is a :math:`\mathsf{label}` and not the first non-value entry of the stack is a :math:`\mathsf{frame}` and not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
+
+   a. Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -16929,8 +16263,6 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}`.
 
-#. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
-
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
@@ -16938,6 +16270,8 @@ watsup 0.4 generator
 #. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16958,13 +16292,13 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`a` be :math:`{|z{.}\mathsf{structs}|}`.
-
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
 #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^{n}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
 #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{{\mathit{fieldtype}}_0^{n}}`.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{structs}|}`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17016,17 +16350,17 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Let :math:`a` be :math:`{|z{.}\mathsf{arrays}|}`.
-
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
 #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{arrays}|}`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
 #. Let :math:`{\mathit{ai}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
 
@@ -19749,97 +19083,61 @@ watsup 0.4 generator
 ......................................................................................................................................................................
 
 
-1. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
    #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-   #. Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{clz}`, then:
 
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ctz}`, then:
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
-   #. Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
+   #. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}`, then:
 
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
    #. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`.
 
    #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
    #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
-
-#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
-
-#. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
+
+   a. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
+
+   a. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}`, then:
+
+   a. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}`, then:
+
+   a. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}`, then:
+
+   a. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
+
+#. If :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}`, then:
+
+   a. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
+
+#. Assert: Due to validation, :math:`{\mathit{unop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{fN}})`.
 
@@ -19848,7 +19146,7 @@ watsup 0.4 generator
 .....................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -19856,35 +19154,17 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
 
-   #. Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{div}`, then:
 
@@ -19898,53 +19178,21 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{and}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}`, then:
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}`, then:
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{or}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{xor}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`, then:
 
@@ -19952,87 +19200,13 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotl}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+   #. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}`, then:
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{rotr}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
+      1) Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
@@ -20041,6 +19215,32 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
+
+   a. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
+
+   a. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
+
+   a. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}`, then:
+
+   a. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}`, then:
+
+   a. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}`, then:
+
+   a. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{binop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -20056,7 +19256,7 @@ watsup 0.4 generator
 .....................................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -20064,25 +19264,13 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
 
-   #. Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
+   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
 
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+      1) Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
@@ -20108,58 +19296,6 @@ watsup 0.4 generator
 
       #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
-
 #. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
@@ -20167,6 +19303,28 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
+
+   a. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
+
+   a. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}`, then:
+
+   a. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}`, then:
+
+   a. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. If :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}`, then:
+
+   a. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{relop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -20183,25 +19341,19 @@ watsup 0.4 generator
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{extend}`, then:
 
          a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
          #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
-
-#. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{wrap}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Inn, then:
-
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
       #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{wrap}`, then:
+
+         a) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
@@ -20211,11 +19363,11 @@ watsup 0.4 generator
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{trunc}`, then:
 
          a) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
@@ -20223,25 +19375,27 @@ watsup 0.4 generator
 
          a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
+         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
          #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
       #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{convert}`, then:
 
          a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
          #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-#. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{promote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
 
    a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
@@ -20251,33 +19405,25 @@ watsup 0.4 generator
 
       #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{promote}`, then:
 
-#. If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
+         a) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{demote}`, then:
+
+         a) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
    #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
 
       1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
-
-      #) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
-
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is Fnn, then:
-
-   a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-      1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
       #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
 
-      #) If :math:`{|{{\mathsf{i}}{N}}_1|}` is :math:`{|{{\mathsf{f}}{N}}_2|}`, then:
+      #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{N}}_1|}` is :math:`{|{{\mathsf{f}}{N}}_2|}`, then:
 
          a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{N}}_1, {{\mathsf{f}}{N}}_2}({\mathit{iN}}_1)`.
 
@@ -20290,6 +19436,8 @@ watsup 0.4 generator
 #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_u{\kern-0.1em\scriptstyle 3}}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{reinterpret}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathsf{f}}{N}}_1|}` is :math:`{|{{\mathsf{i}}{N}}_2|}`.
 
@@ -20387,17 +19535,19 @@ watsup 0.4 generator
 ......................................................................................
 
 
-1. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
 
-   a. Return :math:`i`.
+   a. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}`, then:
 
-#. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{high}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
+      1) Return :math:`i`.
 
-   a. Return :math:`j`.
+   #. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{high}`, then:
 
-#. Assert: Due to validation, :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}`.
+      1) Return :math:`j`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn.
+
+#. Assert: Due to validation, :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{low}`.
 
 #. Return :math:`i`.
 
@@ -20463,65 +19613,51 @@ watsup 0.4 generator
 ..............................................................................................................................................................
 
 
-1. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iabs}}, {\mathit{vN}}_1)`.
+   #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      1) Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iabs}}, {\mathit{vN}}_1)`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
 
-   #. Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ineg}}, {\mathit{vN}}_1)`.
+      1) Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ineg}}, {\mathit{vN}}_1)`.
 
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+   #. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{popcnt}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ipopcnt}}, {\mathit{vN}}_1)`.
-
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fabs}}, {\mathit{vN}}_1)`.
-
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fneg}}, {\mathit{vN}}_1)`.
-
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fsqrt}}, {\mathit{vN}}_1)`.
-
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fceil}}, {\mathit{vN}}_1)`.
-
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{ffloor}}, {\mathit{vN}}_1)`.
-
-#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{ftrunc}}, {\mathit{vN}}_1)`.
-
-#. Assert: Due to validation, :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
+      1) Return :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ipopcnt}}, {\mathit{vN}}_1)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{abs}`, then:
+
+   a. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fabs}}, {\mathit{vN}}_1)`.
+
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{neg}`, then:
+
+   a. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fneg}}, {\mathit{vN}}_1)`.
+
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sqrt}`, then:
+
+   a. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fsqrt}}, {\mathit{vN}}_1)`.
+
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ceil}`, then:
+
+   a. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fceil}}, {\mathit{vN}}_1)`.
+
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{floor}`, then:
+
+   a. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{ffloor}}, {\mathit{vN}}_1)`.
+
+#. If :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{trunc}`, then:
+
+   a. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{ftrunc}}, {\mathit{vN}}_1)`.
+
+#. Assert: Due to validation, :math:`{\mathit{vunop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fvunop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fnearest}}, {\mathit{vN}}_1)`.
 
@@ -20569,27 +19705,21 @@ watsup 0.4 generator
 ................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      1) Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
 
-   #. Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{isub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+      1) Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{isub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{imul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{ivbinop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{imul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{add\_sat}`, then:
 
@@ -20615,65 +19745,47 @@ watsup 0.4 generator
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{imax}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is , then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iavgr}}, \mathsf{u}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   #. Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iavgr}}, \mathsf{u}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is , then:
 
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is  and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fsub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fdiv}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fpmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmax}`.
+      1) Return :math:`{{\mathrm{ivbinopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{add}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fadd}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{sub}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fsub}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{mul}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmul}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{div}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fdiv}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{min}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{max}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmin}`, then:
+
+   a. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fpmin}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{vbinop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{pmax}`.
 
 #. Return :math:`{{\mathrm{fvbinop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fpmax}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
@@ -20725,21 +19837,17 @@ watsup 0.4 generator
 ................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
 
    a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. Return :math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ieq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
+      1) Return :math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ieq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+   #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
 
-   #. Return :math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ine}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      1) Return :math:`{{\mathrm{ivrelop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ine}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
    #. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{lt}`, then:
 
@@ -20765,41 +19873,31 @@ watsup 0.4 generator
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ige}}, {\mathit{sx}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{feq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fne}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{flt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fgt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn, then:
-
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fle}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
-
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Fnn.
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{eq}`, then:
+
+   a. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{feq}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ne}`, then:
+
+   a. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fne}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{lt}`, then:
+
+   a. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{flt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{gt}`, then:
+
+   a. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fgt}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. If :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{le}`, then:
+
+   a. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fle}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{vrelop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fge}}, {\mathit{vN}}_1, {\mathit{vN}}_2)`.
 
@@ -20816,77 +19914,61 @@ watsup 0.4 generator
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
-
       #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{extend}`, then:
 
          a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
 
          #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
          #) Return :math:`{\mathit{iN}}_2`.
 
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
+   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Jnn, then:
-
-      1) Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
-
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
       #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{convert}`, then:
 
          a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+
          #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
          #) Return :math:`{\mathit{fN}}_2`.
 
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Fnn, then:
-
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-      #) If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
-
-         a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-         #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
-
-         #) Return :math:`{{\mathit{iN}}_2^?}`.
-
-#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{demote}` and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Fnn, then:
-
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
-
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
-
-      #) Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
-
-      #) Return :math:`{{\mathit{fN}}_2^\ast}`.
-
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{promote}`.
-
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Fnn.
 
 #. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+
+#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+
+   a. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{trunc\_sat}`, then:
+
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+      #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
+
+      #) Return :math:`{{\mathit{iN}}_2^?}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
 
 #. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_u{\kern-0.1em\scriptstyle 5}}}`.
+
+#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{demote}`, then:
+
+   a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
+
+   #. Return :math:`{{\mathit{fN}}_2^\ast}`.
+
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{promote}`.
 
 #. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
@@ -21034,21 +20116,21 @@ watsup 0.4 generator
 ..................................................................................................................................................
 
 
-1. Let :math:`{\mathit{val}}` be :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype, then:
 
-#. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype, then:
+   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   a. Return :math:`{\mathit{val}}`.
+   #. Return :math:`{\mathit{val}}`.
+
+#. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
+
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{const}`.
 
 #. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`\mathsf{i{\scriptstyle 32}}`.
-
-#. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype.
-
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
 #. Return :math:`({\mathit{packtype}}{.}\mathsf{pack}~{{\mathrm{wrap}}}_{32, {|{\mathit{packtype}}|}}(i))`.
 
@@ -21057,27 +20139,25 @@ watsup 0.4 generator
 ...........................................................................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+1. If the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype and the type of :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is val, then:
 
-   a. Assert: Due to validation, the type of :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is val.
+   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   #. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   #. Assert: Due to validation, the type of :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valtype.
+      1) Return :math:`{\mathit{val}}`.
 
-   #. Return :math:`{\mathit{val}}`.
+#. Assert: Due to validation, :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{pack}`.
 
-#. Else:
+#. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   a. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+#. Assert: Due to validation, :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined.
 
-   #. Assert: Due to validation, :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{pack}`.
+#. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-   #. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be :math:`{\mathit{fieldval}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
 
-   #. Assert: Due to validation, :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{packtype}}`.
-
-   #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
+#. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
@@ -21847,7 +20927,11 @@ watsup 0.4 generator
 ..................................................................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
+1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
+
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+
+#. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
 #. Let :math:`{{\mathit{ga}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
@@ -21856,10 +20940,6 @@ watsup 0.4 generator
 #. Let :math:`{{\mathit{ma}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
 
 #. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
-
-#. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
-
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
 
@@ -21992,9 +21072,9 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{val}}` be :math:`{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}})`.
-
 #. Let :math:`f` be :math:`z`.
+
+#. Let :math:`{\mathit{val}}` be :math:`{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}})`.
 
 #. Let :math:`a` be :math:`{\mathrm{allocglobal}}({\mathit{gt}}, {\mathit{val}})`.
 
@@ -22086,13 +21166,13 @@ watsup 0.4 generator
 .....................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+1. Assert: Due to validation, :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
 
 #. Let :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` be :math:`{\mathit{functype}}_0`.
+
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{{\mathrm{Val}}_{\mathit{type}}({\mathit{val}}, t_1)^\ast}`.
 
@@ -24021,11 +23101,11 @@ Step_read/return_call_ref yy
 4. Else if the first non-value entry of the stack is a FRAME_, then:
   a. Assert: Due to validation, a value is on the top of the stack.
   b. Pop the value instr_u0 from the stack.
-  c. Pop all values val* from the top of the stack.
-  d. If instr_u0 is of the case REF.NULL, then:
-    1) Pop the current FRAME_ context from the stack.
-    2) Trap.
-  e. If instr_u0 is of the case REF.FUNC_ADDR, then:
+  c. If instr_u0 is of the case REF.NULL, then:
+    1) Pop all values val* from the top of the stack.
+    2) Pop the current FRAME_ context from the stack.
+    3) Trap.
+  d. If instr_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_u0.
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
@@ -24045,29 +23125,24 @@ Step_read/throw_ref
 3. Pop the value instr_u0 from the stack.
 4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. Pop all values val* from the top of the stack.
-6. If ((val* is not []) and instr_u0 is of the case REF.EXN_ADDR), then:
+5. If instr_u0 is of the case REF.EXN_ADDR, then:
   a. Let (REF.EXN_ADDR a) be instr_u0.
-  b. Push the value (REF.EXN_ADDR a) to the stack.
-  c. Execute the instruction THROW_REF.
-7. Else if the first non-value entry of the stack is a LABEL_, then:
-  a. If instr_u0 is of the case REF.EXN_ADDR, then:
-    1) Let (REF.EXN_ADDR a) be instr_u0.
-    2) Pop the current LABEL_ context from the stack.
-    3) Push the value (REF.EXN_ADDR a) to the stack.
-    4) Execute the instruction THROW_REF.
-8. Else if the first non-value entry of the stack is a FRAME_, then:
-  a. If instr_u0 is of the case REF.EXN_ADDR, then:
-    1) Let (REF.EXN_ADDR a) be instr_u0.
-    2) Pop the current FRAME_ context from the stack.
-    3) Push the value (REF.EXN_ADDR a) to the stack.
-    4) Execute the instruction THROW_REF.
-9. Else if not the first non-value entry of the stack is a HANDLER_, then:
-  a. Throw the exception instr_u0 as a result.
-10. Else:
-  a. Let (HANDLER_ n { catch_u1* }) be the current HANDLER_ context.
-  b. If instr_u0 is of the case REF.EXN_ADDR, then:
-    1) Let (REF.EXN_ADDR a) be instr_u0.
+  b. Pop all values val* from the top of the stack.
+  c. If (val* is not []), then:
+    1) Push the value (REF.EXN_ADDR a) to the stack.
+    2) Execute the instruction THROW_REF.
+  d. Else if the first non-value entry of the stack is a LABEL_, then:
+    1) Pop the current LABEL_ context from the stack.
+    2) Push the value (REF.EXN_ADDR a) to the stack.
+    3) Execute the instruction THROW_REF.
+  e. Else if the first non-value entry of the stack is a FRAME_, then:
+    1) Pop the current FRAME_ context from the stack.
+    2) Push the value (REF.EXN_ADDR a) to the stack.
+    3) Execute the instruction THROW_REF.
+  f. Else if not the first non-value entry of the stack is a HANDLER_, then:
+    1) Throw the exception instr_u0 as a result.
+  g. Else:
+    1) Let (HANDLER_ n { catch_u1* }) be the current HANDLER_ context.
     2) If (catch_u1* is []), then:
       a) Pop the current HANDLER_ context from the stack.
       b) Push the value (REF.EXN_ADDR a) to the stack.
@@ -24138,6 +23213,8 @@ Step_read/throw_ref
         2. Pop the current HANDLER_ context from the stack.
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
+6. Else if ((not the first non-value entry of the stack is a LABEL_ and not the first non-value entry of the stack is a FRAME_) and not the first non-value entry of the stack is a HANDLER_), then:
+  a. Throw the exception instr_u0 as a result.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
@@ -24696,11 +23773,11 @@ Step_read/memory.init x y
 Step/throw x
 1. Let z be the current state.
 2. Assert: Due to validation, (x < |$tagaddr(z)|).
-3. Let a be |$exninst(z)|.
-4. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
-5. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
-6. Let (t^n -> valtype_1) be functype_0.
-7. Assert: Due to validation, (valtype_1 is []).
+3. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
+4. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
+5. Let (t^n -> valtype_1) be functype_0.
+6. Assert: Due to validation, (valtype_1 is []).
+7. Let a be |$exninst(z)|.
 8. Assert: Due to validation, there are at least n values on the top of the stack.
 9. Pop the values val^n from the stack.
 10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
@@ -24710,10 +23787,10 @@ Step/throw x
 
 Step/struct.new x
 1. Let z be the current state.
-2. Let a be |$structinst(z)|.
-3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-4. Let (STRUCT fieldtype_0^n) be $expanddt($type(z, x)).
-5. Let (mut, zt)^n be fieldtype_0^n.
+2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+3. Let (STRUCT fieldtype_0^n) be $expanddt($type(z, x)).
+4. Let (mut, zt)^n be fieldtype_0^n.
+5. Let a be |$structinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
@@ -24738,12 +23815,12 @@ Step/struct.set x i
 
 Step/array.new_fixed x n
 1. Let z be the current state.
-2. Assert: Due to validation, there are at least n values on the top of the stack.
-3. Pop the values val^n from the stack.
-4. Let a be |$arrayinst(z)|.
-5. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-6. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-7. Let (mut, zt) be arraytype_0.
+2. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+3. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+4. Let (mut, zt) be arraytype_0.
+5. Let a be |$arrayinst(z)|.
+6. Assert: Due to validation, there are at least n values on the top of the stack.
+7. Pop the values val^n from the stack.
 8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
 9. Push the value (REF.ARRAY_ADDR a) to the stack.
 10. Perform $add_arrayinst(z, [ai]).
@@ -26015,277 +25092,184 @@ invsigned_ N i
 2. Return j.
 
 unop_ numtype_u1 unop__u0 num__u3
-1. If ((unop__u0 is CLZ) and the type of numtype_u1 is Inn), then:
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
   b. Let iN be num__u3.
-  c. Return [$iclz_($sizenn(Inn), iN)].
-2. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ictz_($sizenn(Inn), iN)].
-3. If ((unop__u0 is POPCNT) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ipopcnt_($sizenn(Inn), iN)].
-4. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Assert: Due to validation, unop__u0 is of the case EXTEND.
-  c. Let (EXTEND M) be unop__u0.
-  d. Let iN be num__u3.
-  e. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
-5. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fabs_($sizenn(Fnn), fN).
-6. If ((unop__u0 is NEG) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fneg_($sizenn(Fnn), fN).
-7. If ((unop__u0 is SQRT) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fsqrt_($sizenn(Fnn), fN).
-8. If ((unop__u0 is CEIL) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fceil_($sizenn(Fnn), fN).
-9. If ((unop__u0 is FLOOR) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ffloor_($sizenn(Fnn), fN).
-10. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ftrunc_($sizenn(Fnn), fN).
+  c. If (unop__u0 is CLZ), then:
+    1) Return [$iclz_($sizenn(Inn), iN)].
+  d. If (unop__u0 is CTZ), then:
+    1) Return [$ictz_($sizenn(Inn), iN)].
+  e. If (unop__u0 is POPCNT), then:
+    1) Return [$ipopcnt_($sizenn(Inn), iN)].
+  f. Assert: Due to validation, unop__u0 is of the case EXTEND.
+  g. Let (EXTEND M) be unop__u0.
+  h. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
+2. Assert: Due to validation, the type of numtype_u1 is Fnn.
+3. Let Fnn be numtype_u1.
+4. Let fN be num__u3.
+5. If (unop__u0 is ABS), then:
+  a. Return $fabs_($sizenn(Fnn), fN).
+6. If (unop__u0 is NEG), then:
+  a. Return $fneg_($sizenn(Fnn), fN).
+7. If (unop__u0 is SQRT), then:
+  a. Return $fsqrt_($sizenn(Fnn), fN).
+8. If (unop__u0 is CEIL), then:
+  a. Return $fceil_($sizenn(Fnn), fN).
+9. If (unop__u0 is FLOOR), then:
+  a. Return $ffloor_($sizenn(Fnn), fN).
+10. If (unop__u0 is TRUNC), then:
+  a. Return $ftrunc_($sizenn(Fnn), fN).
 11. Assert: Due to validation, (unop__u0 is NEAREST).
-12. Assert: Due to validation, the type of numtype_u1 is Fnn.
-13. Let Fnn be numtype_u1.
-14. Let fN be num__u3.
-15. Return $fnearest_($sizenn(Fnn), fN).
+12. Return $fnearest_($sizenn(Fnn), fN).
 
 binop_ numtype_u1 binop__u0 num__u3 num__u5
-1. If ((binop__u0 is ADD) and the type of numtype_u1 is Inn), then:
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
-  d. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
-2. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
-3. If ((binop__u0 is MUL) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
-4. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case DIV, then:
+  d. If (binop__u0 is ADD), then:
+    1) Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
+  e. If (binop__u0 is SUB), then:
+    1) Return [$isub_($sizenn(Inn), iN_1, iN_2)].
+  f. If (binop__u0 is MUL), then:
+    1) Return [$imul_($sizenn(Inn), iN_1, iN_2)].
+  g. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
     2) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
-  e. If binop__u0 is of the case REM, then:
+  h. If binop__u0 is of the case REM, then:
     1) Let (REM sx) be binop__u0.
     2) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
-5. If ((binop__u0 is AND) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
-6. If ((binop__u0 is OR) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
-7. If ((binop__u0 is XOR) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
-8. If ((binop__u0 is SHL) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
-9. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case SHR, then:
+  i. If (binop__u0 is AND), then:
+    1) Return [$iand_($sizenn(Inn), iN_1, iN_2)].
+  j. If (binop__u0 is OR), then:
+    1) Return [$ior_($sizenn(Inn), iN_1, iN_2)].
+  k. If (binop__u0 is XOR), then:
+    1) Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
+  l. If (binop__u0 is SHL), then:
+    1) Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
+  m. If binop__u0 is of the case SHR, then:
     1) Let (SHR sx) be binop__u0.
     2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
-10. If ((binop__u0 is ROTL) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
-11. If ((binop__u0 is ROTR) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
-12. If ((binop__u0 is ADD) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
-13. If ((binop__u0 is SUB) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
-14. If ((binop__u0 is MUL) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
-15. If ((binop__u0 is DIV) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
-16. If ((binop__u0 is MIN) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
-17. If ((binop__u0 is MAX) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
-18. Assert: Due to validation, (binop__u0 is COPYSIGN).
-19. Assert: Due to validation, the type of numtype_u1 is Fnn.
-20. Let Fnn be numtype_u1.
-21. Let fN_1 be num__u3.
-22. Let fN_2 be num__u5.
-23. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
+  n. If (binop__u0 is ROTL), then:
+    1) Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
+  o. If (binop__u0 is ROTR), then:
+    1) Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
+2. Assert: Due to validation, the type of numtype_u1 is Fnn.
+3. Let Fnn be numtype_u1.
+4. Let fN_1 be num__u3.
+5. Let fN_2 be num__u5.
+6. If (binop__u0 is ADD), then:
+  a. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
+7. If (binop__u0 is SUB), then:
+  a. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
+8. If (binop__u0 is MUL), then:
+  a. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
+9. If (binop__u0 is DIV), then:
+  a. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
+10. If (binop__u0 is MIN), then:
+  a. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
+11. If (binop__u0 is MAX), then:
+  a. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
+12. Assert: Due to validation, (binop__u0 is COPYSIGN).
+13. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($sizenn(Inn), iN).
 
 relop_ numtype_u1 relop__u0 num__u3 num__u5
-1. If ((relop__u0 is EQ) and the type of numtype_u1 is Inn), then:
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
-  d. Return $ieq_($sizenn(Inn), iN_1, iN_2).
-2. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return $ine_($sizenn(Inn), iN_1, iN_2).
-3. If the type of numtype_u1 is Inn, then:
-  a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If relop__u0 is of the case LT, then:
+  d. If (relop__u0 is EQ), then:
+    1) Return $ieq_($sizenn(Inn), iN_1, iN_2).
+  e. If (relop__u0 is NE), then:
+    1) Return $ine_($sizenn(Inn), iN_1, iN_2).
+  f. If relop__u0 is of the case LT, then:
     1) Let (LT sx) be relop__u0.
     2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
-  e. If relop__u0 is of the case GT, then:
+  g. If relop__u0 is of the case GT, then:
     1) Let (GT sx) be relop__u0.
     2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
-  f. If relop__u0 is of the case LE, then:
+  h. If relop__u0 is of the case LE, then:
     1) Let (LE sx) be relop__u0.
     2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
-  g. If relop__u0 is of the case GE, then:
+  i. If relop__u0 is of the case GE, then:
     1) Let (GE sx) be relop__u0.
     2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
-4. If ((relop__u0 is EQ) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $feq_($sizenn(Fnn), fN_1, fN_2).
-5. If ((relop__u0 is NE) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fne_($sizenn(Fnn), fN_1, fN_2).
-6. If ((relop__u0 is LT) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $flt_($sizenn(Fnn), fN_1, fN_2).
-7. If ((relop__u0 is GT) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
-8. If ((relop__u0 is LE) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fle_($sizenn(Fnn), fN_1, fN_2).
-9. Assert: Due to validation, (relop__u0 is GE).
-10. Assert: Due to validation, the type of numtype_u1 is Fnn.
-11. Let Fnn be numtype_u1.
-12. Let fN_1 be num__u3.
-13. Let fN_2 be num__u5.
-14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
+2. Assert: Due to validation, the type of numtype_u1 is Fnn.
+3. Let Fnn be numtype_u1.
+4. Let fN_1 be num__u3.
+5. Let fN_2 be num__u5.
+6. If (relop__u0 is EQ), then:
+  a. Return $feq_($sizenn(Fnn), fN_1, fN_2).
+7. If (relop__u0 is NE), then:
+  a. Return $fne_($sizenn(Fnn), fN_1, fN_2).
+8. If (relop__u0 is LT), then:
+  a. Return $flt_($sizenn(Fnn), fN_1, fN_2).
+9. If (relop__u0 is GT), then:
+  a. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
+10. If (relop__u0 is LE), then:
+  a. Return $fle_($sizenn(Fnn), fN_1, fN_2).
+11. Assert: Due to validation, (relop__u0 is GE).
+12. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
 cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
 1. If the type of numtype_u1 is Inn, then:
   a. Let Inn_1 be numtype_u1.
   b. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) If cvtop___u0 is of the case EXTEND, then:
+    2) If cvtop___u0 is of the case EXTEND, then:
       a) Let (EXTEND sx) be cvtop___u0.
-      b) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
-2. If ((cvtop___u0 is WRAP) and the type of numtype_u1 is Inn), then:
-  a. Let Inn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
-    1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
-3. If the type of numtype_u1 is Fnn, then:
+      b) Let iN_1 be num__u3.
+      c) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+    3) Let iN_1 be num__u3.
+    4) If (cvtop___u0 is WRAP), then:
+      a) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+2. If the type of numtype_u1 is Fnn, then:
   a. Let Fnn_1 be numtype_u1.
   b. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) If cvtop___u0 is of the case TRUNC, then:
+    2) If cvtop___u0 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop___u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-    4) If cvtop___u0 is of the case TRUNC_SAT, then:
+      b) Let fN_1 be num__u3.
+      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    3) If cvtop___u0 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop___u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-4. If the type of numtype_u4 is Fnn, then:
-  a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
-    1) Let Inn_1 be numtype_u1.
-    2) Let iN_1 be num__u3.
-    3) If cvtop___u0 is of the case CONVERT, then:
+      b) Let fN_1 be num__u3.
+      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+3. If the type of numtype_u1 is Inn, then:
+  a. Let Inn_1 be numtype_u1.
+  b. If the type of numtype_u4 is Fnn, then:
+    1) Let Fnn_2 be numtype_u4.
+    2) If cvtop___u0 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop___u0.
-      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
-5. If ((cvtop___u0 is PROMOTE) and the type of numtype_u1 is Fnn), then:
+      b) Let iN_1 be num__u3.
+      c) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+4. If the type of numtype_u1 is Fnn, then:
   a. Let Fnn_1 be numtype_u1.
   b. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
     2) Let fN_1 be num__u3.
-    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-6. If ((cvtop___u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
-  a. Let Fnn_1 be numtype_u1.
+    3) If (cvtop___u0 is PROMOTE), then:
+      a) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+    4) If (cvtop___u0 is DEMOTE), then:
+      a) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+5. If the type of numtype_u1 is Inn, then:
+  a. Let Inn_1 be numtype_u1.
   b. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-7. Assert: Due to validation, (cvtop___u0 is REINTERPRET).
-8. If the type of numtype_u4 is Fnn, then:
-  a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
-    1) Let Inn_1 be numtype_u1.
     2) Let iN_1 be num__u3.
-    3) If ($size(Inn_1) is $size(Fnn_2)), then:
+    3) If ((cvtop___u0 is REINTERPRET) and ($size(Inn_1) is $size(Fnn_2))), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
-9. Assert: Due to validation, the type of numtype_u1 is Fnn.
-10. Let Fnn_1 be numtype_u1.
-11. Assert: Due to validation, the type of numtype_u4 is Inn.
-12. Let Inn_2 be numtype_u4.
-13. Let fN_1 be num__u3.
-14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
-15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
+6. Assert: Due to validation, the type of numtype_u1 is Fnn.
+7. Let Fnn_1 be numtype_u1.
+8. Assert: Due to validation, the type of numtype_u4 is Inn.
+9. Let Inn_2 be numtype_u4.
+10. Let fN_1 be num__u3.
+11. Assert: Due to validation, (cvtop___u0 is REINTERPRET).
+12. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
+13. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -26328,13 +25312,14 @@ invlanes_ sh c*
 2. Return vc.
 
 half__ (lanetype_u1 X M_1) (lanetype_u2 X M_2) half___u0 i j
-1. If ((half___u0 is LOW) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
-  a. Return i.
-2. If ((half___u0 is HIGH) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
-  a. Return j.
+1. If (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn), then:
+  a. If (half___u0 is LOW), then:
+    1) Return i.
+  b. If (half___u0 is HIGH), then:
+    1) Return j.
+2. Assert: Due to validation, the type of lanetype_u2 is Fnn.
 3. Assert: Due to validation, (half___u0 is LOW).
-4. Assert: Due to validation, the type of lanetype_u2 is Fnn.
-5. Return i.
+4. Return i.
 
 vvunop_ V128 NOT v128
 1. Return [$inot_($vsize(V128), v128)].
@@ -26363,37 +25348,30 @@ ivunop_ (Jnn X M) $f_ vN_1
 3. Return [$invlanes_((Jnn X M), c*)].
 
 vunop_ (lanetype_u1 X M) vunop__u0 vN_1
-1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivunop_((Jnn X M), $iabs_, vN_1).
-2. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivunop_((Jnn X M), $ineg_, vN_1).
-3. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivunop_((Jnn X M), $ipopcnt_, vN_1).
-4. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fabs_, vN_1).
-5. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fneg_, vN_1).
-6. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fsqrt_, vN_1).
-7. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $fceil_, vN_1).
-8. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $ffloor_, vN_1).
-9. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvunop_((Fnn X M), $ftrunc_, vN_1).
+  b. If (vunop__u0 is ABS), then:
+    1) Return $ivunop_((Jnn X M), $iabs_, vN_1).
+  c. If (vunop__u0 is NEG), then:
+    1) Return $ivunop_((Jnn X M), $ineg_, vN_1).
+  d. If (vunop__u0 is POPCNT), then:
+    1) Return $ivunop_((Jnn X M), $ipopcnt_, vN_1).
+2. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+3. Let Fnn be lanetype_u1.
+4. If (vunop__u0 is ABS), then:
+  a. Return $fvunop_((Fnn X M), $fabs_, vN_1).
+5. If (vunop__u0 is NEG), then:
+  a. Return $fvunop_((Fnn X M), $fneg_, vN_1).
+6. If (vunop__u0 is SQRT), then:
+  a. Return $fvunop_((Fnn X M), $fsqrt_, vN_1).
+7. If (vunop__u0 is CEIL), then:
+  a. Return $fvunop_((Fnn X M), $fceil_, vN_1).
+8. If (vunop__u0 is FLOOR), then:
+  a. Return $fvunop_((Fnn X M), $ffloor_, vN_1).
+9. If (vunop__u0 is TRUNC), then:
+  a. Return $fvunop_((Fnn X M), $ftrunc_, vN_1).
 10. Assert: Due to validation, (vunop__u0 is NEAREST).
-11. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-12. Let Fnn be lanetype_u1.
-13. Return $fvunop_((Fnn X M), $fnearest_, vN_1).
+11. Return $fvunop_((Fnn X M), $fnearest_, vN_1).
 
 fvbinop_ (Fnn X M) $f_ vN_1 vN_2
 1. Let c_1* be $lanes_((Fnn X M), vN_1).
@@ -26414,60 +25392,48 @@ ivbinopsx_ (Jnn X M) $f_ sx vN_1 vN_2
 4. Return [$invlanes_((Jnn X M), c*)].
 
 vbinop_ (lanetype_u1 X M) vbinop__u0 vN_1 vN_2
-1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Jnn), then:
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivbinop_((Jnn X M), $iadd_, vN_1, vN_2).
-2. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivbinop_((Jnn X M), $isub_, vN_1, vN_2).
-3. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivbinop_((Jnn X M), $imul_, vN_1, vN_2).
-4. If the type of lanetype_u1 is Jnn, then:
-  a. Let Jnn be lanetype_u1.
-  b. If vbinop__u0 is of the case ADD_SAT, then:
+  b. If (vbinop__u0 is ADD), then:
+    1) Return $ivbinop_((Jnn X M), $iadd_, vN_1, vN_2).
+  c. If (vbinop__u0 is SUB), then:
+    1) Return $ivbinop_((Jnn X M), $isub_, vN_1, vN_2).
+  d. If (vbinop__u0 is MUL), then:
+    1) Return $ivbinop_((Jnn X M), $imul_, vN_1, vN_2).
+  e. If vbinop__u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop__u0.
     2) Return $ivbinopsx_((Jnn X M), $iadd_sat_, sx, vN_1, vN_2).
-  c. If vbinop__u0 is of the case SUB_SAT, then:
+  f. If vbinop__u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop__u0.
     2) Return $ivbinopsx_((Jnn X M), $isub_sat_, sx, vN_1, vN_2).
-  d. If vbinop__u0 is of the case MIN, then:
+  g. If vbinop__u0 is of the case MIN, then:
     1) Let (MIN sx) be vbinop__u0.
     2) Return $ivbinopsx_((Jnn X M), $imin_, sx, vN_1, vN_2).
-  e. If vbinop__u0 is of the case MAX, then:
+  h. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
     2) Return $ivbinopsx_((Jnn X M), $imax_, sx, vN_1, vN_2).
-5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivbinopsx_((Jnn X M), $iavgr_, U, vN_1, vN_2).
-6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivbinopsx_((Jnn X M), $iq15mulr_sat_, S, vN_1, vN_2).
-7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fadd_, vN_1, vN_2).
-8. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fsub_, vN_1, vN_2).
-9. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fmul_, vN_1, vN_2).
-10. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fdiv_, vN_1, vN_2).
-11. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fmin_, vN_1, vN_2).
-12. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fmax_, vN_1, vN_2).
-13. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvbinop_((Fnn X M), $fpmin_, vN_1, vN_2).
-14. Assert: Due to validation, (vbinop__u0 is PMAX).
-15. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-16. Let Fnn be lanetype_u1.
-17. Return $fvbinop_((Fnn X M), $fpmax_, vN_1, vN_2).
+  i. If (vbinop__u0 is (AVGRU)), then:
+    1) Return $ivbinopsx_((Jnn X M), $iavgr_, U, vN_1, vN_2).
+  j. If (vbinop__u0 is (Q15MULR_SATS)), then:
+    1) Return $ivbinopsx_((Jnn X M), $iq15mulr_sat_, S, vN_1, vN_2).
+2. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+3. Let Fnn be lanetype_u1.
+4. If (vbinop__u0 is ADD), then:
+  a. Return $fvbinop_((Fnn X M), $fadd_, vN_1, vN_2).
+5. If (vbinop__u0 is SUB), then:
+  a. Return $fvbinop_((Fnn X M), $fsub_, vN_1, vN_2).
+6. If (vbinop__u0 is MUL), then:
+  a. Return $fvbinop_((Fnn X M), $fmul_, vN_1, vN_2).
+7. If (vbinop__u0 is DIV), then:
+  a. Return $fvbinop_((Fnn X M), $fdiv_, vN_1, vN_2).
+8. If (vbinop__u0 is MIN), then:
+  a. Return $fvbinop_((Fnn X M), $fmin_, vN_1, vN_2).
+9. If (vbinop__u0 is MAX), then:
+  a. Return $fvbinop_((Fnn X M), $fmax_, vN_1, vN_2).
+10. If (vbinop__u0 is PMIN), then:
+  a. Return $fvbinop_((Fnn X M), $fpmin_, vN_1, vN_2).
+11. Assert: Due to validation, (vbinop__u0 is PMAX).
+12. Return $fvbinop_((Fnn X M), $fpmax_, vN_1, vN_2).
 
 fvrelop_ (Fnn X M) $f_ vN_1 vN_2
 1. Let c_1* be $lanes_((Fnn X M), vN_1).
@@ -26490,89 +25456,74 @@ ivrelopsx_ (Jnn X M) $f_ sx vN_1 vN_2
 4. Return $invlanes_((Jnn X M), c*).
 
 vrelop_ (lanetype_u1 X M) vrelop__u0 vN_1 vN_2
-1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Jnn), then:
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. Return $ivrelop_((Jnn X M), $ieq_, vN_1, vN_2).
-2. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
-  a. Let Jnn be lanetype_u1.
-  b. Return $ivrelop_((Jnn X M), $ine_, vN_1, vN_2).
-3. If the type of lanetype_u1 is Jnn, then:
-  a. Let Jnn be lanetype_u1.
-  b. If vrelop__u0 is of the case LT, then:
+  b. If (vrelop__u0 is EQ), then:
+    1) Return $ivrelop_((Jnn X M), $ieq_, vN_1, vN_2).
+  c. If (vrelop__u0 is NE), then:
+    1) Return $ivrelop_((Jnn X M), $ine_, vN_1, vN_2).
+  d. If vrelop__u0 is of the case LT, then:
     1) Let (LT sx) be vrelop__u0.
     2) Return $ivrelopsx_((Jnn X M), $ilt_, sx, vN_1, vN_2).
-  c. If vrelop__u0 is of the case GT, then:
+  e. If vrelop__u0 is of the case GT, then:
     1) Let (GT sx) be vrelop__u0.
     2) Return $ivrelopsx_((Jnn X M), $igt_, sx, vN_1, vN_2).
-  d. If vrelop__u0 is of the case LE, then:
+  f. If vrelop__u0 is of the case LE, then:
     1) Let (LE sx) be vrelop__u0.
     2) Return $ivrelopsx_((Jnn X M), $ile_, sx, vN_1, vN_2).
-  e. If vrelop__u0 is of the case GE, then:
+  g. If vrelop__u0 is of the case GE, then:
     1) Let (GE sx) be vrelop__u0.
     2) Return $ivrelopsx_((Jnn X M), $ige_, sx, vN_1, vN_2).
-4. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $feq_, vN_1, vN_2).
-5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $fne_, vN_1, vN_2).
-6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $flt_, vN_1, vN_2).
-7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $fgt_, vN_1, vN_2).
-8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
-  a. Let Fnn be lanetype_u1.
-  b. Return $fvrelop_((Fnn X M), $fle_, vN_1, vN_2).
+2. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+3. Let Fnn be lanetype_u1.
+4. If (vrelop__u0 is EQ), then:
+  a. Return $fvrelop_((Fnn X M), $feq_, vN_1, vN_2).
+5. If (vrelop__u0 is NE), then:
+  a. Return $fvrelop_((Fnn X M), $fne_, vN_1, vN_2).
+6. If (vrelop__u0 is LT), then:
+  a. Return $fvrelop_((Fnn X M), $flt_, vN_1, vN_2).
+7. If (vrelop__u0 is GT), then:
+  a. Return $fvrelop_((Fnn X M), $fgt_, vN_1, vN_2).
+8. If (vrelop__u0 is LE), then:
+  a. Return $fvrelop_((Fnn X M), $fle_, vN_1, vN_2).
 9. Assert: Due to validation, (vrelop__u0 is GE).
-10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-11. Let Fnn be lanetype_u1.
-12. Return $fvrelop_((Fnn X M), $fge_, vN_1, vN_2).
+10. Return $fvrelop_((Fnn X M), $fge_, vN_1, vN_2).
 
 vcvtop__ (lanetype_u3 X M_1) (lanetype_u0 X M_2) vcvtop___u2 lane__u5
 1. If the type of lanetype_u3 is Jnn, then:
   a. Let Jnn_1 be lanetype_u3.
   b. If the type of lanetype_u0 is Jnn, then:
     1) Let Jnn_2 be lanetype_u0.
-    2) Let iN_1 be lane__u5.
-    3) If vcvtop___u2 is of the case EXTEND, then:
+    2) If vcvtop___u2 is of the case EXTEND, then:
       a) Let (EXTEND sx) be vcvtop___u2.
-      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
-      c) Return [iN_2].
-2. If the type of lanetype_u0 is Fnn, then:
-  a. Let Fnn_2 be lanetype_u0.
-  b. If the type of lanetype_u3 is Jnn, then:
-    1) Let Jnn_1 be lanetype_u3.
-    2) Let iN_1 be lane__u5.
-    3) If vcvtop___u2 is of the case CONVERT, then:
-      a) Let (CONVERT sx) be vcvtop___u2.
-      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
-      c) Return [fN_2].
-3. If the type of lanetype_u3 is Fnn, then:
-  a. Let Fnn_1 be lanetype_u3.
-  b. If the type of lanetype_u0 is Inn, then:
-    1) Let Inn_2 be lanetype_u0.
-    2) Let fN_1 be lane__u5.
-    3) If vcvtop___u2 is of the case TRUNC_SAT, then:
-      a) Let (TRUNC_SAT sx) be vcvtop___u2.
-      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
-      c) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
-4. If ((vcvtop___u2 is DEMOTE) and the type of lanetype_u3 is Fnn), then:
-  a. Let Fnn_1 be lanetype_u3.
-  b. If the type of lanetype_u0 is Fnn, then:
+      b) Let iN_1 be lane__u5.
+      c) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      d) Return [iN_2].
+  c. If the type of lanetype_u0 is Fnn, then:
     1) Let Fnn_2 be lanetype_u0.
+    2) If vcvtop___u2 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be vcvtop___u2.
+      b) Let iN_1 be lane__u5.
+      c) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      d) Return [fN_2].
+2. Assert: Due to validation, the type of lanetype_u3 is Fnn.
+3. Let Fnn_1 be lanetype_u3.
+4. If the type of lanetype_u0 is Inn, then:
+  a. Let Inn_2 be lanetype_u0.
+  b. If vcvtop___u2 is of the case TRUNC_SAT, then:
+    1) Let (TRUNC_SAT sx) be vcvtop___u2.
     2) Let fN_1 be lane__u5.
-    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-    4) Return fN_2*.
-5. Assert: Due to validation, (vcvtop___u2 is PROMOTE).
-6. Assert: Due to validation, the type of lanetype_u3 is Fnn.
-7. Let Fnn_1 be lanetype_u3.
-8. Assert: Due to validation, the type of lanetype_u0 is Fnn.
-9. Let Fnn_2 be lanetype_u0.
-10. Let fN_1 be lane__u5.
-11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-12. Return fN_2*.
+    3) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+    4) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
+5. Assert: Due to validation, the type of lanetype_u0 is Fnn.
+6. Let Fnn_2 be lanetype_u0.
+7. Let fN_1 be lane__u5.
+8. If (vcvtop___u2 is DEMOTE), then:
+  a. Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+  b. Return fN_2*.
+9. Assert: Due to validation, (vcvtop___u2 is PROMOTE).
+10. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+11. Return fN_2*.
 
 vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
@@ -26639,28 +25590,27 @@ default_ valtype_u0
 8. Return ?().
 
 packfield_ storagetype_u0 val_u1
-1. Let val be val_u1.
-2. If the type of storagetype_u0 is valtype, then:
-  a. Return val.
-3. Assert: Due to validation, val_u1 is of the case CONST.
-4. Let (numtype_0.CONST i) be val_u1.
-5. Assert: Due to validation, (numtype_0 is I32).
-6. Assert: Due to validation, the type of storagetype_u0 is packtype.
-7. Let packtype be storagetype_u0.
-8. Return (PACK packtype $wrap__(32, $psize(packtype), i)).
+1. If the type of storagetype_u0 is valtype, then:
+  a. Let val be val_u1.
+  b. Return val.
+2. Assert: Due to validation, the type of storagetype_u0 is packtype.
+3. Let packtype be storagetype_u0.
+4. Assert: Due to validation, val_u1 is of the case CONST.
+5. Let (numtype_0.CONST i) be val_u1.
+6. Assert: Due to validation, (numtype_0 is I32).
+7. Return (PACK packtype $wrap__(32, $psize(packtype), i)).
 
 unpackfield_ storagetype_u0 sx_u1? fieldval_u2
-1. If sx_u1? is not defined, then:
-  a. Assert: Due to validation, the type of fieldval_u2 is val.
-  b. Let val be fieldval_u2.
-  c. Assert: Due to validation, the type of storagetype_u0 is valtype.
-  d. Return val.
-2. Else:
-  a. Let ?(sx) be sx_u1?.
-  b. Assert: Due to validation, fieldval_u2 is of the case PACK.
-  c. Let (PACK packtype i) be fieldval_u2.
-  d. Assert: Due to validation, (storagetype_u0 is packtype).
-  e. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
+1. If (the type of storagetype_u0 is valtype and the type of fieldval_u2 is val), then:
+  a. Let val be fieldval_u2.
+  b. If sx_u1? is not defined, then:
+    1) Return val.
+2. Assert: Due to validation, fieldval_u2 is of the case PACK.
+3. Let (PACK packtype i) be fieldval_u2.
+4. Assert: Due to validation, sx_u1? is defined.
+5. Let ?(sx) be sx_u1?.
+6. Assert: Due to validation, (storagetype_u0 is packtype).
+7. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
 
 funcsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
@@ -27014,13 +25964,13 @@ allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
 allocmodule module externaddr* val_G* ref_T* ref_E**
-1. Let fa_I* be $funcsxa(externaddr*).
-2. Let ga_I* be $globalsxa(externaddr*).
-3. Let aa_I* be $tagsxa(externaddr*).
-4. Let ma_I* be $memsxa(externaddr*).
-5. Let ta_I* be $tablesxa(externaddr*).
-6. Assert: Due to validation, module is of the case MODULE.
-7. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+1. Assert: Due to validation, module is of the case MODULE.
+2. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+3. Let fa_I* be $funcsxa(externaddr*).
+4. Let ga_I* be $globalsxa(externaddr*).
+5. Let aa_I* be $tagsxa(externaddr*).
+6. Let ma_I* be $memsxa(externaddr*).
+7. Let ta_I* be $tablesxa(externaddr*).
 8. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
 9. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
 10. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
@@ -27085,8 +26035,8 @@ evalglobals z globaltype_u0* expr_u1*
 4. Let [expr] :: expr'* be expr_u1*.
 5. Assert: Due to validation, (|globaltype_u0*| ≥ 1).
 6. Let [gt] :: gt'* be globaltype_u0*.
-7. Let [val] be $eval_expr(expr).
-8. Let f be z.
+7. Let f be z.
+8. Let [val] be $eval_expr(expr).
 9. Let a be $allocglobal(gt, val).
 10. Append a to the f.MODULE.GLOBALS.
 11. Let val'* be $evalglobals(z, gt'*, expr'*).
@@ -27131,10 +26081,10 @@ instantiate z module externaddr*
 35. Return f.MODULE.
 
 invoke funcaddr val*
-1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
-3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
-4. Let (t_1* -> t_2*) be functype_0.
+1. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
+2. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
+3. Let (t_1* -> t_2*) be functype_0.
+4. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 5. Assert: Due to validation, $Val_type(val, t_1)*.
 6. Let k be |t_2*|.
 7. Push the evaluation context (FRAME_ k { f }) to the stack.
