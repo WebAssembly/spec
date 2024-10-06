@@ -87,6 +87,9 @@ def Main():
                 r'\1',
                 data, flags=re.DOTALL)
 
+  # Escape some latex sequences that Bikeshed interprets as macros
+  data = data.replace(r' \\[1ex]', r' \&#x5c;\[1ex]')
+
   sys.stdout.write(data)
 
 Main()
