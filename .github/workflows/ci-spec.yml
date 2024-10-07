@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: Setup Bikeshed
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -86,7 +86,7 @@ jobs:
     needs: [build-core-spec, build-js-api-spec, build-web-api-spec, build-spec-versions]
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Create output directory
         run: mkdir _output && cp document/index.html _output/index.html
       - name: Download core spec artifact
@@ -111,7 +111,7 @@ jobs:
           path: _output/versions
       - name: Publish to GitHub Pages
         if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           publish_dir: ./_output
           github_token: ${{ secrets.GITHUB_TOKEN }}
