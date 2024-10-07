@@ -153,7 +153,7 @@ test(() => {
 }, "Memory with i32 index constructor");
 
 test(() => {
-  const argument = { "initial": 1, "index": "i64" };
+  const argument = { "initial": 1n, "index": "i64" };
   const memory = new WebAssembly.Memory(argument);
   assert_Memory(memory, { "size": 1, "index": "i64" });
 }, "Memory with i64 index constructor");

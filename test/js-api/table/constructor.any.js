@@ -161,8 +161,8 @@ test(() => {
     get index() {
       order.push("index");
       return {
-        valueOf() {
-          order.push("index valueOf");
+        toString() {
+          order.push("index toString");
           return "i32";
         },
       };
@@ -172,12 +172,12 @@ test(() => {
   assert_array_equals(order, [
     "element",
     "element toString",
+    "index",
+    "index toString",
     "initial",
     "initial valueOf",
     "maximum",
     "maximum valueOf",
-    "index",
-    "index valueOf",
   ]);
 }, "Order of evaluation for descriptor");
 
@@ -220,7 +220,7 @@ test(() => {
 }, "initialize anyfunc table with a bad default value");
 
 test(() => {
-  const argument = { "element": "i32", "initial": 3, "index": "i32" };
+  const argument = { "element": "anyfunc", "initial": 3, "index": "i32" };
   const table = new WebAssembly.Table(argument);
   // Once this is merged with the type reflection proposal we should check the
   // index type of `table`.
@@ -228,7 +228,7 @@ test(() => {
 }, "Table with i32 index constructor");
 
 test(() => {
-  const argument = { "element": "i32", "initial": 3, "index": "i64" };
+  const argument = { "element": "anyfunc", "initial": 3n, "index": "i64" };
   const table = new WebAssembly.Table(argument);
   // Once this is merged with the type reflection proposal we should check the
   // index type of `table`.
@@ -236,6 +236,6 @@ test(() => {
 }, "Table with i64 index constructor");
 
 test(() => {
-  const argument = { "element": "i32", "initial": 3, "index": "unknown" };
+  const argument = { "element": "anyfunc", "initial": 3, "index": "unknown" };
   assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
 }, "Unknown table index");
