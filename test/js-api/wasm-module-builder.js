@@ -981,7 +981,7 @@ class WasmModuleBuilder {
             section.emit_u32v(imp.initial); // initial
             if (has_max) section.emit_u32v(imp.maximum); // maximum
           } else if (imp.kind == kExternalTable) {
-            section.emit_u8(imp.type);
+            section.emit_type(imp.type);
             var has_max = (typeof imp.maximum) != "undefined";
             section.emit_u8(has_max ? 1 : 0); // flags
             section.emit_u32v(imp.initial); // initial
@@ -1013,7 +1013,7 @@ class WasmModuleBuilder {
       binary.emit_section(kTableSectionCode, section => {
         section.emit_u32v(wasm.tables.length);
         for (let table of wasm.tables) {
-          section.emit_u8(table.type);
+          section.emit_type(table.type);
           section.emit_u8(table.has_max);
           section.emit_u32v(table.initial_size);
           if (table.has_max) section.emit_u32v(table.max_size);
@@ -1045,7 +1045,7 @@ class WasmModuleBuilder {
       binary.emit_section(kGlobalSectionCode, section => {
         section.emit_u32v(wasm.globals.length);
         for (let global of wasm.globals) {
-          section.emit_u8(global.type);
+          section.emit_type(global.type);
           section.emit_u8(global.mutable);
           if ((typeof global.init_index) == "undefined") {
             // Emit a constant initializer.
@@ -1219,7 +1219,7 @@ class WasmModuleBuilder {
           header.emit_u32v(local_decls.length);
           for (let decl of local_decls) {
             header.emit_u32v(decl.count);
-            header.emit_u8(decl.type);
+            header.emit_type(decl.type);
           }
 
           section.emit_u32v(header.length + func.body.length);
