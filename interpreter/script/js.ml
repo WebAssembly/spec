@@ -36,7 +36,10 @@ let spectest = {
   global_f32: 666.6,
   global_f64: 666.6,
   table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),
-  memory: new WebAssembly.Memory({initial: 1, maximum: 2})
+  table64: new WebAssembly.Table(
+    {initial: 10n, maximum: 20n, element: 'anyfunc', index: 'i64'}),
+  memory: new WebAssembly.Memory({initial: 1, maximum: 2}),
+  memory64: new WebAssembly.Memory({initial: 1n, maximum: 2n, index: 'i64'})
 };
 
 let handler = {
