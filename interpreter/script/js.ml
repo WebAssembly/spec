@@ -622,9 +622,6 @@ let rec of_definition def =
     try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
     with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
-let of_instance env x_opt =
-  "instance(" ^ of_mod_opt env x_opt ^ ")"
-
 let of_wrapper env x_opt name wrap_action wrap_assertion at =
   let x = of_inst_opt env x_opt in
   let bs = wrap name wrap_action wrap_assertion at in
