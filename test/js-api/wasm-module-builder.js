@@ -966,7 +966,7 @@ class WasmModuleBuilder {
     }
     let type_index = (typeof type) == "number" ? type : this.addType(type);
     this.imports.push({module: module, name: name, kind: kExternalFunction,
-                       type: type_index});
+                       type_index: type_index});
     return this.num_imported_funcs++;
   }
 
