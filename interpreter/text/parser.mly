@@ -374,6 +374,7 @@ let parse_annots (m : module_) : Custom.section list =
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXCEPTION ASSERT_EXHAUSTION
 %token ASSERT_MALFORMED_CUSTOM ASSERT_INVALID_CUSTOM
 %token<Script.nan> NAN
+%token EITHER
 %token INPUT OUTPUT
 %token EOF
 
@@ -1567,6 +1568,7 @@ result :
         error (at $sloc) "wrong number of lane literals";
       VecResult (VecPat
         (Value.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ $sloc }
+  | LPAR EITHER result list(result) RPAR { EitherResult ($3 :: $4) @@ $sloc }
 
 script :
   | list(cmd) EOF { List.concat $1 }

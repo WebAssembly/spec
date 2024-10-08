@@ -965,6 +965,26 @@ let rec instr s =
     | 0xfdl -> i32x4_trunc_sat_f64x2_u_zero
     | 0xfel -> f64x2_convert_low_i32x4_s
     | 0xffl -> f64x2_convert_low_i32x4_u
+    | 0x100l -> i8x16_relaxed_swizzle
+    | 0x101l -> i32x4_relaxed_trunc_f32x4_s
+    | 0x102l -> i32x4_relaxed_trunc_f32x4_u
+    | 0x103l -> i32x4_relaxed_trunc_f64x2_s_zero
+    | 0x104l -> i32x4_relaxed_trunc_f64x2_u_zero
+    | 0x105l -> f32x4_relaxed_madd
+    | 0x106l -> f32x4_relaxed_nmadd
+    | 0x107l -> f64x2_relaxed_madd
+    | 0x108l -> f64x2_relaxed_nmadd
+    | 0x109l -> i8x16_relaxed_laneselect
+    | 0x10al -> i16x8_relaxed_laneselect
+    | 0x10bl -> i32x4_relaxed_laneselect
+    | 0x10cl -> i64x2_relaxed_laneselect
+    | 0x10dl -> f32x4_relaxed_min
+    | 0x10el -> f32x4_relaxed_max
+    | 0x10fl -> f64x2_relaxed_min
+    | 0x110l -> f64x2_relaxed_max
+    | 0x111l -> i16x8_relaxed_q15mulr_s
+    | 0x112l -> i16x8_relaxed_dot_i8x16_i7x16_s
+    | 0x113l -> i32x4_relaxed_dot_i8x16_i7x16_add_s
     | n -> illegal s pos (I32.to_int_u n)
     )
 

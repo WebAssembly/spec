@@ -987,6 +987,10 @@ let rec step (c : config) : config =
         (try Vec (Eval_vec.eval_binop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
+      | VecTernary ternop, Vec v3 :: Vec v2 :: Vec v1 :: vs' ->
+        (try Vec (Eval_vec.eval_ternop ternop v1 v2 v3) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
       | VecCompare relop, Vec n2 :: Vec n1 :: vs' ->
         (try Vec (Eval_vec.eval_relop relop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])

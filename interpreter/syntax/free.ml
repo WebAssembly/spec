@@ -187,7 +187,8 @@ let rec instr (e : instr) =
   | MemoryCopy (x, y) -> memories (idx x) ++ memories (idx y)
   | MemoryInit (x, y) -> memories (idx x) ++ datas (idx y)
   | DataDrop x -> datas (idx x)
-  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConst _ | VecTest _
+  | VecUnary _ | VecBinary _ | VecTernary _ | VecCompare _
   | VecConvert _ | VecShift _ | VecBitmask _
   | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
   | VecSplat _ | VecExtract _ | VecReplace _ ->

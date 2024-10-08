@@ -876,6 +876,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     let t = VecT (type_vec binop) in
     [t; t] --> [t], []
 
+  | VecTernary ternop ->
+    let t = VecT (type_vec ternop) in
+    [t; t; t] --> [t], []
+
   | VecCompare relop ->
     let t = VecT (type_vec relop) in
     [t; t] --> [t], []
