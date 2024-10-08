@@ -232,6 +232,8 @@ and al_to_el_expr expr =
       let* eliter = al_to_el_iter iter in
       let ele =
         match ele.it with
+        | El.Ast.BinE _ | El.Ast.CatE _ | El.Ast.CmpE _ | El.Ast.MemE _ ->
+          El.Ast.ParenE (ele, `Insig) $ ele.at
         | El.Ast.IterE (_, eliter2) when eliter2 <> eliter ->
           El.Ast.ParenE (ele, `Insig) $ ele.at
         | _ -> ele

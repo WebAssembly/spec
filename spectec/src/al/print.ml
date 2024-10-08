@@ -417,7 +417,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e
     ^ ")"
   | BinE (op, e1, e2) ->
-    "BinopE ("
+    "BinE ("
     ^ string_of_binop op
     ^ ", "
     ^ structured_string_of_expr e1
