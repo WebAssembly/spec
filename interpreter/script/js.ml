@@ -236,7 +236,7 @@ let env () : env =
 let current_mod (env : env) = "$$" ^ string_of_int env.current_mod
 let of_mod_opt (env : env) = function
   | None -> current_mod env
-  | Some x -> x.it
+  | Some x -> "$" ^ x.it
 
 let current_inst (env : env) = "$" ^ string_of_int env.current_inst
 let of_inst_opt (env : env) = function
