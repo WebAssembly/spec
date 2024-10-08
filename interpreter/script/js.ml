@@ -614,13 +614,16 @@ let rec of_result res =
   | EitherResult ress ->
     "[" ^ String.concat ", " (List.map of_result ress) ^ "]"
 
+let of_module bs =
+  "module(" ^ of_bytes bs ^ ")"
+
 let rec of_definition def =
   match def.it with
-  | Textual (m, _) -> of_bytes (Encode.encode m)
-  | Encoded (_, bs) -> of_bytes bs.it
+  | Textual (m, _) -> of_module (Encode.encode m)
+  | Encoded (_, bs) -> of_module bs.it
   | Quoted (_, s) ->
     try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
-    with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
+    with Parse.Syntax _ | Custom.Syntax _ -> of_module "<malformed quote>"
 
 let of_instance env x_opt =
   "instance(" ^ of_mod_opt env x_opt ^ ")"
@@ -628,7 +631,7 @@ let of_instance env x_opt =
 let of_wrapper env x_opt name wrap_action wrap_assertion at =
   let x = of_inst_opt env x_opt in
   let bs = wrap name wrap_action wrap_assertion at in
-  "call(instance(module(" ^ of_bytes bs ^ "), " ^
+  "call(instance(" ^ of_module bs ^ ", " ^
     "exports(" ^ x ^ ")), " ^ " \"run\", [])"
 
 let of_action env act =
