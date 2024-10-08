@@ -677,9 +677,9 @@ let of_assertion env ass =
   | AssertInvalidCustom (def, _) ->
     "assert_invalid_custom(" ^ of_definition def ^ ");"
   | AssertUnlinkable (x_opt, _) ->
-    "assert_unlinkable(" ^ of_instance env x_opt ^ ");"
+    "assert_unlinkable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertUninstantiable (x_opt, _) ->
-    "assert_uninstantiable(" ^ of_instance env x_opt ^ ");"
+    "assert_uninstantiable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertReturn (act, ress) ->
     of_assertion' env act "assert_return" (List.map of_result ress)
       (Some (assert_return ress))
