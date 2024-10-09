@@ -376,7 +376,12 @@ let reorder_unified_args args prems =
     | ExpA e -> has_substring (e |> Il.Print.string_of_exp) (rhs_of_prem p |> Il.Print.string_of_exp)
     | _ -> false
   in
-  let index_of p = List.find_index (on_rhs p) args |> Option.get in
+  let rec find_index f xs =
+    match xs with
+    | [] -> 0
+    | hd :: tl -> if f hd then 0 else 1 + find_index f tl
+  in
+  let index_of p = find_index (on_rhs p) args in
   let cmp p1 p2 = index_of p1 - index_of p2 in
 
   let uprems, prems = List.partition has_uarg_on_rhs prems in
