@@ -929,9 +929,10 @@ warning: rule `Reftype_sub/null` was never spliced
 warning: rule `Resulttype_ok` was never spliced
 warning: rule `Resulttype_sub` was never spliced
 warning: rule `Start_ok` was never spliced
-warning: rule `Step/throw` was never spliced
+warning: rule `Step/ctxt-instrs` was never spliced
 warning: rule `Step/ctxt-label` was never spliced
 warning: rule `Step/ctxt-frame` was never spliced
+warning: rule `Step/throw` was never spliced
 warning: rule `Step/struct.new` was never spliced
 warning: rule `Step/struct.set-null` was never spliced
 warning: rule `Step/struct.set-struct` was never spliced
@@ -983,7 +984,7 @@ warning: rule `Step_pure/return-frame` was never spliced
 warning: rule `Step_pure/return-label` was never spliced
 warning: rule `Step_pure/return-handler` was never spliced
 warning: rule `Step_pure/handler-vals` was never spliced
-warning: rule `Step_pure/trap-vals` was never spliced
+warning: rule `Step_pure/trap-instrs` was never spliced
 warning: rule `Step_pure/trap-label` was never spliced
 warning: rule `Step_pure/trap-frame` was never spliced
 warning: rule `Step_pure/unop-val` was never spliced
@@ -1051,7 +1052,7 @@ warning: rule `Step_read/return_call_ref-handler` was never spliced
 warning: rule `Step_read/return_call_ref-frame-null` was never spliced
 warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
 warning: rule `Step_read/throw_ref-null` was never spliced
-warning: rule `Step_read/throw_ref-vals` was never spliced
+warning: rule `Step_read/throw_ref-instrs` was never spliced
 warning: rule `Step_read/throw_ref-label` was never spliced
 warning: rule `Step_read/throw_ref-frame` was never spliced
 warning: rule `Step_read/throw_ref-handler-empty` was never spliced

@@ -8975,6 +8975,20 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}ctxt{-}instrs}]} \quad & z ; {{\mathit{val}}^\ast}~{{\mathit{instr}}^\ast}~{{\mathit{instr}}_1^\ast} & \hookrightarrow & {z'} ; {{\mathit{val}}^\ast}~{{\mathit{instr}'}^\ast}~{{\mathit{instr}}_1^\ast} & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
+{\land}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}_1^\ast} \neq \epsilon \\
+\end{array} \\
+{[\textsc{\scriptsize E{-}ctxt{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {z'} ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
+{[\textsc{\scriptsize E{-}ctxt{-}frame}]} \quad & s ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {s'} ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ s ; {f'} ; {{\mathit{instr}}^\ast} \hookrightarrow {s'} ; {f'} ; {{\mathit{instr}'}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}unreachable}]} \quad & \mathsf{unreachable} & \hookrightarrow & \mathsf{trap} \\
 {[\textsc{\scriptsize E{-}nop}]} \quad & \mathsf{nop} & \hookrightarrow & \epsilon \\
 {[\textsc{\scriptsize E{-}drop}]} \quad & {\mathit{val}}~\mathsf{drop} & \hookrightarrow & \epsilon \\
@@ -9174,7 +9188,7 @@ $$
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}throw\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null}~{\mathit{ht}})~\mathsf{throw\_ref} & \hookrightarrow & \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}vals}]} \quad & z ; {{\mathit{val}}^\ast}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}~{{\mathit{instr}}^\ast} & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} & \quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon \\
+{[\textsc{\scriptsize E{-}throw\_ref{-}instrs}]} \quad & z ; {{\mathit{val}}^\ast}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}~{{\mathit{instr}}^\ast} & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} & \quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon \\
 {[\textsc{\scriptsize E{-}throw\_ref{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
 {[\textsc{\scriptsize E{-}throw\_ref{-}frame}]} \quad & z ; ({{\mathsf{frame}}_{n}}{\{ f \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
 {[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}empty}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ \epsilon \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
@@ -9207,18 +9221,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}trap{-}vals}]} \quad & {{\mathit{val}}^\ast}~\mathsf{trap}~{{\mathit{instr}}^\ast} & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon \\
+{[\textsc{\scriptsize E{-}trap{-}instrs}]} \quad & {{\mathit{val}}^\ast}~\mathsf{trap}~{{\mathit{instr}}^\ast} & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon \\
 {[\textsc{\scriptsize E{-}trap{-}label}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~\mathsf{trap}) & \hookrightarrow & \mathsf{trap} \\
 {[\textsc{\scriptsize E{-}trap{-}frame}]} \quad & ({{\mathsf{frame}}_{n}}{\{ f \}}~\mathsf{trap}) & \hookrightarrow & \mathsf{trap} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}ctxt{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {z'} ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
-{[\textsc{\scriptsize E{-}ctxt{-}frame}]} \quad & s ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {s'} ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ s ; {f'} ; {{\mathit{instr}}^\ast} \hookrightarrow {s'} ; {f'} ; {{\mathit{instr}'}^\ast} \\
 \end{array}
 $$
 

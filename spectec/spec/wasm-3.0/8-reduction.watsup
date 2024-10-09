@@ -37,6 +37,22 @@ rule Eval_expr:
 ;; Instructions
 ;;
 
+;; Context
+
+rule Step/ctxt-instrs:
+  z; val* instr* instr_1*  ~>  z'; val* instr'* instr_1*
+  -- Step: z; instr* ~> z'; instr'*
+  -- if val* =/= eps \/ instr_1* =/= eps
+
+rule Step/ctxt-label:
+  z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)
+  -- Step: z; instr* ~> z'; instr'*
+
+rule Step/ctxt-frame:
+  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
+  -- Step: s; f'; instr* ~> s'; f'; instr'*
+
+
 ;; Polymorphic instructions
 
 rule Step_pure/unreachable:
@@ -228,7 +244,7 @@ rule Step/throw:
 rule Step_read/throw_ref-null:
   z; (REF.NULL ht) THROW_REF  ~>  TRAP
 
-rule Step_read/throw_ref-vals:
+rule Step_read/throw_ref-instrs:
   z; val* (REF.EXN_ADDR a) THROW_REF instr*  ~>  (REF.EXN_ADDR a) THROW_REF
   -- if val* =/= eps \/ instr* =/= eps
 
@@ -272,7 +288,7 @@ rule Step_pure/handler-vals:
 
 ;; Traps
 
-rule Step_pure/trap-vals:
+rule Step_pure/trap-instrs:
   val* TRAP instr*  ~>  TRAP
   -- if val* =/= eps \/ instr* =/= eps
 
@@ -281,17 +297,6 @@ rule Step_pure/trap-label:
 
 rule Step_pure/trap-frame:
   (FRAME_ n `{f} TRAP)  ~>  TRAP
-
-
-;; Context
-
-rule Step/ctxt-label:
-  z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)
-  -- Step: z; instr* ~> z'; instr'*
-
-rule Step/ctxt-frame:
-  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
-  -- Step: s; f'; instr* ~> s'; f'; instr'*
 
 
 ;; Numeric instructions
