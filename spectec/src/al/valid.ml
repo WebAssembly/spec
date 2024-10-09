@@ -554,7 +554,6 @@ and valid_expr env (expr: expr) : unit =
     check_tuple source exprs expr.note;
   | CaseE (op, exprs) ->
     let is_evalctx_id id =
-      let source = "" $ no_region in
       let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
         let atom = mixop |> List.hd |> List.hd in
         match atom.it with
@@ -567,11 +566,11 @@ and valid_expr env (expr: expr) : unit =
     | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
       check_case source exprs (TupT [] $ no_region)
     | _ -> 
-    List.iter (valid_expr env) exprs;
-    let tcs = get_typcases source expr.note in
-    let _binds, typ, _prems = find_case source tcs op in
-    check_case source exprs typ;
-)
+      List.iter (valid_expr env) exprs;
+      let tcs = get_typcases source expr.note in
+      let _binds, typ, _prems = find_case source tcs op in
+      check_case source exprs typ;
+    )
   | CallE (id, args) ->
     List.iter (valid_arg env) args;
     check_call source id args expr.note;
