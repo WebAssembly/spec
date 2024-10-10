@@ -109,6 +109,10 @@ $${definition: allocmem}
 :ref:`Tags <syntax-taginst>`
 ............................
 
+$${definition-prose: alloctag}
+
+.. todo:: (1) Arity difference between generated prose and LaTex expression(parameter 's')
+
 1. Let :math:`\tagtype` be the :ref:`tag type <syntax-tagtype>` to allocate.
 
 2. Let :math:`a` be the first free :ref:`tag address <syntax-tagaddr>` in :math:`S`.
@@ -119,15 +123,7 @@ $${definition: allocmem}
 
 5. Return :math:`a`.
 
-.. math::
-   \begin{array}{rlll}
-   \alloctag(S, \tagtype) &=& S', \tagaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \tagaddr &=& |S.\STAGS| \\
-   \taginst &=& \{\HITYPE~\tagtype\} \\
-   S' &=& S \compose \{\STAGS~\taginst\} \\
-   \end{array}
-
+$${definition: alloctag}
 
 .. index:: exception, exception instance, exception address, tag address
 .. _alloc-exception:
