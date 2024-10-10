@@ -413,10 +413,45 @@ and render_expr' env expr =
   | Al.Ast.IterE (e, (iter, xes)) when al_to_el_expr e = None ->
     let se = render_expr env e in
     let ids = List.map fst xes in
-    let ids = Al.Al_util.tupE (List.map (Al.Al_util.varE ~note:Al.Al_util.no_note) ids) ~note:Al.Al_util.no_note in
-    let loop = Al.Al_util.iterE (ids, (iter, [])) ~note:Al.Al_util.no_note in
-    let sloop = render_expr env loop in
-    sprintf "for all %s, %s" sloop se
+    (match iter with
+    | Al.Ast.ListN (e, Some id) ->
+      assert (ids = [ id ]);
+      let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
+      let sid = render_expr env eid in
+      let elb = Al.Al_util.numE Z.zero ~note:Al.Al_util.no_note in
+      let selb = render_expr env elb in
+      let eub =
+        Al.Al_util.binE (
+          Al.Ast.SubOp,
+          e,
+          Al.Al_util.numE Z.one ~note:Al.Al_util.no_note)
+        ~note:Al.Al_util.no_note
+      in
+      let seub = render_expr env eub in
+      sprintf "for all %s from %s to %s, %s" sid selb seub se
+    | _ ->
+      let eids = List.map (fun id -> Al.Al_util.varE id ~note:Al.Al_util.no_note) ids in
+      let sids = List.map (fun eid -> render_expr env eid) eids in
+      let sids =
+        match sids with
+        | [] -> ""
+        | [ sid ] -> sid
+        | _ ->
+            let sids, sid_last =
+              List.rev sids |> List.tl |> List.rev,
+              List.rev sids |> List.hd
+            in
+            String.concat ", " sids ^ ", and " ^ sid_last
+      in
+      let eiter =
+        match eids with
+        | [] -> assert false
+        | [ eid ] -> eid
+        | _ -> Al.Al_util.tupE eids ~note:Al.Al_util.no_note
+      in
+      let eiter = Al.Al_util.iterE (eiter, (iter, [])) ~note:Al.Al_util.no_note in
+      let siter = render_expr env eiter in
+      sprintf "for all %s in %s, %s" sids siter se)
   | Al.Ast.GetCurStateE -> "the current state"
   | Al.Ast.GetCurContextE None -> "the current context"
   | Al.Ast.GetCurContextE (Some a) ->
@@ -659,10 +694,10 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Replace %s with %s." (render_order index depth)
       (render_expr env (Al.Al_util.accE (e1, p) ~note:Al.Al_util.no_note ~at:no_region)) (render_expr env e2)
   | Al.Ast.AppendI (e1, e2) ->
-    sprintf "%s Append %s to the %s." (render_order index depth)
+    sprintf "%s Append %s to %s." (render_order index depth)
       (render_expr env e2) (render_expr env e1)
   | Al.Ast.FieldWiseAppendI (e1, e2) ->
-    sprintf "%s Append %s to the %s, fieldwise" (render_order index depth)
+    sprintf "%s Append %s to %s, fieldwise" (render_order index depth)
       (render_expr env e2) (render_expr env e1)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 

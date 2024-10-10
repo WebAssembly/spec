@@ -487,7 +487,7 @@ and structured_string_of_expr expr =
     ^ ", ("
     ^ structured_string_of_iter iter
     ^ ", {"
-    ^ string_of_list (fun (x, e) -> x ^ structured_string_of_expr e) ", " xes
+    ^ string_of_list (fun (x, e) -> x ^ ": " ^ structured_string_of_expr e) ", " xes
     ^ "}))"
   | CaseE (op, el) ->
     "CaseE (" ^ string_of_mixop op

@@ -991,7 +991,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+#. Assert: Due to validation, for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -2379,7 +2379,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{funcs}|}`.
 
-#. Append :math:`{\mathit{fi}}` to the :math:`s{.}\mathsf{funcs}`.
+#. Append :math:`{\mathit{fi}}` to :math:`s{.}\mathsf{funcs}`.
 
 #. Return :math:`a`.
 
@@ -2409,7 +2409,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{globals}|}`.
 
-#. Append :math:`{\mathit{gi}}` to the :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{gi}}` to :math:`s{.}\mathsf{globals}`.
 
 #. Return :math:`a`.
 
@@ -2447,7 +2447,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
-#. Append :math:`{\mathit{ti}}` to the :math:`s{.}\mathsf{tables}`.
+#. Append :math:`{\mathit{ti}}` to :math:`s{.}\mathsf{tables}`.
 
 #. Return :math:`a`.
 
@@ -2477,7 +2477,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
-#. Append :math:`{\mathit{mi}}` to the :math:`s{.}\mathsf{mems}`.
+#. Append :math:`{\mathit{mi}}` to :math:`s{.}\mathsf{mems}`.
 
 #. Return :math:`a`.
 
@@ -2544,29 +2544,29 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{\mathit{mem}}_3` in :math:`{{\mathit{mem}}_3^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}_2` in :math:`{{\mathit{table}}_2^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}_1` in :math:`{{\mathit{global}}_1^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathit{func}})^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathit{global}}^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathit{global}})^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathit{table}}^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathit{table}})^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathit{mem}})^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
@@ -2645,29 +2645,29 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}})^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
 
 #. Let :math:`n_{\mathsf{f}}` be :math:`{|{{\mathit{func}}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{start}})^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
+#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
 
 #. Let :math:`{(\mathsf{start}~{x'})^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{\mathit{expr}}_{\mathsf{d}}~{b^\ast})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{expr}}_{\mathsf{e}}~{x^\ast})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
@@ -5531,7 +5531,7 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
 
-#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
+#. If for all :math:`{\mathit{ci}}_1` in :math:`{{\mathit{ci}}_1^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -5607,9 +5607,9 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_2)`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`M - 1`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`M - 1`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
 
@@ -5628,11 +5628,11 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`N - 1`, :math:`k` is less than :math:`{|{i^\ast}|}`.
 
 #. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_2)`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`N - 1`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
 
@@ -5945,7 +5945,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+#. Assert: Due to validation, for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -6247,7 +6247,7 @@ watsup 0.4 generator
 
          a) Trap.
 
-      #) Let :math:`{j^{N}}` be the result for which for all :math:`{(k)^{k<N}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+      #) Let :math:`{j^{N}}` be the result for which for all :math:`k` from :math:`0` to :math:`N - 1`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
 
       #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`M \cdot 2` is Jnn, then:
 
@@ -9067,7 +9067,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{funcs}|}`.
 
-#. Append :math:`{\mathit{fi}}` to the :math:`s{.}\mathsf{funcs}`.
+#. Append :math:`{\mathit{fi}}` to :math:`s{.}\mathsf{funcs}`.
 
 #. Return :math:`a`.
 
@@ -9097,7 +9097,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{globals}|}`.
 
-#. Append :math:`{\mathit{gi}}` to the :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{gi}}` to :math:`s{.}\mathsf{globals}`.
 
 #. Return :math:`a`.
 
@@ -9135,7 +9135,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
-#. Append :math:`{\mathit{ti}}` to the :math:`s{.}\mathsf{tables}`.
+#. Append :math:`{\mathit{ti}}` to :math:`s{.}\mathsf{tables}`.
 
 #. Return :math:`a`.
 
@@ -9165,7 +9165,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
-#. Append :math:`{\mathit{mi}}` to the :math:`s{.}\mathsf{mems}`.
+#. Append :math:`{\mathit{mi}}` to :math:`s{.}\mathsf{mems}`.
 
 #. Return :math:`a`.
 
@@ -9195,7 +9195,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{elems}|}`.
 
-#. Append :math:`{\mathit{ei}}` to the :math:`s{.}\mathsf{elems}`.
+#. Append :math:`{\mathit{ei}}` to :math:`s{.}\mathsf{elems}`.
 
 #. Return :math:`a`.
 
@@ -9231,7 +9231,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{datas}|}`.
 
-#. Append :math:`{\mathit{di}}` to the :math:`s{.}\mathsf{datas}`.
+#. Append :math:`{\mathit{di}}` to :math:`s{.}\mathsf{datas}`.
 
 #. Return :math:`a`.
 
@@ -9298,41 +9298,41 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}_4^\ast}~{{\mathit{data}}_5^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}}_5)^\ast}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}_5` in :math:`{{\mathit{data}}_5^\ast}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}}_4)^\ast}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}_4` in :math:`{{\mathit{elem}}_4^\ast}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{\mathit{mem}}_3` in :math:`{{\mathit{mem}}_3^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}_2` in :math:`{{\mathit{table}}_2^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}_1` in :math:`{{\mathit{global}}_1^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathit{func}})^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathit{global}}^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathit{global}})^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathit{table}}^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathit{table}})^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathit{mem}})^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{|s{.}\mathsf{elems}|} + i_{\mathit{elem}}^{i_{\mathit{elem}}<n_{\mathit{elem}}}}`.
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{({|s{.}\mathsf{elems}|} + i_{\mathit{elem}})^{i_{\mathit{elem}}<n_{\mathit{elem}}}}`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{|s{.}\mathsf{datas}|} + i_{\mathit{data}}^{i_{\mathit{data}}<n_{\mathit{data}}}}`.
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathit{data}})^{i_{\mathit{data}}<n_{\mathit{data}}}}`.
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
@@ -9413,7 +9413,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}})^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
 
@@ -9423,15 +9423,15 @@ watsup 0.4 generator
 
 #. Let :math:`n_{\mathsf{f}}` be :math:`{|{{\mathit{func}}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{start}})^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
+#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
@@ -9439,7 +9439,7 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{concat}}({{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}})`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
@@ -15026,7 +15026,7 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
 
-#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
+#. If for all :math:`{\mathit{ci}}_1` in :math:`{{\mathit{ci}}_1^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -15102,9 +15102,9 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`M - 1`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`M - 1`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
 
@@ -15123,11 +15123,11 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`M - 1`, :math:`k` is less than :math:`{|{i^\ast}|}`.
 
 #. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+#. Assert: Due to validation, for all :math:`k` from :math:`0` to :math:`M - 1`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<M}})}`.
 
@@ -15384,7 +15384,7 @@ watsup 0.4 generator
 ...............................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
@@ -15407,7 +15407,7 @@ watsup 0.4 generator
 .....................................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
@@ -15469,7 +15469,7 @@ watsup 0.4 generator
 
       #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
-      #) If for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
+      #) If for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
 
          a) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -15822,7 +15822,7 @@ watsup 0.4 generator
 .........................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
@@ -15843,7 +15843,7 @@ watsup 0.4 generator
 .........................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
@@ -15872,7 +15872,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, :math:`{|{\mathit{mut*}}|}` is :math:`{|{\mathit{zt*}}|}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{zt}})^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
+#. Assert: Due to validation, for all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
 
@@ -15994,7 +15994,7 @@ watsup 0.4 generator
 
 #. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the result for which :math:`{\bigoplus}\, {{{\mathit{byte}}^\ast}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
 
-#. Let :math:`{c^\ast}` be the result for which for all :math:`{({\mathit{byte*}})^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{{\mathit{byte}}^\ast}`.
+#. Let :math:`{c^\ast}` be the result for which for all :math:`{\mathit{byte*}}` in :math:`{{\mathit{byte*}}^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{{\mathit{byte}}^\ast}`.
 
 #. Push the values :math:`{{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)^{n}}` to the stack.
 
@@ -16679,7 +16679,7 @@ watsup 0.4 generator
 
          a) Trap.
 
-      #) Let :math:`{j^{K}}` be the result for which for all :math:`{(k)^{k<K}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+      #) Let :math:`{j^{K}}` be the result for which for all :math:`k` from :math:`0` to :math:`K - 1`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
 
       #) If the type of :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is Jnn, then:
 
@@ -21196,7 +21196,7 @@ watsup 0.4 generator
 ........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`f`.
 
@@ -21205,7 +21205,7 @@ watsup 0.4 generator
 ..........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
 
@@ -21214,7 +21214,7 @@ watsup 0.4 generator
 .............................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -21293,7 +21293,7 @@ watsup 0.4 generator
 ..........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
@@ -21302,7 +21302,7 @@ watsup 0.4 generator
 ..........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
@@ -21311,7 +21311,7 @@ watsup 0.4 generator
 ............................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
@@ -21320,7 +21320,7 @@ watsup 0.4 generator
 ...........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
@@ -21329,7 +21329,7 @@ watsup 0.4 generator
 .........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
@@ -21338,7 +21338,7 @@ watsup 0.4 generator
 .........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
@@ -21347,7 +21347,7 @@ watsup 0.4 generator
 ..........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
@@ -21356,7 +21356,7 @@ watsup 0.4 generator
 ..........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
@@ -21365,7 +21365,7 @@ watsup 0.4 generator
 ...........................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
@@ -21374,7 +21374,7 @@ watsup 0.4 generator
 ..............................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
@@ -21383,7 +21383,7 @@ watsup 0.4 generator
 ...............................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
@@ -21392,7 +21392,7 @@ watsup 0.4 generator
 .................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
 
@@ -21401,7 +21401,7 @@ watsup 0.4 generator
 ..............................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
@@ -21410,7 +21410,7 @@ watsup 0.4 generator
 .........................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
@@ -21419,7 +21419,7 @@ watsup 0.4 generator
 ............................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
@@ -21428,7 +21428,7 @@ watsup 0.4 generator
 ....................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
 
@@ -21437,7 +21437,7 @@ watsup 0.4 generator
 ....................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
 
 #. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
 
@@ -21460,21 +21460,21 @@ watsup 0.4 generator
 ..................................................................
 
 
-1. Append :math:`{{\mathit{si}}^\ast}` to the :math:`s{.}\mathsf{structs}`.
+1. Append :math:`{{\mathit{si}}^\ast}` to :math:`s{.}\mathsf{structs}`.
 
 
 :math:`{\mathrm{add}}_{\mathit{arrayinst}}({{\mathit{ai}}^\ast})`
 .................................................................
 
 
-1. Append :math:`{{\mathit{ai}}^\ast}` to the :math:`s{.}\mathsf{arrays}`.
+1. Append :math:`{{\mathit{ai}}^\ast}` to :math:`s{.}\mathsf{arrays}`.
 
 
 :math:`{\mathrm{add}}_{\mathit{exninst}}({{\mathit{exn}}^\ast})`
 ................................................................
 
 
-1. Append :math:`{{\mathit{exn}}^\ast}` to the :math:`s{.}\mathsf{exns}`.
+1. Append :math:`{{\mathit{exn}}^\ast}` to :math:`s{.}\mathsf{exns}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{tableinst}}, n, r)`
@@ -21559,7 +21559,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{funcs}|}`.
 
-#. Append :math:`{\mathit{funcinst}}` to the :math:`s{.}\mathsf{funcs}`.
+#. Append :math:`{\mathit{funcinst}}` to :math:`s{.}\mathsf{funcs}`.
 
 #. Return :math:`a`.
 
@@ -21603,7 +21603,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{globals}|}`.
 
-#. Append :math:`{\mathit{globalinst}}` to the :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{globalinst}}` to :math:`s{.}\mathsf{globals}`.
 
 #. Return :math:`a`.
 
@@ -21641,7 +21641,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
-#. Append :math:`{\mathit{tableinst}}` to the :math:`s{.}\mathsf{tables}`.
+#. Append :math:`{\mathit{tableinst}}` to :math:`s{.}\mathsf{tables}`.
 
 #. Return :math:`a`.
 
@@ -21677,7 +21677,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
-#. Append :math:`{\mathit{meminst}}` to the :math:`s{.}\mathsf{mems}`.
+#. Append :math:`{\mathit{meminst}}` to :math:`s{.}\mathsf{mems}`.
 
 #. Return :math:`a`.
 
@@ -21707,7 +21707,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tags}|}`.
 
-#. Append :math:`{\mathit{taginst}}` to the :math:`s{.}\mathsf{tags}`.
+#. Append :math:`{\mathit{taginst}}` to :math:`s{.}\mathsf{tags}`.
 
 #. Return :math:`a`.
 
@@ -21737,7 +21737,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{elems}|}`.
 
-#. Append :math:`{\mathit{eleminst}}` to the :math:`s{.}\mathsf{elems}`.
+#. Append :math:`{\mathit{eleminst}}` to :math:`s{.}\mathsf{elems}`.
 
 #. Return :math:`a`.
 
@@ -21773,7 +21773,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{datas}|}`.
 
-#. Append :math:`{\mathit{datainst}}` to the :math:`s{.}\mathsf{datas}`.
+#. Append :math:`{\mathit{datainst}}` to :math:`s{.}\mathsf{datas}`.
 
 #. Return :math:`a`.
 
@@ -21861,47 +21861,47 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathsf{g}}^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathsf{g}})^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathsf{t}}^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathsf{t}})^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{|s{.}\mathsf{tags}|} + i_{\mathsf{a}}^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{({|s{.}\mathsf{tags}|} + i_{\mathsf{a}})^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathsf{m}}^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathsf{m}})^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{|s{.}\mathsf{elems}|} + i_{\mathsf{e}}^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{({|s{.}\mathsf{elems}|} + i_{\mathsf{e}})^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{|s{.}\mathsf{datas}|} + i_{\mathsf{d}}^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathsf{d}})^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}})^\ast}`, :math:`{\mathit{mem}}` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, :math:`{\mathit{mem}}` is of the case :math:`\mathsf{memory}`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{tag}})^\ast}`, :math:`{\mathit{tag}}` is of the case :math:`\mathsf{tag}`.
+#. Assert: Due to validation, for all :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`, :math:`{\mathit{tag}}` is of the case :math:`\mathsf{tag}`.
 
 #. Let :math:`{(\mathsf{tag}~y)^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}})^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{func}})^\ast}`, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
+#. Assert: Due to validation, for all :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
@@ -21978,7 +21978,7 @@ watsup 0.4 generator
 .................................................................................................................................................................................
 
 
-1. Let :math:`({{\mathsf{frame}}_{}}{\{})` be the current :math:`\mathsf{frame}` context.
+1. Let :math:`({{\mathsf{frame}}_{}}{\{}~z~\})` be the current :math:`\mathsf{frame}` context.
 
 #. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{expr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
 
@@ -21998,7 +21998,7 @@ watsup 0.4 generator
 
 #. Let :math:`a` be :math:`{\mathrm{allocglobal}}({\mathit{gt}}, {\mathit{val}})`.
 
-#. Append :math:`a` to the :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
+#. Append :math:`a` to :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
 
 #. Let :math:`{{\mathit{val}'}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})}`.
 
@@ -22021,23 +22021,23 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{start}})^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
+#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}})^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
@@ -22045,29 +22045,29 @@ watsup 0.4 generator
 
 #. Let :math:`z` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array}`.
 
-#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{})` to the stack.
+#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{}~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{})` from the stack.
+#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` from the stack.
 
-#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{})` to the stack.
+#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` to the stack.
 
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{t}})^\ast}`.
 
-#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{})` from the stack.
+#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
 
-#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{})` to the stack.
+#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` to the stack.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{})` from the stack.
+#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` to the stack.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 
@@ -22077,7 +22077,7 @@ watsup 0.4 generator
 
    a. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
 
-#. Pop the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{})` from the stack.
+#. Pop the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -22098,7 +22098,7 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the evaluation context :math:`({{\mathsf{frame}}_{k}}{\{})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{k}}{\{}~f~\})` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -22108,7 +22108,7 @@ watsup 0.4 generator
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Pop the evaluation context :math:`({{\mathsf{frame}}_{k}}{\{})` from the stack.
+#. Pop the evaluation context :math:`({{\mathsf{frame}}_{k}}{\{}~f~\})` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 

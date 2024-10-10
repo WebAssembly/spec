@@ -157,6 +157,6 @@ syntax instr/admin hint(desc "administrative instruction") =
   | TRAP
 
 syntax evalctx hint(desc "evaluation context") =
-  | LABEL_ n `{instr*}   hint(show LABEL_%#%)
-  | FRAME_ n `{frame}    hint(show FRAME_%#%)
-  | HANDLER_ n `{catch*} hint(show HANDLER_%#%)
+  | LABEL_ n `{instr*}   hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame}    hint(show FRAME_%#% %%)
+  | HANDLER_ n `{catch*} hint(show HANDLER_%#% %%)
