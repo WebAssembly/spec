@@ -7,8 +7,8 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == IL Validation...
 == Translating to AL...
 == Prose Generation...
-../spec/wasm-3.0/6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-../spec/wasm-3.0/6-typing.watsup:1386.9-1386.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
+../spec/wasm-3.0/3-typing.watsup:204.10-204.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
+../spec/wasm-3.0/3-typing.watsup:1398.9-1398.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -331,7 +331,6 @@ warning: syntax `elemidx` was never spliced
 warning: syntax `eleminst` was never spliced
 warning: syntax `elemmode` was never spliced
 warning: syntax `elemtype` was never spliced
-warning: syntax `evalctx` was never spliced
 warning: syntax `exnaddr` was never spliced
 warning: syntax `exninst` was never spliced
 warning: syntax `export` was never spliced
@@ -483,6 +482,7 @@ warning: syntax `u8` was never spliced
 warning: syntax `uN` was never spliced
 warning: syntax `unop_` was never spliced
 warning: syntax `unop_` was never spliced
+warning: syntax `v128` was never spliced
 warning: syntax `vN` was never spliced
 warning: syntax `val` was never spliced
 warning: syntax `valtype/syn` was never spliced
@@ -1335,6 +1335,7 @@ warning: definition `free_tag` was never spliced
 warning: definition `free_type` was never spliced
 warning: definition `free_typeidx` was never spliced
 warning: definition `free_typeuse` was never spliced
+warning: definition `free_typevar` was never spliced
 warning: definition `free_valtype` was never spliced
 warning: definition `free_vectype` was never spliced
 warning: definition `frelaxed_madd_` was never spliced
@@ -1410,7 +1411,6 @@ warning: definition `irotl_` was never spliced
 warning: definition `irotr_` was never spliced
 warning: definition `ishl_` was never spliced
 warning: definition `ishr_` was never spliced
-warning: definition `isize` was never spliced
 warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
 warning: definition `ivbinop_` was never spliced
@@ -1875,9 +1875,14 @@ warning: definition prose `alloctag` was never spliced
 warning: definition prose `alloctags` was never spliced
 warning: definition prose `alloctypes` was never spliced
 warning: definition prose `arrayinst` was never spliced
+warning: definition prose `before` was never spliced
 warning: definition prose `binop_` was never spliced
 warning: definition prose `blocktype_` was never spliced
 warning: definition prose `canon_` was never spliced
+warning: definition prose `clos_deftype` was never spliced
+warning: definition prose `clos_deftypes` was never spliced
+warning: definition prose `clos_moduletype` was never spliced
+warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
 warning: definition prose `concatn_` was never spliced
 warning: definition prose `const` was never spliced
@@ -1959,10 +1964,12 @@ warning: definition prose `free_tag` was never spliced
 warning: definition prose `free_type` was never spliced
 warning: definition prose `free_typeidx` was never spliced
 warning: definition prose `free_typeuse` was never spliced
+warning: definition prose `free_typevar` was never spliced
 warning: definition prose `free_valtype` was never spliced
 warning: definition prose `free_vectype` was never spliced
 warning: definition prose `func` was never spliced
 warning: definition prose `funcidx_module` was never spliced
+warning: definition prose `funcidx_nonfuncs` was never spliced
 warning: definition prose `funcinst` was never spliced
 warning: definition prose `funcsxa` was never spliced
 warning: definition prose `funcsxt` was never spliced
@@ -2096,6 +2103,7 @@ warning: definition prose `unpack` was never spliced
 warning: definition prose `unpackfield_` was never spliced
 warning: definition prose `unpackshape` was never spliced
 warning: definition prose `unrolldt` was never spliced
+warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
@@ -2118,6 +2126,7 @@ warning: definition prose `with_data` was never spliced
 warning: definition prose `with_elem` was never spliced
 warning: definition prose `with_global` was never spliced
 warning: definition prose `with_local` was never spliced
+warning: definition prose `with_locals` was never spliced
 warning: definition prose `with_mem` was never spliced
 warning: definition prose `with_meminst` was never spliced
 warning: definition prose `with_struct` was never spliced

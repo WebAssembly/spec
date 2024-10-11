@@ -219,11 +219,8 @@ let flatten_rec def =
 
 let preprocess (il: script) : rule_def list * helper_def list =
 
-  let not_translate = ["typing.watsup"] in
   let is_al_target def =
-    let f = fun name -> String.ends_with ~suffix:name def.at.left.file in
     match def.it with
-    | _ when List.exists f not_translate -> None
     | DecD (id, _, _, _) when id.it = "utf8" -> None
     | RelD (id, mixop, t, rules) when List.mem id.it [ "Step"; "Step_read"; "Step_pure" ] ->
       (* HARDCODE: Exclude administrative rules *)

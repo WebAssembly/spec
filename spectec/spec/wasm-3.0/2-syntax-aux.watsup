@@ -1,33 +1,43 @@
 ;;
+;; Auxiliary definitions on Indices
+;;
+
+;; Sort projection
+
+;; TODO(2, rossberg): add built-in notation for comprehensions?
+
+def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "funcsxx")
+def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")
+def $tablesxx(externidx*) : tableidx*    hint(show $tables(%))  hint(macro "tablesxx")
+def $memsxx(externidx*) : memidx*        hint(show $mems(%))    hint(macro "memsxx")
+def $tagsxx(externidx*) : tagidx*        hint(show $tags(%))    hint(macro "tagsxx")
+
+def $funcsxx(eps) = eps
+def $funcsxx((FUNC x) xx*) = x $funcsxx(xx*)
+def $funcsxx(externidx xx*) = $funcsxx(xx*)  -- otherwise
+
+def $globalsxx(eps) = eps
+def $globalsxx((GLOBAL x) xx*) = x $globalsxx(xx*)
+def $globalsxx(externidx xx*) = $globalsxx(xx*)  -- otherwise
+
+def $tablesxx(eps) = eps
+def $tablesxx((TABLE x) xx*) = x $tablesxx(xx*)
+def $tablesxx(externidx xx*) = $tablesxx(xx*)  -- otherwise
+
+def $memsxx(eps) = eps
+def $memsxx((MEM x) xx*) = x $memsxx(xx*)
+def $memsxx(externidx xx*) = $memsxx(xx*)  -- otherwise
+
+def $tagsxx(eps) = eps
+def $tagsxx((TAG x) xx*) = x $tagsxx(xx*)
+def $tagsxx(externidx xx*) = $tagsxx(xx*)  -- otherwise
+
+
+;;
 ;; Auxiliary definitions on Types
 ;;
 
-;; Size
-
-;; def |I n| = |F n| = |V n| = n        ;; TODO(2, rossberg): show this?
-
-;;def $size(numtype) : nat       hint(show |%|)
-;;def $vsize(vegtype) : nat      hint(show |%|)
-;;def $psize(packtype) : nat     hint(show |%|)
-;;def $lsize(lanetype) : nat     hint(show |%|)
-;;def $zsize(storagetype) : nat  hint(show |%|) hint(partial)
-
-def $size(I32) = 32
-def $size(I64) = 64
-def $size(F32) = 32
-def $size(F64) = 64
-
-def $vsize(V128) = 128
-
-def $psize(I8) = 8
-def $psize(I16) = 16
-
-def $lsize(numtype) = $size(numtype)
-def $lsize(packtype) = $psize(packtype)
-
-def $zsize(numtype) = $size(numtype)
-def $zsize(vectype) = $vsize(vectype)
-def $zsize(packtype) = $psize(packtype)
+;; Computed types
 
 def $IN(N) : Inn  hint(show I#%) hint(macro "INX")
 def $IN(32) = I32
@@ -44,55 +54,6 @@ def $JN(32) = I32
 def $JN(64) = I64
 
 
-;; Unpacking
-
-def $lunpack(lanetype) : numtype  hint(show $unpack(%))
-def $lunpack(numtype) = numtype
-def $lunpack(packtype) = I32
-
-def $unpack(storagetype) : valtype
-def $unpack(valtype) = valtype
-def $unpack(packtype) = I32
-
-def $nunpack(storagetype) : numtype  hint(show $unpack(%)) hint(partial)
-def $nunpack(numtype) = numtype
-def $nunpack(packtype) = I32
-
-def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
-def $vunpack(vectype) = vectype
-
-def $cunpack(storagetype) : consttype hint(show $unpack(%)) hint(partial)
-def $cunpack(consttype) = consttype
-def $cunpack(packtype) = I32
-def $cunpack(lanetype) = $lunpack(lanetype)  ;; HACK
-
-def $sx(storagetype) : sx?  hint(show $sx(%))
-def $sx(consttype) = eps
-def $sx(packtype) = S
-
-
-;; Const
-
-def $const(consttype, lit_(consttype)): instr  hint(show %.CONST %)
-def $const(numtype, c) = (CONST numtype c)
-def $const(vectype, c) = (VCONST vectype c)
-
-
-;; Shapes
-
-;;def $lanetype(shape) : lanetype
-def $lanetype(Lnn X N) = Lnn
-
-;;def $dim(shape) : nat
-def $dim(Lnn X N) = N
-
-;;def $shsize(shape) : nat
-def $shsize(Lnn X N) = $($lsize(Lnn) * N)
-
-def $unpackshape(shape) : numtype  hint(show $unpack(%))
-def $unpackshape(Lnn X N) = $lunpack(Lnn)
-
-
 ;; Type difference
 
 def $diffrt(reftype, reftype) : reftype  hint(show %\%) hint(macro "reftypediff")
@@ -101,36 +62,183 @@ def $diffrt((REF nul1 ht_1), (REF NULL ht_2)) = (REF ht_1)
 def $diffrt((REF nul1 ht_1), (REF ht_2)) = (REF nul1 ht_1)
 
 
-;; Injection
+;; Sort projection
 
-syntax typevar = _IDX typeidx hint(show %) | REC nat
-var tv : typevar
-var yy : typeuse hint(show y)
-var tu : typeuse
+;; TODO(2, rossberg): add built-in notation for comprehensions?
+
+def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "funcsxt")
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "globalsxt")
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "tablesxt")
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "memsxt")
+def $tagsxt(externtype*) : tagtype*        hint(show $tags(%))    hint(macro "tagsxt")
+
+def $funcsxt(eps) = eps
+def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)
+def $funcsxt(externtype xt*) = $funcsxt(xt*)  -- otherwise
+
+def $globalsxt(eps) = eps
+def $globalsxt((GLOBAL gt) xt*) = gt $globalsxt(xt*)
+def $globalsxt(externtype xt*) = $globalsxt(xt*)  -- otherwise
+
+def $tablesxt(eps) = eps
+def $tablesxt((TABLE tt) xt*) = tt $tablesxt(xt*)
+def $tablesxt(externtype xt*) = $tablesxt(xt*)  -- otherwise
+
+def $memsxt(eps) = eps
+def $memsxt((MEM mt) xt*) = mt $memsxt(xt*)
+def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
+
+def $tagsxt(eps) = eps
+def $tagsxt((TAG at) xt*) = at $tagsxt(xt*)
+def $tagsxt(externtype xt*) = $tagsxt(xt*)  -- otherwise
 
 
+;; Substitution
+
+def $subst_typevar(typevar, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_typeuse(typeuse, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_numtype(numtype, typevar*, typeuse*) : numtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_vectype(vectype, typevar*, typeuse*) : vectype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_heaptype(heaptype, typevar*, typeuse*) : heaptype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_reftype(reftype, typevar*, typeuse*) : reftype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_valtype(valtype, typevar*, typeuse*) : valtype             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_packtype(packtype, typevar*, typeuse*) : packtype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_storagetype(storagetype, typevar*, typeuse*) : storagetype hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_fieldtype(fieldtype, typevar*, typeuse*) : fieldtype       hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_comptype(comptype, typevar*, typeuse*) : comptype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_subtype(subtype, typevar*, typeuse*) : subtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_rectype(rectype, typevar*, typeuse*) : rectype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_deftype(deftype, typevar*, typeuse*) : deftype             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_globaltype(globaltype, typevar*, typeuse*) : globaltype    hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_functype(functype, typevar*, typeuse*) : functype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_moduletype(moduletype, typevar*, typeuse*) : moduletype    hint(show %#`[%:=%]) hint(macro "%subst")
+
+
+def $subst_typevar(tv, eps, eps) = tv
+def $subst_typevar(tv, tv_1 tv'*, tu_1 tu'*) = tu_1                            -- if tv = tv_1
+def $subst_typevar(tv, tv_1 tv'*, tu_1 tu'*) = $subst_typevar(tv, tv'*, tu'*)  -- otherwise
+
+def $subst_typeuse(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
+def $subst_typeuse(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
+
+def $subst_numtype(nt, tv*, tu*) = nt
+def $subst_vectype(vt, tv*, tu*) = vt
+
+def $subst_heaptype(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
+def $subst_heaptype(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
+def $subst_heaptype(ht, tv*, tu*) = ht  -- otherwise
+
+def $subst_reftype((REF nul ht), tv*, tu*) = REF nul $subst_heaptype(ht, tv*, tu*)
+
+def $subst_valtype(nt, tv*, tu*) = $subst_numtype(nt, tv*, tu*)
+def $subst_valtype(vt, tv*, tu*) = $subst_vectype(vt, tv*, tu*)
+def $subst_valtype(rt, tv*, tu*) = $subst_reftype(rt, tv*, tu*)
+def $subst_valtype(BOT, tv*, tu*) = BOT
+
+def $subst_packtype(pt, tv*, tu*) = pt
+
+def $subst_storagetype(t, tv*, tu*) = $subst_valtype(t, tv*, tu*)
+def $subst_storagetype(pt, tv*, tu*) = $subst_packtype(pt, tv*, tu*)
+
+def $subst_fieldtype((mut zt), tv*, tu*) = mut $subst_storagetype(zt, tv*, tu*)
+
+def $subst_comptype((STRUCT yt*), tv*, tu*) = STRUCT $subst_fieldtype(yt, tv*, tu*)*
+def $subst_comptype((ARRAY yt), tv*, tu*) = ARRAY $subst_fieldtype(yt, tv*, tu*)
+def $subst_comptype((FUNC ft), tv*, tu*) = FUNC $subst_functype(ft, tv*, tu*)
+
+def $subst_subtype((SUB fin tu'* ct), tv*, tu*) =
+  SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
+
+def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv*, tu*)*
+
+def $subst_deftype((DEF qt i), tv*, tu*) = DEF $subst_rectype(qt, tv*, tu*) i
+
+def $subst_globaltype((mut t), tv*, tu*) = mut $subst_valtype(t, tv*, tu*)
+def $subst_functype((t_1* -> t_2*), tv*, tu*) = $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*
+def $subst_memtype((lim PAGE), tv*, tu*) = lim PAGE
+def $subst_tabletype((lim rt), tv*, tu*) = lim $subst_reftype(rt, tv*, tu*)
+
+def $subst_externtype((FUNC dt), tv*, tu*) = FUNC $subst_deftype(dt, tv*, tu*)
+def $subst_externtype((GLOBAL gt), tv*, tu*) = GLOBAL $subst_globaltype(gt, tv*, tu*)
+def $subst_externtype((TABLE tt), tv*, tu*) = TABLE $subst_tabletype(tt, tv*, tu*)
+def $subst_externtype((MEM mt), tv*, tu*) = MEM $subst_memtype(mt, tv*, tu*)
+
+def $subst_moduletype(xt_1* -> xt_2*, tv*, tu*) = $subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*
+
+
+;; Complete substitution
+
+def $subst_all_valtype(valtype, heaptype*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_globaltype(globaltype, heaptype*) : globaltype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_tabletype(tabletype, heaptype*) : tabletype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_memtype(memtype, heaptype*) : memtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_moduletype(moduletype, heaptype*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
+
+def $subst_all_valtype(t, tu^n) = $subst_valtype(t, (_IDX i)^(i<n), tu^n)
+def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, (_IDX i)^(i<n), tu^n)
+def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, (_IDX i)^(i<n), tu^n)
+def $subst_all_globaltype(gt, tu^n) = $subst_globaltype(gt, (_IDX i)^(i<n), tu^n)
+def $subst_all_tabletype(tt, tu^n) = $subst_tabletype(tt, (_IDX i)^(i<n), tu^n)
+def $subst_all_memtype(mt, tu^n) = $subst_memtype(mt, (_IDX i)^(i<n), tu^n)
+def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n)
+
+def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftypes(eps, tu*) = eps
+def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_all_deftypes(dt*, tu*)
+
+
+;; Rolling and Unrolling
+
+def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))   hint(macro "rollrt")
+def $unrollrt(rectype) : rectype         hint(show $unroll(%))     hint(macro "unrollrt")
+def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro "rolldt")
+def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
+def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
+
+;; TODO(3, rossberg): in general, multi-dimensional use of dimensioned vars is ambiguous;
+;; for example, x** with dimension x* could be x1 x2 x1 x2 or x1 x1 x2 x2.
+;; For now, we avoid to reuse the dimension var in exact same form
+def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
+  -- if rectype = REC subtype^n
+def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n)))^n
+  -- if rectype = REC subtype^n
+
+def $rolldt(x, rectype) = (DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
+def $unrolldt(DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
+
+def $expanddt(deftype) = comptype              -- if $unrolldt(deftype) = SUB fin typeuse* comptype
+
+relation Expand: deftype ~~ comptype hint(macro "%expanddt") hint(tabular)
+rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fin typeuse* comptype
+
+
+;;
+;; Auxiliary definitions on Instructions
+;;
+
+;; Shorthands
+
+def $memarg0 : memarg  hint(show )
+def $memarg0 = {ALIGN 0, OFFSET 0}
+
+def $const(consttype, lit_(consttype)) : instr  hint(show %.CONST %)
+def $const(numtype, c) = (CONST numtype c)
+def $const(vectype, c) = (VCONST vectype c)
+
+
+;;
 ;; Free indices
-
-(;
-def $dataidx_instr(instr) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
-def $dataidx_instr(MEMORY.INIT x y) = y
-def $dataidx_instr(DATA.DROP x) = x
-def $dataidx_instr(in) = eps
-
-def $dataidx_instrs(instr*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
-def $dataidx_instrs(eps) = eps
-def $dataidx_instrs(instr instr'*) = $dataidx_instr(instr) $dataidx_instrs(instr'*)
-
-def $dataidx_expr(expr) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
-def $dataidx_expr(in*) = $dataidx_instrs(in*)
-
-def $dataidx_func(func) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
-def $dataidx_func(FUNC x loc* e) = $dataidx_expr(e)
-
-def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
-def $dataidx_funcs(eps) = eps
-def $dataidx_funcs(func func'*) = $dataidx_func(func) $dataidx_funcs(func'*)
-;)
+;;
 
 syntax free =
   { TYPES typeidx*,
@@ -145,160 +253,172 @@ syntax free =
   }
 
 
+;; Sequences
+
 def $free_opt(free?) : free
+def $free_list(free*) : free
+
 def $free_opt(eps) = {}
 def $free_opt(free) = free
 
-def $free_list(free*) : free
 def $free_list(eps) = {}
 def $free_list(free free'*) = free ++ $free_list(free'*)
 
 
+;; Indices
+
 def $free_typeidx(typeidx) : free
-def $free_typeidx(typeidx) = {TYPES typeidx}
-
 def $free_funcidx(funcidx) : free
-def $free_funcidx(funcidx) = {FUNCS funcidx}
-
 def $free_globalidx(globalidx) : free
-def $free_globalidx(globalidx) = {GLOBALS globalidx}
-
 def $free_tableidx(tableidx) : free
-def $free_tableidx(tableidx) = {TABLES tableidx}
-
 def $free_memidx(memidx) : free
-def $free_memidx(memidx) = {MEMS memidx}
-
 def $free_elemidx(elemidx) : free
-def $free_elemidx(elemidx) = {ELEMS elemidx}
-
 def $free_dataidx(dataidx) : free
-def $free_dataidx(dataidx) = {DATAS dataidx}
-
 def $free_localidx(localidx) : free
-def $free_localidx(localidx) = {LOCALS localidx}
-
 def $free_labelidx(labelidx) : free
+def $free_externidx(externidx) : free
+
+def $free_typeidx(typeidx) = {TYPES typeidx}
+def $free_funcidx(funcidx) = {FUNCS funcidx}
+def $free_globalidx(globalidx) = {GLOBALS globalidx}
+def $free_tableidx(tableidx) = {TABLES tableidx}
+def $free_memidx(memidx) = {MEMS memidx}
+def $free_elemidx(elemidx) = {ELEMS elemidx}
+def $free_dataidx(dataidx) = {DATAS dataidx}
+def $free_localidx(localidx) = {LOCALS localidx}
 def $free_labelidx(labelidx) = {LABELS labelidx}
 
-def $free_externidx(externidx) : free
 def $free_externidx(FUNC funcidx) = $free_funcidx(funcidx)
 def $free_externidx(GLOBAL globalidx) = $free_globalidx(globalidx)
 def $free_externidx(TABLE tableidx) = $free_tableidx(tableidx)
 def $free_externidx(MEM memidx) = $free_memidx(memidx)
 
 
+;; Types
+
 def $free_numtype(numtype) : free
+def $free_packtype(packtype) : free
+def $free_lanetype(lanetype) : free
+def $free_vectype(vectype) : free
+def $free_consttype(consttype) : free
+def $free_absheaptype(absheaptype) : free
+def $free_heaptype(heaptype) : free
+def $free_reftype(reftype) : free
+def $free_typevar(typevar) : free
+def $free_typeuse(typeuse) : free
+def $free_valtype(valtype) : free
+
+def $free_resulttype(resulttype) : free
+def $free_storagetype(storagetype) : free
+def $free_fieldtype(fieldtype) : free
+def $free_structtype(structtype) : free
+def $free_arraytype(arraytype) : free
+def $free_functype(functype) : free
+def $free_comptype(comptype) : free
+def $free_subtype(subtype) : free
+def $free_rectype(rectype) : free
+
+def $free_globaltype(globaltype) : free
+def $free_tabletype(tabletype) : free
+def $free_memtype(memtype) : free
+def $free_elemtype(elemtype) : free
+def $free_datatype(datatype) : free
+def $free_externtype(externtype) : free
+def $free_moduletype(moduletype) : free
+
+
 def $free_numtype(numtype) = {}
 
-def $free_packtype(packtype) : free
 def $free_packtype(packtype) = {}
 
-def $free_lanetype(lanetype) : free
 def $free_lanetype(numtype) = $free_numtype(numtype)
 def $free_lanetype(packtype) = $free_packtype(packtype)
 
-def $free_vectype(vectype) : free
 def $free_vectype(vectype) = {}
 
-def $free_consttype(consttype) : free
 def $free_consttype(numtype) = $free_numtype(numtype)
 def $free_consttype(vectype) = $free_vectype(vectype)
 
-def $free_absheaptype(absheaptype) : free
 def $free_absheaptype(absheaptype) = {}
-
-def $free_rectype(rectype) : free  ;; forward decl
 
 def $free_deftype(deftype) : free
 def $free_deftype(DEF rectype n) = $free_rectype(rectype)
 
-def $free_typeuse(typeuse) : free
-def $free_typeuse(_IDX typeidx) = $free_typeidx(typeidx)
-def $free_typeuse(REC n) = {}
+def $free_typevar(_IDX typeidx) = $free_typeidx(typeidx)
+def $free_typevar(REC n) = {}
+
+def $free_typeuse(typevar) = $free_typevar(typevar)
 def $free_typeuse(deftype) = $free_deftype(deftype)
 
-def $free_heaptype(heaptype) : free
 def $free_heaptype(absheaptype) = $free_absheaptype(absheaptype)
 def $free_heaptype(typeuse) = $free_typeuse(typeuse)
 
-def $free_reftype(reftype) : free
 def $free_reftype(REF nul heaptype) = $free_heaptype(heaptype)
 
-def $free_valtype(valtype) : free
 def $free_valtype(numtype) = $free_numtype(numtype)
 def $free_valtype(vectype) = $free_vectype(vectype)
 def $free_valtype(reftype) = $free_reftype(reftype)
 def $free_valtype(BOT) = {}
 
-def $free_resulttype(resulttype) : free
 def $free_resulttype(valtype*) = $free_list($free_valtype(valtype)*)
 
-def $free_storagetype(storagetype) : free
 def $free_storagetype(valtype) = $free_valtype(valtype)
 def $free_storagetype(packtype) = $free_packtype(packtype)
 
-def $free_fieldtype(fieldtype) : free
 def $free_fieldtype(mut storagetype) = $free_storagetype(storagetype)
 
-def $free_functype(functype) : free
 def $free_functype(resulttype_1 -> resulttype_2) =
   $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
 
-def $free_structtype(structtype) : free
 def $free_structtype(fieldtype*) = $free_list($free_fieldtype(fieldtype)*)
 
-def $free_arraytype(arraytype) : free
 def $free_arraytype(fieldtype) = $free_fieldtype(fieldtype)
 
-def $free_comptype(comptype) : free
 def $free_comptype(STRUCT structtype) = $free_structtype(structtype)
 def $free_comptype(ARRAY arraytype) = $free_arraytype(arraytype)
 def $free_comptype(FUNC functype) = $free_functype(functype)
 
-def $free_subtype(subtype) : free
 def $free_subtype(SUB fin typeuse* comptype) =
   $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype)
 
-;;def $free_rectype(subtype) : free  ;; forward decl'd
 def $free_rectype(REC subtype*) = $free_list($free_subtype(subtype)*)
 
-def $free_globaltype(globaltype) : free
 def $free_globaltype(mut valtype) = $free_valtype(valtype)
 
-def $free_tabletype(tabletype) : free
 def $free_tabletype(limits reftype) = $free_reftype(reftype)
 
-def $free_memtype(memtype) : free
 def $free_memtype(limits PAGE) = {}
 
-def $free_elemtype(elemtype) : free
 def $free_elemtype(reftype) = $free_reftype(reftype)
 
-def $free_datatype(datatype) : free
 def $free_datatype(OK) = {}
 
-def $free_externtype(externtype) : free
 def $free_externtype(FUNC typeuse) = $free_typeuse(typeuse)
 def $free_externtype(GLOBAL globaltype) = $free_globaltype(globaltype)
 def $free_externtype(TABLE tabletype) = $free_tabletype(tabletype)
 def $free_externtype(MEM memtype) = $free_memtype(memtype)
 
-def $free_moduletype(moduletype) : free
 def $free_moduletype(externtype_1* -> externtype_2*) =
-  $free_list($free_externtype(externtype_1)*) ++ $free_list($free_externtype(externtype_2)*)
+  $free_list($free_externtype(externtype_1)*) ++
+  $free_list($free_externtype(externtype_2)*)
 
+
+;; Instructions
+
+def $free_shape(shape) : free
 def $free_blocktype(blocktype) : free
+
+def $free_instr(instr) : free
+def $free_block(instr*) : free
+def $free_expr(expr) : free
+
+
+def $free_shape(lanetype X dim) = $free_lanetype(lanetype)
+
 def $free_blocktype(_RESULT valtype?) = $free_opt($free_valtype(valtype)?)
 def $free_blocktype(_IDX funcidx) = $free_funcidx(funcidx)
 
 
-def $free_shape(shape) : free
-def $free_shape(lanetype X dim) = $free_lanetype(lanetype)
-
-def $free_block(instr*) : free  ;; forward decl
-
-def $free_instr(instr) : free
 def $free_instr(NOP) = {}
 def $free_instr(UNREACHABLE) = {}
 def $free_instr(DROP) = {}
@@ -446,67 +566,69 @@ def $shift_labelidxs(eps) = eps
 def $shift_labelidxs(0 labelidx'*) = $shift_labelidxs(labelidx'*)
 def $shift_labelidxs(labelidx labelidx'*) = ($(labelidx - 1)) $shift_labelidxs(labelidx'*)
 
-;; def $free_block(instr*) : free  ;; forward decl'd
 def $free_block(instr*) = free[.LABELS = $shift_labelidxs(free.LABELS)]
   -- if free = $free_list($free_instr(instr)*)
 
-def $free_expr(expr) : free
+
 def $free_expr(instr*) = $free_list($free_instr(instr)*)
 
 
+;; Modules
+
 def $free_type(type) : free
+def $free_local(local) : free
+def $free_func(func) : free
+def $free_global(global) : free
+def $free_table(table) : free
+def $free_mem(mem) : free
+def $free_tag(tag) : free
+def $free_elem(elem) : free
+def $free_data(data) : free
+def $free_elemmode(elemmode) : free
+def $free_datamode(datamode) : free
+def $free_start(start) : free
+def $free_export(export) : free
+def $free_import(import) : free
+def $free_module(module) : free
+
+
 def $free_type(TYPE rectype) = $free_rectype(rectype)
 
-def $free_local(local) : free
 def $free_local(LOCAL t) = $free_valtype(t)
 
-def $free_func(func) : free
 def $free_func(FUNC typeidx local* expr) =
-  $free_typeidx(typeidx) ++ $free_list($free_local(local)*) ++ $free_block(expr)[.LOCALS = eps]
+  $free_typeidx(typeidx) ++ $free_list($free_local(local)*) ++
+  $free_block(expr)[.LOCALS = eps]
 
-def $free_global(global) : free
 def $free_global(GLOBAL globaltype expr) =
   $free_globaltype(globaltype) ++ $free_expr(expr)
 
-def $free_table(table) : free
 def $free_table(TABLE tabletype expr) =
   $free_tabletype(tabletype) ++ $free_expr(expr)
 
-def $free_mem(mem) : free
 def $free_mem(MEMORY memtype) = $free_memtype(memtype)
 
-def $free_tag(tag) : free
 def $free_tag(TAG typeidx) = $free_typeidx(typeidx)
 
-def $free_elemmode(elemmode) : free
-def $free_elemmode(ACTIVE tableidx expr) =
-  $free_tableidx(tableidx) ++ $free_expr(expr)
+def $free_elem(ELEM reftype expr* elemmode) =
+  $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++
+  $free_elemmode(elemmode)
+
+def $free_data(DATA byte* datamode) = $free_datamode(datamode)
+
+def $free_elemmode(ACTIVE tableidx expr) = $free_tableidx(tableidx) ++ $free_expr(expr)
 def $free_elemmode(PASSIVE) = {}
 def $free_elemmode(DECLARE) = {}
 
-def $free_datamode(datamode) : free
-def $free_datamode(ACTIVE memidx expr) =
-  $free_memidx(memidx) ++ $free_expr(expr)
+def $free_datamode(ACTIVE memidx expr) = $free_memidx(memidx) ++ $free_expr(expr)
 def $free_datamode(PASSIVE) = {}
 
-def $free_elem(elem) : free
-def $free_elem(ELEM reftype expr* elemmode) =
-  $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++ $free_elemmode(elemmode)
-
-def $free_data(data) : free
-def $free_data(DATA byte* datamode) = $free_datamode(datamode)
-
-def $free_start(start) : free
 def $free_start(START funcidx) = $free_funcidx(funcidx)
 
-def $free_export(export) : free
 def $free_export(EXPORT name externidx) = $free_externidx(externidx)
 
-def $free_import(import) : free
 def $free_import(IMPORT name_1 name_2 externtype) = $free_externtype(externtype)
 
-
-def $free_module(module) : free
 def $free_module(MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) =
   $free_list($free_type(type)*) ++
   $free_list($free_import(import)*) ++
@@ -526,199 +648,3 @@ def $funcidx_module(module) = $free_module(module).FUNCS
 
 def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
 def $dataidx_funcs(func*) = $free_list($free_func(func)*).DATAS
-
-
-;; Substitution
-
-def $subst_typevar(typevar, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_typeuse(typeuse, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
-
-def $subst_numtype(numtype, typevar*, typeuse*) : numtype             hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_vectype(vectype, typevar*, typeuse*) : vectype             hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_heaptype(heaptype, typevar*, typeuse*) : heaptype          hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_reftype(reftype, typevar*, typeuse*) : reftype             hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_valtype(valtype, typevar*, typeuse*) : valtype             hint(show %#`[%:=%]) hint(macro "%subst")
-
-def $subst_packtype(packtype, typevar*, typeuse*) : packtype          hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_storagetype(storagetype, typevar*, typeuse*) : storagetype hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_fieldtype(fieldtype, typevar*, typeuse*) : fieldtype       hint(show %#`[%:=%]) hint(macro "%subst")
-
-def $subst_comptype(comptype, typevar*, typeuse*) : comptype          hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_subtype(subtype, typevar*, typeuse*) : subtype             hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_rectype(rectype, typevar*, typeuse*) : rectype             hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_deftype(deftype, typevar*, typeuse*) : deftype             hint(show %#`[%:=%]) hint(macro "%subst")
-
-def $subst_globaltype(globaltype, typevar*, typeuse*) : globaltype    hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_functype(functype, typevar*, typeuse*) : functype          hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%]) hint(macro "%subst")
-
-def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_moduletype(moduletype, typevar*, typeuse*) : moduletype    hint(show %#`[%:=%]) hint(macro "%subst")
-
-
-def $subst_typevar(tv, eps, eps) = tv
-def $subst_typevar(tv, tv_1 tv'*, tu_1 tu'*) = tu_1                            -- if tv = tv_1
-def $subst_typevar(tv, tv_1 tv'*, tu_1 tu'*) = $subst_typevar(tv, tv'*, tu'*)  -- otherwise
-
-def $subst_typeuse(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
-def $subst_typeuse(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
-
-def $subst_numtype(nt, tv*, tu*) = nt
-def $subst_vectype(vt, tv*, tu*) = vt
-
-def $subst_heaptype(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
-def $subst_heaptype(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
-def $subst_heaptype(ht, tv*, tu*) = ht  -- otherwise
-
-def $subst_reftype((REF nul ht), tv*, tu*) = REF nul $subst_heaptype(ht, tv*, tu*)
-
-def $subst_valtype(nt, tv*, tu*) = $subst_numtype(nt, tv*, tu*)
-def $subst_valtype(vt, tv*, tu*) = $subst_vectype(vt, tv*, tu*)
-def $subst_valtype(rt, tv*, tu*) = $subst_reftype(rt, tv*, tu*)
-def $subst_valtype(BOT, tv*, tu*) = BOT
-
-def $subst_packtype(pt, tv*, tu*) = pt
-
-def $subst_storagetype(t, tv*, tu*) = $subst_valtype(t, tv*, tu*)
-def $subst_storagetype(pt, tv*, tu*) = $subst_packtype(pt, tv*, tu*)
-
-def $subst_fieldtype((mut zt), tv*, tu*) = mut $subst_storagetype(zt, tv*, tu*)
-
-def $subst_comptype((STRUCT yt*), tv*, tu*) = STRUCT $subst_fieldtype(yt, tv*, tu*)*
-def $subst_comptype((ARRAY yt), tv*, tu*) = ARRAY $subst_fieldtype(yt, tv*, tu*)
-def $subst_comptype((FUNC ft), tv*, tu*) = FUNC $subst_functype(ft, tv*, tu*)
-
-def $subst_subtype((SUB fin tu'* ct), tv*, tu*) =
-  SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
-
-def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv*, tu*)*
-
-def $subst_deftype((DEF qt i), tv*, tu*) = DEF $subst_rectype(qt, tv*, tu*) i
-
-def $subst_globaltype((mut t), tv*, tu*) = mut $subst_valtype(t, tv*, tu*)
-def $subst_functype((t_1* -> t_2*), tv*, tu*) = $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*
-def $subst_memtype((lim PAGE), tv*, tu*) = lim PAGE
-def $subst_tabletype((lim rt), tv*, tu*) = lim $subst_reftype(rt, tv*, tu*)
-
-def $subst_externtype((FUNC dt), tv*, tu*) = FUNC $subst_deftype(dt, tv*, tu*)
-def $subst_externtype((GLOBAL gt), tv*, tu*) = GLOBAL $subst_globaltype(gt, tv*, tu*)
-def $subst_externtype((TABLE tt), tv*, tu*) = TABLE $subst_tabletype(tt, tv*, tu*)
-def $subst_externtype((MEM mt), tv*, tu*) = MEM $subst_memtype(mt, tv*, tu*)
-
-def $subst_moduletype(xt_1* -> xt_2*, tv*, tu*) = $subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*
-
-
-def $subst_all_valtype(valtype, heaptype*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_globaltype(globaltype, heaptype*) : globaltype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_tabletype(tabletype, heaptype*) : tabletype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_memtype(memtype, heaptype*) : memtype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_moduletype(moduletype, heaptype*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
-
-def $subst_all_valtype(t, tu^n) = $subst_valtype(t, (_IDX i)^(i<n), tu^n)
-def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, (_IDX i)^(i<n), tu^n)
-def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, (_IDX i)^(i<n), tu^n)
-def $subst_all_globaltype(gt, tu^n) = $subst_globaltype(gt, (_IDX i)^(i<n), tu^n)
-def $subst_all_tabletype(tt, tu^n) = $subst_tabletype(tt, (_IDX i)^(i<n), tu^n)
-def $subst_all_memtype(mt, tu^n) = $subst_memtype(mt, (_IDX i)^(i<n), tu^n)
-def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n)
-
-def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_deftypes(eps, tu*) = eps
-def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_all_deftypes(dt*, tu*)
-
-
-;; Rolling and Unrolling
-
-def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))   hint(macro "rollrt")
-def $unrollrt(rectype) : rectype         hint(show $unroll(%))     hint(macro "unrollrt")
-def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro "rolldt")
-def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
-def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
-
-;; TODO(3, rossberg): in general, multi-dimensional use of dimensioned vars is ambiguous;
-;; for example, x** with dimension x* could be x1 x2 x1 x2 or x1 x1 x2 x2.
-;; For now, we avoid to reuse the dimension var in exact same form
-def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
-  -- if rectype = REC subtype^n
-def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n)))^n
-  -- if rectype = REC subtype^n
-
-def $rolldt(x, rectype) = (DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
-def $unrolldt(DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
-
-def $expanddt(deftype) = comptype              -- if $unrolldt(deftype) = SUB fin typeuse* comptype
-
-relation Expand: deftype ~~ comptype hint(macro "%expanddt") hint(tabular)
-rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fin typeuse* comptype
-
-
-;; Projections
-
-;; TODO(2, rossberg): add built-in notation for comprehensions?
-
-def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "funcsxx")
-def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")
-def $tablesxx(externidx*) : tableidx*    hint(show $tables(%))  hint(macro "tablesxx")
-def $memsxx(externidx*) : memidx*        hint(show $mems(%))    hint(macro "memsxx")
-def $tagsxx(externidx*) : tagidx*        hint(show $tags(%))    hint(macro "tagsxx")
-
-def $funcsxx(eps) = eps
-def $funcsxx((FUNC x) xx*) = x $funcsxx(xx*)
-def $funcsxx(externidx xx*) = $funcsxx(xx*)  -- otherwise
-
-def $globalsxx(eps) = eps
-def $globalsxx((GLOBAL x) xx*) = x $globalsxx(xx*)
-def $globalsxx(externidx xx*) = $globalsxx(xx*)  -- otherwise
-
-def $tablesxx(eps) = eps
-def $tablesxx((TABLE x) xx*) = x $tablesxx(xx*)
-def $tablesxx(externidx xx*) = $tablesxx(xx*)  -- otherwise
-
-def $memsxx(eps) = eps
-def $memsxx((MEM x) xx*) = x $memsxx(xx*)
-def $memsxx(externidx xx*) = $memsxx(xx*)  -- otherwise
-
-def $tagsxx(eps) = eps
-def $tagsxx((TAG x) xx*) = x $tagsxx(xx*)
-def $tagsxx(externidx xx*) = $tagsxx(xx*)  -- otherwise
-
-
-def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "funcsxt")
-def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "globalsxt")
-def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "tablesxt")
-def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "memsxt")
-def $tagsxt(externtype*) : tagtype*        hint(show $tags(%))    hint(macro "tagsxt")
-
-def $funcsxt(eps) = eps
-def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)
-def $funcsxt(externtype xt*) = $funcsxt(xt*)  -- otherwise
-
-def $globalsxt(eps) = eps
-def $globalsxt((GLOBAL gt) xt*) = gt $globalsxt(xt*)
-def $globalsxt(externtype xt*) = $globalsxt(xt*)  -- otherwise
-
-def $tablesxt(eps) = eps
-def $tablesxt((TABLE tt) xt*) = tt $tablesxt(xt*)
-def $tablesxt(externtype xt*) = $tablesxt(xt*)  -- otherwise
-
-def $memsxt(eps) = eps
-def $memsxt((MEM mt) xt*) = mt $memsxt(xt*)
-def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
-
-def $tagsxt(eps) = eps
-def $tagsxt((TAG at) xt*) = at $tagsxt(xt*)
-def $tagsxt(externtype xt*) = $tagsxt(xt*)  -- otherwise
-
-
-
-;;
-;; Auxiliary definitions on Instructions
-;;
-
-;; Shorthands for Instructions
-
-def $memarg0 : memarg  hint(show )
-def $memarg0 = {ALIGN 0, OFFSET 0}

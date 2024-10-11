@@ -2,6 +2,8 @@
 ;; Contexts
 ;;
 
+;; Internal types
+
 syntax init hint(desc "initialization status") =
   | SET | UNSET
 
@@ -11,6 +13,11 @@ syntax localtype hint(desc "local type") =
 syntax instrtype hint(desc "instruction type") =
   resulttype ->_ localidx* resulttype  hint(macro "to")
 
+var lct : localtype  hint(show lt)
+var it : instrtype
+
+
+;; Contexts
 
 syntax context hint(desc "context") hint(macro "%" "C%") =
   { TYPES deftype*,
@@ -29,9 +36,9 @@ syntax context hint(desc "context") hint(macro "%" "C%") =
   }
 
 var C : context
-var lct : localtype  hint(show lt)
-var it : instrtype
 
+
+;; Context update
 
 ;; TODO(3, rossberg): is there a way to show this as %[.LOCAL[%]* = %*] ?
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
@@ -39,6 +46,8 @@ def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%
 def $with_locals(C, eps, eps) = C
 def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCALS[x_1] = lct_1], x*, lct*)
 
+
+;; Type closure
 
 def $clos_valtype(context, valtype) : valtype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro "clostype")
@@ -104,7 +113,7 @@ rule Valtype_ok/bot:
   C |- BOT : OK
 
 
-;; Result and Instruction types
+;; Result & instruction types
 
 relation Resulttype_ok: context |- resulttype : OK  hint(show "K-result") hint(macro "%resulttype")
 relation Instrtype_ok: context |- instrtype : OK    hint(show "K-instr")  hint(macro "%instrtype")
@@ -397,7 +406,7 @@ rule Valtype_sub/bot:
   C |- BOT <: valtype
 
 
-;; Result and Instruction types
+;; Result & instruction types
 
 relation Resulttype_sub: context |- valtype* <: valtype*   hint(show "S-result") hint(macro "%resulttypematch")
 relation Instrtype_sub: context |- instrtype <: instrtype  hint(show "S-instr")  hint(macro "%instrtypematch")
@@ -419,9 +428,12 @@ rule Instrtype_sub:
 relation Packtype_sub: context |- packtype <: packtype          hint(show "S-pack")    hint(macro "%packtypematch")
 relation Storagetype_sub: context |- storagetype <: storagetype hint(show "S-storage") hint(macro "%storagetypematch")
 relation Fieldtype_sub: context |- fieldtype <: fieldtype       hint(show "S-field")   hint(macro "%fieldtypematch")
-;;relation Comptype_sub: context |- comptype <: comptype        hint(show "S-comp")    hint(macro "%comptypematch")
 relation Functype_sub: context |- functype <: functype          hint(show "S-func")    hint(macro "%functypematch")
+
+;; Forward declared above
+;;relation Comptype_sub: context |- comptype <: comptype        hint(show "S-comp")    hint(macro "%comptypematch")
 ;;relation Deftype_sub: context |- deftype <: deftype           hint(show "S-def")     hint(macro "%deftypematch")
+
 
 rule Packtype_sub:
   C |- packtype <: packtype
@@ -544,37 +556,7 @@ relation Instr_ok: context |- instr : instrtype     hint(show "T")        hint(m
 relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*") hint(macro "%instrs")
 relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")   hint(macro "%expr")
 
-
-;; Expressions
-
-rule Expr_ok:
-  C |- instr* : t*
-  -- Instrs_ok: C |- instr* : eps ->_(eps) t*
-
-
-;; Instruction sequences
-
-rule Instrs_ok/empty:
-  C |- eps : eps -> eps
-
-;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
-rule Instrs_ok/seq:
-  C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
-  -- (if C.LOCALS[x_1] = init t)*
-  -- Instrs_ok: $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
-
-rule Instrs_ok/sub:
-  C |- instr* : it'
-  -- Instrs_ok: C |- instr* : it
-  -- Instrtype_sub: C |- it <: it'
-  -- Instrtype_ok: C |- it' : OK
-
-;; TODO(3, rossberg): allow omitting parens
-rule Instrs_ok/frame:
-  C |- instr* : (t* t_1*) ->_(x*) (t* t_2*)
-  -- Instrs_ok: C |- instr* : t_1* ->_(x*) t_2*
-  -- Resulttype_ok: C |- t* : OK
+def $default_(valtype) : val?  ;; forward declaration, defined in runtime-aux
 
 
 ;; Parametric instructions
@@ -1163,9 +1145,39 @@ rule Instr_ok/vstore_lane:
   -- if $(i < 128/N)
 
 
-;;
-;; Constant Expressions
-;;
+;; Instruction sequences
+
+rule Instrs_ok/empty:
+  C |- eps : eps -> eps
+
+;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
+rule Instrs_ok/seq:
+  C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
+  -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
+  -- (if C.LOCALS[x_1] = init t)*
+  -- Instrs_ok: $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
+
+rule Instrs_ok/sub:
+  C |- instr* : it'
+  -- Instrs_ok: C |- instr* : it
+  -- Instrtype_sub: C |- it <: it'
+  -- Instrtype_ok: C |- it' : OK
+
+;; TODO(3, rossberg): allow omitting parens
+rule Instrs_ok/frame:
+  C |- instr* : (t* t_1*) ->_(x*) (t* t_2*)
+  -- Instrs_ok: C |- instr* : t_1* ->_(x*) t_2*
+  -- Resulttype_ok: C |- t* : OK
+
+
+;; Expressions
+
+rule Expr_ok:
+  C |- instr* : t*
+  -- Instrs_ok: C |- instr* : eps ->_(eps) t*
+
+
+;; Constant expressions
 
 relation Instr_const: context |- instr CONST             hint(show "C-instr") hint(macro "%instrconst")
 relation Expr_const: context |- expr CONST               hint(show "C-expr")  hint(macro "%exprconst")
@@ -1231,7 +1243,7 @@ rule Expr_ok_const:
 ;; Modules
 ;;
 
-;; Module definitions
+;; Definitions
 
 relation Type_ok: context |- type : deftype*         hint(show "T-type")     hint(macro "%type")
 relation Func_ok: context |- func : deftype          hint(show "T-func")     hint(macro "%func")
@@ -1321,7 +1333,7 @@ rule Start_ok:
   -- Expand: C.FUNCS[x] ~~ FUNC (eps -> eps)
 
 
-;; Module im/exports
+;; Im/exports
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")    hint(macro "%import")
 relation Export_ok: context |- export : name externtype   hint(show "T-export")    hint(macro "%export")
@@ -1357,7 +1369,7 @@ rule Externidx_ok/tag:
   -- if C.TAGS[x] = at
 
 
-;; Modules proper
+;; Modules
 
 relation Module_ok: |- module : moduletype            hint(show "T-module")  hint(macro "%module")
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")

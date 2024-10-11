@@ -6,14 +6,6 @@ def $ND : bool  ;; non-determinism
 
 
 ;;
-;; Lists
-;;
-
-;; TODO(3, rossberg): enable writing X^n
-syntax list(syntax X) = X*  -- if |X*| < $(2^32)
-
-
-;;
 ;; Values
 ;;
 
@@ -84,6 +76,16 @@ def $canon_(N) = $(2^($signif(N)-1))
 syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNX") =
   iN(N)
 
+syntax v128 = vN(128)
+
+
+;;
+;; Lists
+;;
+
+;; TODO(3, rossberg): enable writing X^n
+syntax list(syntax X) = X*  -- if |X*| < $(2^32)
+
 
 ;;
 ;; Names
@@ -117,9 +119,13 @@ syntax labelidx hint(desc "label index") = idx
 syntax localidx hint(desc "local index") = idx
 syntax fieldidx hint(desc "field index") = idx
 
+syntax externidx hint(desc "external index") hint(macro "%" "XX%") =
+  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx | TAG tagidx
+
 var x : idx
 var y : idx
 var l : labelidx
+var xx : externidx
 var x33 : s33 hint(show x)
 
 
@@ -131,9 +137,8 @@ var x33 : s33 hint(show x)
 
 ;; TODO(3, rossberg): add ability to do this inline
 syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
-;; HACK
-syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?
-syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?
+syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?  ;; HACK
+syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?  ;; HACK
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
@@ -162,6 +167,9 @@ syntax typeuse/syn hint(desc "type use") =
 syntax typeuse/sem =
   | ... | deftype | REC n
 
+syntax typevar hint(desc "type variable") =
+  | _IDX typeidx | REC nat
+
 syntax heaptype hint(desc "heap type") =
   | absheaptype | typeuse
 
@@ -177,6 +185,7 @@ syntax Inn hint(show I#N) hint(macro none) = I32 | I64
 syntax Fnn hint(show F#N) hint(macro none) = F32 | F64
 syntax Vnn hint(show V#N) hint(macro none) = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
+
 
 def $ANYREF    : reftype hint(show ANYREF)
 def $EQREF     : reftype hint(show EQREF)
@@ -200,9 +209,6 @@ def $NULLREF   = (REF NULL NONE)
 def $NULLFUNCREF = (REF NULL NOFUNC)
 def $NULLEXTERNREF = (REF NULL NOEXTERN)
 
-syntax resulttype hint(desc "result type") =
-  list(valtype)
-
 
 ;; Packed types
 
@@ -213,6 +219,12 @@ syntax storagetype hint(desc "storage type") = valtype | packtype
 syntax Pnn hint(show I#N) hint(macro none) = I8 | I16
 syntax Jnn hint(show I#N) hint(macro none) = Inn | Pnn
 syntax Lnn hint(show I#N) hint(macro none) = Inn | Fnn | Pnn
+
+
+;; Result types
+
+syntax resulttype hint(desc "result type") =
+  list(valtype)
 
 
 ;; Type definitions
@@ -244,25 +256,20 @@ syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
 
 ;; External types
 
-syntax limits hint(desc "limits") hint(macro "%" "L%") =
-  `[u32 .. u32]
+syntax limits hint(desc "limits") = `[u32 .. u32] hint(macro "L%")
 
-syntax globaltype hint(desc "global type") =
-  mut valtype
-syntax tabletype hint(desc "table type") =
-  limits reftype
-syntax memtype hint(desc "memory type") =
-  limits PAGE
-syntax tagtype hint(desc "memory type") =
-  deftype
-syntax elemtype hint(desc "element type") =
-  reftype
-syntax datatype hint(desc "data type") hint(macro "%" "%data") =
-  OK
+syntax globaltype hint(desc "global type") = mut valtype
+syntax tabletype hint(desc "table type") = limits reftype
+syntax memtype hint(desc "memory type") = limits PAGE
+syntax tagtype hint(desc "memory type") = deftype
+syntax elemtype hint(desc "element type") = reftype
+syntax datatype hint(desc "data type") = OK hint(macro "%data")
+
 syntax externtype hint(desc "external type") hint(macro "%" "XT%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype | TAG typeuse
 
-syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
+syntax moduletype hint(desc "module type") =
+  externtype* -> externtype* hint(macro "toM")
 
 
 ;; Meta variables
@@ -293,20 +300,37 @@ var yt : fieldtype
 var zt : storagetype
 var ok : datatype
 
+var tv : typevar
+var yy : typeuse hint(show y)
+var tu : typeuse
 
-;;
-;; Operators
-;;
 
-;; Constants
+;; Type sizes
+
+;; def |I n| = |F n| = |V n| = n        ;; TODO(2, rossberg): show this?
 
 def $size(numtype) : nat       hint(show |%|)
-def $isize(Inn) : nat          hint(show |%|)
 def $vsize(vectype) : nat      hint(show |%|)
 def $psize(packtype) : nat     hint(show |%|)
 def $lsize(lanetype) : nat     hint(show |%|)
 def $zsize(storagetype) : nat  hint(show |%|)
-def $lanetype(shape) : lanetype hint(macro "shlanetype")
+
+def $size(I32) = 32
+def $size(I64) = 64
+def $size(F32) = 32
+def $size(F64) = 64
+
+def $vsize(V128) = 128
+
+def $psize(I8) = 8
+def $psize(I16) = 16
+
+def $lsize(numtype) = $size(numtype)
+def $lsize(packtype) = $psize(packtype)
+
+def $zsize(numtype) = $size(numtype)
+def $zsize(vectype) = $vsize(vectype)
+def $zsize(packtype) = $psize(packtype)
 
 ;; TODO(2, rossberg): get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
 def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
@@ -325,6 +349,36 @@ def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
 def $lsizenn(lt) = $lsize(lt)
 def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
+
+
+;; Type unpacking
+
+def $lunpack(lanetype) : numtype  hint(show $unpack(%))
+def $lunpack(numtype) = numtype
+def $lunpack(packtype) = I32
+
+def $unpack(storagetype) : valtype
+def $unpack(valtype) = valtype
+def $unpack(packtype) = I32
+
+def $nunpack(storagetype) : numtype  hint(show $unpack(%)) hint(partial)
+def $nunpack(numtype) = numtype
+def $nunpack(packtype) = I32
+
+def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
+def $vunpack(vectype) = vectype
+
+def $cunpack(storagetype) : consttype hint(show $unpack(%)) hint(partial)
+def $cunpack(consttype) = consttype
+def $cunpack(packtype) = I32
+def $cunpack(lanetype) = $lunpack(lanetype)  ;; HACK
+
+
+;;
+;; Instructions
+;;
+
+;; Constants
 
 syntax num_(numtype)
 syntax num_(Inn) = iN($sizenn(Inn))
@@ -393,7 +447,7 @@ syntax cvtop__(Fnn_1, Fnn_2) =
   | DEMOTE       -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
 
 
-;; Vector operators
+;; Vector shapes
 
 ;; TODO(1, rossberg): restrict size to 128
 syntax dim hint(desc "dimension") = `1 | `2 | `4 | `8 | `16
@@ -402,8 +456,21 @@ syntax ishape hint(desc "shape") = Jnn X dim      hint(show %0#X#%2) hint(macro 
 syntax fshape hint(desc "shape") = Fnn X dim      hint(show %0#X#%2) hint(macro "%shape")
 syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2) hint(macro "%shape")
 
+
+def $lanetype(shape) : lanetype hint(macro "shlanetype")
+def $lanetype(Lnn X N) = Lnn
+
 def $dim(shape) : dim     hint(macro "shdim")
+def $dim(Lnn X N) = N
+
 def $shsize(shape) : nat  hint(show |%|)
+def $shsize(Lnn X N) = $($lsize(Lnn) * N)
+
+def $unpackshape(shape) : numtype  hint(show $unpack(%))
+def $unpackshape(Lnn X N) = $lunpack(Lnn)
+
+
+;; Vector operators
 
 syntax half__(shape_1, shape_2)
 syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
@@ -512,15 +579,20 @@ syntax vloadop_(vectype) hint(macro "%" "L%") =
   | ZERO sz          hint(show %#_#ZERO) -- if sz >= `32
 
 
-;;
-;; Instructions
-;;
+;; Block types
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
   | _IDX funcidx
 
 var bt : blocktype
+
+
+;; Instructions
+
+syntax instr hint(desc "instruction")
+
+var in : instr
 
 syntax instr/parametric hint(desc "parametric instruction") =
   | NOP
@@ -701,12 +773,11 @@ syntax instr/data hint(desc "data instruction") = ...
   | ...
 
 
+;; Expressions
+
 syntax expr hint(desc "expression") =
   instr*
 
-syntax instr hint(desc "instruction")
-
-var in : instr
 var e : expr
 
 
@@ -717,33 +788,19 @@ var e : expr
 syntax elemmode hint(macro "%" "E%") = ACTIVE tableidx expr | PASSIVE | DECLARE
 syntax datamode hint(macro "%" "D%") = ACTIVE memidx expr | PASSIVE
 
-syntax type hint(desc "type definition") =
-  TYPE rectype
-syntax local hint(desc "local") =
-  LOCAL valtype
-syntax func hint(desc "function") =
-  FUNC typeidx local* expr
-syntax global hint(desc "global") =
-  GLOBAL globaltype expr
-syntax table hint(desc "table") =
-  TABLE tabletype expr
-syntax mem hint(desc "memory") =
-  MEMORY memtype
-syntax tag hint(desc "tag") =
-  TAG typeidx
-syntax elem hint(desc "table segment") =
-  ELEM reftype expr* elemmode
-syntax data hint(desc "memory segment") =
-  DATA byte* datamode
-syntax start hint(desc "start function") =
-  START funcidx
+syntax type hint(desc "type definition") = TYPE rectype
+syntax local hint(desc "local") = LOCAL valtype
+syntax func hint(desc "function") = FUNC typeidx local* expr
+syntax global hint(desc "global") = GLOBAL globaltype expr
+syntax table hint(desc "table") = TABLE tabletype expr
+syntax mem hint(desc "memory") = MEMORY memtype
+syntax tag hint(desc "tag") = TAG typeidx
+syntax elem hint(desc "table segment") = ELEM reftype expr* elemmode
+syntax data hint(desc "memory segment") = DATA byte* datamode
+syntax start hint(desc "start function") = START funcidx
 
-syntax externidx hint(desc "external index") hint(macro "%" "XX%") =
-  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx | TAG tagidx
-syntax export hint(desc "export") =
-  EXPORT name externidx
-syntax import hint(desc "import") =
-  IMPORT name name externtype
+syntax export hint(desc "export") = EXPORT name externidx
+syntax import hint(desc "import") = IMPORT name name externtype
 
 syntax module hint(desc "module") =
   MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
@@ -755,4 +812,3 @@ var glob : global
 var tab : table
 var im : import
 var ex : export
-var xx : externidx

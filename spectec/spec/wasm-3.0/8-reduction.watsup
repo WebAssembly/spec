@@ -1,11 +1,14 @@
 ;;
-;; Configurations
+;; Reduction
 ;;
 
 relation Step: config ~> config       hint(show "E") hint(macro "stepto") hint(tabular)
 relation Step_pure: instr* ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
 relation Step_read: config ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
 relation Steps: config ~>* config     hint(show "E") hint(macro "steptostar") hint(tabular)
+
+
+;; Structural
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -23,19 +26,6 @@ rule Steps/trans:
   -- Step: z; instr*  ~>  z'; instr'*
   -- Steps: z'; instr'*  ~>*  z''; instr''*
 
-
-;; Expressions
-
-relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar") hint(tabular)
-
-rule Eval_expr:
-  z; instr*  ~>*  z'; val*
-  -- Steps: z; instr*  ~>*  z'; val*
-
-
-;;
-;; Instructions
-;;
 
 ;; Context
 
@@ -1131,3 +1121,12 @@ rule Step_read/memory.init-succ:
 
 rule Step/data.drop:
   z; (DATA.DROP x)  ~>  $with_data(z, x, eps); eps
+
+
+;; Expressions
+
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar") hint(tabular)
+
+rule Eval_expr:
+  z; instr*  ~>*  z'; val*
+  -- Steps: z; instr*  ~>*  z'; val*
