@@ -7975,8 +7975,8 @@ grammar Binstr : instr
   prod{x : idx, ao : memarg} {0xFD `%`_u32(93):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(64))), x, ao)
   ;; A-binary.watsup:621.5-621.71
   prod{`b*` : byte*} {0xFD `%`_u32(12):Bu32 b:Bbyte^16{b <- `b*`}} => VCONST_instr(V128_vectype, $invibytes_(128, b^16{b <- `b*`}))
-  ;; A-binary.watsup:625.5-625.58
-  prod{l : labelidx} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), [`%`_uN(l!`%`_labelidx.0)])
+  ;; A-binary.watsup:625.5-625.61
+  prod{`l*` : labelidx*} {0xFD `%`_u32(13):Bu32 `%`_laneidx(l!`%`_labelidx.0):Blaneidx^16{l <- `l*`}} => VSHUFFLE_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), `%`_laneidx(l!`%`_labelidx.0)^16{l <- `l*`})
   ;; A-binary.watsup:626.5-626.49
   prod {0xFD `%`_u32(14):Bu32} => VSWIZZLOP_instr(`%X%`_ishape(I8_Jnn, `%`_dim(16)), SWIZZLE_vswizzlop_)
   ;; A-binary.watsup:627.5-627.58
