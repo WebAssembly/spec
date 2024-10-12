@@ -64,6 +64,8 @@ testpromote:
 $(TESTDIRS): test-%: exe
 	@echo "#### Running (cd $@; make test)"
 	@(cd $@ && ((make test >$(LOG) 2>&1 && (grep warning $(LOG) || true)) || (cat $(LOG) && echo "####>" Failure running $@. See log above. && false)))
+	@echo "#### Running (cd $@; dune runtest)"
+	@(cd $@ && dune runtest)
 
 
 # Cleanup

@@ -201,6 +201,7 @@ and eval_expr env expr =
   match expr.it with
   (* Value *)
   | NumE i -> numV i
+  | BoolE b -> boolV b
   (* Numeric Operation *)
   | UnE (MinusOp, inner_e) -> eval_expr env inner_e |> al_to_z |> Z.neg |> numV
   | UnE (NotOp, e) -> eval_expr env e |> to_bool e |> not |> boolV

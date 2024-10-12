@@ -10,7 +10,7 @@ def $s33_to_u32(s33) : u32  hint(show %)
 ;; Signed numbers
 
 def $signed_(N, nat) : int
-def $signed_(N, i) = i           -- if $(0 <= 2^(N-1))
+def $signed_(N, i) = i           -- if $(i < 2^(N-1))
 def $signed_(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
 
 def $invsigned_(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))

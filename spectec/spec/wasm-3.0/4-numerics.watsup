@@ -47,6 +47,8 @@ def $zbytes_(storagetype, lit_(storagetype)) : byte* hint(show $bytes_(%,%))
 def $cbytes_(Cnn, lit_(Cnn)) : byte*                 hint(show $bytes_(%,%))
 
 
+;; TODO(3, rossberg): implement numerics internally
+
 def $invibytes_(N, byte*) : iN(N) hint(show $bytes_($IN(%))^(-1)#((%)))
 def $invfbytes_(N, byte*) : fN(N) hint(show $bytes_($FN(%))^(-1)#((%)))
 
@@ -57,7 +59,7 @@ def $invfbytes_(N, b*) = p  -- if $fbytes_(N, p) = b*
 ;; Signed numbers
 
 def $signed_(N, nat) : int
-def $signed_(N, i) = i           -- if $(0 <= 2^(N-1))
+def $signed_(N, i) = i           -- if $(i < 2^(N-1))
 def $signed_(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
 
 def $invsigned_(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))
@@ -66,6 +68,16 @@ def $invsigned_(N, i) = j        -- if $signed_(N, j) = i
 def $sx(storagetype) : sx?  hint(show $sx(%))
 def $sx(consttype) = eps
 def $sx(packtype) = S
+
+
+;; Truncation
+
+def $int(rat) : int
+;;def $int(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+
+def $bool(bool) : nat
+def $bool(true) = 1
+def $bool(false) = 0
 
 
 ;; Saturation
@@ -83,10 +95,8 @@ def $sat_s_(N, i) = i               -- otherwise
 
 ;; Integer operations
 
-;; TODO(3, rossberg): implement numerics internally
-
-def $iabs_(N, iN(N)) : iN(N)
 def $ineg_(N, iN(N)) : iN(N)
+def $iabs_(N, iN(N)) : iN(N)
 def $iclz_(N, iN(N)) : iN(N)
 def $ictz_(N, iN(N)) : iN(N)
 def $ipopcnt_(N, iN(N)) : iN(N)
@@ -128,9 +138,79 @@ def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile_(%)^(%)#((%,%)))
 def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige_(%)^(%)#((%,%)))
 
 
-;; Floating-point operations
-
 ;; TODO(3, rossberg): implement numerics internally
+
+;;def $ineg_(N, i_1) = $((2^N - i_1) \ 2^N)
+def $ineg_(N, i_1) = $invsigned_(N, $(- $signed_(N, i_1)))
+
+def $iabs_(N, i_1) = i_1             -- if $signed_(N, i_1) >= 0
+def $iabs_(N, i_1) = $ineg_(N, i_1)  -- otherwise
+
+;;def $iclz_(N, i_1) = k               -- if $ibits_(N, i_1) = (0)^k 1 d*
+
+;;def $ictz_(N, i_1) = k               -- if $ibits_(N, i_1) = d* 1 (0)^k
+
+;;def $ipopcnt_(N, i_1) = k            -- if $ibits_(N, i_1) = (0* 1)^k 0*
+
+
+def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
+
+def $isub_(N, i_1, i_2) = $((i_1 - i_2 + 2^N) \ 2^N)
+
+def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
+
+;;def $idiv_(N, U, i_1, 0)   = eps
+;;def $idiv_(N, U, i_1, i_2) = $($int(i_1 / i_2))
+;;def $idiv_(N, S, i_1, 0)   = eps
+;;def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = 2^(N-1)
+;;def $idiv_(N, S, i_1, i_2) = $($invsigned_(N, $int($signed_(N, i_1) / $signed_(N, i_2))))
+
+;;def $irem_(N, U, i_1, 0)   = eps
+;;def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $int(i_1 / i_2))
+;;def $irem_(N, S, i_1, 0)   = eps
+;;def $irem_(N, S, i_1, i_2) = $($invsigned_(N, j_1 - j_2 * $int(j_1 / f_2)))
+;;                             -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
+
+;;def $imin_(N, U, i_1, i_2) = i_1  -- if i_1 <= i_2
+;;def $imin_(N, U, i_1, i_2) = i_2  -- otherwise
+;;def $imin_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) <= $signed_(N, i_2)
+;;def $imin_(N, S, i_1, i_2) = i_2  -- otherwise
+
+;;def $imax_(N, U, i_1, i_2) = i_1  -- if i_1 >= i_2
+;;def $imax_(N, U, i_1, i_2) = i_2  -- otherwise
+;;def $imax_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) >= $signed_(N, i_2)
+;;def $imax_(N, S, i_1, i_2) = i_2  -- otherwise
+
+def $iadd_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 + i_2))
+def $iadd_sat_(N, S, i_1, i_2) = $invsigned_(N, $sat_s_(N, $($signed_(N, i_1) + $signed_(N, i_2))))
+
+def $isub_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 - i_2))
+def $isub_sat_(N, S, i_1, i_2) = $invsigned_(N, $sat_s_(N, $($signed_(N, i_1) - $signed_(N, i_2))))
+
+
+def $ieqz_(N, i_1) = $bool(i_1 = 0)
+
+def $inez_(N, i_1) = $bool(i_1 =/= 0)
+
+
+def $ieq_(N, i_1, i_2) = $bool(i_1 = i_2)
+
+def $ine_(N, i_1, i_2) = $bool(i_1 =/= i_2)
+
+def $ilt_(N, U, i_1, i_2) = $bool(i_1 < i_2)
+def $ilt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) < $signed_(N, i_2))
+
+def $igt_(N, U, i_1, i_2) = $bool(i_1 > i_2)
+def $igt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) > $signed_(N, i_2))
+
+def $ile_(N, U, i_1, i_2) = $bool(i_1 <= i_2)
+def $ile_(N, S, i_1, i_2) = $bool($signed_(N, i_1) <= $signed_(N, i_2))
+
+def $ige_(N, U, i_1, i_2) = $bool(i_1 >= i_2)
+def $ige_(N, S, i_1, i_2) = $bool($signed_(N, i_1) >= $signed_(N, i_2))
+
+
+;; Floating-point operations
 
 def $fabs_(N, fN(N)) : fN(N)*
 def $fneg_(N, fN(N)) : fN(N)*
@@ -163,9 +243,10 @@ def $frelaxed_madd_(N, fN(N), fN(N), fN(N)) : fN(N)*    hint(show $frelaxed__mad
 def $frelaxed_nmadd_(N, fN(N), fN(N), fN(N)) : fN(N)*   hint(show $frelaxed__nmadd_(%,%,%))
 
 
-;; Conversions
-
 ;; TODO(3, rossberg): implement numerics internally
+
+
+;; Conversions
 
 def $wrap__(M, N, iN(M)) : iN(N)
 def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend_((%,%))^(%)#((%)))
@@ -178,6 +259,9 @@ def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert_((%,%))^
 def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow_((%,%))^(%)#(%))
 
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
+
+
+;; TODO(3, rossberg): implement numerics internally
 
 
 ;; Packed numbers
