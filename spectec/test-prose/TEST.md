@@ -14381,42 +14381,38 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} {\mathit{vshiftop}}`
-................................................................
+:math:`{\mathit{sh}} {.} {\mathit{vshiftop}}`
+.............................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathit{vshiftop}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{({c'}, n)}^\ast})}`.
+#. Let :math:`c` be :math:`{{\mathit{vshiftop}}}{{}_{{\mathit{sh}}}}{(c_1, i)}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{bitmask}`
-...........................................................
+:math:`{\mathit{sh}}{.}\mathsf{bitmask}`
+........................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
+#. Let :math:`c` be :math:`{\mathsf{bitmask}}{{}_{{\mathit{sh}}}(c_1)}`.
 
-#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{N}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M} {.} {\mathit{vswizzlop\_u{\kern-0.1em\scriptstyle 0}}}`
-..........................................................................................................
+:math:`{\mathit{sh}} {.} {\mathit{swizzlop}}`
+.............................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -14427,33 +14423,13 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{\mathit{vswizzlop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{swizzle}`, then:
+#. Let :math:`c` be :math:`{{\mathit{swizzlop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
 
-   a. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
-
-   #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(c_2)`.
-
-   #. If for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}` and for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`, then:
-
-      1) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{\mathit{vswizzlop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{relaxed\_swizzle}`, then:
-
-   a. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
-
-   #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(c_2)`.
-
-   #. If for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}` and for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`, then:
-
-      1) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{shuffle}~{i^\ast}`
-....................................................................
+:math:`{\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast}`
+.................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -14464,13 +14440,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<M}})}`.
+#. Let :math:`c` be :math:`{\mathsf{shuffle}}{{}_{{\mathit{sh}}}({i^\ast}, c_1, c_2)}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -14593,8 +14563,8 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}{.}\mathsf{narrow}}{\mathsf{\_}}{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}{\mathsf{\_}}{{\mathit{sx}}}`
-...................................................................................................................................................
+:math:`{{\mathit{sh}}_2{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_1}{\mathsf{\_}}{{\mathit{sx}}}`
+.....................................................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -14605,96 +14575,22 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
-
-#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
-
-#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})}`.
+#. Let :math:`c` be :math:`{\mathsf{narrow}}{{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}^{{\mathit{sx}}}}}{(c_1, c_2)}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}}{\mathsf{\_}}{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}}`
-............................................................................................................................................................................................................................................................................................................................................................................................................................................
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_1}{\mathsf{\_}}{{{\mathit{half}}^?}}`
+.................................................................................................................................................
 
 
 1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
+#. Let :math:`c` be :math:`{{\mathrm{vcvtop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vcvtop}}, {{\mathit{half}}^?}, {{\mathit{zero}}^?}, c_1)`.
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
-
-   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
-
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M})}(c_1)`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
-
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
-
-   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
-
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined, then:
-
-   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}` is numtype, then:
-
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
-
-      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}` is numtype, then:
-
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
-
-         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is defined, then:
-
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
-
-            #. If :math:`{|{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
-
-               a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
-
-               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{local{.}tee}~x`
@@ -17171,21 +17067,6 @@ watsup 0.4 generator
    #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
 
 
-:math:`0`
-.........
-
-
-1. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-   a. Return :math:`0`.
-
-#. Assert: Due to validation, the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
-
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-#. Return :math:`{+0}`.
-
-
 :math:`{\mathrm{lanetype}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
 ...............................................................
 
@@ -19306,17 +19187,32 @@ watsup 0.4 generator
 #. Return :math:`\mathsf{s}`.
 
 
+:math:`0`
+.........
+
+
+1. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Jnn, then:
+
+   a. Return :math:`0`.
+
+#. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
+
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Return :math:`{+0}`.
+
+
 :math:`\mathbb{B}(b_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
 .............................................................
 
 
-1. If :math:`b_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is true, then:
+1. If :math:`b_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is false, then:
 
-   a. Return :math:`1`.
+   a. Return :math:`0`.
 
-#. Assert: Due to validation, :math:`b_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is false.
+#. Assert: Due to validation, :math:`b_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is true.
 
-#. Return :math:`0`.
+#. Return :math:`1`.
 
 
 :math:`{{\mathrm{sat\_u}}}_{N}(i)`
@@ -19962,6 +19858,32 @@ watsup 0.4 generator
 #. Return :math:`i`.
 
 
+:math:`{{\mathrm{iswizzle}}_{{\mathit{lane}}}}_{N}({c^\ast}, i)`
+................................................................
+
+
+1. If :math:`i` is less than :math:`{|{c^\ast}|}`, then:
+
+   a. Return :math:`{c^\ast}{}[i]`.
+
+#. Return :math:`0`.
+
+
+:math:`{{\mathrm{irelaxed}}_{{\mathit{swizzle}}_{{\mathit{lane}}}}}_{N}({c^\ast}, i)`
+.....................................................................................
+
+
+1. If :math:`i` is less than :math:`{|{c^\ast}|}`, then:
+
+   a. Return :math:`{c^\ast}{}[i]`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i)` is less than :math:`0`, then:
+
+   a. Return :math:`0`.
+
+#. Return :math:`{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{swizzle}})}{{}[ 0, {c^\ast}{}[i \mathbin{\mathrm{mod}} {|{c^\ast}|}] ]}`.
+
+
 :math:`{{\mathrm{ivunop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, v_1)`
 ...................................................................................
 
@@ -20129,6 +20051,63 @@ watsup 0.4 generator
 #. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+
+
+:math:`{{\mathrm{ivshiftop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, v_1, i)`
+.........................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)`.
+
+#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1, i)^\ast}`.
+
+#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+
+
+:math:`{{\mathrm{ivshiftopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, {\mathit{sx}}, v_1, i)`
+..........................................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)`.
+
+#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, i)^\ast}`.
+
+#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+
+
+:math:`{{\mathrm{ivbitmaskop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)`
+..........................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)`.
+
+#. Let :math:`c` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c)` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{N}|}}^{\mathsf{s}}}}{(c_1, 0)}^\ast}`.
+
+#. Return :math:`c`.
+
+
+:math:`{{\mathrm{ivswizzlop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{f}}, v_1, v_2)`
+............................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)~{0^{256 - M}}`.
+
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_2)`.
+
+#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}({c_1^\ast}, c_2)^\ast}`.
+
+#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
+
+
+:math:`{{\mathrm{ivshufflop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)`
+...................................................................................................
+
+
+1. Let :math:`{c^\ast}` be :math:`{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(v_1)~{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(v_2)`.
+
+#. Let :math:`v` be :math:`{{{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}^{{-1}}}}{({{c^\ast}{}[i]^\ast})}`.
+
+#. Return :math:`v`.
 
 
 :math:`{\mathsf{not}}{{}_{{\mathsf{v}}{N}}(v)}`
@@ -20421,7 +20400,7 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{fvrelop}}}_{({{\mathsf{f}}{N}}{\mathsf{x}}{M})}({\mathrm{fge}}, v_1, v_2)`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{M_1}), ({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}, c_1)`
+:math:`{{\mathrm{lcvtop}}}_{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{M_1}), ({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}, c_1)`
 ................................................................................................................................................................................................................................................................
 
 
@@ -20437,9 +20416,9 @@ watsup 0.4 generator
 
          a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
+         #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
-         #) Return :math:`c_2`.
+         #) Return :math:`c`.
 
    #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn, then:
 
@@ -20449,9 +20428,9 @@ watsup 0.4 generator
 
          a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-         #) Let :math:`c_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
+         #) Let :math:`c` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
-         #) Return :math:`c_2`.
+         #) Return :math:`c`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Fnn.
 
@@ -20465,17 +20444,17 @@ watsup 0.4 generator
 
       1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-      #) Let :math:`{c_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
+      #) Let :math:`{c^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
-      #) Return :math:`{c_2^?}`.
+      #) Return :math:`{c^?}`.
 
    #. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is of the case :math:`\mathsf{relaxed\_trunc}`, then:
 
       1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-      #) Let :math:`{c_2^?}` be :math:`{{{{\mathrm{relaxed\_trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
+      #) Let :math:`{c^?}` be :math:`{{{{\mathrm{relaxed\_trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
-      #) Return :math:`{c_2^?}`.
+      #) Return :math:`{c^?}`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Fnn.
 
@@ -20483,15 +20462,119 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{demote}`, then:
 
-   a. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}(c_1)`.
+   a. Let :math:`{c^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}(c_1)`.
 
-   #. Return :math:`{c_2^\ast}`.
+   #. Return :math:`{c^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{promote}`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}(c_1)`.
+#. Let :math:`{c^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}(c_1)`.
 
-#. Return :math:`{c_2^\ast}`.
+#. Return :math:`{c^\ast}`.
+
+
+:math:`{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}})}({\mathit{vcvtop}}, {{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}, {{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 7}}}^?}, v_1)`
+..............................................................................................................................................................................................................................................................................................................................................
+
+
+1. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 7}}}^?}` is not defined and :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
+
+   a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M})}(v_1)`.
+
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{lcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, c_1)^\ast}`.
+
+   #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}^\ast}`.
+
+   #. Return :math:`v`.
+
+#. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+#. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 7}}}^?}` is not defined and :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is defined, then:
+
+   a. Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
+
+   #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{lcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, c_1)^\ast}`.
+
+   #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({c^\ast})}^\ast}`.
+
+   #. Return :math:`v`.
+
+#. Assert: Due to validation, :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined.
+
+#. Assert: Due to validation, :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 7}}}^?}` is defined.
+
+#. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_1)`.
+
+#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{lcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, c_1)^\ast}~{0^{M_1}}`.
+
+#. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({c^\ast})}^\ast}`.
+
+#. Return :math:`v`.
+
+
+:math:`{{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{(v, i)}`
+............................................................................................................
+
+
+1. If :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
+
+   a. Return :math:`{{\mathrm{ivshiftop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ishl}}, v, i)`.
+
+#. Assert: Due to validation, :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`.
+
+#. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Return :math:`{{\mathrm{ivshiftopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ishr}}, {\mathit{sx}}, v, i)`.
+
+
+:math:`{\mathsf{bitmask}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v)}`
+......................................................................
+
+
+1. Return :math:`{{\mathrm{ivbitmaskop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v)`.
+
+
+:math:`{{\mathit{vswizzlop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(v_1, v_2)}`
+..........................................................................................................................
+
+
+1. If :math:`{\mathit{vswizzlop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{swizzle}`, then:
+
+   a. Return :math:`{{\mathrm{ivswizzlop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({\mathrm{iswizzle}}_{{\mathit{lane}}}, v_1, v_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{vswizzlop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{relaxed\_swizzle}`.
+
+#. Return :math:`{{\mathrm{ivswizzlop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({\mathrm{irelaxed}}_{{\mathit{swizzle}}_{{\mathit{lane}}}}, v_1, v_2)`.
+
+
+:math:`{\mathsf{shuffle}}{{}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)}`
+..................................................................................................
+
+
+1. Return :math:`{{\mathrm{ivshufflop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)`.
+
+
+:math:`{\mathsf{narrow}}{{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{\mathit{sx}}}}}{(v_1, v_2)}`
+................................................................................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_1)`.
+
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_2)`.
+
+#. Let :math:`{{c'}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{c_1}^\ast}`.
+
+#. Let :math:`{{c'}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{c_2}^\ast}`.
+
+#. Let :math:`v` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{c'}_1^\ast}~{{c'}_2^\ast})}`.
+
+#. Return :math:`v`.
 
 
 :math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}})}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_1)}`
@@ -20587,21 +20670,6 @@ watsup 0.4 generator
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{ck}}, {\mathit{ci}}_3)^\ast})}`.
 
 #. Return :math:`c`.
-
-
-:math:`{{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{({\mathit{lane}}, n)}`
-..........................................................................................................................
-
-
-1. If :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{shl}`, then:
-
-   a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
-
-#. Assert: Due to validation, :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{shr}`.
-
-#. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vshiftop\_u{\kern-0.1em\scriptstyle 0}}}`.
-
-#. Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}, n)}`.
 
 
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}(t)`
@@ -23427,50 +23495,35 @@ Step_pure/vrelop sh vrelop
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vshiftop (Jnn X M) vshiftop
+Step_pure/vshiftop sh vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
+2. Pop the value (I32.CONST i) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X M), c_1).
-6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
-7. Push the value (V128.CONST c) to the stack.
+5. Let c be $vshiftop_(sh, vshiftop, c_1, i).
+6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vbitmask (Jnn X M)
+Step_pure/vbitmask sh
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
-4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $vbitmaskop_(sh, c_1).
+4. Push the value (I32.CONST c) to the stack.
 
-Step_pure/vswizzlop (I8 X M) vswizzlop__u0
+Step_pure/vswizzlop sh swizzlop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. If (vswizzlop__u0 is SWIZZLE), then:
-  a. Let c'* be $lanes_((I8 X M), c_1) :: 0^(256 - M).
-  b. Let ci* be $lanes_((I8 X M), c_2).
-  c. If ((ci*[k] < |c'*|)^(k<M) and (k < |ci*|)^(k<M)), then:
-    1) Let c be $invlanes_((I8 X M), c'*[ci*[k]]^(k<M)).
-    2) Push the value (V128.CONST c) to the stack.
-6. If (vswizzlop__u0 is RELAXED_SWIZZLE), then:
-  a. Let c'* be $lanes_((I8 X M), c_1) :: 0^(256 - M).
-  b. Let ci* be $lanes_((I8 X M), c_2).
-  c. If ((ci*[k] < |c'*|)^(k<M) and (k < |ci*|)^(k<M)), then:
-    1) Let c be $invlanes_((I8 X M), c'*[ci*[k]]^(k<M)).
-    2) Push the value (V128.CONST c) to the stack.
+5. Let c be $vswizzlop_(sh, swizzlop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vshuffle (Pnn X M) i*
+Step_pure/vshuffle sh i*
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (k < |i*|)^(k<M).
-6. Let c'* be $lanes_((Pnn X M), c_1) :: $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (i*[k] < |c'*|)^(k<M).
-8. Let c be $invlanes_((Pnn X M), c'*[i*[k]]^(k<M)).
-9. Push the value (V128.CONST c) to the stack.
+5. Let c be $vshufflop_(sh, i*, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vsplat (Lnn X M)
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -23528,56 +23581,19 @@ Step_pure/vextternop sh_2 sh_1 vextternop
 7. Let c be $vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3).
 8. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
+Step_pure/vnarrow sh_2 sh_1 sx
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* :: cj_2*).
-10. Push the value (V128.CONST c) to the stack.
+5. Let c be $vnarrowop__(sh_1, sh_2, sx, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zero___u13?
+Step_pure/vcvtop sh_2 sh_1 vcvtop half? zero?
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half___u4? is not defined and zero___u13? is not defined), then:
-  a. Let Lnn_1 be lanetype_u6.
-  b. Let Lnn_2 be lanetype_u5.
-  c. Let M be n_u1.
-  d. If (n_u0 is M), then:
-    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-4. If zero___u13? is not defined, then:
-  a. Let Lnn_1 be lanetype_u6.
-  b. Let Lnn_2 be lanetype_u5.
-  c. Let M_1 be n_u1.
-  d. Let M_2 be n_u0.
-  e. If half___u4? is defined, then:
-    1) Let ?(half) be half___u4?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-5. If half___u4? is not defined, then:
-  a. Let M_1 be n_u1.
-  b. Let M_2 be n_u0.
-  c. If the type of lanetype_u6 is numtype, then:
-    1) Let nt_1 be lanetype_u6.
-    2) If the type of lanetype_u5 is numtype, then:
-      a) Let nt_2 be lanetype_u5.
-      b) If zero___u13? is defined, then:
-        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
-          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
-          b. Push the value (V128.CONST c) to the stack.
+3. Let c be $vcvtop__(sh_1, sh_2, vcvtop, half?, zero?, c_1).
+4. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -24760,13 +24776,6 @@ cunpack storagetype_u0
   a. Let lanetype be storagetype_u0.
   b. Return $lunpack(lanetype).
 
-zero numtype_u0
-1. If the type of numtype_u0 is Inn, then:
-  a. Return 0.
-2. Assert: Due to validation, the type of numtype_u0 is Fnn.
-3. Let Fnn be numtype_u0.
-4. Return $fzero($size(Fnn)).
-
 lanetype (Lnn X N)
 1. Return Lnn.
 
@@ -25761,11 +25770,18 @@ sx storagetype_u0
 2. Assert: Due to validation, the type of storagetype_u0 is packtype.
 3. Return ?(S).
 
+zero lanetype_u0
+1. If the type of lanetype_u0 is Jnn, then:
+  a. Return 0.
+2. Assert: Due to validation, the type of lanetype_u0 is Fnn.
+3. Let Fnn be lanetype_u0.
+4. Return $fzero($size(Fnn)).
+
 bool b_u0
-1. If (b_u0 is true), then:
-  a. Return 1.
-2. Assert: Due to validation, (b_u0 is false).
-3. Return 0.
+1. If (b_u0 is false), then:
+  a. Return 0.
+2. Assert: Due to validation, (b_u0 is true).
+3. Return 1.
 
 sat_u_ N i
 1. If (i < 0), then:
@@ -26074,6 +26090,18 @@ half__ (lanetype_u1 X M_1) (lanetype_u2 X M_2) half___u0 i j
 3. Assert: Due to validation, (half___u0 is LOW).
 4. Return i.
 
+iswizzle_lane_ N c* i
+1. If (i < |c*|), then:
+  a. Return c*[i].
+2. Return 0.
+
+irelaxed_swizzle_lane_ N c* i
+1. If (i < |c*|), then:
+  a. Return c*[i].
+2. If ($signed_(N, i) < 0), then:
+  a. Return 0.
+3. Return $relaxed2($R_swizzle(), iN(N), 0, c*[(i \ |c*|)]).
+
 ivunop_ (Jnn X M) $f_ v_1
 1. Let c_1* be $lanes_((Jnn X M), v_1).
 2. Let c* be $f_($lsizenn(Jnn), c_1)*.
@@ -26151,6 +26179,32 @@ fvrelop_ (Fnn X M) $f_ v_1 v_2
 4. Let Inn be $size^-1($size(Fnn)).
 5. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
 6. Return $invlanes_((Inn X M), c*).
+
+ivshiftop_ (Jnn X M) $f_ v_1 i
+1. Let c_1* be $lanes_((Jnn X M), v_1).
+2. Let c* be $f_($lsizenn(Jnn), c_1, i)*.
+3. Return $invlanes_((Jnn X M), c*).
+
+ivshiftopsx_ (Jnn X M) $f_ sx v_1 i
+1. Let c_1* be $lanes_((Jnn X M), v_1).
+2. Let c* be $f_($lsizenn(Jnn), sx, c_1, i)*.
+3. Return $invlanes_((Jnn X M), c*).
+
+ivbitmaskop_ (Jnn X M) v_1
+1. Let c_1* be $lanes_((Jnn X M), v_1).
+2. Let c be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, c_1, 0)*).
+3. Return c.
+
+ivswizzlop_ (Jnn X M) $f_ v_1 v_2
+1. Let c_1* be $lanes_((Jnn X M), v_1) :: 0^(256 - M).
+2. Let c_2* be $lanes_((Jnn X M), v_2).
+3. Let c* be $f_($lsizenn(Jnn), c_1*, c_2)*.
+4. Return $invlanes_((Jnn X M), c*).
+
+ivshufflop_ (I8 X M) i* v_1 v_2
+1. Let c* be $lanes_((I8 X M), v_1) :: $lanes_((I8 X M), v_2).
+2. Let v be $invlanes_((I8 X M), c*[i]*).
+3. Return v.
 
 vvunop_ Vnn NOT v
 1. Return [$inot_($vsizenn(Vnn), v)].
@@ -26293,41 +26347,90 @@ vrelop_ (lanetype_u1 X M) vrelop__u0 v_1 v_2
 9. Assert: Due to validation, (vrelop__u0 is GE).
 10. Return $fvrelop_((Fnn X M), $fge_, v_1, v_2).
 
-vcvtop__ (lanetype_u3 X M_1) (lanetype_u0 X M_2) vcvtop___u2 c_1
+lcvtop__ (lanetype_u3 X M_1) (lanetype_u0 X M_2) vcvtop___u2 c_1
 1. If the type of lanetype_u3 is Jnn, then:
   a. Let Jnn_1 be lanetype_u3.
   b. If the type of lanetype_u0 is Jnn, then:
     1) Let Jnn_2 be lanetype_u0.
     2) If vcvtop___u2 is of the case EXTEND, then:
       a) Let (EXTEND sx) be vcvtop___u2.
-      b) Let c_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1).
-      c) Return [c_2].
+      b) Let c be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1).
+      c) Return [c].
   c. If the type of lanetype_u0 is Fnn, then:
     1) Let Fnn_2 be lanetype_u0.
     2) If vcvtop___u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be vcvtop___u2.
-      b) Let c_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1).
-      c) Return [c_2].
+      b) Let c be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1).
+      c) Return [c].
 2. Assert: Due to validation, the type of lanetype_u3 is Fnn.
 3. Let Fnn_1 be lanetype_u3.
 4. If the type of lanetype_u0 is Inn, then:
   a. Let Inn_2 be lanetype_u0.
   b. If vcvtop___u2 is of the case TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx) be vcvtop___u2.
-    2) Let c_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
-    3) Return $list_(lane_((Inn_2 : Inn <: lanetype)), c_2?).
+    2) Let c? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
+    3) Return $list_(lane_((Inn_2 : Inn <: lanetype)), c?).
   c. If vcvtop___u2 is of the case RELAXED_TRUNC, then:
     1) Let (RELAXED_TRUNC sx) be vcvtop___u2.
-    2) Let c_2? be $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
-    3) Return $list_(lane_((Inn_2 : Inn <: lanetype)), c_2?).
+    2) Let c? be $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
+    3) Return $list_(lane_((Inn_2 : Inn <: lanetype)), c?).
 5. Assert: Due to validation, the type of lanetype_u0 is Fnn.
 6. Let Fnn_2 be lanetype_u0.
 7. If (vcvtop___u2 is DEMOTE), then:
-  a. Let c_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
-  b. Return c_2*.
+  a. Let c* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
+  b. Return c*.
 8. Assert: Due to validation, (vcvtop___u2 is PROMOTE).
-9. Let c_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
-10. Return c_2*.
+9. Let c* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
+10. Return c*.
+
+vcvtop__ (Lnn_1 X n_u0) (Lnn_2 X n_u1) vcvtop half___u4? zero___u7? v_1
+1. Let M be n_u1.
+2. If (half___u4? is not defined and (zero___u7? is not defined and (n_u0 is M))), then:
+  a. Let c_1* be $lanes_((Lnn_1 X M), v_1).
+  b. Let c** be $setproduct_(lane_(Lnn_2), $lcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, c_1)*).
+  c. Let v be an element of $invlanes_((Lnn_2 X M), c*)*.
+  d. Return v.
+3. Let M_1 be n_u0.
+4. Let M_2 be n_u1.
+5. If (zero___u7? is not defined and half___u4? is defined), then:
+  a. Let ?(half) be half___u4?.
+  b. Let c_1* be $lanes_((Lnn_1 X M_1), v_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
+  c. Let c** be $setproduct_(lane_(Lnn_2), $lcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, c_1)*).
+  d. Let v be an element of $invlanes_((Lnn_2 X M_2), c*)*.
+  e. Return v.
+6. Assert: Due to validation, half___u4? is not defined.
+7. Assert: Due to validation, zero___u7? is defined.
+8. Let c_1* be $lanes_((Lnn_1 X M_1), v_1).
+9. Let c** be $setproduct_(lane_(Lnn_2), $lcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, c_1)* :: [$zero(Lnn_2)]^M_1).
+10. Let v be an element of $invlanes_((Lnn_2 X M_2), c*)*.
+11. Return v.
+
+vshiftop_ (Jnn X M) vshiftop__u0 v i
+1. If (vshiftop__u0 is SHL), then:
+  a. Return $ivshiftop_((Jnn X M), $ishl_, v, i).
+2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
+3. Let (SHR sx) be vshiftop__u0.
+4. Return $ivshiftopsx_((Jnn X M), $ishr_, sx, v, i).
+
+vbitmaskop_ (Jnn X M) v
+1. Return $ivbitmaskop_((Jnn X M), v).
+
+vswizzlop_ (I8 X M) vswizzlop__u0 v_1 v_2
+1. If (vswizzlop__u0 is SWIZZLE), then:
+  a. Return $ivswizzlop_((I8 X M), $iswizzle_lane_, v_1, v_2).
+2. Assert: Due to validation, (vswizzlop__u0 is RELAXED_SWIZZLE).
+3. Return $ivswizzlop_((I8 X M), $irelaxed_swizzle_lane_, v_1, v_2).
+
+vshufflop_ (I8 X M) i* v_1 v_2
+1. Return $ivshufflop_((I8 X M), i*, v_1, v_2).
+
+vnarrowop__ (Jnn_1 X M_1) (Jnn_2 X M_2) sx v_1 v_2
+1. Let c_1* be $lanes_((Jnn_1 X M_1), v_1).
+2. Let c_2* be $lanes_((Jnn_1 X M_1), v_2).
+3. Let c'_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1)*.
+4. Let c'_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2)*.
+5. Let v be $invlanes_((Jnn_2 X M_2), c'_1* :: c'_2*).
+6. Return v.
 
 vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
@@ -26374,13 +26477,6 @@ vextternop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (RELAXED_DOT_ADDS) c_1 c_2 c_3
 12. Let ck* be $iadd_($lsizenn2(Jnn_2), ck'_1, ck'_2)*.
 13. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), ck, ci_3)*).
 14. Return c.
-
-vshiftop_ (Jnn X M) vshiftop__u0 lane n
-1. If (vshiftop__u0 is SHL), then:
-  a. Return $ishl_($lsizenn(Jnn), lane, n).
-2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
-3. Let (SHR sx) be vshiftop__u0.
-4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
 
 inst_valtype moduleinst t
 1. Let dt* be moduleinst.TYPES.

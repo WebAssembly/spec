@@ -401,10 +401,6 @@ syntax lit_(numtype) = num_(numtype)
 syntax lit_(vectype) = vec_(vectype)
 syntax lit_(packtype) = pack_(packtype)
 
-def $zero(numtype) : num_(numtype) hint(show 0)
-def $zero(Inn) = 0
-def $zero(Fnn) = $fzero($size(Fnn))
-
 
 ;; Numeric operators
 
@@ -539,11 +535,11 @@ syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
   | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
   | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
-syntax vswizzlop_(ishape) hint(macro "%" "V%")
-syntax vswizzlop_(I8 X M) = SWIZZLE | RELAXED_SWIZZLE
-
 syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
+
+syntax vswizzlop_(ishape) hint(macro "%" "V%")
+syntax vswizzlop_(I8 X M) = SWIZZLE | RELAXED_SWIZZLE
 
 syntax vextunop__(ishape_1, ishape_2) hint(macro "%" "V%")
 syntax vextunop__(Jnn_1 X M_1, Jnn_2 X M_2) =

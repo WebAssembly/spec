@@ -70,14 +70,18 @@ def $sx(consttype) = eps
 def $sx(packtype) = S
 
 
-;; Truncation
+;; Construction
+
+def $zero(lanetype) : lane_(lanetype) hint(show 0)
+def $zero(Jnn) = 0
+def $zero(Fnn) = $fzero($size(Fnn))
+
+def $bool(bool) : nat
+def $bool(false) = 0
+def $bool(true) = 1
 
 def $int(rat) : int
 ;;def $int(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
-
-def $bool(bool) : nat
-def $bool(true) = 1
-def $bool(false) = 0
 
 
 ;; Saturation
@@ -393,6 +397,18 @@ def $half__(Jnn_1 X M_1, Jnn_2 X M_2, HIGH, i, j) = j
 def $half__(Lnn_1 X M_1, Fnn_2 X M_2, LOW, i, j) = i
 
 
+def $iswizzle_lane_(N, iN(N)*, iN(N)) : iN(N)
+def $irelaxed_swizzle_lane_(N, iN(N)*, iN(N)) : iN(N)
+
+def $iswizzle_lane_(N, c*, i) = c*[i]          -- if i < |c*|
+def $iswizzle_lane_(N, c*, i) = 0              -- otherwise
+
+def $irelaxed_swizzle_lane_(N, c*, i) = c*[i]  -- if i < |c*|
+def $irelaxed_swizzle_lane_(N, c*, i) = 0      -- if $signed_(N, i) < 0
+def $irelaxed_swizzle_lane_(N, c*, i) = $relaxed2($R_swizzle, iN(N), 0, c*[i \ |c*|])
+                                               -- otherwise
+
+
 ;; Lanewise operations
 
 def $ivunop_(shape, def $f_(N, iN(N)) : iN(N), vec_(V128)) : vec_(V128)*
@@ -413,6 +429,13 @@ def $fvtestop_(shape, def $f_(N, fN(N)) : u32, vec_(V128)) : u32
 def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 def $ivrelopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : u32, sx, vec_(V128), vec_(V128)) : vec_(V128)
 def $fvrelop_(shape, def $f_(N, fN(N), fN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
+
+def $ivshiftop_(shape, def $f_(N, iN(N), u32) : iN(N), vec_(V128), u32) : vec_(V128)
+def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), u32) : iN(N), sx, vec_(V128), u32) : vec_(V128)
+
+def $ivbitmaskop_(shape, vec_(V128)) : u32
+def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)
+def $ivshufflop_(shape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
 
 
 def $ivunop_(Jnn X M, def $f_, v_1) = $invlanes_(Jnn X M, c*)
@@ -484,6 +507,31 @@ def $fvrelop_(Fnn X M, def $f_, v_1, v_2) = $invlanes_(Inn X M, c*)
     -- if $size(Inn) = $size(Fnn)  ;; TODO(rossberg, 3): make implicit
 
 
+def $ivshiftop_(Jnn X M, def $f_, v_1, i) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c* = $f_($lsizenn(Jnn), c_1, i)*
+
+def $ivshiftopsx_(Jnn X M, def $f_, sx, v_1, i) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c* = $f_($lsizenn(Jnn), sx, c_1, i)*
+
+
+def $ivbitmaskop_(Jnn X M, v_1) = c
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if $ibits_(32, c) = $ilt_($lsize(Jnn), S, c_1, 0)*
+
+
+def $ivswizzlop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1) ++ (0)^(256 - M)
+  -- if c_2* = $lanes_(Jnn X M, v_2)
+  -- if c* = $f_($lsizenn(Jnn), c_1*, c_2)*
+
+
+def $ivshufflop_(I8 X M, i*, v_1, v_2) = v
+  -- if c* = $lanes_(I8 X M, v_1) ++ $lanes_(I8 X M, v_2)
+  -- if v = $invlanes_(I8 X M, (c*[i])*)
+
+
 ;; Dispatch for vector operators
 
 def $vvunop_(vectype, vvunop, vec_(vectype)) : vec_(vectype)*
@@ -504,8 +552,22 @@ def $vtestop_(shape, vtestop_(shape), vec_(V128)) : u32
 def $vrelop_(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1,%3,%4))
 
-def $vcvtop__(shape_1, shape_2, vcvtop__(shape_1, shape_2), lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
+def $lcvtop__(shape_1, shape_2, vcvtop__(shape_1, shape_2), lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
     hint(show %3#$__(%1,%2)^(%4)#((%5)))
+def $vcvtop__(shape_1, shape_2, vcvtop__(shape_1, shape_2), half__(shape_1, shape_2)?, zero__(shape_1, shape_2)?, vec_(V128)) : vec_(V128)
+    hint(show %3#$__(%1,%2)^(%4)#((%5,%6,%7)))
+
+def $vshiftop_(ishape, vshiftop_(ishape), vec_(V128), u32) : vec_(V128)
+    hint(show %2#$_(%1)#(%3, %4))
+def $vbitmaskop_(ishape, vec_(V128)) : u32
+    hint(show BITMASK#$_(%1,%2))
+def $vswizzlop_(ishape, vswizzlop_(ishape), vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %2#$_(%1,%3,%4))
+def $vshufflop_(ishape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show SHUFFLE#$_(%1,%2,%3,%4))
+
+def $vnarrowop__(shape_1, shape_2, sx, vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show NARROW#$__(%1,%2)^(%3)#((%4,%5)))
 
 def $vextunop__(ishape_1, ishape_2, vextunop__(ishape_1, ishape_2), vec_(V128)) : vec_(V128)
     hint(show %3#$__(%1,%2,%4))
@@ -513,9 +575,6 @@ def $vextbinop__(ishape_1, ishape_2, vextbinop__(ishape_1, ishape_2), vec_(V128)
     hint(show %3#$__(%1,%2,%4,%5))
 def $vextternop__(ishape_1, ishape_2, vextternop__(ishape_1, ishape_2), vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$__(%1,%2,%4,%5,%6))
-
-def $vshiftop_(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
-    hint(show %2#$_(%1)#(%3, %4))
 
 
 def $vvunop_(Vnn, NOT, v) = $inot_($vsizenn(Vnn), v)
@@ -582,19 +641,48 @@ def $vrelop_(Fnn X M, GT, v_1, v_2) = $fvrelop_(Fnn X M, $fgt_, v_1, v_2)
 def $vrelop_(Fnn X M, LE, v_1, v_2) = $fvrelop_(Fnn X M, $fle_, v_1, v_2)
 def $vrelop_(Fnn X M, GE, v_1, v_2) = $fvrelop_(Fnn X M, $fge_, v_1, v_2)
 
-;; TODO(1, rossberg): these don't need the shape, should be part of cvtop
-def $vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND sx, c_1) = c_2
-    -- if c_2 = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)
-def $vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, c_1) = c_2
-    -- if c_2 = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1)
-def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, c_1) = $list_(lane_(Inn_2), c_2?)
-    -- if c_2? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
-def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx, c_1) = $list_(lane_(Inn_2), c_2?)
-    -- if c_2? = $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
-def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, c_1) = c_2*
-    -- if c_2* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)
-def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, c_1) = c_2*
-    -- if c_2* = $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)
+def $vshiftop_(Jnn X M, SHL, v, i) = $ivshiftop_(Jnn X M, $ishl_, v, i)
+def $vshiftop_(Jnn X M, SHR sx, v, i) = $ivshiftopsx_(Jnn X M, $ishr_, sx, v, i)
+
+def $vbitmaskop_(Jnn X M, v) = $ivbitmaskop_(Jnn X M, v)
+
+def $vswizzlop_(I8 X M, SWIZZLE, v_1, v_2) = $ivswizzlop_(I8 X M, $iswizzle_lane_, v_1, v_2)
+def $vswizzlop_(I8 X M, RELAXED_SWIZZLE, v_1, v_2) = $ivswizzlop_(I8 X M, $irelaxed_swizzle_lane_, v_1, v_2)
+
+def $vshufflop_(I8 X M, i*, v_1, v_2) = $ivshufflop_(I8 X M, i*, v_1, v_2)
+
+def $lcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND sx, c_1) = c
+    -- if c = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)
+def $lcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, c_1) = c
+    -- if c = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1)
+def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, c_1) = $list_(lane_(Inn_2), c?)
+    -- if c? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
+def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx, c_1) = $list_(lane_(Inn_2), c?)
+    -- if c? = $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
+def $lcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, c_1) = c*
+    -- if c* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)
+def $lcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, c_1) = c*
+    -- if c* = $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)
+
+def $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, eps, eps, v_1) = v
+  -- if c_1* = $lanes_(Lnn_1 X M, v_1)
+  -- if c** = $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*)
+  -- if v <- $invlanes_(Lnn_2 X M, c*)*
+def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, half, eps, v_1) = v
+  -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
+  -- if c** = $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*)
+  -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
+def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, eps, zero, v_1) = v
+  -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)
+  -- if c** = $setproduct_(lane_(Lnn_2), ($lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* ++ $zero(Lnn_2)^M_1))
+  -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
+
+def $vnarrowop__(Jnn_1 X M_1, Jnn_2 X M_2, sx, v_1, v_2) = v
+  -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)
+  -- if c_2* = $lanes_(Jnn_1 X M_1, v_2)
+  -- if c'_1* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1)*
+  -- if c'_2* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2)*
+  -- if v = $invlanes_(Jnn_2 X M_2, c'_1* ++ c'_2*)
 
 ;; TODO(1, rossberg): use higher-order dispatch like above
 def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, c_1) = c
@@ -643,7 +731,3 @@ def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = 
   -- if ck'_2* = $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_2)*
   -- if ck* = $iadd_($lsizenn2(Jnn_2), ck'_1, ck'_2)*
   -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), ck, ci_3)*)
-
-;; TODO(1, rossberg): refactor for consistency
-def $vshiftop_(Jnn X M, SHL, lane, n) = $ishl_($lsizenn(Jnn), lane, n)
-def $vshiftop_(Jnn X M, SHR sx, lane, n) = $ishr_($lsizenn(Jnn), sx, lane, n)

@@ -213,6 +213,7 @@ and det_cond_exp e =
   | UnE (NotOp, e1) -> det_cond_exp e1
   | BinE (e1, (AndOp | OrOp | EquivOp | ImplOp), e2) -> det_cond_exp e1 + det_cond_exp e2
   | CmpE (e1, EqOp, e2) -> det_exp e1 + det_exp e2
+  | MemE (e1, _) -> det_exp e1
   | ParenE (e1, _) | ArithE e1 -> det_cond_exp e1
   | _ -> empty
 

@@ -175,7 +175,7 @@ $${rule-prose: Step_pure/vcvtop}
 
 \
 
-$${rule+: Step_pure/vcvtop-*}
+$${rule+: Step_pure/vcvtop}
 
 .. _exec-vextunop:
 
