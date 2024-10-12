@@ -49,7 +49,6 @@ syntax result hint(desc "result") =
 
 
 var r : ref
-var v : val
 var res : result
 
 
@@ -169,5 +168,4 @@ syntax state hint(desc "state") = store; frame
 syntax config hint(desc "configuration") = state; instr*
 
 var s : store
-var f : frame
 var z : state

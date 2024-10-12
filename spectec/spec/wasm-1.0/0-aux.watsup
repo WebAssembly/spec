@@ -25,9 +25,8 @@ def $Ki = 1024
 ;; General functions
 
 def $min(nat, nat) : nat
-def $min(0, j) = 0
-def $min(i, 0) = 0
-def $min($(i+1), $(j+1)) = $min(i, j)
+def $min(i, j) = i  -- if $(i <= j)
+def $min(i, j) = j  -- otherwise
 
 def $sum(nat*) : nat  ;; TODO: hint
 def $sum(eps) = 0

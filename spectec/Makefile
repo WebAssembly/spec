@@ -52,7 +52,7 @@ TESTDIRS = $(shell ls -d test-*)
 
 .PHONY: test testpromote $(TESTDIRS)
 
-test: exe $(TESTDIRS) dunetest
+test: exe $(TESTDIRS)
 
 dunetest:
 	@echo "#### Running (dune runtest)"

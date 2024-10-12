@@ -340,6 +340,9 @@ def $sizenn(nt) = $size(nt)
 def $sizenn1(nt) = $size(nt)
 def $sizenn2(nt) = $size(nt)
 
+def $vsizenn(vectype) : nat    hint(show N)   hint(macro none)  ;; HACK!
+def $vsizenn(vt) = $vsize(vt)
+
 def $psizenn(packtype) : nat   hint(show N)   hint(macro none)  ;; HACK!
 def $psizenn(pt) = $psize(pt)
 
