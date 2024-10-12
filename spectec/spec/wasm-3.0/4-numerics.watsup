@@ -687,8 +687,6 @@ def $vnarrowop__(Jnn_1 X M_1, Jnn_2 X M_2, sx, v_1, v_2) = v
 
 ;; TODO(1, rossberg): use higher-order dispatch like above
 def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, c_1) = c
-  -- var cj_1 : iN($lsize(Jnn_2))
-  -- var cj_2 : iN($lsize(Jnn_2))
   -- if ci* = $lanes_(Jnn_1 X M_1, c_1)
   -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*
   -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
@@ -698,8 +696,6 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTMUL sx half, c_1, c_2) = c
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)[$half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2) : M_2]
   -- if c = $invlanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*)
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, c_1, c_2) = c
-  -- var cj_1 : iN($lsize(Jnn_2))
-  -- var cj_2 : iN($lsize(Jnn_2))
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*
@@ -707,8 +703,6 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, c_1, c_2) = c
   -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*
   -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, c_1, c_2) = c
-  -- var cj_1 : iN($lsize(Jnn_2))
-  -- var cj_2 : iN($lsize(Jnn_2))
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*
@@ -718,8 +712,6 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, c_1, c_2) = c
 
 ;; TODO(1, rossberg): refactor DOT operators
 def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- var cj_1 : iN($lsize(Jnn_2))
-  -- var cj_2 : iN($lsize(Jnn_2))
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci_3* = $lanes_(Jnn_2 X M_2, c_3)
