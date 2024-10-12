@@ -20090,7 +20090,7 @@ watsup 0.4 generator
 ............................................................................................
 
 
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)~{0^{256 - M}}`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)`.
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_2)`.
 
@@ -20099,15 +20099,17 @@ watsup 0.4 generator
 #. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{{\mathrm{ivshufflop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)`
-...................................................................................................
+:math:`{{\mathrm{ivshufflop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)`
+........................................................................................
 
 
-1. Let :math:`{c^\ast}` be :math:`{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(v_1)~{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}(v_2)`.
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_1)`.
 
-#. Let :math:`v` be :math:`{{{{\mathrm{lanes}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}^{{-1}}}}{({{c^\ast}{}[i]^\ast})}`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v_2)`.
 
-#. Return :math:`v`.
+#. Let :math:`{c^\ast}` be :math:`{{c_1^\ast}~{c_2^\ast}{}[i]^\ast}`.
+
+#. Return :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({c^\ast})}`.
 
 
 :math:`{\mathsf{not}}{{}_{{\mathsf{v}}{N}}(v)}`
@@ -26196,15 +26198,16 @@ ivbitmaskop_ (Jnn X M) v_1
 3. Return c.
 
 ivswizzlop_ (Jnn X M) $f_ v_1 v_2
-1. Let c_1* be $lanes_((Jnn X M), v_1) :: 0^(256 - M).
+1. Let c_1* be $lanes_((Jnn X M), v_1).
 2. Let c_2* be $lanes_((Jnn X M), v_2).
 3. Let c* be $f_($lsizenn(Jnn), c_1*, c_2)*.
 4. Return $invlanes_((Jnn X M), c*).
 
-ivshufflop_ (I8 X M) i* v_1 v_2
-1. Let c* be $lanes_((I8 X M), v_1) :: $lanes_((I8 X M), v_2).
-2. Let v be $invlanes_((I8 X M), c*[i]*).
-3. Return v.
+ivshufflop_ (Jnn X M) i* v_1 v_2
+1. Let c_1* be $lanes_((Jnn X M), v_1).
+2. Let c_2* be $lanes_((Jnn X M), v_2).
+3. Let c* be c_1* :: c_2*[i]*.
+4. Return $invlanes_((Jnn X M), c*).
 
 vvunop_ Vnn NOT v
 1. Return [$inot_($vsizenn(Vnn), v)].

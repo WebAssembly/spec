@@ -522,14 +522,15 @@ def $ivbitmaskop_(Jnn X M, v_1) = c
 
 
 def $ivswizzlop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
-  -- if c_1* = $lanes_(Jnn X M, v_1) ++ (0)^(256 - M)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
   -- if c_2* = $lanes_(Jnn X M, v_2)
   -- if c* = $f_($lsizenn(Jnn), c_1*, c_2)*
 
 
-def $ivshufflop_(I8 X M, i*, v_1, v_2) = v
-  -- if c* = $lanes_(I8 X M, v_1) ++ $lanes_(I8 X M, v_2)
-  -- if v = $invlanes_(I8 X M, (c*[i])*)
+def $ivshufflop_(Jnn X M, i*, v_1, v_2) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c_2* = $lanes_(Jnn X M, v_2)
+  -- if c* = ((c_1* ++ c_2*)[i])*
 
 
 ;; Dispatch for vector operators

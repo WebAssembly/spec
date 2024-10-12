@@ -287,7 +287,13 @@ and infer_exp (env : Env.t) e : typ =
       else
         error e.at "cannot infer type of list"
     )
-  | CatE _ -> error e.at "cannot infer type of concatenation"
+  | CatE (e1, e2) ->
+    let t1 = infer_exp env e1 in
+    let t2 = infer_exp env e2 in
+    if Eq.eq_typ t1 t2 then
+      t1
+    else
+      error e.at "cannot infer type of concatenation"
   | CaseE _ -> e.note (* error e.at "cannot infer type of case constructor" *)
   | SubE _ -> error e.at "cannot infer type of subsumption"
 

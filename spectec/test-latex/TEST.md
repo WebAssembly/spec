@@ -8272,7 +8272,7 @@ $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ivswizzlop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1, v_2) & = & {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})} & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \oplus {(0)^{256 - M}} \\
+\mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
 {\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2) \\
 {\land}~ {c^\ast} = {{{\mathrm{f}}}_{N}({c_1^\ast}, c_2)^\ast} \\
 \end{array} \\
@@ -8283,10 +8283,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{ivshufflop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({i^\ast}, v_1, v_2) & = & v & \quad
+{{\mathrm{ivshufflop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({i^\ast}, v_1, v_2) & = & {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})} & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ {c^\ast} = {{\mathrm{lanes}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}(v_1) \oplus {{\mathrm{lanes}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}(v_2) \\
-{\land}~ v = {{{{\mathrm{lanes}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}^{{-1}}}}{({({c^\ast}{}[i])^\ast})} \\
+\mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
+{\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2) \\
+{\land}~ {c^\ast} = {(({c_1^\ast} \oplus {c_2^\ast}){}[i])^\ast} \\
 \end{array} \\
 \end{array}
 $$
