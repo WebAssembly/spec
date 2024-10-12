@@ -4244,7 +4244,7 @@ def $invfbytes_(N : N, byte*) : fN(N)
 def $signed_(N : N, nat : nat) : int
   ;; 4-numerics.watsup
   def $signed_{N : N, i : nat}(N, i) = (i : nat <: int)
-    -- if (0 <= (2 ^ (N - 1)))
+    -- if (i < (2 ^ (N - 1)))
   ;; 4-numerics.watsup
   def $signed_{N : N, i : nat}(N, i) = ((i - (2 ^ N)) : nat <: int)
     -- if (((2 ^ (N - 1)) <= i) /\ (i < (2 ^ N)))
@@ -4261,6 +4261,16 @@ def $sx(storagetype : storagetype) : sx?
   def $sx{consttype : consttype}((consttype : consttype <: storagetype)) = ?()
   ;; 4-numerics.watsup
   def $sx{packtype : packtype}((packtype : packtype <: storagetype)) = ?(S_sx)
+
+;; 4-numerics.watsup
+def $int(rat : rat) : int
+
+;; 4-numerics.watsup
+def $bool(bool : bool) : nat
+  ;; 4-numerics.watsup
+  def $bool(true) = 1
+  ;; 4-numerics.watsup
+  def $bool(false) = 0
 
 ;; 4-numerics.watsup
 def $sat_u_(N : N, nat : nat) : nat
@@ -4287,10 +4297,18 @@ def $sat_s_(N : N, int : int) : int
     -- otherwise
 
 ;; 4-numerics.watsup
-def $iabs_(N : N, iN : iN(N)) : iN(N)
+def $ineg_(N : N, iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $ineg_{N : N, i_1 : nat}(N, `%`_iN(i_1)) = `%`_iN($invsigned_(N, - $signed_(N, i_1)))
 
 ;; 4-numerics.watsup
-def $ineg_(N : N, iN : iN(N)) : iN(N)
+def $iabs_(N : N, iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $iabs_{N : N, i_1 : nat}(N, `%`_iN(i_1)) = `%`_iN(i_1)
+    -- if ($signed_(N, i_1) >= (0 : nat <: int))
+  ;; 4-numerics.watsup
+  def $iabs_{N : N, i_1 : nat}(N, `%`_iN(i_1)) = $ineg_(N, `%`_iN(i_1))
+    -- otherwise
 
 ;; 4-numerics.watsup
 def $iclz_(N : N, iN : iN(N)) : iN(N)
@@ -4303,12 +4321,18 @@ def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
 
 ;; 4-numerics.watsup
 def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $iadd_{N : N, i_1 : nat, i_2 : nat}(N, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN(((i_1 + i_2) \ (2 ^ N)))
 
 ;; 4-numerics.watsup
 def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $isub_{N : N, i_1 : nat, i_2 : nat}(N, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN((((i_1 - i_2) + (2 ^ N)) \ (2 ^ N)))
 
 ;; 4-numerics.watsup
 def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $imul_{N : N, i_1 : nat, i_2 : nat}(N, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN(((i_1 * i_2) \ (2 ^ N)))
 
 ;; 4-numerics.watsup
 def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
@@ -4324,9 +4348,17 @@ def $imax_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; 4-numerics.watsup
 def $iadd_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $iadd_sat_{N : N, i_1 : nat, i_2 : nat}(N, U_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN($sat_u_(N, (i_1 + i_2)))
+  ;; 4-numerics.watsup
+  def $iadd_sat_{N : N, i_1 : nat, i_2 : nat}(N, S_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN($invsigned_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))))
 
 ;; 4-numerics.watsup
 def $isub_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; 4-numerics.watsup
+  def $isub_sat_{N : N, i_1 : nat, i_2 : nat}(N, U_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN($sat_u_(N, (i_1 - i_2)))
+  ;; 4-numerics.watsup
+  def $isub_sat_{N : N, i_1 : nat, i_2 : nat}(N, S_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_iN($invsigned_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))))
 
 ;; 4-numerics.watsup
 def $iq15mulr_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
@@ -4372,27 +4404,51 @@ def $irelaxed_laneselect_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*
 
 ;; 4-numerics.watsup
 def $ieqz_(N : N, iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $ieqz_{N : N, i_1 : nat}(N, `%`_iN(i_1)) = `%`_u32($bool((i_1 = 0)))
 
 ;; 4-numerics.watsup
 def $inez_(N : N, iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $inez_{N : N, i_1 : nat}(N, `%`_iN(i_1)) = `%`_u32($bool((i_1 =/= 0)))
 
 ;; 4-numerics.watsup
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $ieq_{N : N, i_1 : nat, i_2 : nat}(N, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool((i_1 = i_2)))
 
 ;; 4-numerics.watsup
 def $ine_(N : N, iN : iN(N), iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $ine_{N : N, i_1 : nat, i_2 : nat}(N, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool((i_1 =/= i_2)))
 
 ;; 4-numerics.watsup
 def $ilt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $ilt_{N : N, i_1 : nat, i_2 : nat}(N, U_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool((i_1 < i_2)))
+  ;; 4-numerics.watsup
+  def $ilt_{N : N, i_1 : nat, i_2 : nat}(N, S_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool(($signed_(N, i_1) < $signed_(N, i_2))))
 
 ;; 4-numerics.watsup
 def $igt_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $igt_{N : N, i_1 : nat, i_2 : nat}(N, U_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool((i_1 > i_2)))
+  ;; 4-numerics.watsup
+  def $igt_{N : N, i_1 : nat, i_2 : nat}(N, S_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool(($signed_(N, i_1) > $signed_(N, i_2))))
 
 ;; 4-numerics.watsup
 def $ile_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $ile_{N : N, i_1 : nat, i_2 : nat}(N, U_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool((i_1 <= i_2)))
+  ;; 4-numerics.watsup
+  def $ile_{N : N, i_1 : nat, i_2 : nat}(N, S_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool(($signed_(N, i_1) <= $signed_(N, i_2))))
 
 ;; 4-numerics.watsup
 def $ige_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32
+  ;; 4-numerics.watsup
+  def $ige_{N : N, i_1 : nat, i_2 : nat}(N, U_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool((i_1 >= i_2)))
+  ;; 4-numerics.watsup
+  def $ige_{N : N, i_1 : nat, i_2 : nat}(N, S_sx, `%`_iN(i_1), `%`_iN(i_2)) = `%`_u32($bool(($signed_(N, i_1) >= $signed_(N, i_2))))
 
 ;; 4-numerics.watsup
 def $fabs_(N : N, fN : fN(N)) : fN(N)*
