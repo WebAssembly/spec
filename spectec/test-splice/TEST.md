@@ -1415,10 +1415,16 @@ warning: definition `ishr_` was never spliced
 warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
 warning: definition `iswizzle_lane_` was never spliced
+warning: definition `ivadd_pairwise_` was never spliced
 warning: definition `ivbinop_` was never spliced
 warning: definition `ivbinopsx_` was never spliced
 warning: definition `ivbinopsxnd_` was never spliced
 warning: definition `ivbitmaskop_` was never spliced
+warning: definition `ivdot_` was never spliced
+warning: definition `ivdot_sat_` was never spliced
+warning: definition `ivextbinop__` was never spliced
+warning: definition `ivextunop__` was never spliced
+warning: definition `ivmul_` was never spliced
 warning: definition `ivrelop_` was never spliced
 warning: definition `ivrelopsx_` was never spliced
 warning: definition `ivshiftop_` was never spliced
@@ -2031,10 +2037,16 @@ warning: definition prose `irelaxed_swizzle_lane_` was never spliced
 warning: definition prose `isub_` was never spliced
 warning: definition prose `isub_sat_` was never spliced
 warning: definition prose `iswizzle_lane_` was never spliced
+warning: definition prose `ivadd_pairwise_` was never spliced
 warning: definition prose `ivbinop_` was never spliced
 warning: definition prose `ivbinopsx_` was never spliced
 warning: definition prose `ivbinopsxnd_` was never spliced
 warning: definition prose `ivbitmaskop_` was never spliced
+warning: definition prose `ivdot_` was never spliced
+warning: definition prose `ivdot_sat_` was never spliced
+warning: definition prose `ivextbinop__` was never spliced
+warning: definition prose `ivextunop__` was never spliced
+warning: definition prose `ivmul_` was never spliced
 warning: definition prose `ivrelop_` was never spliced
 warning: definition prose `ivrelopsx_` was never spliced
 warning: definition prose `ivshiftop_` was never spliced

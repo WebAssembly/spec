@@ -1203,7 +1203,7 @@ $${rule-prose: Step_pure/vswizzlop}
 
 8. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
-$${rule: {Step_pure/vswizzlop-*}}
+$${rule: {Step_pure/vswizzlop}}
 
 .. math::
    \begin{array}{l}
@@ -1635,6 +1635,8 @@ $${rule: {Step_pure/vnarrow}}
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx`
 .....................................................
 
+.. todo:: move more of this to numerics
+
 .. todo:: (*) Prose not spliced, for it has merged multiple rules for vcvtop into one algorithm.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M`.
@@ -1651,7 +1653,7 @@ $${rule: {Step_pure/vnarrow}}
 
 7. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
-$${rule: {Step_pure/vcvtop-full}}
+$${rule: {Step_pure/vcvtop}}
 
 .. math::
    \begin{array}{l}
@@ -1667,6 +1669,8 @@ $${rule: {Step_pure/vcvtop-full}}
 
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^?`
 ..................................................................
+
+.. todo:: move more of this to numerics
 
 .. todo:: (*) Prose not spliced, for it has merged multiple rules for vcvtop into one algorithm.
 
@@ -1691,8 +1695,6 @@ $${rule: {Step_pure/vcvtop-full}}
 8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
 9. Push the value :math:`\V128.\VCONST~c` onto the stack.
-
-$${rule: {Step_pure/vcvtop-half}}
 
 .. math::
    \begin{array}{l}
@@ -1734,8 +1736,6 @@ where:
 7. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
 8. Push the value :math:`\V128.\VCONST~c` onto the stack.
-
-$${rule: {Step_pure/vcvtop-zero}}
 
 .. math::
    \begin{array}{l}

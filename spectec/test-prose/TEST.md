@@ -14406,7 +14406,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{\mathsf{bitmask}}{{}_{{\mathit{sh}}}(c_1)}`.
+#. Let :math:`c` be :math:`{\mathsf{vbitmask}}{{}_{{\mathit{sh}}}(c_1)}`.
 
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
@@ -14440,7 +14440,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{\mathsf{shuffle}}{{}_{{\mathit{sh}}}({i^\ast}, c_1, c_2)}`.
+#. Let :math:`c` be :math:`{\mathsf{vshuffle}}{{}_{{\mathit{sh}}}({i^\ast}, c_1, c_2)}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -14575,7 +14575,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{\mathsf{narrow}}{{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}^{{\mathit{sx}}}}}{(c_1, c_2)}`.
+#. Let :math:`c` be :math:`{\mathsf{vnarrow}}{{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}^{{\mathit{sx}}}}}{(c_1, c_2)}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -20535,8 +20535,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{ivshiftopsx}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}({\mathrm{ishr}}, {\mathit{sx}}, v, i)`.
 
 
-:math:`{\mathsf{bitmask}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v)}`
-......................................................................
+:math:`{\mathsf{vbitmask}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v)}`
+.......................................................................
 
 
 1. Return :math:`{{\mathrm{ivbitmaskop}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(v)`.
@@ -20555,15 +20555,15 @@ watsup 0.4 generator
 #. Return :math:`{{\mathrm{ivswizzlop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({\mathrm{irelaxed}}_{{\mathit{swizzle}}_{{\mathit{lane}}}}, v_1, v_2)`.
 
 
-:math:`{\mathsf{shuffle}}{{}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)}`
-..................................................................................................
+:math:`{\mathsf{vshuffle}}{{}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)}`
+...................................................................................................
 
 
 1. Return :math:`{{\mathrm{ivshufflop}}}_{({\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M})}({i^\ast}, v_1, v_2)`.
 
 
-:math:`{\mathsf{narrow}}{{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{\mathit{sx}}}}}{(v_1, v_2)}`
-................................................................................................................................................
+:math:`{\mathsf{vnarrow}}{{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{\mathit{sx}}}}}{(v_1, v_2)}`
+.................................................................................................................................................
 
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_1)`.
@@ -20579,20 +20579,78 @@ watsup 0.4 generator
 #. Return :math:`v`.
 
 
-:math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}})}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_1)}`
+:math:`{{\mathrm{ivadd\_pairwise}}}_{N}({i^\ast})`
+..................................................
+
+
+1. Let :math:`{j_1~j_2^\ast}` be the result for which :math:`{\bigoplus}\, {j_1~j_2^\ast}` :math:`=` :math:`{i^\ast}`.
+
+#. Return :math:`{{{\mathrm{iadd}}}_{N}(j_1, j_2)^\ast}`.
+
+
+:math:`{{\mathrm{ivextunop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathrm{f}}, {\mathit{sx}}, v_1)`
+.....................................................................................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_1)`.
+
+#. Let :math:`{{c'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}^\ast}`.
+
+#. Let :math:`{c^\ast}` be :math:`{{\mathrm{f}}}_{N_2}({{c'}_1^\ast})`.
+
+#. Return :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({c^\ast})}`.
+
+
+:math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}})}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(v_1)}`
 .................................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` :math:`=` :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})}`.
-
-#. Return :math:`c`.
+1. Return :math:`{{\mathrm{ivextunop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathrm{ivadd}}_{{\mathit{pairwise}}}, {\mathit{sx}}, v_1)`.
 
 
-:math:`{{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_1, c_2)}`
+:math:`{{\mathrm{ivdot}}}_{N}({i_1^\ast}, {i_2^\ast})`
+......................................................
+
+
+1. Let :math:`{j_1~j_2^\ast}` be the result for which :math:`{\bigoplus}\, {j_1~j_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
+
+#. Return :math:`{{{\mathrm{iadd}}}_{N}(j_1, j_2)^\ast}`.
+
+
+:math:`{{\mathrm{ivdot\_sat}}}_{N}({i_1^\ast}, {i_2^\ast})`
+...........................................................
+
+
+1. Let :math:`{j_1~j_2^\ast}` be the result for which :math:`{\bigoplus}\, {j_1~j_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
+
+#. Return :math:`{{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{s}}}}{(j_1, j_2)}^\ast}`.
+
+
+:math:`{{\mathrm{ivextbinop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathrm{f}}, {\mathit{sx}}_1, {\mathit{sx}}_2, i, k, v_1, v_2)`
+....................................................................................................................................................................................
+
+
+1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_1){}[i : k]`.
+
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(v_2){}[i : k]`.
+
+#. Let :math:`{{c'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}_1}}}{(c_1)}^\ast}`.
+
+#. Let :math:`{{c'}_2^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}_2}}}{(c_2)}^\ast}`.
+
+#. Let :math:`{c^\ast}` be :math:`{{\mathrm{f}}}_{N_2}({{c'}_1^\ast}, {{c'}_2^\ast})`.
+
+#. Return :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({c^\ast})}`.
+
+
+:math:`{{\mathrm{ivmul}}}_{N}({i_1^\ast}, {i_2^\ast})`
+......................................................
+
+
+1. Return :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
+
+
+:math:`{{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(v_1, v_2)}`
 .........................................................................................................................................................................
 
 
@@ -20600,76 +20658,34 @@ watsup 0.4 generator
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+   #. Let :math:`i` be :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
-
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})}`.
-
-   #. Return :math:`c`.
+   #. Return :math:`{{\mathrm{ivextbinop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, i, M_2, v_1, v_2)`.
 
 #. If :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is , then:
 
-   a. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
-
-   #. Let :math:`{{\mathit{ci}'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_1)}^\ast}`.
-
-   #. Let :math:`{{\mathit{ci}'}_2^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_2)}^\ast}`.
-
-   #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N_2}({\mathit{ci}'}_1, {\mathit{ci}'}_2)^\ast}`.
-
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})}`.
-
-   #. Return :math:`c`.
+   a. Return :math:`{{\mathrm{ivextbinop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathrm{ivdot}}, \mathsf{s}, \mathsf{s}, 0, M_1, v_1, v_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is .
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
-
-#. Let :math:`{{\mathit{ci}'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_1)}^\ast}`.
-
-#. Let :math:`{{\mathit{ci}'}_2^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}}}}{({\mathit{ci}}_2)}^\ast}`.
-
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N_2}({\mathit{ci}'}_1, {\mathit{ci}'}_2)^\ast}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{{{\mathrm{iadd\_sat}}}_{N_2}^{\mathsf{s}}}}{({\mathit{cj}}_1, {\mathit{cj}}_2)}^\ast})}`.
-
-#. Return :math:`c`.
+#. Return :math:`{{\mathrm{ivextbinop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathrm{ivdot}}_{{\mathit{sat}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
 
 
 :math:`{}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_1, c_2, c_3)}`
 ..................................................................................................................
 
 
-1. Let :math:`{{\mathit{ci}}_3^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}(c_3)`.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
+1. Let :math:`M` be :math:`2 \, M_2`.
 
 #. Assert: Due to validation, the type of :math:`N` for which :math:`N` :math:`=` :math:`2 \cdot N_1` is Jnn.
 
 #. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`2 \cdot N_1`.
 
-#. Let :math:`{{\mathit{ci}'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N}^{\mathsf{s}}}}{({\mathit{ci}}_1)}^\ast}`.
+#. Let :math:`{c'}` be :math:`{}{{}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1, c_2)}`.
 
-#. Let :math:`{{\mathit{ci}'}_2^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N}^{{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}}}}{({\mathit{ci}}_2)}^\ast}`.
+#. Let :math:`{c''}` be :math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{s}})}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({c'})}`.
 
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N}({\mathit{ci}'}_1, {\mathit{ci}'}_2)^\ast}`.
-
-#. Let :math:`{{\mathit{ck}}_1~{\mathit{ck}}_2^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{ck}}_1~{\mathit{ck}}_2^\ast}` :math:`=` :math:`{{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{cj}}_1, {\mathit{cj}}_2)}^\ast}`.
-
-#. Let :math:`{{\mathit{ck}'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N, N_2}^{\mathsf{s}}}}{({\mathit{ck}}_1)}^\ast}`.
-
-#. Let :math:`{{\mathit{ck}'}_2^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N, N_2}^{\mathsf{s}}}}{({\mathit{ck}}_2)}^\ast}`.
-
-#. Let :math:`{{\mathit{ck}}^\ast}` be :math:`{{{\mathrm{iadd}}}_{N_2}({\mathit{ck}'}_1, {\mathit{ck}'}_2)^\ast}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{{\mathrm{iadd}}}_{N_2}({\mathit{ck}}, {\mathit{ci}}_3)^\ast})}`.
+#. Let :math:`c` be an element of :math:`{\mathsf{add}}{{}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({c''}, c_3)}`.
 
 #. Return :math:`c`.
 
@@ -26435,51 +26451,56 @@ vnarrowop__ (Jnn_1 X M_1) (Jnn_2 X M_2) sx v_1 v_2
 5. Let v be $invlanes_((Jnn_2 X M_2), c'_1* :: c'_2*).
 6. Return v.
 
-vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
-2. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*).
-3. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
-4. Return c.
+ivadd_pairwise_ N i*
+1. Let [j_1, j_2]* be $concat__1^-1(N, i*).
+2. Return $iadd_(N, j_1, j_2)*.
 
-vextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) vextbinop___u0 c_1 c_2
+ivextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) $f_ sx v_1
+1. Let c_1* be $lanes_((Jnn_1 X M_1), v_1).
+2. Let c'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)*.
+3. Let c* be $f_($lsizenn2(Jnn_2), c'_1*).
+4. Return $invlanes_((Jnn_2 X M_2), c*).
+
+vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) v_1
+1. Return $ivextunop__((Jnn_1 X M_1), (Jnn_2 X M_2), $ivadd_pairwise_, sx, v_1).
+
+ivdot_ N i_1* i_2*
+1. Let [j_1, j_2]* be $concat__1^-1(iN(N), $imul_(N, i_1, i_2)*).
+2. Return $iadd_(N, j_1, j_2)*.
+
+ivdot_sat_ N i_1* i_2*
+1. Let [j_1, j_2]* be $concat__1^-1(iN(N), $imul_(N, i_1, i_2)*).
+2. Return $iadd_sat_(N, S, j_1, j_2)*.
+
+ivextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) $f_ sx_1 sx_2 i k v_1 v_2
+1. Let c_1* be $lanes_((Jnn_1 X M_1), v_1)[i : k].
+2. Let c_2* be $lanes_((Jnn_1 X M_1), v_2)[i : k].
+3. Let c'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_1, c_1)*.
+4. Let c'_2* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_2, c_2)*.
+5. Let c* be $f_($lsizenn2(Jnn_2), c'_1*, c'_2*).
+6. Return $invlanes_((Jnn_2 X M_2), c*).
+
+ivmul_ N i_1* i_2*
+1. Return $imul_(N, i_1, i_2)*.
+
+vextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) vextbinop___u0 v_1 v_2
 1. If vextbinop___u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx half) be vextbinop___u0.
-  b. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
-  c. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
-  d. Let c be $invlanes_((Jnn_2 X M_2), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
-  e. Return c.
+  b. Let i be $half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2).
+  c. Return $ivextbinop__((Jnn_1 X M_1), (Jnn_2 X M_2), $ivmul_, sx, sx, i, M_2, v_1, v_2).
 2. If (vextbinop___u0 is (DOTS)), then:
-  a. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-  b. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-  c. Let ci'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*.
-  d. Let ci'_2* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2)*.
-  e. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*).
-  f. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
-  g. Return c.
+  a. Return $ivextbinop__((Jnn_1 X M_1), (Jnn_2 X M_2), $ivdot_, S, S, 0, M_1, v_1, v_2).
 3. Assert: Due to validation, (vextbinop___u0 is (RELAXED_DOTS)).
-4. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-5. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-6. Let ci'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*.
-7. Let ci'_2* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), $relaxed2($R_idot(), sx, S, U), ci_2)*.
-8. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*).
-9. Let c be $invlanes_((Jnn_2 X M_2), $iadd_sat_($lsizenn2(Jnn_2), S, cj_1, cj_2)*).
-10. Return c.
+4. Return $ivextbinop__((Jnn_1 X M_1), (Jnn_2 X M_2), $ivdot_sat_, S, $relaxed2($R_idot(), sx, S, U), 0, M_1, v_1, v_2).
 
 vextternop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (RELAXED_DOT_ADDS) c_1 c_2 c_3
-1. Let ci_3* be $lanes_((Jnn_2 X M_2), c_3).
-2. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-3. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-4. Assert: Due to validation, the type of $lsizenn^-1((2 · $lsizenn1(Jnn_1))) is Jnn.
-5. Let Jnn be $lsizenn^-1((2 · $lsizenn1(Jnn_1))).
-6. Let ci'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn(Jnn), S, ci_1)*.
-7. Let ci'_2* be $extend__($lsizenn1(Jnn_1), $lsizenn(Jnn), $relaxed2($R_idot(), sx, S, U), ci_2)*.
-8. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn((Jnn : Jnn <: lanetype))), $imul_($lsizenn(Jnn), ci'_1, ci'_2)*).
-9. Let [ck_1, ck_2]* be $concat__1^-1(iN($lsizenn((Jnn : Jnn <: lanetype))), $iadd_sat_($lsizenn(Jnn), S, cj_1, cj_2)*).
-10. Let ck'_1* be $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_1)*.
-11. Let ck'_2* be $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_2)*.
-12. Let ck* be $iadd_($lsizenn2(Jnn_2), ck'_1, ck'_2)*.
-13. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), ck, ci_3)*).
-14. Return c.
+1. Let M be (2 · M_2).
+2. Assert: Due to validation, the type of $lsizenn^-1((2 · $lsizenn1(Jnn_1))) is Jnn.
+3. Let Jnn be $lsizenn^-1((2 · $lsizenn1(Jnn_1))).
+4. Let c' be $vextbinop__((Jnn_1 X M_1), (Jnn X M), (RELAXED_DOTS), c_1, c_2).
+5. Let c'' be $vextunop__((Jnn X M), (Jnn_2 X M_2), (EXTADD_PAIRWISE S), c').
+6. Let c be an element of $vbinop_((Jnn_2 X M_2), ADD, c'', c_3).
+7. Return c.
 
 inst_valtype moduleinst t
 1. Let dt* be moduleinst.TYPES.
