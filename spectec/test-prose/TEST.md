@@ -2673,23 +2673,23 @@ watsup 0.4 generator
 
 #. Let :math:`z` be :math:`f_{\mathit{init}}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{d}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{g}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
@@ -2716,11 +2716,11 @@ watsup 0.4 generator
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^\ast})` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -4107,15 +4107,15 @@ instantiate z module externaddr*
 14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
 15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 16. Let z be f_init.
-17. Push the value (FRAME_ 0 { z }) to the stack.
+17. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 18. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-19. Pop the value (FRAME_ 0 { _f }) from the stack.
-20. Push the value (FRAME_ 0 { z }) to the stack.
+19. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+20. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 21. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-22. Pop the value (FRAME_ 0 { _f }) from the stack.
-23. Push the value (FRAME_ 0 { z }) to the stack.
+22. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+23. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 24. Let [val]* be $eval_expr(expr_G)*.
-25. Pop the value (FRAME_ 0 { _f }) from the stack.
+25. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 26. Let moduleinst be $allocmodule(module, externaddr*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
@@ -4128,9 +4128,9 @@ instantiate z module externaddr*
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
-2. Push the value (FRAME_ 0 { f }) to the stack.
+2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
-4. Pop the value (FRAME_ 0 { _f }) from the stack.
+4. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
 6. Push the evaluation context (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
@@ -9445,17 +9445,17 @@ watsup 0.4 generator
 
 #. Let :math:`z` be :math:`f_{\mathit{init}}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{g}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
@@ -9482,11 +9482,11 @@ watsup 0.4 generator
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^\ast})` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -12205,12 +12205,12 @@ instantiate z module externaddr*
 16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 18. Let z be f_init.
-19. Push the value (FRAME_ 0 { z }) to the stack.
+19. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 20. Let [val]* be $eval_expr(expr_G)*.
-21. Pop the value (FRAME_ 0 { _f }) from the stack.
-22. Push the value (FRAME_ 0 { z }) to the stack.
+21. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+22. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 23. Let [ref]** be $eval_expr(expr_E)**.
-24. Pop the value (FRAME_ 0 { _f }) from the stack.
+24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
 27. Push the evaluation context (FRAME_ 0 { f }) to the stack.
@@ -12223,9 +12223,9 @@ instantiate z module externaddr*
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Push the value (FRAME_ 0 { f }) to the stack.
+2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
-4. Pop the value (FRAME_ 0 { _f }) from the stack.
+4. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
 6. Push the evaluation context (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
@@ -22045,23 +22045,23 @@ watsup 0.4 generator
 
 #. Let :math:`z` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array}`.
 
-#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{}~z~\})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` from the stack.
+#. Pop the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` from the stack.
 
-#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` to the stack.
 
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{t}})^\ast}`.
 
-#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
+#. Pop the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
 
-#. Push the value :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` to the stack.
+#. Push the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~{z'}~\})` to the stack.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the value :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
+#. Pop the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
@@ -27111,15 +27111,15 @@ instantiate z module externaddr*
 16. Let (ELEM reftype expr_E* elemmode)* be elem*.
 17. Let instr_S? be (CALL x)?.
 18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-19. Push the value (FRAME_ 0 { z }) to the stack.
+19. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-21. Pop the value (FRAME_ 0 { z' }) from the stack.
-22. Push the value (FRAME_ 0 { z' }) to the stack.
+21. Pop the evaluation context (FRAME_ 0 { z' }) from the stack.
+22. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
 23. Let [ref_T]* be $eval_expr(expr_T)*.
-24. Pop the value (FRAME_ 0 { _f }) from the stack.
-25. Push the value (FRAME_ 0 { z' }) to the stack.
+24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+25. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
 26. Let [ref_E]** be $eval_expr(expr_E)**.
-27. Pop the value (FRAME_ 0 { _f }) from the stack.
+27. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.

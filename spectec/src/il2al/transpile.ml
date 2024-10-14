@@ -902,16 +902,15 @@ let handle_unframed_algo instrs =
     let ret =
       match !frame_arg with
       | Some { it = ExpA f; _ } ->
-        let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
         let zeroE = numE Z.zero ~note:natT in
-        let frame = frameE (zeroE, f) ~at:f.at ~note:callframeT in
+        let frame = frameE (zeroE, f) ~at:f.at ~note:evalctxT in
         let frame' =
           match instr.it with
           (* HARDCODE: the frame-passing-style *)
           | LetI ( { it = TupE [f'; _]; _ }, _) ->
-            frameE (zeroE, f') ~at:f'.at ~note:callframeT
+            frameE (zeroE, f') ~at:f'.at ~note:evalctxT
           | _ ->
-            frameE (zeroE, varE "_f" ~note:f.note) ~note:callframeT
+            frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT
         in
         [
           pushI frame ~at:frame.at;
