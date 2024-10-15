@@ -962,18 +962,12 @@ syntax dim =
 ;; 1-syntax.watsup
 syntax shape =
   | `%X%`{lanetype : lanetype, dim : dim}(lanetype : lanetype, dim : dim)
+    -- if (($lsize(lanetype) * dim!`%`_dim.0) = 128)
 
 ;; 1-syntax.watsup
 syntax ishape =
   | `%X%`{Jnn : Jnn, dim : dim}(Jnn : Jnn, dim : dim)
-
-;; 1-syntax.watsup
-syntax fshape =
-  | `%X%`{Fnn : Fnn, dim : dim}(Fnn : Fnn, dim : dim)
-
-;; 1-syntax.watsup
-syntax pshape =
-  | `%X%`{Pnn : Pnn, dim : dim}(Pnn : Pnn, dim : dim)
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) * dim!`%`_dim.0) = 128)
 
 ;; 1-syntax.watsup
 def $lanetype(shape : shape) : lanetype
@@ -984,11 +978,6 @@ def $lanetype(shape : shape) : lanetype
 def $dim(shape : shape) : dim
   ;; 1-syntax.watsup
   def $dim{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = `%`_dim(N)
-
-;; 1-syntax.watsup
-def $shsize(shape : shape) : nat
-  ;; 1-syntax.watsup
-  def $shsize{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = ($lsize(Lnn) * N)
 
 ;; 1-syntax.watsup
 def $unpackshape(shape : shape) : numtype

@@ -448,12 +448,12 @@ syntax cvtop__(Fnn_1, Fnn_2) =
 
 ;; Vector shapes
 
-;; TODO(1, rossberg): restrict size to 128
 syntax dim hint(desc "dimension") = `1 | `2 | `4 | `8 | `16
+
 syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2) hint(macro "%shape")
+  -- if $($lsize(lanetype) * dim = 128)
 syntax ishape hint(desc "shape") = Jnn X dim      hint(show %0#X#%2) hint(macro "%shape")
-syntax fshape hint(desc "shape") = Fnn X dim      hint(show %0#X#%2) hint(macro "%shape")
-syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2) hint(macro "%shape")
+  -- if $($lsizenn(Jnn) * dim = 128)
 
 
 def $lanetype(shape) : lanetype hint(macro "shlanetype")
@@ -461,9 +461,6 @@ def $lanetype(Lnn X N) = Lnn
 
 def $dim(shape) : dim     hint(macro "shdim")
 def $dim(Lnn X N) = N
-
-def $shsize(shape) : nat  hint(show |%|)
-def $shsize(Lnn X N) = $($lsize(Lnn) * N)
 
 def $unpackshape(shape) : numtype  hint(show $unpack(%))
 def $unpackshape(Lnn X N) = $lunpack(Lnn)

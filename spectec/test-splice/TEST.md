@@ -347,7 +347,6 @@ warning: syntax `fieldval` was never spliced
 warning: syntax `fin` was never spliced
 warning: syntax `frame` was never spliced
 warning: syntax `free` was never spliced
-warning: syntax `fshape` was never spliced
 warning: syntax `func` was never spliced
 warning: syntax `funcaddr` was never spliced
 warning: syntax `funccode` was never spliced
@@ -427,7 +426,6 @@ warning: syntax `oktypeidxnat` was never spliced
 warning: syntax `pack_` was never spliced
 warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced
-warning: syntax `pshape` was never spliced
 warning: syntax `pth` was never spliced
 warning: syntax `record` was never spliced
 warning: syntax `recorddots` was never spliced
@@ -1482,7 +1480,6 @@ warning: definition `setproduct1_` was never spliced
 warning: definition `setproduct2_` was never spliced
 warning: definition `setproduct_` was never spliced
 warning: definition `shift_labelidxs` was never spliced
-warning: definition `shsize` was never spliced
 warning: definition `signed_` was never spliced
 warning: definition `signif` was never spliced
 warning: definition `sizenn` was never spliced
@@ -2096,7 +2093,6 @@ warning: definition prose `setproduct1_` was never spliced
 warning: definition prose `setproduct2_` was never spliced
 warning: definition prose `setproduct_` was never spliced
 warning: definition prose `shift_labelidxs` was never spliced
-warning: definition prose `shsize` was never spliced
 warning: definition prose `signed_` was never spliced
 warning: definition prose `signif` was never spliced
 warning: definition prose `size` was never spliced

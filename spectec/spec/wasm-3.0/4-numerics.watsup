@@ -422,7 +422,6 @@ def $fvbinop_(shape, def $f_(N, fN(N), fN(N)) : fN(N)*, vec_(V128), vec_(V128)) 
 def $ivternopnd_(shape, def $f_(N, iN(N), iN(N), iN(N)) : iN(N)*, vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
 def $fvternop_(shape, def $f_(N, fN(N), fN(N), fN(N)) : fN(N)*, vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
 
-;; TODO(1, rossberg): this is not lane-wise, lump with shape shifters
 def $ivtestop_(shape, def $f_(N, iN(N)) : u32, vec_(V128)) : u32
 def $fvtestop_(shape, def $f_(N, fN(N)) : u32, vec_(V128)) : u32
 

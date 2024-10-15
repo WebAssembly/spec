@@ -841,6 +841,7 @@ and equiv_iter env iter1 iter2 =
     equiv_exp env e1 e2 && Option.equal (fun id1 id2 -> id1.it = id2.it) ido1 ido2
   | _, _ -> iter1 = iter2
 
+(*
 and equiv_prem env pr1 pr2 =
   match pr1.it, pr2.it with
   | RulePr (id1, mixop1, e1), RulePr (id2, mixop2, e2) ->
@@ -851,6 +852,7 @@ and equiv_prem env pr1 pr2 =
   | IterPr (pr11, iter1), IterPr (pr21, iter2) ->
     equiv_prem env pr11 pr21 && equiv_iter env (fst iter1) (fst iter2)
   | pr1', pr2' -> pr1' = pr2'
+*)
 
 and equiv_exp env e1 e2 =
   Debug.(log "il.equiv_exp"
@@ -916,17 +918,17 @@ and sub_typ env t1 t2 =
   | VarT _, VarT _ ->
     (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
     | StructT tfs1, StructT tfs2 ->
-      List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
+      List.for_all (fun (atom, (_binds2, t2, _prems2), _) ->
         match find_field tfs1 atom with
-        | Some (_binds1, t1, prems1) ->
-          sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
+        | Some (_binds1, t1, _prems1) ->
+          sub_typ env t1 t2 (*&& equiv_list equiv_prem env prems1 prems2*)
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (mixop, (_binds1, t1, prems1), _) ->
+      List.for_all (fun (mixop, (_binds1, t1, _prems1), _) ->
         match find_case tcs2 mixop with
-        | Some (_binds2, t2, prems2) ->
-          sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
+        | Some (_binds2, t2, _prems2) ->
+          sub_typ env t1 t2 (*&& equiv_list equiv_prem env prems1 prems2*)
         | None -> false
       ) tcs1
     | _, _ -> false

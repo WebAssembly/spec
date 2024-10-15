@@ -2831,10 +2831,8 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(dimension)} & {\mathit{dim}} & ::= & \mathsf{{\scriptstyle 1}} ~|~ \mathsf{{\scriptstyle 2}} ~|~ \mathsf{{\scriptstyle 4}} ~|~ \mathsf{{\scriptstyle 8}} ~|~ \mathsf{{\scriptstyle 16}} \\
-\mbox{(shape)} & {\mathit{shape}} & ::= & {{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}} \\
-\mbox{(shape)} & {\mathit{ishape}} & ::= & {{\mathsf{i}}{N}}{\mathsf{x}}{{\mathit{dim}}} \\
-\mbox{(shape)} & {\mathit{fshape}} & ::= & {{\mathsf{f}}{N}}{\mathsf{x}}{{\mathit{dim}}} \\
-\mbox{(shape)} & {\mathit{pshape}} & ::= & {{\mathsf{i}}{N}}{\mathsf{x}}{{\mathit{dim}}} \\
+\mbox{(shape)} & {\mathit{shape}} & ::= & {{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}} & \quad \mbox{if}~ {|{\mathit{lanetype}}|} \cdot {\mathit{dim}} = 128 \\
+\mbox{(shape)} & {\mathit{ishape}} & ::= & {{\mathsf{i}}{N}}{\mathsf{x}}{{\mathit{dim}}} & \quad \mbox{if}~ N \cdot {\mathit{dim}} = 128 \\
 \end{array}
 $$
 
@@ -2849,12 +2847,6 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & N \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{|{{\mathsf{i}}{N}}{\mathsf{x}}{N}|} & = & {|{\mathsf{i}}{N}|} \cdot N \\
 \end{array}
 $$
 

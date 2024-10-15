@@ -17081,13 +17081,6 @@ watsup 0.4 generator
 1. Return :math:`N`.
 
 
-:math:`{|({{\mathsf{i}}{N}}{\mathsf{x}}{N})|}`
-..............................................
-
-
-1. Return :math:`{|{\mathsf{i}}{N}|} \cdot N`.
-
-
 :math:`{\mathrm{unpack}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
 .............................................................
 
@@ -24799,9 +24792,6 @@ lanetype (Lnn X N)
 
 dim (Lnn X N)
 1. Return N.
-
-shsize (Lnn X N)
-1. Return ($lsize(Lnn) · N).
 
 unpackshape (Lnn X N)
 1. Return $lunpack(Lnn).
