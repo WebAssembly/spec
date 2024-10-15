@@ -373,9 +373,9 @@ def $cvtop__(Fnn_1, Fnn_2, PROMOTE, f_1) =
 def $cvtop__(Fnn_1, Fnn_2, DEMOTE, f_1) =
   $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), f_1)
 def $cvtop__(Inn_1, Fnn_2, REINTERPRET, i_1) =
-  $reinterpret__(Inn_1, Fnn_2, i_1) -- if $size(Inn_1) = $size(Fnn_2)  ;; TODO(rossberg, 3): make implicit
+  $reinterpret__(Inn_1, Fnn_2, i_1) -- if $size(Inn_1) = $size(Fnn_2)  ;; TODO(3, rossberg): make implicit
 def $cvtop__(Fnn_1, Inn_2, REINTERPRET, f_1) =
-  $reinterpret__(Fnn_1, Inn_2, f_1) -- if $size(Fnn_1) = $size(Inn_2)  ;; TODO(rossberg, 3): make implicit
+  $reinterpret__(Fnn_1, Inn_2, f_1) -- if $size(Fnn_1) = $size(Inn_2)  ;; TODO(3, rossberg): make implicit
 
 
 ;; Vectors
@@ -504,7 +504,7 @@ def $fvrelop_(Fnn X M, def $f_, v_1, v_2) = $invlanes_(Inn X M, c*)
     -- if c_1* = $lanes_(Fnn X M, v_1)
     -- if c_2* = $lanes_(Fnn X M, v_2)
     -- if c* = $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*
-    -- if $size(Inn) = $size(Fnn)  ;; TODO(rossberg, 3): make implicit
+    -- if $size(Inn) = $size(Fnn)  ;; TODO(3, rossberg): make implicit
 
 
 def $ivshiftop_(Jnn X M, def $f_, v_1, i) = $invlanes_(Jnn X M, c*)

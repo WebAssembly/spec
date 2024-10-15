@@ -250,12 +250,12 @@ rule Step_read/throw_ref-handler-empty:
 rule Step_read/throw_ref-handler-catch:
   z; (HANDLER_ n `{(CATCH x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (BR l)
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
-  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(rossberg, 3): inline
+  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(3, rossberg): inline
 
 rule Step_read/throw_ref-handler-catch_ref:
   z; (HANDLER_ n `{(CATCH_REF x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (REF.EXN_ADDR a) (BR l)
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
-  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(rossberg, 3): inline
+  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(3, rossberg): inline
 
 rule Step_read/throw_ref-handler-catch_all:
   z; (HANDLER_ n `{(CATCH_ALL l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (BR l)
