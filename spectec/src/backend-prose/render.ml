@@ -303,6 +303,11 @@ let render_prose_cmpop = function
   | Le -> " less than or equal to"
   | Ge -> " greater than or equal to"
 
+let render_prose_cmpop_eps = function
+  | Eq -> ""
+  | Ne -> " not"
+  | op -> render_prose_cmpop op
+
 let render_al_unop = function
   | Al.Ast.NotOp -> "not"
   | Al.Ast.MinusOp -> "minus"
@@ -544,12 +549,6 @@ let rec render_stmt env depth stmt =
     | CondS e ->
       sprintf "%s."
         (render_expr env e)
-    | CmpS (e1, Eq, { it = Al.Ast.OptE None; _ }) ->
-      sprintf "%s is absent."
-        (render_expr_with_type env e1)
-    | CmpS (e1, Ne, { it = Al.Ast.OptE None; _ }) ->
-      sprintf "%s is not absent."
-        (render_expr_with_type env e1)
     | CmpS (e1, cmpop, ({ it = Al.Ast.SubE (id, t); _ } as e2)) when (Il.Print.string_of_typ_name t) = id ->
       let rhs =
         match render_type_desc t with
@@ -561,10 +560,12 @@ let rec render_stmt env depth stmt =
         (render_prose_cmpop cmpop)
         rhs
     | CmpS (e1, cmpop, e2) ->
-      sprintf "%s is%s %s."
-        (render_expr_with_type env e1)
-        (render_prose_cmpop cmpop)
-        (render_expr env e2)
+      let cmpop, rhs =
+        match al_to_el_expr e2 with
+        | Some { it = El.Ast.EpsE; _ } -> render_prose_cmpop_eps cmpop, "absent"
+        | _ -> render_prose_cmpop cmpop, render_expr env e2
+      in
+      sprintf "%s is%s %s." (render_expr_with_type env e1) cmpop rhs
     | IsValidS (c_opt, e, es) ->
       sprintf "%s%s is valid%s."
         (render_opt "under the context " (render_expr env) ", " c_opt)
@@ -637,6 +638,9 @@ let render_stack_prefix expr =
   | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
+
+
+
 
 let rec render_instr env algoname index depth instr =
   match instr.it with
