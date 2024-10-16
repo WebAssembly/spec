@@ -1507,15 +1507,29 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
   | TupT [], SeqT [] ->
     e'.it
   | ConT ((t11, _), _), ConT ((t21, _), _) ->
-    let mixop1, ts1', ts1 = elab_typ_notation env (expand_id env t1) t11 in
-    let mixop2, _ts2', ts2 = elab_typ_notation env (expand_id env t2) t21 in
-    if mixop1 <> mixop2 then
-      error_typ2 env e'.at phrase t1 t2 "";
-    let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tup_typ' ts1' e'.at in
-    let es' = List.mapi (fun i t1I' -> Il.ProjE (e'', i) $$ e''.at % t1I') ts1' in
-    let es'' = List.map2 (fun eI' (t1I, t2I) ->
-      cast_exp phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-    Il.CaseE (mixop2, tup_exp_bind' es'' e'.at)
+    (try
+      let mixop1, ts1', ts1 = elab_typ_notation env (expand_id env t1) t11 in
+      let mixop2, _ts2', ts2 = elab_typ_notation env (expand_id env t2) t21 in
+      if mixop1 <> mixop2 then
+        error_typ2 env e'.at phrase t1 t2 "";
+      let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tup_typ' ts1' e'.at in
+      let es' = List.mapi (fun i t1I' -> Il.ProjE (e'', i) $$ e''.at % t1I') ts1' in
+      let es'' = List.map2 (fun eI' (t1I, t2I) ->
+        cast_exp phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
+      Il.CaseE (mixop2, tup_exp_bind' es'' e'.at)
+    with Error _ ->  (* backtrack *)
+      Debug.(log_in_at "el.cast_exp" e'.at
+        (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 1" (el_typ t1) (el_typ t2)
+          (el_typ (expand_def env t1 $ t1.at)) (el_typ (expand_def env t2 $ t2.at))
+          (el_typ (expand_nondef env t2))
+        )
+      );
+      let mixop, ts', ts = elab_typ_notation env (expand_id env t1) t11 in
+      let t111, t111' = match ts, ts' with [t111], [t111'] -> t111, t111' | _ ->
+        error_typ2 env e'.at phrase t1 t2 "" in
+      let e'' = Il.UncaseE (e', mixop) $$ e'.at % tup_typ' ts' e'.at in
+      cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t111') t111 t2
+    )
   | ConT ((t11, _), _), t2' ->
     (try
       let env' = local_env env in
@@ -1531,7 +1545,7 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
       e'
     with Error _ ->  (* backtrack *)
       Debug.(log_in_at "el.cast_exp" e'.at
-        (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 1" (el_typ t1) (el_typ t2)
+        (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 2" (el_typ t1) (el_typ t2)
           (el_typ (expand_def env t1 $ t1.at)) (el_typ (expand_def env t2 $ t2.at))
           (el_typ (expand_nondef env t2))
         )
@@ -1562,7 +1576,7 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
       e'
     with Error _ ->  (* backtrack *)
       Debug.(log_in_at "el.cast_exp" e'.at
-        (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 2" (el_typ t1) (el_typ t2)
+        (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 3" (el_typ t1) (el_typ t2)
           (el_typ (expand_def env t1 $ t1.at)) (el_typ (expand_def env t2 $ t2.at))
           (el_typ (expand_nondef env t2))
         )

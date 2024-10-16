@@ -2832,17 +2832,10 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(dimension)} & {\mathit{dim}} & ::= & \mathsf{{\scriptstyle 1}} ~|~ \mathsf{{\scriptstyle 2}} ~|~ \mathsf{{\scriptstyle 4}} ~|~ \mathsf{{\scriptstyle 8}} ~|~ \mathsf{{\scriptstyle 16}} \\
 \mbox{(shape)} & {\mathit{shape}} & ::= & {{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}} & \quad \mbox{if}~ {|{\mathit{lanetype}}|} \cdot {\mathit{dim}} = 128 \\
-\mbox{(shape)} & {\mathit{ishape}} & ::= & {{\mathsf{i}}{N}}{\mathsf{x}}{{\mathit{dim}}} & \quad \mbox{if}~ N \cdot {\mathit{dim}} = 128 \\
 \end{array}
 $$
 
 \vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & {\mathsf{i}}{N} \\
-\end{array}
-$$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
@@ -2852,7 +2845,22 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & {\mathsf{i}}{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{unpack}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & {\mathrm{unpack}}({\mathsf{i}}{N}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+\mbox{(integer shape)} & {\mathit{ishape}} & ::= & {\mathit{shape}} & \quad \mbox{if}~ {\mathrm{lanetype}}({\mathit{shape}}) = {\mathsf{i}}{N} \\
+\mbox{(byte shape)} & {\mathit{bshape}} & ::= & {\mathit{shape}} & \quad \mbox{if}~ {\mathrm{lanetype}}({\mathit{shape}}) = \mathsf{i{\scriptstyle 8}} \\
 \end{array}
 $$
 
@@ -2925,17 +2933,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {{\mathit{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_2 = 2 \cdot N_1 \\
-& {{\mathit{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_2 \geq N_1 = \mathsf{{\scriptstyle 32}} \\
-& {{\mathit{vcvtop}}}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_1 \geq N_2 = \mathsf{{\scriptstyle 32}} \\
-& & | & {\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_1 \geq N_2 = \mathsf{{\scriptstyle 32}} \\
-& {{\mathit{vcvtop}}}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{demote} & \quad \mbox{if}~ N_1 > N_2 \\
-& & | & \mathsf{promote} & \quad \mbox{if}~ N_1 < N_2 \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{vshiftop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{shl} ~|~ {\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}} \\
 \end{array}
 $$
@@ -2963,6 +2960,17 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{vextternop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{relaxed\_dot\_add}}{\mathsf{\_}}{\mathsf{s}} & \quad \mbox{if}~ 4 \cdot N_1 = N_2 = \mathsf{{\scriptstyle 32}} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {{\mathit{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_2 = 2 \cdot N_1 \\
+& {{\mathit{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_2 \geq N_1 = \mathsf{{\scriptstyle 32}} \\
+& {{\mathit{vcvtop}}}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & {\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_1 \geq N_2 = \mathsf{{\scriptstyle 32}} \\
+& & | & {\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N_1 \geq N_2 = \mathsf{{\scriptstyle 32}} \\
+& {{\mathit{vcvtop}}}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{demote} & \quad \mbox{if}~ N_1 > N_2 \\
+& & | & \mathsf{promote} & \quad \mbox{if}~ N_1 < N_2 \\
 \end{array}
 $$
 
@@ -3053,8 +3061,8 @@ $$
 & & | & {\mathit{shape}} {.} {{\mathit{vrelop}}}_{{\mathit{shape}}} \\
 & & | & {\mathit{ishape}} {.} {{\mathit{vshiftop}}}_{{\mathit{ishape}}} \\
 & & | & {\mathit{ishape}}{.}\mathsf{bitmask} \\
-& & | & {\mathit{ishape}} {.} {{\mathit{vswizzlop}}}_{{\mathit{ishape}}} \\
-& & | & {\mathit{ishape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast} & \quad \mbox{if}~ {\mathit{ishape}} = {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} \land {|{{\mathit{laneidx}}^\ast}|} = \mathsf{{\scriptstyle 16}} \\
+& & | & {\mathit{bshape}} {.} {{\mathit{vswizzlop}}}_{{\mathit{bshape}}} \\
+& & | & {\mathit{bshape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast} & \quad \mbox{if}~ {|{{\mathit{laneidx}}^\ast}|} = {\mathrm{dim}}({\mathit{bshape}}) \\
 & & | & {\mathit{ishape}}_1 {.} {{{\mathit{vextunop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2} \\
 & & | & {\mathit{ishape}}_1 {.} {{{\mathit{vextbinop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2} \\
 & & | & {\mathit{ishape}}_1 {.} {{{\mathit{vextternop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2} \\
@@ -3943,8 +3951,8 @@ $$
 {\mathrm{free}}_{\mathit{instr}}({\mathit{shape}} {.} {\mathit{vrelop}}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
 {\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}} {.} {\mathit{vshiftop}}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
 {\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}{.}\mathsf{bitmask}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
-{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}} {.} {\mathit{vswizzlop}}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
-{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{bshape}} {.} {\mathit{vswizzlop}}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{bshape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast}) & = & {\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}}) \\
 {\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}

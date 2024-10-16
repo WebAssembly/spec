@@ -449,21 +449,22 @@ syntax cvtop__(Fnn_1, Fnn_2) =
 ;; Vector shapes
 
 syntax dim hint(desc "dimension") = `1 | `2 | `4 | `8 | `16
-
 syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2) hint(macro "%shape")
   -- if $($lsize(lanetype) * dim = 128)
-syntax ishape hint(desc "shape") = Jnn X dim      hint(show %0#X#%2) hint(macro "%shape")
-  -- if $($lsizenn(Jnn) * dim = 128)
 
 
-def $lanetype(shape) : lanetype hint(macro "shlanetype")
-def $lanetype(Lnn X N) = Lnn
-
-def $dim(shape) : dim     hint(macro "shdim")
+def $dim(shape) : dim  hint(macro "shdim")
 def $dim(Lnn X N) = N
+
+def $lanetype(shape) : lanetype  hint(macro "shlanetype")
+def $lanetype(Lnn X N) = Lnn
 
 def $unpackshape(shape) : numtype  hint(show $unpack(%))
 def $unpackshape(Lnn X N) = $lunpack(Lnn)
+
+
+syntax ishape hint(desc "integer shape") = shape -- if $lanetype(shape) = Jnn
+syntax bshape hint(desc "byte shape") = shape    -- if $lanetype(shape) = I8
 
 
 ;; Vector operators
@@ -515,27 +516,10 @@ syntax vrelop_(Jnn X M) = EQ | NE
   | GE sx hint(show GE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 
-;; TODO(2, rossberg): internalise half and zero
-syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
-syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTEND sx hint(show EXTEND#_#%)
-    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
-syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
-  | CONVERT sx hint(show CONVERT#_#%)
-    -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
-syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
-  | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
-    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
-  | RELAXED_TRUNC sx hint(show RELAXED_TRUNC#_#%)
-    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
-syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
-  | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
-  | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
-
 syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
 
-syntax vswizzlop_(ishape) hint(macro "%" "V%")
+syntax vswizzlop_(bshape) hint(macro "%" "V%")
 syntax vswizzlop_(I8 X M) = SWIZZLE | RELAXED_SWIZZLE
 
 syntax vextunop__(ishape_1, ishape_2) hint(macro "%" "V%")
@@ -556,6 +540,23 @@ syntax vextternop__(ishape_1, ishape_2) hint(macro "%" "V%")
 syntax vextternop__(Jnn_1 X M_1, Jnn_2 X M_2) =
   | RELAXED_DOT_ADD S hint(show RELAXED_DOT_ADD#_#%)
     -- if $(4 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
+
+;; TODO(2, rossberg): internalise half and zero
+syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
+syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTEND sx hint(show EXTEND#_#%)
+    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
+syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
+  | CONVERT sx hint(show CONVERT#_#%)
+    -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
+syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
+  | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
+    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+  | RELAXED_TRUNC sx hint(show RELAXED_TRUNC#_#%)
+    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
+  | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
+  | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
 
 ;; Memory operators
@@ -658,10 +659,9 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VRELOP shape vrelop_(shape)         hint(show ##%.##%)
   | VSHIFTOP ishape vshiftop_(ishape)   hint(show ##%.##%)
   | VBITMASK ishape                     hint(show ##%.BITMASK)   hint(macro "VBITMASK")
-  | VSWIZZLOP ishape vswizzlop_(ishape) hint(show ##%.##%)
-  | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
-    -- if ishape = I8 X `16 /\ |laneidx*| = `16
-    ;; TODO(3, rossberg): enable ^16 in type
+  | VSWIZZLOP bshape vswizzlop_(bshape) hint(show ##%.##%)
+  | VSHUFFLE bshape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
+    -- if |laneidx*| = $dim(bshape)
   | VEXTUNOP ishape_1 ishape_2 vextunop__(ishape_2, ishape_1)
     hint(show ##%1.##%3#_# ##%2)
   | VEXTBINOP ishape_1 ishape_2 vextbinop__(ishape_2, ishape_1)

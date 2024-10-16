@@ -117,7 +117,8 @@ Vector Instructions
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {lanetype dim shape ishape} half__ zero__ laneidx instr/vec}
+$${syntax: {lanetype dim shape ishape bshape} half__ zero__ laneidx instr/vec}
+$${syntax-ignore: J8}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop

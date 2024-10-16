@@ -750,6 +750,14 @@ and equiv_params env ps1 ps2 =
 
 (* Subtyping *)
 
+and sub_prems _env prems1 prems2 =
+  Debug.(log "el.sub_prems"
+    (fun _ -> fmt "%s <: %s" (nl_list el_prem prems1) (nl_list el_prem prems2))
+    Bool.to_string
+  ) @@ fun _ ->
+  let open Convert in
+  forall_nl_list (fun prem2 -> exists_nl_list (Eq.eq_prem prem2) prems1) prems2
+
 and sub_typ env t1 t2 =
   Debug.(log "el.sub_typ"
     (fun _ -> fmt "%s <: %s" (el_typ t1) (el_typ t2)) Bool.to_string
@@ -759,21 +767,21 @@ and sub_typ env t1 t2 =
   match t1.it, t2.it with
   | NumT t1', NumT t2' -> t1' <= t2'
   | StrT tfs1, StrT tfs2 ->
-    El.Convert.forall_nl_list (fun (atom, (t2, _prems2), _) ->
+    El.Convert.forall_nl_list (fun (atom, (t2, prems2), _) ->
       match find_field tfs1 atom with
-      | Some (t1, _prems1) ->
-        equiv_typ env t1 t2 (*&& Eq.eq_nl_list Eq.eq_prem prems1 prems2*)
+      | Some (t1, prems1) ->
+        equiv_typ env t1 t2 && sub_prems env prems1 prems2
       | None -> false
     ) tfs2
   | CaseT (NoDots, [], tcs1, NoDots), CaseT (NoDots, [], tcs2, NoDots) ->
-    El.Convert.forall_nl_list (fun (atom, (t1, _prems1), _) ->
+    El.Convert.forall_nl_list (fun (atom, (t1, prems1), _) ->
       match find_case tcs2 atom with
-      | Some (t2, _prems2) ->
-        equiv_typ env t1 t2 (*&& Eq.eq_nl_list Eq.eq_prem prems1 prems2*)
+      | Some (t2, prems2) ->
+        equiv_typ env t1 t2 && sub_prems env prems1 prems2
       | None -> false
     ) tcs1
-  | ConT ((t11, _prems1), _), ConT ((t21, _prems2), _) ->
-    sub_typ env t11 t21 (*&& Eq.eq_nl_list Eq.eq_prem prems1 prems2*)
+  | ConT ((t11, prems1), _), ConT ((t21, prems2), _) ->
+    sub_typ env t11 t21 && sub_prems env prems1 prems2
 (*
   | ConT ((t11, _), _), _ -> sub_typ env t11 t2
   | _, ConT ((t21, _), _) -> sub_typ env t1 t21

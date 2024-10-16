@@ -905,6 +905,9 @@ and equiv_params env ps1 ps2 =
 
 (* Subtyping *)
 
+and sub_prems _env prems1 prems2 =
+  List.for_all (fun prem2 -> List.exists (Eq.eq_prem prem2) prems1) prems2
+
 and sub_typ env t1 t2 =
   Debug.(log "il.sub_typ"
     (fun _ -> fmt "%s <: %s" (il_typ t1) (il_typ t2)) Bool.to_string
@@ -918,17 +921,17 @@ and sub_typ env t1 t2 =
   | VarT _, VarT _ ->
     (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
     | StructT tfs1, StructT tfs2 ->
-      List.for_all (fun (atom, (_binds2, t2, _prems2), _) ->
+      List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
         match find_field tfs1 atom with
-        | Some (_binds1, t1, _prems1) ->
-          sub_typ env t1 t2 (*&& equiv_list equiv_prem env prems1 prems2*)
+        | Some (_binds1, t1, prems1) ->
+          sub_typ env t1 t2 && sub_prems env prems1 prems2
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (mixop, (_binds1, t1, _prems1), _) ->
+      List.for_all (fun (mixop, (_binds1, t1, prems1), _) ->
         match find_case tcs2 mixop with
-        | Some (_binds2, t2, _prems2) ->
-          sub_typ env t1 t2 (*&& equiv_list equiv_prem env prems1 prems2*)
+        | Some (_binds2, t2, prems2) ->
+          sub_typ env t1 t2 && sub_prems env prems1 prems2
         | None -> false
       ) tcs1
     | _, _ -> false

@@ -752,9 +752,9 @@
 .. |frelop| mathdef:: \xref{syntax/instructions}{syntax-relop}{\X{frelop}}
 
 .. |dim| mathdef:: \xref{syntax/instructions}{syntax-dim}{\X{dim}}
-.. |ishape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{ishape}}
-.. |fshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{fshape}}
 .. |shape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{shape}}
+.. |ishape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{ishape}}
+.. |bshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\X{bshape}}
 
 .. |vvunop| mathdef:: \xref{syntax/instructions}{syntax-vvunop}{\X{vvunop}}
 .. |vvbinop| mathdef:: \xref{syntax/instructions}{syntax-vvbinop}{\X{vvbinop}}

@@ -303,6 +303,7 @@ warning: syntax `binop_` was never spliced
 warning: syntax `binop_` was never spliced
 warning: syntax `bit` was never spliced
 warning: syntax `blocktype` was never spliced
+warning: syntax `bshape` was never spliced
 warning: syntax `byte` was never spliced
 warning: syntax `callframe` was never spliced
 warning: syntax `castop` was never spliced

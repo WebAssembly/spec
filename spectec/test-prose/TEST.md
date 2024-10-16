@@ -17067,18 +17067,18 @@ watsup 0.4 generator
    #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
 
 
-:math:`{\mathrm{lanetype}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
-...............................................................
-
-
-1. Return :math:`{\mathsf{i}}{N}`.
-
-
 :math:`{\mathrm{dim}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
 ..........................................................
 
 
 1. Return :math:`N`.
+
+
+:math:`{\mathrm{lanetype}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
+...............................................................
+
+
+1. Return :math:`{\mathsf{i}}{N}`.
 
 
 :math:`{\mathrm{unpack}}(({{\mathsf{i}}{N}}{\mathsf{x}}{N}))`
@@ -18452,15 +18452,15 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vswizzlop}`, then:
 
-   a. Let :math:`({\mathit{ishape}} {.} {\mathit{vswizzlop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`({\mathit{bshape}} {.} {\mathit{vswizzlop}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vshuffle}`, then:
 
-   a. Let :math:`({\mathit{ishape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`({\mathit{bshape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextunop}`, then:
 
@@ -24787,11 +24787,11 @@ cunpack storagetype_u0
   a. Let lanetype be storagetype_u0.
   b. Return $lunpack(lanetype).
 
-lanetype (Lnn X N)
-1. Return Lnn.
-
 dim (Lnn X N)
 1. Return N.
+
+lanetype (Lnn X N)
+1. Return Lnn.
 
 unpackshape (Lnn X N)
 1. Return $lunpack(Lnn).
@@ -25431,11 +25431,11 @@ free_instr instr_u0
   a. Let (VBITMASK ishape) be instr_u0.
   b. Return $free_shape(ishape).
 40. If instr_u0 is of the case VSWIZZLOP, then:
-  a. Let (VSWIZZLOP ishape vswizzlop) be instr_u0.
-  b. Return $free_shape(ishape).
+  a. Let (VSWIZZLOP bshape vswizzlop) be instr_u0.
+  b. Return $free_shape(bshape).
 41. If instr_u0 is of the case VSHUFFLE, then:
-  a. Let (VSHUFFLE ishape laneidx*) be instr_u0.
-  b. Return $free_shape(ishape).
+  a. Let (VSHUFFLE bshape laneidx*) be instr_u0.
+  b. Return $free_shape(bshape).
 42. If instr_u0 is of the case VEXTUNOP, then:
   a. Let (VEXTUNOP ishape_1 ishape_2 vextunop) be instr_u0.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
