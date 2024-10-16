@@ -515,10 +515,10 @@ and render_paths env paths =
 
 let render_type_visit = ref Map.empty
 let init_render_type () = render_type_visit := Map.empty
-let render_expr_with_type ?(always = false) env e =
+let render_expr_with_type env e =
   let s = render_expr env e in
   match (Map.find_opt s !render_type_visit) with
-  | Some t -> if always && t <> "" then "the " ^ t ^ " " ^ s else s
+  | Some t -> if t <> "" then "the " ^ t ^ " " ^ s else s
   | None ->
     let t = Prose_util.extract_desc e.note in
     render_type_visit := Map.add s t !render_type_visit;
@@ -575,8 +575,8 @@ let rec render_stmt env depth stmt =
         (render_expr_with_type env e1)
     | MatchesS (e1, e2) ->
       sprintf "%s matches %s."
-        (render_expr_with_type env e1 ~always:true)
-        (render_expr_with_type env e2 ~always:true)
+        (render_expr_with_type env e1)
+        (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
       sprintf "%s%s is const."
         (render_opt "under the context " (render_expr_with_type env) ", " c_opt)

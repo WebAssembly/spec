@@ -42,7 +42,7 @@ The global type :math:`((\mathsf{mut}~{()^?}~{}^?)~t)` is valid.
 The table type :math:`{\mathit{limits}}` is valid if:
 
 
-  * :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
+  * The table type :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
 
 
 
@@ -50,7 +50,7 @@ The table type :math:`{\mathit{limits}}` is valid if:
 The memory type :math:`{\mathit{limits}}` is valid if:
 
 
-  * :math:`{\mathit{limits}}` is valid with :math:`{2^{16}}`.
+  * The memory type :math:`{\mathit{limits}}` is valid with :math:`{2^{16}}`.
 
 
 
@@ -60,23 +60,23 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
     * The function type :math:`{\mathit{functype}}` is valid.
 
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
     * The global type :math:`{\mathit{globaltype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
     * The table type :math:`{\mathit{tabletype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
     * The memory type :math:`{\mathit{memtype}}` is valid.
 
@@ -138,7 +138,7 @@ The global type :math:`{\mathit{gt}}` matches itself.
 The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{lim}}_2` if:
 
 
-  * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
+  * The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{lim}}_2`.
 
 
 
@@ -146,7 +146,7 @@ The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{l
 The memory type :math:`{\mathit{lim}}_1` matches the memory type :math:`{\mathit{lim}}_2` if:
 
 
-  * :math:`{\mathit{lim}}_1` matches :math:`{\mathit{lim}}_2`.
+  * The memory type :math:`{\mathit{lim}}_1` matches the memory type :math:`{\mathit{lim}}_2`.
 
 
 
@@ -156,31 +156,31 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
     * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
     * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
     * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
     * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
 
@@ -242,7 +242,7 @@ The instruction :math:`\mathsf{select}` is valid with the function type :math:`t
 The instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^?}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 
@@ -260,7 +260,7 @@ The instruction :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else
 
   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^?}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t^?}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 
@@ -270,7 +270,7 @@ The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
 
 
 
@@ -280,7 +280,7 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :mat
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
 
 
 
@@ -294,7 +294,7 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the fun
 
   * For all :math:`l` in :math:`{l^\ast}`, the result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * For all :math:`l` in :math:`{l^\ast}`, :math:`{t^?}` is equal to :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the number type :math:`{t^?}` is equal to :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -304,7 +304,7 @@ The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
 
@@ -314,7 +314,7 @@ The instruction :math:`(\mathsf{call\_indirect}~x)` is valid with the function t
 
   * The function type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * The function type :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
 
 
@@ -371,7 +371,7 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type
 
   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+  * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -381,7 +381,7 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type
 
   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+  * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -391,7 +391,7 @@ The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type
 
   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+  * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -401,7 +401,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}~t)`.
 
 
 
@@ -411,7 +411,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -421,7 +421,7 @@ The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -431,7 +431,7 @@ The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -441,7 +441,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -461,7 +461,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})`
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -494,7 +494,7 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
   * Either:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
 
     * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
@@ -502,24 +502,24 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+    * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
+    * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
 
     * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
     * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
+    * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
+    * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
-    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -542,7 +542,7 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -550,7 +550,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the funct
 The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^?}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+  * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 
@@ -562,11 +562,11 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
   * Or:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+    * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
 
 
 
@@ -581,7 +581,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
 
 
 
@@ -597,7 +597,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
 
 
-  * :math:`{\mathit{ft}}` is valid.
+  * The function type :math:`{\mathit{ft}}` is valid.
 
 
 
@@ -607,7 +607,7 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 
   * The function type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
+  * The function type :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^?}`.
 
@@ -617,9 +617,9 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
 
 
-  * :math:`{\mathit{gt}}` is valid.
+  * The global type :math:`{\mathit{gt}}` is valid.
 
-  * :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
+  * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`t`.
 
@@ -631,7 +631,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
 
 
-  * :math:`{\mathit{tt}}` is valid.
+  * The table type :math:`{\mathit{tt}}` is valid.
 
 
 
@@ -639,7 +639,7 @@ The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :m
 The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
 
 
-  * :math:`{\mathit{mt}}` is valid.
+  * The memory type :math:`{\mathit{mt}}` is valid.
 
 
 
@@ -649,7 +649,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
   * The table type :math:`C{.}\mathsf{tables}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[0]` is equal to :math:`{\mathit{lim}}`.
+  * The table type :math:`C{.}\mathsf{tables}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -659,7 +659,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
   * For all :math:`x` in :math:`{x^\ast}`, the function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
+  * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`, the function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
 
 
@@ -669,7 +669,7 @@ The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{lim}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -683,7 +683,7 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
@@ -691,7 +691,7 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-  * :math:`{\mathit{xt}}` is valid.
+  * The external type :math:`{\mathit{xt}}` is valid.
 
 
 
@@ -701,41 +701,41 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
 
     * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
+    * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
     * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -745,7 +745,7 @@ The external index :math:`(\mathsf{func}~x)` is valid with the external type :ma
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
 
 
@@ -755,7 +755,7 @@ The external index :math:`(\mathsf{global}~x)` is valid with the external type :
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
 
 
 
@@ -765,7 +765,7 @@ The external index :math:`(\mathsf{table}~x)` is valid with the external type :m
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
 
 
 
@@ -775,7 +775,7 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -783,7 +783,7 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-  * The external index :math:`{\mathit{externidx}}` is valid with :math:`{\mathit{xt}}`.
+  * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
 
@@ -4535,23 +4535,23 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
     * The function type :math:`{\mathit{functype}}` is valid.
 
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
     * The global type :math:`{\mathit{globaltype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
     * The table type :math:`{\mathit{tabletype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
     * The memory type :math:`{\mathit{memtype}}` is valid.
 
@@ -4593,9 +4593,9 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is valid if:
 The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches the value type :math:`t` if:
 
 
-  * Either: :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`t`.
+  * Either: the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`t`.
 
-  * Or: :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
+  * Or: the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
 
 
 
@@ -4661,31 +4661,31 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
     * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
     * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
     * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
     * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
 
@@ -4729,7 +4729,7 @@ The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
   * Either:
 
-    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{{\mathit{valtype}}^?}`.
+    * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
     * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
@@ -4737,15 +4737,15 @@ The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
   * Or:
 
-    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
+    * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
     * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4760,7 +4760,7 @@ The block type :math:`{\mathit{typeidx}}` is valid with the function type :math:
 
   * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4787,7 +4787,7 @@ The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
   * Or:
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
@@ -4799,9 +4799,9 @@ The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * The block type :math:`{\mathit{bt}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4809,9 +4809,9 @@ The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` i
 The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * The block type :math:`{\mathit{bt}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4821,9 +4821,9 @@ The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mat
 
   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4833,7 +4833,7 @@ The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
 
 
@@ -4843,7 +4843,7 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :mat
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
 
 
@@ -4853,11 +4853,11 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the fun
 
   * For all :math:`l` in :math:`{l^\ast}`, the result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
   * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-  * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
 
@@ -4867,7 +4867,7 @@ The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4877,11 +4877,11 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~\mathsf{funcref})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~\mathsf{funcref})`.
 
   * The function type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[y]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The function type :math:`C{.}\mathsf{types}{}[y]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -4943,7 +4943,7 @@ The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the function type 
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
 
 
@@ -5067,7 +5067,7 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type
 
   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+  * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -5077,7 +5077,7 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type
 
   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+  * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -5087,7 +5087,7 @@ The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type
 
   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+  * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -5097,7 +5097,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}~t)`.
 
 
 
@@ -5107,7 +5107,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -5117,7 +5117,7 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5127,7 +5127,7 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5137,7 +5137,7 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function typ
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5147,7 +5147,7 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function typ
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5157,7 +5157,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function typ
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5167,11 +5167,11 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the functi
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}_1~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}_1~{\mathit{rt}})`.
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_2]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{lim}}_2~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{lim}}_2~{\mathit{rt}})`.
 
 
 
@@ -5181,11 +5181,11 @@ The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the functi
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The element type :math:`C{.}\mathsf{elems}{}[x_2]` exists.
 
-  * :math:`C{.}\mathsf{elems}{}[x_2]` is equal to :math:`{\mathit{rt}}`.
+  * The element type :math:`C{.}\mathsf{elems}{}[x_2]` is equal to :math:`{\mathit{rt}}`.
 
 
 
@@ -5195,7 +5195,7 @@ The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type
 
   * The element type :math:`C{.}\mathsf{elems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{elems}{}[x]` is equal to :math:`{\mathit{rt}}`.
+  * The element type :math:`C{.}\mathsf{elems}{}[x]` is equal to :math:`{\mathit{rt}}`.
 
 
 
@@ -5205,7 +5205,7 @@ The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -5215,7 +5215,7 @@ The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -5225,7 +5225,7 @@ The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -5235,7 +5235,7 @@ The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -5245,11 +5245,11 @@ The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function ty
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * The data type :math:`C{.}\mathsf{datas}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{datas}{}[x]` is equal to :math:`\mathsf{ok}`.
+  * The data type :math:`C{.}\mathsf{datas}{}[x]` is equal to :math:`\mathsf{ok}`.
 
 
 
@@ -5259,7 +5259,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type
 
   * The data type :math:`C{.}\mathsf{datas}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{datas}{}[x]` is equal to :math:`\mathsf{ok}`.
+  * The data type :math:`C{.}\mathsf{datas}{}[x]` is equal to :math:`\mathsf{ok}`.
 
 
 
@@ -5269,7 +5269,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -5289,7 +5289,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})`
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -5309,7 +5309,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -5336,7 +5336,7 @@ The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\ma
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -5350,7 +5350,7 @@ The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{me
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -5362,7 +5362,7 @@ The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\m
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -5404,7 +5404,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\maths
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
@@ -5416,7 +5416,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -5428,7 +5428,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -5440,7 +5440,7 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
   * Either:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
 
     * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
@@ -5448,37 +5448,37 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
 
     * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
     * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{t'}_1^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{t'}_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{{t'}_2^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{{t'}_2^\ast}`.
 
-    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
     * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
 
     * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
-    * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -5501,7 +5501,7 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{{t'}_1^\ast}~\rightarrow~{{t'}_2^\ast}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
   * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
 
@@ -5513,7 +5513,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the funct
 The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -5521,7 +5521,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the funct
 The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
+  * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 
@@ -5531,16 +5531,16 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequ
 
   * Either: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
   * Or:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+    * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
 
 
 
@@ -5570,7 +5570,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
 
 
 
@@ -5586,7 +5586,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequ
 The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
 
 
-  * :math:`{\mathit{ft}}` is valid.
+  * The function type :math:`{\mathit{ft}}` is valid.
 
 
 
@@ -5596,7 +5596,7 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 
   * The function type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The function type :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
 
@@ -5606,9 +5606,9 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
 
 
-  * :math:`{\mathit{gt}}` is valid.
+  * The global type :math:`{\mathit{gt}}` is valid.
 
-  * :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
+  * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
@@ -5620,7 +5620,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
 
 
-  * :math:`{\mathit{tt}}` is valid.
+  * The table type :math:`{\mathit{tt}}` is valid.
 
 
 
@@ -5628,7 +5628,7 @@ The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :m
 The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
 
 
-  * :math:`{\mathit{mt}}` is valid.
+  * The memory type :math:`{\mathit{mt}}` is valid.
 
 
 
@@ -5642,7 +5642,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -5659,7 +5659,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -5683,11 +5683,11 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
   * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
 
-    * The expression :math:`{\mathit{expr}}` is valid with :math:`{\mathit{rt}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
     * :math:`{\mathit{expr}}` is const.
 
-  * :math:`{\mathit{elemmode}}` is valid with :math:`{\mathit{rt}}`.
+  * :math:`{\mathit{elemmode}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -5701,7 +5701,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
     * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-    * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -5717,7 +5717,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -5744,7 +5744,7 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
@@ -5752,7 +5752,7 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-  * :math:`{\mathit{xt}}` is valid.
+  * The external type :math:`{\mathit{xt}}` is valid.
 
 
 
@@ -5762,41 +5762,41 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
 
     * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
+    * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
     * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -5806,7 +5806,7 @@ The external index :math:`(\mathsf{func}~x)` is valid with the external type :ma
 
   * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
+  * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
 
 
@@ -5816,7 +5816,7 @@ The external index :math:`(\mathsf{global}~x)` is valid with the external type :
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
 
 
 
@@ -5826,7 +5826,7 @@ The external index :math:`(\mathsf{table}~x)` is valid with the external type :m
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
 
 
 
@@ -5836,7 +5836,7 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -5844,7 +5844,7 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-  * The external index :math:`{\mathit{externidx}}` is valid with :math:`{\mathit{xt}}`.
+  * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
 
@@ -13216,22 +13216,22 @@ The vector type :math:`{\mathit{vectype}}` is valid.
 The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if:
 
 
-  * Either: :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to abstract heap type.
+  * Either: the heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to abstract heap type.
 
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
 
     * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{rec}~i)`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{rec}~i)`.
 
     * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-    * :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`{\mathit{st}}`.
+    * The sub type :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`{\mathit{st}}`.
 
 
 
@@ -13246,7 +13246,7 @@ The heap type :math:`{\mathit{typeidx}}` is valid if:
 
   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
+  * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -13256,7 +13256,7 @@ The heap type :math:`(\mathsf{rec}~i)` is valid if:
 
   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-  * :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`{\mathit{st}}`.
+  * The sub type :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`{\mathit{st}}`.
 
 
 
@@ -13274,21 +13274,21 @@ The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 
   * Either:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to number type.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to number type.
 
     * The number type :math:`{\mathit{numtype}}` is valid.
 
   * Or:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to vector type.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to vector type.
 
     * The vector type :math:`{\mathit{vectype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to reference type.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to reference type.
 
     * The reference type :math:`{\mathit{reftype}}` is valid.
-  * Or: :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
+  * Or: the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
 
 
 
@@ -13296,7 +13296,7 @@ The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 The value type :math:`{\mathit{numtype}}` is valid if:
 
 
-  * :math:`{\mathit{numtype}}` is valid.
+  * The value type :math:`{\mathit{numtype}}` is valid.
 
 
 
@@ -13304,7 +13304,7 @@ The value type :math:`{\mathit{numtype}}` is valid if:
 The value type :math:`{\mathit{vectype}}` is valid if:
 
 
-  * :math:`{\mathit{vectype}}` is valid.
+  * The value type :math:`{\mathit{vectype}}` is valid.
 
 
 
@@ -13312,7 +13312,7 @@ The value type :math:`{\mathit{vectype}}` is valid if:
 The value type :math:`{\mathit{reftype}}` is valid if:
 
 
-  * :math:`{\mathit{reftype}}` is valid.
+  * The value type :math:`{\mathit{reftype}}` is valid.
 
 
 
@@ -13341,7 +13341,7 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
   * For all :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`{{\mathit{lt}}}`.
+  * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`{{\mathit{lt}}}`.
 
 
 
@@ -13356,13 +13356,13 @@ The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to value type.
+    * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to value type.
 
     * The value type :math:`{\mathit{valtype}}` is valid.
 
   * Or:
 
-    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to packed type.
+    * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to packed type.
 
     * The packed type :math:`{\mathit{packtype}}` is valid.
 
@@ -13372,7 +13372,7 @@ The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyl
 The storage type :math:`{\mathit{valtype}}` is valid if:
 
 
-  * :math:`{\mathit{valtype}}` is valid.
+  * The storage type :math:`{\mathit{valtype}}` is valid.
 
 
 
@@ -13380,7 +13380,7 @@ The storage type :math:`{\mathit{valtype}}` is valid if:
 The storage type :math:`{\mathit{packtype}}` is valid if:
 
 
-  * :math:`{\mathit{packtype}}` is valid.
+  * The storage type :math:`{\mathit{packtype}}` is valid.
 
 
 
@@ -13408,18 +13408,18 @@ The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle
 
   * Either:
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
     * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`, the field type :math:`{\mathit{fieldtype}}` is valid.
 
   * Or:
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
-    * :math:`{\mathit{fieldtype}}` is valid.
+    * The field type :math:`{\mathit{fieldtype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
     * The function type :math:`{\mathit{functype}}` is valid.
 
@@ -13471,7 +13471,7 @@ The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\
 
     * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
 
-    * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches :math:`{\mathit{deftype}}_2`.
+    * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the defined type :math:`{\mathit{deftype}}_2`.
 
 
 
@@ -13491,7 +13491,7 @@ The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\
 
   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
 
-  * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches :math:`{\mathit{deftype}}_2`.
+  * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the defined type :math:`{\mathit{deftype}}_2`.
 
 
 
@@ -13501,124 +13501,124 @@ The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 
   * Either:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{heaptype}}_1`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{heaptype}}_1`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}_2`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}_2`.
 
     * The heap type :math:`{\mathit{heaptype}'}` is valid.
 
-    * The heap type :math:`{\mathit{heaptype}}_1` matches :math:`{\mathit{heaptype}'}`.
+    * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
 
-    * :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
+    * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{eq}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{eq}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{any}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{any}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{i{\scriptstyle 31}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{i{\scriptstyle 31}}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{struct}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{struct}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{array}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{array}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to defined type.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to defined type.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{struct}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{struct}`.
 
     * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to defined type.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to defined type.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{array}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{array}`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to defined type.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to defined type.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{func}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{func}`.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{deftype}}_1`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{deftype}}_1`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}_2`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}_2`.
 
     * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
     * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-    * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-    * :math:`{\mathit{heaptype}}` matches :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+    * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{rec}~i)`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{rec}~i)`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
     * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
 
     * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-    * :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+    * The sub type :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{none}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{none}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-    * :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
+    * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{nofunc}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{nofunc}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-    * :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
+    * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{noextern}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{noextern}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-    * :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
+    * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
   * Or:
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
 
-    * :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+    * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13633,9 +13633,9 @@ The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathi
 
   * The heap type :math:`{\mathit{heaptype}'}` is valid.
 
-  * :math:`{\mathit{heaptype}}_1` matches :math:`{\mathit{heaptype}'}`.
+  * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
 
-  * :math:`{\mathit{heaptype}'}` matches :math:`{\mathit{heaptype}}_2`.
+  * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
 
 
 
@@ -13663,7 +13663,7 @@ The heap type :math:`\mathsf{array}` matches the heap type :math:`\mathsf{eq}`.
 The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{struct}` if:
 
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the heap type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`
 
 
 
@@ -13671,7 +13671,7 @@ The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{st
 The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{array}` if:
 
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of the heap type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`
 
 
 
@@ -13679,7 +13679,7 @@ The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{ar
 The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{func}` if:
 
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of the heap type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
 
@@ -13687,7 +13687,7 @@ The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{fu
 The heap type :math:`{\mathit{deftype}}_1` matches the heap type :math:`{\mathit{deftype}}_2` if:
 
 
-  * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.
+  * The heap type :math:`{\mathit{deftype}}_1` matches the heap type :math:`{\mathit{deftype}}_2`.
 
 
 
@@ -13697,7 +13697,7 @@ The heap type :math:`{\mathit{typeidx}}` matches the heap type :math:`{\mathit{h
 
   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-  * :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches :math:`{\mathit{heaptype}}`.
+  * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13707,7 +13707,7 @@ The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`{\mathit{
 
   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-  * :math:`{\mathit{heaptype}}` matches :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+  * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
 
 
 
@@ -13719,7 +13719,7 @@ The heap type :math:`(\mathsf{rec}~i)` matches the type use :math:`{{\mathit{typ
 
   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-  * :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+  * The sub type :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
 
 
@@ -13727,7 +13727,7 @@ The heap type :math:`(\mathsf{rec}~i)` matches the type use :math:`{{\mathit{typ
 The heap type :math:`\mathsf{none}` matches the heap type :math:`{\mathit{heaptype}}` if:
 
 
-  * :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
+  * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
 
 
 
@@ -13735,7 +13735,7 @@ The heap type :math:`\mathsf{none}` matches the heap type :math:`{\mathit{heapty
 The heap type :math:`\mathsf{nofunc}` matches the heap type :math:`{\mathit{heaptype}}` if:
 
 
-  * :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
+  * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
 
 
 
@@ -13743,7 +13743,7 @@ The heap type :math:`\mathsf{nofunc}` matches the heap type :math:`{\mathit{heap
 The heap type :math:`\mathsf{noextern}` matches the heap type :math:`{\mathit{heaptype}}` if:
 
 
-  * :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
+  * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
 
 
 
@@ -13799,31 +13799,31 @@ The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 
   * Either:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{numtype}}_1`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{numtype}}_1`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_2`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_2`.
 
     * The number type :math:`{\mathit{numtype}}_1` matches the number type :math:`{\mathit{numtype}}_2`.
 
   * Or:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{vectype}}_1`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{vectype}}_1`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_2`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_2`.
 
     * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.
   * Or:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{reftype}}_1`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{reftype}}_1`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_2`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_2`.
 
     * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
   * Or:
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{bot}`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}`.
 
 
 
@@ -13831,7 +13831,7 @@ The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 The value type :math:`{\mathit{numtype}}_1` matches the value type :math:`{\mathit{numtype}}_2` if:
 
 
-  * :math:`{\mathit{numtype}}_1` matches :math:`{\mathit{numtype}}_2`.
+  * The value type :math:`{\mathit{numtype}}_1` matches the value type :math:`{\mathit{numtype}}_2`.
 
 
 
@@ -13839,7 +13839,7 @@ The value type :math:`{\mathit{numtype}}_1` matches the value type :math:`{\math
 The value type :math:`{\mathit{vectype}}_1` matches the value type :math:`{\mathit{vectype}}_2` if:
 
 
-  * :math:`{\mathit{vectype}}_1` matches :math:`{\mathit{vectype}}_2`.
+  * The value type :math:`{\mathit{vectype}}_1` matches the value type :math:`{\mathit{vectype}}_2`.
 
 
 
@@ -13847,7 +13847,7 @@ The value type :math:`{\mathit{vectype}}_1` matches the value type :math:`{\math
 The value type :math:`{\mathit{reftype}}_1` matches the value type :math:`{\mathit{reftype}}_2` if:
 
 
-  * :math:`{\mathit{reftype}}_1` matches :math:`{\mathit{reftype}}_2`.
+  * The value type :math:`{\mathit{reftype}}_1` matches the value type :math:`{\mathit{reftype}}_2`.
 
 
 
@@ -13862,17 +13862,17 @@ The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{valtype}}_1`.
+    * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{valtype}}_1`.
 
-    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}_2`.
+    * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}_2`.
 
     * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
 
   * Or:
 
-    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{packtype}}_1`.
+    * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{packtype}}_1`.
 
-    * :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{packtype}}_2`.
+    * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{packtype}}_2`.
 
     * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
 
@@ -13882,7 +13882,7 @@ The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyl
 The storage type :math:`{\mathit{valtype}}_1` matches the storage type :math:`{\mathit{valtype}}_2` if:
 
 
-  * :math:`{\mathit{valtype}}_1` matches :math:`{\mathit{valtype}}_2`.
+  * The storage type :math:`{\mathit{valtype}}_1` matches the storage type :math:`{\mathit{valtype}}_2`.
 
 
 
@@ -13890,7 +13890,7 @@ The storage type :math:`{\mathit{valtype}}_1` matches the storage type :math:`{\
 The storage type :math:`{\mathit{packtype}}_1` matches the storage type :math:`{\mathit{packtype}}_2` if:
 
 
-  * :math:`{\mathit{packtype}}_1` matches :math:`{\mathit{packtype}}_2`.
+  * The storage type :math:`{\mathit{packtype}}_1` matches the storage type :math:`{\mathit{packtype}}_2`.
 
 
 
@@ -13912,7 +13912,7 @@ The field type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}
 
     * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`()`.
 
-    * :math:`{\mathit{zt}}_2` matches :math:`{\mathit{zt}}_1`.
+    * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
 
 
@@ -13930,7 +13930,7 @@ The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` matches the field type :ma
 
   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
 
-  * :math:`{\mathit{zt}}_2` matches :math:`{\mathit{zt}}_1`.
+  * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
 
 
@@ -13960,9 +13960,9 @@ The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle
 
   * Either:
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
     * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is equal to :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
 
@@ -13970,16 +13970,16 @@ The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle
 
   * Or:
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
 
-    * :math:`{\mathit{yt}}_1` matches :math:`{\mathit{yt}}_2`.
+    * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
   * Or:
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-    * :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+    * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
     * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
 
@@ -14029,7 +14029,7 @@ The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{x^\ast}~{\mathit
 
   * The composite type :math:`{\mathit{comptype}}` is valid.
 
-  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, the composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
 
@@ -14049,7 +14049,7 @@ The sub type :math:`(\mathsf{sub}~(\mathsf{final}~{()^?}~{}^?)~{{\mathit{typeuse
 
   * The composite type :math:`{\mathit{comptype}}` is valid.
 
-  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+  * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, the composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
 
 
 
@@ -14061,7 +14061,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1
 
   * Or:
 
-    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+    * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
     * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x, i)})`.
 
@@ -14092,16 +14092,16 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1
 
   * Or:
 
-    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+    * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
     * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{x})`.
 
     * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x + 1})`.
   * Or:
 
-    * :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{subtype}}^\ast}`.
+    * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{subtype}}^\ast}`.
 
-    * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
+    * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
 
@@ -14124,7 +14124,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x})` if:
 
 
-  * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
+  * Under the context :math:`C{}[{.}\mathsf{recs} \mathrel{{=}{\oplus}} {{\mathit{subtype}}^\ast}]`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
 
@@ -14134,7 +14134,7 @@ The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
   * The recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{x})`.
 
-  * :math:`{\mathit{rectype}}` is equal to :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
+  * The recursive type :math:`{\mathit{rectype}}` is equal to :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
   * :math:`i` is less than :math:`n`.
 
@@ -14180,9 +14180,9 @@ The memory type :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
 The tag type :math:`{\mathit{deftype}}` is valid if:
 
 
-  * :math:`{\mathit{deftype}}` is valid.
+  * The tag type :math:`{\mathit{deftype}}` is valid.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
 
@@ -14192,30 +14192,30 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
 
     * The defined type :math:`{\mathit{deftype}}` is valid.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
     * The global type :math:`{\mathit{globaltype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
     * The table type :math:`{\mathit{tabletype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
     * The memory type :math:`{\mathit{memtype}}` is valid.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
     * The tag type :math:`{\mathit{tagtype}}` is valid.
 
@@ -14227,7 +14227,7 @@ The external type :math:`(\mathsf{func}~{\mathit{deftype}})` is valid if:
 
   * The defined type :math:`{\mathit{deftype}}` is valid.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
 
@@ -14277,7 +14277,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
   * For all :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`, :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
+  * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
 
 
 
@@ -14309,7 +14309,7 @@ The global type :math:`((\mathsf{mut}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?
 
     * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`()`.
 
-    * :math:`{\mathit{valtype}}_2` matches :math:`{\mathit{valtype}}_1`.
+    * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
 
 
 
@@ -14327,7 +14327,7 @@ The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` matches the global t
 
   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
 
-  * :math:`{\mathit{valtype}}_2` matches :math:`{\mathit{valtype}}_1`.
+  * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
 
 
 
@@ -14339,7 +14339,7 @@ The table type :math:`({\mathit{limits}}_1~{\mathit{reftype}}_1)` matches the ta
 
   * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
 
-  * :math:`{\mathit{reftype}}_2` matches :math:`{\mathit{reftype}}_1`.
+  * The reference type :math:`{\mathit{reftype}}_2` matches the reference type :math:`{\mathit{reftype}}_1`.
 
 
 
@@ -14355,9 +14355,9 @@ The memory type :math:`{\mathit{limits}}_1~\mathsf{page}` matches the memory typ
 The tag type :math:`{\mathit{deftype}}_1` matches the tag type :math:`{\mathit{deftype}}_2` if:
 
 
-  * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.
+  * The tag type :math:`{\mathit{deftype}}_1` matches the tag type :math:`{\mathit{deftype}}_2`.
 
-  * :math:`{\mathit{deftype}}_2` matches :math:`{\mathit{deftype}}_1`.
+  * The tag type :math:`{\mathit{deftype}}_2` matches the tag type :math:`{\mathit{deftype}}_1`.
 
 
 
@@ -14367,38 +14367,38 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
     * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
 
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
     * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
     * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
     * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.
   * Or:
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
     * The tag type :math:`{\mathit{tagtype}}_1` matches the tag type :math:`{\mathit{tagtype}}_2`.
 
@@ -14450,7 +14450,7 @@ The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
   * Either:
 
-    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{{\mathit{valtype}}^?}`.
+    * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
     * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
@@ -14460,15 +14460,15 @@ The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
   * Or:
 
-    * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
+    * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
     * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 
@@ -14486,7 +14486,7 @@ The block type :math:`{\mathit{typeidx}}` is valid with the instruction type :ma
 
   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 
@@ -14498,33 +14498,33 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 
   * Either:
 
-    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch}~x~l)`.
+    * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch}~x~l)`.
 
     * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+    * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
-    * The value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
   * Or:
 
-    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch\_ref}~x~l)`.
+    * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch\_ref}~x~l)`.
 
-    * :math:`C{.}\mathsf{tags}{}[x]` exists.
+    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+    * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
-    * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
   * Or:
 
-    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch\_all}~l)`.
+    * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch\_all}~l)`.
 
-    * The value type sequence :math:`\epsilon` matches :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
   * Or:
 
-    * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
+    * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-    * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
+    * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14534,11 +14534,11 @@ The catch clause :math:`(\mathsf{catch}~x~l)` is valid if:
 
   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * The value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+  * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14548,11 +14548,11 @@ The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is valid if:
 
   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
+  * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14562,7 +14562,7 @@ The catch clause :math:`(\mathsf{catch\_all}~l)` is valid if:
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * The value type sequence :math:`\epsilon` matches :math:`C{.}\mathsf{labels}{}[l]`.
+  * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14572,7 +14572,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is valid if:
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
+  * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14585,7 +14585,7 @@ The instruction :math:`\mathsf{nop}` is valid with the instruction type :math:`\
 The instruction :math:`\mathsf{unreachable}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+  * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 
@@ -14607,9 +14607,9 @@ The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1
 
   * Or:
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is absent.
 
-    * :math:`t` matches the value type :math:`{t'}`.
+    * The value type :math:`t` matches the value type :math:`{t'}`.
 
     * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
@@ -14619,7 +14619,7 @@ The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1
 The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * The block type :math:`{\mathit{bt}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
@@ -14629,7 +14629,7 @@ The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` i
 The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * The block type :math:`{\mathit{bt}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_1^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
@@ -14653,7 +14653,7 @@ The instruction :math:`(\mathsf{br}~l)` is valid with the instruction type :math
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -14665,7 +14665,7 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the instruction type :
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
 
 
@@ -14675,11 +14675,11 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the ins
 
   * For all :math:`l` in :math:`{l^\ast}`, the result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+  * For all :math:`l` in :math:`{l^\ast}`, the value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
   * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-  * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -14691,7 +14691,7 @@ The instruction :math:`(\mathsf{br\_on\_null}~l)` is valid with the instruction 
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
   * The heap type :math:`{\mathit{ht}}` is valid.
 
@@ -14703,7 +14703,7 @@ The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with the instruc
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
 
@@ -14713,15 +14713,15 @@ The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~{\mathit{rt}}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~{\mathit{rt}}`.
 
   * The reference type :math:`{\mathit{rt}}_1` is valid.
 
   * The reference type :math:`{\mathit{rt}}_2` is valid.
 
-  * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
-  * :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -14731,13 +14731,13 @@ The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{r
 
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-  * :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~{\mathit{rt}}`.
+  * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~{\mathit{rt}}`.
 
   * The reference type :math:`{\mathit{rt}}_1` is valid.
 
   * The reference type :math:`{\mathit{rt}}_2` is valid.
 
-  * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
+  * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
   * The reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
 
@@ -14749,7 +14749,7 @@ The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :ma
 
   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 
@@ -14759,7 +14759,7 @@ The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction typ
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 
@@ -14769,13 +14769,13 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruct
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
 
 
@@ -14795,7 +14795,7 @@ The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction 
 
   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
@@ -14811,7 +14811,7 @@ The instruction :math:`(\mathsf{return\_call\_ref}~x)` is valid with the instruc
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
@@ -14827,13 +14827,13 @@ The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
@@ -14849,7 +14849,7 @@ The instruction :math:`(\mathsf{throw}~x)` is valid with the instruction type :m
 
   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`
 
   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -14867,7 +14867,7 @@ The instruction :math:`\mathsf{throw\_ref}` is valid with the instruction type :
 The instruction :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * The block type :math:`{\mathit{bt}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
@@ -14919,7 +14919,7 @@ The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction ty
 
   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
   * The index :math:`C{.}\mathsf{refs}{}[0]` exists.
 
@@ -14961,7 +14961,7 @@ The instruction :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with the in
 
   * The reference type :math:`{\mathit{rt}'}` is valid.
 
-  * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
+  * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
 
 
@@ -14973,7 +14973,7 @@ The instruction :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with the in
 
   * The reference type :math:`{\mathit{rt}'}` is valid.
 
-  * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
+  * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
 
 
@@ -14988,7 +14988,7 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction 
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
 
 
@@ -14998,7 +14998,7 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`
 
   * :math:`{|{\mathit{zt*}}|}` is equal to :math:`{|{\mathit{val*}}|}`.
 
@@ -15012,7 +15012,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -15028,7 +15028,7 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instructio
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -15042,7 +15042,7 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction t
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 
@@ -15052,7 +15052,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * The value :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is equal to :math:`{\mathit{val}}`.
 
@@ -15064,7 +15064,7 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
 
 
@@ -15074,11 +15074,11 @@ The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instr
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`
 
   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -15088,13 +15088,13 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instr
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{datas}{}[y]` is equal to :math:`\mathsf{ok}`.
+  * The data type :math:`C{.}\mathsf{datas}{}[y]` is equal to :math:`\mathsf{ok}`.
 
 
 
@@ -15104,7 +15104,7 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`
 
   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15116,7 +15116,7 @@ The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction t
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 
@@ -15131,7 +15131,7 @@ The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction 
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
 
 
@@ -15141,11 +15141,11 @@ The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instru
 
   * The defined type :math:`C{.}\mathsf{types}{}[x_1]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`
 
   * The defined type :math:`C{.}\mathsf{types}{}[x_2]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`
 
   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
@@ -15157,11 +15157,11 @@ The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
 
 
 
@@ -15171,13 +15171,13 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`
 
   * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{datas}{}[y]` is equal to :math:`\mathsf{ok}`.
+  * The data type :math:`C{.}\mathsf{datas}{}[y]` is equal to :math:`\mathsf{ok}`.
 
 
 
@@ -15312,7 +15312,7 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction t
 
   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
 
 
 
@@ -15322,7 +15322,7 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction t
 
   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}~t)`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}~t)`.
 
 
 
@@ -15332,7 +15332,7 @@ The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction t
 
   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}~t)`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}~t)`.
 
 
 
@@ -15342,7 +15342,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction 
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
 
 
@@ -15352,7 +15352,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction 
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -15362,7 +15362,7 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction t
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15372,7 +15372,7 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction t
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15382,7 +15382,7 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15392,7 +15392,7 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15402,7 +15402,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15412,11 +15412,11 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instru
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}_1~{\mathit{rt}}_1)`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}_1~{\mathit{rt}}_1)`.
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_2]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{lim}}_2~{\mathit{rt}}_2)`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{lim}}_2~{\mathit{rt}}_2)`.
 
   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
@@ -15428,11 +15428,11 @@ The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instructio
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}}_1)`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}}_1)`.
 
   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{elems}{}[y]` is equal to :math:`{\mathit{rt}}_2`.
+  * The element type :math:`C{.}\mathsf{elems}{}[y]` is equal to :math:`{\mathit{rt}}_2`.
 
   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
@@ -15444,7 +15444,7 @@ The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the instruction t
 
   * The element type :math:`C{.}\mathsf{elems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{elems}{}[x]` is equal to :math:`{\mathit{rt}}`.
+  * The element type :math:`C{.}\mathsf{elems}{}[x]` is equal to :math:`{\mathit{rt}}`.
 
 
 
@@ -15454,7 +15454,7 @@ The instruction :math:`(\mathsf{memory{.}size}~x)` is valid with the instruction
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -15464,7 +15464,7 @@ The instruction :math:`(\mathsf{memory{.}grow}~x)` is valid with the instruction
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -15474,7 +15474,7 @@ The instruction :math:`(\mathsf{memory{.}fill}~x)` is valid with the instruction
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -15484,11 +15484,11 @@ The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with the instr
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x_1]` is equal to :math:`{\mathit{mt}}_1`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` is equal to :math:`{\mathit{mt}}_1`.
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x_2]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x_2]` is equal to :math:`{\mathit{mt}}_2`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x_2]` is equal to :math:`{\mathit{mt}}_2`.
 
 
 
@@ -15498,11 +15498,11 @@ The instruction :math:`(\mathsf{memory{.}init}~x~y)` is valid with the instructi
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
-  * :math:`C{.}\mathsf{datas}{}[y]` is equal to :math:`\mathsf{ok}`.
+  * The data type :math:`C{.}\mathsf{datas}{}[y]` is equal to :math:`\mathsf{ok}`.
 
 
 
@@ -15512,7 +15512,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the instruction t
 
   * The data type :math:`C{.}\mathsf{datas}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{datas}{}[x]` is equal to :math:`\mathsf{ok}`.
+  * The data type :math:`C{.}\mathsf{datas}{}[x]` is equal to :math:`\mathsf{ok}`.
 
 
 
@@ -15522,7 +15522,7 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -15536,11 +15536,11 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0
 
   * Or:
 
-    * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathsf{i}}{N}`.
+    * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
     * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{N}`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
     * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15552,7 +15552,7 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -15566,11 +15566,11 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0
 
   * Or:
 
-    * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathsf{i}}{N}`.
+    * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
-    * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
+    * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-    * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{N}`.
+    * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
     * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15582,7 +15582,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * Either:
 
@@ -15614,7 +15614,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15628,7 +15628,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -15640,7 +15640,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15662,7 +15662,7 @@ The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction
 
   * The value type :math:`t` is valid.
 
-  * :math:`t` matches the value type :math:`{t'}`.
+  * The value type :math:`t` matches the value type :math:`{t'}`.
 
   * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
 
@@ -15674,7 +15674,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{mem
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -15686,7 +15686,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\m
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15698,7 +15698,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{me
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -15710,7 +15710,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15722,7 +15722,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -15734,7 +15734,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
@@ -15746,7 +15746,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15758,7 +15758,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15770,15 +15770,15 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
   * Either:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
 
-    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
+    * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+    * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
     * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
@@ -15788,27 +15788,27 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
     * For all :math:`x_1` in :math:`{x_1^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x_1]` exists.
 
-    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
+    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
     * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`{\mathit{it}'}`.
+    * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`{\mathit{it}'}`.
 
     * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
 
-    * :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
+    * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
 
-    * :math:`{\mathit{it}'}` is valid.
+    * The instruction type :math:`{\mathit{it}'}` is valid.
   * Or:
 
-    * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-    * :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+    * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-    * :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
     * The value type sequence :math:`{t^\ast}` is valid.
 
@@ -15831,7 +15831,7 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
   * For all :math:`x_1` in :math:`{x_1^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x_1]` exists.
 
-  * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
+  * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`, the local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
   * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
 
@@ -15841,11 +15841,11 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}'}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
 
-  * :math:`{\mathit{it}}` matches :math:`{\mathit{it}'}`.
+  * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
 
-  * :math:`{\mathit{it}'}` is valid.
+  * The instruction type :math:`{\mathit{it}'}` is valid.
 
 
 
@@ -15853,7 +15853,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instr
 The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+  * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
   * The value type sequence :math:`{t^\ast}` is valid.
 
@@ -15863,7 +15863,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instr
 The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
 
 
-  * :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
+  * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 
@@ -15873,27 +15873,27 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequ
 
   * Either: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct{.}new}~x)`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array{.}new}~x)`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{any{.}convert\_extern}`.
-  * Or: :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{extern{.}convert\_any}`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct{.}new}~x)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array{.}new}~x)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{any{.}convert\_extern}`.
+  * Or: the instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{extern{.}convert\_any}`.
   * Or:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+    * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
   * Or:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+    * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
     * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
 
@@ -15967,7 +15967,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(t)`.
 
 
 
@@ -15995,7 +15995,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the
 
   * :math:`{|C{.}\mathsf{types}|}` is equal to :math:`x`.
 
-  * :math:`{{\mathit{dt}}^\ast}` is equal to :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
+  * The defined type sequence :math:`{{\mathit{dt}}^\ast}` is equal to :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
 
   * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}^\ast}]`, the recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{x})`.
 
@@ -16013,9 +16013,9 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
   * Or:
 
-    * :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{unset}`.
+    * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{unset}`.
 
-    * :math:`{{\mathrm{default}}}_{t}` is absent.
+    * The value :math:`{{\mathrm{default}}}_{t}` is absent.
 
 
 
@@ -16039,9 +16039,9 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-  * :math:`C{.}\mathsf{types}{}[x]` exists.
+  * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`
 
   * :math:`{|{\mathit{local*}}|}` is equal to :math:`{|{\mathit{lct*}}|}`.
 
@@ -16057,7 +16057,7 @@ The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is va
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * :math:`{\mathit{globaltype}}` is equal to :math:`({\mathsf{mut}^?}~t)`.
+  * The global type :math:`{\mathit{globaltype}}` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
@@ -16071,7 +16071,7 @@ The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid
 
   * The table type :math:`{\mathit{tt}}` is valid.
 
-  * :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
+  * The table type :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
@@ -16083,7 +16083,7 @@ The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid
 The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with the memory type :math:`{\mathit{memtype}}` if:
 
 
-  * :math:`{\mathit{memtype}}` is valid.
+  * The memory type :math:`{\mathit{memtype}}` is valid.
 
 
 
@@ -16091,9 +16091,9 @@ The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with the memory
 The tag :math:`(\mathsf{tag}~x)` is valid with the tag type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-  * :math:`C{.}\mathsf{types}{}[x]` exists.
+  * The tag type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
+  * The :ref:`expansion <aux-expand-deftype>` of the tag type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`
 
 
 
@@ -16103,20 +16103,20 @@ The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 
   * Either:
 
-    * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+    * The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}'})`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}'})`.
 
-    * :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+    * The element type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
     * :math:`{\mathit{expr}}` is const.
 
-  * Or: :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{passive}`.
-  * Or: :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{declare}`.
+  * Or: the elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{passive}`.
+  * Or: the elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{declare}`.
 
 
 
@@ -16126,9 +16126,9 @@ The elem mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the elem
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}'})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}'})`.
 
-  * :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+  * The element type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -16150,15 +16150,15 @@ The elem mode :math:`\mathsf{declare}` is valid with the element type :math:`{\m
 The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
 
 
-  * :math:`{\mathit{elemtype}}` is valid.
+  * The element type :math:`{\mathit{elemtype}}` is valid.
 
   * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`,
 
-    * The expression :math:`{\mathit{expr}}` is valid with :math:`{\mathit{elemtype}}`.
+    * The expression :math:`{\mathit{expr}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
     * :math:`{\mathit{expr}}` is const.
 
-  * The elem mode :math:`{\mathit{elemmode}}` is valid with :math:`{\mathit{elemtype}}`.
+  * The elem mode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
 
 
@@ -16168,17 +16168,17 @@ The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}
 
   * Either:
 
-    * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+    * The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
     * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
     * :math:`{\mathit{expr}}` is const.
 
-  * Or: :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{passive}`.
+  * Or: the data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`\mathsf{passive}`.
 
 
 
@@ -16188,7 +16188,7 @@ The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the data
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -16205,7 +16205,7 @@ The data mode :math:`\mathsf{passive}` is valid with the data type :math:`\maths
 The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
 
 
-  * The data mode :math:`{\mathit{datamode}}` is valid with :math:`\mathsf{ok}`.
+  * The data mode :math:`{\mathit{datamode}}` is valid with the data type :math:`\mathsf{ok}`.
 
 
 
@@ -16215,7 +16215,7 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 
   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`
 
 
 
@@ -16223,7 +16223,7 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
 
 
-  * :math:`{\mathit{xt}}` is valid.
+  * The external type :math:`{\mathit{xt}}` is valid.
 
 
 
@@ -16233,50 +16233,50 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
   * Either:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{func}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
 
     * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+    * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{table}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{mem}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
     * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
   * Or:
 
-    * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{tag}~x)`.
+    * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{tag}~x)`.
 
-    * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{at}})`.
+    * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{at}})`.
 
     * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{tags}{}[x]` is equal to :math:`{\mathit{at}}`.
+    * The tag type :math:`C{.}\mathsf{tags}{}[x]` is equal to :math:`{\mathit{at}}`.
 
 
 
@@ -16286,7 +16286,7 @@ The external index :math:`(\mathsf{func}~x)` is valid with the external type :ma
 
   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+  * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -16296,7 +16296,7 @@ The external index :math:`(\mathsf{global}~x)` is valid with the external type :
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
 
 
 
@@ -16306,7 +16306,7 @@ The external index :math:`(\mathsf{table}~x)` is valid with the external type :m
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
 
 
 
@@ -16316,7 +16316,7 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
+  * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
 
 
@@ -16326,7 +16326,7 @@ The external index :math:`(\mathsf{tag}~x)` is valid with the external type :mat
 
   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{tags}{}[x]` is equal to :math:`{\mathit{at}}`.
+  * The tag type :math:`C{.}\mathsf{tags}{}[x]` is equal to :math:`{\mathit{at}}`.
 
 
 
@@ -16334,7 +16334,7 @@ The external index :math:`(\mathsf{tag}~x)` is valid with the external type :mat
 The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
 
 
-  * The external index :math:`{\mathit{externidx}}` is valid with :math:`{\mathit{xt}}`.
+  * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
 
 
 
@@ -16344,15 +16344,15 @@ The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle
 
   * Either:
 
-    * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
+    * The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
 
-    * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+    * The global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
   * Or:
 
-    * :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
+    * The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
 
-    * :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
+    * The global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
     * The global :math:`{\mathit{global}}_1` is valid with the global type :math:`{\mathit{gt}}_1`.
 
@@ -16361,7 +16361,7 @@ The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle
 
 
 
-:math:`\epsilon` is valid with the global type sequence :math:`\epsilon`.
+The global type sequence :math:`\epsilon` is valid with the global type sequence :math:`\epsilon`.
 
 
 
@@ -16381,15 +16381,15 @@ The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scri
 
   * Either:
 
-    * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
+    * The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`\epsilon`.
 
-    * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+    * The defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
   * Or:
 
-    * :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
+    * The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
 
-    * :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
+    * The defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
     * The type definition :math:`{\mathit{type}}_1` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
@@ -16398,7 +16398,7 @@ The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scri
 
 
 
-:math:`\epsilon` is valid with the defined type sequence :math:`\epsilon`.
+The defined type sequence :math:`\epsilon` is valid with the defined type sequence :math:`\epsilon`.
 
 
 
@@ -16482,7 +16482,7 @@ The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptst
 
   * Either:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
+    * The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
     * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
@@ -16490,26 +16490,26 @@ The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptst
 
   * Or:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+    * The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`t`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`t`.
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
   * Or:
 
-    * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
+    * The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-    * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`{t_2^\ast}`.
+    * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
     * The block type :math:`{\mathit{blocktype}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-    * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+    * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -16524,7 +16524,7 @@ The instruction sequence :math:`(\mathsf{global{.}get}~x)` is valid with the fun
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
 
 
@@ -16532,9 +16532,9 @@ The instruction sequence :math:`(\mathsf{global{.}get}~x)` is valid with the fun
 The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-  * The block type :math:`{\mathit{blocktype}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * The block type :math:`{\mathit{blocktype}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 :math:`\mathsf{unreachable}`
