@@ -561,8 +561,8 @@ let rec render_stmt env depth stmt =
         rhs
     | CmpS (e1, cmpop, e2) ->
       let cmpop, rhs =
-        match al_to_el_expr e2 with
-        | Some { it = El.Ast.EpsE; _ } -> render_prose_cmpop_eps cmpop, "absent"
+        match e2.it with
+        | OptE None -> render_prose_cmpop_eps cmpop, "absent"
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
       sprintf "%s is%s %s." (render_expr_with_type env e1) cmpop rhs
@@ -638,9 +638,6 @@ let render_stack_prefix expr =
   | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
-
-
-
 
 let rec render_instr env algoname index depth instr =
   match instr.it with
