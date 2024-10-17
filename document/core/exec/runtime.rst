@@ -897,7 +897,8 @@ Finally, the following definition of *evaluation context* and associated structu
    \production{evaluation contexts} & E &::=&
      [\_] ~|~
      \val^\ast~E~\instr^\ast ~|~
-     \LABEL_n\{\instr^\ast\}~E~\END \\
+     \LABEL_n\{\instr^\ast\}~E~\END ~|~
+     \HANDLER_n\{\catch^\ast\}~E~\END \\
    \end{array}
 
 .. math::
