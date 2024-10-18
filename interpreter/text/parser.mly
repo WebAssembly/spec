@@ -264,37 +264,37 @@ let inline_func_type_explicit (c : context) x ft loc =
     error (at loc) "inline function type does not match explicit type";
   x
 
-let index_type_of_num_type t loc =
+let addr_type_of_num_type t loc =
   match t with
-  | I32T -> I32IndexType
-  | I64T -> I64IndexType
-  | _ -> error (at loc) "illegal index type"
+  | I32T -> I32AddrType
+  | I64T -> I64AddrType
+  | _ -> error (at loc) "illegal address type"
 
-let index_type_of_value_type t loc =
+let addr_type_of_value_type t loc =
   match t with
-  | NumT t -> index_type_of_num_type t loc
-  | _ -> error (at loc) "illegal index type"
+  | NumT t -> addr_type_of_num_type t loc
+  | _ -> error (at loc) "illegal address type"
 
-let memory_data init it c x loc =
+let memory_data init at c x loc =
   let size = Int64.(div (add (of_int (String.length init)) 65535L) 65536L) in
-  let instr = match it with
-    | I32IndexType -> i32_const (0l @@ loc)
-    | I64IndexType -> i64_const (0L @@ loc) in
+  let instr = match at with
+    | I32AddrType -> i32_const (0l @@ loc)
+    | I64AddrType -> i64_const (0L @@ loc) in
   let offset = [instr @@ loc] @@ loc in
-  [{mtype = MemoryT ({min = size; max = Some size}, it)} @@ loc],
+  [{mtype = MemoryT ({min = size; max = Some size}, at)} @@ loc],
   [{dinit = init; dmode = Active {index = x; offset} @@ loc} @@ loc],
   [], []
 
-let table_data tinit init it etype c x loc =
-  let instr = match it with
-    | I32IndexType -> i32_const (0l @@ loc)
-    | I64IndexType -> i64_const (0L @@ loc) in
+let table_data tinit init at etype c x loc =
+  let instr = match at with
+    | I32AddrType -> i32_const (0l @@ loc)
+    | I64AddrType -> i64_const (0L @@ loc) in
   let offset = [instr @@ loc] @@ loc in
   let einit = init c in
   let size = Lib.List32.length einit in
   let size64 = Int64.of_int32 size in
   let emode = Active {index = x; offset} @@ loc in
-  [{ttype = TableT ({min = size64; max = Some size64}, it, etype); tinit} @@ loc],
+  [{ttype = TableT ({min = size64; max = Some size64}, at, etype); tinit} @@ loc],
   [{etype; einit; emode} @@ loc],
   [], []
 
@@ -501,12 +501,12 @@ sub_type :
         List.map (fun y -> VarHT (StatX y.it)) ($4 c type_), $5 c x) }
 
 table_type :
-  | val_type limits ref_type { fun c -> TableT ($2, index_type_of_value_type ($1 c) $sloc, $3 c) }
-  | limits ref_type { fun c -> TableT ($1, I32IndexType, $2 c) }
+  | val_type limits ref_type { fun c -> TableT ($2, addr_type_of_value_type ($1 c) $sloc, $3 c) }
+  | limits ref_type { fun c -> TableT ($1, I32AddrType, $2 c) }
 
 memory_type :
-  | val_type limits { fun c -> MemoryT ($2, index_type_of_value_type ($1 c) $sloc) }
-  | limits { fun c -> MemoryT ($1, I32IndexType) }
+  | val_type limits { fun c -> MemoryT ($2, addr_type_of_value_type ($1 c) $sloc) }
+  | limits { fun c -> MemoryT ($1, I32AddrType) }
 
 limits :
   | NAT { {min = nat64 $1 $loc($1); max = None} }
@@ -1165,19 +1165,19 @@ table_fields :
       let emode = Active {index = x; offset} @@ loc in
       let (_, ht) as etype = $1 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      [{ttype = TableT ({min = size64; max = Some size64}, I32IndexType, etype); tinit} @@ loc],
+      [{ttype = TableT ({min = size64; max = Some size64}, I32AddrType, etype); tinit} @@ loc],
       [{etype; einit; emode} @@ loc],
       [], [] }
   | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x loc ->
       let (_, ht) as etype = $1 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      table_data tinit $4 I32IndexType etype c x loc }
+      table_data tinit $4 I32AddrType etype c x loc }
   | val_type ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x loc ->
       let (_, ht) as etype = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      table_data tinit $5 (index_type_of_value_type ($1 c) loc) etype c x loc }
+      table_data tinit $5 (addr_type_of_value_type ($1 c) loc) etype c x loc }
 
 data :
   | LPAR DATA bind_var_opt string_list RPAR
@@ -1209,9 +1209,9 @@ memory_fields :
     { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
   | LPAR DATA string_list RPAR  /* Sugar */
-    { memory_data $3 I32IndexType }
+    { memory_data $3 I32AddrType }
   | val_type LPAR DATA string_list RPAR  /* Sugar */
-    { fun c x loc -> memory_data $4 (index_type_of_value_type ($1 c) $sloc) c x loc }
+    { fun c x loc -> memory_data $4 (addr_type_of_value_type ($1 c) $sloc) c x loc }
 
 tag :
   | LPAR TAG bind_var_opt tag_fields RPAR

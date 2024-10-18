@@ -286,7 +286,7 @@
 
 .. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
-.. |idxtype| mathdef:: \xref{syntax/types}{syntax-idxtype}{\X{idxtype}}
+.. |addrtype| mathdef:: \xref{syntax/types}{syntax-addrtype}{\X{addrtype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
 .. |tagtype| mathdef:: \xref{syntax/types}{syntax-tagtype}{\X{tagtype}}
 
@@ -311,7 +311,7 @@
 .. |unrollht| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}}
 
 .. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
-.. |itmin| mathdef:: \xref{syntax/types}{aux-idxtype-min}{\F{itmin}}
+.. |atmin| mathdef:: \xref{syntax/types}{aux-addrtype-min}{\F{atmin}}
 
 .. |etfuncs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
 .. |ettables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
@@ -972,7 +972,7 @@
 
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
-.. |Tidxtype| mathdef:: \xref{text/types}{text-idxtype}{\T{idxtype}}
+.. |Taddrtype| mathdef:: \xref{text/types}{text-addrtype}{\T{addrtype}}
 .. |Tmemtype| mathdef:: \xref{text/types}{text-memtype}{\T{memtype}}
 .. |Tlimits| mathdef:: \xref{text/types}{text-limits}{\T{limits}}
 

@@ -94,7 +94,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
 
 1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` of the table to allocate and :math:`\reff` the initialization value.
 
-2. Let :math:`(\idxtype~\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+2. Let :math:`(\addrtype~\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
@@ -108,7 +108,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \begin{array}{rlll}
    \alloctable(S, \tabletype, \reff) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \tabletype &=& \idxtype~\{\LMIN~n, \LMAX~m^?\}~\reftype \\
+   \tabletype &=& \addrtype~\{\LMIN~n, \LMAX~m^?\}~\reftype \\
    \tableaddr &=& |S.\STABLES| \\
    \tableinst &=& \{ \TITYPE~\tabletype, \TIELEM~\reff^n \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
@@ -123,7 +123,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
 
 1. Let :math:`\memtype` be the :ref:`memory type <syntax-memtype>` of the memory to allocate.
 
-2. Let :math:`(\idxtype~\{\LMIN~n, \LMAX~m^?\})` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
+2. Let :math:`(\addrtype~\{\LMIN~n, \LMAX~m^?\})` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
@@ -137,7 +137,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \begin{array}{rlll}
    \allocmem(S, \memtype) &=& S', \memaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \memtype &=& \idxtype~\{\LMIN~n, \LMAX~m^?\} \\
+   \memtype &=& \addrtype~\{\LMIN~n, \LMAX~m^?\} \\
    \memaddr &=& |S.\SMEMS| \\
    \meminst &=& \{ \MITYPE~\memtype, \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \} \\
    S' &=& S \compose \{\SMEMS~\meminst\} \\
@@ -284,25 +284,25 @@ Growing :ref:`tables <syntax-tableinst>`
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
-3. Let :math:`(\idxtype~\limits~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
+3. Let :math:`(\addrtype~\limits~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
 
 4. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-5. If the :ref:`table type <syntax-tabletype>` :math:`(\idxtype~\limits'~\reftype)` is not :ref:`valid <valid-tabletype>`, then fail.
+5. If the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~\reftype)` is not :ref:`valid <valid-tabletype>`, then fail.
 
 6. Append :math:`\reff^n` to :math:`\tableinst.\TIELEM`.
 
-7. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`(\idxtype~\limits'~\reftype)`.
+7. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~\reftype)`.
 
 .. math::
    \begin{array}{rllll}
-   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \idxtype~\limits'~\reftype \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
+   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \addrtype~\limits'~\reftype \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
-       \wedge & \idxtype~\limits~\reftype = \tableinst.\TITYPE \\
+       \wedge & \addrtype~\limits~\reftype = \tableinst.\TITYPE \\
        \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashtabletype \idxtype~\limits'~\reftype \ok) \\
+       \wedge & \vdashtabletype \addrtype~\limits'~\reftype \ok) \\
        \end{array} \\
    \end{array}
 
@@ -319,25 +319,25 @@ Growing :ref:`memories <syntax-meminst>`
 
 3. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\meminst.\MIDATA` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-4. Let :math:`(\idxtype~\limits)` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
+4. Let :math:`(\addrtype~\limits)` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
 
 5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-6. If the :ref:`memory type <syntax-memtype>` :math:`(\idxtype~\limits')` is not :ref:`valid <valid-memtype>`, then fail.
+6. If the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')` is not :ref:`valid <valid-memtype>`, then fail.
 
 7. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
 
-8. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`(\idxtype~\limits')`.
+8. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')`.
 
 .. math::
    \begin{array}{rllll}
-   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \idxtype~\limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
+   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \addrtype~\limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\meminst.\MIDATA| / 64\,\F{Ki} \\
-       \wedge & \idxtype~\limits = \meminst.\MITYPE \\
+       \wedge & \addrtype~\limits = \meminst.\MITYPE \\
        \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashmemtype \idxtype~\limits' \ok) \\
+       \wedge & \vdashmemtype \addrtype~\limits' \ok) \\
        \end{array} \\
    \end{array}
 

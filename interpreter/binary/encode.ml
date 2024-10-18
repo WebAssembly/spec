@@ -194,15 +194,15 @@ struct
     | RecT [st] -> sub_type st
     | RecT sts -> s7 (-0x32); vec sub_type sts
 
-  let limits vu {min; max} it =
-    let flags = flag (max <> None) 0 + flag (it = I64IndexType) 2 in
+  let limits vu {min; max} at =
+    let flags = flag (max <> None) 0 + flag (at = I64AddrType) 2 in
     byte flags; vu min; opt vu max
 
   let table_type = function
-    | TableT (lim, it, t) -> ref_type t; limits u64 lim it
+    | TableT (lim, at, t) -> ref_type t; limits u64 lim at
 
   let memory_type = function
-    | MemoryT (lim, it) -> limits u64 lim it
+    | MemoryT (lim, at) -> limits u64 lim at
 
   let global_type = function
     | GlobalT (mut, t) -> val_type t; mutability mut
@@ -972,7 +972,7 @@ struct
   let table tab =
     let {ttype; tinit} = tab.it in
     match ttype, tinit.it with
-    | TableT (_, _it, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
+    | TableT (_, _at, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
       table_type ttype
     | _ -> op 0x40; op 0x00; table_type ttype; const tinit
 

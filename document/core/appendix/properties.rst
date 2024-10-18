@@ -513,10 +513,10 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: table type, table instance, limits, function address
 .. _valid-tableinst:
 
-:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~\idxtype~\limits~t, \TIELEM~\reff^\ast \}`
-......................................................................................................
+:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~\addrtype~\limits~t, \TIELEM~\reff^\ast \}`
+.......................................................................................................
 
-* The :ref:`table type <syntax-tabletype>` :math:`\idxtype~\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
+* The :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 * The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
 
@@ -526,11 +526,11 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
   * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
 
-* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\idxtype~\limits~t`.
+* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t`.
 
 .. math::
    \frac{
-     \vdashtabletype \idxtype~\limits~t \ok
+     \vdashtabletype \addrtype~\limits~t \ok
      \qquad
      n = \limits.\LMIN
      \qquad
@@ -538,29 +538,29 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      (\vdashreftypematch t' \matchesvaltype t)^n
    }{
-     S \vdashtableinst \{ \TITYPE~\idxtype~\limits~t, \TIELEM~\reff^n \} : \idxtype~\limits~t
+     S \vdashtableinst \{ \TITYPE~\addrtype~\limits~t, \TIELEM~\reff^n \} : \addrtype~\limits~t
    }
 
 
 .. index:: memory type, memory instance, limits, byte
 .. _valid-meminst:
 
-:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\idxtype~\limits, \MIDATA~b^\ast \}`
-...............................................................................................
+:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\addrtype~\limits, \MIDATA~b^\ast \}`
+................................................................................................
 
-* The :ref:`memory type <syntax-memtype>` :math:`\idxtype~\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
+* The :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 * The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\idxtype~\limits`.
+* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits`.
 
 .. math::
    \frac{
-     \vdashmemtype \idxtype~\limits \ok
+     \vdashmemtype \addrtype~\limits \ok
      \qquad
      n = \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdashmeminst \{ \MITYPE~\idxtype~\limits, \MIDATA~b^n \} : \idxtype~\limits
+     S \vdashmeminst \{ \MITYPE~\addrtype~\limits, \MIDATA~b^n \} : \addrtype~\limits
    }
 
 

@@ -251,7 +251,7 @@ Additional shorthands are recognized for unary recursions and sub types without 
 Limits
 ~~~~~~
 
-:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present, and the corresponsing index type.
+:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present, and the corresponding :ref:`address type <syntax-addrtype>`.
 
 .. math::
    \begin{array}{llclll}
@@ -275,7 +275,7 @@ Memory Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory type} & \Bmemtype &::=&
-     (\X{it}, \X{lim}){:}\Blimits &\Rightarrow& \X{it}~~\X{lim} \\
+     (\X{at}, \X{lim}){:}\Blimits &\Rightarrow& \X{at}~~\X{lim} \\
    \end{array}
 
 
@@ -291,7 +291,7 @@ Table Types
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Btabletype &::=&
-     \X{et}{:}\Breftype~~(\X{it}, \X{lim}){:}\Blimits &\Rightarrow& \X{it}~~\X{lim}~\X{et} \\
+     \X{et}{:}\Breftype~~(\X{at}, \X{lim}){:}\Blimits &\Rightarrow& \X{at}~~\X{lim}~\X{et} \\
    \end{array}
 
 

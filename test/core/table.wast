@@ -44,7 +44,7 @@
   "table size must be at most 2^32-1"
 )
 
-;; Same as above but with i64 index types
+;; Same as above but with i64 address types
 
 (module (table i64 0 funcref))
 (module (table i64 1 funcref))

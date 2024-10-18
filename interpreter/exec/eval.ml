@@ -385,7 +385,7 @@ let rec step (c : config) : config =
 
       | TableSize x, vs ->
         let tab = table c.frame.inst x in
-        value_of_index (Table.index_type_of tab) (Table.size (table c.frame.inst x)) :: vs, []
+        value_of_addr (Table.addr_type_of tab) (Table.size (table c.frame.inst x)) :: vs, []
 
       | TableGrow x, Num delta :: Ref r :: vs' ->
         let tab = table c.frame.inst x in
@@ -393,7 +393,7 @@ let rec step (c : config) : config =
         let result =
           try Table.grow tab (Table.index_of_num delta) r; old_size
           with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1L
-        in (value_of_index (Table.index_type_of tab) result) :: vs', []
+        in (value_of_addr (Table.addr_type_of tab) result) :: vs', []
 
       | TableFill x, Num n :: Ref r :: Num i :: vs' ->
         let n_64 = Table.index_of_num n in
@@ -552,7 +552,7 @@ let rec step (c : config) : config =
 
       | MemorySize x, vs ->
         let mem = memory c.frame.inst x in
-        value_of_index (Memory.index_type_of mem) (Memory.size mem) :: vs, []
+        value_of_addr (Memory.addr_type_of mem) (Memory.size mem) :: vs, []
 
       | MemoryGrow x, Num delta :: vs' ->
         let mem = memory c.frame.inst x in
@@ -560,7 +560,7 @@ let rec step (c : config) : config =
         let result =
           try Memory.grow mem (Memory.address_of_num delta); old_size
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1L
-        in (value_of_index (Memory.index_type_of mem) result) :: vs', []
+        in (value_of_addr (Memory.addr_type_of mem) result) :: vs', []
 
       | MemoryFill x, Num n :: Num k :: Num i :: vs' ->
         let n_64 = Memory.address_of_num n in

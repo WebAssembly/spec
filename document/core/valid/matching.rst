@@ -502,9 +502,9 @@ Limits
 Table Types
 ~~~~~~~~~~~
 
-A :ref:`table type <syntax-tabletype>` :math:`(\idxtype_1~\limits_1~\reftype_1)` matches :math:`(\idxtype_2~\limits_2~\reftype_2)` if and only if:
+A :ref:`table type <syntax-tabletype>` :math:`(\addrtype_1~\limits_1~\reftype_1)` matches :math:`(\addrtype_2~\limits_2~\reftype_2)` if and only if:
 
-* Index types :math:`\idxtype_1` and :math:`\idxtype_2` are the same.
+* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -513,7 +513,7 @@ A :ref:`table type <syntax-tabletype>` :math:`(\idxtype_1~\limits_1~\reftype_1)`
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashnumtypematch \idxtype_1 \matchesnumtype \idxtype_2
+     C \vdashnumtypematch \addrtype_1 \matchesnumtype \addrtype_2
      \qquad
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
      \qquad
@@ -521,7 +521,7 @@ A :ref:`table type <syntax-tabletype>` :math:`(\idxtype_1~\limits_1~\reftype_1)`
      \qquad
      C \vdashreftypematch \reftype_2 \matchesreftype \reftype_1
    }{
-     C \vdashtabletypematch \idxtype_1~\limits_1~\reftype_1 \matchestabletype \idxtype_2~\limits_2~\reftype_2
+     C \vdashtabletypematch \addrtype_1~\limits_1~\reftype_1 \matchestabletype \addrtype_2~\limits_2~\reftype_2
    }
 
 
@@ -531,9 +531,9 @@ A :ref:`table type <syntax-tabletype>` :math:`(\idxtype_1~\limits_1~\reftype_1)`
 Memory Types
 ~~~~~~~~~~~~
 
-A :ref:`memory type <syntax-memtype>` :math:`(\idxtype_1~\limits_1)` matches :math:`(\idxtype_2~\limits_2)` if and only if:
+A :ref:`memory type <syntax-memtype>` :math:`(\addrtype_1~\limits_1)` matches :math:`(\addrtype_2~\limits_2)` if and only if:
 
-* Index types :math:`\idxtype_1` and :math:`\idxtype_2` are the same.
+* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -541,7 +541,7 @@ A :ref:`memory type <syntax-memtype>` :math:`(\idxtype_1~\limits_1)` matches :ma
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashnumtypematch \idxtype_1 \matchesnumtype \idxtype_2
+     C \vdashnumtypematch \addrtype_1 \matchesnumtype \addrtype_2
      \qquad
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{

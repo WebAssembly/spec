@@ -62,20 +62,20 @@ have to support 32-bit memory addresses in their ABI.
 * The [limits][syntax limits] structure is changed to use `u64`
 ￼  - `limits ::= {min u64, max u64?}`
 
-* A new `idxtype` can be either `i32` or `i64`
-  - `idxtype ::= i32 | i64`
+* A new `addrtype` can be either `i32` or `i64`
+  - `addrtype ::= i32 | i64`
 
 * The [memory type][syntax memtype] and [table type][syntax tabletype]
-  structures are extended to include an index type
-  - `memtype ::= idxtype limits`
-  - `tabletype ::= idxtype limits reftype`
+  structures are extended to include an address type
+  - `memtype ::= addrtype limits`
+  - `tabletype ::= addrtype limits reftype`
 
 * The [memarg][syntax memarg] immediate is changed to allow a 64-bit offset
   - `memarg ::= {offset u64, align u32}`
 
 ### Validation
 
-* Index types are classified by their value range:
+* Address types are classified by their value range:
   - ```
     ----------------
     ⊦ i32 : 2**16
@@ -86,7 +86,7 @@ have to support 32-bit memory addresses in their ABI.
     ```
 
 * [Memory page limits][valid limits] and [Table entry limits][valid limits] are
-  classified by their respective index types
+  classified by their respective address types
   - ```
     ⊦ it : k    n <= k    (m <= k)?    (n < m)?
     -------------------------------------------
@@ -100,112 +100,112 @@ have to support 32-bit memory addresses in their ABI.
     ⊦ it limits ok
     ```
 
-* All [memory instructions][valid meminst] are changed to use the index type,
-  and the offset must also be in range of the index type
+* All [memory instructions][valid meminst] are changed to use the address type,
+  and the offset must also be in range of the address type
   - t.load memarg
     - ```
-      C.mems[0] = it limits   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
+      C.mems[0] = at limits   2**memarg.align <= |t|/8   memarg.offset < 2**|at|
       --------------------------------------------------------------------------
-                          C ⊦ t.load memarg : [it] → [t]
+                          C ⊦ t.load memarg : [at] → [t]
       ```
   - t.loadN_sx memarg
     - ```
-      C.mems[0] = it limits   2**memarg.align <= N/8   memarg.offset < 2**|it|
+      C.mems[0] = at limits   2**memarg.align <= N/8   memarg.offset < 2**|at|
       ------------------------------------------------------------------------
-                        C ⊦ t.loadN_sx memarg : [it] → [t]
+                        C ⊦ t.loadN_sx memarg : [at] → [t]
       ```
   - t.store memarg
     - ```
-      C.mems[0] = it limits   2**memarg.align <= |t|/8   memarg.offset < 2**|it|
+      C.mems[0] = at limits   2**memarg.align <= |t|/8   memarg.offset < 2**|at|
       --------------------------------------------------------------------------
-                         C ⊦ t.store memarg : [it t] → []
+                         C ⊦ t.store memarg : [at t] → []
       ```
   - t.storeN_sx memarg
     - ```
-      C.mems[0] = it limits   2**memarg.align <= N/8   memarg.offset < 2**|it|
+      C.mems[0] = at limits   2**memarg.align <= N/8   memarg.offset < 2**|t|
       ------------------------------------------------------------------------
-                       C ⊦ t.storeN_sx memarg : [it t] → []
+                       C ⊦ t.storeN_sx memarg : [at t] → []
       ```
   - memory.size
     - ```
-         C.mems[0] = it limits
+         C.mems[0] = at limits
       ---------------------------
-      C ⊦ memory.size : [] → [it]
+      C ⊦ memory.size : [] → [at]
       ```
   - memory.grow
     - ```
-          C.mems[0] = it limits
+          C.mems[0] = at limits
       -----------------------------
-      C ⊦ memory.grow : [it] → [it]
+      C ⊦ memory.grow : [at] → [at]
       ```
   - memory.fill
     - ```
-          C.mems[0] = it limits
+          C.mems[0] = at limits
       -----------------------------
-      C ⊦ memory.fill : [it i32 it] → []
+      C ⊦ memory.fill : [at i32 at] → []
       ```
   - memory.copy
     - ```
-          C.mems[0] = it limits
+          C.mems[0] = at limits
       -----------------------------
-      C ⊦ memory.copy : [it it it] → []
+      C ⊦ memory.copy : [at at at] → []
       ```
   - memory.init x
     - ```
-          C.mems[0] = it limits   C.datas[x] = ok
+          C.mems[0] = at limits   C.datas[x] = ok
       -------------------------------------------
-          C ⊦ memory.init : [it i32 i32] → []
+          C ⊦ memory.init : [at i32 i32] → []
       ```
   - (and similar for memory instructions from other proposals)
 
-* [Table instructions][valid tableinst] are changed to use the index type
+* [Table instructions][valid tableinst] are changed to use the address type
   - call_indirect x y
     - ```
-        C.tables[x] = it limits t  C.types[y] = [t1*] → [t2*]
+        C.tables[x] = at limits t  C.types[y] = [t1*] → [t2*]
       -------------------------------------------------------
-      C ⊦ call_indirect x y : [t1* it] → [t2*]
+      C ⊦ call_indirect x y : [t1* at] → [t2*]
       ```
   - table.get x
     - ```
-        C.tables[x] = it limits t
+        C.tables[x] = at limits t
       ------------------------------
-      C ⊦ table.get x : [it] → [t]
+      C ⊦ table.get x : [at] → [t]
       ```
   - table.set x
     - ```
-        C.tables[x] = it limits t
+        C.tables[x] = at limits t
       ------------------------------
-      C ⊦ table.set x : [it t] → []
+      C ⊦ table.set x : [at t] → []
       ```
   - table.size x
     - ```
-        C.tables[x] = it limits t
+        C.tables[x] = at limits t
       ------------------------------
-      C ⊦ table.size x : [] → [it]
+      C ⊦ table.size x : [] → [at]
       ```
   - table.grow x
     - ```
-        C.tables[x] = it limits t
+        C.tables[x] = at limits t
       -------------------------------
-      C ⊦ table.grow x : [t it] → [it]
+      C ⊦ table.grow x : [t at] → [at]
       ```
   - table.fill x
     - ```
-        C.tables[x] = it limits t
+        C.tables[x] = at limits t
       ----------------------------------
-      C ⊦ tables.fill x : [it t it] → []
+      C ⊦ tables.fill x : [at t at] → []
       ```
   - table.copy x y
     - ```
-        C.tables[d] = iN limits t   C.tables[s] = iM limits t    K = min {N, M}
+        C.tables[d] = aN limits t   C.tables[s] = aM limits t    K = min {aN, AM}
       -----------------------------------------------------------------------------
-      C ⊦ table.copy d s : [iN iM iK] → []
+      C ⊦ table.copy d s : [aN aM aK] → []
       ```
   - table.init x y
     - ```
-          C.tables[x] = it limits t   C.elems[y] = ok
+          C.tables[x] = at limits t   C.elems[y] = ok
       -----------------------------------------------
-          C ⊦ table.init x y : [it i32 i32] → []
+          C ⊦ table.init x y : [at i32 i32] → []
       ```
 
 * The [SIMD proposal][simd] extends `t.load memarg` and `t.store memarg`
@@ -266,27 +266,27 @@ have to support 32-bit memory addresses in their ABI.
   64-bit memory.
 
 * The [Multi-memory proposal][multi memory] extends each of these instructions
-  with one or two memory index immediates. The index type for that memory will
+  with one or two memory index immediates. The address type for that memory will
   be used. For example,
   - memory.size x
     - ```
-         C.mems[x] = it limits
+         C.mems[x] = at limits
       ---------------------------
-      C ⊦ memory.size x : [] → [it]
+      C ⊦ memory.size x : [] → [at]
       ```
 
   `memory.copy` has two memory index immediates, so will have multiple possible
   signatures:
   - memory.copy d s
     - ```
-      C.mems[d] = iN limits   C.mems[s] = iM limits    K = min {N, M}
+      C.mems[d] = aN limits   C.mems[s] = aM limits    K = min {aN, aM}
       ---------------------------------------------------------------
-          C ⊦ memory.copy d s : [iN iM iK] → []
+          C ⊦ memory.copy d s : [aN aM aK] → []
       ```
 
-* [Data segment validation][valid data] uses the index type
+* [Data segment validation][valid data] uses the address type
   - ```
-    C.mems[0] = it limits   C ⊦ expr: [it]   C ⊦ expr const
+    C.mems[0] = at limits   C ⊦ expr: [at]   C ⊦ expr const
     -------------------------------------------------------
           C ⊦ {data x, offset expr, init b*} ok
     ```
@@ -298,7 +298,7 @@ have to support 32-bit memory addresses in their ABI.
   max size
   - `meminst ::= { data vec64(byte), max u64? }`
 
-* [Memory instructions][exec meminst] use the index type instead of `i32`
+* [Memory instructions][exec meminst] use the address type instead of `i32`
   - `t.load memarg`
   - `t.loadN_sx  memarg`
   - `t.store memarg`
@@ -307,31 +307,31 @@ have to support 32-bit memory addresses in their ABI.
   - `memory.grow`
   - (spec text omitted)
 
-* [memory.grow][exec memgrow] has behavior that depends on the index type:
+* [memory.grow][exec memgrow] has behavior that depends on the address type:
   - for `i32`: no change
   - for `i64`: check for a size greater than 2<sup>64</sup> - 1, and return
     2<sup>64</sup> - 1 when `memory.grow` fails.
 
-* [Memory import matching][exec memmatch] requires that the index type matches
+* [Memory import matching][exec memmatch] requires that the address type matches
   - ```
-      it_1 = it_2   ⊦ limits_1 <= limits_2
+      at_1 = at_2   ⊦ limits_1 <= limits_2
     ----------------------------------------
-    ⊦ mem it_1 limits_1 <= mem it_2 limits_2
+    ⊦ mem at_1 limits_1 <= mem at_2 limits_2
     ```
 
 * Bounds checking is required to be the same as for 32-bit memories, that is,
-  the index + offset (a `u65`) of a load or store operation is required to be
+  the address + offset (a `u65`) of a load or store operation is required to be
   checked against the current memory size and trap if out of range.
 
   It is expected that the cost of this check remains low, if an implementation
-  can implement the index check with a branch, and the offset separately using a
-  guard page for all smaller offsets. Repeated accesses over the same index and
+  can implement the address check with a branch, and the offset separately using a
+  guard page for all smaller offsets. Repeated accesses over the same address and
   different offsets allow simple elimination of subsequent checks.
 
 ### Binary format
 
 * The [limits][binary limits] structure also encodes an additional value to
-  indicate the index type
+  indicate the address type
   - ```
     limits ::= 0x00 n:u32        ⇒ i32, {min n, max ϵ}, 0
             |  0x01 n:u32 m:u32  ⇒ i32, {min n, max m}, 0
@@ -346,7 +346,7 @@ have to support 32-bit memory addresses in their ABI.
 * The [memory type][binary memtype] structure is extended to use this limits
   encoding
   - ```
-    memtype ::= (it, lim, _):limits ⇒ it lim
+    memtype ::= (at, lim, _):limits ⇒ at lim
     ```
 
 * The [memarg][binary memarg]'s offset is read as `u64`
@@ -354,23 +354,23 @@ have to support 32-bit memory addresses in their ABI.
 
 ### Text format
 
-*  There is a new index type:
+*  There is a new address type:
    - ```
-     idxtype ::= 'i32' ⇒ i32
-              |  'i64' ⇒ i64
+     addrtype ::= 'i32' ⇒ i32
+               |  'i64' ⇒ i64
      ```
 
 *  The [memory type][text memtype] definition is extended to allow an optional
-   index type, which must be either `i32` or `i64`
+   address type, which must be either `i32` or `i64`
    - ```
      memtype ::= lim:limits             ⇒ i32 lim
-              |  it:idxtype lim:limits  ⇒ it lim
+              |  at:addrtype lim:limits  ⇒ at lim
      ```
 
 * The [memory abbreviation][text memabbrev] definition is extended to allow an
-  optional index type too, which must be either `i32` or `i64`
+  optional address type too, which must be either `i32` or `i64`
   - ```
-    '(' 'memory' id? index_type? '(' 'data' b_n:datastring ')' ')' === ...
+    '(' 'memory' id? address_type? '(' 'data' b_n:datastring ')' ')' === ...
     ```
 
 

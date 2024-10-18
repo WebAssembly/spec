@@ -223,7 +223,7 @@ test(() => {
   const argument = { "element": "anyfunc", "initial": 3, "index": "i32" };
   const table = new WebAssembly.Table(argument);
   // Once this is merged with the type reflection proposal we should check the
-  // index type of `table`.
+  // address type of `table`.
   assert_equals(table.length, 3);
 }, "Table with i32 index constructor");
 
@@ -231,7 +231,7 @@ test(() => {
   const argument = { "element": "anyfunc", "initial": 3n, "index": "i64" };
   const table = new WebAssembly.Table(argument);
   // Once this is merged with the type reflection proposal we should check the
-  // index type of `table`.
+  // address type of `table`.
   assert_equals(table.length, 3);
 }, "Table with i64 index constructor");
 

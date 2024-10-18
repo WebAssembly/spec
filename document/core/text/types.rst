@@ -286,16 +286,16 @@ Similarly, final sub types with no super-types can omit the |Tsub| keyword and a
    \end{array}
 
 
-.. index:: index type
-   pair: text format; index type
-.. _text-idxtype:
+.. index:: address type
+   pair: text format; address type
+.. _text-addrtype:
 
-Index Type
-~~~~~~~~~~
+Address Types
+~~~~~~~~~~~~~
 
 .. math::
    \begin{array}{llclll}
-   \production{index type} & \Tidxtype &::=&
+   \production{address type} & \Taddrtype &::=&
      \text{i32} &\Rightarrow& \I32 \\ &&|&
      \text{i64} &\Rightarrow& \I64 \\
    \end{array}
@@ -303,11 +303,11 @@ Index Type
 Abbreviations
 .............
 
-The index type can be omited, in which case it defaults :math:`\I32`:
+The address type can be omited, in which case it defaults :math:`\I32`:
 
 .. math::
    \begin{array}{llclll}
-   \production{index type} &
+   \production{address type} &
      \text{} &\equiv& \text{i32}
    \end{array}
 
@@ -337,7 +337,7 @@ Memory Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory type} & \Tmemtype_I &::=&
-     \X{it}{:}\Tidxtype~~\X{lim}{:}\Tlimits &\Rightarrow& \X{it}~\X{lim} \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits &\Rightarrow& \X{at}~\X{lim} \\
    \end{array}
 
 
@@ -351,7 +351,7 @@ Table Types
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Ttabletype_I &::=&
-     \X{it}{:}\Tidxtype~~\X{lim}{:}\Tlimits~~\X{et}{:}\Treftype_I &\Rightarrow& \X{it}~\X{lim}~\X{et} \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits~~\X{et}{:}\Treftype_I &\Rightarrow& \X{at}~\X{lim}~\X{et} \\
    \end{array}
 
 

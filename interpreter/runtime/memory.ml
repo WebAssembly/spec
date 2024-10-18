@@ -25,8 +25,8 @@ let valid_limits {min; max} =
   | None -> true
   | Some m -> I64.le_u min m
 
-let create n it =
-  if I64.gt_u n 0x10000L && it = I32IndexType then raise SizeOverflow else
+let create n at =
+  if I64.gt_u n 0x10000L && at = I32AddrType then raise SizeOverflow else
   try
     let size = Int64.(mul n page_size) in
     let mem = Array1_64.create Int8_unsigned C_layout size in
@@ -34,10 +34,10 @@ let create n it =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryT (lim, it) as ty) =
+let alloc (MemoryT (lim, at) as ty) =
   assert Free.((memory_type ty).types = Set.empty);
   if not (valid_limits lim) then raise Type;
-  {ty; content = create lim.min it}
+  {ty; content = create lim.min at}
 
 let bound mem =
   Array1_64.dim mem.content
@@ -48,8 +48,8 @@ let size mem =
 let type_of mem =
   mem.ty
 
-let index_type_of mem =
-  let (MemoryT (_, it)) = type_of mem in it
+let addr_type_of mem =
+  let (MemoryT (_, at)) = type_of mem in at
 
 let address_of_num x =
   match x with
@@ -63,17 +63,17 @@ let address_of_value x =
   | _ -> raise Type
 
 let grow mem delta =
-  let MemoryT (lim, it) = mem.ty in
+  let MemoryT (lim, at) = mem.ty in
   assert (lim.min = size mem);
   let old_size = lim.min in
   let new_size = Int64.add old_size delta in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let lim' = {lim with min = new_size} in
   if not (valid_limits lim') then raise SizeLimit else
-  let after = create new_size (index_type_of mem) in
+  let after = create new_size (addr_type_of mem) in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
-  mem.ty <- MemoryT (lim', it);
+  mem.ty <- MemoryT (lim', at);
   mem.content <- after
 
 let load_byte mem a =

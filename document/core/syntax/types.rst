@@ -357,36 +357,36 @@ In a :ref:`module <syntax-module>`, each member of a recursive type is assigned 
 The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
-.. _index:: ! index type
-   pair: abstract syntax; index type
-   single: memory; index type
-   single: table; index type
-.. _syntax-idxtype:
+.. _index:: ! address type
+   pair: abstract syntax; address type
+   single: memory; address type
+   single: table; address type
+.. _syntax-addrtype:
 
-Index Type
-~~~~~~~~~~
+Address Type
+~~~~~~~~~~~~
 
-*Index types* classify the values that can be used to index into
+*Address types* classify the values that can be used to index into
 :ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
 
 .. math::
    \begin{array}{llll}
-   \production{index type} & \idxtype &::=&
+   \production{address type} & \addrtype &::=&
      \I32 ~|~ \I64 \\
    \end{array}
 
-.. _aux-idxtype-min:
+.. _aux-addrtype-min:
 
 Conventions
 ...........
 
-The *minimum* of two index types is defined as |I32| if either of the types are
+The *minimum* of two address types is defined as |I32| if either of the types are
 |I32|, and |I64| otherwise.
 
 .. math::
    \begin{array}{llll}
-   \itmin(\I64, \I64) &=& \I64 \\
-   \itmin(\X{it}_1, \X{it}_2) &=& \I32 & (\otherwise) \\
+   \atmin(\I64, \I64) &=& \I64 \\
+   \atmin(\X{at}_1, \X{at}_2) &=& \I32 & (\otherwise) \\
    \end{array}
 
 
@@ -424,7 +424,7 @@ Memory Types
 .. math::
    \begin{array}{llrl}
    \production{memory type} & \memtype &::=&
-     ~\idxtype~\limits \\
+     ~\addrtype~\limits \\
    \end{array}
 
 The limits constrain the minimum and optionally the maximum size of a memory.
@@ -445,7 +445,7 @@ Table Types
 .. math::
    \begin{array}{llrl}
    \production{table type} & \tabletype &::=&
-     ~\idxtype~\limits ~\reftype \\
+     ~\addrtype~\limits ~\reftype \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.

@@ -501,10 +501,10 @@ Limits
 Table Types
 ~~~~~~~~~~~
 
-:math:`\idxtype~\limits~\reftype`
-.................................
+:math:`\addrtype~\limits~\reftype`
+..................................
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\idxtype|}-1`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|}-1`.
 
 * The reference type :math:`\reftype` must be :ref:`valid <valid-reftype>`.
 
@@ -512,11 +512,11 @@ Table Types
 
 .. math::
    \frac{
-     C \vdashlimits \limits : 2^{|\idxtype|}-1
+     C \vdashlimits \limits : 2^{|\addrtype|}-1
      \qquad
      C \vdashreftype \reftype \ok
    }{
-     C \vdashtabletype \idxtype~\limits~\reftype \ok
+     C \vdashtabletype \addrtype~\limits~\reftype \ok
    }
 
 
@@ -528,16 +528,16 @@ Table Types
 Memory Types
 ~~~~~~~~~~~~
 
-:math:`\idxtype~\limits`
-........................
+:math:`\addrtype~\limits`
+.........................
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\idxtype|-16}`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|-16}`.
 
 * Then the memory type is valid.
 
 .. math::
    \frac{
-     C \vdashlimits \limits : 2^{|\idxtype|-16}
+     C \vdashlimits \limits : 2^{|\addrtype|-16}
    }{
      C \vdashmemtype \limits \ok
    }

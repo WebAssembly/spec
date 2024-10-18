@@ -25,7 +25,7 @@ type heap_type =
 and ref_type = null * heap_type
 and val_type = NumT of num_type | VecT of vec_type | RefT of ref_type | BotT
 
-and index_type = I32IndexType | I64IndexType
+and addr_type = I32AddrType | I64AddrType
 and result_type = val_type list
 and instr_type = InstrT of result_type * result_type * local_idx list
 
@@ -45,8 +45,8 @@ and sub_type = SubT of final * heap_type list * str_type
 and rec_type = RecT of sub_type list
 and def_type = DefT of rec_type * int32
 
-type table_type = TableT of Int64.t limits * index_type * ref_type
-type memory_type = MemoryT of Int64.t limits * index_type
+type table_type = TableT of Int64.t limits * addr_type * ref_type
+type memory_type = MemoryT of Int64.t limits * addr_type
 type global_type = GlobalT of mut * val_type
 type tag_type = TagT of def_type
 type local_type = LocalT of init * val_type
@@ -147,11 +147,11 @@ let memories = List.filter_map (function ExternMemoryT mt -> Some mt | _ -> None
 let globals = List.filter_map (function ExternGlobalT gt -> Some gt | _ -> None)
 let tags = List.filter_map (function ExternTagT tt -> Some tt | _ -> None)
 
-let num_type_of_index_type = function
-  | I32IndexType -> I32T
-  | I64IndexType -> I64T
+let num_type_of_addr_type = function
+  | I32AddrType -> I32T
+  | I64AddrType -> I64T
 
-let value_type_of_index_type t = NumT (num_type_of_index_type t)
+let value_type_of_addr_type t = NumT (num_type_of_addr_type t)
 
 (* Substitution *)
 
@@ -228,10 +228,10 @@ let subst_def_type s = function
 
 
 let subst_memory_type s = function
-  | MemoryT (lim, it) -> MemoryT (lim, it)
+  | MemoryT (lim, at) -> MemoryT (lim, at)
 
 let subst_table_type s = function
-  | TableT (lim, it, t) -> TableT (lim, it, subst_ref_type s t)
+  | TableT (lim, at, t) -> TableT (lim, at, subst_ref_type s t)
 
 let subst_global_type s = function
   | GlobalT (mut, t) ->  GlobalT (mut, subst_val_type s t)
@@ -365,8 +365,8 @@ and string_of_val_type = function
   | RefT t -> string_of_ref_type t
   | BotT -> "bot"
 
-and string_of_index_type t =
-  string_of_val_type (value_type_of_index_type t)
+and string_of_addr_type t =
+  string_of_val_type (value_type_of_addr_type t)
 
 and string_of_result_type = function
   | ts -> "[" ^ String.concat " " (List.map string_of_val_type ts) ^ "]"
@@ -418,10 +418,10 @@ let string_of_limits = function
     (match max with None -> "" | Some n -> " " ^ I64.to_string_u n)
 
 let string_of_memory_type = function
-  | MemoryT (lim, it) -> string_of_num_type (num_type_of_index_type it) ^ " " ^ string_of_limits lim
+  | MemoryT (lim, at) -> string_of_num_type (num_type_of_addr_type at) ^ " " ^ string_of_limits lim
 
 let string_of_table_type = function
-  | TableT (lim, it, t) -> string_of_num_type (num_type_of_index_type it) ^ " " ^ string_of_limits lim ^ " " ^ string_of_ref_type t
+  | TableT (lim, at, t) -> string_of_num_type (num_type_of_addr_type at) ^ " " ^ string_of_limits lim ^ " " ^ string_of_ref_type t
 
 let string_of_global_type = function
   | GlobalT (mut, t) -> string_of_mut (string_of_val_type t) mut

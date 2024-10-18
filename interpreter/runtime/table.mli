@@ -16,7 +16,7 @@ exception OutOfMemory
 
 val alloc : table_type -> ref_ -> table (* raises Type, OutOfMemory *)
 val type_of : table -> table_type
-val index_type_of : table -> index_type
+val addr_type_of : table -> addr_type
 val size : table -> size
 val index_of_num : num -> index
 val grow : table -> size -> ref_ -> unit

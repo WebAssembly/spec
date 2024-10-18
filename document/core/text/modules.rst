@@ -378,12 +378,12 @@ A :ref:`data segment <text-data>` can be given inline with a memory definition, 
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{memory}~~\Tid^?~~\X{it}^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{memory}~~\Tid'~~\X{it}^?~~m~~m~\text{)} \\ & \qquad
-       \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\X{it}'\text{.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
+     \text{(}~\text{memory}~~\Tid^?~~\X{at}^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{memory}~~\Tid'~~\X{at}^?~~m~~m~\text{)} \\ & \qquad
+       \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\X{at}'\text{.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, \\ & \qquad\qquad
-        \iff it^? \neq \epsilon \wedge \X{it}' = \X{it}^? \vee \X{it}^? = \epsilon \wedge \X{it}' = \text{i32}, \\ & \qquad\qquad
+        \iff \X{at}^? \neq \epsilon \wedge \X{at}' = \X{at}^? \vee \X{at}^? = \epsilon \wedge \X{at}' = \text{i32}, \\ & \qquad\qquad
         m = \F{ceil}(n / 64\,\F{Ki})), \\
    \end{array}
 
