@@ -679,7 +679,7 @@ Note: The use of this synchronous API is discouraged, as some implementations so
 dictionary MemoryDescriptor {
   required AddressValue initial;
   AddressValue maximum;
-  AddressType addressType;
+  AddressType address;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
@@ -748,7 +748,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Memory">Memory(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
-    1. If |descriptor|["addressType"] [=map/exists=], let |addrtype| be |descriptor|["addressType"]; otherwise, let |addrtype| be "i32".
+    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be |descriptor|["address"]; otherwise, let |addrtype| be "i32".
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
@@ -875,7 +875,7 @@ dictionary TableDescriptor {
   required TableKind element;
   required AddressValue initial;
   AddressValue maximum;
-  AddressType addressType;
+  AddressType address;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
@@ -915,7 +915,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |elementtype| be [=ToValueType=](|descriptor|["element"]).
     1. If |elementtype| is not a [=reftype=],
         1. [=Throw=] a {{TypeError}} exception.
-    1. If |descriptor|["addressType"] [=map/exists=], let |addrtype| be |descriptor|["addressType"]; otherwise, let |addrtype| be "i32".
+    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be |descriptor|["address"]; otherwise, let |addrtype| be "i32".
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
