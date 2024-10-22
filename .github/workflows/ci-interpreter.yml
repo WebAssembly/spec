@@ -2,11 +2,11 @@ name: CI for interpreter & tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, wasm-3.0 ]
     paths: [ .github/**, interpreter/**, test/** ]
 
   pull_request:
-    branches: [ main ]
+    branches: [ main, wasm-3.0 ]
     paths: [ .github/**, interpreter/**, test/** ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -15,6 +15,8 @@ on:
 jobs:
   interpreter:
     runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: 24.0.0-v8-canary20241018c59bfa2926
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -24,13 +26,15 @@ jobs:
           ocaml-compiler: 4.14.x
       - name: Setup OCaml tools
         run: opam install --yes ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20.x
       - name: Build interpreter
         run: cd interpreter && opam exec make
+      - name: Setup node canary
+        run: |
+          cd $HOME
+          wget https://nodejs.org/download/v8-canary/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz
+          tar xf node-v${NODE_VERSION}-linux-x64.tar.xz
+          stat $HOME/node-v${NODE_VERSION}-linux-x64/bin/node
       - name: Run tests
-        # TODO: reactiate node once it supports all of Wasm 3.0
-        # run: cd interpreter && opam exec make JS=node ci
-        run: cd interpreter && opam exec make ci
+        run: |
+          NODE="$HOME/node-v${NODE_VERSION}-linux-x64/bin/node --wasm-staging"
+          cd interpreter && opam exec make "JS=$NODE" ci
