@@ -375,7 +375,7 @@ $${rule-prose: Instr_ok/struct.new}
 
 .. todo::
    below is the official specification
-   
+
    (*) - unpack(zt)* vs let t* be concatenation of ti
 
 
@@ -1828,11 +1828,11 @@ $${rule: Instr_ok/try_table}
 
 :math:`\CATCH~x~l`
 ..................
-$${rule-prose: Catch_ok}
+$${rule-prose: Catch_ok/catch}
 
 .. todo::
    below is the official specification
-   
+
    (**) - [THE OFFICIAL SPECIFICATION IS WRONG! It should have "expansion" in the tag type ]
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
@@ -1852,6 +1852,7 @@ $${rule: Catch_ok/catch}
 
 :math:`\CATCHREF~x~l`
 .....................
+$${rule-prose: Catch_ok/catch_ref}
 
 .. todo::
  below is the official specification
@@ -1878,6 +1879,8 @@ $${rule: Catch_ok/catch_ref}
 
 :math:`\CATCHALL~l`
 ...................
+$${rule-prose: Catch_ok/catch_all}
+
 .. todo::
    below is the official specification
 
@@ -1892,6 +1895,8 @@ $${rule: Catch_ok/catch_all}
 
 :math:`\CATCHALLREF~l`
 ......................
+$${rule-prose: Catch_ok/catch_all_ref}
+
 .. todo::
    below is the official specification
 
@@ -2008,7 +2013,7 @@ $${rule-prose: Instr_ok/br_on_non_null}
 
 .. todo::
  below is the official specification
- 
+
  (*) - Simplified prose.
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
@@ -2154,7 +2159,7 @@ $${rule-prose: Instr_ok/return}
 
 .. todo::
  below is the official specification
- 
+
  (*) - [changed prose from (seemingly wrong) "t1* -> t2*" to (seemingly correct) "t1* t* -> t2*"]
 
 * The return type :math:`C.\CRETURN` must not be absent in the context.
