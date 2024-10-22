@@ -65,6 +65,13 @@ let cmpop_to_cmpop = function
 | Ast.LeOp _ -> Le
 | Ast.GeOp _ -> Ge
 
+let binop_to_binop = function
+  | Ast.AndOp -> And
+  | Ast.OrOp -> Or
+  | Ast.ImplOp -> Impl
+  | Ast.EquivOp -> Equiv
+  | _ -> assert false
+
 let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
 
 (* Hardcoded convention: "The rules implicitly assume a given context C" *)
@@ -193,23 +200,23 @@ let rec if_expr_to_instrs e =
     [ match e2.it with LenE _ -> CmpS (e2, swap op, e1) | _ -> CmpS (e1, op, e2) ]
   | Ast.BinE (Ast.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
-  | Ast.BinE (Ast.OrOp, e1, e2) ->
+  | Ast.BinE (op, e1, e2) ->
+    let op = binop_to_binop op in
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
-    [ match cond1, cond2 with
-      | [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ], _ ->
+    [ match op, cond1, cond2 with
+      | Or, [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ], _ ->
         (* ~P \/ Q is equivalent to P -> Q *)
         IfS (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
-      | [ CmpS (e1, Eq, e2) ], [ CmpS (e3, Eq, e4) ] when Al.Eq.eq_expr e1 e3 ->
+      | Or, [ CmpS (e1, Eq, e2) ], [ CmpS (e3, Eq, e4) ] when Al.Eq.eq_expr e1 e3 ->
         (* TODO: Change this not to use a set notation *)
         CondS (memE (e1, listE [e2; e4] ~note:(iterT e2.note List)) ~note:boolT)
-      | _ ->
-        CondS (exp_to_expr e)]
-  | Ast.BinE (Ast.EquivOp, _, _)
+      | _, [ stmt1 ], [ stmt2 ] -> BinS (stmt1, op, stmt2)
+      | _ -> CondS (exp_to_expr e)]
   | Ast.MemE _ ->
-      [ CondS (exp_to_expr e) ]
+    [ CondS (exp_to_expr e) ]
   | _ ->
-      [ CmpS (exp_to_expr e, Eq, boolE true ~note:boolT) ]
+    [ CmpS (exp_to_expr e, Eq, boolE true ~note:boolT) ]
 
 let rec prem_to_instrs prem =
   match prem.it with

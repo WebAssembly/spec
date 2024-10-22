@@ -404,60 +404,74 @@ let string_of_cmpop = function
   | Le -> "is less than or equal to"
   | Ge -> "is greater than or equal to"
 
-let rec raw_string_of_stmt stmt =
-  let string_of_block = function
-    | [s] -> " " ^ raw_string_of_stmt s
-    | ss -> "\n" ^ indented_string_of_stmts ss
-  in
+let string_of_prose_binop = function
+| And -> "and"
+| Or -> "or"
+| Impl -> "implies"
+| Equiv -> "if and only if"
+
+let rec raw_string_of_single_stmt stmt =
   match stmt with
   | LetS (e1, e2) ->
-      sprintf "Let %s be %s."
-        (string_of_expr e1)
-        (string_of_expr_with_type e2)
+    sprintf "Let %s be %s"
+      (string_of_expr e1)
+      (string_of_expr_with_type e2)
   | CondS e ->
-      sprintf "%s."
-        (string_of_expr e)
+    sprintf "%s"
+      (string_of_expr e)
   | CmpS (e1, cmpop, e2) ->
-      sprintf "%s %s %s."
-        (string_of_expr_with_type e1)
-        (string_of_cmpop cmpop)
-        (string_of_expr e2)
+    sprintf "%s %s %s"
+      (string_of_expr_with_type e1)
+      (string_of_cmpop cmpop)
+      (string_of_expr e2)
   | IsValidS (c_opt, e, es) ->
-      sprintf "%s%s is valid%s."
-        (string_of_opt "Under the context " string_of_expr ", " c_opt)
-        (string_of_expr_with_type e)
-        (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
+    sprintf "%s%s is valid%s"
+      (string_of_opt "Under the context " string_of_expr ", " c_opt)
+      (string_of_expr_with_type e)
+      (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
   | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
-      sprintf "%s matches itself."
-        (string_of_expr_with_type e1)
+    sprintf "%s matches itself"
+      (string_of_expr_with_type e1)
   | MatchesS (e1, e2) ->
-      sprintf "%s matches %s."
-        (string_of_expr_with_type e1)
-        (string_of_expr_with_type e2)
+    sprintf "%s matches %s"
+      (string_of_expr_with_type e1)
+      (string_of_expr_with_type e2)
   | IsConstS (c_opt, e) ->
-      sprintf "%s%s is constant."
-        (string_of_opt "Under the context " string_of_expr ", " c_opt)
-        (string_of_expr_with_type e)
+    sprintf "%s%s is constant"
+      (string_of_opt "Under the context " string_of_expr ", " c_opt)
+      (string_of_expr_with_type e)
   | IsDefinedS e ->
-      sprintf "%s exists."
-        (string_of_expr_with_type e)
-  | IfS (c, ss) ->
-      sprintf "If %s,%s"
-        (string_of_expr c)
-        (string_of_block ss)
-  | ForallS (iters, ss) ->
-      let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
-      sprintf "For all %s,%s"
-        (string_of_list string_of_iter "" " and " "" iters)
-        (string_of_block ss)
-  | EitherS sss ->
-        string_of_list string_of_block "Either:" ("\n" ^ indent () ^ "Or:") "" sss
+    sprintf "%s exists"
+      (string_of_expr_with_type e)
   | RelS (s, es) ->
-      let template = String.split_on_char '%' s in
-      let args = List.map string_of_expr_with_type es in
+    let template = String.split_on_char '%' s in
+    let args = List.map string_of_expr_with_type es in
 
-      Prose_util.alternate template args |> String.concat ""
+    Prose_util.alternate template args |> String.concat ""
   | YetS s -> indent () ^ " Yet: " ^ s
+  | _ -> assert false
+
+
+and raw_string_of_stmt stmt =
+  let string_of_block ss = "\n" ^ indented_string_of_stmts ss in
+  match stmt with
+  | IfS (c, ss) ->
+    sprintf "If %s, then:%s"
+      (string_of_expr c)
+      (string_of_block ss)
+  | ForallS (iters, ss) ->
+    let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
+    sprintf "For all %s:%s"
+      (string_of_list string_of_iter "" " and " "" iters)
+      (string_of_block ss)
+  | EitherS sss ->
+    string_of_list string_of_block "Either:" ("\n" ^ indent () ^ "Or:") "" sss
+  | BinS (s1, binop, s2) ->
+    sprintf "%s %s %s."
+      (raw_string_of_single_stmt s1)
+      (string_of_prose_binop binop)
+      (raw_string_of_single_stmt s2)
+  | _ -> raw_string_of_single_stmt stmt ^ "."
 
 and string_of_stmt stmt = indent () ^ raw_string_of_stmt stmt
 

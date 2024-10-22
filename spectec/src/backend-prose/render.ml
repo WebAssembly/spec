@@ -308,6 +308,12 @@ let render_prose_cmpop_eps = function
   | Ne -> " not"
   | op -> render_prose_cmpop op
 
+let render_prose_binop = function
+  | And -> "and"
+  | Or -> "or"
+  | Impl -> "implies"
+  | Equiv -> "if and only if"
+
 let render_al_unop = function
   | Al.Ast.NotOp -> "not"
   | Al.Ast.MinusOp -> "minus"
@@ -534,20 +540,14 @@ let render_expr_with_type env e =
 
 (* Instructions *)
 
-let rec render_stmt env depth stmt =
-  let prefix = if depth = 0 then "\n\n" else "* " in
-  let rec render_stmt' stmt =
-    let render_block = function
-      | [s] -> " " ^ render_stmt' s
-      | ss -> render_stmts env (depth + 1) ss
-    in
-    match stmt with
+let rec render_single_stmt env stmt =
+  match stmt with
     | LetS (e1, e2) ->
-      sprintf "let %s be %s."
+      sprintf "let %s be %s"
         (render_expr env e1)
         (render_expr_with_type env e2)
     | CondS e ->
-      sprintf "%s."
+      sprintf "%s"
         (render_expr env e)
     | CmpS (e1, cmpop, ({ it = Al.Ast.SubE (id, t); _ } as e2)) when (Il.Print.string_of_typ_name t) = id ->
       let rhs =
@@ -555,7 +555,7 @@ let rec render_stmt env depth stmt =
         | None -> render_expr env e2
         | Some desc -> desc
       in
-      sprintf "%s is%s %s."
+      sprintf "%s is%s %s"
         (render_expr_with_type env e1)
         (render_prose_cmpop cmpop)
         rhs
@@ -565,34 +565,46 @@ let rec render_stmt env depth stmt =
         | OptE None -> render_prose_cmpop_eps cmpop, "absent"
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
-      sprintf "%s is%s %s." (render_expr_with_type env e1) cmpop rhs
+      sprintf "%s is%s %s" (render_expr_with_type env e1) cmpop rhs
     | IsValidS (c_opt, e, es) ->
-      sprintf "%s%s is valid%s."
+      sprintf "%s%s is valid%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_expr_with_type env e)
         (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
-      sprintf "%s matches itself."
+      sprintf "%s matches itself"
         (render_expr_with_type env e1)
     | MatchesS (e1, e2) ->
-      sprintf "%s matches %s."
+      sprintf "%s matches %s"
         (render_expr_with_type env e1)
         (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
-      sprintf "%s%s is const."
+      sprintf "%s%s is const"
         (render_opt "under the context " (render_expr_with_type env) ", " c_opt)
         (render_expr env e)
     | IsDefinedS e ->
-      sprintf "%s exists."
+      sprintf "%s exists"
         (render_expr_with_type env e)
+    | RelS (s, es) ->
+      let template = String.split_on_char '%' s in
+      let args = List.map (render_expr_with_type env) es in
+      Prose_util.alternate template args |> String.concat ""
+    | YetS s -> sprintf "YetS: %s" s
+    | _ -> assert false
+
+and render_stmt env depth stmt =
+  let prefix = if depth = 0 then "\n\n" else "* " in
+  let render_block = render_stmts env (depth + 1) in
+  let stmt' =
+    match stmt with
     | IfS (c, sl) ->
-      sprintf "if %s,%s"
+      sprintf "if %s, then:%s"
         (render_expr env c)
         (render_block sl)
     | ForallS (iters, is) ->
       let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
       let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
-      sprintf "for all %s,%s"
+      sprintf "for all %s:%s"
         (render_iters env iters)
         (render_block is)
     | EitherS sll ->
@@ -609,15 +621,14 @@ let rec render_stmt env depth stmt =
           "" tl
       in
       sprintf "either:%s\n%s" hd' tl'
-    | RelS (s, es) ->
-      let template = String.split_on_char '%' s in
-      let args = List.map (render_expr_with_type env) es in
-
-      Prose_util.alternate template args |> String.concat ""
-    | YetS s ->
-      sprintf "YetS: %s." s
+    | BinS (s1, binop, s2) ->
+      sprintf "%s %s %s."
+        (render_single_stmt env s1)
+        (render_prose_binop binop)
+        (render_single_stmt env s2)
+    | _ -> render_single_stmt env stmt ^ "."
   in
-  prefix ^ (render_stmt' stmt |> String.capitalize_ascii)
+  prefix ^ (stmt' |> String.capitalize_ascii)
 
 and render_stmts env depth stmts =
   List.fold_left

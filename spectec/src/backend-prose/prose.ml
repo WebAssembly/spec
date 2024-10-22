@@ -2,6 +2,7 @@
    Perhaps this should be improved later *)
 
 type cmpop = Eq | Ne | Lt | Gt | Le | Ge
+type binop = And | Or | Impl | Equiv
 
 type expr = Al.Ast.expr
 
@@ -16,6 +17,7 @@ type stmt =
 | IfS of expr * stmt list
 | ForallS of (expr * expr) list * stmt list
 | EitherS of stmt list list
+| BinS of stmt * binop * stmt
 (* TODO: Merge others statements into RelS *)
 | RelS of string * expr list
 | YetS of string
