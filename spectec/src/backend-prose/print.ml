@@ -107,7 +107,14 @@ and string_of_expr expr =
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | TupE el -> "(" ^ string_of_exprs ", " el ^ ")"
-  | CallE (id, al) -> sprintf "$%s(%s)" id (string_of_args ", " al)
+  | CallE (id, al) ->
+    (match Prose_util.extract_prose_hint id with
+    | Some prose_hint ->
+      let args = List.map string_of_arg al in
+      Prose_util.apply_prose_hint id prose_hint args
+    | _ ->
+      sprintf "$%s(%s)" id (string_of_args ", " al)
+    )
   | InvCallE (id, nl, al) ->
     let id' =
       if List.for_all Option.is_some nl then id

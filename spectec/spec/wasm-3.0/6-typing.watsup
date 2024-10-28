@@ -1353,7 +1353,7 @@ rule Externidx_ok/tag:
 
 ;; Modules proper
 
-relation Module_ok: |- module : moduletype            hint(show "T-module")  hint(macro "%module")
+relation Module_ok: |- module : moduletype            hint(show "T-module")  hint(macro "%module")    hint(prose "the type of %1")
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
 relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globals")
 

@@ -180,14 +180,19 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, al) ->
-      let elid = id $ no_region in
-      let* elal = al_to_el_args al in
-      let elal = List.map
-        (fun elarg ->
-          (ref elarg) $ no_region)
-        elal
-      in
-      Some (El.Ast.CallE (elid, elal))
+      (match Prose_util.extract_prose_hint id with
+      | Some _ ->
+        None
+      | _ ->
+        let elid = id $ no_region in
+        let* elal = al_to_el_args al in
+        let elal = List.map
+          (fun elarg ->
+            (ref elarg) $ no_region)
+          elal
+        in
+        Some (El.Ast.CallE (elid, elal))
+      )
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in
@@ -345,6 +350,11 @@ let render_el_exp env exp =
   let sexp = Str.global_replace newline "" sexp in
   render_math sexp
 
+let render_arg env arg = 
+  ref (Option.get (al_to_el_arg arg)) $ no_region
+  |> Backend_latex.Render.render_arg env.render_latex
+  |> render_math
+
 let rec render_expr env expr = match al_to_el_expr expr with
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
@@ -390,6 +400,10 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
+  | Al.Ast.CallE (id, al) ->
+    let prose_hint = Option.get (Prose_util.extract_prose_hint id) in
+    let args = List.map (render_arg env) al in
+    Prose_util.apply_prose_hint id prose_hint args
   | Al.Ast.InvCallE (id, nl, al) ->
     let e =
       if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N" ~note:Al.Al_util.no_note
@@ -642,7 +656,7 @@ let rec render_al_instr env algoname index depth instr =
         "validation"
     in
     sprintf "%s Assert: Due to %s, %s." (render_order index depth)
-      vref (render_expr env c)
+    vref (render_expr env c)
   | Al.Ast.PushI e ->
     sprintf "%s Push %s%s to the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)

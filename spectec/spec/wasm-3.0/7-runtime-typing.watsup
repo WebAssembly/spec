@@ -5,7 +5,7 @@
 relation Num_type: store |- num : numtype
 relation Vec_type: store |- vec : vectype
 relation Ref_type: store |- ref : reftype
-relation Val_type: store |- val : valtype
+relation Val_type: store |- val : valtype  hint(prose "the type of %2 is %3")
 
 rule Num_type:
   s |- CONST nt c : nt
@@ -64,7 +64,7 @@ rule Val_type/ref:
 ;; Typing external addresses
 ;;
 
-relation Externaddr_type: store |- externaddr : externtype
+relation Externaddr_type: store |- externaddr : externtype    hint(prose "the type of %2 is %3")
 
 rule Externaddr_type/func:
   s |- FUNC a : FUNC funcinst.TYPE
