@@ -358,7 +358,12 @@ let rec type_of_result res =
 
 let assert_return ress ts at =
   let rec test (res, t) =
-    if not (Match.match_val_type [] t (type_of_result res)) then
+    if
+      not (
+        Match.match_val_type [] t (type_of_result res) ||
+        Match.match_val_type [] (type_of_result res) t
+      )
+    then
       [ Br (0l @@ at) @@ at ]
     else
     match res.it with
