@@ -2,11 +2,11 @@ name: CI for interpreter & tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, wasm-3.0 ]
     paths: [ .github/**, interpreter/**, test/** ]
 
   pull_request:
-    branches: [ main ]
+    branches: [ main, wasm-3.0 ]
     paths: [ .github/**, interpreter/**, test/** ]
 
   # Allows you to run this workflow manually from the Actions tab
