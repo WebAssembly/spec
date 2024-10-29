@@ -334,6 +334,7 @@ warning: syntax `elemmode` was never spliced
 warning: syntax `elemtype` was never spliced
 warning: syntax `exnaddr` was never spliced
 warning: syntax `exninst` was never spliced
+warning: syntax `exp` was never spliced
 warning: syntax `export` was never spliced
 warning: syntax `exportinst` was never spliced
 warning: syntax `externaddr` was never spliced

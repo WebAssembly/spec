@@ -124,7 +124,8 @@ and subst_exp s e =
     | None -> VarE (id, List.map (subst_arg s) args)
     | Some e' -> assert (args = []); e'.it  (* We do not support higher-order substitutions yet *)
     )
-  | AtomE _ | BoolE _ | NatE _ | TextE _ -> e.it
+  | AtomE _ | BoolE _ | NumE _ | TextE _ -> e.it
+  | CvtE (e1, nt) -> CvtE (subst_exp s e1, nt)
   | UnE (op, e1) -> UnE (op, subst_exp s e1)
   | BinE (e1, op, e2) -> BinE (subst_exp s e1, op, subst_exp s e2)
   | CmpE (e1, op, e2) -> CmpE (subst_exp s e1, op, subst_exp s e2)
@@ -176,7 +177,7 @@ and subst_sym s g =
     | None -> VarG (id, List.map (subst_arg s) args)
     | Some g' -> assert (args = []); g'.it (* We do not support higher-order substitutions yet *)
     )
-  | NatG _ | TextG _ -> g.it
+  | NumG _ | TextG _ -> g.it
   | EpsG -> EpsG
   | SeqG gs -> SeqG (subst_nl_list subst_sym s gs)
   | AltG gs -> AltG (subst_nl_list subst_sym s gs)

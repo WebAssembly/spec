@@ -1,12 +1,13 @@
 open Util.Source
+open Xl
 
 
 (* Terminals *)
 
-type nat = Z.t
+type num = Num.num
 type text = string
 type id = string phrase
-type atom = El.Atom.atom
+type atom = Atom.atom
 type mixop = Mixop.mixop
 
 
@@ -21,11 +22,7 @@ type iter =
 
 (* Types *)
 
-and numtyp =
-  | NatT                         (* `nat` *)
-  | IntT                         (* `int` *)
-  | RatT                         (* `rat` *)
-  | RealT                        (* `real` *)
+and numtyp = Num.typ
 
 and typ = typ' phrase
 and typ' =
@@ -49,37 +46,25 @@ and typcase = mixop * (bind list * typ * prem list) * hint list  (* variant case
 (* Expressions *)
 
 and unop =
-  | NotOp             (* `~` *)
-  | PlusOp of numtyp  (* `+` *)
-  | MinusOp of numtyp (* `-` *)
+  | BoolUnop of Bool.unop
+  | NumUnop of Num.unop * numtyp
   | PlusMinusOp of numtyp (* `+-` *)
   | MinusPlusOp of numtyp (* `-+` *)
 
 and binop =
-  | AndOp            (* `/\` *)
-  | OrOp             (* `\/` *)
-  | ImplOp           (* `=>` *)
-  | EquivOp          (* `<=>` *)
-  | AddOp of numtyp  (* `+` *)
-  | SubOp of numtyp  (* `-` *)
-  | MulOp of numtyp  (* `*` *)
-  | DivOp of numtyp  (* `/` *)
-  | ModOp of numtyp  (* `\` *)
-  | ExpOp of numtyp  (* `^` *)
+  | BoolBinop of Bool.binop
+  | NumBinop of Num.binop * numtyp
 
 and cmpop =
   | EqOp             (* `=` *)
   | NeOp             (* `=/=` *)
-  | LtOp of numtyp   (* `<` *)
-  | GtOp of numtyp   (* `>` *)
-  | LeOp of numtyp   (* `<=` *)
-  | GeOp of numtyp   (* `>=` *)
+  | NumCmpop of Num.cmpop * numtyp
 
 and exp = (exp', typ) note_phrase
 and exp' =
   | VarE of id                   (* varid *)
   | BoolE of bool                (* bool *)
-  | NatE of nat                  (* nat *)
+  | NumE of num                  (* num *)
   | TextE of text                (* text *)
   | UnE of unop * exp            (* unop exp *)
   | BinE of binop * exp * exp    (* exp binop exp *)
@@ -103,6 +88,7 @@ and exp' =
   | ExtE of exp * path * exp     (* exp[path =.. exp] *)
   | CallE of id * arg list       (* defid( arg* ) *)
   | IterE of exp * iterexp       (* exp iter *)
+  | CvtE of exp * numtyp * numtyp (* exp : typ1 <:> typ2 *)
   | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
 
 and expfield = atom * exp        (* atom exp *)
@@ -122,7 +108,7 @@ and iterexp = iter * (id * exp) list
 and sym = sym' phrase
 and sym' =
   | VarG of id * arg list                    (* gramid (`(` arg,* `)`)? *)
-  | NatG of int                              (* nat *)
+  | NumG of int                              (* num *)
   | TextG of string                          (* `"`text`"` *)
   | EpsG                                     (* `eps` *)
   | SeqG of sym list                         (* sym sym *)

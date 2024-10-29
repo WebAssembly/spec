@@ -4,10 +4,6 @@
 
 ;; General variable conventions
 
-var i : nat
-var j : nat
-var k : nat
-
 syntax N hint(macro none) = nat  ;; hack
 syntax M hint(macro none) = nat  ;; hack
 syntax K hint(macro none) = nat  ;; hack

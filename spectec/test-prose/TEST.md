@@ -1286,7 +1286,7 @@ watsup 0.4 generator
 ............
 
 
-1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{n}})})`.
+1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{e}})})`.
 
 
 :math:`{+1}`
@@ -3314,8 +3314,8 @@ signed_ N i
 3. Assert: Due to validation, (i < (2 ^ N)).
 4. Return (i - (2 ^ N)).
 
-invsigned_ N ii
-1. Let j be $signed__1^-1(N, ii).
+invsigned_ N i
+1. Let j be $signed__1^-1(N, i).
 2. Return j.
 
 unop_ valtype_u1 unop__u0 val__u3
@@ -6559,7 +6559,7 @@ watsup 0.4 generator
 ............
 
 
-1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{n}})})`.
+1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{e}})})`.
 
 
 :math:`{+1}`
@@ -16759,7 +16759,7 @@ watsup 0.4 generator
 ............
 
 
-1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{n}})})`.
+1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{e}})})`.
 
 
 :math:`{+1}`
@@ -19280,7 +19280,7 @@ watsup 0.4 generator
 .......................................
 
 
-1. Return :math:`i_1 - i_2 + {2^{N}} \mathbin{\mathrm{mod}} {2^{N}}`.
+1. Return :math:`{2^{N}} + i_1 - i_2 \mathbin{\mathrm{mod}} {2^{N}}`.
 
 
 :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`
@@ -19327,7 +19327,7 @@ watsup 0.4 generator
 ..................................
 
 
-1. Return `$bool((i_1 != 0))`.
+1. Return `$bool((i_1 =/= 0))`.
 
 
 :math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`
@@ -19341,7 +19341,7 @@ watsup 0.4 generator
 ......................................
 
 
-1. Return `$bool((i_1 != i_2))`.
+1. Return `$bool((i_1 =/= i_2))`.
 
 
 :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}}}{(i_1, i_2)}`
@@ -19376,11 +19376,11 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{u}`, then:
 
-   a. Return `$bool((i_1 ≤ i_2))`.
+   a. Return `$bool((i_1 <= i_2))`.
 
 #. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{s}`.
 
-#. Return `$bool(($signed_(N, i_1) ≤ $signed_(N, i_2)))`.
+#. Return `$bool(($signed_(N, i_1) <= $signed_(N, i_2)))`.
 
 
 :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}}}{(i_1, i_2)}`
@@ -19389,11 +19389,11 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{u}`, then:
 
-   a. Return `$bool((i_1 ≥ i_2))`.
+   a. Return `$bool((i_1 >= i_2))`.
 
 #. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{s}`.
 
-#. Return `$bool(($signed_(N, i_1) ≥ $signed_(N, i_2)))`.
+#. Return `$bool(($signed_(N, i_1) >= $signed_(N, i_2)))`.
 
 
 :math:`{{\mathrm{pack}}}_{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}(c)`
@@ -25823,7 +25823,7 @@ iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
 
 isub_ N i_1 i_2
-1. Return (((i_1 - i_2) + (2 ^ N)) \ (2 ^ N)).
+1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
 
 imul_ N i_1 i_2
 1. Return ((i_1 · i_2) \ (2 ^ N)).

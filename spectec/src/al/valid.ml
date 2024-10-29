@@ -2,12 +2,11 @@ open Util
 open Source
 open Il.Ast
 open Ast
+open Xl
 open Al_util
 open Print
 open Free
 
-
-module Atom = El.Atom
 module IlEval = Il.Eval
 
 (* Error *)
@@ -421,7 +420,7 @@ let check_case source exprs typ =
   | _ -> error_case source typ
 
 let find_case source cases op =
-  match List.find_opt (fun (op', _, _) -> Il.Mixop.eq op' op) cases with
+  match List.find_opt (fun (op', _, _) -> Mixop.eq op' op) cases with
   | Some (_op, x, _hints) -> x
   | None -> error_valid "unknown case" source (string_of_mixop op)
 
@@ -479,27 +478,30 @@ and valid_expr env (expr: expr) : unit =
   | NumE _ -> check_num source expr.note;
   | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | ContextKindE _ ->
     check_bool source expr.note;
-  | UnE (NotOp, expr') ->
+  | CvtE (expr', _, _) ->
+    check_num source expr.note;
+    check_num source expr'.note;
+  | UnE (BoolUnop _, expr') ->
     valid_expr env expr';
     check_bool source expr.note;
     check_bool source expr'.note;
-  | UnE (MinusOp, expr') ->
+  | UnE (NumUnop _, expr') ->
     valid_expr env expr';
     check_num source expr.note;
     check_num source expr'.note;
-  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
+  | BinE (NumBinop _, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_num source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE ((LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+  | BinE (NumCmpop _, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE ((ImplOp|EquivOp|AndOp|OrOp), expr1, expr2) ->
+  | BinE (BoolBinop _, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
@@ -557,7 +559,7 @@ and valid_expr env (expr: expr) : unit =
       let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
         let atom = mixop |> List.hd |> List.hd in
         match atom.it with
-        | El.Atom.Atom s -> Some s
+        | Atom.Atom s -> Some s
         | _ -> None
       ) (get_typcases source evalctxT) in
       List.mem id evalctx_ids

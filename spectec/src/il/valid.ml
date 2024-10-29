@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Xl
 open Print
 
 
@@ -105,18 +106,30 @@ let sub_typ env t1 t2 at =
 
 (* Operators *)
 
-let infer_unop = function
-  | NotOp -> BoolT, BoolT
-  | PlusOp t | MinusOp t | PlusMinusOp t | MinusPlusOp t -> NumT t, NumT t
+let infer_unop at = function
+  | BoolUnop _ -> BoolT, BoolT
+  | PlusMinusOp t | MinusPlusOp t -> NumT t, NumT t
+  | NumUnop (op, t) ->
+    if not (Num.typ_unop op t t) then
+      error at ("illegal type " ^ string_of_numtyp t ^ " for unary operator");
+    NumT t, NumT t
 
-let infer_binop = function
-  | AndOp | OrOp | ImplOp | EquivOp -> BoolT, BoolT, BoolT
-  | AddOp t | SubOp t | MulOp t | DivOp t | ModOp t -> NumT t, NumT t, NumT t
-  | ExpOp t -> NumT t, NumT NatT, NumT t
+let infer_binop at = function
+  | BoolBinop _ -> BoolT, BoolT, BoolT
+  | NumBinop (op, t) ->
+    let open Num in
+    let t1, t2, t3 =
+      match op with
+      | AddOp | SubOp | MulOp | DivOp | ModOp -> t, t, t
+      | PowOp -> t, NatT, t
+    in
+    if not (Num.typ_binop op t1 t2 t3) then
+      error at ("illegal type " ^ string_of_numtyp t ^ " for unary operator");
+    NumT t1, NumT t2, NumT t3
 
-let infer_cmpop = function
+let infer_cmpop _at = function
   | EqOp | NeOp -> None
-  | LtOp t | GtOp t | LeOp t | GeOp t -> Some (NumT t)
+  | NumCmpop (_, t) -> Some (NumT t)
 
 
 (* Atom Bindings *)
@@ -146,9 +159,9 @@ let rec valid_iter ?(side = `Rhs) env iter : Env.t =
   match iter with
   | Opt | List | List1 -> env
   | ListN (e, id_opt) ->
-    valid_exp ~side env e (NumT NatT $ e.at);
+    valid_exp ~side env e (NumT Num.NatT $ e.at);
     Option.fold id_opt ~none:env ~some:(fun id ->
-      Env.bind_var env id (NumT NatT $ e.at)
+      Env.bind_var env id (NumT Num.NatT $ e.at)
     )
 
 
@@ -237,10 +250,10 @@ and infer_exp (env : Env.t) e : typ =
   match e.it with
   | VarE id -> Env.find_var env id
   | BoolE _ -> BoolT $ e.at
-  | NatE _ | LenE _ -> NumT NatT $ e.at
+  | NumE n -> NumT (Num.to_typ n) $ e.at
   | TextE _ -> TextT $ e.at
-  | UnE (op, _) -> let _t1, t' = infer_unop op in t' $ e.at
-  | BinE (op, _, _) -> let _t1, _t2, t' = infer_binop op in t' $ e.at
+  | UnE (op, _) -> let _t1, t' = infer_unop e.at op in t' $ e.at
+  | BinE (op, _, _) -> let _t1, _t2, t' = infer_binop e.at op in t' $ e.at
   | CmpE _ | MemE _ -> BoolT $ e.at
   | IdxE (e1, _) -> as_list_typ "expression" env Infer (infer_exp env e1) e1.at
   | SliceE (e1, _, _)
@@ -287,6 +300,7 @@ and infer_exp (env : Env.t) e : typ =
       else
         error e.at "cannot infer type of list"
     )
+  | LenE _ -> NumT Num.NatT $ e.at
   | CatE (e1, e2) ->
     let t1 = infer_exp env e1 in
     let t2 = infer_exp env e2 in
@@ -295,7 +309,8 @@ and infer_exp (env : Env.t) e : typ =
     else
       error e.at "cannot infer type of concatenation"
   | CaseE _ -> e.note (* error e.at "cannot infer type of case constructor" *)
-  | SubE _ -> error e.at "cannot infer type of subsumption"
+  | CvtE (_, _, t2) -> NumT t2 $ e.at
+  | SubE (_, _, t2) -> t2
 
 
 and valid_exp ?(side = `Rhs) env e t =
@@ -309,27 +324,27 @@ try
   | VarE id ->
     let t' = Env.find_var env id in
     equiv_typ env t' t e.at
-  | BoolE _ | NatE _ | TextE _ ->
+  | BoolE _ | NumE _ | TextE _ ->
     let t' = infer_exp env e in
     equiv_typ env t' t e.at
   | UnE (op, e1) ->
-    let t1, t' = infer_unop op in
+    let t1, t' = infer_unop e.at op in
     valid_exp ~side env e1 (t1 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-  | BinE ((AddOp _ | SubOp _) as op, e1, ({it = NatE _; _} as e2))
-  | BinE ((AddOp _ | SubOp _) as op, ({it = NatE _; _} as e1), e2) when side = `Lhs ->
-    let t1, t2, t' = infer_binop op in
+  | BinE (NumBinop (Num.(AddOp | SubOp), _) as op, e1, ({it = NumE (Num.Nat _); _} as e2))
+  | BinE (NumBinop (Num.(AddOp | SubOp), _) as op, ({it = NumE (Num.Nat _); _} as e1), e2) when side = `Lhs ->
+    let t1, t2, t' = infer_binop e.at op in
     valid_exp ~side env e1 (t1 $ e.at);
     valid_exp ~side env e2 (t2 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
   | BinE (op, e1, e2) ->
-    let t1, t2, t' = infer_binop op in
+    let t1, t2, t' = infer_binop e.at op in
     valid_exp env e1 (t1 $ e.at);
     valid_exp env e2 (t2 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
   | CmpE (op, e1, e2) ->
     let t' =
-      match infer_cmpop op with
+      match infer_cmpop e.at op with
       | Some t' -> t' $ e.at
       | None -> try infer_exp env e1 with _ -> infer_exp env e2
     in
@@ -341,13 +356,13 @@ try
     let t1 = infer_exp env e1 in
     let t' = as_list_typ "expression" env Infer t1 e1.at in
     valid_exp env e1 t1;
-    valid_exp env e2 (NumT NatT $ e2.at);
+    valid_exp env e2 (NumT Num.NatT $ e2.at);
     equiv_typ env t' t e.at
   | SliceE (e1, e2, e3) ->
     let _typ' = as_list_typ "expression" env Check t e1.at in
     valid_exp env e1 t;
-    valid_exp env e2 (NumT NatT $ e2.at);
-    valid_exp env e3 (NumT NatT $ e3.at)
+    valid_exp env e2 (NumT Num.NatT $ e2.at);
+    valid_exp env e3 (NumT Num.NatT $ e3.at)
   | UpdE (e1, p, e2) ->
     valid_exp env e1 t;
     let t2 = valid_path env p t in
@@ -379,7 +394,7 @@ try
     let t1 = infer_exp env e1 in
     let _typ11 = as_list_typ "expression" env Infer t1 e1.at in
     valid_exp env e1 t1;
-    equiv_typ env (NumT NatT $ e.at) t e.at
+    equiv_typ env (NumT Num.NatT $ e.at) t e.at
   | TupE es ->
     let ets = as_tup_typ "tuple" env Check t e.at in
     if List.length es <> List.length ets then
@@ -434,6 +449,9 @@ try
     let cases = as_variant_typ "case" env Check t e.at in
     let _binds, t1, _prems = find_case cases op e1.at in
     valid_exp ~side env e1 t1
+  | CvtE (e1, nt1, nt2) ->
+    valid_exp ~side env e1 (NumT nt1 $ e1.at);
+    equiv_typ env (NumT nt2 $e.at) t e.at;
   | SubE (e1, t1, t2) ->
     valid_typ env t1;
     valid_typ env t2;
@@ -478,12 +496,12 @@ and valid_path env p t : typ =
     | RootP -> t
     | IdxP (p1, e1) ->
       let t1 = valid_path env p1 t in
-      valid_exp env e1 (NumT NatT $ e1.at);
+      valid_exp env e1 (NumT Num.NatT $ e1.at);
       as_list_typ "path" env Check t1 p1.at
     | SliceP (p1, e1, e2) ->
       let t1 = valid_path env p1 t in
-      valid_exp env e1 (NumT NatT $ e1.at);
-      valid_exp env e2 (NumT NatT $ e2.at);
+      valid_exp env e1 (NumT Num.NatT $ e1.at);
+      valid_exp env e2 (NumT Num.NatT $ e2.at);
       let _ = as_list_typ "path" env Check t1 p1.at in
       t1
     | DotP (p1, atom) ->
@@ -517,10 +535,10 @@ and valid_sym env g : typ =
     let ps, t, _ = Env.find_gram env id in
     let s = valid_args env as_ ps Subst.empty g.at in
     Subst.subst_typ s t
-  | NatG n ->
+  | NumG n ->
     if n < 0x00 || n > 0xff then
       error g.at "byte value out of range";
-    NumT NatT $ g.at
+    NumT Num.NatT $ g.at
   | TextG _ -> TextT $ g.at
   | EpsG -> TupT [] $ g.at
   | SeqG gs ->
@@ -532,8 +550,8 @@ and valid_sym env g : typ =
   | RangeG (g1, g2) ->
     let t1 = valid_sym env g1 in
     let t2 = valid_sym env g2 in
-    equiv_typ env t1 (NumT NatT $ g1.at) g.at;
-    equiv_typ env t2 (NumT NatT $ g2.at) g.at;
+    equiv_typ env t1 (NumT Num.NatT $ g1.at) g.at;
+    equiv_typ env t2 (NumT Num.NatT $ g2.at) g.at;
     TupT [] $ g.at
   | IterG (g1, iterexp) ->
     let iter, env' = valid_iterexp ~side:`Lhs env iterexp g.at in

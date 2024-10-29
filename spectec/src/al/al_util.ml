@@ -1,4 +1,5 @@
 open Ast
+open Xl
 open Util
 open Source
 
@@ -44,6 +45,8 @@ let mk_expr at note it = it $$ at % note
 let varE ?(at = no) ~note id = VarE id |> mk_expr at note
 let boolE ?(at = no) ~note b = BoolE b |> mk_expr at note
 let numE ?(at = no) ~note i = NumE i |> mk_expr at note
+let natE ?(at = no) ~note i = NumE (Num.Nat i) |> mk_expr at note
+let cvtE ?(at = no) ~note (e, nt1, nt2) = CvtE (e, nt1, nt2) |> mk_expr at note
 let unE ?(at = no) ~note (unop, e) = UnE (unop, e) |> mk_expr at note
 let binE ?(at = no) ~note (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at note
 let accE ?(at = no) ~note (e, p) = AccE (e, p) |> mk_expr at note
@@ -81,8 +84,10 @@ let idxP ?(at = no) e = IdxP e |> mk_path at
 let sliceP ?(at = no) (e1, e2) = SliceP (e1, e2) |> mk_path at
 let dotP ?(at = no) a = DotP a |> mk_path at
 
-let numV i = NumV i
-let numV_of_int i = Z.of_int i |> numV
+let numV n = NumV n
+let natV i = assert (i >= Z.zero); NumV (Num.Nat i)
+let intV i = NumV (Num.Int i)
+let natV_of_int i = Z.of_int i |> natV
 let boolV b = BoolV b
 let strV r = StrV r
 let caseV (s, vl) = CaseV (s, vl)
@@ -93,8 +98,8 @@ let tupV vl = TupV vl
 let nullary s = CaseV (String.uppercase_ascii s, [])
 let listV a = ListV (ref a)
 let listV_of_list l = Array.of_list l |> listV
-let zero = numV Z.zero
-let one = numV Z.one
+let zero = natV Z.zero
+let one = natV Z.one
 let empty_list = listV [||]
 let singleton v = listV [|v|]
 let iter_var ?(at = no) x iter t =
@@ -212,11 +217,21 @@ let unwrap_textv: value -> string = function
   | TextV str -> str
   | v -> fail_value "unwrap_textv" v
 
-let unwrap_numv: value -> Z.t = function
-  | NumV i -> i
+let unwrap_numv: value -> Num.num = function
+  | NumV n -> n
   | v -> fail_value "unwrap_numv" v
 
-let unwrap_numv_to_int (v: value): int = unwrap_numv v |> Z.to_int
+let unwrap_natv v =
+  match unwrap_numv v with
+  | Num.Nat n -> assert (n >= Z.zero); n
+  | n -> fail_value "unwrap_natv" (NumV n)
+
+let unwrap_intv v =
+  match unwrap_numv v with
+  | Num.Int i -> i
+  | n -> fail_value "unwrap_natv" (NumV n)
+
+let unwrap_natv_to_int (v: value): int = unwrap_natv v |> Z.to_int
 
 let unwrap_boolv: value -> bool = function
   | BoolV b -> b
@@ -262,12 +277,12 @@ let unwrap_framev: value -> value = function
 
 (* Mixop *)
 
-let atom_of_name name typ = El.Atom.Atom name $$ no_region % (El.Atom.info typ)
-let atom_of_atom' atom' typ = atom' $$ no_region % (El.Atom.info typ)
+let atom_of_name name typ = Atom.Atom name $$ no_region % (Atom.info typ)
+let atom_of_atom' atom' typ = atom' $$ no_region % (Atom.info typ)
 
 let frame_atom = atom_of_name "FRAME_" "evalctx"
 let frameE ?(at = no) ~note (arity, e) =
-  let frame_mixop = [[frame_atom]; [atom_of_atom' El.Atom.LBrace "evalctx"]; [atom_of_atom' El.Atom.RBrace "evalctx"]] in
+  let frame_mixop = [[frame_atom]; [atom_of_atom' Atom.LBrace "evalctx"]; [atom_of_atom' Atom.RBrace "evalctx"]] in
   caseE (frame_mixop, [arity; e]) ~at:at ~note:note
 
 
@@ -276,7 +291,7 @@ let get_atom op =
   | Some al -> Some(List.hd al)
   | None -> None
 
-let name_of_mixop = Il.Mixop.name
+let name_of_mixop = Mixop.name
 
 (* Il Types *)
 
@@ -287,7 +302,7 @@ let iterT ty iter = Il.Ast.IterT (ty, iter) $ no_region
 let listT ty = iterT ty Il.Ast.List
 let listnT ty n = Il.Ast.IterT (ty, Il.Ast.ListN (n, None)) $ no_region
 let boolT = Il.Ast.BoolT $ no_region
-let natT = Il.Ast.NumT Il.Ast.NatT $ no_region
+let natT = Il.Ast.NumT Num.NatT $ no_region
 let topT = varT "TOP" []
 let valT = varT "val" []
 let frameT = varT "frame" []

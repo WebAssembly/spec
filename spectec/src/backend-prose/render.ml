@@ -1,3 +1,4 @@
+open Xl
 open Prose
 open Printf
 open Util.Source
@@ -98,16 +99,11 @@ let al_invcalle_to_al_bine e id nl al =
 let (let*) = Option.bind
 
 let al_to_el_unop = function
-  | Al.Ast.MinusOp -> Some El.Ast.MinusOp
+  | Al.Ast.NumUnop op -> Some (El.Ast.NumUnop op)
   | _ -> None
 
 let al_to_el_binop = function
-  | Al.Ast.AddOp -> Some El.Ast.AddOp
-  | Al.Ast.SubOp -> Some El.Ast.SubOp
-  | Al.Ast.MulOp -> Some El.Ast.MulOp
-  | Al.Ast.DivOp -> Some El.Ast.DivOp
-  | Al.Ast.ModOp -> Some El.Ast.ModOp
-  | Al.Ast.ExpOp -> Some El.Ast.ExpOp
+  | Al.Ast.NumBinop op -> Some (El.Ast.NumBinop op)
   | _ -> None
 
 let rec al_to_el_iter iter = match iter with
@@ -160,9 +156,12 @@ and al_to_el_args args =
 and al_to_el_expr expr =
   let exp' =
     match expr.it with
-    | Al.Ast.NumE i ->
-      let eli = El.Ast.NatE (El.Ast.DecOp, i) in
+    | Al.Ast.NumE n ->
+      let eli = El.Ast.NumE (El.Ast.DecOp, n) in
       Some eli
+    | Al.Ast.CvtE (e, _, nt2) ->
+      let* ele = al_to_el_expr e in
+      Some (El.Ast.CvtE (ele, nt2))
     | Al.Ast.UnE (op, e) ->
       let* elop = al_to_el_unop op in
       let* ele = al_to_el_expr e in
@@ -295,26 +294,27 @@ let render_prose_cmpop = function
   | Ge -> "greater than or equal to"
 
 let render_al_unop = function
-  | Al.Ast.NotOp -> "not"
-  | Al.Ast.MinusOp -> "minus"
+  | Al.Ast.BoolUnop Bool.NotOp -> "not"
+  | Al.Ast.NumUnop Num.PlusOp -> "plus"
+  | Al.Ast.NumUnop Num.MinusOp -> "minus"
 
 let render_al_binop = function
-  | Al.Ast.AndOp -> "and"
-  | Al.Ast.OrOp -> "or"
-  | Al.Ast.ImplOp -> "implies"
-  | Al.Ast.EquivOp -> "is equivalent to"
-  | Al.Ast.AddOp -> "plus"
-  | Al.Ast.SubOp -> "minus"
-  | Al.Ast.MulOp -> "multiplied by"
-  | Al.Ast.DivOp -> "divided by"
-  | Al.Ast.ModOp -> "modulo"
-  | Al.Ast.ExpOp -> "to the power of"
+  | Al.Ast.BoolBinop Bool.AndOp -> "and"
+  | Al.Ast.BoolBinop Bool.OrOp -> "or"
+  | Al.Ast.BoolBinop Bool.ImplOp -> "implies"
+  | Al.Ast.BoolBinop Bool.EquivOp -> "is equivalent to"
+  | Al.Ast.NumBinop Num.AddOp -> "plus"
+  | Al.Ast.NumBinop Num.SubOp -> "minus"
+  | Al.Ast.NumBinop Num.MulOp -> "multiplied by"
+  | Al.Ast.NumBinop Num.DivOp -> "divided by"
+  | Al.Ast.NumBinop Num.ModOp -> "modulo"
+  | Al.Ast.NumBinop Num.PowOp -> "to the power of"
+  | Al.Ast.NumCmpop Num.LtOp -> "is less than"
+  | Al.Ast.NumCmpop Num.GtOp -> "is greater than"
+  | Al.Ast.NumCmpop Num.LeOp -> "is less than or equal to"
+  | Al.Ast.NumCmpop Num.GeOp -> "is greater than or equal to"
   | Al.Ast.EqOp -> "is"
   | Al.Ast.NeOp -> "is not"
-  | Al.Ast.LtOp -> "is less than"
-  | Al.Ast.GtOp -> "is greater than"
-  | Al.Ast.LeOp -> "is less than or equal to"
-  | Al.Ast.GeOp -> "is greater than or equal to"
 
 (* Names *)
 
@@ -349,17 +349,18 @@ let rec render_expr env expr = match al_to_el_expr expr with
 and render_expr' env expr =
   match expr.it with
   | Al.Ast.BoolE b -> string_of_bool b
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
+  | Al.Ast.CvtE (e, _, _) -> render_expr' env e
+  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
     let se = render_expr env e in
     let sa = render_atom env a in
     sprintf "%s is not of the case %s" se sa
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
+  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not defined" se
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
+  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.IsValidE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not valid" se
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
+  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s does not match %s" se1 se2
@@ -674,9 +675,9 @@ let render_atom_title env name params =
      that are defined as LABEL_ or FRAME_ in the dsl *)
   let name' =
     match name.it with
-    | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
-    | El.Atom.Atom "frame" -> El.Atom.Atom "FRAME_"
-    | El.Atom.Atom s -> El.Atom.Atom (String.uppercase_ascii s)
+    | Atom.Atom "label" -> Atom.Atom "LABEL_"
+    | Atom.Atom "frame" -> Atom.Atom "FRAME_"
+    | Atom.Atom s -> Atom.Atom (String.uppercase_ascii s)
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in

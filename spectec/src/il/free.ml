@@ -124,7 +124,7 @@ and free_typcase (_, (bs, t, prems), _) =
 and free_exp e =
   match e.it with
   | VarE id -> free_varid id
-  | BoolE _ | NatE _ | TextE _ -> empty
+  | BoolE _ | NumE _ | TextE _ -> empty
   | UnE (_, e1) | LenE e1 | ProjE (e1, _) | TheE e1 | DotE (e1, _) -> free_exp e1
   | BinE (_, e1, e2) | CmpE (_, e1, e2)
   | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) -> free_exp e1 + free_exp e2
@@ -136,6 +136,7 @@ and free_exp e =
   | CaseE (_, e1) | UncaseE (e1, _) -> free_exp e1
   | CallE (id, as1) -> free_defid id + free_args as1
   | IterE (e1, iter) -> (free_exp e1 - bound_iterexp iter) + free_iterexp iter
+  | CvtE (e1, _nt1, _nt2) -> free_exp e1
   | SubE (e1, t1, t2) -> free_exp e1 + free_typ t1 + free_typ t2
 
 and free_expfield (_, e) = free_exp e
@@ -159,7 +160,7 @@ and bound_iterexp (iter, xes) =
 and free_sym g =
   match g.it with
   | VarG (id, as_) -> free_gramid id + free_args as_
-  | NatG _ | TextG _ | EpsG -> empty
+  | NumG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_list free_sym gs
   | RangeG (g1, g2) -> free_sym g1 + free_sym g2
   | IterG (g1, iter) -> (free_sym g1 - bound_iterexp iter) + free_iterexp iter

@@ -1,4 +1,5 @@
 open Al
+open Xl
 open Ast
 open Util
 open Source
@@ -10,7 +11,7 @@ let rec merge_pop_assert' instrs =
     ({ it = PopI e2; _ } as i2) ::
     ({ it = AssertI ({ it = BinE (EqOp, e31, e32); _ }); _ } as i3) :: il ->
       (match e2.it, e32.it with
-      | CaseE ([{ it = El.Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_), VarE _
+      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_), VarE _
       when Eq.eq_expr e31 hd ->
         let e1 = { e1 with it = TopValueE (Some e32) } in
         let i1 = { i1 with it = AssertI e1 } in
@@ -21,7 +22,7 @@ let rec merge_pop_assert' instrs =
     | ({ it = AssertI ({ it = TopValueE None; _ } as e1); _ } as i1) ::
     ({ it = PopI e2; _ } as i2) :: il ->
       (match e2.it with
-      | CaseE ([{ it = El.Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_tl) ->
+      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_tl) ->
         let e1 = { e1 with it = TopValueE (Some hd) } in
         let i1 = { i1 with it = AssertI e1 } in
         merge_helper (i2 :: i1 :: acc) il

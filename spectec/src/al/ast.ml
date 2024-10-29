@@ -1,13 +1,15 @@
 open Util.Source
+open Xl
 
 (* Terminals *)
 
-type atom = El.Atom.atom
-type mixop = Il.Ast.mixop
+type atom = Atom.atom
+type mixop = Mixop.mixop
 
 (* Types *)
 
 (* TODO: define AL type *)
+type numtyp = Num.typ
 type typ = Il.Ast.typ
 
 (* Identifiers *)
@@ -27,7 +29,7 @@ type ('a, 'b) record = ('a * 'b ref) list
 and store = (atom, value) record
 
 and value =
-  | NumV of Z.t                        (* number *)
+  | NumV of Num.num                    (* number *)
   | BoolV of bool                      (* boolean *)
   | TextV of string                    (* string *)
   | ListV of value growable_array      (* list of values *)
@@ -44,28 +46,14 @@ type extend_dir =                      (* direction of extension *)
 (* Operators *)
 
 type unop =
-  | NotOp    (* `~` *)
-  | MinusOp  (* `-` *)
+  | BoolUnop of Bool.unop
+  | NumUnop of Num.unop
 
 type binop =
-  (* arithmetic operation *)
-  | AddOp    (* `+` *)
-  | SubOp    (* `-` *)
-  | MulOp    (* `*` *)
-  | DivOp    (* `/` *)
-  | ModOp    (* `\` *)
-  | ExpOp    (* `^` *)
-  (* logical operation *)
-  | ImplOp   (* `=>` *)
-  | EquivOp  (* `<=>` *)
-  | AndOp    (* `/\` *)
-  | OrOp     (* `\/` *)
-  | EqOp     (* `=` *)
-  | NeOp     (* `=/=` *)
-  | LtOp     (* `<` *)
-  | GtOp     (* `>` *)
-  | LeOp     (* `<=` *)
-  | GeOp     (* `>=` *)
+  | BoolBinop of Bool.binop
+  | NumBinop of Num.binop
+  | NumCmpop of Num.cmpop
+  | EqOp | NeOp
 
 (* Iteration *)
 
@@ -80,8 +68,9 @@ type iter =
 and expr = (expr', Il.Ast.typ) note_phrase
 and expr' =
   | VarE of id                                    (* varid *)
-  | NumE of Z.t                                   (* number *)
+  | NumE of Num.num                               (* number *)
   | BoolE of bool                                 (* boolean *)
+  | CvtE of expr * numtyp * numtyp                (* conversion *)
   | UnE of unop * expr                            (* unop expr *)
   | BinE of binop * expr * expr                   (* expr binop expr *)
   | AccE of expr * path                           (* expr `[` path `]` *)

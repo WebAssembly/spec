@@ -9,8 +9,9 @@ let rec transform_expr f e =
     match e.it with
     | VarE _
     | BoolE _
-    | NatE _
+    | NumE _
     | TextE _ -> e.it
+    | CvtE (e1, nt1, nt2) -> CvtE (new_ e1, nt1, nt2)
     | UnE (op, e1) -> UnE (op, new_ e1)
     | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
     | CmpE (op, e1, e2) -> CmpE (op, new_ e1, new_ e2)

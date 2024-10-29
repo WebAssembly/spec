@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Xl
 
 let error at msg = Error.error at "syntax" msg
 
@@ -41,10 +42,10 @@ let arg_of_exp e =
 let typ_of_varid id =
     (match id.it with
     | "bool" -> BoolT
-    | "nat" -> NumT NatT
-    | "int" -> NumT IntT
-    | "rat" -> NumT RatT
-    | "real" -> NumT RealT
+    | "nat" -> NumT Num.NatT
+    | "int" -> NumT Num.IntT
+    | "rat" -> NumT Num.RatT
+    | "real" -> NumT Num.RealT
     | "text" -> TextT
     | _ -> VarT (id, [])
     ) $ id.at
@@ -53,10 +54,10 @@ let rec varid_of_typ t =
   (match t.it with
   | VarT (id, _) -> id.it
   | BoolT -> "bool"
-  | NumT NatT -> "nat"
-  | NumT IntT -> "int"
-  | NumT RatT -> "rat"
-  | NumT RealT -> "real"
+  | NumT Num.NatT -> "nat"
+  | NumT Num.IntT -> "int"
+  | NumT Num.RatT -> "rat"
+  | NumT Num.RealT -> "real"
   | TextT -> "text"
   | ParenT t1 -> (varid_of_typ t1).it
   | _ -> "_"
@@ -152,7 +153,7 @@ let rec sym_of_exp e =
   (match e.it with
   | VarE (id, args) -> VarG (id, args)
   | AtomE {it = Atom id; _} -> VarG (id $ e.at, [])  (* for uppercase grammar ids in show hints *)
-  | NatE (op, n) -> NatG (op, n)
+  | NumE (op, Num.Nat n) -> NumG (op, n)
   | TextE s -> TextG s
   | EpsE -> EpsG
   | SeqE es -> SeqG (List.map (fun e -> Elem (sym_of_exp e)) es)
@@ -169,7 +170,7 @@ let rec sym_of_exp e =
 let rec exp_of_sym g =
   (match g.it with
   | VarG (id, args) -> VarE (id, args)
-  | NatG (op, n) -> NatE (op, n)
+  | NumG (op, n) -> NumE (op, Num.Nat n)
   | TextG t -> TextE t
   | EpsG -> EpsE
   | SeqG gs -> SeqE (map_filter_nl_list exp_of_sym gs)

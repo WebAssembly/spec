@@ -128,7 +128,7 @@ let get_global_value module_name globalname =
 
   let index = get_export_addr globalname module_name in
   index
-  |> al_to_int
+  |> al_to_nat
   |> listv_nth (Store.access "GLOBALS")
   |> strv_access "VALUE"
   |> Array.make 1
@@ -322,9 +322,18 @@ let rec run_file path args =
     (* Check file extension *)
     match Filename.extension path with
     | ".wast" ->
-      path
-      |> parse_file path Parse.Script.parse_file
-      |> run_wast path
+      let (m1, n1), time1 =
+        path
+        |> parse_file path Parse.Script.parse_file
+        |> run_wast path
+      in
+      let (m2, n2), time2 =
+        match args with
+        | path' :: args' when Sys.file_exists path -> run_file  path' args'
+        | path' :: _ -> failwith ("file " ^ path' ^ " does not exist")
+        | [] -> pass, 0.0
+      in
+      (m1 + m2, n1 + n2), time1 +. time2
     | ".wat" ->
       path
       |> parse_file path Parse.Module.parse_file
@@ -334,8 +343,8 @@ let rec run_file path args =
       In_channel.with_open_bin path In_channel.input_all
       |> parse_file path (Decode.decode path)
       |> run_wasm args
-    | _ -> pass, 0.
-  with Decode.Code _ | Parse.Syntax _ -> pass, 0.
+    | _ -> pass, 0.0
+  with Decode.Code _ | Parse.Syntax _ -> pass, 0.0
 
 and run_dir path =
   path
@@ -358,4 +367,5 @@ let run = function
         print_endline ((string_of_int !num_parse_fail) ^ " parsing fail");
       print_runner_result "Total" result;
     )
-  | _ -> failwith "Cannot find file to run"
+  | path :: _ -> failwith ("file " ^ path ^ " does not exist")
+  | [] -> failwith "no file to run"

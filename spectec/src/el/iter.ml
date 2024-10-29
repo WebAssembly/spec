@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Xl
 
 module type Arg =
 sig
@@ -57,7 +58,7 @@ let nl_list f = list (nl_elem f)
 (* Identifiers, operators, literals *)
 
 let bool _b = ()
-let nat _n = ()
+let num _n = ()
 let text _s = ()
 
 let atom at = visit_atom at
@@ -122,9 +123,10 @@ and exp e =
   match e.it with
   | VarE (x, as_) -> varid x; args as_
   | BoolE b -> bool b
-  | NatE (op, n) -> natop op; nat n
+  | NumE (op, n) -> natop op; num n
   | TextE s -> text s
   | EpsE | HoleE _ | LatexE _ -> ()
+  | CvtE (e1, nt) -> exp e1; numtyp nt
   | UnE (op, e1) -> unop op; exp e1
   | LenE e1 | ArithE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
   | DotE (e1, at) -> exp e1; atom at
@@ -175,7 +177,7 @@ and sym g =
   visit_sym g;
   match g.it with
   | VarG (x, as_) -> gramid x; args as_
-  | NatG (op, n) -> natop op; nat n
+  | NumG (op, n) -> natop op; num (Num.Nat n)
   | TextG s -> text s
   | EpsG -> ()
   | SeqG gs | AltG gs -> nl_list sym gs
@@ -268,8 +270,9 @@ and clone_typcase (atom, (t, prs), hints) =
 and clone_exp e =
   (match e.it with
   | VarE (id, args) -> VarE (id, List.map clone_arg args)
-  | (BoolE _ | NatE _ | TextE _ | EpsE | SizeE _ | HoleE _) as e' -> e'
+  | (BoolE _ | NumE _ | TextE _ | EpsE | SizeE _ | HoleE _) as e' -> e'
   | AtomE atom -> AtomE (clone_atom atom)
+  | CvtE (e1, t) -> CvtE (clone_exp e1, t)
   | UnE (op, e1) -> UnE (op, clone_exp e1)
   | BinE (e1, op, e2) -> BinE (clone_exp e1, op, clone_exp e2)
   | CmpE (e1, op, e2) -> CmpE (clone_exp e1, op, clone_exp e2)

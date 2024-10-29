@@ -2,9 +2,8 @@ open Util
 open Source
 open El.Ast
 open El.Convert
+open Xl
 open Config
-
-module Atom = El.Atom
 
 
 (* Errors *)
@@ -639,12 +638,15 @@ and expand_exp env ctxt e =
   | AtomE atom ->
     let atom' = expand_atom env ctxt atom in
     AtomE atom'
-  | BoolE _ | NatE _ | TextE _ | EpsE ->
+  | BoolE _ | NumE _ | TextE _ | EpsE ->
     e.it
   | VarE (id, args) ->
     let id' = expand_id env ctxt id in
     let args' = List.map (expand_arg env ctxt) args in
     VarE (id', args')
+  | CvtE (e1, nt) ->
+    let e1' = expand_exp env ctxt e1 in
+    CvtE (e1', nt)
   | UnE (op, e1) ->
     let e1' = expand_exp env ctxt e1 in
     UnE (op, e1')
@@ -1049,31 +1051,31 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
 (* Operators *)
 
 let render_unop = function
-  | NotOp -> "\\neg"
-  | PlusOp -> "+"
-  | MinusOp -> "-"
+  | BoolUnop Bool.NotOp -> "\\neg"
+  | NumUnop Num.PlusOp -> "+"
+  | NumUnop Num.MinusOp -> "-"
   | PlusMinusOp -> "\\pm"
   | MinusPlusOp -> "\\mp"
 
 let render_binop = function
-  | AndOp -> "\\land"
-  | OrOp -> "\\lor"
-  | ImplOp -> "\\Rightarrow"
-  | EquivOp -> "\\Leftrightarrow"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "\\cdot"
-  | DivOp -> "/"
-  | ModOp -> "\\mathbin{\\mathrm{mod}}"
-  | ExpOp -> assert false
+  | BoolBinop Bool.AndOp -> "\\land"
+  | BoolBinop Bool.OrOp -> "\\lor"
+  | BoolBinop Bool.ImplOp -> "\\Rightarrow"
+  | BoolBinop Bool.EquivOp -> "\\Leftrightarrow"
+  | NumBinop Num.AddOp -> "+"
+  | NumBinop Num.SubOp -> "-"
+  | NumBinop Num.MulOp -> "\\cdot"
+  | NumBinop Num.DivOp -> "/"
+  | NumBinop Num.ModOp -> "\\mathbin{\\mathrm{mod}}"
+  | NumBinop Num.PowOp -> assert false
 
 let render_cmpop = function
   | EqOp -> "="
   | NeOp -> "\\neq"
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "\\leq"
-  | GeOp -> "\\geq"
+  | NumCmpop Num.LtOp -> "<"
+  | NumCmpop Num.GtOp -> ">"
+  | NumCmpop Num.LeOp -> "\\leq"
+  | NumCmpop Num.GeOp -> "\\geq"
 
 let render_dots = function
   | Dots -> [Row [Col "\\dots"]]
@@ -1131,9 +1133,9 @@ and render_nottyp env t : table =
     render_typcon env tcon
   | RangeT tes ->
     render_nl_list env (`H, "~|~") render_typenum tes
-  | NumT NatT ->
+  | NumT Num.NatT ->
     [Row [Col "0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
-  | NumT IntT ->
+  | NumT Num.IntT ->
     [Row [Col "\\dots ~|~ {-2} ~|~ {-1} ~|~ 0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
   | _ ->
     [Row [Col (render_typ env t)]]
@@ -1186,27 +1188,29 @@ and render_exp env e =
     render_apply render_varid render_exp env env.show_typ env.macro_typ id args
   | BoolE b ->
     render_atom env (Atom.(Atom (string_of_bool b) $$ e.at % info "bool"))
-  | NatE (DecOp, n) -> Z.to_string n
-  | NatE (HexOp, n) ->
+  | NumE (DecOp, Num.Nat n) -> Z.to_string n
+  | NumE (HexOp, Num.Nat n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
-  | NatE (CharOp, n) ->
+  | NumE (CharOp, Num.Nat n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NatE (AtomOp, n) ->
+  | NumE (AtomOp, Num.Nat n) ->
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
+  | NumE _ -> assert false
   | TextE t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
+  | CvtE (e1, _) -> render_exp env e1
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
-  | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
+  | BinE (e1, NumBinop Num.PowOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
-  | BinE (({it = NatE (DecOp, _); _} as e1), MulOp,
+  | BinE (({it = NumE (DecOp, Num.Nat _); _} as e1), NumBinop Num.MulOp,
       ({it = VarE _ | CallE (_, []) | ParenE _; _ } as e2)) ->
     render_exp env e1 ^ " \\, " ^ render_exp env e2
   | BinE (e1, op, e2) ->
@@ -1420,20 +1424,20 @@ and render_sym env g : string =
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym
       env env.show_gram env.macro_gram id args
-  | NatG (DecOp, n) -> Z.to_string n
-  | NatG (HexOp, n) ->
+  | NumG (DecOp, n) -> Z.to_string n
+  | NumG (HexOp, n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
-  | NatG (CharOp, n) ->
+  | NumG (CharOp, n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
+  | NumG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | EpsG -> "\\epsilon"
   | SeqG gs -> render_sym_seq env gs

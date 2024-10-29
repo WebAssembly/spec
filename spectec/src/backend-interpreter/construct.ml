@@ -5,6 +5,7 @@ open Value
 open Al.Ast
 open Al.Al_util
 open Al.Print
+open Xl
 open Source
 open Util
 
@@ -53,15 +54,16 @@ let mask_mant layout = Z.(pred (shift_left one layout.mantissa))
 let mask_exp layout = Z.(mask_mag layout - mask_mant layout)
 let bias layout = let em1 = layout.exponent - 1 in Z.((one + one)**em1 - one)
 
-let al_to_z: value -> Z.t = unwrap_numv
+let al_to_z_nat: value -> Z.t = unwrap_natv
+let al_to_z_int: value -> Z.t = unwrap_intv
 let z_to_intN signed unsigned z = if z < Z.zero then signed z else unsigned z
 
 let al_to_fmagN layout = function
   | CaseV ("NORM", [ m; n ]) ->
-    Z.(shift_left (al_to_z n + bias layout) layout.mantissa + al_to_z m)
-  | CaseV ("SUBNORM", [ m ]) -> al_to_z m
+    Z.(shift_left (al_to_z_int n + bias layout) layout.mantissa + al_to_z_nat m)
+  | CaseV ("SUBNORM", [ m ]) -> al_to_z_nat m
   | CaseV ("INF", []) -> mask_exp layout
-  | CaseV ("NAN", [ m ]) -> Z.(mask_exp layout + al_to_z m)
+  | CaseV ("NAN", [ m ]) -> Z.(mask_exp layout + al_to_z_nat m)
   | v -> error_value "fmagN" v
 
 let al_to_floatN layout = function
@@ -74,14 +76,14 @@ let z_to_vec128 i =
   let hi, lo = Z.div_rem i e64 in
   V128.I64x2.of_lanes [Z.to_int64_unsigned lo; Z.to_int64_unsigned hi]
 
-let al_to_int (v: value): int = al_to_z v |> Z.to_int
-let al_to_int32 (v: value): I32.t = al_to_z v |> z_to_intN Z.to_int32 Z.to_int32_unsigned
-let al_to_int64 (v: value): I64.t = al_to_z v |> z_to_intN Z.to_int64 Z.to_int64_unsigned
+let al_to_nat (v: value): int = al_to_z_nat v |> Z.to_int
+let al_to_nat32 (v: value): I32.t = al_to_z_nat v |> z_to_intN Z.to_int32 Z.to_int32_unsigned
+let al_to_nat64 (v: value): I64.t = al_to_z_nat v |> z_to_intN Z.to_int64 Z.to_int64_unsigned
 let al_to_float32 (v: value): F32.t = al_to_floatN layout32 v |> Z.to_int32_unsigned |> F32.of_bits
 let al_to_float64 (v: value): F64.t = al_to_floatN layout64 v |> Z.to_int64_unsigned |> F64.of_bits
-let al_to_vec128 (v: value): V128.t = al_to_z v |> z_to_vec128
-let al_to_idx: value -> idx = al_to_phrase al_to_int32
-let al_to_byte (v: value): Char.t = al_to_int v |> Char.chr
+let al_to_vec128 (v: value): V128.t = al_to_z_nat v |> z_to_vec128
+let al_to_idx: value -> idx = al_to_phrase al_to_nat32
+let al_to_byte (v: value): Char.t = al_to_nat v |> Char.chr
 let al_to_bytes (v: value): string = al_to_seq al_to_byte v |> String.of_seq
 let al_to_string = function
   | TextV str -> str
@@ -136,7 +138,7 @@ and al_to_rec_type: value -> rec_type = function
   | v -> error_value "rec type" v
 
 and al_to_def_type: value -> def_type = function
-  | CaseV ("DEF", [ rt; i32 ]) -> DefT (al_to_rec_type rt, al_to_int32 i32)
+  | CaseV ("DEF", [ rt; i32 ]) -> DefT (al_to_rec_type rt, al_to_nat32 i32)
   | v -> error_value "def type" v
 
 and al_to_typeuse: value -> idx = function
@@ -147,8 +149,8 @@ and al_to_typeuse: value -> idx = function
   | v -> error_value "type use" v
 
 and al_to_heap_type: value -> heap_type = function
-  | CaseV ("_IDX", [ i32 ]) -> VarHT (StatX (al_to_int32 i32))
-  | CaseV ("REC", [ i32 ]) -> VarHT (RecX (al_to_int32 i32))
+  | CaseV ("_IDX", [ i32 ]) -> VarHT (StatX (al_to_nat32 i32))
+  | CaseV ("REC", [ i32 ]) -> VarHT (RecX (al_to_nat32 i32))
   | CaseV ("DEF", _) as v -> DefHT (al_to_def_type v)
   | CaseV (tag, []) as v ->
     (match tag with
@@ -195,11 +197,11 @@ let al_to_block_type: value -> block_type = function
 let al_to_limits (default: int64): value -> int32 limits = function
   | CaseV ("[", [ min; max ]) ->
     let max' =
-      match al_to_int64 max with
+      match al_to_nat64 max with
       | i64 when default = i64 -> None
-      | _ -> Some (al_to_int32 max)
+      | _ -> Some (al_to_nat32 max)
     in
-    { min = al_to_int32 min; max = max' }
+    { min = al_to_nat32 min; max = max' }
   | v -> error_value "limits" v
 
 
@@ -221,6 +223,14 @@ let al_to_tag_type: value -> tag_type = function
 
 (* Destruct operator *)
 
+let num i = Num.Nat (Z.of_int i)
+let two = num 2
+let four = num 4
+let eight = num 8
+let sixteen = num 16
+let thirtytwo = num 32
+let sixtyfour = num 64
+
 let al_to_op f1 f2 = function
   | [ CaseV ("I32", []); op ] -> I32 (f1 op)
   | [ CaseV ("I64", []); op ] -> I64 (f1 op)
@@ -232,10 +242,10 @@ let al_to_int_unop: value -> IntOp.unop = function
   | CaseV ("CLZ", []) -> IntOp.Clz
   | CaseV ("CTZ", []) -> IntOp.Ctz
   | CaseV ("POPCNT", []) -> IntOp.Popcnt
-  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 8 -> IntOp.ExtendS Pack.Pack8
-  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 16 -> IntOp.ExtendS Pack.Pack16
-  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 32 -> IntOp.ExtendS Pack.Pack32
-  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 64 -> IntOp.ExtendS Pack.Pack64
+  | CaseV ("EXTEND", [NumV z]) when z = eight -> IntOp.ExtendS Pack.Pack8
+  | CaseV ("EXTEND", [NumV z]) when z = sixteen -> IntOp.ExtendS Pack.Pack16
+  | CaseV ("EXTEND", [NumV z]) when z = thirtytwo -> IntOp.ExtendS Pack.Pack32
+  | CaseV ("EXTEND", [NumV z]) when z = sixtyfour -> IntOp.ExtendS Pack.Pack64
   | v -> error_value "integer unop" v
 let al_to_float_unop: value -> FloatOp.unop = function
   | CaseV ("NEG", []) -> FloatOp.Neg
@@ -349,13 +359,6 @@ let al_to_cvtop: value list -> cvtop = function
   | l -> error_values "cvtop" l
 
 (* Vector operator *)
-
-let two = Z.of_int 2
-let four = Z.of_int 4
-let eight = Z.of_int 8
-let sixteen = Z.of_int 16
-let thirtytwo = Z.of_int 32
-let sixtyfour = Z.of_int 64
 
 let al_to_extension : value -> Pack.extension = function
   | CaseV ("S", []) -> Pack.SX
@@ -486,7 +489,7 @@ let al_to_special_vbinop = function
     | CaseV ("RELAXED_SWIZZLE", []) -> V128 (V128.I8x16 (V128Op.RelaxedSwizzle))
     | _ ->  error_value "special vbinop" v)
   | CaseV ("VSWIZZLE", [ CaseV ("X", [ CaseV ("I8", []); NumV z ]) ]) when z = sixteen && !version = 2 -> V128 (V128.I8x16 (V128Op.Swizzle))
-  | CaseV ("VSHUFFLE", [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); l ]) when z = sixteen -> V128 (V128.I8x16 (V128Op.Shuffle (al_to_list al_to_int l)))
+  | CaseV ("VSHUFFLE", [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); l ]) when z = sixteen -> V128 (V128.I8x16 (V128Op.Shuffle (al_to_list al_to_nat l)))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I8", []); NumV z1 ]); CaseV ("X", [ CaseV ("I16", []); NumV z2 ]); CaseV ("S", []) ]) when z1 = sixteen && z2 = eight -> V128 (V128.I8x16 (V128Op.NarrowS))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I16", []); NumV z1 ]); CaseV ("X", [ CaseV ("I32", []); NumV z2 ]); CaseV ("S", []) ]) when z1 = eight && z2 = four -> V128 (V128.I16x8 (V128Op.NarrowS))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I8", []); NumV z1 ]); CaseV ("X", [ CaseV ("I16", []); NumV z2 ]); CaseV ("U", []) ]) when z1 = sixteen && z2 = eight -> V128 (V128.I8x16 (V128Op.NarrowU))
@@ -633,26 +636,26 @@ let al_to_vsplatop : value list -> vec_splatop = function
 
 let al_to_vextractop : value list -> vec_extractop = function
   | [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); OptV (Some ext); n ] when z = sixteen ->
-    V128 (V128.I8x16 (Extract (al_to_int n, al_to_extension ext)))
+    V128 (V128.I8x16 (Extract (al_to_nat n, al_to_extension ext)))
   | [ CaseV ("X", [ CaseV ("I16", []); NumV z ]); OptV (Some ext); n ] when z = eight ->
-    V128 (V128.I16x8 (Extract (al_to_int n, al_to_extension ext)))
+    V128 (V128.I16x8 (Extract (al_to_nat n, al_to_extension ext)))
   | [ CaseV ("X", [ CaseV ("I32", []); NumV z ]); OptV None; n ] when z = four ->
-    V128 (V128.I32x4 (Extract (al_to_int n, ())))
+    V128 (V128.I32x4 (Extract (al_to_nat n, ())))
   | [ CaseV ("X", [ CaseV ("I64", []); NumV z ]); OptV None; n ] when z = two ->
-    V128 (V128.I64x2 (Extract (al_to_int n, ())))
+    V128 (V128.I64x2 (Extract (al_to_nat n, ())))
   | [ CaseV ("X", [ CaseV ("F32", []); NumV z ]); OptV None; n ] when z = four ->
-    V128 (V128.F32x4 (Extract (al_to_int n, ())))
+    V128 (V128.F32x4 (Extract (al_to_nat n, ())))
   | [ CaseV ("X", [ CaseV ("F64", []); NumV z ]); OptV None; n ] when z = two ->
-    V128 (V128.F64x2 (Extract (al_to_int n, ())))
+    V128 (V128.F64x2 (Extract (al_to_nat n, ())))
   | vs -> error_values "vextractop" vs
 
 let al_to_vreplaceop : value list -> vec_replaceop = function
-  | [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); n ] when z = sixteen -> V128 (V128.I8x16 (Replace (al_to_int n)))
-  | [ CaseV ("X", [ CaseV ("I16", []); NumV z ]); n ] when z = eight -> V128 (V128.I16x8 (Replace (al_to_int n)))
-  | [ CaseV ("X", [ CaseV ("I32", []); NumV z ]); n ] when z = four -> V128 (V128.I32x4 (Replace (al_to_int n)))
-  | [ CaseV ("X", [ CaseV ("I64", []); NumV z ]); n ] when z = two -> V128 (V128.I64x2 (Replace (al_to_int n)))
-  | [ CaseV ("X", [ CaseV ("F32", []); NumV z ]); n ] when z = four -> V128 (V128.F32x4 (Replace (al_to_int n)))
-  | [ CaseV ("X", [ CaseV ("F64", []); NumV z ]); n ] when z = two -> V128 (V128.F64x2 (Replace (al_to_int n)))
+  | [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); n ] when z = sixteen -> V128 (V128.I8x16 (Replace (al_to_nat n)))
+  | [ CaseV ("X", [ CaseV ("I16", []); NumV z ]); n ] when z = eight -> V128 (V128.I16x8 (Replace (al_to_nat n)))
+  | [ CaseV ("X", [ CaseV ("I32", []); NumV z ]); n ] when z = four -> V128 (V128.I32x4 (Replace (al_to_nat n)))
+  | [ CaseV ("X", [ CaseV ("I64", []); NumV z ]); n ] when z = two -> V128 (V128.I64x2 (Replace (al_to_nat n)))
+  | [ CaseV ("X", [ CaseV ("F32", []); NumV z ]); n ] when z = four -> V128 (V128.F32x4 (Replace (al_to_nat n)))
+  | [ CaseV ("X", [ CaseV ("F64", []); NumV z ]); n ] when z = two -> V128 (V128.F64x2 (Replace (al_to_nat n)))
   | vs -> error_values "vreplaceop" vs
 
 let al_to_pack_size : value -> Pack.pack_size = function
@@ -672,16 +675,16 @@ let al_to_memop (f: value -> 'p) : value list -> idx * (num_type, 'p) memop = fu
     0l @@ no_region,
     {
       ty = al_to_num_type nt;
-      align = Record.find "ALIGN" str |> al_to_int;
-      offset = Record.find "OFFSET" str |> al_to_int32;
+      align = Record.find "ALIGN" str |> al_to_nat;
+      offset = Record.find "OFFSET" str |> al_to_nat32;
       pack = f p;
     }
   | [ nt; p; idx; StrV str ] when !version >= 3 ->
     al_to_idx idx,
     {
       ty = al_to_num_type nt;
-      align = Record.find "ALIGN" str |> al_to_int;
-      offset = Record.find "OFFSET" str |> al_to_int32;
+      align = Record.find "ALIGN" str |> al_to_nat;
+      offset = Record.find "OFFSET" str |> al_to_nat32;
       pack = f p;
     }
   | v -> error_values "memop" v
@@ -698,15 +701,15 @@ let al_to_vmemop' (f: value -> 'p): value list -> (vec_type, 'p) memop = functio
   | [ StrV str ] ->
     {
       ty = V128T;
-      align = Record.find "ALIGN" str |> al_to_int;
-      offset = Record.find "OFFSET" str |> al_to_int32;
-      pack = f (numV Z.zero);
+      align = Record.find "ALIGN" str |> al_to_nat;
+      offset = Record.find "OFFSET" str |> al_to_nat32;
+      pack = f (natV Z.zero);
     }
   | [ p; StrV str ] ->
     {
       ty = V128T;
-      align = Record.find "ALIGN" str |> al_to_int;
-      offset = Record.find "OFFSET" str |> al_to_int32;
+      align = Record.find "ALIGN" str |> al_to_nat;
+      offset = Record.find "OFFSET" str |> al_to_nat32;
       pack = f p;
     }
   | v -> error_values "vmemop" v
@@ -761,7 +764,7 @@ let al_to_vlaneop: value list -> idx * vec_laneop * int = function
       | _ -> error_values "vlaneop" vl
     in
     let idx, op = al_to_vmemop al_to_pack_size split h in
-    idx, op, al_to_int t
+    idx, op, al_to_nat t
   | vs -> error_value "vlaneop" (TupV vs)
 
 
@@ -776,8 +779,8 @@ let al_to_catch' = function
 let al_to_catch (v: value): Ast.catch = al_to_phrase al_to_catch' v
 
 let al_to_num: value -> num = function
-  | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_int32 i32)
-  | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_int64 i64)
+  | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_nat32 i32)
+  | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_nat64 i64)
   | CaseV ("CONST", [ CaseV ("F32", []); f32 ]) -> F32 (al_to_float32 f32)
   | CaseV ("CONST", [ CaseV ("F64", []); f64 ]) -> F64 (al_to_float64 f64)
   | v -> error_value "num" v
@@ -892,7 +895,7 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("ARRAY.NEW", [ idx ]) -> ArrayNew (al_to_idx idx, Explicit)
   | CaseV ("ARRAY.NEW_DEFAULT", [ idx ]) -> ArrayNew (al_to_idx idx, Implicit)
   | CaseV ("ARRAY.NEW_FIXED", [ idx; i32 ]) ->
-    ArrayNewFixed (al_to_idx idx, al_to_int32 i32)
+    ArrayNewFixed (al_to_idx idx, al_to_nat32 i32)
   | CaseV ("ARRAY.NEW_ELEM", [ idx1; idx2 ]) ->
     ArrayNewElem (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("ARRAY.NEW_DATA", [ idx1; idx2 ]) ->
@@ -1084,7 +1087,7 @@ let rec al_to_field: value -> Aggr.field = function
       | CaseV ("I64", []) -> Pack.Pack64
       | v -> error_value "packsize" v
     in
-    Aggr.PackField (pack_size', ref (al_to_int c))
+    Aggr.PackField (pack_size', ref (al_to_nat c))
   | v -> Aggr.ValField (ref (al_to_value v))
 
 and al_to_array: value -> Aggr.array = function
@@ -1111,7 +1114,7 @@ and al_to_tag: value -> Tag.t = function
 and al_to_exn: value -> Exn.exn_ = function
   | StrV r when Record.mem "TAG" r && Record.mem "FIELDS" r ->
     let tag_insts = Ds.Store.access "TAGS" in
-    let tag = Record.find "TAG" r |> al_to_int |> listv_nth tag_insts |> al_to_tag in
+    let tag = Record.find "TAG" r |> al_to_nat |> listv_nth tag_insts |> al_to_tag in
     Exn.Exn (
       tag,
       al_to_list al_to_value (Record.find "FIELDS" r)
@@ -1129,20 +1132,20 @@ and al_to_funcinst: value -> Instance.func_inst = function
 
 and al_to_ref: value -> ref_ = function
   | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heap_type ht)
-  | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_int i)
+  | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_nat i)
   | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
     let struct_insts = Ds.Store.access "STRUCTS" in
-    let struct_ = addr |> al_to_int |> listv_nth struct_insts |> al_to_struct in
+    let struct_ = addr |> al_to_nat |> listv_nth struct_insts |> al_to_struct in
     Aggr.StructRef struct_
   | CaseV ("REF.ARRAY_ADDR", [ addr ]) ->
     let arr_insts = Ds.Store.access "ARRAYS" in
-    let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
+    let arr = addr |> al_to_nat |> listv_nth arr_insts |> al_to_array in
     Aggr.ArrayRef arr
   | CaseV ("REF.FUNC_ADDR", [ addr ]) ->
     let func_insts = Ds.Store.access "FUNCS" in
-    let func = addr |> al_to_int |> listv_nth func_insts |> al_to_funcinst in
+    let func = addr |> al_to_nat |> listv_nth func_insts |> al_to_funcinst in
     Instance.FuncRef func
-  | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
+  | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_nat32 i32)
   | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)
   | v -> error_value "ref" v
 
@@ -1164,19 +1167,20 @@ let al_of_opt f opt = Option.map f opt |> optV
 
 (* Construct minor *)
 
-let al_of_z z = numV z
+let al_of_z_nat z = natV z
+let al_of_z_int z = intV z
 
 let al_of_fmagN layout i =
   let n = Z.logand i (mask_exp layout) in
   let m = Z.logand i (mask_mant layout) in
   if n = Z.zero then
-    CaseV ("SUBNORM", [ al_of_z m ])
+    CaseV ("SUBNORM", [ al_of_z_nat m ])
   else if n <> mask_exp layout then
-    CaseV ("NORM", [ al_of_z m; al_of_z Z.(shift_right n layout.mantissa - bias layout) ])
+    CaseV ("NORM", [ al_of_z_nat m; al_of_z_int Z.(shift_right n layout.mantissa - bias layout) ])
   else if m = Z.zero then
     CaseV ("INF", [])
   else
-    CaseV ("NAN", [ al_of_z m ])
+    CaseV ("NAN", [ al_of_z_nat m ])
 
 let al_of_floatN layout i =
   let i' = Z.logand i (mask_mag layout) in
@@ -1188,25 +1192,25 @@ let vec128_to_z vec =
   | [ v1; v2 ] -> Z.(of_int64_unsigned v1 + e64 * of_int64_unsigned v2)
   | _ -> assert false
 
-let al_of_int i = Z.of_int i |> al_of_z
-let al_of_int8 i8 =
+let al_of_nat i = Z.of_int i |> al_of_z_nat
+let al_of_nat8 i8 =
   (* NOTE: int8 is considered to be unsigned *)
-  Z.of_int32_unsigned Int32.(logand i8 0x0000_00ffl) |> al_of_z
-let al_of_int16 i16 =
+  Z.of_int32_unsigned Int32.(logand i8 0x0000_00ffl) |> al_of_z_nat
+let al_of_nat16 i16 =
   (* NOTE: int32 is considered to be unsigned *)
-  Z.of_int32_unsigned Int32.(logand i16 0x0000_ffffl) |> al_of_z
-let al_of_int32 i32 =
+  Z.of_int32_unsigned Int32.(logand i16 0x0000_ffffl) |> al_of_z_nat
+let al_of_nat32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
-  Z.of_int32_unsigned i32 |> al_of_z
-let al_of_int64 i64 =
+  Z.of_int32_unsigned i32 |> al_of_z_nat
+let al_of_nat64 i64 =
   (* NOTE: int32 is considered to be unsigned *)
-  Z.of_int64_unsigned i64 |> al_of_z
+  Z.of_int64_unsigned i64 |> al_of_z_nat
 let al_of_float32 f32 = F32.to_bits f32 |> Z.of_int32_unsigned |> al_of_floatN layout32
 let al_of_float64 f64 = F64.to_bits f64 |> Z.of_int64_unsigned |> al_of_floatN layout64
-let al_of_vec128 vec = vec128_to_z vec |> al_of_z
-let al_of_bool b = Bool.to_int b |> al_of_int
-let al_of_idx idx = al_of_int32 idx.it
-let al_of_byte byte = Char.code byte |> al_of_int
+let al_of_vec128 vec = vec128_to_z vec |> al_of_z_nat
+let al_of_bool b = Stdlib.Bool.to_int b |> al_of_nat
+let al_of_idx idx = al_of_nat32 idx.it
+let al_of_byte byte = Char.code byte |> al_of_nat
 let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
 let al_of_name name = TextV (Utf8.encode name)
 let al_with_version vs f a = if (List.mem !version vs) then [ f a ] else []
@@ -1259,15 +1263,15 @@ and al_of_rec_type = function
   | RecT stl -> CaseV ("REC", [ al_of_list al_of_sub_type stl ])
 
 and al_of_def_type = function
-  | DefT (rt, i) -> CaseV ("DEF", [al_of_rec_type rt; al_of_int32 i])
+  | DefT (rt, i) -> CaseV ("DEF", [al_of_rec_type rt; al_of_nat32 i])
 
 and al_of_typeuse = function
   | idx when !version <= 2 -> al_of_idx idx
   | idx -> CaseV ("_IDX", [ al_of_idx idx ])
 
 and al_of_heap_type = function
-  | VarHT (StatX i) -> CaseV ("_IDX", [ al_of_int32 i ])
-  | VarHT (RecX i) -> CaseV ("REC", [ al_of_int32 i ])
+  | VarHT (StatX i) -> CaseV ("_IDX", [ al_of_nat32 i ])
+  | VarHT (RecX i) -> CaseV ("REC", [ al_of_nat32 i ])
   | DefHT dt -> al_of_def_type dt
   | BotHT -> nullary "BOT"
   | FuncHT | ExternHT as ht when !version = 2 ->
@@ -1301,11 +1305,11 @@ let al_of_blocktype = function
 let al_of_limits default limits =
   let max =
     match limits.max with
-    | Some v -> al_of_int32 v
-    | None -> al_of_int64 default
+    | Some v -> al_of_nat32 v
+    | None -> al_of_nat64 default
   in
 
-  CaseV ("[", [ al_of_int32 limits.min; max ]) (* TODO: Something better tan this is needed *)
+  CaseV ("[", [ al_of_nat32 limits.min; max ]) (* TODO: Something better tan this is needed *)
 
 let al_of_global_type = function
   | GlobalT (mut, vt) -> tupV [ al_of_mut mut; al_of_val_type vt ]
@@ -1319,8 +1323,8 @@ let al_of_memory_type = function
 (* Construct value *)
 
 let al_of_num = function
-  | I32 i32 -> CaseV ("CONST", [ nullary "I32"; al_of_int32 i32 ])
-  | I64 i64 -> CaseV ("CONST", [ nullary "I64"; al_of_int64 i64 ])
+  | I32 i32 -> CaseV ("CONST", [ nullary "I32"; al_of_nat32 i32 ])
+  | I64 i64 -> CaseV ("CONST", [ nullary "I64"; al_of_nat64 i64 ])
   | F32 f32 -> CaseV ("CONST", [ nullary "F32"; al_of_float32 f32 ])
   | F64 f64 -> CaseV ("CONST", [ nullary "F64"; al_of_float64 f64 ])
 
@@ -1350,7 +1354,7 @@ let rec al_of_ref = function
   | Instance.FuncRef a ->
     CaseV ("REF.FUNC_ADDR", [ NumV (int64_of_int32_u a) ])
   *)
-  | Script.HostRef i32 -> CaseV ("REF.HOST_ADDR", [ al_of_int32 i32 ])
+  | Script.HostRef i32 -> CaseV ("REF.HOST_ADDR", [ al_of_nat32 i32 ])
   | Extern.ExternRef r -> CaseV ("REF.EXTERN", [ al_of_ref r ])
   | r -> string_of_ref r |> error "al_of_ref"
 
@@ -1372,10 +1376,10 @@ let al_of_int_unop = function
   | IntOp.Clz -> CaseV ("CLZ", [])
   | IntOp.Ctz -> CaseV ("CTZ", [])
   | IntOp.Popcnt -> CaseV ("POPCNT", [])
-  | IntOp.ExtendS Pack.Pack8 -> CaseV ("EXTEND", [al_of_int 8])
-  | IntOp.ExtendS Pack.Pack16 -> CaseV ("EXTEND", [al_of_int 16])
-  | IntOp.ExtendS Pack.Pack32 -> CaseV ("EXTEND", [al_of_int 32])
-  | IntOp.ExtendS Pack.Pack64 -> CaseV ("EXTEND", [al_of_int 64])
+  | IntOp.ExtendS Pack.Pack8 -> CaseV ("EXTEND", [al_of_nat 8])
+  | IntOp.ExtendS Pack.Pack16 -> CaseV ("EXTEND", [al_of_nat 16])
+  | IntOp.ExtendS Pack.Pack32 -> CaseV ("EXTEND", [al_of_nat 32])
+  | IntOp.ExtendS Pack.Pack64 -> CaseV ("EXTEND", [al_of_nat 64])
 
 let al_of_float_unop = function
   | FloatOp.Neg -> CaseV ("NEG", [])
@@ -1623,7 +1627,7 @@ let al_of_special_vbinop = function
   | V128 (V128.I8x16 (V128Op.Swizzle)) when !version = 2 -> CaseV ("VSWIZZLE", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); ])
   | V128 (V128.I8x16 (V128Op.Swizzle)) -> CaseV ("VSWIZZLOP", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); nullary "SWIZZLE" ])
   | V128 (V128.I8x16 (V128Op.RelaxedSwizzle)) -> CaseV ("VSWIZZLOP", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); nullary "RELAXED_SWIZZLE" ])
-  | V128 (V128.I8x16 (V128Op.Shuffle l)) -> CaseV ("VSHUFFLE", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_list al_of_int l ])
+  | V128 (V128.I8x16 (V128Op.Shuffle l)) -> CaseV ("VSHUFFLE", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_list al_of_nat l ])
   | V128 (V128.I8x16 (V128Op.NarrowS)) -> CaseV ("VNARROW", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); CaseV ("X", [ nullary "I16"; numV eight ]); al_of_extension Pack.SX ])
   | V128 (V128.I16x8 (V128Op.NarrowS)) -> CaseV ("VNARROW", [ CaseV ("X", [ nullary "I16"; numV eight ]); CaseV ("X", [ nullary "I32"; numV four ]); al_of_extension Pack.SX ])
   | V128 (V128.I8x16 (V128Op.NarrowU)) -> CaseV ("VNARROW", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); CaseV ("X", [ nullary "I16"; numV eight ]); al_of_extension Pack.ZX ])
@@ -1801,47 +1805,47 @@ let al_of_vextractop : vec_extractop -> value list = function
     | V128.I8x16 vop' -> (
       match vop' with
       | Extract (n, ext) ->
-        [ CaseV ("X", [ nullary "I8"; numV sixteen ]); optV (Some (al_of_extension ext)); al_of_int n; ]
+        [ CaseV ("X", [ nullary "I8"; numV sixteen ]); optV (Some (al_of_extension ext)); al_of_nat n; ]
     )
     | V128.I16x8 vop' -> (
       match vop' with
       | Extract (n, ext) ->
-        [ CaseV ("X", [ nullary "I16"; numV eight ]); optV (Some (al_of_extension ext)); al_of_int n; ]
+        [ CaseV ("X", [ nullary "I16"; numV eight ]); optV (Some (al_of_extension ext)); al_of_nat n; ]
     )
     | V128.I32x4 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "I32"; numV four ]); optV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "I32"; numV four ]); optV None; al_of_nat n ]
     )
     | V128.I64x2 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "I64"; numV two ]); optV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "I64"; numV two ]); optV None; al_of_nat n ]
     )
     | V128.F32x4 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "F32"; numV four ]); optV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "F32"; numV four ]); optV None; al_of_nat n ]
     )
     | V128.F64x2 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "F64"; numV two ]); optV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "F64"; numV two ]); optV None; al_of_nat n ]
     )
   )
 
 let al_of_vreplaceop : vec_replaceop -> value list = function
   | V128 vop -> (
     match vop with
-    | V128.I8x16 (Replace n) -> [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_int n ]
-    | V128.I16x8 (Replace n) -> [ CaseV ("X", [ nullary "I16"; numV eight ]); al_of_int n ]
-    | V128.I32x4 (Replace n) -> [ CaseV ("X", [ nullary "I32"; numV four ]); al_of_int n ]
-    | V128.I64x2 (Replace n) -> [ CaseV ("X", [ nullary "I64"; numV two ]); al_of_int n ]
-    | V128.F32x4 (Replace n) -> [ CaseV ("X", [ nullary "F32"; numV four ]); al_of_int n ]
-    | V128.F64x2 (Replace n) -> [ CaseV ("X", [ nullary "F64"; numV two ]); al_of_int n ]
+    | V128.I8x16 (Replace n) -> [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_nat n ]
+    | V128.I16x8 (Replace n) -> [ CaseV ("X", [ nullary "I16"; numV eight ]); al_of_nat n ]
+    | V128.I32x4 (Replace n) -> [ CaseV ("X", [ nullary "I32"; numV four ]); al_of_nat n ]
+    | V128.I64x2 (Replace n) -> [ CaseV ("X", [ nullary "I64"; numV two ]); al_of_nat n ]
+    | V128.F32x4 (Replace n) -> [ CaseV ("X", [ nullary "F32"; numV four ]); al_of_nat n ]
+    | V128.F64x2 (Replace n) -> [ CaseV ("X", [ nullary "F64"; numV two ]); al_of_nat n ]
   )
 
 let al_of_pack_size = function
-  | Pack.Pack8 -> al_of_int 8
-  | Pack.Pack16 -> al_of_int 16
-  | Pack.Pack32 -> al_of_int 32
-  | Pack.Pack64 -> al_of_int 64
+  | Pack.Pack8 -> al_of_nat 8
+  | Pack.Pack16 -> al_of_nat 16
+  | Pack.Pack32 -> al_of_nat 32
+  | Pack.Pack64 -> al_of_nat 64
 
 let al_of_pack_shape = function
   | Pack.Pack8x8 -> [NumV eight; NumV eight]
@@ -1855,8 +1859,8 @@ let al_of_extension = function
 let al_of_memop f idx memop =
   let str =
     Record.empty
-    |> Record.add "ALIGN" (al_of_int memop.align)
-    |> Record.add "OFFSET" (al_of_int32 memop.offset)
+    |> Record.add "ALIGN" (al_of_nat memop.align)
+    |> Record.add "OFFSET" (al_of_nat32 memop.offset)
   in
   [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx idx @ [ StrV str ]
 
@@ -1869,8 +1873,8 @@ let al_of_storeop = al_of_opt al_of_pack_size |> al_of_memop
 let al_of_vloadop idx vloadop =
   let str =
     Record.empty
-    |> Record.add "ALIGN" (al_of_int vloadop.align)
-    |> Record.add "OFFSET" (al_of_int32 vloadop.offset)
+    |> Record.add "ALIGN" (al_of_nat vloadop.align)
+    |> Record.add "OFFSET" (al_of_nat32 vloadop.offset)
   in
 
   let vmemop = match vloadop.pack with
@@ -1888,8 +1892,8 @@ let al_of_vloadop idx vloadop =
 let al_of_vstoreop idx vstoreop =
   let str =
     Record.empty
-    |> Record.add "ALIGN" (al_of_int vstoreop.align)
-    |> Record.add "OFFSET" (al_of_int32 vstoreop.offset)
+    |> Record.add "ALIGN" (al_of_nat vstoreop.align)
+    |> Record.add "OFFSET" (al_of_nat32 vstoreop.offset)
   in
 
   al_of_vec_type V128T :: al_of_memidx idx @ [ StrV str ]
@@ -1899,11 +1903,11 @@ let al_of_vlaneop idx vlaneop laneidx =
 
   let str =
     Record.empty
-    |> Record.add "ALIGN" (al_of_int vlaneop.align)
-    |> Record.add "OFFSET" (al_of_int32 vlaneop.offset)
+    |> Record.add "ALIGN" (al_of_nat vlaneop.align)
+    |> Record.add "OFFSET" (al_of_nat32 vlaneop.offset)
   in
 
-  [ al_of_vec_type V128T; al_of_pack_size pack_size ] @ al_of_memidx idx @ [ StrV str; al_of_int laneidx ]
+  [ al_of_vec_type V128T; al_of_pack_size pack_size ] @ al_of_memidx idx @ [ StrV str; al_of_nat laneidx ]
 
 (* Construct instruction *)
 
@@ -2029,7 +2033,7 @@ let rec al_of_instr instr =
   | ArrayNew (idx, Explicit) -> CaseV ("ARRAY.NEW", [ al_of_idx idx ])
   | ArrayNew (idx, Implicit) -> CaseV ("ARRAY.NEW_DEFAULT", [ al_of_idx idx ])
   | ArrayNewFixed (idx, i32) ->
-    CaseV ("ARRAY.NEW_FIXED", [ al_of_idx idx; al_of_int32 i32 ])
+    CaseV ("ARRAY.NEW_FIXED", [ al_of_idx idx; al_of_nat32 i32 ])
   | ArrayNewElem (idx1, idx2) ->
     CaseV ("ARRAY.NEW_ELEM", [ al_of_idx idx1; al_of_idx idx2 ])
   | ArrayNewData (idx1, idx2) ->

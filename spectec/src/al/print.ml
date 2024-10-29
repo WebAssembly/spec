@@ -1,9 +1,8 @@
 open Ast
+open Xl
 open Printf
 open Util
 open Source
-
-module Atom = El.Atom
 
 
 (* Helper functions *)
@@ -59,7 +58,7 @@ let rec string_of_record r =
 and string_of_value =
   function
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
-  | NumV n -> "0x" ^ Z.format "%X" n
+  | NumV n -> Num.to_string n
   | BoolV b -> string_of_bool b
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
@@ -78,26 +77,15 @@ and string_of_values sep = string_of_list string_of_value sep
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "!"
-  | MinusOp -> "-"
+  | BoolUnop op -> Bool.string_of_unop op
+  | NumUnop op -> Num.string_of_unop op
 
 let string_of_binop = function
-  | AndOp -> "&&"
-  | OrOp -> "||"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "·"
-  | DivOp -> "/"
-  | ModOp -> "\\"
-  | ExpOp -> "^"
+  | BoolBinop op -> Bool.string_of_binop op
+  | NumBinop op -> Num.string_of_binop op
+  | NumCmpop op -> Num.string_of_cmpop op
   | EqOp -> "=="
-  | NeOp -> "!="
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "≤"
-  | GeOp -> "≥"
+  | NeOp -> "=/="
 
 
 (* Iters *)
@@ -123,8 +111,9 @@ and string_of_record_expr r =
 
 and string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
+  | NumE n -> Num.to_string n
   | BoolE b -> string_of_bool b
+  | CvtE (e, _, t) -> sprintf "$%s$(%s)" (Il.Print.string_of_numtyp t) (string_of_expr e)
   | UnE (op, e) -> sprintf "%s(%s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -376,7 +365,7 @@ let string_of_algorithm algo =
 let rec structured_string_of_value = function
   | ListV lv -> "ListV" ^ "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
-  | NumV n -> "NumV (" ^ Z.to_string n ^ ")"
+  | NumV n -> "NumV (" ^ Num.to_string n ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
   | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")"
   | CaseV (s, vl) -> "CaseV(" ^ s ^ ", [" ^ structured_string_of_values vl ^ "])"
@@ -408,8 +397,15 @@ and structured_string_of_record_expr r =
 
 and structured_string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
-  | BoolE b -> string_of_bool b
+  | NumE _ | BoolE _ -> string_of_expr expr
+  | CvtE (e, t1, t2) ->
+    "CvtE ("
+    ^ structured_string_of_expr e
+    ^ ", "
+    ^ Il.Print.string_of_numtyp t1
+    ^ ", "
+    ^ Il.Print.string_of_numtyp t2
+    ^ ")"
   | UnE (op, e) ->
     "UnE ("
     ^ string_of_unop op

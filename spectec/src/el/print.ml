@@ -1,6 +1,7 @@
 open Util.Source
 open Ast
 open Convert
+open Xl
 
 
 (* Helpers *)
@@ -26,31 +27,19 @@ let string_of_gramid id = id.it
 let string_of_atom = Atom.to_string
 
 let string_of_unop = function
-  | NotOp -> "~"
-  | PlusOp -> "+"
-  | MinusOp -> "-"
+  | BoolUnop op -> Bool.string_of_unop op
+  | NumUnop op -> Num.string_of_unop op
   | PlusMinusOp -> "+-"
   | MinusPlusOp -> "-+"
 
 let string_of_binop = function
-  | AndOp -> "/\\"
-  | OrOp -> "\\/"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "*"
-  | DivOp -> "/"
-  | ModOp -> "\\"
-  | ExpOp -> "^"
+  | BoolBinop op -> Bool.string_of_binop op
+  | NumBinop op -> Num.string_of_binop op
 
 let string_of_cmpop = function
   | EqOp -> "="
   | NeOp -> "=/="
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "<="
-  | GeOp -> ">="
+  | NumCmpop op -> Num.string_of_cmpop op
 
 let strings_of_dots = function
   | Dots -> ["..."]
@@ -70,11 +59,12 @@ let rec string_of_iter iter =
 
 (* Types *)
 
-and string_of_numtyp = function
-  | NatT -> "nat"
-  | IntT -> "int"
-  | RatT -> "rat"
-  | RealT -> "real"
+and string_of_numtyp t =
+  match t with
+  | Num.NatT -> "nat"
+  | Num.IntT -> "int"
+  | Num.RatT -> "rat"
+  | Num.RealT -> "real"
 
 and string_of_typ t =
   match t.it with
@@ -129,11 +119,13 @@ and string_of_exp e =
   | VarE (id, args) -> string_of_varid id ^ string_of_args args
   | AtomE atom -> string_of_atom atom
   | BoolE b -> string_of_bool b
-  | NatE (DecOp, n) -> Z.to_string n
-  | NatE (HexOp, n) -> "0x" ^ Z.format "%X" n
-  | NatE (CharOp, n) -> "U+" ^ Z.format "%X" n
-  | NatE (AtomOp, n) -> "`" ^ Z.to_string n
+  | NumE (DecOp, Num.Nat n) -> Z.to_string n
+  | NumE (HexOp, Num.Nat n) -> "0x" ^ Z.format "%X" n
+  | NumE (CharOp, Num.Nat n) -> "U+" ^ Z.format "%X" n
+  | NumE (AtomOp, Num.Nat n) -> "`" ^ Z.to_string n
+  | NumE (_, n) -> Num.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
+  | CvtE (e1, nt) -> "$" ^ string_of_numtyp nt ^ "(" ^ string_of_exp e1 ^ ")"
   | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
   | BinE (e1, op, e2) ->
     string_of_exp e1 ^ space string_of_binop op ^ string_of_exp e2
@@ -198,10 +190,10 @@ and string_of_path p =
 and string_of_sym g =
   match g.it with
   | VarG (id, args) -> string_of_gramid id ^ string_of_args args
-  | NatG (DecOp, n) -> Z.to_string n
-  | NatG (HexOp, n) -> "0x" ^ Z.format "%X" n
-  | NatG (CharOp, n) -> "U+" ^ Z.format "%X" n
-  | NatG (AtomOp, n) -> "`" ^ Z.to_string n
+  | NumG (DecOp, n) -> Z.to_string n
+  | NumG (HexOp, n) -> "0x" ^ Z.format "%X" n
+  | NumG (CharOp, n) -> "U+" ^ Z.format "%X" n
+  | NumG (AtomOp, n) -> "`" ^ Z.to_string n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"

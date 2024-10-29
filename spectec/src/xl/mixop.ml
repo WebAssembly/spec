@@ -1,7 +1,5 @@
 open Util.Source
 
-module Atom = El.Atom
-
 type atom = Atom.atom
 type mixop = atom list list
 
