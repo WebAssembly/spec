@@ -198,7 +198,11 @@ and reduce_exp env e : exp =
     | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
     | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
     | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
-    | NumCmpop op', NumE (_, n1), NumE (_, n2) -> BoolE (Num.cmp op' n1 n2)
+    | NumCmpop op', NumE (_, n1), NumE (_, n2) ->
+      (match Num.cmp op' n1 n2 with
+      | Some b -> BoolE b
+      | None -> CmpE (e1', op, e2')
+      )
     | _ -> CmpE (e1', op, e2')
     ) $ e.at
   | EpsE -> SeqE [] $ e.at

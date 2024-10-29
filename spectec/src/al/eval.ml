@@ -134,7 +134,11 @@ let rec reduce_exp s e : expr =
       )
     | NumCmpop op' ->
       (match of_num_exp e1'.it, of_num_exp e2'.it with
-      | Some n1, Some n2 -> to_bool_exp (Num.cmp op' n1 n2)
+      | Some n1, Some n2 ->
+        (match Num.cmp op' n1 n2 with
+        | Some b -> to_bool_exp b
+        | None -> BinE (op, e1', e2')
+        )
       | _, _ -> BinE (op, e1', e2')
       )
     | EqOp when Eq.eq_expr e1' e2' -> BoolE true

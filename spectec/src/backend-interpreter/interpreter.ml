@@ -227,12 +227,15 @@ and eval_expr env expr =
     (match op, eval_expr env e1, eval_expr env e2 with
     | BoolBinop op', v1, v2 -> Bool.bin op' (to_bool e1 v1) (to_bool e2 v2) |> boolV
     | NumBinop op', NumV n1, NumV n2 ->
-      let n1', n2' = Num.adjust n1 n2 in
-      (match Num.bin op' n1' n2' with
+      (match Num.bin op' n1 n2 with
       | Some n -> numV n
       | None -> fail_expr expr ("binary operation `" ^ Num.string_of_binop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
       )
-    | NumCmpop op', NumV n1, NumV n2 -> Num.cmp op' n1 n2 |> boolV
+    | NumCmpop op', NumV n1, NumV n2 ->
+      (match Num.cmp op' n1 n2 with
+      | Some b -> boolV b
+      | None -> fail_expr expr ("comparison operation `" ^ Num.string_of_cmpop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
+      )
     | EqOp, v1, v2 -> boolV (v1 = v2)
     | NeOp, v1, v2 -> boolV (v1 <> v2)
     | _ -> fail_expr expr "type mismatch for binary operation"

@@ -16,7 +16,7 @@ syntax bit hint(desc "bit") = 0 | 1
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
 syntax uN(N) hint(desc "unsigned integer") hint(show u#%) =
-  0 | ... | 2^N-1
+  0 | ... | $nat$(2^N-1)
 syntax sN(N) hint(desc "signed integer") hint(show s#%) =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
 syntax iN(N) hint(desc "integer") hint(show i#%) =

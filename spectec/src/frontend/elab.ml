@@ -529,8 +529,6 @@ Printf.eprintf "[elab_atom %s @ %s] def=%s/%s\n%!"
   atom.note.Atom.def <- tid.it;
   atom
 
-let numtyps = Num.[NatT; IntT; RatT; RealT]
-
 let infer_unop'' fop ts =
   List.map (fun t -> fop t, NumT t, NumT t) ts
 
@@ -542,27 +540,27 @@ let infer_cmpop'' op ts =
 
 let infer_unop' = function
   | BoolUnop op -> [Il.BoolUnop op, BoolT, BoolT]
-  | NumUnop op -> infer_unop'' (fun t -> Il.NumUnop (op, t)) (List.tl numtyps)
-  | PlusMinusOp -> infer_unop'' (fun t -> Il.PlusMinusOp t) (List.tl numtyps)
-  | MinusPlusOp -> infer_unop'' (fun t -> Il.MinusPlusOp t) (List.tl numtyps)
+  | NumUnop op -> infer_unop'' (fun t -> Il.NumUnop (op, t)) Num.[IntT; RatT; RealT]
+  | PlusMinusOp -> infer_unop'' (fun t -> Il.PlusMinusOp t) Num.[IntT; RatT; RealT]
+  | MinusPlusOp -> infer_unop'' (fun t -> Il.MinusPlusOp t) Num.[IntT; RatT; RealT]
 
 let infer_binop' = function
   | BoolBinop op -> [Il.BoolBinop op, BoolT, BoolT, BoolT]
   | NumBinop op ->
     match op with
-    | Num.AddOp -> infer_binop'' op numtyps
-    | Num.SubOp -> infer_binop'' op ((*List.tl*) numtyps)  (* TODO(3, rossberg): tighten? *)
-    | Num.MulOp -> infer_binop'' op numtyps
-    | Num.DivOp -> infer_binop'' op ((*Lib.List.drop 2*) numtyps)
-    | Num.ModOp -> infer_binop'' op (Lib.List.take 2 numtyps)
-    | Num.PowOp -> infer_binop'' op numtyps |>
+    | Num.AddOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
+    | Num.SubOp -> infer_binop'' op Num.[IntT; RatT; RealT]
+    | Num.MulOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
+    | Num.DivOp -> infer_binop'' op Num.[RatT; RealT]
+    | Num.ModOp -> infer_binop'' op Num.[NatT; IntT]
+    | Num.PowOp -> infer_binop'' op Num.[NatT; RatT; RealT] |>
         List.map (fun (op, t1, t2, t3) ->
           (op, t1, Num.(if t2 = NumT NatT then t2 else NumT IntT), t3))
 
 let infer_cmpop' = function
   | EqOp -> `Poly Il.EqOp
   | NeOp -> `Poly Il.NeOp
-  | NumCmpop op -> `Over (infer_cmpop'' op numtyps)
+  | NumCmpop op -> `Over (infer_cmpop'' op Num.[NatT; IntT; RatT; RealT])
 
 let infer_unop env op t1 at : Il.unop * typ * typ =
   let ops = infer_unop' op in

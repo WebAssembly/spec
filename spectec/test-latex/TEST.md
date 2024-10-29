@@ -2385,8 +2385,9 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(floating-point number)} & {f}{N} & ::= & {+{{\mathit{fNmag}}}} ~|~ {-{{\mathit{fNmag}}}} \\
-\mbox{(floating-point magnitude)} & {{\mathit{fNmag}}} & ::= & (1 + m \cdot {2^{{-M}}}) \cdot {2^{n}} & \quad \mbox{if}~ m < {2^{M}} \land 2 - {2^{E - 1}} \leq n \leq {2^{E - 1}} - 1 \\
-& & | & (0 + m \cdot {2^{{-M}}}) \cdot {2^{n}} & \quad \mbox{if}~ m < {2^{M}} \land 2 - {2^{E - 1}} = n \\
+& e & ::= & \dots ~|~ {-2} ~|~ {-1} ~|~ 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+\mbox{(floating-point magnitude)} & {{\mathit{fNmag}}} & ::= & (1 + m \cdot {2^{{-M}}}) \cdot {2^{e}} & \quad \mbox{if}~ m < {2^{M}} \land 2 - {2^{E - 1}} \leq e \leq {2^{E - 1}} - 1 \\
+& & | & (0 + m \cdot {2^{{-M}}}) \cdot {2^{e}} & \quad \mbox{if}~ m < {2^{M}} \land 2 - {2^{E - 1}} = e \\
 & & | & \infty \\
 & & | & {\mathsf{nan}}{(m)} & \quad \mbox{if}~ 1 \leq m < {2^{M}} \\
 & {\mathit{f{\kern-0.1em\scriptstyle 32}}} & ::= & {f}{32} \\
@@ -2396,7 +2397,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{+0} & = & {+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{n}})} \\
+{+0} & = & {+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{e}})} \\
 \end{array}
 $$
 
@@ -7797,7 +7798,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{isub}}}_{N}(i_1, i_2) & = & (i_1 - i_2 + {2^{N}}) \mathbin{\mathrm{mod}} {2^{N}} \\
+{{\mathrm{isub}}}_{N}(i_1, i_2) & = & ({2^{N}} + i_1 - i_2) \mathbin{\mathrm{mod}} {2^{N}} \\
 \end{array}
 $$
 

@@ -183,12 +183,12 @@ syntax byte =
 ;; 1-syntax.watsup
 syntax uN{N : N}(N) =
   | `%`{i : nat}(i : nat)
-    -- if ((i >= 0) /\ (i <= ((2 ^ N) - 1)))
+    -- if ((i >= 0) /\ (i <= ((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))
 
 ;; 1-syntax.watsup
 syntax sN{N : N}(N) =
   | `%`{i : int}(i : int)
-    -- if ((((i >= - ((2 ^ (N - 1)) : nat <:> int)) /\ (i <= - (1 : nat <:> int))) \/ (i = (0 : nat <:> int))) \/ ((i >= + (1 : nat <:> int)) /\ (i <= (((2 ^ (N - 1)) - 1) : nat <:> int))))
+    -- if ((((i >= - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)) /\ (i <= - (1 : nat <:> int))) \/ (i = (0 : nat <:> int))) \/ ((i >= + (1 : nat <:> int)) /\ (i <= (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int)))))
 
 ;; 1-syntax.watsup
 syntax iN{N : N}(N) = uN(N)
@@ -244,9 +244,9 @@ syntax exp = int
 ;; 1-syntax.watsup
 syntax fNmag{N : N}(N) =
   | NORM{m : m, exp : exp}(m : m, exp : exp)
-    -- if ((m < (2 ^ $M(N))) /\ ((((2 - (2 ^ ($E(N) - 1))) : nat <:> int) <= exp) /\ (exp <= (((2 ^ ($E(N) - 1)) - 1) : nat <:> int))))
+    -- if ((m < (2 ^ $M(N))) /\ ((((2 : nat <:> int) - ((2 ^ ((($E(N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)) <= exp) /\ (exp <= (((2 ^ ((($E(N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int)))))
   | SUBNORM{m : m, exp : exp}(m : m)
-    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = (exp : int <:> nat)))
+    -- if ((m < (2 ^ $M(N))) /\ (((2 : nat <:> int) - ((2 ^ ((($E(N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)) = exp))
   | INF
   | `NAN(%)`{m : m}(m : m)
     -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
@@ -275,7 +275,7 @@ def $fone(N : N) : fN(N)
 ;; 1-syntax.watsup
 def $canon_(N : N) : nat
   ;; 1-syntax.watsup
-  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+  def $canon_{N : N}(N) = (2 ^ ((($signif(N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
 
 ;; 1-syntax.watsup
 syntax vN{N : N}(N) = iN(N)
@@ -296,7 +296,7 @@ syntax char =
 ;; A-binary.watsup
 def $cont(byte : byte) : nat
   ;; A-binary.watsup
-  def $cont{b : byte}(b) = (b!`%`_byte.0 - 128)
+  def $cont{b : byte}(b) = (((b!`%`_byte.0 : nat <:> int) - (128 : nat <:> int)) : int <:> nat)
     -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
 
 ;; 1-syntax.watsup
@@ -313,15 +313,15 @@ def $utf8(char*) : byte*
   ;; A-binary.watsup:57.1-59.46
   def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
     -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
-    -- if (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + $cont(b_2))))
+    -- if (ch = `%`_char((((2 ^ 6) * (((b_1!`%`_byte.0 : nat <:> int) - (192 : nat <:> int)) : int <:> nat)) + $cont(b_2))))
   ;; A-binary.watsup:60.1-62.64
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
     -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
-    -- if (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))))
+    -- if (ch = `%`_char(((((2 ^ 12) * (((b_1!`%`_byte.0 : nat <:> int) - (224 : nat <:> int)) : int <:> nat)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))))
   ;; A-binary.watsup:63.1-65.82
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
     -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
-    -- if (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))))
+    -- if (ch = `%`_char((((((2 ^ 18) * (((b_1!`%`_byte.0 : nat <:> int) - (240 : nat <:> int)) : int <:> nat)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))))
 }
 
 ;; 1-syntax.watsup
@@ -1207,7 +1207,7 @@ syntax loadop_{Inn : Inn}((Inn : Inn <: numtype)) =
 ;; 1-syntax.watsup
 syntax vloadop_{vectype : vectype}(vectype) =
   | `SHAPE%X%%`{sz : sz, M : M, sx : sx}(sz : sz, M : M, sx : sx)
-    -- if ((sz!`%`_sz.0 * M) = ($vsize(vectype) / 2))
+    -- if ((sz!`%`_sz.0 * M) = ((($vsize(vectype) : nat <:> rat) / (2 : nat <:> rat)) : rat <:> nat))
   | SPLAT{sz : sz}(sz : sz)
   | ZERO{sz : sz}(sz : sz)
     -- if (sz!`%`_sz.0 >= 32)
@@ -2202,7 +2202,7 @@ def $shift_labelidxs(labelidx*) : labelidx*
   ;; 2-syntax-aux.watsup:566.1-566.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_uN(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
   ;; 2-syntax-aux.watsup:567.1-567.91
-  def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_uN((labelidx!`%`_labelidx.0 - 1))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
+  def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_uN((((labelidx!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
 ;; 2-syntax-aux.watsup
@@ -3029,7 +3029,7 @@ relation Tabletype_ok: `%|-%:OK`(context, tabletype)
   ;; 3-typing.watsup
   rule _{C : context, limits : limits, reftype : reftype}:
     `%|-%:OK`(C, `%%`_tabletype(limits, reftype))
-    -- Limits_ok: `%|-%:%`(C, limits, ((2 ^ 32) - 1))
+    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ 32) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
     -- Reftype_ok: `%|-%:OK`(C, reftype)
 
 ;; 3-typing.watsup
@@ -3741,69 +3741,69 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1086.1-1089.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1100.1-1103.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1105.1-1108.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_sz(M)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (M / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1110.1-1113.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1115.1-1118.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ((M / 8) * N))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (((M : nat <:> rat) / (8 : nat <:> rat)) * (N : nat <:> rat)))
 
   ;; 3-typing.watsup:1120.1-1123.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1125.1-1128.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1130.1-1134.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
-    -- if (i!`%`_laneidx.0 < (128 / N))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
   ;; 3-typing.watsup:1136.1-1139.46
   rule vstore{C : context, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($vsize(V128_vectype) / 8))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
   ;; 3-typing.watsup:1141.1-1145.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
-    -- if (i!`%`_laneidx.0 < (128 / N))
+    -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
 ;; 3-typing.watsup:556.1-556.96
 relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
@@ -4235,10 +4235,10 @@ def $invfbytes_(N : N, byte*) : fN(N)
 def $signed_(N : N, nat : nat) : int
   ;; 4-numerics.watsup
   def $signed_{N : N, i : nat}(N, i) = (i : nat <:> int)
-    -- if (i < (2 ^ (N - 1)))
+    -- if (i < (2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))
   ;; 4-numerics.watsup
   def $signed_{N : N, i : nat}(N, i) = ((i : nat <:> int) - ((2 ^ N) : nat <:> int))
-    -- if (((2 ^ (N - 1)) <= i) /\ (i < (2 ^ N)))
+    -- if (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) <= i) /\ (i < (2 ^ N)))
 
 ;; 4-numerics.watsup
 def $invsigned_(N : N, int : int) : nat
@@ -4276,8 +4276,8 @@ def $sat_u_(N : N, int : int) : nat
   def $sat_u_{N : N, i : int}(N, i) = 0
     -- if (i < (0 : nat <:> int))
   ;; 4-numerics.watsup
-  def $sat_u_{N : N, i : int}(N, i) = ((2 ^ N) - 1)
-    -- if (i > (((2 ^ N) - 1) : nat <:> int))
+  def $sat_u_{N : N, i : int}(N, i) = ((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)
+    -- if (i > (((2 ^ N) : nat <:> int) - (1 : nat <:> int)))
   ;; 4-numerics.watsup
   def $sat_u_{N : N, i : int}(N, i) = (i : int <:> nat)
     -- otherwise
@@ -4285,11 +4285,11 @@ def $sat_u_(N : N, int : int) : nat
 ;; 4-numerics.watsup
 def $sat_s_(N : N, int : int) : int
   ;; 4-numerics.watsup
-  def $sat_s_{N : N, i : int}(N, i) = - ((2 ^ (N - 1)) : nat <:> int)
-    -- if (i < - ((2 ^ (N - 1)) : nat <:> int))
+  def $sat_s_{N : N, i : int}(N, i) = - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)
+    -- if (i < - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int))
   ;; 4-numerics.watsup
-  def $sat_s_{N : N, i : int}(N, i) = (((2 ^ (N - 1)) - 1) : nat <:> int)
-    -- if (i > (((2 ^ (N - 1)) - 1) : nat <:> int))
+  def $sat_s_{N : N, i : int}(N, i) = (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int))
+    -- if (i > (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int)))
   ;; 4-numerics.watsup
   def $sat_s_{N : N, i : int}(N, i) = i
     -- otherwise
@@ -4332,7 +4332,7 @@ def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 ;; 4-numerics.watsup
 def $isub_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
   ;; 4-numerics.watsup
-  def $isub_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, i_1, i_2) = `%`_iN(((((2 ^ N) + i_1!`%`_iN.0) - i_2!`%`_iN.0) \ (2 ^ N)))
+  def $isub_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, i_1, i_2) = `%`_iN(((((((2 ^ N) + i_1!`%`_iN.0) : nat <:> int) - (i_2!`%`_iN.0 : nat <:> int)) \ ((2 ^ N) : nat <:> int)) : int <:> nat))
 
 ;; 4-numerics.watsup
 def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
@@ -4361,7 +4361,7 @@ def $iadd_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 ;; 4-numerics.watsup
 def $isub_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
   ;; 4-numerics.watsup
-  def $isub_sat_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = `%`_iN($sat_u_(N, (((i_1!`%`_iN.0 : nat <:> int) : int <:> int) - (i_2!`%`_iN.0 : nat <:> int))))
+  def $isub_sat_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = `%`_iN($sat_u_(N, ((i_1!`%`_iN.0 : nat <:> int) - (i_2!`%`_iN.0 : nat <:> int))))
   ;; 4-numerics.watsup
   def $isub_sat_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = `%`_iN($invsigned_(N, $sat_s_(N, ($signed_(N, i_1!`%`_iN.0) - $signed_(N, i_2!`%`_iN.0)))))
 
@@ -5615,7 +5615,7 @@ def $growmem(meminst : meminst, nat : nat) : meminst
   def $growmem{meminst : meminst, n : n, meminst' : meminst, i : u32, j : u32, `b*` : byte*, i' : u32}(meminst, n) = meminst'
     -- if (meminst = {TYPE `%PAGE`_memtype(`[%..%]`_limits(i, j)), BYTES b*{b <- `b*`}})
     -- if (meminst' = {TYPE `%PAGE`_memtype(`[%..%]`_limits(i', j)), BYTES b*{b <- `b*`} ++ `%`_byte(0)^(n * (64 * $Ki)){}})
-    -- if ((i' = `%`_u32(((|b*{b <- `b*`}| / (64 * $Ki)) + n))) /\ (((|b*{b <- `b*`}| / (64 * $Ki)) + n) <= j!`%`_u32.0))
+    -- if ((i' = `%`_u32(((((|b*{b <- `b*`}| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) + (n : nat <:> rat)) : rat <:> nat))) /\ ((((|b*{b <- `b*`}| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) + (n : nat <:> rat)) <= (j!`%`_u32.0 : nat <:> rat)))
 
 ;; 7-runtime-typing.watsup
 relation Num_type: `%|-%:%`(store, num, numtype)
@@ -5775,7 +5775,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; 8-reduction.watsup
   rule `br-label-succ`{n : n, `instr'*` : instr*, `val*` : val*, l : labelidx, `instr*` : instr*}:
-    `%~>%`([`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)] ++ instr*{instr <- `instr*`})], (val : val <: instr)*{val <- `val*`} ++ [BR_instr(`%`_labelidx((l!`%`_labelidx.0 - 1)))])
+    `%~>%`([`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)] ++ instr*{instr <- `instr*`})], (val : val <: instr)*{val <- `val*`} ++ [BR_instr(`%`_labelidx((((l!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))])
     -- if (l!`%`_labelidx.0 > 0)
 
   ;; 8-reduction.watsup
@@ -6297,13 +6297,13 @@ relation Step_read: `%~>%`(config, instr*)
   rule `array.new_data-oob`{z : state, i : num_(I32_numtype), n : n, x : idx, y : idx, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), [TRAP_instr])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ((i!`%`_num_.0 + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES_datainst|)
+    -- if ((i!`%`_num_.0 + ((((n * $zsize(zt)) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$data(z, y).BYTES_datainst|)
 
   ;; 8-reduction.watsup
   rule `array.new_data-num`{z : state, i : num_(I32_numtype), n : n, x : idx, y : idx, zt : storagetype, `c*` : lit_(zt)*, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const($cunpack(zt), $cunpacknum_(zt, c))^n{c <- `c*`} ++ [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concatn_(syntax byte, $zbytes_(zt, c)^n{c <- `c*`}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i!`%`_num_.0 : ((n * $zsize(zt)) / 8)])
+    -- if ($concatn_(syntax byte, $zbytes_(zt, c)^n{c <- `c*`}, ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) = $data(z, y).BYTES_datainst[i!`%`_num_.0 : ((((n * $zsize(zt)) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; 8-reduction.watsup
   rule `array.get-null`{z : state, ht : heaptype, i : num_(I32_numtype), `sx?` : sx?, x : idx}:
@@ -6344,7 +6344,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `array.fill-succ`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.FILL_instr(x)]), [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) ARRAY.SET_instr(x) REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((n - 1))) ARRAY.FILL_instr(x)])
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.FILL_instr(x)]), [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) ARRAY.SET_instr(x) REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) ARRAY.FILL_instr(x)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -6373,14 +6373,14 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `array.copy-le`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx, `sx?` : sx?, mut : mut, zt_2 : storagetype}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.COPY_instr(x_1, x_2)]), [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) ARRAY.GET_instr(sx?{sx <- `sx?`}, x_2) ARRAY.SET_instr(x_1) REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, `%`_num_((i_1!`%`_num_.0 + 1))) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, `%`_num_((i_2!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((n - 1))) ARRAY.COPY_instr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.COPY_instr(x_1, x_2)]), [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) ARRAY.GET_instr(sx?{sx <- `sx?`}, x_2) ARRAY.SET_instr(x_1) REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, `%`_num_((i_1!`%`_num_.0 + 1))) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, `%`_num_((i_2!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) ARRAY.COPY_instr(x_1, x_2)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
     -- if ((i_1!`%`_num_.0 <= i_2!`%`_num_.0) /\ (sx?{sx <- `sx?`} = $sx(zt_2)))
 
   ;; 8-reduction.watsup
   rule `array.copy-gt`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx, `sx?` : sx?, mut : mut, zt_2 : storagetype}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.COPY_instr(x_1, x_2)]), [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, `%`_num_(((i_1!`%`_num_.0 + n) - 1))) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, `%`_num_(((i_2!`%`_num_.0 + n) - 1))) ARRAY.GET_instr(sx?{sx <- `sx?`}, x_2) ARRAY.SET_instr(x_1) REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_((n - 1))) ARRAY.COPY_instr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.COPY_instr(x_1, x_2)]), [REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, `%`_num_(((((i_1!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, `%`_num_(((((i_2!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) ARRAY.GET_instr(sx?{sx <- `sx?`}, x_2) ARRAY.SET_instr(x_1) REF.ARRAY_ADDR_instr(a_1) CONST_instr(I32_numtype, i_1) REF.ARRAY_ADDR_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) ARRAY.COPY_instr(x_1, x_2)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
     -- if (sx?{sx <- `sx?`} = $sx(zt_2))
@@ -6407,7 +6407,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `array.init_elem-succ`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, ref : ref}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.INIT_ELEM_instr(x, y)]), [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) (ref : ref <: instr) ARRAY.SET_instr(x) REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_ELEM_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.INIT_ELEM_instr(x, y)]), [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) (ref : ref <: instr) ARRAY.SET_instr(x) REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) ARRAY.INIT_ELEM_instr(x, y)])
     -- otherwise
     -- if (ref = $elem(z, y).REFS_eleminst[j!`%`_num_.0])
 
@@ -6424,7 +6424,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule `array.init_data-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_instr(x, y)]), [TRAP_instr])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ((j!`%`_num_.0 + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES_datainst|)
+    -- if ((j!`%`_num_.0 + ((((n * $zsize(zt)) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$data(z, y).BYTES_datainst|)
 
   ;; 8-reduction.watsup
   rule `array.init_data-zero`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
@@ -6434,10 +6434,10 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `array.init_data-num`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, zt : storagetype, c : lit_(zt), mut : mut}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_instr(x, y)]), [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) $const($cunpack(zt), $cunpacknum_(zt, c)) ARRAY.SET_instr(x) REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + ($zsize(zt) / 8)))) CONST_instr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_instr(x, y)]), [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, i) $const($cunpack(zt), $cunpacknum_(zt, c)) ARRAY.SET_instr(x) REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) ARRAY.INIT_DATA_instr(x, y)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($zbytes_(zt, c) = $data(z, y).BYTES_datainst[j!`%`_num_.0 : ($zsize(zt) / 8)])
+    -- if ($zbytes_(zt, c) = $data(z, y).BYTES_datainst[j!`%`_num_.0 : ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; 8-reduction.watsup
   rule local.get{z : state, x : idx, val : val}:
@@ -6477,7 +6477,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `table.fill-succ`{z : state, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.FILL_instr(x)]), [CONST_instr(I32_numtype, i) (val : val <: instr) TABLE.SET_instr(x) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((n - 1))) TABLE.FILL_instr(x)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.FILL_instr(x)]), [CONST_instr(I32_numtype, i) (val : val <: instr) TABLE.SET_instr(x) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) TABLE.FILL_instr(x)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -6493,13 +6493,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `table.copy-le`{z : state, j : num_(I32_numtype), i : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.COPY_instr(x, y)]), [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) TABLE.GET_instr(y) TABLE.SET_instr(x) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((n - 1))) TABLE.COPY_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.COPY_instr(x, y)]), [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) TABLE.GET_instr(y) TABLE.SET_instr(x) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) TABLE.COPY_instr(x, y)])
     -- otherwise
     -- if (j!`%`_num_.0 <= i!`%`_num_.0)
 
   ;; 8-reduction.watsup
   rule `table.copy-gt`{z : state, j : num_(I32_numtype), i : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.COPY_instr(x, y)]), [CONST_instr(I32_numtype, `%`_num_(((j!`%`_num_.0 + n) - 1))) CONST_instr(I32_numtype, `%`_num_(((i!`%`_num_.0 + n) - 1))) TABLE.GET_instr(y) TABLE.SET_instr(x) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_((n - 1))) TABLE.COPY_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.COPY_instr(x, y)]), [CONST_instr(I32_numtype, `%`_num_(((((j!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) CONST_instr(I32_numtype, `%`_num_(((((i!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) TABLE.GET_instr(y) TABLE.SET_instr(x) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) TABLE.COPY_instr(x, y)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -6515,85 +6515,85 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `table.init-succ`{z : state, j : num_(I32_numtype), i : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.INIT_instr(x, y)]), [CONST_instr(I32_numtype, j) ($elem(z, y).REFS_eleminst[i!`%`_num_.0] : ref <: instr) TABLE.SET_instr(x) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((n - 1))) TABLE.INIT_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.INIT_instr(x, y)]), [CONST_instr(I32_numtype, j) ($elem(z, y).REFS_eleminst[i!`%`_num_.0] : ref <: instr) TABLE.SET_instr(x) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) TABLE.INIT_instr(x, y)])
     -- otherwise
 
   ;; 8-reduction.watsup
   rule `load-num-oob`{z : state, i : num_(I32_numtype), nt : numtype, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) LOAD_instr(nt, ?(), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((($size(nt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `load-num-val`{z : state, i : num_(I32_numtype), nt : numtype, x : idx, ao : memarg, c : num_(nt)}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) LOAD_instr(nt, ?(), x, ao)]), [CONST_instr(nt, c)])
-    -- if ($nbytes_(nt, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : ($size(nt) / 8)])
+    -- if ($nbytes_(nt, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : ((($size(nt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; 8-reduction.watsup
   rule `load-pack-oob`{z : state, i : num_(I32_numtype), Inn : Inn, n : n, sx : sx, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(n), sx)), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (((n : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `load-pack-val`{z : state, i : num_(I32_numtype), Inn : Inn, n : n, sx : sx, x : idx, ao : memarg, c : iN(n)}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(n), sx)), x, ao)]), [CONST_instr((Inn : Inn <: numtype), $extend__(n, $size((Inn : Inn <: numtype)), sx, c))])
-    -- if ($ibytes_(n, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (n / 8)])
+    -- if ($ibytes_(n, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (((n : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; 8-reduction.watsup
   rule `vload-oob`{z : state, i : num_(I32_numtype), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `vload-val`{z : state, i : num_(I32_numtype), x : idx, ao : memarg, c : vec_(V128_Vnn)}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(), x, ao)]), [VCONST_instr(V128_vectype, c)])
-    -- if ($vbytes_(V128_vectype, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : ($vsize(V128_vectype) / 8)])
+    -- if ($vbytes_(V128_vectype, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : ((($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; 8-reduction.watsup
   rule `vload-pack-oob`{z : state, i : num_(I32_numtype), M : M, K : K, sx : sx, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((M * K) / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((((M * K) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `vload-pack-val`{z : state, i : num_(I32_numtype), M : M, K : K, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), `j*` : iN(M)*, `k*` : nat*, Jnn : Jnn}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [VCONST_instr(V128_vectype, c)])
-    -- (if ($ibytes_(M, j) = $mem(z, x).BYTES_meminst[((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((k * M) / 8)) : (M / 8)]))^(k<K){j <- `j*`, k <- `k*`}
+    -- (if ($ibytes_(M, j) = $mem(z, x).BYTES_meminst[((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((((k * M) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) : (((M : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)]))^(k<K){j <- `j*`, k <- `k*`}
     -- if ((c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(K)), $extend__(M, $lsizenn((Jnn : Jnn <: lanetype)), sx, j)^K{j <- `j*`})) /\ ($lsizenn((Jnn : Jnn <: lanetype)) = (M * 2)))
 
   ;; 8-reduction.watsup
   rule `vload-splat-oob`{z : state, i : num_(I32_numtype), N : N, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (N / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `vload-splat-val`{z : state, i : num_(I32_numtype), N : N, x : idx, ao : memarg, c : vec_(V128_Vnn), j : iN(N), Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, ao)]), [VCONST_instr(V128_vectype, c)])
-    -- if ($ibytes_(N, j) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
+    -- if ($ibytes_(N, j) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
-    -- if (M = (128 / N))
+    -- if (M = (((128 : nat <:> rat) / (N : nat <:> rat)) : rat <:> nat))
     -- if (c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `%`_lane_(j!`%`_iN.0)^M{}))
 
   ;; 8-reduction.watsup
   rule `vload-zero-oob`{z : state, i : num_(I32_numtype), N : N, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (N / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `vload-zero-val`{z : state, i : num_(I32_numtype), N : N, x : idx, ao : memarg, c : vec_(V128_Vnn), j : iN(N)}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, ao)]), [VCONST_instr(V128_vectype, c)])
-    -- if ($ibytes_(N, j) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
+    -- if ($ibytes_(N, j) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
     -- if (c = $extend__(N, 128, U_sx, j))
 
   ;; 8-reduction.watsup
   rule `vload_lane-oob`{z : state, i : num_(I32_numtype), c_1 : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : laneidx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c_1) VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, ao, j)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (N / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule `vload_lane-val`{z : state, i : num_(I32_numtype), c_1 : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : laneidx, c : vec_(V128_Vnn), k : iN(N), Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c_1) VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, ao, j)]), [VCONST_instr(V128_vectype, c)])
-    -- if ($ibytes_(N, k) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
+    -- if ($ibytes_(N, k) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) : (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
-    -- if (M = ($vsize(V128_vectype) / N))
+    -- if (M = ((($vsize(V128_vectype) : nat <:> rat) / (N : nat <:> rat)) : rat <:> nat))
     -- if (c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1)[[j!`%`_laneidx.0] = `%`_lane_(k!`%`_iN.0)]))
 
   ;; 8-reduction.watsup
@@ -6614,7 +6614,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `memory.fill-succ`{z : state, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.FILL_instr(x)]), [CONST_instr(I32_numtype, i) (val : val <: instr) STORE_instr(I32_numtype, ?(`%`_sz(8)), x, $memarg0) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((n - 1))) MEMORY.FILL_instr(x)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.FILL_instr(x)]), [CONST_instr(I32_numtype, i) (val : val <: instr) STORE_instr(I32_numtype, ?(`%`_sz(8)), x, $memarg0) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) MEMORY.FILL_instr(x)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -6630,13 +6630,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `memory.copy-le`{z : state, i_1 : num_(I32_numtype), i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.COPY_instr(x_1, x_2)]), [CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(8), U_sx)), x_2, $memarg0) STORE_instr(I32_numtype, ?(`%`_sz(8)), x_1, $memarg0) CONST_instr(I32_numtype, `%`_num_((i_1!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i_2!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_instr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.COPY_instr(x_1, x_2)]), [CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(8), U_sx)), x_2, $memarg0) STORE_instr(I32_numtype, ?(`%`_sz(8)), x_1, $memarg0) CONST_instr(I32_numtype, `%`_num_((i_1!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i_2!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) MEMORY.COPY_instr(x_1, x_2)])
     -- otherwise
     -- if (i_1!`%`_num_.0 <= i_2!`%`_num_.0)
 
   ;; 8-reduction.watsup
   rule `memory.copy-gt`{z : state, i_1 : num_(I32_numtype), i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.COPY_instr(x_1, x_2)]), [CONST_instr(I32_numtype, `%`_num_(((i_1!`%`_num_.0 + n) - 1))) CONST_instr(I32_numtype, `%`_num_(((i_2!`%`_num_.0 + n) - 1))) LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(8), U_sx)), x_2, $memarg0) STORE_instr(I32_numtype, ?(`%`_sz(8)), x_1, $memarg0) CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_instr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.COPY_instr(x_1, x_2)]), [CONST_instr(I32_numtype, `%`_num_(((((i_1!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) CONST_instr(I32_numtype, `%`_num_(((((i_2!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) LOAD_instr(I32_numtype, ?(`%%`_loadop_(`%`_sz(8), U_sx)), x_2, $memarg0) STORE_instr(I32_numtype, ?(`%`_sz(8)), x_1, $memarg0) CONST_instr(I32_numtype, i_1) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) MEMORY.COPY_instr(x_1, x_2)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -6652,7 +6652,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule `memory.init-succ`{z : state, j : num_(I32_numtype), i : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.INIT_instr(x, y)]), [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_($data(z, y).BYTES_datainst[i!`%`_num_.0]!`%`_byte.0)) STORE_instr(I32_numtype, ?(`%`_sz(8)), x, $memarg0) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((n - 1))) MEMORY.INIT_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.INIT_instr(x, y)]), [CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_($data(z, y).BYTES_datainst[i!`%`_num_.0]!`%`_byte.0)) STORE_instr(I32_numtype, ?(`%`_sz(8)), x, $memarg0) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1))) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat))) MEMORY.INIT_instr(x, y)])
     -- otherwise
 
 ;; 8-reduction.watsup
@@ -6763,31 +6763,31 @@ relation Step: `%~>%`(config, config)
   ;; 8-reduction.watsup:970.1-973.60
   rule `store-num-oob`{z : state, i : num_(I32_numtype), nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((($size(nt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup:975.1-979.29
   rule `store-num-val`{z : state, i : num_(I32_numtype), nt : numtype, c : num_(nt), x : idx, ao : memarg, `b*` : byte*}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b <- `b*`}), []))
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), ((($size(nt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $nbytes_(nt, c))
 
   ;; 8-reduction.watsup:981.1-984.52
   rule `store-pack-oob`{z : state, i : num_(I32_numtype), Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + (((n : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup:986.1-990.52
   rule `store-pack-val`{z : state, i : num_(I32_numtype), Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, `b*` : byte*}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b <- `b*`}), []))
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), (((n : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $ibytes_(n, $wrap__($size((Inn : Inn <: numtype)), n, c)))
 
   ;; 8-reduction.watsup:992.1-994.63
   rule `vstore-oob`{z : state, i : num_(I32_numtype), c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0) + ((($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup:996.1-998.31
   rule `vstore-val`{z : state, i : num_(I32_numtype), c : vec_(V128_Vnn), x : idx, ao : memarg, `b*` : byte*}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b <- `b*`}), []))
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), ((($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $vbytes_(V128_vectype, c))
 
   ;; 8-reduction.watsup:1001.1-1003.50
@@ -6797,14 +6797,14 @@ relation Step: `%~>%`(config, config)
 
   ;; 8-reduction.watsup:1005.1-1009.49
   rule `vstore_lane-val`{z : state, i : num_(I32_numtype), c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : laneidx, `b*` : byte*, Jnn : Jnn, M : M}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, j)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b <- `b*`}), []))
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, j)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u32.0), (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat), b*{b <- `b*`}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
-    -- if (M = (128 / N))
+    -- if (M = (((128 : nat <:> rat) / (N : nat <:> rat)) : rat <:> nat))
     -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j!`%`_laneidx.0]!`%`_lane_.0)))
 
   ;; 8-reduction.watsup:1017.1-1020.37
   rule `memory.grow-succeed`{z : state, n : n, x : idx, mi : meminst}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((((|$mem(z, x).BYTES_meminst| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat)))]))
     -- if (mi = $growmem($mem(z, x), n))
 
   ;; 8-reduction.watsup:1022.1-1023.78
@@ -7116,7 +7116,7 @@ grammar BuN(N : N) : uN(N)
   prod{n : n} `%`_byte(n):Bbyte => `%`_uN(n)
     -- if ((n < (2 ^ 7)) /\ (n < (2 ^ N)))
   ;; A-binary.watsup:22.5-22.82
-  prod{n : n, m : m} {`%`_byte(n):Bbyte `%`_uN(m):BuN((N - 7))} => `%`_uN((((2 ^ 7) * m) + (n - (2 ^ 7))))
+  prod{n : n, m : m} {`%`_byte(n):Bbyte `%`_uN(m):BuN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))} => `%`_uN((((2 ^ 7) * m) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)))
     -- if ((n >= (2 ^ 7)) /\ (N > 7))
 }
 
@@ -7134,12 +7134,12 @@ grammar Blist(syntax el, grammar BX : el) : el*
 grammar BsN(N : N) : sN(N)
   ;; A-binary.watsup
   prod{n : n} `%`_byte(n):Bbyte => `%`_sN((n : nat <:> int))
-    -- if ((n < (2 ^ 6)) /\ (n < (2 ^ (N - 1))))
+    -- if ((n < (2 ^ 6)) /\ (n < (2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
   ;; A-binary.watsup
-  prod{n : n} `%`_byte(n):Bbyte => `%`_sN(((n - (2 ^ 7)) : nat <:> int))
-    -- if ((((2 ^ 6) <= n) /\ (n < (2 ^ 7))) /\ (n >= ((2 ^ 7) - (2 ^ (N - 1)))))
+  prod{n : n} `%`_byte(n):Bbyte => `%`_sN(((n : nat <:> int) - ((2 ^ 7) : nat <:> int)))
+    -- if ((((2 ^ 6) <= n) /\ (n < (2 ^ 7))) /\ ((n : nat <:> int) >= (((2 ^ 7) : nat <:> int) - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int))))
   ;; A-binary.watsup
-  prod{n : n, i : uN((N - 7))} {`%`_byte(n):Bbyte i:BuN((N - 7))} => `%`_sN(((((2 ^ 7) * i!`%`_uN.0) + (n - (2 ^ 7))) : nat <:> int))
+  prod{n : n, i : uN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))} {`%`_byte(n):Bbyte i:BuN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))} => `%`_sN(((((2 ^ 7) * i!`%`_uN.0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))
     -- if ((n >= (2 ^ 7)) /\ (N > 7))
 
 ;; A-binary.watsup
@@ -7150,7 +7150,7 @@ grammar BiN(N : N) : iN(N)
 ;; A-binary.watsup
 grammar BfN(N : N) : fN(N)
   ;; A-binary.watsup
-  prod{`b*` : byte*} b*{b <- `b*`}:Bbyte^(N / 8){} => $invfbytes_(N, b*{b <- `b*`})
+  prod{`b*` : byte*} b*{b <- `b*`}:Bbyte^(((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat){} => $invfbytes_(N, b*{b <- `b*`})
 
 ;; A-binary.watsup
 grammar Bu64 : u64
@@ -7369,7 +7369,7 @@ grammar Brectype : rectype
 ;; A-binary.watsup
 grammar Blimits : limits
   ;; A-binary.watsup
-  prod{n : n} {0x00 `%`_u32(n):Bu32} => `[%..%]`_limits(`%`_u32(n), `%`_u32(((2 ^ 32) - 1)))
+  prod{n : n} {0x00 `%`_u32(n):Bu32} => `[%..%]`_limits(`%`_u32(n), `%`_u32(((((2 ^ 32) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))
   ;; A-binary.watsup
   prod{n : n, m : m} {0x01 `%`_u32(n):Bu32 `%`_u32(m):Bu32} => `[%..%]`_limits(`%`_u32(n), `%`_u32(m))
 
@@ -7450,7 +7450,7 @@ grammar Bmemarg : memidxop
   prod{n : n, m : m} {`%`_u32(n):Bu32 `%`_u32(m):Bu32} => (`%`_memidx(0), {ALIGN `%`_u32(n), OFFSET `%`_u32(m)})
     -- if (n < (2 ^ 6))
   ;; A-binary.watsup
-  prod{n : n, x : idx, m : m} {`%`_u32(n):Bu32 x:Bmemidx `%`_u32(m):Bu32} => (x, {ALIGN `%`_u32((n - (2 ^ 6))), OFFSET `%`_u32(m)})
+  prod{n : n, x : idx, m : m} {`%`_u32(n):Bu32 x:Bmemidx `%`_u32(m):Bu32} => (x, {ALIGN `%`_u32((((n : nat <:> int) - ((2 ^ 6) : nat <:> int)) : int <:> nat)), OFFSET `%`_u32(m)})
     -- if (((2 ^ 6) <= n) /\ (n < (2 ^ 7)))
 
 ;; A-binary.watsup

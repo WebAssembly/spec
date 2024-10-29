@@ -22,6 +22,12 @@ let to_string = function
   | Rat q -> Z.to_string (Q.num q) ^ "/" ^ Z.to_string (Q.den q)
   | Real r -> Printf.sprintf "%.17g" r
 
+let string_of_typ = function
+  | NatT -> "Nat"
+  | IntT -> "Int"
+  | RatT -> "Rat"
+  | RealT -> "Real"
+
 let string_of_unop = function
   | PlusOp -> "+"
   | MinusOp -> "-"
@@ -54,8 +60,8 @@ let typ_unop op t1 t2 : bool =
 let typ_binop op t1 t2 t3 : bool =
 	match op with
   | AddOp | MulOp -> t1 = t2 && t1 = t3
-  | SubOp -> t1 = t2 (*&& t1 >= IntT*)  (* TODO(3, rossberg): tighten? *)
-  | DivOp -> t1 = t2 (*&& t1 >= RatT*)
+  | SubOp -> t1 = t2 && t1 >= IntT
+  | DivOp -> t1 = t2 && t1 >= RatT
   | ModOp -> t1 = t2 && t1 <= IntT
   | PowOp -> t1 = t3 && (t2 = NatT || t2 = IntT && t1 >= RatT)
 
@@ -128,8 +134,8 @@ let rec bin op num1 num2 : num option =
   | DivOp, Rat q1, Rat q2 when Q.(q2 <> zero) -> Some (Rat Q.(q1 / q2))
   | DivOp, Real r1, Real r2 when r2 <> 0.0 -> Some (Real (r1 /. r2))
 
-  | ModOp, Nat n1, Nat n2 -> Some (Nat Z.(rem n1 n2))
-  | ModOp, Int i1, Nat i2 -> Some (Int Z.(rem i1 i2))
+  | ModOp, Nat n1, Nat n2 when Z.(n2 <> zero) -> Some (Nat Z.(rem n1 n2))
+  | ModOp, Int i1, Int i2 when Z.(i2 <> zero) -> Some (Int Z.(rem i1 i2))
 
   | PowOp, Nat n1, Nat n2 -> Some (Nat Z.(n1 ** to_int n2))
   | PowOp, Int i1, Int i2 when Z.(i2 >= zero && fits_int i2) -> Some (Int Z.(i1 ** to_int i2))
@@ -199,12 +205,7 @@ let bin_partial op arg1 arg2 of_ to_ : 'a option =
 	| op, Some num1, Some num2 ->
 	  (match bin op num1 num2 with
 	  | Some num -> Some (to_ num)
-	  | None when to_typ num1 = to_typ num2 -> None
-    | None ->
-	    let num1', num2' = adjust num1 num2 in
-	    match bin op num1' num2' with
-	    | Some num -> Some (to_ num)
-	    | None -> None
+	  | None -> None
 	  )
 
 (*
@@ -240,30 +241,30 @@ let bin_partial op arg1 arg2 of_ to_ : 'a option =
 
   | _, _, _ -> None
 
-let rec cmp op num1 num2 : bool =
+let cmp op num1 num2 : bool option =
   Util.Debug_log.(log "xl.num.cmp"
     (fun _ -> to_string num1 ^ " " ^ string_of_cmpop op ^ " " ^ to_string num2)
-    Bool.to_string
+    (function None -> "?" | Some b -> Bool.to_string b)
   ) @@ fun _ ->
 	match op, num1, num2 with
-  | LtOp, Nat n1, Nat n2 -> (n1 < n2)
-  | LtOp, Int i1, Int i2 -> (i1 < i2)
-  | LtOp, Rat q1, Rat q2 -> Q.(q1 < q2)
-  | LtOp, Real r1, Real r2 -> (r1 < r2)
+  | LtOp, Nat n1, Nat n2 -> Some (n1 < n2)
+  | LtOp, Int i1, Int i2 -> Some (i1 < i2)
+  | LtOp, Rat q1, Rat q2 -> Some Q.(q1 < q2)
+  | LtOp, Real r1, Real r2 -> Some (r1 < r2)
 
-  | GtOp, Nat n1, Nat n2 -> (n1 > n2)
-  | GtOp, Int i1, Int i2 -> (i1 > i2)
-  | GtOp, Rat q1, Rat q2 -> Q.(q1 > q2)
-  | GtOp, Real r1, Real r2 -> (r1 > r2)
+  | GtOp, Nat n1, Nat n2 -> Some (n1 > n2)
+  | GtOp, Int i1, Int i2 -> Some (i1 > i2)
+  | GtOp, Rat q1, Rat q2 -> Some Q.(q1 > q2)
+  | GtOp, Real r1, Real r2 -> Some (r1 > r2)
 
-  | LeOp, Nat n1, Nat n2 -> (n1 <= n2)
-  | LeOp, Int i1, Int i2 -> (i1 <= i2)
-  | LeOp, Rat q1, Rat q2 -> Q.(q1 <= q2)
-  | LeOp, Real r1, Real r2 -> (r1 <= r2)
+  | LeOp, Nat n1, Nat n2 -> Some (n1 <= n2)
+  | LeOp, Int i1, Int i2 -> Some (i1 <= i2)
+  | LeOp, Rat q1, Rat q2 -> Some Q.(q1 <= q2)
+  | LeOp, Real r1, Real r2 -> Some (r1 <= r2)
 
-  | GeOp, Nat n1, Nat n2 -> (n1 >= n2)
-  | GeOp, Int i1, Int i2 -> (i1 >= i2)
-  | GeOp, Rat q1, Rat q2 -> Q.(q1 >= q2)
-  | GeOp, Real r1, Real r2 -> (r1 >= r2)
+  | GeOp, Nat n1, Nat n2 -> Some (n1 >= n2)
+  | GeOp, Int i1, Int i2 -> Some (i1 >= i2)
+  | GeOp, Rat q1, Rat q2 -> Some Q.(q1 >= q2)
+  | GeOp, Real r1, Real r2 -> Some (r1 >= r2)
 
-  | _, _, _ -> let num1', num2' = adjust num1 num2 in cmp op num1' num2'
+  | _, _, _ -> None
