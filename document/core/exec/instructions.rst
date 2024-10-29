@@ -2142,7 +2142,7 @@ where :math:`\Large\times \{x^\ast\}^N` transforms a sequence of :math:`N` sets 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\V128\K{.}\VCONST~c)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~i)
-     & (\iff i = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
+     & (\iff i = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), (0)^N) (0)^{32-N}))
      \\
    \end{array}
 
