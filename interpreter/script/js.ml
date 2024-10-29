@@ -436,7 +436,7 @@ let assert_return ress ts at =
       [ RefIsNull @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = HostRef n; _}) ->
+    | RefResult (RefPat {it = (HostRef n | Extern.ExternRef (HostRef n)); _}) ->
       [ Const (Value.I32 n @@ at) @@ at;
         Call (hostref_idx @@ at) @@ at;
         Call (eq_ref_idx @@ at)  @@ at;
