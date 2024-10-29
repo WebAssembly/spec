@@ -1,5 +1,6 @@
 open Reference_interpreter
 open Al
+open Xl
 open Ast
 open Al_util
 open Ds
@@ -41,7 +42,7 @@ let ref_type =
   (* exception *)
   | [CaseV ("REF.EXN_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXN"])
   (* array/func/struct addr *)
-  | [CaseV (name, [ NumV i ])]
+  | [CaseV (name, [ NumV (Num.Nat i) ])]
   when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
     let field_name = String.sub name 4 (String.length name - 9) in
     let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
@@ -115,7 +116,7 @@ let module_ok = function
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let externaddr_type = function
-  | [ CaseV (name, [ NumV z ]); t ] ->
+  | [ CaseV (name, [ NumV (Num.Nat z) ]); t ] ->
     (try
       let addr = Z.to_int z in
       let externaddr_type =

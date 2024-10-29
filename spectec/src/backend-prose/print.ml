@@ -2,6 +2,7 @@ open Al.Ast
 open Prose
 open Printf
 open Util.Source
+open Xl
 
 (* Helpers *)
 
@@ -50,26 +51,27 @@ let string_of_typ = Il.Print.string_of_typ
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "not"
-  | MinusOp -> "-"
+  | BoolUnop Bool.NotOp -> "not"
+  | NumUnop Num.PlusOp -> "+"
+  | NumUnop Num.MinusOp -> "-"
 
 let string_of_binop = function
-  | AndOp -> "and"
-  | OrOp -> "or"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "·"
-  | DivOp -> "/"
-  | ModOp -> "\\"
-  | ExpOp -> "^"
+  | BoolBinop Bool.AndOp -> "and"
+  | BoolBinop Bool.OrOp -> "or"
+  | BoolBinop Bool.ImplOp -> "=>"
+  | BoolBinop Bool.EquivOp -> "<=>"
+  | NumBinop Num.AddOp -> "+"
+  | NumBinop Num.SubOp -> "-"
+  | NumBinop Num.MulOp -> "·"
+  | NumBinop Num.DivOp -> "/"
+  | NumBinop Num.ModOp -> "\\"
+  | NumBinop Num.PowOp -> "^"
+  | NumCmpop Num.LtOp -> "<"
+  | NumCmpop Num.GtOp -> ">"
+  | NumCmpop Num.LeOp -> "≤"
+  | NumCmpop Num.GeOp -> "≥"
   | EqOp -> "is"
   | NeOp -> "is not"
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "≤"
-  | GeOp -> "≥"
 
 (* Iters *)
 
@@ -92,17 +94,18 @@ and string_of_record_expr r =
 
 and string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
+  | NumE n -> Num.to_string n
   | BoolE b -> string_of_bool b
-  | UnE (NotOp, { it = IsCaseOfE (e, a); _ }) ->
+  | CvtE (e, _, _) -> string_of_expr e  (* TODO: show? *)
+  | UnE (BoolUnop Bool.NotOp, { it = IsCaseOfE (e, a); _ }) ->
     sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
-  | UnE (NotOp, { it = IsDefinedE e; _ }) ->
+  | UnE (BoolUnop Bool.NotOp, { it = IsDefinedE e; _ }) ->
     sprintf "%s is not defined" (string_of_expr e)
-  | UnE (NotOp, { it = IsValidE e; _ }) ->
+  | UnE (BoolUnop Bool.NotOp, { it = IsValidE e; _ }) ->
     sprintf "%s is not valid" (string_of_expr e)
-  | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
+  | UnE (BoolUnop Bool.NotOp, { it = MatchE (e1, e2); _ }) ->
     sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
-  | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
+  | UnE (BoolUnop Bool.NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -142,7 +145,7 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ([[ atom ]], []) -> string_of_atom atom
   | CaseE (op, el) ->

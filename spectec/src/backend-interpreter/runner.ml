@@ -128,7 +128,7 @@ let get_global_value module_name globalname =
 
   let index = get_export_addr globalname module_name in
   index
-  |> al_to_int
+  |> al_to_nat
   |> listv_nth (Store.access "GLOBALS")
   |> strv_access "VALUE"
   |> Array.make 1

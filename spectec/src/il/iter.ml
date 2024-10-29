@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Xl
 
 module type Arg =
 sig
@@ -59,7 +60,7 @@ let pair f1 f2 (x1, x2) = f1 x1; f2 x2
 (* Identifiers, operators, literals *)
 
 let bool _b = ()
-let nat _n = ()
+let num _n = ()
 let text _s = ()
 
 let atom at = visit_atom at
@@ -119,7 +120,7 @@ and exp e =
   match e.it with
   | VarE x -> varid x
   | BoolE b -> bool b
-  | NatE n -> nat n
+  | NumE n -> num n
   | TextE s -> text s
   | UnE (op, e1) -> unop op; exp e1
   | BinE (op, e1, e2) -> binop op; exp e1; exp e2
@@ -136,6 +137,7 @@ and exp e =
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> exp e1; path p; exp e2
   | CallE (x, as_) -> defid x; args as_
   | IterE (e1, it) -> exp e1; iterexp it
+  | CvtE (e1, nt1, nt2) -> exp e1; numtyp nt1; numtyp nt2
   | SubE (e1, t1, t2) -> exp e1; typ t1; typ t2
 
 and expfield (at, e) = atom at; exp e
@@ -157,7 +159,7 @@ and sym g =
   visit_sym g;
   match g.it with
   | VarG (x, as_) -> gramid x; args as_
-  | NatG n -> nat n
+  | NumG n -> num (Num.Nat (Z.of_int n))
   | TextG s -> text s
   | EpsG -> ()
   | SeqG gs | AltG gs -> list sym gs

@@ -2,6 +2,7 @@ open Prose
 open Eq
 
 open Il
+open Xl
 open Al.Al_util
 open Il2al.Translate
 open Util.Source
@@ -34,7 +35,7 @@ let is_context_rel def =
   | _ -> false
 let is_empty_context_rel def =
   match def.it with
-  | Ast.RelD (_, [ { it = El.Atom.Turnstile; _} ] :: _, _, _) -> true
+  | Ast.RelD (_, [ { it = Atom.Turnstile; _} ] :: _, _, _) -> true
   | _ -> false
 
 let extract_validation_il il =
@@ -53,7 +54,7 @@ let preprocess_prem prem = match prem.it with
       { prem with it = Ast.IfPr (Ast.CmpE (Ast.EqOp, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
   | _ -> prem
 
-let atomize atom' = atom' $$ no_region % (El.Atom.info "")
+let atomize atom' = atom' $$ no_region % (Atom.info "")
 
 let rel_has_id id rel =
   match rel.it with
@@ -63,10 +64,10 @@ let rel_has_id id rel =
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
 | Ast.NeOp -> Ne
-| Ast.LtOp _ -> Lt
-| Ast.GtOp _ -> Gt
-| Ast.LeOp _ -> Le
-| Ast.GeOp _ -> Ge
+| Ast.NumCmpop (Num.LtOp, _) -> Lt
+| Ast.NumCmpop (Num.GtOp, _) -> Gt
+| Ast.NumCmpop (Num.LeOp, _) -> Le
+| Ast.NumCmpop (Num.GeOp, _) -> Ge
 
 let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
 
@@ -101,7 +102,7 @@ type rel_kind =
   | OtherRel
 
 let get_rel_kind def =
-  let open El.Atom in
+  let open Atom in
   let valid_pattern = [[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
   let valid_with_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []] in
   let match_pattern = [[]; [atomize Turnstile]; [atomize Sub]; []] in
@@ -156,9 +157,9 @@ let rec if_expr_to_instrs e =
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
     [ match e2.it with LenE _ -> CmpI (e2, swap op, e1) | _ -> CmpI (e1, op, e2) ]
-  | Ast.BinE (Ast.AndOp, e1, e2) ->
+  | Ast.BinE (Ast.BoolBinop Bool.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
-  | Ast.BinE (Ast.OrOp, e1, e2) ->
+  | Ast.BinE (Ast.BoolBinop Bool.OrOp, e1, e2) ->
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match cond1 with
@@ -167,7 +168,7 @@ let rec if_expr_to_instrs e =
         IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
       | _ ->
         EitherI [cond1; cond2] ]
-  | Ast.BinE (Ast.EquivOp, e1, e2) ->
+  | Ast.BinE (Ast.BoolBinop Bool.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.MemE (e1, e2) ->
       [ MemI (exp_to_expr e1, exp_to_expr e2) ]

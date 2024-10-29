@@ -1,6 +1,7 @@
 open Util
 open Source
 open El
+open Xl
 open Ast
 
 
@@ -27,6 +28,18 @@ exception Irred
 let assume_coherent_matches = ref true
 
 let (let*) = Option.bind
+
+
+let of_bool_exp = function
+  | BoolE b -> Some b
+  | _ -> None
+
+let of_num_exp = function
+  | NumE (_, n) -> Some n
+  | _ -> None
+
+let to_bool_exp b = BoolE b
+let to_num_exp n = NumE (DecOp, n)
 
 
 (* Matching Lists *)
@@ -60,7 +73,7 @@ let disj_list disj_x env xs1 xs2 =
 (* Type Reduction (weak-head) *)
 
 let rec reduce_typ env t : typ =
-  Debug.(log_if "el.reduce_typ" (t.it <> NumT NatT)
+  Debug.(log_if "el.reduce_typ" (t.it <> NumT Num.NatT)
     (fun _ -> fmt "%s" (el_typ t))
     (fun r -> fmt "%s" (el_typ r))
   ) @@ fun _ ->
@@ -119,13 +132,13 @@ and reduce_typ_app env id args at = function
 
 and is_head_normal_exp e =
   match e.it with
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | UnE (MinusOp, {it = NatE _; _})
+  | AtomE _ | BoolE _ | NumE _ | TextE _
   | SeqE _ | TupE _ | InfixE _ | BrackE _ | StrE _ -> true
   | _ -> false
 
 and is_normal_exp e =
   match e.it with
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | UnE (MinusOp, {it = NatE _; _}) -> true
+  | AtomE _ | BoolE _ | NumE _ | TextE _ -> true
   | SeqE es | TupE es -> List.for_all is_normal_exp es
   | BrackE (_, e, _) -> is_normal_exp e
   | InfixE (e1, _, e2) -> is_normal_exp e1 && is_normal_exp e2
@@ -138,84 +151,54 @@ and reduce_exp env e : exp =
     (fun r -> fmt "%s" (el_exp r))
   ) @@ fun _ ->
   match e.it with
-  | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | SizeE _ -> e
+  | VarE _ | AtomE _ | BoolE _ | NumE _ | TextE _ | SizeE _ -> e
+  | CvtE (e1, nt) ->
+    let e1' = reduce_exp env e1 in
+    (match e1'.it with
+    | NumE (op, n) ->
+      (match Num.cvt nt n with
+      | Some n' -> NumE (op, n') $ e.at
+      | None -> e1'
+      )
+    | _ -> e1'
+    )
   | UnE (op, e1) ->
     let e1' = reduce_exp env e1 in
     (match op, e1'.it with
-    | NotOp, BoolE b -> BoolE (not b) $ e.at
-    | NotOp, UnE (NotOp, e11) -> e11
-    | PlusOp, _ -> e1'
-    | MinusOp, UnE (PlusOp, e11) -> UnE (MinusOp, e11) $ e.at
-    | MinusOp, UnE (MinusOp, e11) -> UnE (PlusOp, e11) $ e.at
+    | BoolUnop op', BoolE b1 -> BoolE (Bool.un op' b1) $ e.at
+    | NumUnop op', NumE (numop, n1) ->
+      (match Num.un op' n1 with
+      | Some n -> NumE (numop, n)
+      | None -> UnE (op, e1')
+      ) $ e.at
+    | BoolUnop Bool.NotOp, UnE (BoolUnop Bool.NotOp, e11') -> e11'
+    | NumUnop Num.MinusOp, UnE (NumUnop Num.MinusOp, e11') -> e11'
     | _ -> UnE (op, e1') $ e.at
     )
   | BinE (e1, op, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (match op, e1'.it, e2'.it with
-    | AndOp, BoolE true, _ -> e2'
-    | AndOp, BoolE false, _ -> e1'
-    | AndOp, _, BoolE true -> e1'
-    | AndOp, _, BoolE false -> e2'
-    | OrOp, BoolE true, _ -> e1'
-    | OrOp, BoolE false, _ -> e2'
-    | OrOp, _, BoolE true -> e2'
-    | OrOp, _, BoolE false -> e1'
-    | ImplOp, BoolE b1, BoolE b2 -> BoolE (not b1 || b2) $ e.at
-    | ImplOp, BoolE true, _ -> e2'
-    | ImplOp, BoolE false, _ -> BoolE true $ e.at
-    | ImplOp, _, BoolE true -> e2'
-    | ImplOp, _, BoolE false -> UnE (NotOp, e1') $ e.at
-    | EquivOp, BoolE b1, BoolE b2 -> BoolE (b1 = b2) $ e.at
-    | EquivOp, BoolE true, _ -> e2'
-    | EquivOp, BoolE false, _ -> UnE (NotOp, e2') $ e.at
-    | EquivOp, _, BoolE true -> e1'
-    | EquivOp, _, BoolE false -> UnE (NotOp, e1') $ e.at
-    | AddOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 + n2)) $ e.at
-    | AddOp, NatE (_, z0), _ when z0 = Z.zero -> e2'
-    | AddOp, _, NatE (_, z0) when z0 = Z.zero -> e1'
-    | SubOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 - n2)) $ e.at
-    | SubOp, NatE (_, z0), _ when z0 = Z.zero -> UnE (MinusOp, e2') $ e.at
-    | SubOp, _, NatE (_, z0) when z0 = Z.zero -> e1'
-    | MulOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 * n2)) $ e.at
-    | MulOp, NatE (_, z1), _ when z1 = Z.one -> e2'
-    | MulOp, _, NatE (_, z1) when z1 = Z.one -> e1'
-    | DivOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 / n2)) $ e.at
-    | DivOp, NatE (_, z0), _ when z0 = Z.zero -> e1'
-    | DivOp, _, NatE (_, z1) when z1 = Z.one -> e1'
-    | ModOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.rem n1 n2) $ e.at
-    | ModOp, NatE (_, z0), _ when z0 = Z.zero -> e1'
-    | ModOp, _, NatE (op, z1) when z1 = Z.one -> NatE (op, Z.zero) $ e.at
-    | ExpOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 ** to_int n2)) $ e.at
-    | ExpOp, NatE (_, z01), _ when z01 = Z.zero || z01 = Z.one -> e1'
-    | ExpOp, _, NatE (op, z0) when z0 = Z.zero -> NatE (op, Z.one) $ e.at
-    | ExpOp, _, NatE (_, z1) when z1 = Z.one -> e1'
-    | _ -> BinE (e1', op, e2') $ e.at
-    )
+    (match op with
+    | BoolBinop op' ->
+      (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
+      | None -> BinE (e1', op, e2')
+      | Some e' -> e'
+      )
+    | NumBinop op' ->
+      (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
+      | None -> BinE (e1', op, e2')
+      | Some e' -> e'
+      )
+    ) $ e.at
   | CmpE (e1, op, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
     | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
     | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
     | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
-    | LtOp, NatE (_, n1), NatE (_, n2) -> BoolE (n1 < n2)
-    | LtOp, UnE (MinusOp, {it = NatE (_, n1); _}), UnE (MinusOp, {it = NatE (_, n2); _}) -> BoolE (n2 < n1)
-    | LtOp, UnE (MinusOp, {it = NatE _; _}), NatE _ -> BoolE true
-    | LtOp, NatE _, UnE (MinusOp, {it = NatE _; _}) -> BoolE false
-    | GtOp, NatE (_, n1), NatE (_, n2) -> BoolE (n1 > n2)
-    | GtOp, UnE (MinusOp, {it = NatE (_, n1); _}), UnE (MinusOp, {it = NatE (_, n2); _}) -> BoolE (n2 > n1)
-    | GtOp, UnE (MinusOp, {it = NatE _; _}), NatE _ -> BoolE false
-    | GtOp, NatE _, UnE (MinusOp, {it = NatE _; _}) -> BoolE true
-    | LeOp, NatE (_, n1), NatE (_, n2) -> BoolE (n1 <= n2)
-    | LeOp, UnE (MinusOp, {it = NatE (_, n1); _}), UnE (MinusOp, {it = NatE (_, n2); _}) -> BoolE (n2 <= n1)
-    | LeOp, UnE (MinusOp, {it = NatE _; _}), NatE _ -> BoolE true
-    | LeOp, NatE _, UnE (MinusOp, {it = NatE _; _}) -> BoolE false
-    | GeOp, NatE (_, n1), NatE (_, n2) -> BoolE (n1 >= n2)
-    | GeOp, UnE (MinusOp, {it = NatE (_, n1); _}), UnE (MinusOp, {it = NatE (_, n2); _}) -> BoolE (n2 >= n1)
-    | GeOp, UnE (MinusOp, {it = NatE _; _}), NatE _ -> BoolE false
-    | GeOp, NatE _, UnE (MinusOp, {it = NatE _; _}) -> BoolE true
+    | NumCmpop op', NumE (_, n1), NumE (_, n2) -> BoolE (Num.cmp op' n1 n2)
     | _ -> CmpE (e1', op, e2')
     ) $ e.at
   | EpsE -> SeqE [] $ e.at
@@ -224,7 +207,7 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
-    | SeqE es, NatE (_, i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
+    | SeqE es, NumE (_, Num.Nat i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
     | _ -> IdxE (e1', e2') $ e.at
     )
   | SliceE (e1, e2, e3) ->
@@ -232,7 +215,7 @@ and reduce_exp env e : exp =
     let e2' = reduce_exp env e2 in
     let e3' = reduce_exp env e3 in
     (match e1'.it, e2'.it, e3'.it with
-    | SeqE es, NatE (_, i), NatE (_, n) when Z.(i + n) < Z.of_int (List.length es) ->
+    | SeqE es, NumE (_, Num.Nat i), NumE (_, Num.Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
       SeqE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es))
     | _ -> SliceE (e1', e2', e3')
     ) $ e.at
@@ -305,7 +288,7 @@ and reduce_exp env e : exp =
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | SeqE es -> NatE (DecOp, Z.of_int (List.length es))
+    | SeqE es -> NumE (DecOp, Num.Nat (Z.of_int (List.length es)))
     | _ -> LenE e1'
     ) $ e.at
   | ParenE (e1, _) | ArithE e1 | TypE (e1, _) -> reduce_exp env e1
@@ -340,7 +323,7 @@ and reduce_path env e p f =
     let e1' = reduce_exp env e1 in
     let f' e' p1' =
       match e'.it, e1'.it with
-      | SeqE es, NatE (_, i) when i < Z.of_int (List.length es) ->
+      | SeqE es, NumE (_, Num.Nat i) when i < Z.of_int (List.length es) ->
         SeqE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $ e'.at
       | _ ->
         f e' (IdxP (p1', e1') $ p.at)
@@ -351,7 +334,7 @@ and reduce_path env e p f =
     let e2' = reduce_exp env e2 in
     let f' e' p1' =
       match e'.it, e1'.it, e2'.it with
-      | SeqE es, NatE (_, i), NatE (_, n) when Z.(i + n) < Z.of_int (List.length es) ->
+      | SeqE es, NumE (_, Num.Nat i), NumE (_, Num.Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
         let e1' = SeqE Lib.List.(take (Z.to_int i) es) $ e'.at in
         let e2' = SeqE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $ e'.at in
         let e3' = SeqE Lib.List.(drop Z.(to_int (i + n)) es) $ e'.at in
@@ -514,13 +497,13 @@ and match_exp env s e1 e2 : subst option =
         let t2' = reduce_typ env t2 in
         match e1.it, t2'.it with
         | BoolE _, BoolT
-        | NatE _, NumT _
         | TextE _, TextT -> true
-        | UnE ((MinusOp | PlusOp), _), NumT t1 -> t1 >= IntT
-        | NatE (_, n), RangeT tes ->
+        | NumE (_, n), NumT t -> t = Num.to_typ n
+        | UnE (NumUnop Num.(MinusOp | PlusOp), _), NumT t1 -> t1 >= IntT
+        | NumE (_, Num.Nat n), RangeT tes ->
           List.exists (function
-            | ({it = NatE (_, n1); _}, None) -> n1 = n
-            | ({it = NatE (_, n1); _}, Some {it = NatE (_, n2); _}) -> n1 <= n && n <= n2
+            | ({it = NumE (_, Num.Nat n1); _}, None) -> n1 = n
+            | ({it = NumE (_, Num.Nat n1); _}, Some {it = NumE (_, Num.Nat n2); _}) -> n1 <= n && n <= n2
             | _ -> false
           ) (Convert.filter_nl tes)
         | (AtomE atom | SeqE ({it = AtomE atom; _}::_)), CaseT (_, _, tcs, _) ->
@@ -543,9 +526,8 @@ and match_exp env s e1 e2 : subst option =
     else None
   | AtomE atom1, AtomE atom2 when atom1.it = atom2.it -> Some s
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
-  | NatE (_, n1), NatE (_, n2) when n1 = n2 -> Some s
+  | NumE (_, n1), NumE (_, n2) when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
-  | UnE (MinusOp, e11), UnE (MinusOp, e21) -> match_exp env s e11 e21
 (*
   | UnE (op1, e11), UnE (op2, e21) when op1 = op2 -> match_exp env s e11 e21
   | BinE (e11, op1, e12), BinE (e21, op2, e22) when op1 = op2 ->
@@ -765,7 +747,7 @@ and sub_typ env t1 t2 =
   let t1 = reduce_typ env t1 in
   let t2 = reduce_typ env t2 in
   match t1.it, t2.it with
-  | NumT t1', NumT t2' -> t1' <= t2'
+(*| NumT t1', NumT t2' -> t1' <= t2'*)
   | StrT tfs1, StrT tfs2 ->
     El.Convert.forall_nl_list (fun (atom, (t2, prems2), _) ->
       match find_field tfs1 atom with
@@ -788,14 +770,14 @@ and sub_typ env t1 t2 =
   | RangeT [], NumT _ -> true
   | RangeT (Elem (e1, _)::tes1), NumT t2' ->
     (match (reduce_exp env e1).it with
-    | NatE _ -> true
+    | NumE _ -> true
     | UnE (MinusOp, _) -> t2' <= IntT
     | _ -> assert false
     ) && sub_typ env (RangeT tes1 $ t1.at) t2
   | NumT _, RangeT [] -> true
   | NumT t1', RangeT (Elem (e2, _)::tes2) ->
     (match (reduce_exp env e2).it with
-    | NatE _ -> t1' <= NatT
+    | NumE (_, Num.Nat _) -> t1' = Num.NatT
     | UnE (MinusOp, _) -> true
     | _ -> assert false
     ) && sub_typ env t1 (RangeT tes2 $ t2.at)
@@ -865,6 +847,16 @@ and disj_typ env t1 t2 =
   | ConT ((t11, _), _), ConT ((t21, _), _) -> disj_typ env t11 t21
   | RangeT _, RangeT _ -> false  (* approximation *)
   | _, _ -> t1.it <> t2.it
+
+and narrow_typ env t1 t2 =
+  Debug.(log "el.narrow_typ"
+    (fun _ -> fmt "%s <: %s" (el_typ t1) (el_typ t2)) Bool.to_string
+  ) @@ fun _ ->
+  let t1 = reduce_typ env t1 in
+  let t2 = reduce_typ env t2 in
+  match t1.it, t2.it with
+  | NumT nt1, NumT nt2 -> nt1 <= nt2
+  | _, _ -> equiv_typ env t1 t2
 
 and atoms xs =
   Set.of_list (List.map Print.string_of_atom

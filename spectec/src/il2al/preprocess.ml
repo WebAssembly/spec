@@ -1,7 +1,7 @@
 open Il
+open Xl
 open Ast
 open Util.Source
-open El.Atom
 open Def
 open Il2al_util
 
@@ -39,7 +39,7 @@ let transform_rulepr = List.map transform_rulepr_def
 (* Remove or *)
 let remove_or_exp e =
   match e.it with (* TODO: recursive *)
-  | BinE (OrOp, e1, e2) -> [ e1; e2 ]
+  | BinE (BoolBinop Bool.OrOp, e1, e2) -> [ e1; e2 ]
   | _ -> [ e ]
 
 let rec remove_or_prem prem =
@@ -178,7 +178,7 @@ let rec preprocess_prem prem =
     | _ -> [ prem ]
     )
   (* Split -- if e1 /\ e2 *)
-  | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
+  | IfPr ( { it = BinE (BoolBinop Bool.AndOp, e1, e2); _ } ) ->
     preprocess_prem (IfPr e1 $ prem.at) @ preprocess_prem (IfPr e2 $ prem.at)
   | _ -> [ prem ]
 

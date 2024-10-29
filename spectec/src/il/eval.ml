@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Xl
 open Env
 
 
@@ -29,6 +30,17 @@ let snd3 (_, x, _) = x
 
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
+
+let of_bool_exp = function
+  | BoolE b -> Some b
+  | _ -> None
+
+let of_num_exp = function
+  | NumE n -> Some n
+  | _ -> None
+
+let to_bool_exp b = BoolE b
+let to_num_exp n = NumE n
 
 let as_opt_exp e =
   match e.it with
@@ -117,14 +129,14 @@ and reduce_typ_app' env id args at = function
 
 and is_head_normal_exp e =
   match e.it with
-  | BoolE _ | NatE _ | TextE _ | UnE (MinusOp _, {it = NatE _; _})
+  | BoolE _ | NumE _ | TextE _
   | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _ -> true
   | SubE (e, _, _) -> is_head_normal_exp e
   | _ -> false
 
 and is_normal_exp e =
   match e.it with
-  | BoolE _ | NatE _ | TextE _ | UnE (MinusOp _, {it = NatE _; _}) -> true
+  | BoolE _ | NumE _ | TextE _ -> true
   | ListE es | TupE es -> List.for_all is_normal_exp es
   | OptE None -> true
   | OptE (Some e) | CaseE (_, e) | SubE (e, _, _) -> is_normal_exp e
@@ -137,91 +149,51 @@ and reduce_exp env e : exp =
     (fun e' -> fmt "%s" (il_exp e'))
   ) @@ fun _ ->
   match e.it with
-  | VarE _ | BoolE _ | NatE _ | TextE _ -> e
+  | VarE _ | BoolE _ | NumE _ | TextE _ -> e
   | UnE (op, e1) ->
     let e1' = reduce_exp env e1 in
     (match op, e1'.it with
-    | NotOp, BoolE b -> BoolE (not b) $> e
-    | NotOp, UnE (NotOp, e11) -> e11
-    | PlusOp _, _ -> e1'
-    | MinusOp _, UnE (PlusOp t, e11) -> UnE (MinusOp t, e11) $> e
-    | MinusOp _, UnE (MinusOp t, e11) -> UnE (PlusOp t, e11) $> e
+    | BoolUnop op', BoolE b1 -> BoolE (Bool.un op' b1) $> e
+    | NumUnop (op', _), NumE n1 ->
+      (match Num.un op' n1 with
+      | Some n -> NumE n
+      | None -> UnE (op, e1')
+      ) $> e
+    | BoolUnop Bool.NotOp, UnE (BoolUnop Bool.NotOp, e11') -> e11'
+    | NumUnop (Num.MinusOp, _), UnE (NumUnop (Num.MinusOp, _), e11') -> e11'
     | _ -> UnE (op, e1') $> e
     )
   | BinE (op, e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (match op, e1'.it, e2'.it with
-    | AndOp, BoolE true, _ -> e2'
-    | AndOp, BoolE false, _ -> e1'
-    | AndOp, _, BoolE true -> e1'
-    | AndOp, _, BoolE false -> e2'
-    | OrOp, BoolE true, _ -> e1'
-    | OrOp, BoolE false, _ -> e2'
-    | OrOp, _, BoolE true -> e2'
-    | OrOp, _, BoolE false -> e1'
-    | ImplOp, BoolE b1, BoolE b2 -> BoolE (not b1 || b2) $> e
-    | ImplOp, BoolE true, _ -> e2'
-    | ImplOp, BoolE false, _ -> BoolE true $> e
-    | ImplOp, _, BoolE true -> e2'
-    | ImplOp, _, BoolE false -> UnE (NotOp, e1') $> e
-    | EquivOp, BoolE b1, BoolE b2 -> BoolE (b1 = b2) $> e
-    | EquivOp, BoolE true, _ -> e2'
-    | EquivOp, BoolE false, _ -> UnE (NotOp, e2') $> e
-    | EquivOp, _, BoolE true -> e1'
-    | EquivOp, _, BoolE false -> UnE (NotOp, e1') $> e
-    | AddOp _, NatE n1, NatE n2 -> NatE Z.(n1 + n2) $> e
-    | AddOp _, NatE z0, _ when z0 = Z.zero -> e2'
-    | AddOp _, _, NatE z0 when z0 = Z.zero -> e1'
-    | SubOp _, NatE n1, NatE n2 when n1 >= n2 -> NatE Z.(n1 - n2) $> e
-    | SubOp t, NatE z0, _ when z0 = Z.zero -> UnE (MinusOp t, e2') $> e
-    | SubOp _, _, NatE z0 when z0 = Z.zero -> e1'
-    | MulOp _, NatE n1, NatE n2 -> NatE Z.(n1 * n2) $> e
-    | MulOp _, NatE z1, _ when z1 = Z.one -> e2'
-    | MulOp _, _, NatE z1 when z1 = Z.one -> e1'
-    | DivOp _, NatE n1, NatE n2 when Z.(n2 <> zero && rem n1 n2 = zero) -> NatE Z.(n1 / n2) $> e
-    | DivOp _, NatE z0, _ when z0 = Z.zero -> e1'
-    | DivOp _, _, NatE z1 when z1 = Z.one -> e1'
-    | ModOp _, NatE n1, NatE n2 -> NatE Z.(rem n1 n2) $> e
-    | ModOp _, NatE z0, _ when z0 = Z.zero -> e1'
-    | ModOp _, _, NatE z1 when z1 = Z.one -> NatE Z.zero $> e
-    | ExpOp _, NatE n1, NatE n2 when n2 >= Z.zero -> NatE Z.(n1 ** to_int n2) $> e
-    | ExpOp _, NatE z01, _ when z01 = Z.zero || z01 = Z.one -> e1'
-    | ExpOp _, _, NatE z0 when z0 = Z.zero -> NatE Z.one $> e
-    | ExpOp _, _, NatE z1 when z1 = Z.one -> e1'
-    | _ -> BinE (op, e1', e2') $> e
-    )
+    (match op with
+    | BoolBinop op' ->
+      (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
+      | None -> BinE (op, e1', e2')
+      | Some e' -> e'
+      )
+    | NumBinop (op', _) ->
+      (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
+      | None -> BinE (op, e1', e2')
+      | Some e' -> e'
+      )
+    ) $> e
   | CmpE (op, e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
     | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
     | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
     | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
-    | LtOp _, NatE n1, NatE n2 -> BoolE (n1 < n2)
-    | LtOp _, UnE (MinusOp _, {it = NatE n1; _}), UnE (MinusOp _, {it = NatE n2; _}) -> BoolE (n2 < n1)
-    | LtOp _, UnE (MinusOp _, {it = NatE _; _}), NatE _ -> BoolE true
-    | LtOp _, NatE _, UnE (MinusOp _, {it = NatE _; _}) -> BoolE false
-    | GtOp _, NatE n1, NatE n2 -> BoolE (n1 > n2)
-    | GtOp _, UnE (MinusOp _, {it = NatE n1; _}), UnE (MinusOp _, {it = NatE n2; _}) -> BoolE (n2 > n1)
-    | GtOp _, UnE (MinusOp _, {it = NatE _; _}), NatE _ -> BoolE false
-    | GtOp _, NatE _, UnE (MinusOp _, {it = NatE _; _}) -> BoolE true
-    | LeOp _, NatE n1, NatE n2 -> BoolE (n1 <= n2)
-    | LeOp _, UnE (MinusOp _, {it = NatE n1; _}), UnE (MinusOp _, {it = NatE n2; _}) -> BoolE (n2 <= n1)
-    | LeOp _, UnE (MinusOp _, {it = NatE _; _}), NatE _ -> BoolE true
-    | LeOp _, NatE _, UnE (MinusOp _, {it = NatE _; _}) -> BoolE false
-    | GeOp _, NatE n1, NatE n2 -> BoolE (n1 >= n2)
-    | GeOp _, UnE (MinusOp _, {it = NatE n1; _}), UnE (MinusOp _, {it = NatE n2; _}) -> BoolE (n2 >= n1)
-    | GeOp _, UnE (MinusOp _, {it = NatE _; _}), NatE _ -> BoolE false
-    | GeOp _, NatE _, UnE (MinusOp _, {it = NatE _; _}) -> BoolE true
+    | NumCmpop (op, _), NumE n1, NumE n2 -> BoolE (Num.cmp op n1 n2)
     | _ -> CmpE (op, e1', e2')
     ) $> e
   | IdxE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
-    | ListE es, NatE i when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
+    | ListE es, NumE (Num.Nat i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
     | _ -> IdxE (e1', e2') $> e
     )
   | SliceE (e1, e2, e3) ->
@@ -229,7 +201,7 @@ and reduce_exp env e : exp =
     let e2' = reduce_exp env e2 in
     let e3' = reduce_exp env e3 in
     (match e1'.it, e2'.it, e3'.it with
-    | ListE es, NatE i, NatE n when Z.(i + n) < Z.of_int (List.length es) ->
+    | ListE es, NumE (Num.Nat i), NumE (Num.Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
       ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es))
     | _ -> SliceE (e1', e2', e3')
     ) $> e
@@ -251,7 +223,7 @@ and reduce_exp env e : exp =
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | StrE efs -> snd (List.find (fun (atomN, _) -> El.Atom.eq atomN atom) efs)
+    | StrE efs -> snd (List.find (fun (atomN, _) -> Atom.eq atomN atom) efs)
     | _ -> DotE (e1', atom) $> e
     )
   | CompE (e1, e2) ->
@@ -264,7 +236,7 @@ and reduce_exp env e : exp =
     | OptE _, OptE None -> e1'.it
     | StrE efs1, StrE efs2 ->
       let merge (atom1, e1) (atom2, e2) =
-        assert (El.Atom.eq atom1 atom2);
+        assert (Atom.eq atom1 atom2);
         (atom1, reduce_exp env (CompE (e1, e2) $> e1))
       in StrE (List.map2 merge efs1 efs2)
     | _ -> CompE (e1', e2')
@@ -284,7 +256,7 @@ and reduce_exp env e : exp =
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | ListE es -> NatE (Z.of_int (List.length es))
+    | ListE es -> NumE (Num.Nat (Z.of_int (List.length es)))
     | _ -> LenE e1'
     ) $> e
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
@@ -318,11 +290,11 @@ and reduce_exp env e : exp =
       | List | List1 ->
         let n = List.length (as_list_exp (List.hd es')) in
         if iter' = List || n >= 1 then
-          let en = NatE (Z.of_int n) $$ e.at % (NumT NatT $ e.at) in
+          let en = NumE (Num.Nat (Z.of_int n)) $$ e.at % (NumT NatT $ e.at) in
           reduce_exp env (IterE (e1', (ListN (en, None), xes')) $> e)
         else
           IterE (e1', iterexp') $> e
-      | ListN ({it = NatE n'; _}, ido) ->
+      | ListN ({it = NumE (Num.Nat n'); _}, ido) ->
         let ess' = List.map as_list_exp es' in
         let ns = List.map List.length ess' in
         let n = Z.to_int n' in
@@ -332,7 +304,7 @@ and reduce_exp env e : exp =
             let s = List.fold_left2 Subst.add_varid Subst.empty ids esI' in
             let s' =
               Option.fold ido ~none:s ~some:(fun id ->
-                let en = NatE (Z.of_int i) $$ id.at % (NumT NatT $ id.at) in
+                let en = NumE (Num.Nat (Z.of_int i)) $$ id.at % (NumT NatT $ id.at) in
                 Subst.add_varid s id en
               )
             in Subst.subst_exp s' e1'
@@ -372,6 +344,16 @@ and reduce_exp env e : exp =
     | _ -> CatE (e1', e2')
     ) $> e
   | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
+  | CvtE (e1, _nt1, nt2) ->
+    let e1' = reduce_exp env e1 in
+    (match e1'.it with
+    | NumE n ->
+      (match Num.cvt nt2 n with
+      | Some n' -> NumE n' $> e
+      | None -> e1'
+      )
+    | _ -> e1'
+    )
   | SubE (e1, t1, t2) when equiv_typ env t1 t2 ->
     reduce_exp env e1
   | SubE (e1, t1, t2) ->
@@ -423,7 +405,7 @@ and reduce_path env e p f =
     let e1' = reduce_exp env e1 in
     let f' e' p1' =
       match e'.it, e1'.it with
-      | ListE es, NatE i when i < Z.of_int (List.length es) ->
+      | ListE es, NumE (Num.Nat i) when i < Z.of_int (List.length es) ->
         ListE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $> e'
       | _ ->
         f e' (IdxP (p1', e1') $> p)
@@ -434,7 +416,7 @@ and reduce_path env e p f =
     let e2' = reduce_exp env e2 in
     let f' e' p1' =
       match e'.it, e1'.it, e2'.it with
-      | ListE es, NatE i, NatE n when Z.(i + n) < Z.of_int (List.length es) ->
+      | ListE es, NumE (Num.Nat i), NumE (Num.Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
         let e1' = ListE Lib.List.(take (Z.to_int i) es) $> e' in
         let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
         let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in
@@ -589,9 +571,8 @@ and match_exp' env s e1 e2 : subst option =
     let e1' = reduce_exp env (SubE (e1, e1.note, e2.note) $$ e1.at % e2.note) in
     Some (Subst.add_varid s id e1')
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
-  | NatE n1, NatE n2 when n1 = n2 -> Some s
+  | NumE n1, NumE n2 when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
-  | UnE (MinusOp _, e11), UnE (MinusOp _, e21) -> match_exp' env s e11 e21
 (*
   | UnE (op1, e11), UnE (op2, e21) when op1 = op2 -> match_exp' env s e11 e21
   | BinE (e11, op1, e12), BinE (e21, op2, e22) when op1 = op2 ->
@@ -676,7 +657,7 @@ and match_exp' env s e1 e2 : subst option =
     let en = VarE ("_" $ e2.at) $$ e2.at % (NumT NatT $ e2.at) in
     match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
   | ListE es1, IterE (e21, (ListN (en, id_opt), xes)) ->
-    let en' = NatE (Z.of_int (List.length es1)) $$ e1.at % (NumT NatT $ e1.at) in
+    let en' = NumE (Num.Nat (Z.of_int (List.length es1))) $$ e1.at % (NumT NatT $ e1.at) in
     let* s' = match_exp' env s en' en in
     let s'' = List.fold_left Subst.remove_varid s' (List.map fst xes) in  (* local subst *)
     (* match each list element against iteration body for corresponding subst *)
@@ -687,7 +668,7 @@ and match_exp' env s e1 e2 : subst option =
           | None -> s''
           | Some xJ ->
             Subst.add_varid s'' xJ
-              (NatE (Z.of_int j) $$ e1.at % (NumT NatT $ e1.at))
+              (NumE (Num.Nat (Z.of_int j)) $$ e1.at % (NumT NatT $ e1.at))
         in match_exp' env s''' e1J (Subst.subst_exp s''' e21)
       ) es1 |> Lib.List.flatten_opt
     in
@@ -715,9 +696,8 @@ and match_exp' env s e1 e2 : subst option =
       if
         match e1.it, t21'.it with
         | BoolE _, BoolT
-        | NatE _, NumT _
+        | NumE _, NumT _
         | TextE _, TextT -> true
-        | UnE (MinusOp _, _), NumT t -> t >= IntT
         | CaseE (op, _), VarT _ ->
           (match (reduce_typdef env t21).it with
           | VariantT tcs ->
@@ -916,7 +896,7 @@ and sub_typ env t1 t2 =
   let t1' = reduce_typ env t1 in
   let t2' = reduce_typ env t2 in
   match t1'.it, t2'.it with
-  | NumT t1', NumT t2' -> t1' < t2'
+(*| NumT t1', NumT t2' -> t1' <= t2'*)
   | TupT ets1, TupT ets2 -> sub_tup env Subst.empty ets1 ets2
   | VarT _, VarT _ ->
     (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with

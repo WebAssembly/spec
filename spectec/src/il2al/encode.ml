@@ -14,6 +14,7 @@ open Source
 
 open Free
 open Il
+open Xl
 open Ast
 (* open Print *)
 
@@ -70,12 +71,12 @@ let free_ids e =
   |> Set.elements
 
 let dim e =
-  let t = (NumT NatT $ no_region) in
+  let t = (NumT Num.NatT $ no_region) in
   match e.it with
   | IterE (_, (ListN (e_n, _), _)) -> e_n
-  | IterE _ -> NatE Z.minus_one $$ e.at % t
-  | ListE es -> NatE (List.length es |> Z.of_int) $$ e.at % t
-  | _ -> NatE Z.one $$ e.at % t
+  | IterE _ -> NumE (Num.Nat Z.minus_one) $$ e.at % t
+  | ListE es -> NumE (Num.Nat (List.length es |> Z.of_int)) $$ e.at % t
+  | _ -> NumE (Num.Nat Z.one) $$ e.at % t
 
 let arg e =
   ExpA e $ e.at
