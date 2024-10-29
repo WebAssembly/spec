@@ -2,11 +2,11 @@ name: CI for specs
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, wasm-3.0 ]
     paths: [ .github/**, document/** ]
 
   pull_request:
-    branches: [ main ]
+    branches: [ main, wasm-3.0 ]
     paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab
