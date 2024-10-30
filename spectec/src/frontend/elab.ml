@@ -900,20 +900,20 @@ and must_elab_exp env e =
   | _ -> false
 
 (* Returns
- * - Ok (il_exp, typ, b) if the type can be inferred, b is true if the type is principal
+ * - Ok (il_exp, typ) if the type can be inferred
  * - Error (at, s) when it cannot, where s is the name of the failing construct
  * - raises Error.Error on unrecoverable errors
  *)
-and infer_exp env e : (Il.exp * typ * bool, region * string) result =
+and infer_exp env e : (Il.exp * typ, region * string) result =
   Debug.(log_at "el.infer_exp" e.at
     (fun _ -> fmt "%s" (el_exp e))
-    (result (fun (e', t, b) -> fmt "%s : %s (%b)" (il_exp e') (el_typ t) b) snd)
+    (result (fun (e', t) -> fmt "%s : %s" (il_exp e') (el_typ t)) snd)
   ) @@ fun _ ->
   match infer_exp' env e with
-  | Ok (e', t', b) -> let t = t' $ e.at in Ok (e' $$ e.at % elab_typ env t, t, b)
+  | Ok (e', t') -> let t = t' $ e.at in Ok (e' $$ e.at % elab_typ env t, t)
   | Error err -> Error err
 
-and infer_exp' env e : (Il.exp' * typ' * bool, region * string) result =
+and infer_exp' env e : (Il.exp' * typ', region * string) result =
   let ( let* ) = Result.bind in
   match e.it with
   | VarE (id, args) ->
@@ -934,93 +934,93 @@ and infer_exp' env e : (Il.exp' * typ' * bool, region * string) result =
             Some t
           with Error _ -> None
       with
-      | Some t -> Ok (Il.VarE id, t.it, true)
+      | Some t -> Ok (Il.VarE id, t.it)
       | None -> Error (e.at, "variable")
       )
   | AtomE _ ->
     Error (e.at, "atom")
   | BoolE b ->
-    Ok (Il.BoolE b, BoolT, true)
+    Ok (Il.BoolE b, BoolT)
   | NumE (_op, n) ->
-    Ok (Il.NumE n, NumT (Num.to_typ n), true)
+    Ok (Il.NumE n, NumT (Num.to_typ n))
   | TextE s ->
-    Ok (Il.TextE s, TextT, true)
+    Ok (Il.TextE s, TextT)
   | CvtE (e1, nt) ->
-    let* e1', t1, _ = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let nt1 = as_num_typ "conversion" env Infer t1 e1.at in
-    Ok (Il.CvtE (cast_exp "operand" env e1' t1 (NumT nt1 $ e1.at), nt1, nt), NumT nt, true)
+    Ok (Il.CvtE (cast_exp "operand" env e1' t1 (NumT nt1 $ e1.at), nt1, nt), NumT nt)
   | UnE (op, e1) ->
-    let* e1', t1, _ = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let op', nt, t1', t = infer_unop env op (typ_rep env t1) e.at in
-    Ok (Il.UnE (op', nt, cast_exp "operand" env e1' t1 t1'), t.it, true)
+    Ok (Il.UnE (op', nt, cast_exp "operand" env e1' t1 t1'), t.it)
   | BinE (e1, op, e2) ->
-    let* e1', t1, _ = infer_exp env e1 in
-    let* e2', t2, _ = infer_exp env e2 in
+    let* e1', t1 = infer_exp env e1 in
+    let* e2', t2 = infer_exp env e2 in
     let op', nt, t1', t2', t = infer_binop env op (typ_rep env t1) (typ_rep env t2) e.at in
     Ok (Il.BinE (op', nt,
       cast_exp "operand" env e1' t1 t1',
       cast_exp "operand" env e2' t2 t2'
-    ), t.it, true)
+    ), t.it)
   | CmpE (e1, op, ({it = CmpE (e21, _, _); _} as e2)) ->
-    let* e1', _t1, _ = infer_exp env (CmpE (e1, op, e21) $ e.at) in
-    let* e2', _t2, _ = infer_exp env e2 in
-    Ok (Il.BinE (`AndOp, None, e1', e2'), BoolT, true)
+    let* e1', _t1 = infer_exp env (CmpE (e1, op, e21) $ e.at) in
+    let* e2', _t2 = infer_exp env e2 in
+    Ok (Il.BinE (`AndOp, None, e1', e2'), BoolT)
   | CmpE (e1, op, e2) ->
     (match infer_cmpop env op with
     | `Poly op' ->
       let* e1', e2' =
-        if must_elab_exp env e1 then
-          let* e2', t2, _ = infer_exp env e2 in
+        if must_elab_exp env e1 then  (* TODO: use backtracking *)
+          let* e2', t2 = infer_exp env e2 in
           let e1' = elab_exp env e1 t2 in
           Ok (e1', e2')
         else
-          let* e1', t1, _ = infer_exp env e1 in
+          let* e1', t1 = infer_exp env e1 in
           let e2' = elab_exp env e2 t1 in
           Ok (e1', e2')
       in
-      Ok (Il.CmpE (op', None, e1', e2'), BoolT, true)
+      Ok (Il.CmpE (op', None, e1', e2'), BoolT)
     | `Over elab_cmpop'  ->
-      let* e1', t1, _ = infer_exp env e1 in
-      let* e2', t2, _ = infer_exp env e2 in
+      let* e1', t1 = infer_exp env e1 in
+      let* e2', t2 = infer_exp env e2 in
       let op', nt, t = elab_cmpop' (typ_rep env t1) (typ_rep env t2) e.at in
       Ok (Il.CmpE (op', nt,
         cast_exp "operand" env e1' t1 t,
         cast_exp "operand" env e2' t2 t
-      ), BoolT, true)
+      ), BoolT)
     )
   | IdxE (e1, e2) ->
-    let* e1', t1, _ = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let t = as_list_typ "expression" env Infer t1 e1.at in
     let e2' = elab_exp env e2 (NumT Num.NatT $ e2.at) in
-    Ok (Il.IdxE (e1', e2'), t.it, true)
+    Ok (Il.IdxE (e1', e2'), t.it)
   | SliceE (e1, e2, e3) ->
-    let* e1', t1, b = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let _t' = as_list_typ "expression" env Infer t1 e1.at in
     let e2' = elab_exp env e2 (NumT Num.NatT $ e2.at) in
     let e3' = elab_exp env e3 (NumT Num.NatT $ e3.at) in
-    Ok (Il.SliceE (e1', e2', e3'), t1.it, b)
+    Ok (Il.SliceE (e1', e2', e3'), t1.it)
   | UpdE (e1, p, e2) ->
-    let* e1', t1, b = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let p', t2 = elab_path env p t1 in
     let e2' = elab_exp env e2 t2 in
-    Ok (Il.UpdE (e1', p', e2'), t1.it, b)
+    Ok (Il.UpdE (e1', p', e2'), t1.it)
   | ExtE (e1, p, e2) ->
-    let* e1', t1, b = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let p', t2 = elab_path env p t1 in
     let _t21 = as_list_typ "path" env Infer t2 p.at in
     let e2' = elab_exp env e2 t2 in
-    Ok (Il.ExtE (e1', p', e2'), t1.it, b)
+    Ok (Il.ExtE (e1', p', e2'), t1.it)
   | StrE _ ->
     Error (e.at, "record")
   | DotE (e1, atom) ->
-    let* e1', t1, _ = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
     let t, prems = find_field tfs atom e1.at t1 in
     let e' = Il.DotE (e1', elab_atom atom (expand_id env t1)) in
     let e'' = if prems = [] then e' else Il.ProjE (e' $$ e.at % elab_typ env t, 0) in
-    Ok (e'', t.it, true)
+    Ok (e'', t.it)
   | CommaE (e1, e2) ->
-    let* e1', t1, b = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
     let _ = as_cat_typ "expression" env Infer t1 e.at in
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
@@ -1029,69 +1029,69 @@ and infer_exp' env e : (Il.exp' * typ' * bool, region * string) result =
       let _t2 = find_field tfs atom at t1 in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
-      Ok (Il.CompE (e2', e1'), t1.it, b)
+      Ok (Il.CompE (e2', e1'), t1.it)
     | _ -> error e.at "malformed comma operator"
     )
   | CatE (e1, e2) ->
-    let* e1', t1, b = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let _ = as_cat_typ "operand" env Infer t1 e.at in
     let e2' = elab_exp env e2 t1 in
-    Ok ((if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1.it, b)
+    Ok ((if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1.it)
   | MemE (e1, e2) ->
-    let* e1', t1, _ = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let e2' = elab_exp env e2 (IterT (t1, List) $ e2.at) in
-    Ok (Il.MemE (e1', e2'), BoolT, true)
+    Ok (Il.MemE (e1', e2'), BoolT)
   | LenE e1 ->
-    let* e1', t1, _ = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let _t11 = as_list_typ "expression" env Infer t1 e1.at in
-    Ok (Il.LenE e1', NumT Num.NatT, true)
+    Ok (Il.LenE e1', NumT Num.NatT)
   | SizeE id ->
     let _ = find "grammar" env.grams id in
-    Ok (Il.NumE (Num.Nat Z.zero), NumT Num.NatT, true)
+    Ok (Il.NumE (Num.Nat Z.zero), NumT Num.NatT)
   | ParenE (e1, _) | ArithE e1 ->
     infer_exp' env e1
   | TupE es ->
-    let* es', ts, b = infer_exp_list env es in
-    Ok (Il.TupE es', TupT ts, b)
+    let* es', ts = infer_exp_list env es in
+    Ok (Il.TupE es', TupT ts)
   | CallE (id, as_) ->
     let ps, t, _ = find "definition" env.defs id in
     let as', s = elab_args `Rhs env as_ ps e.at in
-    Ok (Il.CallE (id, as'), (Subst.subst_typ s t).it, true)
+    Ok (Il.CallE (id, as'), (Subst.subst_typ s t).it)
   | EpsE ->
     Error (e.at, "empty sequence")
-  | SeqE [] ->  (* empty tuples *)
-    Ok (Il.TupE [], TupT [], false)
-  | SeqE es ->  (* not principal *)
-    let* es', ts, _ = infer_exp_list env es in
+  | SeqE [] ->  (* treat as empty tuple, not principal *)
+    Ok (Il.TupE [], TupT [])
+  | SeqE es ->  (* treat as homogeneous sequence, not principal *)
+    let* es', ts = infer_exp_list env es in
     let t = List.hd ts in
     if List.for_all (equiv_typ env t) (List.tl ts) then
-      Ok (Il.ListE es', IterT (t, List), false)
+      Ok (Il.ListE es', IterT (t, List))
     else
       Error (e.at, "expression sequence")
   | InfixE _ -> Error (e.at, "infix expression")
   | BrackE _ -> Error (e.at, "bracket expression")
   | IterE (e1, iter) ->
     let iter' = elab_iterexp env iter in
-    let* e1', t1, _ = infer_exp env e1 in
-    Ok (Il.IterE (e1', iter'), IterT (t1, match iter with ListN _ -> List | _ -> iter), false)
+    let* e1', t1 = infer_exp env e1 in
+    Ok (Il.IterE (e1', iter'), IterT (t1, match iter with ListN _ -> List | _ -> iter))
   | TypE (e1, t) ->
     let _t' = elab_typ env t in
-    Ok ((elab_exp env e1 t).it, t.it, true)
+    Ok ((elab_exp env e1 t).it, t.it)
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
   | UnparenE _ -> error e.at "misplaced unparenthesize"
   | LatexE _ -> error e.at "misplaced latex literal"
 
 and infer_exp_list env = function
-  | [] -> Ok ([], [], true)
+  | [] -> Ok ([], [])
   | e::es ->
     let ( let* ) = Result.bind in
-    let* e', t, b1 = infer_exp env e in
-    let* es', ts, b2 = infer_exp_list env es in
-    Ok (e'::es', t::ts, b1 && b2)
+    let* e', t = infer_exp env e in
+    let* es', ts = infer_exp_list env es in
+    Ok (e'::es', t::ts)
 
 and typ_of = function
-  | Ok (_, t, _) -> t
+  | Ok (_, t) -> t
   | Error (at, construct) -> error at ("cannot infer type of " ^ construct)
 
 and elab_exp env e t : Il.exp =
@@ -1111,26 +1111,32 @@ and elab_exp' env e t : Il.exp' =
     (fun _ -> fmt "%s : %s" (el_exp e) (el_typ t))
     (fun e' -> fmt "%s" (il_exp (e' $$ no_region % elab_typ env t)))
   ) @@ fun _ ->
-  match infer_exp env e with
-  | Ok (e', t', true) ->
-    cast_exp' "expression" env e' t' t
-  | result ->
   match e.it with
   | BoolE _ | NumE _ | TextE _ | CvtE _ | UnE _ | BinE _ | CmpE _
   | IdxE _ | DotE _ | MemE _ | LenE _ | SizeE _ | CallE _ | TypE _
   | HoleE _ | FuseE _ | UnparenE _ | LatexE _ ->
-    ignore (typ_of result) (* will throw *); assert false
+    (match infer_exp env e with
+    | Ok (e', t') ->
+      cast_exp' "expression" env e' t' t
+    | Error (at, construct) ->
+      error at ("cannot infer type of " ^ construct)
+    )
   | VarE (id, _) when id.it = "_" ->
     Il.VarE id
   | VarE (id, _) ->
-    if is_iter_typ env t then
-      (* Never infer an iteration type for a variable *)
-      let t1, iter = as_iter_typ "" env Check t e.at in
-      let e' = elab_exp env e t1 in
-      lift_exp' e' iter
-    else (
-      env.vars <- bind "variable" env.vars id t;
-      Il.VarE id
+    (match infer_exp env e with
+    | Ok (e', t') ->
+      cast_exp' "expression" env e' t' t
+    | Error _ ->  (* TODO: use backtracking *)
+      if is_iter_typ env t then
+        (* Never infer an iteration type for a variable *)
+        let t1, iter = as_iter_typ "" env Check t e.at in
+        let e' = elab_exp env e t1 in
+        lift_exp' e' iter
+      else (
+        env.vars <- bind "variable" env.vars id t;
+        Il.VarE id
+      )
     )
   | SliceE (e1, e2, e3) ->
     let _t' = as_list_typ "expression" env Check t e1.at in
@@ -1186,7 +1192,7 @@ and elab_exp' env e t : Il.exp' =
     Il.TupE es'
   | SeqE [] when is_empty_typ env t ->
     (match infer_exp env e with
-    | Ok (e', t', _) -> cast_exp' "empty expression" env e' t' t
+    | Ok (e', t') -> cast_exp' "empty expression" env e' t' t
     | Error _ -> assert false
     )
   | EpsE | SeqE _ when is_iter_typ env t ->
