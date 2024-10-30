@@ -148,6 +148,7 @@ syntax val_(Fnn) = fN($size(Fnn))
 ;; Operators
 
 syntax sx hint(desc "signedness") = U | S
+syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax unop_(valtype)
 syntax unop_(Inn) = CLZ | CTZ | POPCNT
@@ -176,9 +177,14 @@ syntax cvtop =
   | EXTEND sx | WRAP | CONVERT sx | TRUNC sx | PROMOTE | DEMOTE | REINTERPRET
 
 
+;; Memory operators
+
 syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 
 var ao : memarg
+
+syntax loadop_(valtype)
+syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $size(Inn)
 
 
 ;; Instructions
@@ -233,13 +239,10 @@ syntax instr/global hint(desc "global instruction") = ...
   | GLOBAL.SET globalidx
   | ...
 
-syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
-
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD valtype (sz _ sx)? memarg  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-    -- (if valtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | STORE valtype sz? memarg        hint(show %.STORE % %)   hint(show %.STORE#% % %)
-    -- (if valtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
+  | LOAD valtype loadop_(valtype)? memarg  hint(show %.LOAD % %) hint(show %.LOAD# ##% %)
+  | STORE valtype sz? memarg               hint(show %.STORE % %) hint(show %.STORE#% %)
+    -- (if valtype = Inn /\ sz < $size(Inn))?
   | MEMORY.SIZE
   | MEMORY.GROW
 

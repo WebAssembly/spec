@@ -539,9 +539,9 @@ def $free_instr(TABLE.INIT tableidx elemidx) =
   $free_tableidx(tableidx) ++ $free_elemidx(elemidx)
 def $free_instr(ELEM.DROP elemidx) = $free_elemidx(elemidx)
 
-def $free_instr(LOAD numtype loadop memidx memarg) =
+def $free_instr(LOAD numtype loadop? memidx memarg) =
   $free_numtype(numtype) ++ $free_memidx(memidx)
-def $free_instr(STORE numtype sz? memidx memarg) =
+def $free_instr(STORE numtype storeop? memidx memarg) =
   $free_numtype(numtype) ++ $free_memidx(memidx)
 def $free_instr(VLOAD vectype vloadop? memidx memarg) =
   $free_vectype(vectype) ++ $free_memidx(memidx)

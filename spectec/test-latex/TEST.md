@@ -2988,6 +2988,12 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{loadop}}}_{{\mathsf{i}}{N}} & ::= & {\mathit{sz}}~{\mathit{sx}} & \quad \mbox{if}~ {\mathit{sz}} < N \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {{\mathit{storeop}}}_{{\mathsf{i}}{N}} & ::= & {\mathit{sz}} & \quad \mbox{if}~ {\mathit{sz}} < N \\
 & {{\mathit{vloadop}}}_{{\mathit{vectype}}} & ::= & {{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ {\mathit{sz}} \cdot M = {|{\mathit{vectype}}|} / 2 \\
 & & | & {{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}} \\
 & & | & {{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}} & \quad \mbox{if}~ {\mathit{sz}} \geq \mathsf{{\scriptstyle 32}} \\
@@ -3113,7 +3119,7 @@ $$
 & & | & \mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}} \\
 & & | & \mathsf{elem{.}drop}~{\mathit{elemidx}} \\
 & & | & {{\mathit{numtype}}{.}\mathsf{load}}{{{{\mathit{loadop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
-& & | & {{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
+& & | & {{\mathit{numtype}}{.}\mathsf{store}}{{{{\mathit{storeop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
 & & | & {{\mathit{vectype}}{.}\mathsf{load}}{{{{\mathit{vloadop}}}_{{\mathit{vectype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
 & & | & {{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\
 & & | & {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\
@@ -4065,13 +4071,13 @@ $$
 \end{array}
 } \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{elem{.}drop}~{\mathit{elemidx}}) & = & {\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}}) \\
-{\mathrm{free}}_{\mathit{instr}}({{\mathit{numtype}}{.}\mathsf{load}}{{\mathit{loadop}}}~{\mathit{memidx}}~{\mathit{memarg}}) & = & & \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
 {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
 \end{array}
 } \\
-{\mathrm{free}}_{\mathit{instr}}({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}) & = & & \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
 {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
@@ -8593,7 +8599,7 @@ $$
 \mbox{(reference value)} & {\mathit{ref}} & ::= & {\mathit{addrref}} \\
 & & | & \mathsf{ref{.}null}~{\mathit{heaptype}} \\
 \mbox{(value)} & {\mathit{val}} & ::= & {\mathit{num}} ~|~ {\mathit{vec}} ~|~ {\mathit{ref}} \\
-\mbox{(result)} & {\mathit{result}} & ::= & {{\mathit{val}}^\ast} ~|~ (\mathsf{ref{.}exn\_addr}~{\mathit{exnaddr}})~\mathsf{throw\_ref} ~|~ \mathsf{trap} \\
+\mbox{(result)} & {\mathit{result}} & ::= & {{\mathit{val}}^\ast} ~|~ ( \mathsf{ref{.}exn\_addr}~{\mathit{exnaddr}} )~\mathsf{throw\_ref} ~|~ \mathsf{trap} \\
 \end{array}
 $$
 
@@ -10435,11 +10441,11 @@ $$
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {b^\ast} = {{\mathrm{bytes}}}_{{\mathit{nt}}}(c)
 } \\
-{[\textsc{\scriptsize E{-}store{-}pack{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathit{nt}}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}store{-}pack{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathit{nt}}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}] ; \epsilon &  \\
+{[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}] ; \epsilon &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {b^\ast} = {{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))
 } \\

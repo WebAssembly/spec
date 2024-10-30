@@ -98,10 +98,10 @@ let is_post_exp e =
   | HoleE _ -> true
   | _ -> false
 
-let is_typcase t =
+let rec is_typcase t =
   match t.it with
   | AtomT _ | InfixT _ | BrackT _ -> true
-  | SeqT ({it = AtomT _; _}::_) -> true
+  | SeqT (t'::_) -> is_typcase t'
   | VarT _ | BoolT | NumT _ | TextT | TupT _ | SeqT _
   | ParenT _ | IterT _ -> false
   | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
@@ -413,9 +413,11 @@ deftyp_ :
               | Elem (t, prems, hints) ->
                 match t.it with
                 | AtomT atom
-                | SeqT ({it = AtomT atom; _}::_)
                 | InfixT (_, atom, _)
-                | BrackT (atom, _, _) when at = None ->
+                | BrackT (atom, _, _)
+                | SeqT ({it = AtomT atom; _}::_)
+                | SeqT ({it = InfixT (_, atom, _); _}::_)
+                | SeqT ({it = BrackT (atom, _, _); _}::_) when at = None ->
                   y1, (Elem (atom, (t, prems), hints))::y2, at
                 | _ when prems = [] && hints = [] ->
                   (Elem t)::y1, y2, Some t.at
@@ -442,7 +444,7 @@ nottyp_prim_ :
     { BrackT (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE nottyp RBRACE
     { BrackT (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
-  | LPAREN tup_list(nottyp) RPAREN
+  | LPAREN tup_list(typ) RPAREN
     { match $2 with
       | [], _ -> ParenT (SeqT [] $ $sloc)
       | [t], `Insig -> ParenT t

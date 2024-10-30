@@ -296,46 +296,60 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}})` if and only if:
-
-
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
-
-   * If :math:`n` is defined,
-
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
-
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
-
-   * If :math:`n` is defined,
-
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
-
-
-* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon)` if and only if:
+* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
 
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * Either:
 
-   * If :math:`n` is defined,
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`t`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`\epsilon`.
 
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`t`.
 
-   * If :math:`n` is defined,
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|t|} / 8`.
 
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
+   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`(M, {\mathit{sx}})`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
+
+
+* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon)` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+
+   * Either:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`t`.
+
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`t`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|t|} / 8`.
+
+   * Or:
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`M`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
 * :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if and only if:
@@ -1020,8 +1034,8 @@ watsup 0.4 generator
 #. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
 
 
-:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
-..........................................................................................................................................................................
+:math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~{\mathit{ao}}`
+.......................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -1030,7 +1044,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
+#. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
    a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
@@ -1044,11 +1058,11 @@ watsup 0.4 generator
 
 #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+   a. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1056,11 +1070,11 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -1104,8 +1118,8 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
 
 
-:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
-...........................................................................................................................................................
+:math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{ao}}`
+..............................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -2752,27 +2766,34 @@ Instr_ok/memory.grow
   - C.MEMS[0] is mt.
 
 Instr_ok/load
-- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type ([I32] -> [nt]) if and only if:
+- the instr (LOAD valtype_u0 loadop__u2? memarg) is valid with the function type ([I32] -> [valtype_u3]) if and only if:
   - |C.MEMS| is greater than 0.
-  - ((sx? is ?())) if and only if ((n? is ?())).
   - C.MEMS[0] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
-  - If n is defined,
-    - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
-    - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - Either:
+    - valtype_u0 is t.
+    - loadop__u2? is ?().
+    - valtype_u3 is t.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
+  - Or:
+    - valtype_u0 is Inn.
+    - loadop__u2? is ?((M, sx)).
+    - valtype_u3 is Inn.
+    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if and only if:
+- the instr (STORE valtype_u0 sz_u1? memarg) is valid with the function type ([I32, valtype_u2] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
-  - If n is defined,
-    - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
-    - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - Either:
+    - valtype_u0 is t.
+    - sz_u1? is ?().
+    - valtype_u2 is t.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
+  - Or:
+    - valtype_u0 is Inn.
+    - sz_u1? is ?(M).
+    - valtype_u2 is Inn.
+    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instrs_ok
 - the instr sequence instr_u0* is valid with the function type (valtype_u1* -> valtype_u2*) if and only if:
@@ -3122,26 +3143,26 @@ Step_read/global.get x
 1. Let z be the current state.
 2. Push the value $global(z, x).VALUE to the stack.
 
-Step_read/load valtype_u0 sz_sx_u1? ao
+Step_read/load valtype_u0 loadop__u2? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
+4. If loadop__u2? is not defined, then:
   a. Let t be valtype_u0.
   b. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   c. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
   d. Push the value (t.CONST c) to the stack.
 5. If the type of valtype_u0 is Inn, then:
-  a. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
+  a. If loadop__u2? is defined, then:
+    1) Let ?(loadop__0) be loadop__u2?.
+    2) Let (n, sx) be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be valtype_u0.
-  c. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
+  c. If loadop__u2? is defined, then:
+    1) Let ?(loadop__0) be loadop__u2?.
+    2) Let (n, sx) be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
@@ -4407,46 +4428,60 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{{(n, {\mathit{sx}})^?}}~{}^?~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}})` if and only if:
-
-
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
-
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
-
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
-
-   * If :math:`n` is defined,
-
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
-
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
-
-   * If :math:`n` is defined,
-
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
-
-
-* :math:`({\mathit{nt}}{.}\mathsf{store}~{n^?}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon)` if and only if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
 
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * Either:
 
-   * If :math:`n` is defined,
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`\epsilon`.
 
-      * :math:`n / 8` must be less than :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathit{nt}}`.
 
-   * If :math:`n` is defined,
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
-      * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
+   * Or:
+
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`(M, {\mathit{sx}})`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
+
+
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon)` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+
+   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+
+   * Either:
+
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
+
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathit{nt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+   * Or:
+
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`M`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathsf{i}}{n}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
 * :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if and only if:
@@ -5871,8 +5906,8 @@ watsup 0.4 generator
    #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
-:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
-..........................................................................................................................................................................
+:math:`{{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~{\mathit{ao}}`
+.......................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -5881,7 +5916,7 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
+#. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
    a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
@@ -5895,11 +5930,11 @@ watsup 0.4 generator
 
 #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+   a. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -5907,11 +5942,11 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -6069,7 +6104,7 @@ watsup 0.4 generator
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
@@ -6118,9 +6153,9 @@ watsup 0.4 generator
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})})`.
 
-      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
@@ -6132,9 +6167,9 @@ watsup 0.4 generator
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})})`.
 
-      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
@@ -6181,7 +6216,7 @@ watsup 0.4 generator
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}{}[i])` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
@@ -6275,8 +6310,8 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
-...........................................................................................................................................................
+:math:`{{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{ao}}`
+..............................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -9334,27 +9369,34 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type ([I32] -> [nt]) if and only if:
+- the instr (LOAD numtype_u0 loadop__u2? memarg) is valid with the function type ([I32] -> [valtype_u3]) if and only if:
   - |C.MEMS| is greater than 0.
-  - ((sx? is ?())) if and only if ((n? is ?())).
   - C.MEMS[0] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
-  - If n is defined,
-    - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
-    - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - Either:
+    - numtype_u0 is nt.
+    - loadop__u2? is ?().
+    - valtype_u3 is nt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - Or:
+    - numtype_u0 is Inn.
+    - loadop__u2? is ?((M, sx)).
+    - valtype_u3 is Inn.
+    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if and only if:
+- the instr (STORE numtype_u0 sz_u1? memarg) is valid with the function type ([I32, valtype_u2] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
-  - If n is defined,
-    - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
-    - (n / 8) is less than ($size(nt) / 8).
-  - If n is defined,
-    - nt is Inn.
+  - Either:
+    - numtype_u0 is nt.
+    - sz_u1? is ?().
+    - valtype_u2 is nt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - Or:
+    - numtype_u0 is Inn.
+    - sz_u1? is ?(M).
+    - valtype_u2 is Inn.
+    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
 - the instr (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type ([I32] -> [V128]) if and only if:
@@ -10073,26 +10115,26 @@ Step_read/table.init x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
-Step_read/load numtype_u0 sz_sx_u1? ao
+Step_read/load numtype_u0 loadop__u2? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
+4. If loadop__u2? is not defined, then:
   a. Let nt be numtype_u0.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   c. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
 5. If the type of numtype_u0 is Inn, then:
-  a. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
+  a. If loadop__u2? is defined, then:
+    1) Let ?(loadop__0) be loadop__u2?.
+    2) Let (n, sx) be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be numtype_u0.
-  c. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
+  c. If loadop__u2? is defined, then:
+    1) Let ?(loadop__0) be loadop__u2?.
+    2) Let (n, sx) be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
@@ -10193,14 +10235,14 @@ Step_read/memory.copy
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
     2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8, U)) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
     5) Push the value (I32.CONST (j + 1)) to the stack.
     6) Push the value (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
     2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8, U)) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
     5) Push the value (I32.CONST j) to the stack.
     6) Push the value (I32.CONST i) to the stack.
@@ -13123,7 +13165,7 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
@@ -13134,9 +13176,9 @@ watsup 0.4 generator
 
       * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+      * :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`\epsilon`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathit{nt}}`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -13144,9 +13186,9 @@ watsup 0.4 generator
 
       * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`M`.
+      * :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`M`.
 
-      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
@@ -16409,47 +16451,43 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
-...................................................................................................................
+:math:`{{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{ao}}`
+...........................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}`, then:
+#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
-      1) Trap.
+   a. Trap.
 
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is Inn, then:
 
-   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{N}` and :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
-
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
-
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
       #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
 
@@ -18728,15 +18766,13 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{load}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{\mathit{loadop\_{\scriptstyle 0}}}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is defined, then:
-
-      1) Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
+   #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{store}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
    #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
@@ -22849,18 +22885,18 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type ([I32, valtype_u2] ->_ [] []) if and only if:
+- the instr (STORE numtype_u0 storeop__u2? x memarg) is valid with the instruction type ([I32, valtype_u3] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - Either:
     - numtype_u0 is nt.
-    - sz_u1? is ?().
-    - valtype_u2 is nt.
+    - storeop__u2? is ?().
+    - valtype_u3 is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
     - numtype_u0 is Inn.
-    - sz_u1? is ?(M).
-    - valtype_u2 is Inn.
+    - storeop__u2? is ?(M).
+    - valtype_u3 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
@@ -24485,28 +24521,26 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store nt sz_u0? x ao
+Step/store numtype_u0 storeop__u2? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u1 is on the top of the stack.
-3. Pop the value (numtype_u1.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type numtype_u3 is on the top of the stack.
+3. Pop the value (numtype_u3.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. If (numtype_u1 is nt), then:
-  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u0? is not defined), then:
-    1) Trap.
-  b. If sz_u0? is not defined, then:
-    1) Let b* be $nbytes_(nt, c).
-    2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
-7. If the type of numtype_u1 is Inn, then:
-  a. If sz_u0? is defined, then:
-    1) Let ?(n) be sz_u0?.
+6. Let nt be numtype_u3.
+7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and ((numtype_u0 is nt) and storeop__u2? is not defined)), then:
+  a. Trap.
+8. If ((numtype_u0 is nt) and storeop__u2? is not defined), then:
+  a. Let b* be $nbytes_(nt, c).
+  b. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
+9. If the type of numtype_u3 is Inn, then:
+  a. Let Inn be numtype_u3.
+  b. If ((numtype_u0 is Inn) and storeop__u2? is defined), then:
+    1) Let ?(n) be storeop__u2?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_u1.
-  c. If sz_u0? is defined, then:
-    1) Let ?(n) be sz_u0?.
-    2) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-    3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
+    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    4) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 
 Step/vstore V128 x ao
 1. Let z be the current state.
@@ -25569,11 +25603,10 @@ free_instr instr_u0
   a. Let (ELEM.DROP elemidx) be instr_u0.
   b. Return $free_elemidx(elemidx).
 89. If instr_u0 is of the case LOAD, then:
-  a. Let (LOAD numtype loadop__0 memidx memarg) be instr_u0.
-  b. If loadop__0 is defined, then:
-    1) Return $free_numtype(numtype) ++ $free_memidx(memidx).
+  a. Let (LOAD numtype loadop? memidx memarg) be instr_u0.
+  b. Return $free_numtype(numtype) ++ $free_memidx(memidx).
 90. If instr_u0 is of the case STORE, then:
-  a. Let (STORE numtype sz? memidx memarg) be instr_u0.
+  a. Let (STORE numtype storeop? memidx memarg) be instr_u0.
   b. Return $free_numtype(numtype) ++ $free_memidx(memidx).
 91. If instr_u0 is of the case VLOAD, then:
   a. Let (VLOAD vectype vloadop? memidx memarg) be instr_u0.
