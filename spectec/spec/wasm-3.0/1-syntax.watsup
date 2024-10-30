@@ -567,9 +567,10 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 var ao : memarg
 
 syntax loadop_(numtype)
-syntax loadop_(Inn) =
-  sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
-;; syntax loadop_(Fnn) = |           ;; uninhabited
+syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
+
+syntax storeop_(numtype)
+syntax storeop_(Inn) = sz                      -- if sz < $sizenn(Inn)
 
 syntax vloadop_(vectype) hint(macro "%" "L%") =
   | SHAPE sz X M sx  hint(show %1#X#%3#_#%4) hint(macro "%shape") -- if $(sz * M = $vsize(vectype)/2)
@@ -753,7 +754,7 @@ syntax instr/elem hint(desc "element instruction") = ...
 
 syntax instr/memory hint(desc "memory instruction") = ...
   | LOAD numtype loadop_(numtype)? memidx memarg   hint(show %.LOAD % %) hint(show %.LOAD# ##% % %)
-  | STORE numtype sz? memidx memarg                hint(show %.STORE % %) hint(show %.STORE#% % %)
+  | STORE numtype storeop_(numtype)? memidx memarg hint(show %.STORE % %) hint(show %.STORE#% % %)
   | VLOAD vectype vloadop_(vectype)? memidx memarg hint(show %.LOAD % %) hint(show %.LOAD# ##% % %) hint(macro "V%")
   | VLOAD_LANE vectype sz memidx memarg laneidx    hint(show %.LOAD#%#_#LANE % % %) hint(macro "V%")
   | VSTORE vectype memidx memarg                   hint(show %.STORE % %) hint(macro "V%")

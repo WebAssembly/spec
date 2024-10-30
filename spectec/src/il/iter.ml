@@ -122,9 +122,9 @@ and exp e =
   | BoolE b -> bool b
   | NumE n -> num n
   | TextE s -> text s
-  | UnE (op, e1) -> unop op; exp e1
-  | BinE (op, e1, e2) -> binop op; exp e1; exp e2
-  | CmpE (op, e1, e2) -> cmpop op; exp e1; exp e2
+  | UnE (op, nt, e1) -> unop op; opt numtyp nt; exp e1
+  | BinE (op, nt, e1, e2) -> binop op; opt numtyp nt; exp e1; exp e2
+  | CmpE (op, nt, e1, e2) -> cmpop op; opt numtyp nt; exp e1; exp e2
   | TupE es | ListE es -> list exp es
   | ProjE (e1, _) | TheE e1 | LenE e1 -> exp e1
   | CaseE (op, e1) -> mixop op; exp e1

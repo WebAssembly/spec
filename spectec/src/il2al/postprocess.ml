@@ -9,7 +9,7 @@ let rec merge_pop_assert' instrs =
     (* pop unknown type then assert *)
     | ({ it = AssertI ({ it = TopValueE None; _ } as e1); _ } as i1) ::
     ({ it = PopI e2; _ } as i2) ::
-    ({ it = AssertI ({ it = BinE (EqOp, e31, e32); _ }); _ } as i3) :: il ->
+    ({ it = AssertI ({ it = BinE (`EqOp, e31, e32); _ }); _ } as i3) :: il ->
       (match e2.it, e32.it with
       | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_), VarE _
       when Eq.eq_expr e31 hd ->

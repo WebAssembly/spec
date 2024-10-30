@@ -137,9 +137,9 @@ and subst_exp s e =
     | Some e' -> e'.it
     )
   | BoolE _ | NumE _ | TextE _ -> e.it
-  | UnE (op, e1) -> UnE (op, subst_exp s e1)
-  | BinE (op, e1, e2) -> BinE (op, subst_exp s e1, subst_exp s e2)
-  | CmpE (op, e1, e2) -> CmpE (op, subst_exp s e1, subst_exp s e2)
+  | UnE (op, nt, e1) -> UnE (op, nt, subst_exp s e1)
+  | BinE (op, nt, e1, e2) -> BinE (op, nt, subst_exp s e1, subst_exp s e2)
+  | CmpE (op, nt, e1, e2) -> CmpE (op, nt, subst_exp s e1, subst_exp s e2)
   | IdxE (e1, e2) -> IdxE (subst_exp s e1, subst_exp s e2)
   | SliceE (e1, e2, e3) -> SliceE (subst_exp s e1, subst_exp s e2, subst_exp s e3)
   | UpdE (e1, p, e2) -> UpdE (subst_exp s e1, subst_path s p, subst_exp s e2)

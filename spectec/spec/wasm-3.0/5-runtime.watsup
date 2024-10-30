@@ -45,7 +45,7 @@ syntax val hint(desc "value") =
   | num | vec | ref
 
 syntax result hint(desc "result") =
-  | _VALS val* | _EXN (REF.EXN_ADDR exnaddr) THROW_REF | TRAP
+  | _VALS val* | `(REF.EXN_ADDR exnaddr) THROW_REF | TRAP
 
 
 var r : ref

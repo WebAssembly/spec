@@ -317,6 +317,7 @@ The ${:ELEM.DROP} instruction prevents further use of a passive element segment.
 .. _syntax-storen:
 .. _syntax-memarg:
 .. _syntax-loadop:
+.. _syntax-storeop:
 .. _syntax-vloadop:
 .. _syntax-lanewidth:
 .. _syntax-instr-memory:
@@ -326,7 +327,7 @@ Memory Instructions
 
 Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
-$${syntax: memarg loadop_ vloadop_ {instr/memory instr/data}}
+$${syntax: memarg loadop_ storeop_ vloadop_ {instr/memory instr/data}}
 
 Memory is accessed with ${:LOAD} and ${:STORE} instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory argument* ${:memarg} that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).

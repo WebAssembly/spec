@@ -361,17 +361,17 @@ and annot_exp env e : Il.Ast.exp * occur =
       VarE id, Env.singleton id.it (e.note, Env.find id.it env)
     | VarE _ | BoolE _ | NumE _ | TextE _ ->
       e.it, Env.empty
-    | UnE (op, e1) ->
+    | UnE (op, nt, e1) ->
       let e1', occur1 = annot_exp env e1 in
-      UnE (op, e1'), occur1
-    | BinE (op, e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
-      BinE (op, e1', e2'), union occur1 occur2
-    | CmpE (op, e1, e2) ->
+      UnE (op, nt, e1'), occur1
+    | BinE (op, nt, e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in
-      CmpE (op, e1', e2'), union occur1 occur2
+      BinE (op, nt, e1', e2'), union occur1 occur2
+    | CmpE (op, nt, e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      CmpE (op, nt, e1', e2'), union occur1 occur2
     | IdxE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in

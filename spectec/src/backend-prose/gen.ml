@@ -51,7 +51,7 @@ let preprocess_prem prem = match prem.it with
       { it = TupE [dt; ct]; at = tup_at; _ }
     ) ->
       let expanded_dt = { dt with it = Ast.CallE ("expanddt" $ no_region, [Ast.ExpA dt $ dt.at]); note = ct.note } in
-      { prem with it = Ast.IfPr (Ast.CmpE (Ast.EqOp, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
+      { prem with it = Ast.IfPr (Ast.CmpE (`EqOp, None, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
   | _ -> prem
 
 let atomize atom' = atom' $$ no_region % (Atom.info "")
@@ -61,15 +61,7 @@ let rel_has_id id rel =
   | Ast.RelD (id', _, _, _) -> id.it = id'.it
   | _ -> false
 
-let cmpop_to_cmpop = function
-| Ast.EqOp -> Eq
-| Ast.NeOp -> Ne
-| Ast.NumCmpop (Num.LtOp, _) -> Lt
-| Ast.NumCmpop (Num.GtOp, _) -> Gt
-| Ast.NumCmpop (Num.LeOp, _) -> Le
-| Ast.NumCmpop (Num.GeOp, _) -> Ge
-
-let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
+let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
 
 (* Hardcoded convention: "The rules implicitly assume a given context C" *)
 let try_omit c = match c.it with
@@ -152,23 +144,22 @@ let exp_to_argexpr es = translate_argexp es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   match e.it with
-  | Ast.CmpE (op, e1, e2) ->
-    let op = cmpop_to_cmpop op in
+  | Ast.CmpE (op, _, e1, e2) ->
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
     [ match e2.it with LenE _ -> CmpI (e2, swap op, e1) | _ -> CmpI (e1, op, e2) ]
-  | Ast.BinE (Ast.BoolBinop Bool.AndOp, e1, e2) ->
+  | Ast.BinE (`AndOp, None, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
-  | Ast.BinE (Ast.BoolBinop Bool.OrOp, e1, e2) ->
+  | Ast.BinE (`OrOp, None, e1, e2) ->
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match cond1 with
-      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
+      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, `EqOp, { it = OptE None; _ }) ] ->
         (* ~P \/ Q is equivalent to P -> Q *)
         IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
       | _ ->
         EitherI [cond1; cond2] ]
-  | Ast.BinE (Ast.BoolBinop Bool.EquivOp, e1, e2) ->
+  | Ast.BinE (`EquivOp, None, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.MemE (e1, e2) ->
       [ MemI (exp_to_expr e1, exp_to_expr e2) ]

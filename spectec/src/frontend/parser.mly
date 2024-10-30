@@ -98,10 +98,10 @@ let is_post_exp e =
   | HoleE _ -> true
   | _ -> false
 
-let is_typcase t =
+let rec is_typcase t =
   match t.it with
   | AtomT _ | InfixT _ | BrackT _ -> true
-  | SeqT ({it = AtomT _; _}::_) -> true
+  | SeqT (t'::_) -> is_typcase t'
   | VarT _ | BoolT | NumT _ | TextT | TupT _ | SeqT _
   | ParenT _ | IterT _ -> false
   | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
@@ -287,32 +287,32 @@ check_atom :
 (* Operators *)
 
 %inline unop :
-  | NOT { BoolUnop Bool.NotOp }
-  | PLUS { NumUnop Num.PlusOp }
-  | MINUS { NumUnop Num.MinusOp }
-  | PLUSMINUS { PlusMinusOp }
-  | MINUSPLUS { MinusPlusOp }
+  | NOT { `NotOp }
+  | PLUS { `PlusOp }
+  | MINUS { `MinusOp }
+  | PLUSMINUS { `PlusMinusOp }
+  | MINUSPLUS { `MinusPlusOp }
 
 %inline binop :
-  | PLUS { NumBinop Num.AddOp }
-  | MINUS { NumBinop Num.SubOp }
-  | STAR { NumBinop Num.MulOp }
-  | SLASH { NumBinop Num.DivOp }
-  | BACKSLASH { NumBinop Num.ModOp }
+  | PLUS { `AddOp }
+  | MINUS { `SubOp }
+  | STAR { `MulOp }
+  | SLASH { `DivOp }
+  | BACKSLASH { `ModOp }
 
 %inline cmpop :
-  | EQ { EqOp }
-  | NE { NeOp }
-  | LT { NumCmpop Num.LtOp }
-  | GT { NumCmpop Num.GtOp }
-  | LE { NumCmpop Num.LeOp }
-  | GE { NumCmpop Num.GeOp }
+  | EQ { `EqOp }
+  | NE { `NeOp }
+  | LT { `LtOp }
+  | GT { `GtOp }
+  | LE { `LeOp }
+  | GE { `GeOp }
 
 %inline boolop :
-  | AND { BoolBinop Bool.AndOp }
-  | OR { BoolBinop Bool.OrOp }
-  | ARROW2 { BoolBinop Bool.ImplOp }
-  | DARROW2 { BoolBinop Bool.EquivOp }
+  | AND { `AndOp }
+  | OR { `OrOp }
+  | ARROW2 { `ImplOp }
+  | DARROW2 { `EquivOp }
 
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
@@ -356,7 +356,7 @@ iter :
   | STAR { List }
   | UP arith_prim
     { match $2.it with
-      | ParenE ({it = CmpE ({it = VarE (id, []); _}, NumCmpop Num.LtOp, e); _}, `Insig) ->
+      | ParenE ({it = CmpE ({it = VarE (id, []); _}, `LtOp, e); _}, `Insig) ->
         ListN (e, Some id)
       | _ -> ListN ($2, None)
     }
@@ -413,9 +413,11 @@ deftyp_ :
               | Elem (t, prems, hints) ->
                 match t.it with
                 | AtomT atom
-                | SeqT ({it = AtomT atom; _}::_)
                 | InfixT (_, atom, _)
-                | BrackT (atom, _, _) when at = None ->
+                | BrackT (atom, _, _)
+                | SeqT ({it = AtomT atom; _}::_)
+                | SeqT ({it = InfixT (_, atom, _); _}::_)
+                | SeqT ({it = BrackT (atom, _, _); _}::_) when at = None ->
                   y1, (Elem (atom, (t, prems), hints))::y2, at
                 | _ when prems = [] && hints = [] ->
                   (Elem t)::y1, y2, Some t.at
@@ -442,7 +444,7 @@ nottyp_prim_ :
     { BrackT (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE nottyp RBRACE
     { BrackT (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
-  | LPAREN tup_list(nottyp) RPAREN
+  | LPAREN tup_list(typ) RPAREN
     { match $2 with
       | [], _ -> ParenT (SeqT [] $ $sloc)
       | [t], `Insig -> ParenT t
@@ -488,8 +490,8 @@ casetyp :
 
 %inline enum1 :
   | exp_lit { $1 }
-  | PLUS arith_un { UnE (NumUnop Num.PlusOp, $2) $ $sloc }
-  | MINUS arith_un { UnE (NumUnop Num.MinusOp, $2) $ $sloc }
+  | PLUS arith_un { UnE (`PlusOp, $2) $ $sloc }
+  | MINUS arith_un { UnE (`MinusOp, $2) $ $sloc }
   | DOLLAR LPAREN exp RPAREN { $3 }
   | DOLLAR numtyp DOLLAR LPAREN exp RPAREN { CvtE ($5, $2) $ $sloc }
 
@@ -636,7 +638,7 @@ arith_prim_ :
 arith_post : arith_post_ { $1 $ $sloc }
 arith_post_ :
   | arith_prim_ { $1 }
-  | arith_atom UP arith_prim { BinE ($1, NumBinop Num.PowOp, $3) }
+  | arith_atom UP arith_prim { BinE ($1, `PowOp, $3) }
   | arith_atom LBRACK arith RBRACK { IdxE ($1, $3) }
   | arith_post dotid { DotE ($1, $2) }
 

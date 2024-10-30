@@ -141,9 +141,9 @@ and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
 
 and t_exp' env = function
   | (VarE _ | BoolE _ | NumE _ | TextE _) as e -> e
-  | UnE (unop, exp) -> UnE (unop, t_exp env exp)
-  | BinE (binop, exp1, exp2) -> BinE (binop, t_exp env exp1, t_exp env exp2)
-  | CmpE (cmpop, exp1, exp2) -> CmpE (cmpop, t_exp env exp1, t_exp env exp2)
+  | UnE (unop, nto, exp) -> UnE (unop, nto, t_exp env exp)
+  | BinE (binop, nto, exp1, exp2) -> BinE (binop, nto, t_exp env exp1, t_exp env exp2)
+  | CmpE (cmpop, nto, exp1, exp2) -> CmpE (cmpop, nto, t_exp env exp1, t_exp env exp2)
   | IdxE (exp1, exp2) -> IdxE (t_exp env exp1, t_exp env exp2)
   | SliceE (exp1, exp2, exp3) -> SliceE (t_exp env exp1, t_exp env exp2, t_exp env exp3)
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)

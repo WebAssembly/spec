@@ -77,7 +77,7 @@ $$
 & & | & \mathsf{global{.}get}~{\mathit{globalidx}} \\
 & & | & \mathsf{global{.}set}~{\mathit{globalidx}} \\
 & & | & {{\mathit{numtype}}{.}\mathsf{load}}{{{{\mathit{loadop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
-& & | & {{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
+& & | & {{\mathit{numtype}}{.}\mathsf{store}}{{{{\mathit{storeop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
 & & | & {{\mathit{vectype}}{.}\mathsf{load}}{{{{\mathit{vloadop}}}_{{\mathit{vectype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\
 & & | & {{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\
 & & | & {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\
@@ -448,6 +448,7 @@ warning: syntax `startopt` was never spliced
 warning: syntax `state` was never spliced
 warning: syntax `storagetype` was never spliced
 warning: syntax `store` was never spliced
+warning: syntax `storeop_` was never spliced
 warning: syntax `structaddr` was never spliced
 warning: syntax `structinst` was never spliced
 warning: syntax `structtype` was never spliced

@@ -51,27 +51,14 @@ let string_of_typ = Il.Print.string_of_typ
 (* Operators *)
 
 let string_of_unop = function
-  | BoolUnop Bool.NotOp -> "not"
-  | NumUnop Num.PlusOp -> "+"
-  | NumUnop Num.MinusOp -> "-"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
 
 let string_of_binop = function
-  | BoolBinop Bool.AndOp -> "and"
-  | BoolBinop Bool.OrOp -> "or"
-  | BoolBinop Bool.ImplOp -> "=>"
-  | BoolBinop Bool.EquivOp -> "<=>"
-  | NumBinop Num.AddOp -> "+"
-  | NumBinop Num.SubOp -> "-"
-  | NumBinop Num.MulOp -> "·"
-  | NumBinop Num.DivOp -> "/"
-  | NumBinop Num.ModOp -> "\\"
-  | NumBinop Num.PowOp -> "^"
-  | NumCmpop Num.LtOp -> "<"
-  | NumCmpop Num.GtOp -> ">"
-  | NumCmpop Num.LeOp -> "≤"
-  | NumCmpop Num.GeOp -> "≥"
-  | EqOp -> "is"
-  | NeOp -> "is not"
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 (* Iters *)
 
@@ -97,15 +84,15 @@ and string_of_expr expr =
   | NumE n -> Num.to_string n
   | BoolE b -> string_of_bool b
   | CvtE (e, _, _) -> string_of_expr e  (* TODO: show? *)
-  | UnE (BoolUnop Bool.NotOp, { it = IsCaseOfE (e, a); _ }) ->
+  | UnE (`NotOp, { it = IsCaseOfE (e, a); _ }) ->
     sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
-  | UnE (BoolUnop Bool.NotOp, { it = IsDefinedE e; _ }) ->
+  | UnE (`NotOp, { it = IsDefinedE e; _ }) ->
     sprintf "%s is not defined" (string_of_expr e)
-  | UnE (BoolUnop Bool.NotOp, { it = IsValidE e; _ }) ->
+  | UnE (`NotOp, { it = IsValidE e; _ }) ->
     sprintf "%s is not valid" (string_of_expr e)
-  | UnE (BoolUnop Bool.NotOp, { it = MatchE (e1, e2); _ }) ->
+  | UnE (`NotOp, { it = MatchE (e1, e2); _ }) ->
     sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
-  | UnE (BoolUnop Bool.NotOp, e) -> sprintf "not %s" (string_of_expr e)
+  | UnE (`NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -387,12 +374,12 @@ let string_of_algorithm algo = match algo.it with
 let string_of_expr_with_type e = "the " ^ extract_desc e.note ^ " " ^ string_of_expr e
 
 let string_of_cmpop = function
-  | Eq -> "is"
-  | Ne -> "is different with"
-  | Lt -> "is less than"
-  | Gt -> "is greater than"
-  | Le -> "is less than or equal to"
-  | Ge -> "is greater than or equal to"
+  | `EqOp -> "is"
+  | `NeOp -> "is different with"
+  | `LtOp -> "is less than"
+  | `GtOp -> "is greater than"
+  | `LeOp -> "is less than or equal to"
+  | `GeOp -> "is greater than or equal to"
 
 let rec string_of_instr = function
   | LetI (e1, e2) ->

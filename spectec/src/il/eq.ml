@@ -66,11 +66,11 @@ and eq_typcase (op1, (_binds1, t1, prems1), _) (op2, (_binds2, t2, prems2), _) =
 and eq_exp e1 e2 =
   match e1.it, e2.it with
   | VarE id1, VarE id2 -> eq_id id1 id2
-  | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
-  | BinE (op1, e11, e12), BinE (op2, e21, e22) ->
-    op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
-  | CmpE (op1, e11, e12), CmpE (op2, e21, e22) ->
-    op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
+  | UnE (op1, nt1, e11), UnE (op2, nt2, e21) -> op1 = op2 && nt1 = nt2 && eq_exp e11 e21
+  | BinE (op1, nt1, e11, e12), BinE (op2, nt2, e21, e22) ->
+    op1 = op2 && nt1 = nt2 && eq_exp e11 e21 && eq_exp e12 e22
+  | CmpE (op1, nt1, e11, e12), CmpE (op2, nt2, e21, e22) ->
+    op1 = op2 && nt1 = nt2 && eq_exp e11 e21 && eq_exp e12 e22
   | LenE e11, LenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)

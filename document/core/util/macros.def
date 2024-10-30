@@ -785,11 +785,8 @@
 .. |vftestop| mathdef:: \xref{syntax/instructions}{syntax-vtestop}{\X{vftestop}}
 .. |vfrelop| mathdef:: \xref{syntax/instructions}{syntax-vrelop}{\X{vfrelop}}
 
-.. TODO: obsolete, remove
-.. |viminmaxop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{viminmaxop}}
-.. |visatbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{visatbinop}}
-
 .. |loadop| mathdef:: \xref{syntax/instructions}{syntax-loadop}{\X{loadop}}
+.. |storeop| mathdef:: \xref{syntax/instructions}{syntax-storeop}{\X{storeop}}
 .. |vloadop| mathdef:: \xref{syntax/instructions}{syntax-vloadop}{\X{vloadop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}

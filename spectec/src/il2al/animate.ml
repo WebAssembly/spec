@@ -277,7 +277,7 @@ let rec rows_of_prem vars len i p =
   match p.it with
   | IfPr e ->
     (match e.it with
-      | CmpE (EqOp, l, r) ->
+      | CmpE (`EqOp, _, l, r) ->
         [ Condition, p, [i] ]
         @ rows_of_eq vars len i l r p.at
         @ rows_of_eq vars len i r l p.at

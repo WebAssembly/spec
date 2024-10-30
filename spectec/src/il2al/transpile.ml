@@ -22,30 +22,30 @@ let take n str =
 let rec neg cond =
   let cond' =
     match cond.it with
-    | UnE (BoolUnop Bool.NotOp, c) -> c.it
-    | BinE (BoolBinop Bool.AndOp, c1, c2) -> BinE (BoolBinop Bool.OrOp, neg c1, neg c2)
-    | BinE (BoolBinop Bool.OrOp, c1, c2) -> BinE (BoolBinop Bool.AndOp, neg c1, neg c2)
-    | BinE (EqOp, e1, e2) -> BinE (NeOp, e1, e2)
-    | BinE (NeOp, e1, e2) -> BinE (EqOp, e1, e2)
-    | BinE (NumCmpop Num.LtOp, e1, e2) -> BinE (NumCmpop Num.GeOp, e1, e2)
-    | BinE (NumCmpop Num.GtOp, e1, e2) -> BinE (NumCmpop Num.LeOp, e1, e2)
-    | BinE (NumCmpop Num.LeOp, e1, e2) -> BinE (NumCmpop Num.GtOp, e1, e2)
-    | BinE (NumCmpop Num.GeOp, e1, e2) -> BinE (NumCmpop Num.LtOp, e1, e2)
-    | _ -> UnE (BoolUnop Bool.NotOp, cond)
+    | UnE (`NotOp, c) -> c.it
+    | BinE (`AndOp, c1, c2) -> BinE (`OrOp, neg c1, neg c2)
+    | BinE (`OrOp, c1, c2) -> BinE (`AndOp, neg c1, neg c2)
+    | BinE (`EqOp, e1, e2) -> BinE (`NeOp, e1, e2)
+    | BinE (`NeOp, e1, e2) -> BinE (`EqOp, e1, e2)
+    | BinE (`LtOp, e1, e2) -> BinE (`GeOp, e1, e2)
+    | BinE (`GtOp, e1, e2) -> BinE (`LeOp, e1, e2)
+    | BinE (`LeOp, e1, e2) -> BinE (`GtOp, e1, e2)
+    | BinE (`GeOp, e1, e2) -> BinE (`LtOp, e1, e2)
+    | _ -> UnE (`NotOp, cond)
   in
   { cond with it = cond' }
 
 let both_empty cond1 cond2 =
   let get_list cond =
     match cond.it with
-    | BinE (EqOp, e, { it = ListE []; _ })
-    | BinE (EqOp, { it = ListE []; _ }, e) -> Some e
-    | BinE (EqOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (EqOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (NumCmpop Num.LeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (NumCmpop Num.GeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ }) when z = Z.zero -> Some e
-    | BinE (NumCmpop Num.LtOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (NumCmpop Num.GeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ }) when z = Z.one -> Some e
+    | BinE (`EqOp, e, { it = ListE []; _ })
+    | BinE (`EqOp, { it = ListE []; _ }, e) -> Some e
+    | BinE (`EqOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
+    | BinE (`EqOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
+    | BinE (`LeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
+    | BinE (`GeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ }) when z = Z.zero -> Some e
+    | BinE (`LtOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
+    | BinE (`GeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ }) when z = Z.one -> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -55,14 +55,14 @@ let both_empty cond1 cond2 =
 let both_non_empty cond1 cond2 =
   let get_list cond =
     match cond.it with
-    | BinE (NeOp, e, { it = ListE []; _ })
-    | BinE (NeOp, { it = ListE []; _ }, e) -> Some e
-    | BinE (NeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (NeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (NumCmpop Num.LtOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (NumCmpop Num.GtOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ }) when z = Z.zero -> Some e
-    | BinE (NumCmpop Num.LeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (NumCmpop Num.GeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ }) when z = Z.one-> Some e
+    | BinE (`NeOp, e, { it = ListE []; _ })
+    | BinE (`NeOp, { it = ListE []; _ }, e) -> Some e
+    | BinE (`NeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
+    | BinE (`NeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
+    | BinE (`LtOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
+    | BinE (`GtOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ }) when z = Z.zero -> Some e
+    | BinE (`LeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
+    | BinE (`GeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ }) when z = Z.one-> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -230,7 +230,7 @@ let rec infer_else instrs =
 let if_not_defined cond =
   let at = cond.at in
   match cond.it with
-  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (BoolUnop Bool.NotOp, isDefinedE e ~at:e.at ~note:boolT) ~at:at ~note:boolT
+  | BinE (`EqOp, e, { it = OptE None; _ }) -> unE (`NotOp, isDefinedE e ~at:e.at ~note:boolT) ~at:at ~note:boolT
   | _ -> cond
 
 let swap_if instr =
@@ -320,7 +320,7 @@ let merge_three_branches i =
   match i.it with
   | IfI (e1, il1, [ { it = IfI (e2, il2, il3); at = at2; _ } ]) when Eq.eq_instrs il1 il3 ->
     let at = over_region [ at1; at2 ] in
-    ifI (binE (BoolBinop Bool.AndOp, neg e1, e2) ~note:boolT, il2, il1) ~at:at
+    ifI (binE (`AndOp, neg e1, e2) ~note:boolT, il2, il1) ~at:at
   | _ -> i
 
 let remove_dead_assignment il =
@@ -447,8 +447,8 @@ let infer_case_assert instrs =
       case_count := Counter.add k v' !case_count
     | HasTypeE ({ it = VarE id; _ }, _) ->
       case_count := Counter.add id Many !case_count
-    | UnE (BoolUnop Bool.NotOp, c') -> handle_cond c' mt_else mt_then
-    | BinE (BoolBinop Bool.(AndOp | OrOp), c1, c2) -> handle_cond c1 mt_then mt_else; handle_cond c2 mt_then mt_else
+    | UnE (`NotOp, c') -> handle_cond c' mt_else mt_then
+    | BinE ((`AndOp | `OrOp), c1, c2) -> handle_cond c1 mt_then mt_else; handle_cond c2 mt_then mt_else
     | _ -> ()
   in
   let handle_if walker i =
@@ -563,7 +563,7 @@ let flatten_if instrs =
     match instr.it with
     | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
       let at = over_region [ at1; at2 ] in
-      ifI (binE (BoolBinop Bool.AndOp, e1, e2) ~at:at ~note:boolT, il1, il2) ~at:at1
+      ifI (binE (`AndOp, e1, e2) ~at:at ~note:boolT, il1, il2) ~at:at1
     | _ -> instr
   in
   let walk_instr walker instr = 

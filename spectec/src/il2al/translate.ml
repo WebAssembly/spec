@@ -217,33 +217,22 @@ and translate_exp exp =
   (* Conversion *)
   | Il.CvtE (exp1, nt1, nt2) -> cvtE (translate_exp exp1, nt1, nt2) ~at ~note
   (* Binary / Unary operation *)
-  | Il.UnE (op, exp) ->
+  | Il.UnE (op, _, exp) ->
     let exp' = translate_exp exp in
     let op = match op with
-    | Il.BoolUnop op' -> BoolUnop op'
-    | Il.NumUnop (op', _) -> NumUnop op'
-    | _ -> error_exp exp "AL unary expression"
+    | #Bool.unop as op' -> op'
+    | #Num.unop as op' -> op'
+    | `PlusMinusOp | `MinusPlusOp -> error_exp exp "AL unary expression"
     in
     unE (op, exp') ~at ~note
-  | Il.BinE (op, exp1, exp2) ->
+  | Il.BinE (#Il.binop as op, _, exp1, exp2) ->
     let lhs = translate_exp exp1 in
     let rhs = translate_exp exp2 in
-    let op =
-      match op with
-      | Il.BoolBinop op' -> BoolBinop op'
-      | Il.NumBinop (op', _) -> NumBinop op'
-    in
     binE (op, lhs, rhs) ~at ~note
-  | Il.CmpE (op, exp1, exp2) ->
+  | Il.CmpE (#Il.cmpop as op, _, exp1, exp2) ->
     let lhs = translate_exp exp1 in
     let rhs = translate_exp exp2 in
-    let compare_op =
-      match op with
-      | Il.EqOp -> EqOp
-      | Il.NeOp -> NeOp
-      | Il.NumCmpop (op', _) -> NumCmpop op'
-    in
-    binE (compare_op, lhs, rhs) ~at ~note
+    binE (op, lhs, rhs) ~at ~note
   (* Set operation *)
   | Il.MemE (exp1, exp2) ->
     let lhs = translate_exp exp1 in
@@ -539,7 +528,7 @@ let handle_partial_bindings lhs rhs ids =
         e
       else (
         let new_e = get_lhs_name e in
-        conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % boolT ];
+        conds := !conds @ [ BinE (`EqOp, new_e, e) $$ no_region % boolT ];
         new_e
       )
     ) in
@@ -556,7 +545,7 @@ let rec translate_bindings ids bindings =
   List.fold_right (fun (l, r) cont ->
     match l with
     | _ when IdSet.is_empty (free_expr l) ->
-      [ ifI (BinE (EqOp, r, l) $$ no_region % boolT, [], []) ]
+      [ ifI (BinE (`EqOp, r, l) $$ no_region % boolT, [], []) ]
     | _ -> insert_instrs cont (handle_special_lhs l r ids)
   ) bindings []
 
@@ -741,7 +730,7 @@ and handle_iter_lhs lhs rhs free_ids =
   match iter with
   | ListN (expr, None) when not (contains_ids free_ids expr) ->
     let at = over_region [ lhs.at; rhs.at ] in
-    assertI (BinE (EqOp, lenE rhs ~note:expr.note, expr) $$ at % boolT) :: instrs'
+    assertI (BinE (`EqOp, lenE rhs ~note:expr.note, expr) $$ at % boolT) :: instrs'
   | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
@@ -801,14 +790,14 @@ and handle_special_lhs lhs rhs free_ids =
     else
       [
         ifI
-          ( binE (EqOp, lenE rhs ~note:natT, natE (Z.of_int (List.length es)) ~note:natT) ~note:boolT,
+          ( binE (`EqOp, lenE rhs ~note:natT, natE (Z.of_int (List.length es)) ~note:natT) ~note:boolT,
             letI (listE es' ~at:lhs.at ~note:lhs.note, rhs) ~at :: translate_bindings free_ids bindings,
             [] );
       ]
   | OptE None ->
     [
       ifI
-        ( unE (BoolUnop Bool.NotOp, isDefinedE rhs ~note:boolT) ~note:boolT,
+        ( unE (`NotOp, isDefinedE rhs ~note:boolT) ~note:boolT,
           [],
           [] );
     ]
@@ -827,11 +816,11 @@ and handle_special_lhs lhs rhs free_ids =
           letI (optE (Some fresh) ~at:lhs.at ~note:lhs.note, rhs) ~at :: handle_special_lhs e fresh free_ids,
           [] );
      ]
-  | BinE (NumBinop Num.AddOp, a, b) ->
+  | BinE (`AddOp, a, b) ->
     [
       ifI
-        ( binE (NumCmpop Num.GeOp, rhs, b) ~note:boolT,
-          [letI (a, binE (NumBinop Num.SubOp, rhs, b) ~at ~note:natT) ~at:at],
+        ( binE (`GeOp, rhs, b) ~note:boolT,
+          [letI (a, binE (`SubOp, rhs, b) ~at ~note:natT) ~at:at],
           [] );
     ]
   | CatE (prefix, suffix) ->
@@ -850,8 +839,8 @@ and handle_special_lhs lhs rhs free_ids =
     let cond = match length_p, length_s with
       | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs) ~note:boolT
       | Some l, None
-      | None, Some l -> binE (NumCmpop Num.GeOp, lenE rhs ~note:l.note, l) ~note:boolT
-      | Some l1, Some l2 -> binE (EqOp, lenE rhs ~note:l1.note, binE (NumBinop Num.AddOp, l1, l2) ~note:natT) ~note:boolT
+      | None, Some l -> binE (`GeOp, lenE rhs ~note:l.note, l) ~note:boolT
+      | Some l1, Some l2 -> binE (`EqOp, lenE rhs ~note:l1.note, binE (`AddOp, l1, l2) ~note:natT) ~note:boolT
     in
     [
       ifI

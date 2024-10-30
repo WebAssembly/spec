@@ -45,20 +45,9 @@ and typcase = mixop * (bind list * typ * prem list) * hint list  (* variant case
 
 (* Expressions *)
 
-and unop =
-  | BoolUnop of Bool.unop
-  | NumUnop of Num.unop * numtyp
-  | PlusMinusOp of numtyp (* `+-` *)
-  | MinusPlusOp of numtyp (* `-+` *)
-
-and binop =
-  | BoolBinop of Bool.binop
-  | NumBinop of Num.binop * numtyp
-
-and cmpop =
-  | EqOp             (* `=` *)
-  | NeOp             (* `=/=` *)
-  | NumCmpop of Num.cmpop * numtyp
+and unop = [Bool.unop | Num.unop | `PlusMinusOp | `MinusPlusOp]
+and binop = [Bool.binop | Num.binop]
+and cmpop = [Bool.cmpop | Num.cmpop]
 
 and exp = (exp', typ) note_phrase
 and exp' =
@@ -66,9 +55,9 @@ and exp' =
   | BoolE of bool                (* bool *)
   | NumE of num                  (* num *)
   | TextE of text                (* text *)
-  | UnE of unop * exp            (* unop exp *)
-  | BinE of binop * exp * exp    (* exp binop exp *)
-  | CmpE of cmpop * exp * exp    (* exp cmpop exp *)
+  | UnE of unop * numtyp option * exp            (* unop exp *)
+  | BinE of binop * numtyp option * exp * exp    (* exp binop exp *)
+  | CmpE of cmpop * numtyp option * exp * exp    (* exp cmpop exp *)
   | TupE of exp list             (* ( exp* ) *)
   | ProjE of exp * int           (* exp.i *)
   | CaseE of mixop * exp         (* atom exp? *)

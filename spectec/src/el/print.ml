@@ -27,19 +27,18 @@ let string_of_gramid id = id.it
 let string_of_atom = Atom.to_string
 
 let string_of_unop = function
-  | BoolUnop op -> Bool.string_of_unop op
-  | NumUnop op -> Num.string_of_unop op
-  | PlusMinusOp -> "+-"
-  | MinusPlusOp -> "-+"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
+  | `PlusMinusOp -> "+-"
+  | `MinusPlusOp -> "-+"
 
 let string_of_binop = function
-  | BoolBinop op -> Bool.string_of_binop op
-  | NumBinop op -> Num.string_of_binop op
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
 
 let string_of_cmpop = function
-  | EqOp -> "="
-  | NeOp -> "=/="
-  | NumCmpop op -> Num.string_of_cmpop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 let strings_of_dots = function
   | Dots -> ["..."]

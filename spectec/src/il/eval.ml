@@ -150,48 +150,48 @@ and reduce_exp env e : exp =
   ) @@ fun _ ->
   match e.it with
   | VarE _ | BoolE _ | NumE _ | TextE _ -> e
-  | UnE (op, e1) ->
+  | UnE (op, nto, e1) ->
     let e1' = reduce_exp env e1 in
     (match op, e1'.it with
-    | BoolUnop op', BoolE b1 -> BoolE (Bool.un op' b1) $> e
-    | NumUnop (op', _), NumE n1 ->
+    | #Bool.unop as op', BoolE b1 -> BoolE (Bool.un op' b1) $> e
+    | #Num.unop as op', NumE n1 ->
       (match Num.un op' n1 with
       | Some n -> NumE n
-      | None -> UnE (op, e1')
+      | None -> UnE (op, nto, e1')
       ) $> e
-    | BoolUnop Bool.NotOp, UnE (BoolUnop Bool.NotOp, e11') -> e11'
-    | NumUnop (Num.MinusOp, _), UnE (NumUnop (Num.MinusOp, _), e11') -> e11'
-    | _ -> UnE (op, e1') $> e
+    | `NotOp, UnE (`NotOp, _, e11') -> e11'
+    | `MinusOp, UnE (`MinusOp, _, e11') -> e11'
+    | _ -> UnE (op, nto, e1') $> e
     )
-  | BinE (op, e1, e2) ->
+  | BinE (op, nto, e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op with
-    | BoolBinop op' ->
+    | #Bool.binop as op' ->
       (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
-      | None -> BinE (op, e1', e2')
+      | None -> BinE (op, nto, e1', e2')
       | Some e' -> e'
       )
-    | NumBinop (op', _) ->
+    | #Num.binop as op' ->
       (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
-      | None -> BinE (op, e1', e2')
+      | None -> BinE (op, nto, e1', e2')
       | Some e' -> e'
       )
     ) $> e
-  | CmpE (op, e1, e2) ->
+  | CmpE (op, nto, e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
-    | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
-    | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
-    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
-    | NumCmpop (op', _), NumE n1, NumE n2 ->
+    | `EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
+    | `NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | `EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | `NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
+    | #Num.cmpop as op', NumE n1, NumE n2 ->
       (match Num.cmp op' n1 n2 with
       | Some b -> BoolE b
-      | None -> CmpE (op, e1', e2')
+      | None -> CmpE (op, nto, e1', e2')
       )
-    | _ -> CmpE (op, e1', e2')
+    | _ -> CmpE (op, nto, e1', e2')
     ) $> e
   | IdxE (e1, e2) ->
     let e1' = reduce_exp env e1 in
@@ -578,7 +578,7 @@ and match_exp' env s e1 e2 : subst option =
   | NumE n1, NumE n2 when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
 (*
-  | UnE (op1, e11), UnE (op2, e21) when op1 = op2 -> match_exp' env s e11 e21
+  | UnE (op1, _, e11), UnE (op2, _, e21) when op1 = op2 -> match_exp' env s e11 e21
   | BinE (e11, op1, e12), BinE (e21, op2, e22) when op1 = op2 ->
     let* s' = match_exp' env s e11 e21 in match_exp' env s' e12 e22
   | CmpE (e11, op1, e12), CmpE (e21, op2, e22) when op1 = op2 ->

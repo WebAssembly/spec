@@ -1,7 +1,7 @@
 (* Currently, the prose directly borrows some structures of AL.
    Perhaps this should be improved later *)
 
-type cmpop = Eq | Ne | Lt | Gt | Le | Ge
+type cmpop = [Xl.Bool.cmpop | Xl.Num.cmpop]
 
 type expr = Al.Ast.expr
 

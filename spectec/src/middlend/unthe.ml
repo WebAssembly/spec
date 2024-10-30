@@ -106,7 +106,7 @@ let rec t_exp n e : eqns * exp =
     let xe = VarE x $$ no_region % t in
     let bind = ExpB (x, t) $ no_region in
     let prem = IfPr (
-      CmpE (EqOp, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
+      CmpE (`EqOp, None, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
     ) $ no_region in
     eqns @ [(bind, prem)], xe
   | _ -> eqns, e'
@@ -124,7 +124,7 @@ and t_exp' n e : eqns * exp' =
   match e with
   | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None -> [], e
 
-  | UnE (uo, exp) -> t_e n exp (fun exp' -> UnE (uo, exp'))
+  | UnE (uo, nto, exp) -> t_e n exp (fun exp' -> UnE (uo, nto, exp'))
   | DotE (exp, a) -> t_e n exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e n exp (fun exp' -> LenE exp')
   | CallE (f, args) -> t_list t_arg n args (fun args' -> CallE (f, args'))
@@ -136,8 +136,8 @@ and t_exp' n e : eqns * exp' =
   | CvtE (exp, a, b) -> t_e n exp (fun exp' -> CvtE (exp', a, b))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))
 
-  | BinE (bo, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
-  | CmpE (co, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CmpE (co, e1', e2'))
+  | BinE (bo, nto, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> BinE (bo, nto, e1', e2'))
+  | CmpE (co, nto, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CmpE (co, nto, e1', e2'))
   | IdxE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> IdxE (e1', e2'))
   | CompE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CompE (e1', e2'))
   | CatE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CatE (e1', e2'))

@@ -108,31 +108,31 @@ let rec reduce_exp s e : expr =
   | UnE (op, e1) ->
     let e1' = reduce_exp s e1 in
     (match op, e1'.it with
-    | BoolUnop op', BoolE b1 -> BoolE (Bool.un op' b1) $> e
-    | NumUnop op', NumE n1 ->
+    | #Bool.unop as op', BoolE b1 -> BoolE (Bool.un op' b1) $> e
+    | #Num.unop as op', NumE n1 ->
       (match Num.un op' n1 with
       | Some n -> NumE n
       | None -> UnE (op, e1')
       ) $> e
-    | BoolUnop Bool.NotOp, UnE (BoolUnop Bool.NotOp, e11') -> e11'
-    | NumUnop Num.MinusOp, UnE (NumUnop Num.MinusOp, e11') -> e11'
+    | `NotOp, UnE (`NotOp, e11') -> e11'
+    | `MinusOp, UnE (`MinusOp, e11') -> e11'
     | _ -> UnE (op, e1') $> e
     )
   | BinE (op, e1, e2) ->
     let e1' = reduce_exp s e1 in
     let e2' = reduce_exp s e2 in
     (match op with
-    | BoolBinop op' ->
+    | #Bool.binop as op' ->
       (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
       | None -> BinE (op, e1', e2')
       | Some e' -> e'
       )
-    | NumBinop op' ->
+    | #Num.binop as op' ->
       (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
       | None -> BinE (op, e1', e2')
       | Some e' -> e'
       )
-    | NumCmpop op' ->
+    | #Num.cmpop as op' ->
       (match of_num_exp e1'.it, of_num_exp e2'.it with
       | Some n1, Some n2 ->
         (match Num.cmp op' n1 n2 with
@@ -141,11 +141,11 @@ let rec reduce_exp s e : expr =
         )
       | _, _ -> BinE (op, e1', e2')
       )
-    | EqOp when Eq.eq_expr e1' e2' -> BoolE true
-    | NeOp when Eq.eq_expr e1' e2' -> BoolE false
-    | EqOp when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
-    | NeOp when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
-    | EqOp | NeOp -> BinE (op, e1', e2')
+    | `EqOp when Eq.eq_expr e1' e2' -> BoolE true
+    | `NeOp when Eq.eq_expr e1' e2' -> BoolE false
+    | `EqOp when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | `NeOp when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
+    | #Bool.cmpop -> BinE (op, e1', e2')
     ) $> e
   | AccE (e1, p) ->
     (match p.it with
