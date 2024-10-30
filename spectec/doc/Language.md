@@ -68,14 +68,17 @@ atomop ::=
 ### Types
 
 ```
-typ ::=
-  varid args                           type name
-  "bool"                               booleans
+numtyp ::=
   "nat"                                natural numbers
   "int"                                integer numbers
   "rat"                                rational numbers
   "real"                               real numbers
+
+typ ::=
+  varid args                           type name
+  "bool"                               booleans
   "text"                               text strings
+  numtyp                               numbers
   typ iter                             iteration
   "(" list(typ, ",") ")"               parentheses or tupling
 
@@ -150,6 +153,7 @@ exp ::=
   "`" "[" list(exp, ",") "]"
   "`" "{" list(exp, ",") "}"
   "$" "(" arith ")"                    escape to arithmetic syntax
+  "$" numtyp "$" "(" arith ")"         numeric conversion
   hole                                 hole (for syntax rewrites in hints)
   exp "#" exp                          token concatenation (for syntax rewrites in hints)
   "##" exp                             remove possible parentheses (for syntax rewrites in hints)
@@ -169,6 +173,7 @@ arith ::=
   "|" exp "|"                          list length
   "$" defid exp?                       function invocation
   "$" "(" exp ")"                      escape back to general expression syntax
+  "$" numtyp "$" "(" arith ")"         numeric conversion
 
 path ::=
   path? "[" arith "]"                  list element
