@@ -32,7 +32,8 @@ let log_if label = log_if_at label Source.no_region
 module MySet = Set.Make(String)
 module MyMap = Map.Make(String)
 
-let opt f xo = match xo with None -> "-" | Some x -> f x
+let opt f = function None -> "-" | Some x -> f x
+let result f g = function Ok x -> f x | Error y -> g y
 let seq f xs = String.concat " " (List.map f xs)
 let list f xs = String.concat ", " (List.map f xs)
 let set s = seq Fun.id (MySet.elements s)
