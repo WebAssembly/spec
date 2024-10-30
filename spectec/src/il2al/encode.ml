@@ -128,7 +128,7 @@ let encode_inner_stack context_opt stack =
       let stack0 = mk_varE s0 "stackT" in
       let rhs = CallE (mk_id "pop", [arg n; arg stack0]) $$ no_region % t in
 
-      IfPr (CmpE (EqOp, lhs, rhs) $$ e.at % (BoolT $ no_region)) $ e.at
+      IfPr (CmpE (`EqOp, None, lhs, rhs) $$ e.at % (BoolT $ no_region)) $ e.at
     ) operands in
 
     None, prem :: prems @ unused_prems

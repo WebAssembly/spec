@@ -1,5 +1,6 @@
 open Util.Source
 open Ast
+open Xl
 
 
 (* Data Structure *)
@@ -159,11 +160,11 @@ and det_exp e =
   match e.it with
   | VarE (id, []) -> bound_varid id
   | VarE _ -> assert false
-  | CvtE (e1, _) | UnE (NumUnop _, e1)
+  | CvtE (e1, _) | UnE (#Num.unop, e1)
   | ParenE (e1, _) | BrackE (_, e1, _) | ArithE e1 -> det_exp e1
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)
-  | BinE (e1, NumBinop _, e2)
+  | BinE (e1, #Num.binop, e2)
   | InfixE (e1, _, e2) -> det_exp e1 + det_exp e2
   | SeqE es | TupE es -> free_list det_exp es
   | StrE efs -> free_nl_list det_expfield efs
@@ -209,9 +210,9 @@ and idx_iter iter =
 
 and det_cond_exp e =
   match e.it with
-  | UnE (BoolUnop _, e1) -> det_cond_exp e1
-  | BinE (e1, BoolBinop _, e2) -> det_cond_exp e1 + det_cond_exp e2
-  | CmpE (e1, EqOp, e2) -> det_exp e1 + det_exp e2
+  | UnE (#Bool.unop, e1) -> det_cond_exp e1
+  | BinE (e1, #Bool.binop, e2) -> det_cond_exp e1 + det_cond_exp e2
+  | CmpE (e1, `EqOp, e2) -> det_exp e1 + det_exp e2
   | MemE (e1, _) -> det_exp e1
   | ParenE (e1, _) | ArithE e1 -> det_cond_exp e1
   | _ -> empty

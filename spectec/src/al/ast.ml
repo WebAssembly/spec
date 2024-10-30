@@ -45,15 +45,9 @@ type extend_dir =                      (* direction of extension *)
 
 (* Operators *)
 
-type unop =
-  | BoolUnop of Bool.unop
-  | NumUnop of Num.unop
+type unop = [Bool.unop | Num.unop]
+type binop = [Bool.binop | Num.binop | Bool.cmpop | Num.cmpop]
 
-type binop =
-  | BoolBinop of Bool.binop
-  | NumBinop of Num.binop
-  | NumCmpop of Num.cmpop
-  | EqOp | NeOp
 
 (* Iteration *)
 

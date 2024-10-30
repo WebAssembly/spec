@@ -529,69 +529,68 @@ Printf.eprintf "[elab_atom %s @ %s] def=%s/%s\n%!"
   atom.note.Atom.def <- tid.it;
   atom
 
-let infer_unop'' fop ts =
-  List.map (fun t -> fop t, NumT t, NumT t) ts
+let infer_unop'' op ts =
+  List.map (fun t -> op, Some t, NumT t, NumT t) ts
 
 let infer_binop'' op ts =
-  List.map (fun t -> Il.NumBinop (op, t), NumT t, NumT t, NumT t) ts
+  List.map (fun t -> op, Some t, NumT t, NumT t, NumT t) ts
 
 let infer_cmpop'' op ts =
-  List.map (fun t -> Il.NumCmpop (op, t), NumT t) ts
+  List.map (fun t -> op, Some t, NumT t) ts
 
 let infer_unop' = function
-  | BoolUnop op -> [Il.BoolUnop op, BoolT, BoolT]
-  | NumUnop op -> infer_unop'' (fun t -> Il.NumUnop (op, t)) Num.[IntT; RatT; RealT]
-  | PlusMinusOp -> infer_unop'' (fun t -> Il.PlusMinusOp t) Num.[IntT; RatT; RealT]
-  | MinusPlusOp -> infer_unop'' (fun t -> Il.MinusPlusOp t) Num.[IntT; RatT; RealT]
+  | #Bool.unop as op -> [op, None, BoolT, BoolT]
+  | #Num.unop as op -> infer_unop'' op Num.[IntT; RatT; RealT]
+  | `PlusMinusOp -> infer_unop'' `PlusMinusOp Num.[IntT; RatT; RealT]
+  | `MinusPlusOp -> infer_unop'' `MinusPlusOp Num.[IntT; RatT; RealT]
 
 let infer_binop' = function
-  | BoolBinop op -> [Il.BoolBinop op, BoolT, BoolT, BoolT]
-  | NumBinop op ->
+  | #Bool.binop as op -> [op, None, BoolT, BoolT, BoolT]
+  | #Num.binop as op ->
     match op with
-    | Num.AddOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
-    | Num.SubOp -> infer_binop'' op Num.[IntT; RatT; RealT]
-    | Num.MulOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
-    | Num.DivOp -> infer_binop'' op Num.[RatT; RealT]
-    | Num.ModOp -> infer_binop'' op Num.[NatT; IntT]
-    | Num.PowOp -> infer_binop'' op Num.[NatT; RatT; RealT] |>
-        List.map (fun (op, t1, t2, t3) ->
-          (op, t1, Num.(if t2 = NumT NatT then t2 else NumT IntT), t3))
+    | `AddOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
+    | `SubOp -> infer_binop'' op Num.[IntT; RatT; RealT]
+    | `MulOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
+    | `DivOp -> infer_binop'' op Num.[RatT; RealT]
+    | `ModOp -> infer_binop'' op Num.[NatT; IntT]
+    | `PowOp -> infer_binop'' op Num.[NatT; RatT; RealT] |>
+        List.map (fun (op, nt, t1, t2, t3) ->
+          (op, nt, t1, Num.(if t2 = NumT NatT then t2 else NumT IntT), t3))
 
 let infer_cmpop' = function
-  | EqOp -> `Poly Il.EqOp
-  | NeOp -> `Poly Il.NeOp
-  | NumCmpop op -> `Over (infer_cmpop'' op Num.[NatT; IntT; RatT; RealT])
+  | #Bool.cmpop as op -> `Poly op
+  | #Num.cmpop as op -> `Over (infer_cmpop'' op Num.[NatT; IntT; RatT; RealT])
 
-let infer_unop env op t1 at : Il.unop * typ * typ =
+let infer_unop env op t1 at : Il.unop * numtyp option * typ * typ =
   let ops = infer_unop' op in
-  match List.find_opt (fun (_, t1', _) -> narrow_typ env t1 (t1' $ at)) ops with
-  | Some (op', t1', t2') -> op', t1' $ at, t2' $ at
+  match List.find_opt (fun (_, _, t1', _) -> narrow_typ env t1 (t1' $ at)) ops with
+  | Some (op', nt, t1', t2') -> op', nt, t1' $ at, t2' $ at
   | None ->
     error at ("unary operator `" ^ string_of_unop op ^
       "` is not defined for operand type `" ^ string_of_typ t1 ^ "`")
 
-let infer_binop env op t1 t2 at : Il.binop * typ * typ * typ =
+let infer_binop env op t1 t2 at : Il.binop * numtyp option * typ * typ * typ =
   let ops = infer_binop' op in
   match
-    List.find_opt (fun (_, t1', t2', _) ->
+    List.find_opt (fun (_, _, t1', t2', _) ->
       narrow_typ env t1 (t1' $ at) && (lax_num || narrow_typ env t2 (t2' $ at))) ops
   with
-  | Some (op', t1', t2', t3') -> op', t1' $ at, t2' $ at, t3' $ at
+  | Some (op', nt, t1', t2', t3') -> op', nt, t1' $ at, t2' $ at, t3' $ at
   | None ->
     error at ("binary operator `" ^ string_of_binop op ^
       "` is not defined for operand types `" ^
       string_of_typ t1 ^ "` and `" ^ string_of_typ t2 ^ "`")
 
 let infer_cmpop env op
-  : [`Poly of Il.cmpop | `Over of typ -> typ -> region -> Il.cmpop * typ] =
+  : [`Poly of Il.cmpop | `Over of typ -> typ -> region -> Il.cmpop * numtyp option * typ] =
   match infer_cmpop' op with
   | `Poly op' -> `Poly op'
   | `Over ops -> `Over (fun t1 t2 at ->
     match
-      List.find_opt (fun (_, t) ->
+      List.find_opt (fun (_, _, t) ->
         narrow_typ env t1 (t $ at) && narrow_typ env t2 (t $ at)) ops
     with
-    | Some (op', t) -> op', t $ at
+    | Some (op', nt, t) -> op', nt, t $ at
     | None ->
       error at ("comparison operator `" ^ string_of_cmpop op ^
         "` is not defined for operand types `" ^
@@ -697,7 +696,7 @@ and elab_typ_definition env tid t : Il.deftyp =
         fun eid' nt ->
         let e' = fe' eid' nt and eI' = feI' eid' nt in
         let at = Source.over_region [e'.at; eI'.at] in
-        Il.(BinE (BoolBinop Bool.OrOp, e', eI') $$ at % (BoolT $ at))
+        Il.(BinE (`OrOp, None, e', eI') $$ at % (BoolT $ at))
       ) (List.hd ts_fes') (List.tl ts_fes')
     in
     let t' = elab_typ env t1 in
@@ -813,7 +812,7 @@ and elab_typenum env tid (e1, e2o) : typ * (Il.exp -> numtyp -> Il.exp) =
     t1,
     fun eid' nt ->
     let e1' = elab_exp env e1 (NumT nt $ e1.at) in  (* redo with overall type *)
-    Il.(CmpE (EqOp, eid', e1') $$ e1'.at % (BoolT $ e1.at))
+    Il.(CmpE (`EqOp, None, eid', e1') $$ e1'.at % (BoolT $ e1.at))
   | Some e2 ->
     let at = Source.over_region [e1.at; e2.at] in
     let _e2' = elab_exp env e2 (NumT IntT $ e2.at) in
@@ -822,9 +821,9 @@ and elab_typenum env tid (e1, e2o) : typ * (Il.exp -> numtyp -> Il.exp) =
     fun eid' nt ->
     let e1' = elab_exp env e1 (NumT nt $ e1.at) in
     let e2' = elab_exp env e2 (NumT nt $ e2.at) in
-    Il.(BinE (BoolBinop Bool.AndOp,
-      CmpE (NumCmpop (Num.GeOp, nt), eid', e1') $$ e1'.at % (BoolT $ e1.at),
-      CmpE (NumCmpop (Num.LeOp, nt), eid', e2') $$ e2'.at % (BoolT $ e2.at)
+    Il.(BinE (`AndOp, None,
+      CmpE (`GeOp, Some nt, eid', e1') $$ e1'.at % (BoolT $ e1.at),
+      CmpE (`LeOp, Some nt, eid', e2') $$ e2'.at % (BoolT $ e2.at)
     ) $$ at % (BoolT $ at))
 
 and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
@@ -943,20 +942,20 @@ and infer_exp' env e : Il.exp' * typ =
     Il.CvtE (cast_exp "operand" env e1' t1 (NumT nt1 $ e1.at), nt1, nt), NumT nt $ e.at
   | UnE (op, e1) ->
     let e1', t1 = infer_exp env e1 in
-    let op', t1', t = infer_unop env op (typ_rep env t1) e.at in
-    Il.UnE (op', cast_exp "operand" env e1' t1 t1'), t
+    let op', nt, t1', t = infer_unop env op (typ_rep env t1) e.at in
+    Il.UnE (op', nt, cast_exp "operand" env e1' t1 t1'), t
   | BinE (e1, op, e2) ->
     let e1', t1 = infer_exp env e1 in
     let e2', t2 = infer_exp env e2 in
-    let op', t1', t2', t = infer_binop env op (typ_rep env t1) (typ_rep env t2) e.at in
-    Il.BinE (op',
+    let op', nt, t1', t2', t = infer_binop env op (typ_rep env t1) (typ_rep env t2) e.at in
+    Il.BinE (op', nt,
       cast_exp "operand" env e1' t1 t1',
       cast_exp "operand" env e2' t2 t2'
     ), t
   | CmpE (e1, op, ({it = CmpE (e21, _, _); _} as e2)) ->
     let e1', _t1 = infer_exp env (CmpE (e1, op, e21) $ e.at) in
     let e2', _t2 = infer_exp env e2 in
-    Il.BinE (Il.BoolBinop Bool.AndOp, e1', e2'), BoolT $ e.at
+    Il.BinE (`AndOp, None, e1', e2'), BoolT $ e.at
   | CmpE (e1, op, e2) ->
     (match infer_cmpop env op with
     | `Poly op' ->
@@ -970,12 +969,12 @@ and infer_exp' env e : Il.exp' * typ =
           let e2' = elab_exp env e2 t1 in
           e1', e2'
       in
-      Il.CmpE (op', e1', e2'), BoolT $ e.at
+      Il.CmpE (op', None, e1', e2'), BoolT $ e.at
     | `Over elab_cmpop'  ->
       let e1', t1 = infer_exp env e1 in
       let e2', t2 = infer_exp env e2 in
-      let op', t = elab_cmpop' (typ_rep env t1) (typ_rep env t2) e.at in
-      Il.CmpE (op',
+      let op', nt, t = elab_cmpop' (typ_rep env t1) (typ_rep env t2) e.at in
+      Il.CmpE (op', nt,
         cast_exp "operand" env e1' t1 t,
         cast_exp "operand" env e2' t2 t
       ), BoolT $ e.at

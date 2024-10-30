@@ -29,19 +29,18 @@ let string_of_id id =
 (* Operators *)
 
 let string_of_unop = function
-  | BoolUnop op -> Bool.string_of_unop op
-  | NumUnop (op, _) -> Num.string_of_unop op
-  | PlusMinusOp _ -> "+-"
-  | MinusPlusOp _ -> "-+"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
+  | `PlusMinusOp -> "+-"
+  | `MinusPlusOp -> "-+"
 
 let string_of_binop = function
-  | BoolBinop op -> Bool.string_of_binop op
-  | NumBinop (op, _) -> Num.string_of_binop op
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
 
 let string_of_cmpop = function
-  | EqOp -> "="
-  | NeOp -> "=/="
-  | NumCmpop (op, _) -> Num.string_of_cmpop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 let string_of_atom = Atom.to_string
 let string_of_mixop = Mixop.to_string
@@ -119,10 +118,10 @@ and string_of_exp e =
   | BoolE b -> string_of_bool b
   | NumE n -> Num.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
-  | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
-  | BinE (op, e1, e2) ->
+  | UnE (op, _, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
+  | BinE (op, _, e1, e2) ->
     "(" ^ string_of_exp e1 ^ space string_of_binop op ^ string_of_exp e2 ^ ")"
-  | CmpE (op, e1, e2) ->
+  | CmpE (op, _, e1, e2) ->
     "(" ^ string_of_exp e1 ^ space string_of_cmpop op ^ string_of_exp e2 ^ ")"
   | IdxE (e1, e2) -> string_of_exp e1 ^ "[" ^ string_of_exp e2 ^ "]"
   | SliceE (e1, e2, e3) ->

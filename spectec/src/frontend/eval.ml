@@ -165,26 +165,26 @@ and reduce_exp env e : exp =
   | UnE (op, e1) ->
     let e1' = reduce_exp env e1 in
     (match op, e1'.it with
-    | BoolUnop op', BoolE b1 -> BoolE (Bool.un op' b1) $ e.at
-    | NumUnop op', NumE (numop, n1) ->
+    | #Bool.unop as op', BoolE b1 -> BoolE (Bool.un op' b1) $ e.at
+    | #Num.unop as op', NumE (numop, n1) ->
       (match Num.un op' n1 with
       | Some n -> NumE (numop, n)
       | None -> UnE (op, e1')
       ) $ e.at
-    | BoolUnop Bool.NotOp, UnE (BoolUnop Bool.NotOp, e11') -> e11'
-    | NumUnop Num.MinusOp, UnE (NumUnop Num.MinusOp, e11') -> e11'
+    | `NotOp, UnE (`NotOp, e11') -> e11'
+    | `MinusOp, UnE (`MinusOp, e11') -> e11'
     | _ -> UnE (op, e1') $ e.at
     )
   | BinE (e1, op, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op with
-    | BoolBinop op' ->
+    | #Bool.binop as op' ->
       (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
       | None -> BinE (e1', op, e2')
       | Some e' -> e'
       )
-    | NumBinop op' ->
+    | #Num.binop as op' ->
       (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
       | None -> BinE (e1', op, e2')
       | Some e' -> e'
@@ -194,11 +194,11 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
-    | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
-    | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
-    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
-    | NumCmpop op', NumE (_, n1), NumE (_, n2) ->
+    | `EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
+    | `NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | `EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | `NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
+    | #Num.cmpop as op', NumE (_, n1), NumE (_, n2) ->
       (match Num.cmp op' n1 n2 with
       | Some b -> BoolE b
       | None -> CmpE (e1', op, e2')
@@ -503,7 +503,7 @@ and match_exp env s e1 e2 : subst option =
         | BoolE _, BoolT
         | TextE _, TextT -> true
         | NumE (_, n), NumT t -> t = Num.to_typ n
-        | UnE (NumUnop Num.(MinusOp | PlusOp), _), NumT t1 -> t1 >= IntT
+        | UnE ((`MinusOp | `PlusOp), _), NumT t1 -> t1 >= IntT
         | NumE (_, Num.Nat n), RangeT tes ->
           List.exists (function
             | ({it = NumE (_, Num.Nat n1); _}, None) -> n1 = n
@@ -775,14 +775,14 @@ and sub_typ env t1 t2 =
   | RangeT (Elem (e1, _)::tes1), NumT t2' ->
     (match (reduce_exp env e1).it with
     | NumE _ -> true
-    | UnE (MinusOp, _) -> t2' <= IntT
+    | UnE (`MinusOp, _) -> t2' <= IntT
     | _ -> assert false
     ) && sub_typ env (RangeT tes1 $ t1.at) t2
   | NumT _, RangeT [] -> true
   | NumT t1', RangeT (Elem (e2, _)::tes2) ->
     (match (reduce_exp env e2).it with
     | NumE (_, Num.Nat _) -> t1' = Num.NatT
-    | UnE (MinusOp, _) -> true
+    | UnE (`MinusOp, _) -> true
     | _ -> assert false
     ) && sub_typ env t1 (RangeT tes2 $ t2.at)
 *)

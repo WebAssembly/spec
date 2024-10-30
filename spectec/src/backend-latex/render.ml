@@ -1051,31 +1051,31 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
 (* Operators *)
 
 let render_unop = function
-  | BoolUnop Bool.NotOp -> "\\neg"
-  | NumUnop Num.PlusOp -> "+"
-  | NumUnop Num.MinusOp -> "-"
-  | PlusMinusOp -> "\\pm"
-  | MinusPlusOp -> "\\mp"
+  | `NotOp -> "\\neg"
+  | `PlusOp -> "+"
+  | `MinusOp -> "-"
+  | `PlusMinusOp -> "\\pm"
+  | `MinusPlusOp -> "\\mp"
 
 let render_binop = function
-  | BoolBinop Bool.AndOp -> "\\land"
-  | BoolBinop Bool.OrOp -> "\\lor"
-  | BoolBinop Bool.ImplOp -> "\\Rightarrow"
-  | BoolBinop Bool.EquivOp -> "\\Leftrightarrow"
-  | NumBinop Num.AddOp -> "+"
-  | NumBinop Num.SubOp -> "-"
-  | NumBinop Num.MulOp -> "\\cdot"
-  | NumBinop Num.DivOp -> "/"
-  | NumBinop Num.ModOp -> "\\mathbin{\\mathrm{mod}}"
-  | NumBinop Num.PowOp -> assert false
+  | `AndOp -> "\\land"
+  | `OrOp -> "\\lor"
+  | `ImplOp -> "\\Rightarrow"
+  | `EquivOp -> "\\Leftrightarrow"
+  | `AddOp -> "+"
+  | `SubOp -> "-"
+  | `MulOp -> "\\cdot"
+  | `DivOp -> "/"
+  | `ModOp -> "\\mathbin{\\mathrm{mod}}"
+  | `PowOp -> assert false
 
 let render_cmpop = function
-  | EqOp -> "="
-  | NeOp -> "\\neq"
-  | NumCmpop Num.LtOp -> "<"
-  | NumCmpop Num.GtOp -> ">"
-  | NumCmpop Num.LeOp -> "\\leq"
-  | NumCmpop Num.GeOp -> "\\geq"
+  | `EqOp -> "="
+  | `NeOp -> "\\neq"
+  | `LtOp -> "<"
+  | `GtOp -> ">"
+  | `LeOp -> "\\leq"
+  | `GeOp -> "\\geq"
 
 let render_dots = function
   | Dots -> [Row [Col "\\dots"]]
@@ -1208,9 +1208,9 @@ and render_exp env e =
   | TextE t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | CvtE (e1, _) -> render_exp env e1
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
-  | BinE (e1, NumBinop Num.PowOp, ({it = ParenE (e2, _); _ } | e2)) ->
+  | BinE (e1, `PowOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
-  | BinE (({it = NumE (DecOp, Num.Nat _); _} as e1), NumBinop Num.MulOp,
+  | BinE (({it = NumE (DecOp, Num.Nat _); _} as e1), `MulOp,
       ({it = VarE _ | CallE (_, []) | ParenE _; _ } as e2)) ->
     render_exp env e1 ^ " \\, " ^ render_exp env e2
   | BinE (e1, op, e2) ->

@@ -106,30 +106,38 @@ let sub_typ env t1 t2 at =
 
 (* Operators *)
 
-let infer_unop at = function
-  | BoolUnop _ -> BoolT, BoolT
-  | PlusMinusOp t | MinusPlusOp t -> NumT t, NumT t
-  | NumUnop (op, t) ->
+let infer_unop at op nt =
+  match op, nt with
+  | #Bool.unop, None -> BoolT, BoolT
+  | #Num.unop as op, Some t ->
     if not (Num.typ_unop op t t) then
       error at ("illegal type " ^ string_of_numtyp t ^ " for unary operator");
     NumT t, NumT t
+  | `PlusMinusOp, Some t | `MinusPlusOp, Some t -> NumT t, NumT t
+  | _, _ ->
+    error at ("malformed unary operator annotation")
 
-let infer_binop at = function
-  | BoolBinop _ -> BoolT, BoolT, BoolT
-  | NumBinop (op, t) ->
+let infer_binop at op nt =
+  match op, nt with
+  | #Bool.binop, None -> BoolT, BoolT, BoolT
+  | #Num.binop as op, Some t ->
     let open Num in
     let t1, t2, t3 =
       match op with
-      | AddOp | SubOp | MulOp | DivOp | ModOp -> t, t, t
-      | PowOp -> t, NatT, t
+      | `AddOp | `SubOp | `MulOp | `DivOp | `ModOp -> t, t, t
+      | `PowOp -> t, NatT, t
     in
     if not (Num.typ_binop op t1 t2 t3) then
       error at ("illegal type " ^ string_of_numtyp t ^ " for unary operator");
     NumT t1, NumT t2, NumT t3
+  | _, _ ->
+    error at ("malformed binary operator annotation")
 
-let infer_cmpop _at = function
-  | EqOp | NeOp -> None
-  | NumCmpop (_, t) -> Some (NumT t)
+let infer_cmpop at op nt =
+  match op, nt with
+  | #Bool.cmpop, None -> None
+  | #Num.cmpop, Some t -> Some (NumT t)
+  | _, _ -> error at ("malformed comparison operator annotation")
 
 
 (* Atom Bindings *)
@@ -252,8 +260,8 @@ and infer_exp (env : Env.t) e : typ =
   | BoolE _ -> BoolT $ e.at
   | NumE n -> NumT (Num.to_typ n) $ e.at
   | TextE _ -> TextT $ e.at
-  | UnE (op, _) -> let _t1, t' = infer_unop e.at op in t' $ e.at
-  | BinE (op, _, _) -> let _t1, _t2, t' = infer_binop e.at op in t' $ e.at
+  | UnE (op, nt, _) -> let _t1, t' = infer_unop e.at op nt in t' $ e.at
+  | BinE (op, nt, _, _) -> let _t1, _t2, t' = infer_binop e.at op nt in t' $ e.at
   | CmpE _ | MemE _ -> BoolT $ e.at
   | IdxE (e1, _) -> as_list_typ "expression" env Infer (infer_exp env e1) e1.at
   | SliceE (e1, _, _)
@@ -327,28 +335,28 @@ try
   | BoolE _ | NumE _ | TextE _ ->
     let t' = infer_exp env e in
     equiv_typ env t' t e.at
-  | UnE (op, e1) ->
-    let t1, t' = infer_unop e.at op in
+  | UnE (op, nt, e1) ->
+    let t1, t' = infer_unop e.at op nt in
     valid_exp ~side env e1 (t1 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-  | BinE (NumBinop (Num.(AddOp | SubOp), _) as op, e1, ({it = NumE (Num.Nat _); _} as e2))
-  | BinE (NumBinop (Num.(AddOp | SubOp), _) as op, ({it = NumE (Num.Nat _); _} as e1), e2) when side = `Lhs ->
-    let t1, t2, t' = infer_binop e.at op in
+  | BinE ((`AddOp | `SubOp) as op, nt, e1, ({it = NumE (Num.Nat _); _} as e2))
+  | BinE ((`AddOp | `SubOp) as op, nt, ({it = NumE (Num.Nat _); _} as e1), e2) when side = `Lhs ->
+    let t1, t2, t' = infer_binop e.at op nt in
     valid_exp ~side env e1 (t1 $ e.at);
     valid_exp ~side env e2 (t2 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-  | BinE (op, e1, e2) ->
-    let t1, t2, t' = infer_binop e.at op in
+  | BinE (op, nt, e1, e2) ->
+    let t1, t2, t' = infer_binop e.at op nt in
     valid_exp env e1 (t1 $ e.at);
     valid_exp env e2 (t2 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-  | CmpE (op, e1, e2) ->
+  | CmpE (op, nt, e1, e2) ->
     let t' =
-      match infer_cmpop e.at op with
+      match infer_cmpop e.at op nt with
       | Some t' -> t' $ e.at
       | None -> try infer_exp env e1 with _ -> infer_exp env e2
     in
-    let side' = if op = EqOp then `Lhs else `Rhs in (* HACK *)
+    let side' = if op = `EqOp then `Lhs else `Rhs in (* HACK *)
     valid_exp ~side:side' env e1 t';
     valid_exp ~side:side' env e2 t';
     equiv_typ env (BoolT $ e.at) t e.at

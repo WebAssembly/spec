@@ -1,5 +1,4 @@
 open Il
-open Xl
 open Ast
 open Util.Source
 open Def
@@ -13,7 +12,7 @@ let rec transform_rulepr_prem prem =
     prem
     |> transform_rulepr_prem
     |> (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
-  | IfPr ({ it = CmpE (EqOp, { it = CallE (id, args); note; at }, rhs); _ })
+  | IfPr ({ it = CmpE (`EqOp, _, { it = CallE (id, args); note; at }, rhs); _ })
   when List.mem id.it !typing_functions ->
     IfPr (CallE (id, args @ [ExpA rhs $ rhs.at]) $$ at % note) $ prem.at
   | _ -> prem
@@ -39,7 +38,7 @@ let transform_rulepr = List.map transform_rulepr_def
 (* Remove or *)
 let remove_or_exp e =
   match e.it with (* TODO: recursive *)
-  | BinE (BoolBinop Bool.OrOp, e1, e2) -> [ e1; e2 ]
+  | BinE (`OrOp, _, e1, e2) -> [ e1; e2 ]
   | _ -> [ e ]
 
 let rec remove_or_prem prem =
@@ -96,7 +95,7 @@ let remove_or def =
 let is_block_context_exp e =
   match e.it with
   (* instr* =/= [] *)
-  | CmpE (NeOp, e1, e2) ->
+  | CmpE (`NeOp, _, e1, e2) ->
     begin match e1.it, e2.it with
     | IterE (var, (List, _)), ListE []
     | ListE [], IterE (var, (List, _)) ->
@@ -138,7 +137,7 @@ let rec preprocess_prem prem =
         CallE ("expanddt" $ prem.at, [ExpA dt $ dt.at]) $$ prem.at % ct.note
       in
       let new_prem =
-        IfPr (CmpE (EqOp, expanddt, ct) $$ prem.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, None, expanddt, ct) $$ prem.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)
@@ -165,7 +164,7 @@ let rec preprocess_prem prem =
         CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note
       in
       let new_prem =
-        IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, None, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)
@@ -178,7 +177,7 @@ let rec preprocess_prem prem =
     | _ -> [ prem ]
     )
   (* Split -- if e1 /\ e2 *)
-  | IfPr ( { it = BinE (BoolBinop Bool.AndOp, e1, e2); _ } ) ->
+  | IfPr ( { it = BinE (`AndOp, _, e1, e2); _ } ) ->
     preprocess_prem (IfPr e1 $ prem.at) @ preprocess_prem (IfPr e2 $ prem.at)
   | _ -> [ prem ]
 

@@ -481,33 +481,33 @@ and valid_expr env (expr: expr) : unit =
   | CvtE (expr', _, _) ->
     check_num source expr.note;
     check_num source expr'.note;
-  | UnE (BoolUnop _, expr') ->
+  | UnE (#Bool.unop, expr') ->
     valid_expr env expr';
     check_bool source expr.note;
     check_bool source expr'.note;
-  | UnE (NumUnop _, expr') ->
+  | UnE (#Num.unop, expr') ->
     valid_expr env expr';
     check_num source expr.note;
     check_num source expr'.note;
-  | BinE (NumBinop _, expr1, expr2) ->
+  | BinE (#Num.binop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_num source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE (NumCmpop _, expr1, expr2) ->
+  | BinE (#Num.cmpop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE (BoolBinop _, expr1, expr2) ->
+  | BinE (#Bool.binop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_bool source expr1.note;
     check_bool source expr2.note;
-  | BinE ((EqOp|NeOp), expr1, expr2) ->
+  | BinE (#Bool.cmpop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;

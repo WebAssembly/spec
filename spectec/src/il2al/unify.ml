@@ -39,12 +39,12 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       let t = overlap_typ e1.note e2.note in
       { e1 with it = IterE (e, i); note = t }
     (* Not unified *)
-    | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
-      UnE (unop1, overlap e1 e2) |> replace_it
-    | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
-      BinE (binop1, overlap e1 e2, overlap e1' e2') |> replace_it
-    | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
-      CmpE (cmpop1, overlap e1 e2, overlap e1' e2') |> replace_it
+    | UnE (unop1, nt1, e1), UnE (unop2, nt2, e2) when unop1 = unop2 && nt1 = nt2 ->
+      UnE (unop1, nt1, overlap e1 e2) |> replace_it
+    | BinE (binop1, nt1, e1, e1'), BinE (binop2, nt2, e2, e2') when binop1 = binop2 && nt1 = nt2 ->
+      BinE (binop1, nt1, overlap e1 e2, overlap e1' e2') |> replace_it
+    | CmpE (cmpop1, nt1, e1, e1'), CmpE (cmpop2, nt2, e2, e2') when cmpop1 = cmpop2 && nt1 = nt2 ->
+      CmpE (cmpop1, nt1, overlap e1 e2, overlap e1' e2') |> replace_it
     | IdxE (e1, e1'), IdxE (e2, e2') ->
       IdxE (overlap e1 e2, overlap e1' e2') |> replace_it
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
@@ -126,9 +126,9 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
+      [IfPr (CmpE (`EqOp, None, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
       [ExpB (id, template.note) $ e.at]
-    | UnE (_, e1), UnE (_, e2)
+    | UnE (_, _, e1), UnE (_, _, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
     | IterE (e1, _), IterE (e2, _)
@@ -138,8 +138,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | TheE e1, TheE e2
     | CaseE (_, e1), CaseE (_, e2)
     | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
-    | BinE (_, e1, e1'), BinE (_, e2, e2')
-    | CmpE (_, e1, e1'), CmpE (_, e2, e2')
+    | BinE (_, _, e1, e1'), BinE (_, _, e2, e2')
+    | CmpE (_, _, e1, e1'), CmpE (_, _, e2, e2')
     | IdxE (e1, e1'), IdxE (e2, e2')
     | UpdE (e1, _, e1'), UpdE (e2, _, e2')
     | ExtE (e1, _, e1'), ExtE (e2, _, e2')

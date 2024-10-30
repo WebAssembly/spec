@@ -77,15 +77,14 @@ and string_of_values sep = string_of_list string_of_value sep
 (* Operators *)
 
 let string_of_unop = function
-  | BoolUnop op -> Bool.string_of_unop op
-  | NumUnop op -> Num.string_of_unop op
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
 
 let string_of_binop = function
-  | BoolBinop op -> Bool.string_of_binop op
-  | NumBinop op -> Num.string_of_binop op
-  | NumCmpop op -> Num.string_of_cmpop op
-  | EqOp -> "=="
-  | NeOp -> "=/="
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 
 (* Iters *)

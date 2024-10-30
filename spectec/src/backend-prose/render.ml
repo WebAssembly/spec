@@ -99,11 +99,11 @@ let al_invcalle_to_al_bine e id nl al =
 let (let*) = Option.bind
 
 let al_to_el_unop = function
-  | Al.Ast.NumUnop op -> Some (El.Ast.NumUnop op)
+  | #Num.unop as op -> Some op
   | _ -> None
 
 let al_to_el_binop = function
-  | Al.Ast.NumBinop op -> Some (El.Ast.NumBinop op)
+  | #Num.binop as op -> Some op
   | _ -> None
 
 let rec al_to_el_iter iter = match iter with
@@ -286,35 +286,35 @@ and al_to_el_record record =
 (* Operators *)
 
 let render_prose_cmpop = function
-  | Eq -> "equal to"
-  | Ne -> "different with"
-  | Lt -> "less than"
-  | Gt -> "greater than"
-  | Le -> "less than or equal to"
-  | Ge -> "greater than or equal to"
+  | `EqOp -> "equal to"
+  | `NeOp -> "different with"
+  | `LtOp -> "less than"
+  | `GtOp -> "greater than"
+  | `LeOp -> "less than or equal to"
+  | `GeOp -> "greater than or equal to"
 
 let render_al_unop = function
-  | Al.Ast.BoolUnop Bool.NotOp -> "not"
-  | Al.Ast.NumUnop Num.PlusOp -> "plus"
-  | Al.Ast.NumUnop Num.MinusOp -> "minus"
+  | `NotOp -> "not"
+  | `PlusOp -> "plus"
+  | `MinusOp -> "minus"
 
 let render_al_binop = function
-  | Al.Ast.BoolBinop Bool.AndOp -> "and"
-  | Al.Ast.BoolBinop Bool.OrOp -> "or"
-  | Al.Ast.BoolBinop Bool.ImplOp -> "implies"
-  | Al.Ast.BoolBinop Bool.EquivOp -> "is equivalent to"
-  | Al.Ast.NumBinop Num.AddOp -> "plus"
-  | Al.Ast.NumBinop Num.SubOp -> "minus"
-  | Al.Ast.NumBinop Num.MulOp -> "multiplied by"
-  | Al.Ast.NumBinop Num.DivOp -> "divided by"
-  | Al.Ast.NumBinop Num.ModOp -> "modulo"
-  | Al.Ast.NumBinop Num.PowOp -> "to the power of"
-  | Al.Ast.NumCmpop Num.LtOp -> "is less than"
-  | Al.Ast.NumCmpop Num.GtOp -> "is greater than"
-  | Al.Ast.NumCmpop Num.LeOp -> "is less than or equal to"
-  | Al.Ast.NumCmpop Num.GeOp -> "is greater than or equal to"
-  | Al.Ast.EqOp -> "is"
-  | Al.Ast.NeOp -> "is not"
+  | `AndOp -> "and"
+  | `OrOp -> "or"
+  | `ImplOp -> "implies"
+  | `EquivOp -> "is equivalent to"
+  | `AddOp -> "plus"
+  | `SubOp -> "minus"
+  | `MulOp -> "multiplied by"
+  | `DivOp -> "divided by"
+  | `ModOp -> "modulo"
+  | `PowOp -> "to the power of"
+  | `EqOp -> "is"
+  | `NeOp -> "is not"
+  | `LtOp -> "is less than"
+  | `GtOp -> "is greater than"
+  | `LeOp -> "is less than or equal to"
+  | `GeOp -> "is greater than or equal to"
 
 (* Names *)
 
@@ -350,17 +350,17 @@ and render_expr' env expr =
   match expr.it with
   | Al.Ast.BoolE b -> string_of_bool b
   | Al.Ast.CvtE (e, _, _) -> render_expr' env e
-  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
     let se = render_expr env e in
     let sa = render_atom env a in
     sprintf "%s is not of the case %s" se sa
-  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not defined" se
-  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.IsValidE e; _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsValidE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not valid" se
-  | Al.Ast.UnE (Al.Ast.BoolUnop Bool.NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s does not match %s" se1 se2
@@ -614,7 +614,7 @@ let rec render_al_instr env algoname index depth instr =
       (render_expr env e)
   | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, iterexp); _ }) ->
     let elhs, erhs = al_invcalle_to_al_bine e id nl al in
-    let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
+    let ebin = Al.Al_util.binE (`EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
     let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
     sprintf "%s Let %s be the result for which %s."
       (render_order index depth)

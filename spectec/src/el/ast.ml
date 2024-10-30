@@ -67,20 +67,9 @@ and numop =
   | CharOp  (* U+hex *)
   | AtomOp  (* `n *)
 
-and unop =
-  | BoolUnop of Bool.unop
-  | NumUnop of Num.unop
-  | PlusMinusOp (* `+-` *)
-  | MinusPlusOp (* `-+` *)
-
-and binop =
-  | BoolBinop of Bool.binop
-  | NumBinop of Num.binop
-
-and cmpop =
-  | EqOp (* `=` *)
-  | NeOp (* `=/=` *)
-  | NumCmpop of Num.cmpop
+and unop = [Bool.unop | Num.unop | `PlusMinusOp | `MinusPlusOp]
+and binop = [Bool.binop | Num.binop]
+and cmpop = [Bool.cmpop | Num.cmpop]
 
 and exp = exp' phrase
 and exp' =

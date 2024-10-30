@@ -215,8 +215,8 @@ and eval_expr env expr =
     )
   | UnE (op, e1) ->
     (match op, eval_expr env e1 with
-    | BoolUnop op', v -> Bool.un op' (to_bool e1 v) |> boolV
-    | NumUnop op', NumV n1 ->
+    | #Bool.unop as op', v -> Bool.un op' (to_bool e1 v) |> boolV
+    | #Num.unop as op', NumV n1 ->
       (match Num.un op' n1 with
       | Some n -> numV n
       | None -> fail_expr expr ("unary operation `" ^ Num.string_of_unop op' ^ "` not defined for " ^ string_of_value (NumV n1))
@@ -225,19 +225,18 @@ and eval_expr env expr =
     )
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
-    | BoolBinop op', v1, v2 -> Bool.bin op' (to_bool e1 v1) (to_bool e2 v2) |> boolV
-    | NumBinop op', NumV n1, NumV n2 ->
+    | #Bool.binop as op', v1, v2 -> Bool.bin op' (to_bool e1 v1) (to_bool e2 v2) |> boolV
+    | #Num.binop as op', NumV n1, NumV n2 ->
       (match Num.bin op' n1 n2 with
       | Some n -> numV n
       | None -> fail_expr expr ("binary operation `" ^ Num.string_of_binop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
       )
-    | NumCmpop op', NumV n1, NumV n2 ->
+    | #Bool.cmpop as op', v1, v2 -> boolV (Bool.cmp op' v1 v2)
+    | #Num.cmpop as op', NumV n1, NumV n2 ->
       (match Num.cmp op' n1 n2 with
       | Some b -> boolV b
       | None -> fail_expr expr ("comparison operation `" ^ Num.string_of_cmpop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
       )
-    | EqOp, v1, v2 -> boolV (v1 = v2)
-    | NeOp, v1, v2 -> boolV (v1 <> v2)
     | _ -> fail_expr expr "type mismatch for binary operation"
     )
   (* Set Operation *)
@@ -467,10 +466,10 @@ and assign lhs rhs env =
   | BinE (binop, e1, e2), NumV m ->
     let invop =
       match binop with
-      | NumBinop Num.AddOp -> Num.SubOp
-      | NumBinop Num.SubOp -> Num.AddOp
-      | NumBinop Num.MulOp -> Num.DivOp
-      | NumBinop Num.DivOp -> Num.MulOp
+      | `AddOp -> `SubOp
+      | `SubOp -> `AddOp
+      | `MulOp -> `DivOp
+      | `DivOp -> `MulOp
       | _ -> fail_expr lhs "invalid assignment: logical binop cannot be an assignment target" in
     let v =
       match Num.bin invop m (eval_expr env e2 |> unwrap_numv) with
