@@ -177,7 +177,7 @@ and sym g =
   visit_sym g;
   match g.it with
   | VarG (x, as_) -> gramid x; args as_
-  | NumG (op, n) -> natop op; num (Num.Nat n)
+  | NumG (op, n) -> natop op; num (`Nat n)
   | TextG s -> text s
   | EpsG -> ()
   | SeqG gs | AltG gs -> nl_list sym gs

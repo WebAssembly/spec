@@ -14,7 +14,6 @@ open Util
 open Source
 open Il.Ast
 open Il.Free
-open Xl
 
 (* Errors *)
 
@@ -25,7 +24,7 @@ module Env = Map.Make(String)
 (* Smart constructor for LenE that optimizes |x^n| into n *)
 let lenE e = match e.it with
 | IterE (_, (ListN (ne, _), _)) -> ne
-| _ -> LenE e $$ e.at % (NumT Num.NatT $ e.at)
+| _ -> LenE e $$ e.at % (NumT `NatT $ e.at)
 
 (* Smart constructor for IterPr that removes dead iter-variables *)
 let iterPr (pr, (iter, vars)) =
@@ -37,9 +36,9 @@ let iterPr (pr, (iter, vars)) =
   let vars'' = if vars' <> [] then vars' else [List.hd vars] in
   IterPr (pr, (iter, vars''))
 
-let is_null e = CmpE (`EqOp, None, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
-let iffE e1 e2 = IfPr (BinE (`EquivOp, None, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
-let same_len e1 e2 = IfPr (CmpE (`EqOp, None, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+let is_null e = CmpE (`EqOp, `BoolT, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
+let iffE e1 e2 = IfPr (BinE (`EquivOp, `BoolT, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+let same_len e1 e2 = IfPr (CmpE (`EqOp, `BoolT, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
 (* let has_len ne e = IfPr (CmpE (`EqOp, None, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at *)
 
 (* updates the types in the environment as we go under iteras *)
@@ -62,12 +61,12 @@ let rec t_exp env e : prem list =
   | CvtE (_exp, t1, t2) when t1 > t2 ->
     []  (* TODO *)
   | IdxE (exp1, exp2) ->
-    [IfPr (CmpE (`LtOp, Some Num.NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (`LtOp, `NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | TheE exp ->
-    [IfPr (CmpE (`NeOp, None, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (`NeOp, `BoolT, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE (_exp, iterexp) -> iter_side_conditions env iterexp
   | MemE (_exp, exp) ->
-    [IfPr (CmpE (`GtOp, Some Num.NatT, LenE exp $$ exp.at % (NumT Num.NatT $ exp.at), NumE (Num.Nat Z.zero) $$ no_region % (NumT Num.NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (`GtOp, `NatT, LenE exp $$ exp.at % (NumT `NatT $ exp.at), NumE (`Nat Z.zero) $$ no_region % (NumT `NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
   | _ -> []
   end @
   (* And now descend *)

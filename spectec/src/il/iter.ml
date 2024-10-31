@@ -91,7 +91,8 @@ let rec iter it =
 (* Types *)
 
 and dots _ = ()
-and numtyp _t = ()
+and numtyp _nt = ()
+and optyp = function #Bool.typ -> () | #Num.typ as nt -> numtyp nt
 
 and typ t =
   visit_typ t;
@@ -122,9 +123,9 @@ and exp e =
   | BoolE b -> bool b
   | NumE n -> num n
   | TextE s -> text s
-  | UnE (op, nt, e1) -> unop op; opt numtyp nt; exp e1
-  | BinE (op, nt, e1, e2) -> binop op; opt numtyp nt; exp e1; exp e2
-  | CmpE (op, nt, e1, e2) -> cmpop op; opt numtyp nt; exp e1; exp e2
+  | UnE (op, ot, e1) -> unop op; optyp ot; exp e1
+  | BinE (op, ot, e1, e2) -> binop op; optyp ot; exp e1; exp e2
+  | CmpE (op, ot, e1, e2) -> cmpop op; optyp ot; exp e1; exp e2
   | TupE es | ListE es -> list exp es
   | ProjE (e1, _) | TheE e1 | LenE e1 -> exp e1
   | CaseE (op, e1) -> mixop op; exp e1
@@ -159,7 +160,7 @@ and sym g =
   visit_sym g;
   match g.it with
   | VarG (x, as_) -> gramid x; args as_
-  | NumG n -> num (Num.Nat (Z.of_int n))
+  | NumG n -> num (`Nat (Z.of_int n))
   | TextG s -> text s
   | EpsG -> ()
   | SeqG gs | AltG gs -> list sym gs

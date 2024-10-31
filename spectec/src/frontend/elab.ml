@@ -107,19 +107,19 @@ type env =
 let new_env () =
   { gvars = Map.empty
       |> Map.add "bool" (no_region, BoolT $ no_region)
-      |> Map.add "nat" (no_region, NumT Num.NatT $ no_region)
-      |> Map.add "int" (no_region, NumT Num.IntT $ no_region)
-      |> Map.add "rat" (no_region, NumT Num.RatT $ no_region)
-      |> Map.add "real" (no_region, NumT Num.RealT $ no_region)
+      |> Map.add "nat" (no_region, NumT `NatT $ no_region)
+      |> Map.add "int" (no_region, NumT `IntT $ no_region)
+      |> Map.add "rat" (no_region, NumT `RatT $ no_region)
+      |> Map.add "real" (no_region, NumT `RealT $ no_region)
       |> Map.add "text" (no_region, TextT $ no_region);
     vars = Map.empty;
     typs = Map.empty;
 (*
       |> Map.add "bool" (no_region, ([], Defined (BoolT $ no_region, Il.BoolT $ no_region)))
-      |> Map.add "nat" (no_region, ([], Defined (NumT Num.NatT $ no_region, Il.(NumT Num.NatT) $ no_region)))
-      |> Map.add "int" (no_region, ([], Defined (NumT Num.IntT $ no_region, Il.(NumT Num.IntT) $ no_region)))
-      |> Map.add "rat" (no_region, ([], Defined (NumT Num.RatT $ no_region, Il.(NumT Num.RatT) $ no_region)))
-      |> Map.add "real" (no_region, ([], Defined (NumT Num.RealT $ no_region, Il.(NumT Num.RealT) $ no_region)))
+      |> Map.add "nat" (no_region, ([], Defined (NumT `NatT $ no_region, Il.(NumT `NatT) $ no_region)))
+      |> Map.add "int" (no_region, ([], Defined (NumT `IntT $ no_region, Il.(NumT `IntT) $ no_region)))
+      |> Map.add "rat" (no_region, ([], Defined (NumT `RatT $ no_region, Il.(NumT `RatT) $ no_region)))
+      |> Map.add "real" (no_region, ([], Defined (NumT `RealT $ no_region, Il.(NumT `RealT) $ no_region)))
       |> Map.add "text" (no_region, ([], Defined (TextT $ no_region, Il.TextT $ no_region)));
 *)
     rels = Map.empty;
@@ -363,7 +363,7 @@ let expand_singular env t =
 let as_num_typ_opt env t : numtyp option =
   match expand_notation env t with
   | NumT nt -> Some nt
-  | RangeT _ -> Some IntT
+  | RangeT _ -> Some `IntT
   | _ -> None
 
 let as_iter_typ_opt env t : (typ * iter) option =
@@ -530,38 +530,36 @@ Printf.eprintf "[elab_atom %s @ %s] def=%s/%s\n%!"
   atom
 
 let infer_unop'' op ts =
-  List.map (fun t -> op, Some t, NumT t, NumT t) ts
+  List.map (fun t -> op, (t :> Il.optyp), NumT t, NumT t) ts
 
 let infer_binop'' op ts =
-  List.map (fun t -> op, Some t, NumT t, NumT t, NumT t) ts
+  List.map (fun t -> op, (t :> Il.optyp), NumT t, NumT t, NumT t) ts
 
 let infer_cmpop'' op ts =
-  List.map (fun t -> op, Some t, NumT t) ts
+  List.map (fun t -> op, (t :> Il.optyp), NumT t) ts
 
 let infer_unop' = function
-  | #Bool.unop as op -> [op, None, BoolT, BoolT]
-  | #Num.unop as op -> infer_unop'' op Num.[IntT; RatT; RealT]
-  | `PlusMinusOp -> infer_unop'' `PlusMinusOp Num.[IntT; RatT; RealT]
-  | `MinusPlusOp -> infer_unop'' `MinusPlusOp Num.[IntT; RatT; RealT]
+  | #Bool.unop as op -> [op, `BoolT, BoolT, BoolT]
+  | (`PlusOp | `MinusOp | `PlusMinusOp | `MinusPlusOp) as op ->
+    infer_unop'' op [`IntT; `RatT; `RealT]
 
 let infer_binop' = function
-  | #Bool.binop as op -> [op, None, BoolT, BoolT, BoolT]
-  | #Num.binop as op ->
-    match op with
-    | `AddOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
-    | `SubOp -> infer_binop'' op Num.[IntT; RatT; RealT]
-    | `MulOp -> infer_binop'' op Num.[NatT; IntT; RatT; RealT]
-    | `DivOp -> infer_binop'' op Num.[RatT; RealT]
-    | `ModOp -> infer_binop'' op Num.[NatT; IntT]
-    | `PowOp -> infer_binop'' op Num.[NatT; RatT; RealT] |>
-        List.map (fun (op, nt, t1, t2, t3) ->
-          (op, nt, t1, Num.(if t2 = NumT NatT then t2 else NumT IntT), t3))
+  | #Bool.binop as op -> [op, `BoolT, BoolT, BoolT, BoolT]
+  | `AddOp as op -> infer_binop'' op [`NatT; `IntT; `RatT; `RealT]
+  | `SubOp as op -> infer_binop'' op [`IntT; `RatT; `RealT]
+  | `MulOp as op -> infer_binop'' op [`NatT; `IntT; `RatT; `RealT]
+  | `DivOp as op -> infer_binop'' op [`RatT; `RealT]
+  | `ModOp as op -> infer_binop'' op [`NatT; `IntT]
+  | `PowOp as op ->
+    infer_binop'' op [`NatT; `RatT; `RealT] |>
+      List.map (fun (op, nt, t1, t2, t3) ->
+        (op, nt, t1, (if t2 = NumT `NatT then t2 else NumT `IntT), t3))
 
 let infer_cmpop' = function
   | #Bool.cmpop as op -> `Poly op
-  | #Num.cmpop as op -> `Over (infer_cmpop'' op Num.[NatT; IntT; RatT; RealT])
+  | #Num.cmpop as op -> `Over (infer_cmpop'' op [`NatT; `IntT; `RatT; `RealT])
 
-let infer_unop env op t1 at : Il.unop * numtyp option * typ * typ =
+let infer_unop env op t1 at : Il.unop * Il.optyp * typ * typ =
   let ops = infer_unop' op in
   match List.find_opt (fun (_, _, t1', _) -> narrow_typ env t1 (t1' $ at)) ops with
   | Some (op', nt, t1', t2') -> op', nt, t1' $ at, t2' $ at
@@ -569,7 +567,7 @@ let infer_unop env op t1 at : Il.unop * numtyp option * typ * typ =
     error at ("unary operator `" ^ string_of_unop op ^
       "` is not defined for operand type `" ^ string_of_typ ~short:true t1 ^ "`")
 
-let infer_binop env op t1 t2 at : Il.binop * numtyp option * typ * typ * typ =
+let infer_binop env op t1 t2 at : Il.binop * Il.optyp * typ * typ * typ =
   let ops = infer_binop' op in
   match
     List.find_opt (fun (_, _, t1', t2', _) ->
@@ -582,7 +580,7 @@ let infer_binop env op t1 t2 at : Il.binop * numtyp option * typ * typ * typ =
       string_of_typ ~short:true t1 ^ "` and `" ^ string_of_typ ~short:true t2 ^ "`")
 
 let infer_cmpop env op
-  : [`Poly of Il.cmpop | `Over of typ -> typ -> region -> Il.cmpop * numtyp option * typ] =
+  : [`Poly of Il.cmpop | `Over of typ -> typ -> region -> Il.cmpop * Il.optyp * typ] =
   match infer_cmpop' op with
   | `Poly op' -> `Poly op'
   | `Over ops -> `Over (fun t1 t2 at ->
@@ -627,13 +625,13 @@ let rec elab_iter env iter : Il.iter =
   | List1 -> Il.List1
   | ListN (e, id_opt) ->
     Option.iter (fun id ->
-      let e' = elab_exp env (VarE (id, []) $ id.at) (NumT Num.NatT $ id.at) in
+      let e' = elab_exp env (VarE (id, []) $ id.at) (NumT `NatT $ id.at) in
       (* TODO(4, rossberg): extend IL to allow arbitrary pattern exps *)
       match e'.it with
       | Il.VarE _ -> ()
-      | _ -> error_typ env id.at "iteration variable" (NumT Num.NatT $ id.at)
+      | _ -> error_typ env id.at "iteration variable" (NumT `NatT $ id.at)
     ) id_opt;
-    Il.ListN (elab_exp env e (NumT Num.NatT $ e.at), id_opt)
+    Il.ListN (elab_exp env e (NumT `NatT $ e.at), id_opt)
 
 
 (* Types *)
@@ -696,7 +694,7 @@ and elab_typ_definition env tid t : Il.deftyp =
         fun eid' nt ->
         let e' = fe' eid' nt and eI' = feI' eid' nt in
         let at = Source.over_region [e'.at; eI'.at] in
-        Il.(BinE (`OrOp, None, e', eI') $$ at % (BoolT $ at))
+        Il.(BinE (`OrOp, `BoolT, e', eI') $$ at % (BoolT $ at))
       ) (List.hd ts_fes') (List.tl ts_fes')
     in
     let t' = elab_typ env t1 in
@@ -805,25 +803,25 @@ and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
 
 and elab_typenum env tid (e1, e2o) : typ * (Il.exp -> numtyp -> Il.exp) =
   assert (valid_tid tid);
-  let _e1' = elab_exp env e1 (NumT IntT $ e1.at) in  (* ensure it's <= int *)
+  let _e1' = elab_exp env e1 (NumT `IntT $ e1.at) in (* ensure it's <= int *)
   let t1 = typ_of (infer_exp env e1) in              (* get precise type *)
   match e2o with
   | None ->
     t1,
     fun eid' nt ->
     let e1' = elab_exp env e1 (NumT nt $ e1.at) in  (* redo with overall type *)
-    Il.(CmpE (`EqOp, None, eid', e1') $$ e1'.at % (BoolT $ e1.at))
+    Il.(CmpE (`EqOp, `BoolT, eid', e1') $$ e1'.at % (BoolT $ e1.at))
   | Some e2 ->
     let at = Source.over_region [e1.at; e2.at] in
-    let _e2' = elab_exp env e2 (NumT IntT $ e2.at) in
+    let _e2' = elab_exp env e2 (NumT `IntT $ e2.at) in
     let t2 = typ_of (infer_exp env e2) in
     (if narrow_typ env t2 t1 then t1 else t2).it $ at,
     fun eid' nt ->
     let e1' = elab_exp env e1 (NumT nt $ e1.at) in
     let e2' = elab_exp env e2 (NumT nt $ e2.at) in
-    Il.(BinE (`AndOp, None,
-      CmpE (`GeOp, Some nt, eid', e1') $$ e1'.at % (BoolT $ e1.at),
-      CmpE (`LeOp, Some nt, eid', e2') $$ e2'.at % (BoolT $ e2.at)
+    Il.(BinE (`AndOp, `BoolT,
+      CmpE (`GeOp, (nt :> Il.optyp), eid', e1') $$ e1'.at % (BoolT $ e1.at),
+      CmpE (`LeOp, (nt :> Il.optyp), eid', e2') $$ e2'.at % (BoolT $ e2.at)
     ) $$ at % (BoolT $ at))
 
 and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
@@ -951,20 +949,20 @@ and infer_exp' env e : (Il.exp' * typ', region * string) result =
     Ok (Il.CvtE (cast_exp "operand" env e1' t1 (NumT nt1 $ e1.at), nt1, nt), NumT nt)
   | UnE (op, e1) ->
     let* e1', t1 = infer_exp env e1 in
-    let op', nt, t1', t = infer_unop env op (typ_rep env t1) e.at in
-    Ok (Il.UnE (op', nt, cast_exp "operand" env e1' t1 t1'), t.it)
+    let op', ot, t1', t = infer_unop env op (typ_rep env t1) e.at in
+    Ok (Il.UnE (op', ot, cast_exp "operand" env e1' t1 t1'), t.it)
   | BinE (e1, op, e2) ->
     let* e1', t1 = infer_exp env e1 in
     let* e2', t2 = infer_exp env e2 in
-    let op', nt, t1', t2', t = infer_binop env op (typ_rep env t1) (typ_rep env t2) e.at in
-    Ok (Il.BinE (op', nt,
+    let op', ot, t1', t2', t = infer_binop env op (typ_rep env t1) (typ_rep env t2) e.at in
+    Ok (Il.BinE (op', ot,
       cast_exp "operand" env e1' t1 t1',
       cast_exp "operand" env e2' t2 t2'
     ), t.it)
   | CmpE (e1, op, ({it = CmpE (e21, _, _); _} as e2)) ->
     let* e1', _t1 = infer_exp env (CmpE (e1, op, e21) $ e.at) in
     let* e2', _t2 = infer_exp env e2 in
-    Ok (Il.BinE (`AndOp, None, e1', e2'), BoolT)
+    Ok (Il.BinE (`AndOp, `BoolT, e1', e2'), BoolT)
   | CmpE (e1, op, e2) ->
     (match infer_cmpop env op with
     | `Poly op' ->
@@ -978,12 +976,12 @@ and infer_exp' env e : (Il.exp' * typ', region * string) result =
           let e2' = elab_exp env e2 t1 in
           Ok (e1', e2')
       in
-      Ok (Il.CmpE (op', None, e1', e2'), BoolT)
+      Ok (Il.CmpE (op', `BoolT, e1', e2'), BoolT)
     | `Over elab_cmpop'  ->
       let* e1', t1 = infer_exp env e1 in
       let* e2', t2 = infer_exp env e2 in
-      let op', nt, t = elab_cmpop' (typ_rep env t1) (typ_rep env t2) e.at in
-      Ok (Il.CmpE (op', nt,
+      let op', ot, t = elab_cmpop' (typ_rep env t1) (typ_rep env t2) e.at in
+      Ok (Il.CmpE (op', ot,
         cast_exp "operand" env e1' t1 t,
         cast_exp "operand" env e2' t2 t
       ), BoolT)
@@ -991,13 +989,13 @@ and infer_exp' env e : (Il.exp' * typ', region * string) result =
   | IdxE (e1, e2) ->
     let* e1', t1 = infer_exp env e1 in
     let t = as_list_typ "expression" env Infer t1 e1.at in
-    let e2' = elab_exp env e2 (NumT Num.NatT $ e2.at) in
+    let e2' = elab_exp env e2 (NumT `NatT $ e2.at) in
     Ok (Il.IdxE (e1', e2'), t.it)
   | SliceE (e1, e2, e3) ->
     let* e1', t1 = infer_exp env e1 in
     let _t' = as_list_typ "expression" env Infer t1 e1.at in
-    let e2' = elab_exp env e2 (NumT Num.NatT $ e2.at) in
-    let e3' = elab_exp env e3 (NumT Num.NatT $ e3.at) in
+    let e2' = elab_exp env e2 (NumT `NatT $ e2.at) in
+    let e3' = elab_exp env e3 (NumT `NatT $ e3.at) in
     Ok (Il.SliceE (e1', e2', e3'), t1.it)
   | UpdE (e1, p, e2) ->
     let* e1', t1 = infer_exp env e1 in
@@ -1044,10 +1042,10 @@ and infer_exp' env e : (Il.exp' * typ', region * string) result =
   | LenE e1 ->
     let* e1', t1 = infer_exp env e1 in
     let _t11 = as_list_typ "expression" env Infer t1 e1.at in
-    Ok (Il.LenE e1', NumT Num.NatT)
+    Ok (Il.LenE e1', NumT `NatT)
   | SizeE id ->
     let _ = find "grammar" env.grams id in
-    Ok (Il.NumE (Num.Nat Z.zero), NumT Num.NatT)
+    Ok (Il.NumE (`Nat Z.zero), NumT `NatT)
   | ParenE (e1, _) | ArithE e1 ->
     infer_exp' env e1
   | TupE es ->
@@ -1141,8 +1139,8 @@ and elab_exp' env e t : Il.exp' =
   | SliceE (e1, e2, e3) ->
     let _t' = as_list_typ "expression" env Check t e1.at in
     let e1' = elab_exp env e1 t in
-    let e2' = elab_exp env e2 (NumT Num.NatT $ e2.at) in
-    let e3' = elab_exp env e3 (NumT Num.NatT $ e3.at) in
+    let e2' = elab_exp env e2 (NumT `NatT $ e2.at) in
+    let e3' = elab_exp env e3 (NumT `NatT $ e3.at) in
     Il.SliceE (e1', e2', e3')
   | UpdE (e1, p, e2) ->
     let e1' = elab_exp env e1 t in
@@ -1458,13 +1456,13 @@ and elab_path' env p t : Il.path' * typ =
     Il.RootP, t
   | IdxP (p1, e1) ->
     let p1', t1 = elab_path env p1 t in
-    let e1' = elab_exp env e1 (NumT Num.NatT $ e1.at) in
+    let e1' = elab_exp env e1 (NumT `NatT $ e1.at) in
     let t' = as_list_typ "path" env Check t1 p1.at in
     Il.IdxP (p1', e1'), t'
   | SliceP (p1, e1, e2) ->
     let p1', t1 = elab_path env p1 t in
-    let e1' = elab_exp env e1 (NumT Num.NatT $ e1.at) in
-    let e2' = elab_exp env e2 (NumT Num.NatT $ e2.at) in
+    let e1' = elab_exp env e1 (NumT `NatT $ e1.at) in
+    let e2' = elab_exp env e2 (NumT `NatT $ e2.at) in
     let _ = as_list_typ "path" env Check t1 p1.at in
     Il.SliceP (p1', e1', e2'), t1
   | DotP (p1, atom) ->
@@ -1512,7 +1510,7 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     let t1' = elab_typ env (expand_nondef env t1) in
     let t2' = elab_typ env (expand_nondef env t2) in
     Il.SubE (e', t1', t2')
-  | NumT nt1, NumT nt2 when nt1 < nt2 || lax_num && nt1 <> Num.RealT ->
+  | NumT nt1, NumT nt2 when nt1 < nt2 || lax_num && nt1 <> `RealT ->
     Il.CvtE (e', nt1, nt2)
   | TupT [], SeqT [] ->
     e'.it
@@ -1667,14 +1665,14 @@ and elab_sym env g : Il.sym * typ * env =
     let ps, t, _gram, _prods' = find "grammar" env.grams id in
     let as', s = elab_args `Rhs env as_ ps g.at in
     Il.VarG (id, as') $ g.at, Subst.subst_typ s t, env
-  | NumG (CharOp, n) ->
+  | NumG (`CharOp, n) ->
     let s = try Utf8.encode [Z.to_int n] with Z.Overflow | Utf8.Utf8 ->
       error g.at "character value out of range" in
     Il.TextG s $ g.at, TextT $ g.at, env
   | NumG (_, n) ->
     if n < Z.of_int 0x00 || n > Z.of_int 0xff then
       error g.at "byte value out of range";
-    Il.NumG (Z.to_int n) $ g.at, NumT Num.NatT $ g.at, env
+    Il.NumG (Z.to_int n) $ g.at, NumT `NatT $ g.at, env
   | TextG s -> Il.TextG s $ g.at, TextT $ g.at, env
   | EpsG -> Il.EpsG $ g.at, TupT [] $ g.at, env
   | SeqG gs ->

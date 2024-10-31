@@ -175,7 +175,7 @@ and ground_typ_of (typ: typ) : typ =
     let typ' = IlEnv.find_var !il_env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
-  | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
+  | VarT (id, _) when id.it = "fN" -> NumT `RealT $ typ.at
   | VarT (id, args) ->
     get_deftyps id args
     |> unify_deftyps_opt

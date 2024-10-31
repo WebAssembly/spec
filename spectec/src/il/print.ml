@@ -57,12 +57,7 @@ let rec string_of_iter iter =
   | ListN (e, Some id) ->
     "^(" ^ string_of_id id ^ "<" ^ string_of_exp e ^ ")"
 
-and string_of_numtyp t =
-  match t with
-  | Num.NatT -> "nat"
-  | Num.IntT -> "int"
-  | Num.RatT -> "rat"
-  | Num.RealT -> "real"
+and string_of_numtyp = Num.string_of_typ
 
 and string_of_typ t =
   match t.it with

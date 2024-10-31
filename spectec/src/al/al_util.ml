@@ -45,7 +45,7 @@ let mk_expr at note it = it $$ at % note
 let varE ?(at = no) ~note id = VarE id |> mk_expr at note
 let boolE ?(at = no) ~note b = BoolE b |> mk_expr at note
 let numE ?(at = no) ~note i = NumE i |> mk_expr at note
-let natE ?(at = no) ~note i = NumE (Num.Nat i) |> mk_expr at note
+let natE ?(at = no) ~note i = NumE (`Nat i) |> mk_expr at note
 let cvtE ?(at = no) ~note (e, nt1, nt2) = CvtE (e, nt1, nt2) |> mk_expr at note
 let unE ?(at = no) ~note (unop, e) = UnE (unop, e) |> mk_expr at note
 let binE ?(at = no) ~note (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at note
@@ -85,8 +85,8 @@ let sliceP ?(at = no) (e1, e2) = SliceP (e1, e2) |> mk_path at
 let dotP ?(at = no) a = DotP a |> mk_path at
 
 let numV n = NumV n
-let natV i = assert (i >= Z.zero); NumV (Num.Nat i)
-let intV i = NumV (Num.Int i)
+let natV i = assert (i >= Z.zero); NumV (`Nat i)
+let intV i = NumV (`Int i)
 let natV_of_int i = Z.of_int i |> natV
 let boolV b = BoolV b
 let strV r = StrV r
@@ -178,10 +178,10 @@ let rec typ_to_var_name ty =
   (* TODO: guess this for "var" in el? *)
   | Il.Ast.VarT (id, _) -> id.it
   | Il.Ast.BoolT -> "b"
-  | Il.Ast.NumT NatT -> "n"
-  | Il.Ast.NumT IntT -> "i"
-  | Il.Ast.NumT RatT -> "q"
-  | Il.Ast.NumT RealT -> "r"
+  | Il.Ast.NumT `NatT -> "n"
+  | Il.Ast.NumT `IntT -> "i"
+  | Il.Ast.NumT `RatT -> "q"
+  | Il.Ast.NumT `RealT -> "r"
   | Il.Ast.TextT -> "s"
   | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
   | Il.Ast.IterT (t, _) -> typ_to_var_name t
@@ -223,12 +223,12 @@ let unwrap_numv: value -> Num.num = function
 
 let unwrap_natv v =
   match unwrap_numv v with
-  | Num.Nat n -> assert (n >= Z.zero); n
+  | `Nat n -> assert (n >= Z.zero); n
   | n -> fail_value "unwrap_natv" (NumV n)
 
 let unwrap_intv v =
   match unwrap_numv v with
-  | Num.Int i -> i
+  | `Int i -> i
   | n -> fail_value "unwrap_natv" (NumV n)
 
 let unwrap_natv_to_int (v: value): int = unwrap_natv v |> Z.to_int
@@ -302,7 +302,7 @@ let iterT ty iter = Il.Ast.IterT (ty, iter) $ no_region
 let listT ty = iterT ty Il.Ast.List
 let listnT ty n = Il.Ast.IterT (ty, Il.Ast.ListN (n, None)) $ no_region
 let boolT = Il.Ast.BoolT $ no_region
-let natT = Il.Ast.NumT Num.NatT $ no_region
+let natT = Il.Ast.NumT `NatT $ no_region
 let topT = varT "TOP" []
 let valT = varT "val" []
 let frameT = varT "frame" []

@@ -51,7 +51,7 @@ let preprocess_prem prem = match prem.it with
       { it = TupE [dt; ct]; at = tup_at; _ }
     ) ->
       let expanded_dt = { dt with it = Ast.CallE ("expanddt" $ no_region, [Ast.ExpA dt $ dt.at]); note = ct.note } in
-      { prem with it = Ast.IfPr (Ast.CmpE (`EqOp, None, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
+      { prem with it = Ast.IfPr (Ast.CmpE (`EqOp, `BoolT, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
   | _ -> prem
 
 let atomize atom' = atom' $$ no_region % (Atom.info "")
@@ -148,9 +148,9 @@ let rec if_expr_to_instrs e =
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
     [ match e2.it with LenE _ -> CmpI (e2, swap op, e1) | _ -> CmpI (e1, op, e2) ]
-  | Ast.BinE (`AndOp, None, e1, e2) ->
+  | Ast.BinE (`AndOp, _, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
-  | Ast.BinE (`OrOp, None, e1, e2) ->
+  | Ast.BinE (`OrOp, _, e1, e2) ->
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match cond1 with
@@ -159,7 +159,7 @@ let rec if_expr_to_instrs e =
         IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
       | _ ->
         EitherI [cond1; cond2] ]
-  | Ast.BinE (`EquivOp, None, e1, e2) ->
+  | Ast.BinE (`EquivOp, _, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.MemE (e1, e2) ->
       [ MemI (exp_to_expr e1, exp_to_expr e2) ]

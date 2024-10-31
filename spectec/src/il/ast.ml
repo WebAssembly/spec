@@ -23,6 +23,7 @@ type iter =
 (* Types *)
 
 and numtyp = Num.typ
+and optyp = [Bool.typ | Num.typ]
 
 and typ = typ' phrase
 and typ' =
@@ -55,9 +56,9 @@ and exp' =
   | BoolE of bool                (* bool *)
   | NumE of num                  (* num *)
   | TextE of text                (* text *)
-  | UnE of unop * numtyp option * exp            (* unop exp *)
-  | BinE of binop * numtyp option * exp * exp    (* exp binop exp *)
-  | CmpE of cmpop * numtyp option * exp * exp    (* exp cmpop exp *)
+  | UnE of unop * optyp * exp            (* unop exp *)
+  | BinE of binop * optyp * exp * exp    (* exp binop exp *)
+  | CmpE of cmpop * optyp * exp * exp    (* exp cmpop exp *)
   | TupE of exp list             (* ( exp* ) *)
   | ProjE of exp * int           (* exp.i *)
   | CaseE of mixop * exp         (* atom exp? *)

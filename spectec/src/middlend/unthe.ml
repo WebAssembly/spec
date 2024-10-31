@@ -106,7 +106,7 @@ let rec t_exp n e : eqns * exp =
     let xe = VarE x $$ no_region % t in
     let bind = ExpB (x, t) $ no_region in
     let prem = IfPr (
-      CmpE (`EqOp, None, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
+      CmpE (`EqOp, `BoolT, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
     ) $ no_region in
     eqns @ [(bind, prem)], xe
   | _ -> eqns, e'

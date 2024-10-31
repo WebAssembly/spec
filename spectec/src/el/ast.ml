@@ -62,10 +62,12 @@ and typenum = exp * exp option                         (* exp (`|` exp (`|` `...
 (* Expressions *)
 
 and numop =
-  | DecOp   (* n *)
-  | HexOp   (* 0xhex *)
-  | CharOp  (* U+hex *)
-  | AtomOp  (* `n *)
+[
+  | `DecOp   (* n *)
+  | `HexOp   (* 0xhex *)
+  | `CharOp  (* U+hex *)
+  | `AtomOp  (* `n *)
+]
 
 and unop = [Bool.unop | Num.unop | `PlusMinusOp | `MinusPlusOp]
 and binop = [Bool.binop | Num.binop]

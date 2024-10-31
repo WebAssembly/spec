@@ -1,7 +1,6 @@
 open Util
 open Source
 open El
-open Xl
 open Ast
 open Convert
 
@@ -348,7 +347,7 @@ let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
               (Env.find id.it env))
         in
         List.fold_left union
-          (Env.singleton id.it (NumT Num.NatT $ id.at, List.map fst iterexps'))
+          (Env.singleton id.it (NumT `NatT $ id.at, List.map fst iterexps'))
           occurs
     in
     ListN (e', id_opt), (occur1, occur2)

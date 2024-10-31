@@ -153,7 +153,7 @@ let rec reduce_exp s e : expr =
       let e1' = reduce_exp s e1 in
       let e2' = reduce_exp s e2 in
       (match e1'.it, e2'.it with
-      | ListE es, NumE (Num.Nat i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
+      | ListE es, NumE (`Nat i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
       | _ -> AccE (e1', IdxP e2' $ p.at) $> e
       )
     | SliceP (e2, e3) ->
@@ -161,7 +161,7 @@ let rec reduce_exp s e : expr =
       let e2' = reduce_exp s e2 in
       let e3' = reduce_exp s e3 in
       (match e1'.it, e2'.it, e3'.it with
-      | ListE es, NumE (Num.Nat i), NumE (Num.Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
+      | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
         ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es))
       | _ -> AccE (e1', SliceP (e2', e3') $ p.at)
       ) $> e
@@ -219,7 +219,7 @@ let rec reduce_exp s e : expr =
   | LenE e1 ->
     let e1' = reduce_exp s e1 in
     (match e1'.it with
-    | ListE es -> NumE (Num.Nat (Z.of_int (List.length es)))
+    | ListE es -> NumE (`Nat (Z.of_int (List.length es)))
     | _ -> LenE e1'
     ) $> e
   | TupE es -> TupE (List.map (reduce_exp s) es) $> e
@@ -250,11 +250,11 @@ let rec reduce_exp s e : expr =
       | List | List1 ->
         let n = List.length (as_list_exp (List.hd es')) in
         if iter' = List || n >= 1 then
-          let en = NumE (Num.Nat (Z.of_int n)) $$ e.at % (Il.Ast.NumT Num.NatT $ e.at) in
+          let en = NumE (`Nat (Z.of_int n)) $$ e.at % (Il.Ast.NumT `NatT $ e.at) in
           reduce_exp s (IterE (e1', (ListN (en, None), xes')) $> e)
         else
           IterE (e1', iterexp') $> e
-      | ListN ({it = NumE (Num.Nat n'); _}, ido) ->
+      | ListN ({it = NumE (`Nat n'); _}, ido) ->
         let ess' = List.map as_list_exp es' in
         let ns = List.map List.length ess' in
         let n = Z.to_int n' in
@@ -264,7 +264,7 @@ let rec reduce_exp s e : expr =
             let s = List.fold_right2 Subst.add ids esI' Subst.empty in
             let s' =
               Option.fold ido ~none:s ~some:(fun id ->
-                let en = NumE (Num.Nat (Z.of_int i)) $$ no_region % (Il.Ast.NumT Num.NatT $ no_region) in
+                let en = NumE (`Nat (Z.of_int i)) $$ no_region % (Il.Ast.NumT `NatT $ no_region) in
                 Subst.add id en s
               )
             in Subst.subst_exp s' e1'
@@ -306,7 +306,7 @@ and reduce_path s e p f =
       let e1' = reduce_exp s e1 in
       let f' e' p1' =
         match e'.it, e1'.it with
-        | ListE es, NumE (Num.Nat i) when i < Z.of_int (List.length es) ->
+        | ListE es, NumE (`Nat i) when i < Z.of_int (List.length es) ->
           ListE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $> e'
         | _ ->
           f e' (ps @ [IdxP (e1') $> p'])
@@ -317,7 +317,7 @@ and reduce_path s e p f =
       let e2' = reduce_exp s e2 in
       let f' e' p1' =
         match e'.it, e1'.it, e2'.it with
-        | ListE es, NumE (Num.Nat i), NumE (Num.Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
+        | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
           let e1' = ListE Lib.List.(take (Z.to_int i) es) $> e' in
           let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
           let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in
