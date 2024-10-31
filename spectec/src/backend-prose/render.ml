@@ -157,7 +157,7 @@ and al_to_el_expr expr =
   let exp' =
     match expr.it with
     | Al.Ast.NumE n ->
-      let eli = El.Ast.NumE (El.Ast.DecOp, n) in
+      let eli = El.Ast.NumE (`DecOp, n) in
       Some eli
     | Al.Ast.CvtE (e, _, nt2) ->
       let* ele = al_to_el_expr e in

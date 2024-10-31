@@ -137,7 +137,7 @@ let rec preprocess_prem prem =
         CallE ("expanddt" $ prem.at, [ExpA dt $ dt.at]) $$ prem.at % ct.note
       in
       let new_prem =
-        IfPr (CmpE (`EqOp, None, expanddt, ct) $$ prem.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, `BoolT, expanddt, ct) $$ prem.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)
@@ -164,7 +164,7 @@ let rec preprocess_prem prem =
         CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note
       in
       let new_prem =
-        IfPr (CmpE (`EqOp, None, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, `BoolT, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)

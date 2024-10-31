@@ -126,7 +126,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [IfPr (CmpE (`EqOp, None, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
+      [IfPr (CmpE (`EqOp, `BoolT, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
       [ExpB (id, template.note) $ e.at]
     | UnE (_, _, e1), UnE (_, _, e2)
     | DotE (e1, _), DotE (e2, _)

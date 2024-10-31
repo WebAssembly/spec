@@ -14,7 +14,6 @@ open Source
 
 open Free
 open Il
-open Xl
 open Ast
 (* open Print *)
 
@@ -71,12 +70,12 @@ let free_ids e =
   |> Set.elements
 
 let dim e =
-  let t = (NumT Num.NatT $ no_region) in
+  let t = (NumT `NatT $ no_region) in
   match e.it with
   | IterE (_, (ListN (e_n, _), _)) -> e_n
-  | IterE _ -> NumE (Num.Nat Z.minus_one) $$ e.at % t
-  | ListE es -> NumE (Num.Nat (List.length es |> Z.of_int)) $$ e.at % t
-  | _ -> NumE (Num.Nat Z.one) $$ e.at % t
+  | IterE _ -> NumE (`Nat Z.minus_one) $$ e.at % t
+  | ListE es -> NumE (`Nat (List.length es |> Z.of_int)) $$ e.at % t
+  | _ -> NumE (`Nat Z.one) $$ e.at % t
 
 let arg e =
   ExpA e $ e.at
@@ -128,7 +127,7 @@ let encode_inner_stack context_opt stack =
       let stack0 = mk_varE s0 "stackT" in
       let rhs = CallE (mk_id "pop", [arg n; arg stack0]) $$ no_region % t in
 
-      IfPr (CmpE (`EqOp, None, lhs, rhs) $$ e.at % (BoolT $ no_region)) $ e.at
+      IfPr (CmpE (`EqOp, `BoolT, lhs, rhs) $$ e.at % (BoolT $ no_region)) $ e.at
     ) operands in
 
     None, prem :: prems @ unused_prems

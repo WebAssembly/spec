@@ -58,12 +58,7 @@ let rec string_of_iter iter =
 
 (* Types *)
 
-and string_of_numtyp t =
-  match t with
-  | Num.NatT -> "nat"
-  | Num.IntT -> "int"
-  | Num.RatT -> "rat"
-  | Num.RealT -> "real"
+and string_of_numtyp = Num.string_of_typ
 
 and string_of_typ t =
   match t.it with
@@ -118,10 +113,10 @@ and string_of_exp e =
   | VarE (id, args) -> string_of_varid id ^ string_of_args args
   | AtomE atom -> string_of_atom atom
   | BoolE b -> string_of_bool b
-  | NumE (DecOp, Num.Nat n) -> Z.to_string n
-  | NumE (HexOp, Num.Nat n) -> "0x" ^ Z.format "%X" n
-  | NumE (CharOp, Num.Nat n) -> "U+" ^ Z.format "%X" n
-  | NumE (AtomOp, Num.Nat n) -> "`" ^ Z.to_string n
+  | NumE (`DecOp, `Nat n) -> Z.to_string n
+  | NumE (`HexOp, `Nat n) -> "0x" ^ Z.format "%X" n
+  | NumE (`CharOp, `Nat n) -> "U+" ^ Z.format "%X" n
+  | NumE (`AtomOp, `Nat n) -> "`" ^ Z.to_string n
   | NumE (_, n) -> Num.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
   | CvtE (e1, nt) -> "$" ^ string_of_numtyp nt ^ "(" ^ string_of_exp e1 ^ ")"
@@ -189,10 +184,10 @@ and string_of_path p =
 and string_of_sym g =
   match g.it with
   | VarG (id, args) -> string_of_gramid id ^ string_of_args args
-  | NumG (DecOp, n) -> Z.to_string n
-  | NumG (HexOp, n) -> "0x" ^ Z.format "%X" n
-  | NumG (CharOp, n) -> "U+" ^ Z.format "%X" n
-  | NumG (AtomOp, n) -> "`" ^ Z.to_string n
+  | NumG (`DecOp, n) -> Z.to_string n
+  | NumG (`HexOp, n) -> "0x" ^ Z.format "%X" n
+  | NumG (`CharOp, n) -> "U+" ^ Z.format "%X" n
+  | NumG (`AtomOp, n) -> "`" ^ Z.to_string n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"

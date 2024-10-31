@@ -40,12 +40,12 @@ let both_empty cond1 cond2 =
     match cond.it with
     | BinE (`EqOp, e, { it = ListE []; _ })
     | BinE (`EqOp, { it = ListE []; _ }, e) -> Some e
-    | BinE (`EqOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (`EqOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (`LeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (`GeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ }) when z = Z.zero -> Some e
-    | BinE (`LtOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (`GeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ }) when z = Z.one -> Some e
+    | BinE (`EqOp, { it = LenE e; _ }, { it = NumE (`Nat z); _ })
+    | BinE (`EqOp, { it = NumE (`Nat z); _ }, { it = LenE e; _ })
+    | BinE (`LeOp, { it = LenE e; _ }, { it = NumE (`Nat z); _ })
+    | BinE (`GeOp, { it = NumE (`Nat z); _ }, { it = LenE e; _ }) when z = Z.zero -> Some e
+    | BinE (`LtOp, { it = LenE e; _ }, { it = NumE (`Nat z); _ })
+    | BinE (`GeOp, { it = NumE (`Nat z); _ }, { it = LenE e; _ }) when z = Z.one -> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -57,12 +57,12 @@ let both_non_empty cond1 cond2 =
     match cond.it with
     | BinE (`NeOp, e, { it = ListE []; _ })
     | BinE (`NeOp, { it = ListE []; _ }, e) -> Some e
-    | BinE (`NeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ })
-    | BinE (`NeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (`LtOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (`GtOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ }) when z = Z.zero -> Some e
-    | BinE (`LeOp, { it = NumE (Num.Nat z); _ }, { it = LenE e; _ })
-    | BinE (`GeOp, { it = LenE e; _ }, { it = NumE (Num.Nat z); _ }) when z = Z.one-> Some e
+    | BinE (`NeOp, { it = LenE e; _ }, { it = NumE (`Nat z); _ })
+    | BinE (`NeOp, { it = NumE (`Nat z); _ }, { it = LenE e; _ })
+    | BinE (`LtOp, { it = NumE (`Nat z); _ }, { it = LenE e; _ })
+    | BinE (`GtOp, { it = LenE e; _ }, { it = NumE (`Nat z); _ }) when z = Z.zero -> Some e
+    | BinE (`LeOp, { it = NumE (`Nat z); _ }, { it = LenE e; _ })
+    | BinE (`GeOp, { it = LenE e; _ }, { it = NumE (`Nat z); _ }) when z = Z.one-> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -1031,7 +1031,7 @@ let remove_enter algo =
       { it = CatE (instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }); _ },
       il) ->
         begin match e_arity.it with
-        | NumE (Num.Nat z) when Z.to_int z = 0 ->
+        | NumE (`Nat z) when Z.to_int z = 0 ->
           pushI e_frame ~at:instr.at :: il @
           (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
             popI e_frame ~at:instr.at

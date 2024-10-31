@@ -5,7 +5,6 @@ open Value
 open Al.Ast
 open Al.Al_util
 open Al.Print
-open Xl
 open Source
 open Util
 
@@ -223,7 +222,7 @@ let al_to_tag_type: value -> tag_type = function
 
 (* Destruct operator *)
 
-let num i = Num.Nat (Z.of_int i)
+let num i = `Nat (Z.of_int i)
 let two = num 2
 let four = num 4
 let eight = num 8

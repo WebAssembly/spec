@@ -365,10 +365,10 @@ iter :
 (* Types *)
 
 numtyp :
-  | NAT { Num.NatT }
-  | INT { Num.IntT }
-  | RAT { Num.RatT }
-  | REAL { Num.RealT }
+  | NAT { `NatT }
+  | INT { `IntT }
+  | RAT { `RatT }
+  | REAL { `RealT }
 
 (*typ_prim : typ_prim_ { $1 $ $sloc }*)
 typ_prim_ :
@@ -501,10 +501,10 @@ casetyp :
 exp_lit : exp_lit_ { $1 $ $sloc }
 exp_lit_ :
   | BOOLLIT { BoolE $1 }
-  | NATLIT { NumE (DecOp, Num.Nat $1) }
-  | HEXLIT { NumE (HexOp, Num.Nat $1) }
-  | CHARLIT { NumE (CharOp, Num.Nat $1) }
-  | TICK NATLIT { NumE (AtomOp, Num.Nat $2) }
+  | NATLIT { NumE (`DecOp, `Nat $1) }
+  | HEXLIT { NumE (`HexOp, `Nat $1) }
+  | CHARLIT { NumE (`CharOp, `Nat $1) }
+  | TICK NATLIT { NumE (`AtomOp, `Nat $2) }
   | TEXTLIT { TextE $1 }
 
 exp_var_ :
@@ -721,11 +721,11 @@ prem_ :
 sym_prim_ :
   | gramid { VarG ($1, []) }
   | gramid_lparen comma_list(arg) RPAREN { VarG ($1, $2) }
-  | NATLIT { NumG (DecOp, $1) }
-  | HEXLIT { NumG (HexOp, $1) }
-  | CHARLIT { NumG (CharOp, $1) }
+  | NATLIT { NumG (`DecOp, $1) }
+  | HEXLIT { NumG (`HexOp, $1) }
+  | CHARLIT { NumG (`CharOp, $1) }
   | TEXTLIT { TextG $1 }
-  | TICK NATLIT { NumG (AtomOp, $2) }
+  | TICK NATLIT { NumG (`AtomOp, $2) }
   | EPS { EpsG }
   | LPAREN tup_list(sym) RPAREN
     { match $2 with

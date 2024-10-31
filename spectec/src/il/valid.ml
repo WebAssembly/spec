@@ -106,37 +106,36 @@ let sub_typ env t1 t2 at =
 
 (* Operators *)
 
-let infer_unop at op nt =
-  match op, nt with
-  | #Bool.unop, None -> BoolT, BoolT
-  | #Num.unop as op, Some t ->
-    if not (Num.typ_unop op t t) then
-      error at ("illegal type " ^ string_of_numtyp t ^ " for unary operator");
-    NumT t, NumT t
-  | `PlusMinusOp, Some t | `MinusPlusOp, Some t -> NumT t, NumT t
+let infer_unop at op ot =
+  match op, ot with
+  | #Bool.unop, #Bool.typ -> BoolT, BoolT
+  | #Num.unop as op, (#Num.typ as nt) ->
+    if not (Num.typ_unop op nt nt) then
+      error at ("illegal type " ^ string_of_numtyp nt ^ " for unary operator");
+    NumT nt, NumT nt
+  | (`PlusMinusOp | `MinusPlusOp), (#Num.typ as nt) -> NumT nt, NumT nt
   | _, _ ->
     error at ("malformed unary operator annotation")
 
-let infer_binop at op nt =
-  match op, nt with
-  | #Bool.binop, None -> BoolT, BoolT, BoolT
-  | #Num.binop as op, Some t ->
-    let open Num in
-    let t1, t2, t3 =
+let infer_binop at op ot =
+  match op, ot with
+  | #Bool.binop, #Bool.typ -> BoolT, BoolT, BoolT
+  | #Num.binop as op, (#Num.typ as nt) ->
+    let nt1, nt2, nt3 =
       match op with
-      | `AddOp | `SubOp | `MulOp | `DivOp | `ModOp -> t, t, t
-      | `PowOp -> t, NatT, t
+      | `AddOp | `SubOp | `MulOp | `DivOp | `ModOp -> nt, nt, nt
+      | `PowOp -> nt, (if nt = `NatT then `NatT else `IntT), nt
     in
-    if not (Num.typ_binop op t1 t2 t3) then
-      error at ("illegal type " ^ string_of_numtyp t ^ " for unary operator");
-    NumT t1, NumT t2, NumT t3
+    if not (Num.typ_binop op nt1 nt2 nt3) then
+      error at ("illegal type " ^ string_of_numtyp nt ^ " for unary operator");
+    NumT nt1, NumT nt2, NumT nt3
   | _, _ ->
     error at ("malformed binary operator annotation")
 
-let infer_cmpop at op nt =
-  match op, nt with
-  | #Bool.cmpop, None -> None
-  | #Num.cmpop, Some t -> Some (NumT t)
+let infer_cmpop at op ot =
+  match op, ot with
+  | #Bool.cmpop, #Bool.typ -> None
+  | #Num.cmpop, (#Num.typ as nt) -> Some (NumT nt)
   | _, _ -> error at ("malformed comparison operator annotation")
 
 
@@ -167,9 +166,9 @@ let rec valid_iter ?(side = `Rhs) env iter : Env.t =
   match iter with
   | Opt | List | List1 -> env
   | ListN (e, id_opt) ->
-    valid_exp ~side env e (NumT Num.NatT $ e.at);
+    valid_exp ~side env e (NumT `NatT $ e.at);
     Option.fold id_opt ~none:env ~some:(fun id ->
-      Env.bind_var env id (NumT Num.NatT $ e.at)
+      Env.bind_var env id (NumT `NatT $ e.at)
     )
 
 
@@ -260,8 +259,8 @@ and infer_exp (env : Env.t) e : typ =
   | BoolE _ -> BoolT $ e.at
   | NumE n -> NumT (Num.to_typ n) $ e.at
   | TextE _ -> TextT $ e.at
-  | UnE (op, nt, _) -> let _t1, t' = infer_unop e.at op nt in t' $ e.at
-  | BinE (op, nt, _, _) -> let _t1, _t2, t' = infer_binop e.at op nt in t' $ e.at
+  | UnE (op, ot, _) -> let _t1, t' = infer_unop e.at op ot in t' $ e.at
+  | BinE (op, ot, _, _) -> let _t1, _t2, t' = infer_binop e.at op ot in t' $ e.at
   | CmpE _ | MemE _ -> BoolT $ e.at
   | IdxE (e1, _) -> as_list_typ "expression" env Infer (infer_exp env e1) e1.at
   | SliceE (e1, _, _)
@@ -308,7 +307,7 @@ and infer_exp (env : Env.t) e : typ =
       else
         error e.at "cannot infer type of list"
     )
-  | LenE _ -> NumT Num.NatT $ e.at
+  | LenE _ -> NumT `NatT $ e.at
   | CatE (e1, e2) ->
     let t1 = infer_exp env e1 in
     let t2 = infer_exp env e2 in
@@ -339,8 +338,8 @@ try
     let t1, t' = infer_unop e.at op nt in
     valid_exp ~side env e1 (t1 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-  | BinE ((`AddOp | `SubOp) as op, nt, e1, ({it = NumE (Num.Nat _); _} as e2))
-  | BinE ((`AddOp | `SubOp) as op, nt, ({it = NumE (Num.Nat _); _} as e1), e2) when side = `Lhs ->
+  | BinE ((`AddOp | `SubOp) as op, nt, e1, ({it = NumE (`Nat _); _} as e2))
+  | BinE ((`AddOp | `SubOp) as op, nt, ({it = NumE (`Nat _); _} as e1), e2) when side = `Lhs ->
     let t1, t2, t' = infer_binop e.at op nt in
     valid_exp ~side env e1 (t1 $ e.at);
     valid_exp ~side env e2 (t2 $ e.at);
@@ -364,13 +363,13 @@ try
     let t1 = infer_exp env e1 in
     let t' = as_list_typ "expression" env Infer t1 e1.at in
     valid_exp env e1 t1;
-    valid_exp env e2 (NumT Num.NatT $ e2.at);
+    valid_exp env e2 (NumT `NatT $ e2.at);
     equiv_typ env t' t e.at
   | SliceE (e1, e2, e3) ->
     let _typ' = as_list_typ "expression" env Check t e1.at in
     valid_exp env e1 t;
-    valid_exp env e2 (NumT Num.NatT $ e2.at);
-    valid_exp env e3 (NumT Num.NatT $ e3.at)
+    valid_exp env e2 (NumT `NatT $ e2.at);
+    valid_exp env e3 (NumT `NatT $ e3.at)
   | UpdE (e1, p, e2) ->
     valid_exp env e1 t;
     let t2 = valid_path env p t in
@@ -402,7 +401,7 @@ try
     let t1 = infer_exp env e1 in
     let _typ11 = as_list_typ "expression" env Infer t1 e1.at in
     valid_exp env e1 t1;
-    equiv_typ env (NumT Num.NatT $ e.at) t e.at
+    equiv_typ env (NumT `NatT $ e.at) t e.at
   | TupE es ->
     let ets = as_tup_typ "tuple" env Check t e.at in
     if List.length es <> List.length ets then
@@ -504,12 +503,12 @@ and valid_path env p t : typ =
     | RootP -> t
     | IdxP (p1, e1) ->
       let t1 = valid_path env p1 t in
-      valid_exp env e1 (NumT Num.NatT $ e1.at);
+      valid_exp env e1 (NumT `NatT $ e1.at);
       as_list_typ "path" env Check t1 p1.at
     | SliceP (p1, e1, e2) ->
       let t1 = valid_path env p1 t in
-      valid_exp env e1 (NumT Num.NatT $ e1.at);
-      valid_exp env e2 (NumT Num.NatT $ e2.at);
+      valid_exp env e1 (NumT `NatT $ e1.at);
+      valid_exp env e2 (NumT `NatT $ e2.at);
       let _ = as_list_typ "path" env Check t1 p1.at in
       t1
     | DotP (p1, atom) ->
@@ -546,7 +545,7 @@ and valid_sym env g : typ =
   | NumG n ->
     if n < 0x00 || n > 0xff then
       error g.at "byte value out of range";
-    NumT Num.NatT $ g.at
+    NumT `NatT $ g.at
   | TextG _ -> TextT $ g.at
   | EpsG -> TupT [] $ g.at
   | SeqG gs ->
@@ -558,8 +557,8 @@ and valid_sym env g : typ =
   | RangeG (g1, g2) ->
     let t1 = valid_sym env g1 in
     let t2 = valid_sym env g2 in
-    equiv_typ env t1 (NumT Num.NatT $ g1.at) g.at;
-    equiv_typ env t2 (NumT Num.NatT $ g2.at) g.at;
+    equiv_typ env t1 (NumT `NatT $ g1.at) g.at;
+    equiv_typ env t2 (NumT `NatT $ g2.at) g.at;
     TupT [] $ g.at
   | IterG (g1, iterexp) ->
     let iter, env' = valid_iterexp ~side:`Lhs env iterexp g.at in

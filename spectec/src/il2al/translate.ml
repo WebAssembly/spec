@@ -388,7 +388,7 @@ let insert_pop e e_n =
     match e.it, e_n.it with
     | ListE [e'], _ ->
       popI (subst_instr_typ e') ~at:e'.at
-    | _, NumE (Num.Nat z) when z = Z.minus_one ->
+    | _, NumE (`Nat z) when z = Z.minus_one ->
       popAllI (subst_instr_typ e) ~at:e.at
     | _ ->
       popsI (subst_instr_typ e) (Some e_n) ~at:e.at

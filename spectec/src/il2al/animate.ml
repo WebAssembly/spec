@@ -8,7 +8,6 @@ by performing dataflow analysis.
 open Util
 open Source
 open Il.Ast
-open Xl
 open Free
 
 
@@ -120,7 +119,7 @@ let is_pop env row =
   match (unwrap row).it with
   | LetPr (_, {it = CallE (_, {it = ExpA n; _} :: _); note; _}, _) when Il.Print.string_of_typ note = "stackT" ->
     (match n.it with
-    | NumE (Num.Nat i) -> Z.equal i (Z.one)
+    | NumE (`Nat i) -> Z.equal i (Z.one)
     | _ -> false)
   | _ -> false
 

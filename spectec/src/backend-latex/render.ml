@@ -1133,9 +1133,9 @@ and render_nottyp env t : table =
     render_typcon env tcon
   | RangeT tes ->
     render_nl_list env (`H, "~|~") render_typenum tes
-  | NumT Num.NatT ->
+  | NumT `NatT ->
     [Row [Col "0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
-  | NumT Num.IntT ->
+  | NumT `IntT ->
     [Row [Col "\\dots ~|~ {-2} ~|~ {-1} ~|~ 0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
   | _ ->
     [Row [Col (render_typ env t)]]
@@ -1188,20 +1188,20 @@ and render_exp env e =
     render_apply render_varid render_exp env env.show_typ env.macro_typ id args
   | BoolE b ->
     render_atom env (Atom.(Atom (string_of_bool b) $$ e.at % info "bool"))
-  | NumE (DecOp, Num.Nat n) -> Z.to_string n
-  | NumE (HexOp, Num.Nat n) ->
+  | NumE (`DecOp, `Nat n) -> Z.to_string n
+  | NumE (`HexOp, `Nat n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
-  | NumE (CharOp, Num.Nat n) ->
+  | NumE (`CharOp, `Nat n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NumE (AtomOp, Num.Nat n) ->
+  | NumE (`AtomOp, `Nat n) ->
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
   | NumE _ -> assert false
@@ -1210,7 +1210,7 @@ and render_exp env e =
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, `PowOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
-  | BinE (({it = NumE (DecOp, Num.Nat _); _} as e1), `MulOp,
+  | BinE (({it = NumE (`DecOp, `Nat _); _} as e1), `MulOp,
       ({it = VarE _ | CallE (_, []) | ParenE _; _ } as e2)) ->
     render_exp env e1 ^ " \\, " ^ render_exp env e2
   | BinE (e1, op, e2) ->
@@ -1424,20 +1424,20 @@ and render_sym env g : string =
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym
       env env.show_gram env.macro_gram id args
-  | NumG (DecOp, n) -> Z.to_string n
-  | NumG (HexOp, n) ->
+  | NumG (`DecOp, n) -> Z.to_string n
+  | NumG (`HexOp, n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
-  | NumG (CharOp, n) ->
+  | NumG (`CharOp, n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NumG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
+  | NumG (`AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | EpsG -> "\\epsilon"
   | SeqG gs -> render_sym_seq env gs

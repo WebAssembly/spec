@@ -1,3 +1,5 @@
+type typ = [`BoolT]
+
 type unop = [`NotOp]
 type binop = [`AndOp | `OrOp | `ImplOp | `EquivOp]
 type cmpop = [`EqOp | `NeOp]

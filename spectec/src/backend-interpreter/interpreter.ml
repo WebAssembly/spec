@@ -371,7 +371,7 @@ and eval_expr env expr =
   (* TODO : This should be replaced with executing the validation algorithm *)
   | IsValidE e ->
     let valid_lim k = function
-      | TupV [ NumV (Num.Nat n); NumV (Num.Nat m) ] -> n <= m && m <= k
+      | TupV [ NumV (`Nat n); NumV (`Nat m) ] -> n <= m && m <= k
       | _ -> false
     in
     (match eval_expr env e with
