@@ -1033,9 +1033,9 @@ $${rule: Instr_ok/vbitmask}
 
 .. _valid-vswizzlop:
 
-:math:`\K{i8x16.}\viswizzlop`
+:math:`\K{i8x16.}\vswizzlop`
 ...........................
-$${rule-prose: Instr_ok/viswizzlop}
+$${rule-prose: Instr_ok/vswizzlop}
 
 .. todo::
   below is the official specification
