@@ -18,6 +18,7 @@ type stmt =
 | ForallS of (expr * expr) list * stmt list
 | EitherS of stmt list list
 | BinS of stmt * binop * stmt
+| ContextS of expr * expr
 (* TODO: Merge others statements into RelS *)
 | RelS of string * expr list
 | YetS of string

@@ -19,6 +19,8 @@ let print_yet_prem prem fname =
 
 (* Helpers *)
 
+module Map = Map.Make(String)
+
 let flatten_rec def =
   match def.it with
   | Ast.RecD defs -> defs
@@ -49,6 +51,7 @@ let extract_prose_hint Ast.{hintid; hintexp} =
   match hintid.it, hintexp.it with
   | "prose", TextE hint -> Some hint
   | _ -> None
+
 let extract_rel_hint id =
   List.find_map (fun def ->
     match def.it with
@@ -73,11 +76,6 @@ let binop_to_binop = function
   | _ -> assert false
 
 let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
-
-(* Hardcoded convention: "The rules implicitly assume a given context C" *)
-let try_omit c = match c.it with
-| Al.Ast.VarE "C" -> None
-| _ -> Some c
 
 (* CASE (?(())) ~> CASE
    CASE (?()) ~> () *)
@@ -218,6 +216,39 @@ let rec if_expr_to_instrs e =
   | _ ->
     [ CmpS (exp_to_expr e, Eq, boolE true ~note:boolT) ]
 
+
+let ctxs = ref Map.empty
+
+let init_ctxs () = ctxs := Map.empty
+
+(* Hardcoded convention: Bind extension of a context to another context *)
+let ctx_to_instr expr =
+  let s = Al.Print.string_of_expr expr in
+  match Map.find_opt s !ctxs with
+  | Some ctx -> [], Some ctx
+  | None ->
+    let var = Al.Ast.VarE "C'" $$ expr.at % expr.note in
+    ctxs := Map.add s var !ctxs;
+    [ ContextS (var, expr) ], Some var
+
+(* Hardcoded convention: "The rules implicitly assume a given context C" *)
+let extract_context c =
+  match c.it with
+  | Al.Ast.VarE "C" -> [], None
+  | Al.Ast.ExtE ({ it = VarE _; _ }, _ps, _e, _dir) -> ctx_to_instr c
+  | _ -> [], Some c
+
+let inject_ctx' c stmt =
+  match stmt with
+  | IsValidS (None, e, es) -> IsValidS (Some c, e, es)
+  | IsConstS (None, e) -> IsConstS (Some c, e)
+  | _ -> stmt
+
+let inject_ctx c stmts =
+  match extract_context c with
+  | stmt, None -> stmt @ stmts
+  | stmt, Some ctx -> stmt @ (List.map (inject_ctx' ctx) stmts)
+
 let rec prem_to_instrs prem =
   match prem.it with
   | Ast.LetPr (e1, e2, _) ->
@@ -246,13 +277,14 @@ let rec prem_to_instrs prem =
       | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
       | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
       (* context *)
-      | ValidRel,      [c; e]         -> [ IsValidS (try_omit c, e, []) ]
-      | ValidInstrRel, [c; e; t]      -> [ IsValidS (try_omit c, e, [t]) ]
-      | ValidWithRel,  [c; e; e']     -> [ IsValidS (try_omit c, e, [e']) ]
+      | ValidRel,      [c; e]         -> [ IsValidS (None, e, []) ] |> inject_ctx c
+      | ValidInstrRel, [c; e; t]      -> [ IsValidS (None, e, [t]) ] |> inject_ctx c
+      | ValidWithRel,  [c; e; e']     -> [ IsValidS (None, e, [e']) ] |> inject_ctx c
       | MatchRel,      [_; t1; t2]    -> [ MatchesS (t1, t2) ]
-      | ConstRel,      [c; e]         -> [ IsConstS (try_omit c, e) ]
-      | ValidConstRel, [c; e; e']     -> [ IsValidS (try_omit c, e, [e']); IsConstS (try_omit c, e) ]
-      | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (try_omit c, e, [e1; e2]) ]
+      | ConstRel,      [c; e]         -> [ IsConstS (None, e) ] |> inject_ctx c
+      | ValidConstRel, [c; e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ] |> inject_ctx c
+      | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ] |> inject_ctx c
+      (* others *)
       | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]
       | _,              _             -> assert false )
     )
@@ -309,6 +341,7 @@ let extract_triplet_rule rule =
 (** Main translation for rules **)
 let prose_of_rules name mk_concl rules =
   let rule = List.hd rules in
+  init_ctxs ();
 
   (* anchor *)
   let anchor = name in

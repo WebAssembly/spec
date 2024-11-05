@@ -524,21 +524,37 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
-let render_type_visit = ref Map.empty
-let init_render_type () = render_type_visit := Map.empty
+let typs = ref Map.empty
+let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
-  match (Map.find_opt s !render_type_visit) with
+  match (Map.find_opt s !typs) with
   | Some t -> if t <> "" then "the " ^ t ^ " " ^ s else s
   | None ->
     let t = Prose_util.extract_desc e.note in
-    render_type_visit := Map.add s t !render_type_visit;
+    typs := Map.add s t !typs;
     if t = "" then
       render_expr env e
     else
       "the " ^ t ^ " " ^ s
 
-(* Instructions *)
+
+(* Validation Statements *)
+
+let render_context_ext_dir = function
+  | Al.Ast.Front -> "prepended"
+  | Al.Ast.Back -> "appended"
+
+let render_context env e1 e2 =
+  match e2.it with
+  | Al.Ast.ExtE (({ it = VarE _; _ } as c'), ps, e, dir) ->
+    sprintf "Let %s be the same context as %s, but with %s %s to %s"
+      (render_expr env e1)
+      (render_expr env c')
+      (render_expr_with_type env e)
+      (render_context_ext_dir dir)
+      (render_paths env ps)
+  | _ -> assert false
 
 let rec render_single_stmt env stmt =
   match stmt with
@@ -585,6 +601,7 @@ let rec render_single_stmt env stmt =
     | IsDefinedS e ->
       sprintf "%s exists"
         (render_expr_with_type env e)
+    | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
       let template = String.split_on_char '%' s in
       let args = List.map (render_expr_with_type env) es in
@@ -635,6 +652,9 @@ and render_stmts env depth stmts =
     (fun stmts i ->
       stmts ^ "\n\n" ^ repeat indent depth ^ render_stmt env depth i)
     "" stmts
+
+
+(* Instructions *)
 
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix expr =
@@ -803,7 +823,7 @@ let _render_pred env name params instrs =
   render_stmts env 0 instrs
 
 let render_rule env concl prems =
-  init_render_type ();
+  init_typs ();
   match prems with
   | [] -> render_stmt env 0 concl
   | _ ->

@@ -443,10 +443,13 @@ let rec raw_string_of_single_stmt stmt =
   | IsDefinedS e ->
     sprintf "%s exists"
       (string_of_expr_with_type e)
+  | ContextS (e1, e2) ->
+    sprintf "%s is the context %s"
+      (string_of_expr_with_type e1)
+      (string_of_expr e2)
   | RelS (s, es) ->
     let template = String.split_on_char '%' s in
     let args = List.map string_of_expr_with_type es in
-
     Prose_util.alternate template args |> String.concat ""
   | YetS s -> indent () ^ " Yet: " ^ s
   | _ -> assert false
