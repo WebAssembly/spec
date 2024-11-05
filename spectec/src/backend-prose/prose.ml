@@ -2,7 +2,7 @@
    Perhaps this should be improved later *)
 
 type cmpop = [Xl.Bool.cmpop | Xl.Num.cmpop]
-type binop = And | Or | Impl | Equiv
+type binop = Xl.Bool.binop
 
 type expr = Al.Ast.expr
 

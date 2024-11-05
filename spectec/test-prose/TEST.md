@@ -4622,7 +4622,7 @@ The instruction :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
-    * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+    * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
 
 
 
@@ -5246,7 +5246,7 @@ The instruction :math:`\epsilon~{}^?` is valid with the function type :math:`t~t
 
   * The value type :math:`t` matches the value type :math:`{t'}`.
 
-  * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+  * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
 
 
 
@@ -10155,7 +10155,7 @@ Instr_ok/select
   - Or:
     - valtype_u0? is ?().
     - the value type t matches the value type t'.
-    - t' is contained in [numtype, vectype].
+    - t' is numtype or t' is vectype.
 
 Instr_ok/block
 - the instruction (BLOCK bt instr*) is valid with the function type t_1* -> t_2* if:
@@ -10480,7 +10480,7 @@ Instr_ok/select-expl
 Instr_ok/select-impl
 - the instruction (SELECT() ?() ?) is valid with the function type [t, t, I32] -> [t] if:
   - the value type t matches the value type t'.
-  - t' is contained in [numtype, vectype].
+  - t' is numtype or t' is vectype.
 
 Instr_ok/cvtop-reinterpret
 - the instruction (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type [nt_2] -> [nt_1] if:
@@ -14240,7 +14240,7 @@ The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
-    * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+    * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
 
 
 
@@ -14735,7 +14735,7 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instr
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-  * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+  * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to number type or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to vector type.
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -14818,7 +14818,7 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the inst
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-  * :math:`{\mathrm{unpack}}({\mathit{zt}})` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+  * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to number type or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to vector type.
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -15321,7 +15321,7 @@ The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction
 
   * The value type :math:`t` matches the value type :math:`{t'}`.
 
-  * :math:`{t'}` is contained in [:math:`{\mathit{numtype}}`; :math:`{\mathit{vectype}}`].
+  * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
 
 
 
@@ -25198,7 +25198,7 @@ Instr_ok/select
   - Or:
     - valtype_u0? is ?().
     - t matches the value type t'.
-    - t' is contained in [numtype, vectype].
+    - t' is numtype or t' is vectype.
 
 Instr_ok/block
 - the instruction (BLOCK bt instr*) is valid with the instruction type t_1* -> t_2* if:
@@ -25450,7 +25450,7 @@ Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
-  - $unpack(zt) is contained in [numtype, vectype].
+  - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data type C.DATAS[y] exists.
   - C.DATAS[y] is OK.
 
@@ -25492,7 +25492,7 @@ Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF NULL (_IDX x)), I32, I32, I32] -> [] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (MUT zt)).
-  - $unpack(zt) is contained in [numtype, vectype].
+  - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data type C.DATAS[y] exists.
   - C.DATAS[y] is OK.
 
@@ -25754,7 +25754,7 @@ Instr_ok/select-impl
 - the instruction (SELECT ?()) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - t matches the value type t'.
-  - t' is contained in [numtype, vectype].
+  - t' is numtype or t' is vectype.
 
 Instr_ok/load-val
 - the instruction (LOAD nt ?() x memarg) is valid with the instruction type [I32] -> [nt] if:

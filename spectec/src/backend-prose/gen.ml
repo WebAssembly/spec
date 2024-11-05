@@ -63,13 +63,6 @@ let extract_rel_hint id =
     | _ -> None
   ) !Langs.il
 
-let binop_to_binop = function
-  | `AndOp -> And
-  | `OrOp -> Or
-  | `ImplOp -> Impl
-  | `EquivOp -> Equiv
-  | _ -> assert false
-
 let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
 
 (* CASE (?(())) ~> CASE
@@ -192,23 +185,17 @@ let rec if_expr_to_instrs e =
     [ match e2.it with LenE _ -> CmpS (e2, swap op, e1) | _ -> CmpS (e1, op, e2) ]
   | Ast.BinE (`AndOp, _, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
-  | Ast.BinE (op, _, e1, e2) ->
-    let op = binop_to_binop op in
+  | Ast.BinE (#Bool.binop as op, _, e1, e2) ->
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match op, cond1, cond2 with
-      | Or, [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, `EqOp, { it = OptE None; _ }) ], _ ->
+      | `OrOp, [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, `EqOp, { it = OptE None; _ }) ], _ ->
         (* ~P \/ Q is equivalent to P -> Q *)
         IfS (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
-      | Or, [ CmpS (e1, `EqOp, e2) ], [ CmpS (e3, `EqOp, e4) ] when Al.Eq.eq_expr e1 e3 ->
-        (* TODO: Change this not to use a set notation *)
-        CondS (memE (e1, listE [e2; e4] ~note:(iterT e2.note List)) ~note:boolT)
       | _, [ stmt1 ], [ stmt2 ] -> BinS (stmt1, op, stmt2)
       | _ -> CondS (exp_to_expr e)]
-  | Ast.MemE _ ->
-    [ CondS (exp_to_expr e) ]
-  | _ ->
-    [ CmpS (exp_to_expr e, `EqOp, boolE true ~note:boolT) ]
+  | Ast.MemE _ -> [ CondS (exp_to_expr e) ]
+  | _ -> [ CmpS (exp_to_expr e, `EqOp, boolE true ~note:boolT) ]
 
 
 let ctxs = ref Map.empty

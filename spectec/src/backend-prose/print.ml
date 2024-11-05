@@ -377,10 +377,10 @@ let string_of_cmpop = function
   | `GeOp -> "is greater than or equal to"
 
 let string_of_prose_binop = function
-| And -> "and"
-| Or -> "or"
-| Impl -> "implies"
-| Equiv -> "if and only if"
+| `AndOp -> "and"
+| `OrOp -> "or"
+| `ImplOp -> "implies"
+| `EquivOp -> "if and only if"
 
 let rec raw_string_of_single_stmt stmt =
   match stmt with

@@ -308,10 +308,10 @@ let render_prose_cmpop_eps = function
   | op -> render_prose_cmpop op
 
 let render_prose_binop = function
-  | And -> "and"
-  | Or -> "or"
-  | Impl -> "implies"
-  | Equiv -> "if and only if"
+  | `AndOp -> "and"
+  | `OrOp -> "or"
+  | `ImplOp -> "implies"
+  | `EquivOp -> "if and only if"
 
 let render_al_unop = function
   | `NotOp -> "not"
@@ -537,7 +537,8 @@ let render_context env e1 e2 =
       (render_paths env ps)
   | _ -> assert false
 
-let rec render_single_stmt env stmt =
+let rec render_single_stmt ?(with_type=true) env stmt  =
+  let render_hd_expr = if with_type then render_expr_with_type else render_expr in
   match stmt with
     | LetS (e1, e2) ->
       sprintf "let %s be %s"
@@ -553,7 +554,7 @@ let rec render_single_stmt env stmt =
         | Some desc -> desc
       in
       sprintf "%s is%s %s"
-        (render_expr_with_type env e1)
+        (render_hd_expr env e1)
         (render_prose_cmpop cmpop)
         rhs
     | CmpS (e1, cmpop, e2) ->
@@ -562,18 +563,18 @@ let rec render_single_stmt env stmt =
         | OptE None -> render_prose_cmpop_eps cmpop, "absent"
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
-      sprintf "%s is%s %s" (render_expr_with_type env e1) cmpop rhs
+      sprintf "%s is%s %s" (render_hd_expr env e1) cmpop rhs
     | IsValidS (c_opt, e, es) ->
       sprintf "%s%s is valid%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
-        (render_expr_with_type env e)
+        (render_hd_expr env e)
         (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
       sprintf "%s matches itself"
-        (render_expr_with_type env e1)
+        (render_hd_expr env e1)
     | MatchesS (e1, e2) ->
       sprintf "%s matches %s"
-        (render_expr_with_type env e1)
+        (render_hd_expr env e1)
         (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
       sprintf "%s%s is const"
@@ -581,7 +582,7 @@ let rec render_single_stmt env stmt =
         (render_expr env e)
     | IsDefinedS e ->
       sprintf "%s exists"
-        (render_expr_with_type env e)
+        (render_hd_expr env e)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
       let template = String.split_on_char '%' s in
@@ -619,6 +620,11 @@ and render_stmt env depth stmt =
           "" tl
       in
       sprintf "either:%s\n%s" hd' tl'
+    | BinS ((CmpS (e1, _, _) as s1), binop, (CmpS (e2, _, _) as s2)) when Al.Eq.eq_expr e1 e2 ->
+      sprintf "%s %s %s."
+        (render_single_stmt env s1)
+        (render_prose_binop binop)
+        (render_single_stmt env s2 ~with_type:false)
     | BinS (s1, binop, s2) ->
       sprintf "%s %s %s."
         (render_single_stmt env s1)
