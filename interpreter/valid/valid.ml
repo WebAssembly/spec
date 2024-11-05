@@ -358,7 +358,7 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
       check_pack sz (ty_size memop.ty) at;
       Pack.packed_size sz
   in
-  require (1 lsl memop.align <= size) at
+  require (1 lsl memop.align >= 1 && 1 lsl memop.align <= size) at
     "alignment must not be larger than natural";
   memop.ty
 
@@ -859,6 +859,10 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     check_vec_binop binop e.at;
     let t = VecT (type_vec binop) in
     [t; t] --> [t], []
+
+  | VecTernary ternop ->
+    let t = VecT (type_vec ternop) in
+    [t; t; t] --> [t], []
 
   | VecCompare relop ->
     let t = VecT (type_vec relop) in

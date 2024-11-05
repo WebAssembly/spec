@@ -509,3 +509,205 @@ relation Reval_nomacro: parent; child ~> parent; child  hint(macro none) hint(ta
 rule Rok_nomacro: C |- AA : OK
 rule Rsub_nomacro: C |- parent <: AA
 rule Reval_nomacro: parent; child ~> AA; BB
+
+
+;;
+;; Layout
+;;
+
+;; Syntax
+
+syntax argh = ARGH
+syntax borg = BORG
+syntax curb = CURB
+syntax dork = DORK
+syntax eerk = EERK
+
+
+syntax dotstypex = argh | DX1 | ...
+syntax dotstypey =
+  argh | DY1 | ...
+syntax dotstypex = ... | borg | DX2 | ...
+syntax dotstypesep = borg
+syntax dotstypex = ...
+  | curb | DX3
+  | DX4 | DX5
+  | DX6 | ...
+syntax dotstypey =
+  | ...
+  | borg | DY2
+  | DY3 | DY4
+  | ...
+syntax dotstypex = ... | dork | DX7
+syntax dotstypey =
+  | ...
+  | dork
+  | DY5
+
+
+syntax casetype = LA nat argh
+    -- if nat = 0
+    -- if argh =/= ARGH
+  | LB borg curb
+  | LC dork_1 dork_2 -- if dork_1 =/= dork_2
+  | LD argh nat
+    -- if nat > 0 -- if argh =/= ARGH
+  | LE nat_1 nat_2
+    -- if nat_1 <= nat_2
+  | LFA borg | LFB borg | LFC borg
+;;  | LGA borg -- if borg = borg | LGB borg   ;; TODO(3, rossberg): what should this produce?
+  | LH borg
+      argh eerk
+  | LI borg
+      argh eerk
+    -- if 0 < 1
+    -- if 1 > 0
+  | LJ borg
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+  | LK borg
+      argh eerk
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+
+
+;; Grammars
+
+grammar gram : nat* = "GA" "GB" => 0
+    -- if 0 < 1
+  | "GB" "GC" "GD" => 0
+  | "GC" "GD" => 0 -- if 0 < 1
+  | "GD" "GE" => 0
+    -- if 0 < 1 -- if 1 > 0
+  | "GE" "GF" => 0
+    -- if 0 < 1
+  | "GFA" "GF" => 0 | "GFB" "GF" => 1 | "GFC" => 2
+  | "GG" =>
+    0 -- if 1 > 0
+  | "GH" =>
+    0
+    -- if 1 > 0
+  | "GI" =>
+    0
+    1
+    2
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GJ" "GJ"
+      "G" "J" => 0
+  | "GK" "GJ"
+      "G" "J" => 0
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GI" => 0 1 2
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GI" =>
+    0
+    1
+    2
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+
+
+;; Functions
+
+def $func(nat, nat) : nat*
+
+def $func(n, m) = 0
+def $func(n, m) = 0 -- if n < m
+def $func(n, m) = 0 -- if n > m -- if m < n
+def $func(n, m) = 0 1
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0 1
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0
+  1
+  2
+  -- if n < m
+  -- if m > n
+def $func(n, m) = 0 1 2
+  ----
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0
+  1
+  2
+  ----
+  -- if n < m
+  -- if m > n
+
+
+;; Rules
+
+relation Rel: argh borg -> curb dork hint(tabular)
+
+rule Rel/A:
+  argh borg -> curb dork
+
+rule Rel/B:
+  argh borg -> curb dork -- if 0 < 1
+
+rule Rel/C:
+  argh borg -> curb dork -- if 0 < 1 -- if 1 > 0
+
+rule Rel/D:
+  argh borg -> curb dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/E:
+  argh borg ->
+    curb dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/F:
+  argh borg -> curb
+    dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/G:
+  argh borg ->
+    curb
+    dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/DD:
+  argh borg -> curb dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/EE:
+  argh borg ->
+    curb dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/FF:
+  argh borg -> curb
+    dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/GG:
+  argh borg ->
+    curb
+    dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0

@@ -153,12 +153,35 @@ module Register = struct
 end
 
 
+module Modules = struct
+  let _register : Reference_interpreter.Ast.module_ Map.t ref = ref Map.empty
+  let _latest = ""
+
+  let add name module_ = _register := Map.add name module_ !_register
+
+  let add_with_var var module_ =
+    let open Reference_interpreter.Source in
+    add _latest module_;
+    match var with
+    | Some name -> add name.it module_
+    | _ -> ()
+
+  let find name = Map.find name !_register
+
+  let get_module_name var =
+    let open Reference_interpreter.Source in
+    match var with
+    | Some name -> name.it
+    | None -> _latest
+end
+
+
 (* AL Context *)
 
 module AlContext = struct
   type mode =
     (* Al context *)
-    | Al of string * value list * instr list * env
+    | Al of string * arg list * instr list * env
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -179,7 +202,7 @@ module AlContext = struct
     | Al (s, args, il, _) ->
       Printf.sprintf "Al %s (%s):%s"
         s
-        (args |> List.map string_of_value |> String.concat ", ")
+        (args |> List.map string_of_arg |> String.concat ", ")
         (string_of_instrs il)
     | Wasm i -> "Wasm " ^ string_of_int i
     | Enter (s, il, _) ->
@@ -269,10 +292,8 @@ module WasmContext = struct
     (* TODO: Generalize context *)
     let ctx_kind =
       match v with
-      | FrameV _ -> "Frame"
-      | LabelV _ -> "Label"
       | TextV s -> s
-      | _ -> "Unknown context"
+      | _ -> Printf.sprintf "Unknown_context: %s" (string_of_value v)
     in
     Printf.sprintf "(%s; %s; %s)"
       ctx_kind
@@ -292,25 +313,18 @@ module WasmContext = struct
     | None -> failwith "Wasm context stack underflow"
 
   let get_top_context () =
-    let ctx, vs, _ = get_context () in
-    if List.length vs = 0 then Some ctx 
-    else None
+    let ctx, _, _ = get_context () in
+    ctx
 
-  let get_current_frame () =
-    let match_frame = function
-      | FrameV _ -> true
+  let get_current_context typ =
+    let match_context = function
+      | CaseV (t, _) when t = typ -> true
       | _ -> false
-    in get_value_with_condition match_frame
-
-  let get_current_label () =
-    let match_label = function
-      | LabelV _ -> true
-      | _ -> false
-    in get_value_with_condition match_label
+    in get_value_with_condition match_context
 
   let get_module_instance () =
-    match get_current_frame () with
-    | FrameV (_, mm) -> mm
+    match get_current_context "FRAME_" with
+    | CaseV (_, [_; mm]) -> mm
     | _ -> failwith "Invalid frame"
 
   (* Value stack *)
@@ -366,9 +380,9 @@ let init algos =
     let pre_instr = (fun i ->
       let info = Info.make_info algo_name i in
       Info.add i.note info;
-      [i]) 
+      [i])
     in
-    let walk_instr walker instr = 
+    let walk_instr walker instr =
       let instr1 = pre_instr instr in
       List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
     in

@@ -5,7 +5,6 @@ open Al_util
 
 type config = expr * expr * instr list
 
-let atom_of_name name typ = El.Atom.Atom name $$ no_region % (El.Atom.info typ)
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
 
@@ -42,7 +41,7 @@ let return_instrs_of_instantiate config =
   let ty'' = Il.Ast.TupT (List.map (fun t -> no_name, t) [store.note; ty']) $ no_region in
   [
     enterI (
-      frameE (Some (numE Z.zero ~note:natT), frame) ~note:callframeT,
+      frameE (natE Z.zero ~note:natT, frame) ~note:evalctxT,
       catE (instrs, (listE [caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT] ~note:ty)) ~note:ty,
       vals
     );
@@ -62,7 +61,7 @@ let return_instrs_of_invoke config =
   [
     letI (arity,  len_expr);
     enterI (
-      frameE (Some (arity), frame) ~note:callframeT,
+      frameE (arity, frame) ~note:evalctxT,
       catE (instrs, listE [caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT] ~note:ty) ~note:ty,
       vals
     );

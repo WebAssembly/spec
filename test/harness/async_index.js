@@ -293,11 +293,25 @@ function assert_return(action, ...expected) {
                 // so there's no good way to test that it's a canonical NaN.
                 assert_true(Number.isNaN(actual[i]), `expected NaN, observed ${actual[i]}.`);
                 return;
+              case "ref.i31":
+                assert_true(typeof actual[i] === "number" && (actual[i] & 0x7fffffff) === actual[i], `expected Wasm i31, got ${actual[i]}`);
+                return;
+              case "ref.any":
+              case "ref.eq":
+              case "ref.struct":
+              case "ref.array":
+                // For now, JS can't distinguish exported Wasm GC values,
+                // so we only test for object.
+                assert_true(typeof actual[i] === "object", `expected Wasm GC object, got ${actual[i]}`);
+                return;
               case "ref.func":
                 assert_true(typeof actual[i] === "function", `expected Wasm function, got ${actual[i]}`);
                 return;
               case "ref.extern":
                 assert_true(actual[i] !== null, `expected Wasm reference, got ${actual[i]}`);
+                return;
+              case "ref.null":
+                assert_true(actual[i] === null, `expected Wasm null reference, got ${actual[i]}`);
                 return;
               default:
                 assert_equals(actual[i], expected[i], loc);

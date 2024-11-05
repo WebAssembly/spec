@@ -25,7 +25,9 @@ sig
 
   val index_of : 'a -> 'a list -> int option
   val index_where : ('a -> bool) -> 'a list -> int option
-  val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
+
+  val map3 : ('a -> 'b -> 'c -> 'd) -> 'a list -> 'b list -> 'c list -> 'd list
+  val map_pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module List32 :
@@ -79,6 +81,20 @@ module Int :
 sig
   val log2 : int -> int
   val is_power_of_two : int -> bool
+end
+
+module Int32 :
+sig
+  val log2 : int32 -> int32
+  val is_power_of_two : int32 -> bool
+end
+
+module Int64 :
+sig
+  val log2 : int64 -> int64
+  val log2_unsigned : int64 -> int64
+  val is_power_of_two : int64 -> bool
+  val is_power_of_two_unsigned : int64 -> bool
 end
 
 module Char :

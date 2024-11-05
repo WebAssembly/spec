@@ -27,9 +27,15 @@ def $inst_memtype(moduleinst, mt) = $subst_all_memtype(mt, dt*)
 ;; Auxiliary definitions on Values
 ;;
 
+;; Constants
+
+def $Ki : nat hint(macro none)
+def $Ki = 1024
+
+
 ;; Default values
 
-def $default_(valtype) : val?
+;;def $default_(valtype) : val?  ;; forward-declared in typing
 
 def $default_(Inn) = (CONST Inn 0)
 def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
@@ -50,7 +56,7 @@ def $unpackfield_(valtype, eps, val) = val
 def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $extend__($psize(packtype), 32, sx, i)
 
 
-;; Projections
+;; Address filtering
 
 def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxa")
 def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxa")
@@ -83,7 +89,7 @@ def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 ;; Auxiliary definitions on State
 ;;
 
-;; Short-hands
+;; Access
 
 def $store(state) : store             hint(show %.STORE) hint(macro "Z%")
 def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")

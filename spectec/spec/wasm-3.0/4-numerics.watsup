@@ -1,0 +1,777 @@
+;;
+;; Relaxed Behaviour
+;;
+
+syntax relaxed2 = 0 | 1
+syntax relaxed4 = 0 | 1 | 2 | 3
+
+def $relaxed2(relaxed2, syntax X, X, X) : X       hint(show $relaxed(%1)#`[%3,%4])
+def $relaxed4(relaxed4, syntax X, X, X, X, X) : X hint(show $relaxed(%1)#`[%3,%4,%5,%6])
+
+def $relaxed2(i, syntax X, X_1, X_2) = (X_1 X_2)[i]  -- if $ND
+def $relaxed2(i, syntax X, X_1, X_2) = (X_1 X_2)[0]  -- otherwise
+
+def $relaxed4(i, syntax X, X_1, X_2, X_3, X_4) = (X_1 X_2 X_3 X_4)[i]  -- if $ND
+def $relaxed4(i, syntax X, X_1, X_2, X_3, X_4) = (X_1 X_2 X_3 X_4)[0]  -- otherwise
+
+
+def $R_fmadd : relaxed2
+def $R_fmin : relaxed4
+def $R_fmax : relaxed4
+def $R_idot : relaxed2
+def $R_iq15mulr : relaxed2
+def $R_trunc_u : relaxed4
+def $R_trunc_s : relaxed2
+def $R_swizzle : relaxed2
+def $R_laneselect : relaxed2
+
+
+;;
+;; Scalar Numerics
+;;
+
+;; Conversions
+
+def $s33_to_u32(s33) : u32  hint(show %)
+
+
+;; Representation
+
+def $ibits_(N, iN(N)) : bit*                         hint(show $bits_($IN(%),%))
+def $fbits_(N, fN(N)) : bit*                         hint(show $bits_($FN(%),%))
+def $ibytes_(N, iN(N)) : byte*                       hint(show $bytes_($IN(%),%))
+def $fbytes_(N, fN(N)) : byte*                       hint(show $bytes_($FN(%),%))
+def $nbytes_(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%))
+def $vbytes_(vectype, vec_(vectype)) : byte*         hint(show $bytes_(%,%))
+def $zbytes_(storagetype, lit_(storagetype)) : byte* hint(show $bytes_(%,%))
+def $cbytes_(Cnn, lit_(Cnn)) : byte*                 hint(show $bytes_(%,%))
+
+
+;; TODO(3, rossberg): implement numerics internally
+
+def $invibytes_(N, byte*) : iN(N) hint(show $bytes_($IN(%))^(-1)#((%)))
+def $invfbytes_(N, byte*) : fN(N) hint(show $bytes_($FN(%))^(-1)#((%)))
+
+def $invibytes_(N, b*) = n  -- if $ibytes_(N, n) = b*
+def $invfbytes_(N, b*) = p  -- if $fbytes_(N, p) = b*
+
+
+;; Signed numbers
+
+def $signed_(N, nat) : int
+def $signed_(N, i) = i                  -- if $(i < 2^(N-1))
+def $signed_(N, i) = $(i - 2^N)         -- if $(2^(N-1) <= i < 2^N)
+
+def $invsigned_(N, int) : nat           hint(show $signed_(%)^(-1)#((%)))
+def $invsigned_(N, i) = j               -- if $signed_(N, j) = i
+
+def $sx(storagetype) : sx?  hint(show $sx(%))
+def $sx(consttype) = eps
+def $sx(packtype) = S
+
+
+;; Construction
+
+def $zero(lanetype) : lane_(lanetype) hint(show 0)
+def $zero(Jnn) = 0
+def $zero(Fnn) = $fzero($size(Fnn))
+
+def $bool(bool) : nat
+def $bool(false) = 0
+def $bool(true) = 1
+
+def $int(rat) : int
+;;def $int(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+
+
+;; Saturation
+
+def $sat_u_(N, int) : nat           hint(show $sat__u_(%,%))
+def $sat_u_(N, i) = 0               -- if i < 0
+def $sat_u_(N, i) = $(2^N - 1)      -- if i > $(2^N - 1)
+def $sat_u_(N, i) = i               -- otherwise
+
+def $sat_s_(N, int) : int           hint(show $sat__s_(%,%))
+def $sat_s_(N, i) = $(-2^(N-1))     -- if i < $(-2^(N-1))
+def $sat_s_(N, i) = $(2^(N-1) - 1)  -- if i > $(2^(N-1) - 1)
+def $sat_s_(N, i) = i               -- otherwise
+
+
+;; Integer operations
+
+def $ineg_(N, iN(N)) : iN(N)
+def $iabs_(N, iN(N)) : iN(N)
+def $iclz_(N, iN(N)) : iN(N)
+def $ictz_(N, iN(N)) : iN(N)
+def $ipopcnt_(N, iN(N)) : iN(N)
+def $iextend_(N, M, sx, iN(N)) : iN(N)          hint(show $iextend_((%,%))^(%)#((%)))
+
+def $iadd_(N, iN(N), iN(N)) : iN(N)
+def $isub_(N, iN(N), iN(N)) : iN(N)
+def $imul_(N, iN(N), iN(N)) : iN(N)
+def $idiv_(N, sx, iN(N), iN(N)) : iN(N)?        hint(show $idiv_(%)^(%)#((%,%)))
+def $irem_(N, sx, iN(N), iN(N)) : iN(N)?        hint(show $irem_(%)^(%)#((%,%)))
+def $imin_(N, sx, iN(N), iN(N)) : iN(N)         hint(show $imin_(%)^(%)%((%,%)))
+def $imax_(N, sx, iN(N), iN(N)) : iN(N)         hint(show $imax_(%)^(%)%((%,%)))
+def $iadd_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $iadd__sat_(%)^(%)#((%,%)))
+def $isub_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $isub__sat_(%)^(%)#((%,%)))
+def $iq15mulr_sat_(N, sx, iN(N), iN(N)) : iN(N) hint(show $iq15mulr__sat_(%)^(%)#((%,%)))
+def $irelaxed_q15mulr_(N, sx, iN(N), iN(N)) : iN(N)* hint(show $relaxed__iq15mulr_(%)^(%)#((%,%)))
+def $iavgr_(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr_(%)^(%)#((%,%)))
+
+def $inot_(N, iN(N)) : iN(N)
+def $iand_(N, iN(N), iN(N)) : iN(N)
+def $iandnot_(N, iN(N), iN(N)) : iN(N)
+def $ior_(N, iN(N), iN(N)) : iN(N)
+def $ixor_(N, iN(N), iN(N)) : iN(N)
+def $ishl_(N, iN(N), u32) : iN(N)
+def $ishr_(N, sx, iN(N), u32) : iN(N)    hint(show $ishr_(%)^(%)#((%,%)))
+def $irotl_(N, iN(N), iN(N)) : iN(N)
+def $irotr_(N, iN(N), iN(N)) : iN(N)
+
+def $ibitselect_(N, iN(N), iN(N), iN(N)) : iN(N)
+def $irelaxed_laneselect_(N, iN(N), iN(N), iN(N)) : iN(N)*
+
+def $ieqz_(N, iN(N)) : u32
+def $inez_(N, iN(N)) : u32
+
+def $ieq_(N, iN(N), iN(N)) : u32
+def $ine_(N, iN(N), iN(N)) : u32
+def $ilt_(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_(%)^(%)#((%,%)))
+def $igt_(N, sx, iN(N), iN(N)) : u32     hint(show $igt_(%)^(%)#((%,%)))
+def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile_(%)^(%)#((%,%)))
+def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige_(%)^(%)#((%,%)))
+
+
+;; TODO(3, rossberg): implement numerics internally
+
+;;def $ineg_(N, i_1) = $((2^N - i_1) \ 2^N)
+def $ineg_(N, i_1) = $invsigned_(N, $(- $signed_(N, i_1)))
+
+def $iabs_(N, i_1) = i_1             -- if $signed_(N, i_1) >= 0
+def $iabs_(N, i_1) = $ineg_(N, i_1)  -- otherwise
+
+;;def $iclz_(N, i_1) = k               -- if $ibits_(N, i_1) = (0)^k 1 d*
+
+;;def $ictz_(N, i_1) = k               -- if $ibits_(N, i_1) = d* 1 (0)^k
+
+;;def $ipopcnt_(N, i_1) = k            -- if $ibits_(N, i_1) = (0* 1)^k 0*
+
+def $iextend_(N, M, U, i) = $(i \ 2^M)
+def $iextend_(N, M, S, i) = $invsigned_(N, $signed_(M, $(i \ 2^M)))
+
+
+def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
+
+def $isub_(N, i_1, i_2) = $((2^N + i_1 - i_2) \ 2^N)
+
+def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
+
+;;def $idiv_(N, U, i_1, 0)   = eps
+;;def $idiv_(N, U, i_1, i_2) = $($int(i_1 / i_2))
+;;def $idiv_(N, S, i_1, 0)   = eps
+;;def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = 2^(N-1)
+;;def $idiv_(N, S, i_1, i_2) = $($invsigned_(N, $int($signed_(N, i_1) / $signed_(N, i_2))))
+
+;;def $irem_(N, U, i_1, 0)   = eps
+;;def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $int(i_1 / i_2))
+;;def $irem_(N, S, i_1, 0)   = eps
+;;def $irem_(N, S, i_1, i_2) = $($invsigned_(N, j_1 - j_2 * $int(j_1 / f_2)))
+;;                             -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
+
+;;def $imin_(N, U, i_1, i_2) = i_1  -- if i_1 <= i_2
+;;def $imin_(N, U, i_1, i_2) = i_2  -- otherwise
+;;def $imin_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) <= $signed_(N, i_2)
+;;def $imin_(N, S, i_1, i_2) = i_2  -- otherwise
+
+;;def $imax_(N, U, i_1, i_2) = i_1  -- if i_1 >= i_2
+;;def $imax_(N, U, i_1, i_2) = i_2  -- otherwise
+;;def $imax_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) >= $signed_(N, i_2)
+;;def $imax_(N, S, i_1, i_2) = i_2  -- otherwise
+
+def $iadd_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 + i_2))
+def $iadd_sat_(N, S, i_1, i_2) = $invsigned_(N, $sat_s_(N, $($signed_(N, i_1) + $signed_(N, i_2))))
+
+def $isub_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 - i_2))
+def $isub_sat_(N, S, i_1, i_2) = $invsigned_(N, $sat_s_(N, $($signed_(N, i_1) - $signed_(N, i_2))))
+
+
+def $ieqz_(N, i_1) = $bool(i_1 = 0)
+
+def $inez_(N, i_1) = $bool(i_1 =/= 0)
+
+
+def $ieq_(N, i_1, i_2) = $bool(i_1 = i_2)
+
+def $ine_(N, i_1, i_2) = $bool(i_1 =/= i_2)
+
+def $ilt_(N, U, i_1, i_2) = $bool(i_1 < i_2)
+def $ilt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) < $signed_(N, i_2))
+
+def $igt_(N, U, i_1, i_2) = $bool(i_1 > i_2)
+def $igt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) > $signed_(N, i_2))
+
+def $ile_(N, U, i_1, i_2) = $bool(i_1 <= i_2)
+def $ile_(N, S, i_1, i_2) = $bool($signed_(N, i_1) <= $signed_(N, i_2))
+
+def $ige_(N, U, i_1, i_2) = $bool(i_1 >= i_2)
+def $ige_(N, S, i_1, i_2) = $bool($signed_(N, i_1) >= $signed_(N, i_2))
+
+
+;; Floating-point operations
+
+def $fabs_(N, fN(N)) : fN(N)*
+def $fneg_(N, fN(N)) : fN(N)*
+def $fsqrt_(N, fN(N)) : fN(N)*
+def $fceil_(N, fN(N)) : fN(N)*
+def $ffloor_(N, fN(N)) : fN(N)*
+def $ftrunc_(N, fN(N)) : fN(N)*
+def $fnearest_(N, fN(N)) : fN(N)*
+
+def $fadd_(N, fN(N), fN(N)) : fN(N)*
+def $fsub_(N, fN(N), fN(N)) : fN(N)*
+def $fmul_(N, fN(N), fN(N)) : fN(N)*
+def $fdiv_(N, fN(N), fN(N)) : fN(N)*
+def $fmin_(N, fN(N), fN(N)) : fN(N)*
+def $fmax_(N, fN(N), fN(N)) : fN(N)*
+def $fpmin_(N, fN(N), fN(N)) : fN(N)*
+def $fpmax_(N, fN(N), fN(N)) : fN(N)*
+def $frelaxed_min_(N, fN(N), fN(N)) : fN(N)*    hint(show $frelaxed__min_(%,%,%))
+def $frelaxed_max_(N, fN(N), fN(N)) : fN(N)*    hint(show $frelaxed__max_(%,%,%))
+def $fcopysign_(N, fN(N), fN(N)) : fN(N)*
+
+def $feq_(N, fN(N), fN(N)) : u32
+def $fne_(N, fN(N), fN(N)) : u32
+def $flt_(N, fN(N), fN(N)) : u32
+def $fgt_(N, fN(N), fN(N)) : u32
+def $fle_(N, fN(N), fN(N)) : u32
+def $fge_(N, fN(N), fN(N)) : u32
+
+def $frelaxed_madd_(N, fN(N), fN(N), fN(N)) : fN(N)*    hint(show $frelaxed__madd_(%,%,%))
+def $frelaxed_nmadd_(N, fN(N), fN(N), fN(N)) : fN(N)*   hint(show $frelaxed__nmadd_(%,%,%))
+
+
+;; TODO(3, rossberg): implement numerics internally
+
+
+;; Conversions
+
+def $wrap__(M, N, iN(M)) : iN(N)
+def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend_((%,%))^(%)#((%)))
+def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc_((%,%))^(%)#((%)))
+def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat_((%,%))^(%)#((%)))
+def $relaxed_trunc__(M, N, sx, fN(M)) : iN(N)?       hint(show $relaxed__trunc_((%,%))^(%)#((%)))
+def $demote__(M, N, fN(M)) : fN(N)*
+def $promote__(M, N, fN(M)) : fN(N)*
+def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert_((%,%))^(%)#((%)))
+def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow_((%,%))^(%)#(%))
+
+def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
+
+
+;; TODO(3, rossberg): implement numerics internally
+
+
+;; Packed numbers
+
+def $lpacknum_(lanetype, num_($lunpack(lanetype))) : lane_(lanetype)
+    hint(show $pack_(%,%)) hint(macro "packnum")
+def $lpacknum_(numtype, c) = c
+def $lpacknum_(packtype, c) = $wrap__($size($lunpack(packtype)), $psize(packtype), c)
+
+def $lunpacknum_(lanetype, lane_(lanetype)) : num_($lunpack(lanetype))
+    hint(show $unpack_(%,%)) hint(macro "unpacknum")
+def $lunpacknum_(numtype, c) = c
+def $lunpacknum_(packtype, c) = $extend__($psize(packtype), $size($lunpack(packtype)), U, c)
+
+def $cpacknum_(storagetype, lit_($cunpack(storagetype))) : lit_(storagetype)
+    hint(show $pack_(%,%)) hint(macro "packnum")
+def $cpacknum_(consttype, c) = c
+def $cpacknum_(packtype, c) = $wrap__($size($lunpack(packtype)), $psize(packtype), c)
+
+def $cunpacknum_(storagetype, lit_(storagetype)) : lit_($cunpack(storagetype))
+    hint(show $unpack_(%,%)) hint(macro "unpacknum")
+def $cunpacknum_(consttype, c) = c
+def $cunpacknum_(packtype, c) = $extend__($psize(packtype), $size($lunpack(packtype)), U, c)
+
+
+;; Dispatch for scalar operators
+
+def $unop_(numtype, unop_(numtype), num_(numtype)) : num_(numtype)*
+    hint(show %2#$_(%1,%3))
+def $binop_(numtype, binop_(numtype), num_(numtype), num_(numtype)) : num_(numtype)*
+    hint(show %2#$_(%1,%3, %4))
+def $testop_(numtype, testop_(numtype), num_(numtype)) : u32
+    hint(show %2#$_(%1,%3))
+def $relop_(numtype, relop_(numtype), num_(numtype), num_(numtype)) : u32
+    hint(show %2#$_(%1,%3, %4))
+def $cvtop__(numtype_1, numtype_2, cvtop__(numtype_1, numtype_2), num_(numtype_1)) : num_(numtype_2)*
+    hint(show %3#$__(%1,%2,%4))
+
+def $unop_(Inn, CLZ, i) = $iclz_($sizenn(Inn), i)
+def $unop_(Inn, CTZ, i) = $ictz_($sizenn(Inn), i)
+def $unop_(Inn, POPCNT, i) = $ipopcnt_($sizenn(Inn), i)
+def $unop_(Inn, EXTEND M, i) = $iextend_($sizenn(Inn), M, S, i)
+
+def $unop_(Fnn, ABS, f) = $fabs_($sizenn(Fnn), f)
+def $unop_(Fnn, NEG, f) = $fneg_($sizenn(Fnn), f)
+def $unop_(Fnn, SQRT, f) = $fsqrt_($sizenn(Fnn), f)
+def $unop_(Fnn, CEIL, f) = $fceil_($sizenn(Fnn), f)
+def $unop_(Fnn, FLOOR, f) = $ffloor_($sizenn(Fnn), f)
+def $unop_(Fnn, TRUNC, f) = $ftrunc_($sizenn(Fnn), f)
+def $unop_(Fnn, NEAREST, f) = $fnearest_($sizenn(Fnn), f)
+
+def $binop_(Inn, ADD, i_1, i_2) = $iadd_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, SUB, i_1, i_2) = $isub_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, MUL, i_1, i_2) = $imul_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, DIV sx, i_1, i_2) = $list_(num_(Inn), $idiv_($sizenn(Inn), sx, i_1, i_2))
+def $binop_(Inn, REM sx, i_1, i_2) = $list_(num_(Inn), $irem_($sizenn(Inn), sx, i_1, i_2))
+def $binop_(Inn, AND, i_1, i_2) = $iand_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, OR, i_1, i_2) = $ior_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, XOR, i_1, i_2) = $ixor_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, SHL, i_1, i_2) = $ishl_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, SHR sx, i_1, i_2) = $ishr_($sizenn(Inn), sx, i_1, i_2)
+def $binop_(Inn, ROTL, i_1, i_2) = $irotl_($sizenn(Inn), i_1, i_2)
+def $binop_(Inn, ROTR, i_1, i_2) = $irotr_($sizenn(Inn), i_1, i_2)
+
+def $binop_(Fnn, ADD, f_1, f_2) = $fadd_($sizenn(Fnn), f_1, f_2)
+def $binop_(Fnn, SUB, f_1, f_2) = $fsub_($sizenn(Fnn), f_1, f_2)
+def $binop_(Fnn, MUL, f_1, f_2) = $fmul_($sizenn(Fnn), f_1, f_2)
+def $binop_(Fnn, DIV, f_1, f_2) = $fdiv_($sizenn(Fnn), f_1, f_2)
+def $binop_(Fnn, MIN, f_1, f_2) = $fmin_($sizenn(Fnn), f_1, f_2)
+def $binop_(Fnn, MAX, f_1, f_2) = $fmax_($sizenn(Fnn), f_1, f_2)
+def $binop_(Fnn, COPYSIGN, f_1, f_2) = $fcopysign_($sizenn(Fnn), f_1, f_2)
+
+def $testop_(Inn, EQZ, i) = $ieqz_($sizenn(Inn), i)
+
+def $relop_(Inn, EQ, i_1, i_2) = $ieq_($sizenn(Inn), i_1, i_2)
+def $relop_(Inn, NE, i_1, i_2) = $ine_($sizenn(Inn), i_1, i_2)
+def $relop_(Inn, LT sx, i_1, i_2) = $ilt_($sizenn(Inn), sx, i_1, i_2)
+def $relop_(Inn, GT sx, i_1, i_2) = $igt_($sizenn(Inn), sx, i_1, i_2)
+def $relop_(Inn, LE sx, i_1, i_2) = $ile_($sizenn(Inn), sx, i_1, i_2)
+def $relop_(Inn, GE sx, i_1, i_2) = $ige_($sizenn(Inn), sx, i_1, i_2)
+
+def $relop_(Fnn, EQ, f_1, f_2) = $feq_($sizenn(Fnn), f_1, f_2)
+def $relop_(Fnn, NE, f_1, f_2) = $fne_($sizenn(Fnn), f_1, f_2)
+def $relop_(Fnn, LT, f_1, f_2) = $flt_($sizenn(Fnn), f_1, f_2)
+def $relop_(Fnn, GT, f_1, f_2) = $fgt_($sizenn(Fnn), f_1, f_2)
+def $relop_(Fnn, LE, f_1, f_2) = $fle_($sizenn(Fnn), f_1, f_2)
+def $relop_(Fnn, GE, f_1, f_2) = $fge_($sizenn(Fnn), f_1, f_2)
+
+def $cvtop__(Inn_1, Inn_2, EXTEND sx, i_1) =
+  $extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, i_1)
+def $cvtop__(Inn_1, Inn_2, WRAP, i_1) =
+  $wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), i_1)
+def $cvtop__(Fnn_1, Inn_2, TRUNC sx, f_1) =
+  $list_(num_(Inn_2), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1))
+def $cvtop__(Fnn_1, Inn_2, TRUNC_SAT sx, f_1) =
+  $list_(num_(Inn_2), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1))
+def $cvtop__(Inn_1, Fnn_2, CONVERT sx, i_1) =
+  $convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, i_1)
+def $cvtop__(Fnn_1, Fnn_2, PROMOTE, f_1) =
+  $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), f_1)
+def $cvtop__(Fnn_1, Fnn_2, DEMOTE, f_1) =
+  $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), f_1)
+def $cvtop__(Inn_1, Fnn_2, REINTERPRET, i_1) =
+  $reinterpret__(Inn_1, Fnn_2, i_1) -- if $size(Inn_1) = $size(Fnn_2)  ;; TODO(3, rossberg): make implicit
+def $cvtop__(Fnn_1, Inn_2, REINTERPRET, f_1) =
+  $reinterpret__(Fnn_1, Inn_2, f_1) -- if $size(Fnn_1) = $size(Inn_2)  ;; TODO(3, rossberg): make implicit
+
+
+;; Vectors
+
+;; TODO(4, rossberg): avoid hardcoding v128
+
+;; Lanes
+
+def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
+
+def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
+    hint(show $lanes_(%)^(-1)#((%)))
+def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
+
+;; TODO(3, rossberg): somehow enable merging cases
+def $half__(shape_1, shape_2, half__(shape_1, shape_2), nat, nat) : nat hint(show $half(%3,%4,%5))
+def $half__(Jnn_1 X M_1, Jnn_2 X M_2, LOW, i, j) = i
+def $half__(Jnn_1 X M_1, Jnn_2 X M_2, HIGH, i, j) = j
+def $half__(Lnn_1 X M_1, Fnn_2 X M_2, LOW, i, j) = i
+
+
+def $iswizzle_lane_(N, iN(N)*, iN(N)) : iN(N)
+def $irelaxed_swizzle_lane_(N, iN(N)*, iN(N)) : iN(N)
+
+def $iswizzle_lane_(N, c*, i) = c*[i]          -- if i < |c*|
+def $iswizzle_lane_(N, c*, i) = 0              -- otherwise
+
+def $irelaxed_swizzle_lane_(N, c*, i) = c*[i]  -- if i < |c*|
+def $irelaxed_swizzle_lane_(N, c*, i) = 0      -- if $signed_(N, i) < 0
+def $irelaxed_swizzle_lane_(N, c*, i) = $relaxed2($R_swizzle, iN(N), 0, c*[i \ |c*|])
+                                               -- otherwise
+
+
+;; Lanewise operations
+
+def $ivunop_(shape, def $f_(N, iN(N)) : iN(N), vec_(V128)) : vec_(V128)*
+def $fvunop_(shape, def $f_(N, fN(N)) : fN(N)*, vec_(V128)) : vec_(V128)*
+
+def $ivbinop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)*
+def $ivbinopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), vec_(V128)) : vec_(V128)*
+def $ivbinopsxnd_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N)*, sx, vec_(V128), vec_(V128)) : vec_(V128)*
+def $fvbinop_(shape, def $f_(N, fN(N), fN(N)) : fN(N)*, vec_(V128), vec_(V128)) : vec_(V128)*
+
+def $ivternopnd_(shape, def $f_(N, iN(N), iN(N), iN(N)) : iN(N)*, vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
+def $fvternop_(shape, def $f_(N, fN(N), fN(N), fN(N)) : fN(N)*, vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
+
+def $ivtestop_(shape, def $f_(N, iN(N)) : u32, vec_(V128)) : u32
+def $fvtestop_(shape, def $f_(N, fN(N)) : u32, vec_(V128)) : u32
+
+def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
+def $ivrelopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : u32, sx, vec_(V128), vec_(V128)) : vec_(V128)
+def $fvrelop_(shape, def $f_(N, fN(N), fN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
+
+def $ivshiftop_(shape, def $f_(N, iN(N), u32) : iN(N), vec_(V128), u32) : vec_(V128)
+def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), u32) : iN(N), sx, vec_(V128), u32) : vec_(V128)
+
+def $ivbitmaskop_(shape, vec_(V128)) : u32
+def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)
+def $ivshufflop_(shape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
+
+
+def $ivunop_(Jnn X M, def $f_, v_1) = $invlanes_(Jnn X M, c*)
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c* = $f_($lsizenn(Jnn), c_1)*
+
+def $fvunop_(Fnn X M, def $f_, v_1) = $invlanes_(Fnn X M, c*)*
+    -- if c_1* = $lanes_(Fnn X M, v_1)
+    -- if c** = $setproduct_(lane_(Fnn), $f_($sizenn(Fnn), c_1)*)
+
+
+def $ivbinop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c_2* = $lanes_(Jnn X M, v_2)
+    -- if c* = $f_($lsizenn(Jnn), c_1, c_2)*
+
+def $ivbinopsx_(Jnn X M, def $f_, sx, v_1, v_2) = $invlanes_(Jnn X M, c*)
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c_2* = $lanes_(Jnn X M, v_2)
+    -- if c* = $f_($lsizenn(Jnn), sx, c_1, c_2)*
+
+def $ivbinopsxnd_(Jnn X M, def $f_, sx, v_1, v_2) = $invlanes_(Jnn X M, c*)*
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c_2* = $lanes_(Jnn X M, v_2)
+    -- if c** = $setproduct_(lane_(Jnn), $f_($lsizenn(Jnn), sx, c_1, c_2)*)
+
+def $fvbinop_(Fnn X M, def $f_, v_1, v_2) = $invlanes_(Fnn X M, c*)*
+    -- if c_1* = $lanes_(Fnn X M, v_1)
+    -- if c_2* = $lanes_(Fnn X M, v_2)
+    -- if c** = $setproduct_(lane_(Fnn), $f_($sizenn(Fnn), c_1, c_2)*)
+
+
+def $ivternopnd_(Jnn X M, def $f_, v_1, v_2, v_3) = $invlanes_(Jnn X M, c*)*
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c_2* = $lanes_(Jnn X M, v_2)
+    -- if c_3* = $lanes_(Jnn X M, v_3)
+    -- if c** = $setproduct_(lane_(Jnn), $f_($lsizenn(Jnn), c_1, c_2, c_3)*)
+
+def $fvternop_(Fnn X M, def $f_, v_1, v_2, v_3) = $invlanes_(Fnn X M, c*)*
+    -- if c_1* = $lanes_(Fnn X M, v_1)
+    -- if c_2* = $lanes_(Fnn X M, v_2)
+    -- if c_3* = $lanes_(Fnn X M, v_3)
+    -- if c** = $setproduct_(lane_(Fnn), $f_($sizenn(Fnn), c_1, c_2, c_3)*)
+
+
+def $ivtestop_(Jnn X M, def $f_, v_1) = $prod(c*)
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c* = $f_($lsizenn(Jnn), c_1)*
+
+def $fvtestop_(Fnn X M, def $f_, v_1) = $prod(c*)
+    -- if c_1* = $lanes_(Fnn X M, v_1)
+    -- if c* = $f_($sizenn(Fnn), c_1)*
+
+
+def $ivrelop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c_2* = $lanes_(Jnn X M, v_2)
+    -- if c* = $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), c_1, c_2))*
+
+def $ivrelopsx_(Jnn X M, def $f_, sx, v_1, v_2) = $invlanes_(Jnn X M, c*)
+    -- if c_1* = $lanes_(Jnn X M, v_1)
+    -- if c_2* = $lanes_(Jnn X M, v_2)
+    -- if c* = $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), sx, c_1, c_2))*
+
+def $fvrelop_(Fnn X M, def $f_, v_1, v_2) = $invlanes_(Inn X M, c*)
+    -- if c_1* = $lanes_(Fnn X M, v_1)
+    -- if c_2* = $lanes_(Fnn X M, v_2)
+    -- if c* = $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*
+    -- if $size(Inn) = $size(Fnn)  ;; TODO(3, rossberg): make implicit
+
+
+def $ivshiftop_(Jnn X M, def $f_, v_1, i) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c* = $f_($lsizenn(Jnn), c_1, i)*
+
+def $ivshiftopsx_(Jnn X M, def $f_, sx, v_1, i) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c* = $f_($lsizenn(Jnn), sx, c_1, i)*
+
+
+def $ivbitmaskop_(Jnn X M, v_1) = c
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if $ibits_(32, c) = $ilt_($lsize(Jnn), S, c_1, 0)*
+
+
+def $ivswizzlop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c_2* = $lanes_(Jnn X M, v_2)
+  -- if c* = $f_($lsizenn(Jnn), c_1*, c_2)*
+
+
+def $ivshufflop_(Jnn X M, i*, v_1, v_2) = $invlanes_(Jnn X M, c*)
+  -- if c_1* = $lanes_(Jnn X M, v_1)
+  -- if c_2* = $lanes_(Jnn X M, v_2)
+  -- if c* = ((c_1* ++ c_2*)[i])*
+
+
+;; Dispatch for vector operators
+
+def $vvunop_(vectype, vvunop, vec_(vectype)) : vec_(vectype)*
+    hint(show %2#$_(%1,%3))
+def $vvbinop_(vectype, vvbinop, vec_(vectype), vec_(vectype)) : vec_(vectype)*
+    hint(show %2#$_(%1,%3,%4))
+def $vvternop_(vectype, vvternop, vec_(vectype), vec_(vectype), vec_(vectype)) : vec_(vectype)*
+    hint(show %2#$_(%1,%3,%4,%5))
+
+def $vunop_(shape, vunop_(shape), vec_(V128)) : vec_(V128)*
+    hint(show %2#$_(%1,%3))
+def $vbinop_(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
+    hint(show %2#$_(%1,%3,%4))
+def $vternop_(shape, vternop_(shape), vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)*
+    hint(show %2#$_(%1,%3,%4,%5))
+def $vtestop_(shape, vtestop_(shape), vec_(V128)) : u32
+    hint(show %2#$_(%1,%3))
+def $vrelop_(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %2#$_(%1,%3,%4))
+
+def $lcvtop__(shape_1, shape_2, vcvtop__(shape_1, shape_2), lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
+    hint(show %3#$__(%1,%2)^(%4)#((%5)))
+def $vcvtop__(shape_1, shape_2, vcvtop__(shape_1, shape_2), half__(shape_1, shape_2)?, zero__(shape_1, shape_2)?, vec_(V128)) : vec_(V128)
+    hint(show %3#$__(%1,%2)^(%4)#((%5,%6,%7)))
+
+def $vshiftop_(ishape, vshiftop_(ishape), vec_(V128), u32) : vec_(V128)
+    hint(show %2#$_(%1)#(%3, %4))
+def $vbitmaskop_(ishape, vec_(V128)) : u32
+    hint(show VBITMASK#$_(%1,%2))
+def $vswizzlop_(bshape, vswizzlop_(bshape), vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %2#$_(%1,%3,%4))
+def $vshufflop_(bshape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show VSHUFFLE#$_(%1,%2,%3,%4))
+
+def $vnarrowop__(shape_1, shape_2, sx, vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show VNARROW#$__(%1,%2)^(%3)#((%4,%5)))
+
+def $vextunop__(ishape_1, ishape_2, vextunop__(ishape_1, ishape_2), vec_(V128)) : vec_(V128)
+    hint(show %3#$__(%1,%2,%4))
+def $vextbinop__(ishape_1, ishape_2, vextbinop__(ishape_1, ishape_2), vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %3#$__(%1,%2,%4,%5))
+def $vextternop__(ishape_1, ishape_2, vextternop__(ishape_1, ishape_2), vec_(V128), vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %3#$__(%1,%2,%4,%5,%6))
+
+
+def $vvunop_(Vnn, NOT, v) = $inot_($vsizenn(Vnn), v)
+
+def $vvbinop_(Vnn, AND, v_1, v_2) = $iand_($vsizenn(Vnn), v_1, v_2)
+def $vvbinop_(Vnn, ANDNOT, v_1, v_2) = $iandnot_($vsizenn(Vnn), v_1, v_2)
+def $vvbinop_(Vnn, OR, v_1, v_2) = $ior_($vsizenn(Vnn), v_1, v_2)
+def $vvbinop_(Vnn, XOR, v_1, v_2) = $ixor_($vsizenn(Vnn), v_1, v_2)
+
+def $vvternop_(Vnn, BITSELECT, v_1, v_2, v_3) = $ibitselect_($vsizenn(Vnn), v_1, v_2, v_3)
+
+def $vunop_(Fnn X M, ABS, v) = $fvunop_(Fnn X M, $fabs_, v)
+def $vunop_(Fnn X M, NEG, v) = $fvunop_(Fnn X M, $fneg_, v)
+def $vunop_(Fnn X M, SQRT, v) = $fvunop_(Fnn X M, $fsqrt_, v)
+def $vunop_(Fnn X M, CEIL, v) = $fvunop_(Fnn X M, $fceil_, v)
+def $vunop_(Fnn X M, FLOOR, v) = $fvunop_(Fnn X M, $ffloor_, v)
+def $vunop_(Fnn X M, TRUNC, v) = $fvunop_(Fnn X M, $ftrunc_, v)
+def $vunop_(Fnn X M, NEAREST, v) = $fvunop_(Fnn X M, $fnearest_, v)
+
+def $vunop_(Jnn X M, ABS, v) = $ivunop_(Jnn X M, $iabs_, v)
+def $vunop_(Jnn X M, NEG, v) = $ivunop_(Jnn X M, $ineg_, v)
+def $vunop_(Jnn X M, POPCNT, v) = $ivunop_(Jnn X M, $ipopcnt_, v)
+
+def $vbinop_(Jnn X M, ADD, v_1, v_2) = $ivbinop_(Jnn X M, $iadd_, v_1, v_2)
+def $vbinop_(Jnn X M, SUB, v_1, v_2) = $ivbinop_(Jnn X M, $isub_, v_1, v_2)
+def $vbinop_(Jnn X M, MUL, v_1, v_2) = $ivbinop_(Jnn X M, $imul_, v_1, v_2)
+def $vbinop_(Jnn X M, ADD_SAT sx, v_1, v_2) = $ivbinopsx_(Jnn X M, $iadd_sat_, sx, v_1, v_2)
+def $vbinop_(Jnn X M, SUB_SAT sx, v_1, v_2) = $ivbinopsx_(Jnn X M, $isub_sat_, sx, v_1, v_2)
+def $vbinop_(Jnn X M, MIN sx, v_1, v_2) = $ivbinopsx_(Jnn X M, $imin_, sx, v_1, v_2)
+def $vbinop_(Jnn X M, MAX sx, v_1, v_2) = $ivbinopsx_(Jnn X M, $imax_, sx, v_1, v_2)
+def $vbinop_(Jnn X M, AVGR U, v_1, v_2) = $ivbinopsx_(Jnn X M, $iavgr_, U, v_1, v_2)
+def $vbinop_(Jnn X M, Q15MULR_SAT S, v_1, v_2) = $ivbinopsx_(Jnn X M, $iq15mulr_sat_, S, v_1, v_2)
+def $vbinop_(Jnn X M, RELAXED_Q15MULR S, v_1, v_2) = $ivbinopsxnd_(Jnn X M, $irelaxed_q15mulr_, S, v_1, v_2)
+
+def $vbinop_(Fnn X M, ADD, v_1, v_2) = $fvbinop_(Fnn X M, $fadd_, v_1, v_2)
+def $vbinop_(Fnn X M, SUB, v_1, v_2) = $fvbinop_(Fnn X M, $fsub_, v_1, v_2)
+def $vbinop_(Fnn X M, MUL, v_1, v_2) = $fvbinop_(Fnn X M, $fmul_, v_1, v_2)
+def $vbinop_(Fnn X M, DIV, v_1, v_2) = $fvbinop_(Fnn X M, $fdiv_, v_1, v_2)
+def $vbinop_(Fnn X M, MIN, v_1, v_2) = $fvbinop_(Fnn X M, $fmin_, v_1, v_2)
+def $vbinop_(Fnn X M, MAX, v_1, v_2) = $fvbinop_(Fnn X M, $fmax_, v_1, v_2)
+def $vbinop_(Fnn X M, PMIN, v_1, v_2) = $fvbinop_(Fnn X M, $fpmin_, v_1, v_2)
+def $vbinop_(Fnn X M, PMAX, v_1, v_2) = $fvbinop_(Fnn X M, $fpmax_, v_1, v_2)
+def $vbinop_(Fnn X M, RELAXED_MIN, v_1, v_2) = $fvbinop_(Fnn X M, $frelaxed_min_, v_1, v_2)
+def $vbinop_(Fnn X M, RELAXED_MAX, v_1, v_2) = $fvbinop_(Fnn X M, $frelaxed_max_, v_1, v_2)
+
+def $vternop_(Jnn X M, RELAXED_LANESELECT, v_1, v_2, v_3) = $ivternopnd_(Jnn X M, $irelaxed_laneselect_, v_1, v_2, v_3)
+
+def $vternop_(Fnn X M, RELAXED_MADD, v_1, v_2, v_3) = $fvternop_(Fnn X M, $frelaxed_madd_, v_1, v_2, v_3)
+def $vternop_(Fnn X M, RELAXED_NMADD, v_1, v_2, v_3) = $fvternop_(Fnn X M, $frelaxed_nmadd_, v_1, v_2, v_3)
+
+def $vtestop_(Jnn X M, ALL_TRUE, v) = $ivtestop_(Jnn X M, $inez_, v)
+
+def $vrelop_(Jnn X M, EQ, v_1, v_2) = $ivrelop_(Jnn X M, $ieq_, v_1, v_2)
+def $vrelop_(Jnn X M, NE, v_1, v_2) = $ivrelop_(Jnn X M, $ine_, v_1, v_2)
+def $vrelop_(Jnn X M, LT sx, v_1, v_2) = $ivrelopsx_(Jnn X M, $ilt_, sx, v_1, v_2)
+def $vrelop_(Jnn X M, GT sx, v_1, v_2) = $ivrelopsx_(Jnn X M, $igt_, sx, v_1, v_2)
+def $vrelop_(Jnn X M, LE sx, v_1, v_2) = $ivrelopsx_(Jnn X M, $ile_, sx, v_1, v_2)
+def $vrelop_(Jnn X M, GE sx, v_1, v_2) = $ivrelopsx_(Jnn X M, $ige_, sx, v_1, v_2)
+
+def $vrelop_(Fnn X M, EQ, v_1, v_2) = $fvrelop_(Fnn X M, $feq_, v_1, v_2)
+def $vrelop_(Fnn X M, NE, v_1, v_2) = $fvrelop_(Fnn X M, $fne_, v_1, v_2)
+def $vrelop_(Fnn X M, LT, v_1, v_2) = $fvrelop_(Fnn X M, $flt_, v_1, v_2)
+def $vrelop_(Fnn X M, GT, v_1, v_2) = $fvrelop_(Fnn X M, $fgt_, v_1, v_2)
+def $vrelop_(Fnn X M, LE, v_1, v_2) = $fvrelop_(Fnn X M, $fle_, v_1, v_2)
+def $vrelop_(Fnn X M, GE, v_1, v_2) = $fvrelop_(Fnn X M, $fge_, v_1, v_2)
+
+def $vshiftop_(Jnn X M, SHL, v, i) = $ivshiftop_(Jnn X M, $ishl_, v, i)
+def $vshiftop_(Jnn X M, SHR sx, v, i) = $ivshiftopsx_(Jnn X M, $ishr_, sx, v, i)
+
+def $vbitmaskop_(Jnn X M, v) = $ivbitmaskop_(Jnn X M, v)
+
+def $vswizzlop_(I8 X M, SWIZZLE, v_1, v_2) = $ivswizzlop_(I8 X M, $iswizzle_lane_, v_1, v_2)
+def $vswizzlop_(I8 X M, RELAXED_SWIZZLE, v_1, v_2) = $ivswizzlop_(I8 X M, $irelaxed_swizzle_lane_, v_1, v_2)
+
+def $vshufflop_(I8 X M, i*, v_1, v_2) = $ivshufflop_(I8 X M, i*, v_1, v_2)
+
+def $lcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND sx, c_1) = c
+    -- if c = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)
+def $lcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, c_1) = c
+    -- if c = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1)
+def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, c_1) = $list_(lane_(Inn_2), c?)
+    -- if c? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
+def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx, c_1) = $list_(lane_(Inn_2), c?)
+    -- if c? = $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
+def $lcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, c_1) = c*
+    -- if c* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)
+def $lcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, c_1) = c*
+    -- if c* = $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)
+
+def $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, eps, eps, v_1) = v
+  -- if c_1* = $lanes_(Lnn_1 X M, v_1)
+  -- if c** = $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*)
+  -- if v <- $invlanes_(Lnn_2 X M, c*)*
+def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, half, eps, v_1) = v
+  -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
+  -- if c** = $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*)
+  -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
+def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, eps, zero, v_1) = v
+  -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)
+  -- if c** = $setproduct_(lane_(Lnn_2), ($lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* ++ $zero(Lnn_2)^M_1))
+  -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
+
+def $vnarrowop__(Jnn_1 X M_1, Jnn_2 X M_2, sx, v_1, v_2) = v
+  -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)
+  -- if c_2* = $lanes_(Jnn_1 X M_1, v_2)
+  -- if c'_1* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1)*
+  -- if c'_2* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2)*
+  -- if v = $invlanes_(Jnn_2 X M_2, c'_1* ++ c'_2*)
+
+(;
+;; TODO(2, rossberg): this is obsolete, clean up
+def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, c_1) = c
+  -- if ci* = $lanes_(Jnn_1 X M_1, c_1)
+  -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*
+  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
+
+def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTMUL sx half, c_1, c_2) = c
+  -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)[$half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2) : M_2]
+  -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)[$half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2) : M_2]
+  -- if c = $invlanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*)
+def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, c_1, c_2) = c
+  -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
+  -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
+  -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*
+  -- if ci'_2* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2)*
+  -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*
+  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
+def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, c_1, c_2) = c
+  -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
+  -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
+  -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*
+  -- if ci'_2* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), $relaxed2($R_idot, sx, S, U), ci_2)*
+  -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*
+  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_sat_($lsizenn2(Jnn_2), S, cj_1, cj_2)*)
+;)
+
+;; TODO(2, rossberg): move to lanewise section
+def $ivextunop__(shape_1, shape_2, def $f_(N, iN(N)*) : iN(N)*, sx, vec_(V128)) : vec_(V128)
+def $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, def $f_, sx, v_1) = $invlanes_(Jnn_2 X M_2, c*)
+  -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)
+  -- if c'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)*
+  -- if c* = $f_($lsizenn2(Jnn_2), c'_1*)
+
+def $ivextbinop__(shape_1, shape_2, def $f_(N, iN(N)*, iN(N)*) : iN(N)*, sx, sx, laneidx, laneidx, vec_(V128), vec_(V128)) : vec_(V128)
+def $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, def $f_, sx_1, sx_2, i, k, v_1, v_2) = $invlanes_(Jnn_2 X M_2, c*)
+  -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)[i : k]
+  -- if c_2* = $lanes_(Jnn_1 X M_1, v_2)[i : k]
+  -- if c'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_1, c_1)*
+  -- if c'_2* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_2, c_2)*
+  -- if c* = $f_($lsizenn2(Jnn_2), c'_1*, c'_2*)
+
+def $ivadd_pairwise_(N, iN(N)*) : iN(N)*  hint(show $ivadd__pairwise_(%,%))
+def $ivadd_pairwise_(N, i*) = $iadd_(N, j_1, j_2)*
+  -- if $concat_(N, (j_1 j_2)*) = i*
+
+def $ivmul_(N, iN(N)*, iN(N)*) : iN(N)*
+def $ivmul_(N, i_1*, i_2*) = $imul_(N, i_1, i_2)*
+
+def $ivdot_(N, iN(N)*, iN(N)*) : iN(N)*
+def $ivdot_(N, i_1*, i_2*) = $iadd_(N, j_1, j_2)*
+  -- if $concat_(iN(N), (j_1 j_2)*) = $imul_(N, i_1, i_2)*
+
+def $ivdot_sat_(N, iN(N)*, iN(N)*) : iN(N)*  hint(show $ivdot__sat_(%,%,%))
+def $ivdot_sat_(N, i_1*, i_2*) = $iadd_sat_(N, S, j_1, j_2)*
+  -- if $concat_(iN(N), (j_1 j_2)*) = $imul_(N, i_1, i_2)*
+
+def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, v_1) =
+    $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivadd_pairwise_, sx, v_1)
+
+def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTMUL sx half, v_1, v_2) =
+    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivmul_, sx, sx, i, M_2, v_1, v_2)
+    -- if i = $half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2)
+def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, v_1, v_2) =
+    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2)
+def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, v_1, v_2) =
+    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot, sx, S, U), 0, M_1, v_1, v_2)
+
+(;
+;; TODO(2, rossberg): this is obsolete, clean up
+def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
+  -- if $lsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
+  -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
+  -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
+  -- if ci_3* = $lanes_(Jnn_2 X M_2, c_3)
+  -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn(Jnn), S, ci_1)*
+  -- if ci'_2* = $extend__($lsizenn1(Jnn_1), $lsizenn(Jnn), $relaxed2($R_idot, sx, S, U), ci_2)*
+  -- if $concat_(iN($lsizenn(Jnn)), (cj_1 cj_2)*) = $imul_($lsizenn(Jnn), ci'_1, ci'_2)*
+  -- if $concat_(iN($lsizenn(Jnn)), (ck_1 ck_2)*) = $iadd_sat_($lsizenn(Jnn), S, cj_1, cj_2)*
+  -- if ck'_1* = $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_1)*
+  -- if ck'_2* = $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_2)*
+  -- if ck* = $iadd_($lsizenn2(Jnn_2), ck'_1, ck'_2)*
+  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), ck, ci_3)*)
+;)
+
+def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
+  -- if $lsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
+  -- if M = $(2*M_2)
+  -- if c' = $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOT S, c_1, c_2)
+  -- if c'' = $vextunop__(Jnn X M, Jnn_2 X M_2, EXTADD_PAIRWISE S, c')
+  -- if c <- $vbinop_(Jnn_2 X M_2, ADD, c'', c_3)

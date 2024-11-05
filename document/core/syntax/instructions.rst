@@ -100,24 +100,28 @@ For the other integer instructions, the use of two's complement for the signed i
 .. _syntax-vvtestop:
 .. _syntax-vtestop:
 .. _syntax-vrelop:
+.. _syntax-vswizzlop:
 .. _syntax-vshiftop:
 .. _syntax-vunop:
 .. _syntax-vbinop:
+.. _syntax-vternop:
 .. _syntax-vextunop:
 .. _syntax-vextbinop:
+.. _syntax-vextternop:
 .. _syntax-vcvtop:
 .. _syntax-instr-vec:
+.. _syntax-instr-vec-relaxed:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {lanetype dim shape ishape} half__ zero__ laneidx instr/vec}
+$${syntax: {lanetype dim shape ishape bshape} half__ zero__ laneidx instr/vec}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop__ vextbinop__ vcvtop__
+  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_ vextunop__ vextbinop__ vextternop__ vcvtop__
 }
 
 Vector instructions have a naming convention involving a *shape* prefix that
@@ -313,6 +317,7 @@ The ${:ELEM.DROP} instruction prevents further use of a passive element segment.
 .. _syntax-storen:
 .. _syntax-memarg:
 .. _syntax-loadop:
+.. _syntax-storeop:
 .. _syntax-vloadop:
 .. _syntax-lanewidth:
 .. _syntax-instr-memory:
@@ -322,7 +327,7 @@ Memory Instructions
 
 Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
-$${syntax: memarg loadop_ vloadop_ {instr/memory instr/data}}
+$${syntax: memarg loadop_ storeop_ vloadop_ {instr/memory instr/data}}
 
 Memory is accessed with ${:LOAD} and ${:STORE} instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory argument* ${:memarg} that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).

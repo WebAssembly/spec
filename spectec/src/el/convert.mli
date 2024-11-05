@@ -1,6 +1,9 @@
 open Ast
 
 val filter_nl : 'a nl_list -> 'a list
+val empty_nl_list : 'a nl_list -> bool
+val hd_nl_list : 'a nl_list -> 'a
+val last_nl_list : 'a nl_list -> 'a
 val filter_nl_list : ('a -> bool) -> 'a nl_list -> 'a nl_list
 val forall_nl_list : ('a -> bool) -> 'a nl_list -> bool
 val exists_nl_list : ('a -> bool) -> 'a nl_list -> bool

@@ -6,6 +6,9 @@ let error at msg = Error.error at "syntax" msg
 
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
+let empty_nl_list xs = filter_nl xs = []
+let hd_nl_list xs = List.hd (filter_nl xs)
+let last_nl_list xs = Lib.List.last (filter_nl xs)
 let forall_nl_list f xs = List.for_all f (filter_nl xs)
 let exists_nl_list f xs = List.exists f (filter_nl xs)
 let find_nl_list f xs = List.find_opt f (filter_nl xs)
@@ -15,7 +18,6 @@ let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
 let filter_nl_list f xs = List.filter (function Nl -> true | Elem x -> f x) xs
 let concat_map_nl_list f xs = List.concat_map (function Nl -> [Nl] | Elem x -> f x) xs
 let concat_map_filter_nl_list f xs = List.concat_map (function Nl -> [] | Elem x -> f x) xs
-
 
 let rec is_sub s i = i = String.length s || s.[i] = '_' && is_sub s (i + 1)
 
@@ -39,10 +41,10 @@ let arg_of_exp e =
 let typ_of_varid id =
     (match id.it with
     | "bool" -> BoolT
-    | "nat" -> NumT NatT
-    | "int" -> NumT IntT
-    | "rat" -> NumT RatT
-    | "real" -> NumT RealT
+    | "nat" -> NumT `NatT
+    | "int" -> NumT `IntT
+    | "rat" -> NumT `RatT
+    | "real" -> NumT `RealT
     | "text" -> TextT
     | _ -> VarT (id, [])
     ) $ id.at
@@ -51,10 +53,10 @@ let rec varid_of_typ t =
   (match t.it with
   | VarT (id, _) -> id.it
   | BoolT -> "bool"
-  | NumT NatT -> "nat"
-  | NumT IntT -> "int"
-  | NumT RatT -> "rat"
-  | NumT RealT -> "real"
+  | NumT `NatT -> "nat"
+  | NumT `IntT -> "int"
+  | NumT `RatT -> "rat"
+  | NumT `RealT -> "real"
   | TextT -> "text"
   | ParenT t1 -> (varid_of_typ t1).it
   | _ -> "_"
@@ -150,7 +152,7 @@ let rec sym_of_exp e =
   (match e.it with
   | VarE (id, args) -> VarG (id, args)
   | AtomE {it = Atom id; _} -> VarG (id $ e.at, [])  (* for uppercase grammar ids in show hints *)
-  | NatE (op, n) -> NatG (op, n)
+  | NumE (op, `Nat n) -> NumG (op, n)
   | TextE s -> TextG s
   | EpsE -> EpsG
   | SeqE es -> SeqG (List.map (fun e -> Elem (sym_of_exp e)) es)
@@ -167,7 +169,7 @@ let rec sym_of_exp e =
 let rec exp_of_sym g =
   (match g.it with
   | VarG (id, args) -> VarE (id, args)
-  | NatG (op, n) -> NatE (op, n)
+  | NumG (op, n) -> NumE (op, `Nat n)
   | TextG t -> TextE t
   | EpsG -> EpsE
   | SeqG gs -> SeqE (map_filter_nl_list exp_of_sym gs)

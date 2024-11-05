@@ -30,10 +30,17 @@ module Register : sig
   val get_module_name : Reference_interpreter.Script.var option -> string
 end
 
+module Modules : sig
+  val add : string -> Reference_interpreter.Ast.module_ -> unit
+  val add_with_var : Reference_interpreter.Script.var option -> Reference_interpreter.Ast.module_ -> unit
+  val find : string -> Reference_interpreter.Ast.module_
+  val get_module_name : Reference_interpreter.Script.var option -> string
+end
+
 module AlContext : sig
   type mode =
     (* Al context *)
-    | Al of string * value list * instr list * env
+    | Al of string * arg list * instr list * env
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -41,7 +48,7 @@ module AlContext : sig
     | Execute of value
     (* Return register *)
     | Return of value
-  val al : string * value list * instr list * env -> mode
+  val al : string * arg list * instr list * env -> mode
   val wasm : int -> mode
   val enter : string * instr list * env -> mode
   val execute : value -> mode
@@ -70,9 +77,8 @@ module WasmContext : sig
   val string_of_context : t -> string
   val string_of_context_stack : unit -> string
 
-  val get_top_context : unit -> value option
-  val get_current_frame : unit -> value
-  val get_current_label : unit -> value
+  val get_top_context : unit -> value
+  val get_current_context : id -> value
   val get_module_instance : unit -> value
 
   val get_value_stack : unit -> value list

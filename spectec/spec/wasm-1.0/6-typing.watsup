@@ -268,19 +268,43 @@ rule Instr_ok/memory.grow:
   C |- MEMORY.GROW : I32 -> I32
   -- if C.MEMS[0] = mt
 
+(;
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? memarg : I32 -> nt
+  C |- LOAD t (n sx)? memarg : I32 -> t
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
-  -- if n? = eps \/ nt = Inn
+  -- if $(2^(memarg.ALIGN) <= $size(t)/8)
+  -- if $(2^(memarg.ALIGN) <= n/8 < $size(t)/8)?
+  -- if n? = eps \/ t = Inn
+;)
 
-rule Instr_ok/store:
-  C |- STORE nt n? memarg : I32 nt -> eps
+rule Instr_ok/load-val:
+  C |- LOAD t memarg : I32 -> t
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
-  -- if n? = eps \/ nt = Inn
+  -- if $(2^(memarg.ALIGN) <= $size(t)/8)
+
+rule Instr_ok/load-pack:
+  C |- LOAD Inn (M sx) memarg : I32 -> Inn
+  -- if C.MEMS[0] = mt
+  -- if $(2^(memarg.ALIGN) <= M/8)
+
+(;
+rule Instr_ok/store:
+  C |- STORE t n? memarg : I32 t -> eps
+  -- if C.MEMS[0] = mt
+  -- if $(2^(memarg.ALIGN) <= $size(t)/8)
+  -- if $(2^(memarg.ALIGN) <= n/8 < $size(t)/8)?
+  -- if n? = eps \/ t = Inn
+;)
+
+rule Instr_ok/store-val:
+  C |- STORE t memarg : I32 t -> eps
+  -- if C.MEMS[0] = mt
+  -- if $(2^(memarg.ALIGN) <= $size(t)/8)
+
+rule Instr_ok/store-pack:
+  C |- STORE Inn M memarg : I32 Inn -> eps
+  -- if C.MEMS[0] = mt
+  -- if $(2^(memarg.ALIGN) <= M/8)
 
 
 ;;

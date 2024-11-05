@@ -15,7 +15,7 @@ syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
 syntax uN(N) hint(desc "unsigned integer") hint(show u#%) =
-  0 | ... | 2^N-1
+  0 | ... | $nat$(2^N-1)
 syntax sN(N) hint(desc "signed integer") hint(show s#%) =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
 syntax iN(N) hint(desc "integer") hint(show i#%) =
@@ -48,11 +48,12 @@ syntax fN(N) hint(desc "floating-point number") hint(show f#%) =
   | POS fNmag(N)  hint(show $(+%)) \
   | NEG fNmag(N)  hint(show $(-%))
 
-syntax fNmag(N) hint(desc "floating-point magnitude") hint(show f#%#mag) =
-  | NORM m n     hint(show $((1 + %*2^(-$M(N))) * 2^%))  -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) <= n <= 2^($E(N)-1)-1)
-  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^n))  -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) = n)
+syntax exp hint(show e) = int
+syntax fNmag(N) hint(desc "floating-point magnitude") hint(show fNmag) =
+  | NORM m exp   hint(show $((1 + %*2^(-$M(N))) * 2^%))   -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) <= exp <= 2^($E(N)-1)-1)
+  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^exp)) -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) = exp)
   | INF          hint(show infinity)
-  | NAN (m)      hint(show NAN#%)                        -- if $(1 <= m < 2^$M(N))
+  | NAN (m)      hint(show NAN#(%))                       -- if $(1 <= m < 2^$M(N))
 
 syntax f32 = fN(32)
 syntax f64 = fN(64)
@@ -147,6 +148,7 @@ syntax val_(Fnn) = fN($size(Fnn))
 ;; Operators
 
 syntax sx hint(desc "signedness") = U | S
+syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax unop_(valtype)
 syntax unop_(Inn) = CLZ | CTZ | POPCNT
@@ -175,9 +177,14 @@ syntax cvtop =
   | EXTEND sx | WRAP | CONVERT sx | TRUNC sx | PROMOTE | DEMOTE | REINTERPRET
 
 
+;; Memory operators
+
 syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 
 var ao : memarg
+
+syntax loadop_(valtype)
+syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $size(Inn)
 
 
 ;; Instructions
@@ -232,13 +239,10 @@ syntax instr/global hint(desc "global instruction") = ...
   | GLOBAL.SET globalidx
   | ...
 
-syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
-
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD valtype (sz _ sx)? memarg  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-    -- (if valtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | STORE valtype sz? memarg        hint(show %.STORE % %)   hint(show %.STORE#% % %)
-    -- (if valtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
+  | LOAD valtype loadop_(valtype)? memarg  hint(show %.LOAD % %) hint(show %.LOAD# ##% %)
+  | STORE valtype sz? memarg               hint(show %.STORE % %) hint(show %.STORE#% %)
+    -- (if valtype = Inn /\ sz < $size(Inn))?
   | MEMORY.SIZE
   | MEMORY.GROW
 

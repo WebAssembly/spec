@@ -2,12 +2,11 @@ open Util
 open Source
 open Il.Ast
 open Ast
+open Xl
 open Al_util
 open Print
 open Free
 
-
-module Atom = El.Atom
 module IlEval = Il.Eval
 
 (* Error *)
@@ -51,9 +50,13 @@ module Env = struct
     | TypA _ | DefA _ -> env
   let add_subst lhs rhs env =
     let open Eval in
-    get_subst lhs rhs Subst.empty
-    |> Subst.map Option.some
-    |> union (fun _ _ _ -> (* TODO *) assert (false)) env
+    match get_subst lhs rhs Subst.empty with
+    | None ->
+      IdSet.fold (fun id env -> add_bound_var id env) (Free.free_expr lhs) env
+    | Some subst ->
+      subst
+      |> Subst.map Option.some
+      |> union (fun _ _ _ -> (* TODO *) assert (false)) env
   let add id expr = add id (Some expr)
 end
 
@@ -172,7 +175,7 @@ and ground_typ_of (typ: typ) : typ =
     let typ' = IlEnv.find_var !il_env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
-  | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
+  | VarT (id, _) when id.it = "fN" -> NumT `RealT $ typ.at
   | VarT (id, args) ->
     get_deftyps id args
     |> unify_deftyps_opt
@@ -271,6 +274,11 @@ let check_context source typ =
   match typ.it with
   | VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_mismatch source typ (varT "context")
+
+let check_evalctx source typ =
+  match typ.it with
+  | VarT (id, []) when id.it = "evalctx" -> ()
+  | _ -> error_mismatch source typ (varT "evalctx")
 
 let check_field source source_typ expr_record typfield =
   let atom, (_, typ, _), _ = typfield in
@@ -412,7 +420,7 @@ let check_case source exprs typ =
   | _ -> error_case source typ
 
 let find_case source cases op =
-  match List.find_opt (fun (op', _, _) -> Il.Mixop.eq op' op) cases with
+  match List.find_opt (fun (op', _, _) -> Mixop.eq op' op) cases with
   | Some (_op, x, _hints) -> x
   | None -> error_valid "unknown case" source (string_of_mixop op)
 
@@ -468,34 +476,38 @@ and valid_expr env (expr: expr) : unit =
   | VarE id ->
     if not (Env.mem id env) then error expr.at ("free identifier " ^ id)
   | NumE _ -> check_num source expr.note;
-  | BoolE _ | TopFrameE | TopLabelE | TopHandlerE | ContextKindE _ -> check_bool source expr.note
-  | UnE (NotOp, expr') ->
+  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | ContextKindE _ ->
+    check_bool source expr.note;
+  | CvtE (expr', _, _) ->
+    check_num source expr.note;
+    check_num source expr'.note;
+  | UnE (#Bool.unop, expr') ->
     valid_expr env expr';
     check_bool source expr.note;
     check_bool source expr'.note;
-  | UnE (MinusOp, expr') ->
+  | UnE (#Num.unop, expr') ->
     valid_expr env expr';
     check_num source expr.note;
     check_num source expr'.note;
-  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
+  | BinE (#Num.binop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_num source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE ((LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+  | BinE (#Num.cmpop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE ((ImplOp|EquivOp|AndOp|OrOp), expr1, expr2) ->
+  | BinE (#Bool.binop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_bool source expr1.note;
     check_bool source expr2.note;
-  | BinE ((EqOp|NeOp), expr1, expr2) ->
+  | BinE (#Bool.cmpop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
@@ -543,10 +555,24 @@ and valid_expr env (expr: expr) : unit =
     List.iter (valid_expr env) exprs;
     check_tuple source exprs expr.note;
   | CaseE (op, exprs) ->
-    List.iter (valid_expr env) exprs;
-    let tcs = get_typcases source expr.note in
-    let _binds, typ, _prems = find_case source tcs op in
-    check_case source exprs typ;
+    let is_evalctx_id id =
+      let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
+        let atom = mixop |> List.hd |> List.hd in
+        match atom.it with
+        | Atom.Atom s -> Some s
+        | _ -> None
+      ) (get_typcases source evalctxT) in
+      List.mem id evalctx_ids
+    in
+    (match op with
+    | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
+      check_case source exprs (TupT [] $ no_region)
+    | _ -> 
+      List.iter (valid_expr env) exprs;
+      let tcs = get_typcases source expr.note in
+      let _binds, typ, _prems = find_case source tcs op in
+      check_case source exprs typ;
+    )
   | CallE (id, args) ->
     List.iter (valid_arg env) args;
     check_call source id args expr.note;
@@ -578,39 +604,14 @@ and valid_expr env (expr: expr) : unit =
     l
     |> List.map note
     |> List.iter (check_match source elem_typ)
-  | ArityE expr1 ->
-    valid_expr env expr1;
-    check_num source expr.note;
-    check_context source expr1.note;
-  | FrameE (expr_opt, expr1) ->
-    Option.iter (valid_expr env) expr_opt;
-    valid_expr env expr1;
-    check_context source expr.note;
-    Option.iter (fun expr2 -> check_num source expr2.note) expr_opt;
-    check_match source expr1.note (varT "frame")
-  | LabelE (expr1, expr2) ->
-    valid_expr env expr1;
-    valid_expr env expr2;
-    check_context source expr.note;
-    check_num source expr1.note;
-    check_match source expr2.note (iterT (varT "instr") List)
-  | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE ->
+  | GetCurStateE ->
     check_context source expr.note
-  | IsCaseOfE (expr', _) | IsValidE expr' | HasTypeE (expr', _)  ->
-    valid_expr env expr';
-    check_bool source expr.note;
-  | MatchE (expr1, expr2) ->
-    valid_expr env expr1;
-    valid_expr env expr2;
-    check_bool source expr.note;
-  | ContE expr1 ->
-    valid_expr env expr1;
-    check_match source expr.note (iterT (varT "instr") List);
-    check_match source expr1.note (varT "label");
+  | GetCurContextE _ ->
+    check_evalctx source expr.note
   | ChooseE expr1 ->
     valid_expr env expr1;
     check_list source expr1.note;
-    check_match source expr1.note (iterT expr.note List);
+    check_match source expr1.note (iterT expr.note List)
   | IsDefinedE expr1 ->
     valid_expr env expr1;
     check_opt source expr1.note;
@@ -647,7 +648,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
   | EnterI (expr1, expr2, il) ->
     valid_expr env expr1;
     valid_expr env expr2;
-    check_context source expr1.note;
+    check_evalctx source expr1.note;
     check_instr source expr2.note;
     valid_instrs env il
   | AssertI expr ->

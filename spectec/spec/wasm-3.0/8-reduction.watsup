@@ -1,11 +1,14 @@
 ;;
-;; Configurations
+;; Reduction
 ;;
 
 relation Step: config ~> config       hint(show "E") hint(macro "stepto") hint(tabular)
 relation Step_pure: instr* ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
 relation Step_read: config ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
 relation Steps: config ~>* config     hint(show "E") hint(macro "steptostar") hint(tabular)
+
+
+;; Structural
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -24,18 +27,21 @@ rule Steps/trans:
   -- Steps: z'; instr'*  ~>*  z''; instr''*
 
 
-;; Expressions
+;; Context
 
-relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar") hint(tabular)
+rule Step/ctxt-instrs:
+  z; val* instr* instr_1*  ~>  z'; val* instr'* instr_1*
+  -- Step: z; instr* ~> z'; instr'*
+  -- if val* =/= eps \/ instr_1* =/= eps
 
-rule Eval_expr:
-  z; instr*  ~>*  z'; val*
-  -- Steps: z; instr*  ~>*  z'; val*
+rule Step/ctxt-label:
+  z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)
+  -- Step: z; instr* ~> z'; instr'*
 
+rule Step/ctxt-frame:
+  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
+  -- Step: s; f'; instr* ~> s'; f'; instr'*
 
-;;
-;; Instructions
-;;
 
 ;; Polymorphic instructions
 
@@ -219,7 +225,7 @@ rule Step_pure/return-handler:
 ;; Exceptions
 
 rule Step/throw:
-  ;; TODO: Appropriate variable name for execption instance `exn`
+  ;; TODO(2, rossberg): Appropriate variable name for exception instance `exn`
   z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
   -- Expand: $tag(z, x).TYPE ~~ FUNC (t^n -> eps)
   -- if a = |$exninst(z)|
@@ -228,7 +234,7 @@ rule Step/throw:
 rule Step_read/throw_ref-null:
   z; (REF.NULL ht) THROW_REF  ~>  TRAP
 
-rule Step_read/throw_ref-vals:
+rule Step_read/throw_ref-instrs:
   z; val* (REF.EXN_ADDR a) THROW_REF instr*  ~>  (REF.EXN_ADDR a) THROW_REF
   -- if val* =/= eps \/ instr* =/= eps
 
@@ -244,12 +250,12 @@ rule Step_read/throw_ref-handler-empty:
 rule Step_read/throw_ref-handler-catch:
   z; (HANDLER_ n `{(CATCH x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (BR l)
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
-  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(rossberg, 3): inline
+  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(3, rossberg): inline
 
 rule Step_read/throw_ref-handler-catch_ref:
   z; (HANDLER_ n `{(CATCH_REF x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (REF.EXN_ADDR a) (BR l)
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
-  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(rossberg, 3): inline
+  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(3, rossberg): inline
 
 rule Step_read/throw_ref-handler-catch_all:
   z; (HANDLER_ n `{(CATCH_ALL l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (BR l)
@@ -272,7 +278,7 @@ rule Step_pure/handler-vals:
 
 ;; Traps
 
-rule Step_pure/trap-vals:
+rule Step_pure/trap-instrs:
   val* TRAP instr*  ~>  TRAP
   -- if val* =/= eps \/ instr* =/= eps
 
@@ -281,17 +287,6 @@ rule Step_pure/trap-label:
 
 rule Step_pure/trap-frame:
   (FRAME_ n `{f} TRAP)  ~>  TRAP
-
-
-;; Context
-
-rule Step/ctxt-label:
-  z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)
-  -- Step: z; instr* ~> z'; instr'*
-
-rule Step/ctxt-frame:
-  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
-  -- Step: s; f'; instr* ~> s'; f'; instr'*
 
 
 ;; Numeric instructions
@@ -692,109 +687,87 @@ rule Step_pure/vbinop-trap:
   -- if $vbinop_(sh, vbinop, c_1, c_2) = eps
 
 
-;; TODO(2, rossberg): introduce $vitestop for uniformity
-rule Step_pure/vtestop-true:
-  (VCONST V128 c) (VTESTOP (Jnn X M) ALL_TRUE) ~> (CONST I32 1)
-  -- if ci_1* = $lanes_(Jnn X M, c)
-  -- (if $(ci_1 =/= 0))*  ;; TODO(3, rossberg): enable same line
+rule Step_pure/vternop-val:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VTERNOP sh vternop)  ~>  (VCONST V128 c)
+  -- if c <- $vternop_(sh, vternop, c_1, c_2, c_3)
 
-rule Step_pure/vtestop-false:
-  (VCONST V128 c) (VTESTOP (Jnn X M) ALL_TRUE) ~> (CONST I32 0)
-  -- otherwise
+rule Step_pure/vternop-trap:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VTERNOP sh vternop)  ~>  TRAP
+  -- if $vternop_(sh, vternop, c_1, c_2, c_3) = eps
+
+
+rule Step_pure/vtestop:
+  (VCONST V128 c_1) (VTESTOP sh vtestop) ~> (CONST I32 i)
+  -- if i = $vtestop_(sh, vtestop, c_1)
 
 
 rule Step_pure/vrelop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VRELOP sh vrelop)  ~>  (VCONST V128 c)
-  -- if $vrelop_(sh, vrelop, c_1, c_2) = c
-(; TODO(3, rossberg): this should be implemented at the same level as other pointwise ops
-  -- if c'_1* = $lanes_(Lnn X M, c_1)
-  -- if c'_2* = $lanes_(Lnn X M, c_2)
-  -- if c = $invlanes_($IN($lsize(Lnn)) X M, $extend__(1, $lsize(Lnn), S, $vrelop_(Lnn X M, vrelop, c'_1, c'_2))*)
-;)
+  -- if c = $vrelop_(sh, vrelop, c_1, c_2)
 
 
 rule Step_pure/vshiftop:
-  (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP (Jnn X M) vshiftop) ~> (VCONST V128 c)
-  -- if c'* = $lanes_(Jnn X M, c_1)
-  -- if c = $invlanes_(Jnn X M, $vshiftop_(Jnn X M, vshiftop, c', n)*)
+  (VCONST V128 c_1) (CONST I32 i) (VSHIFTOP sh vshiftop)  ~>  (VCONST V128 c)
+  -- if c = $vshiftop_(sh, vshiftop, c_1, i)
 
 
 rule Step_pure/vbitmask:
-  (VCONST V128 c) (VBITMASK (Jnn X M)) ~> (CONST I32 ci)
-  -- if ci_1* = $lanes_(Jnn X M, c)
-  -- if $ibits_(32, ci) = $ilt_($lsize(Jnn), S, ci_1, 0)*
+  (VCONST V128 c_1) (VBITMASK sh)  ~>  (CONST I32 c)
+  -- if c = $vbitmaskop_(sh, c_1)
 
 
-rule Step_pure/vswizzle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (Pnn X M)) ~> (VCONST V128 c)
-  -- var c' : iN($lsize(Pnn))
-  -- if ci* = $lanes_(Pnn X M, c_2)
-  -- if c'* = $lanes_(Pnn X M, c_1) 0^(256 - M)
-  -- if c = $invlanes_(Pnn X M, c'*[$(ci*[k])]^(k<M))
+rule Step_pure/vswizzlop:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP sh swizzlop)  ~>  (VCONST V128 c)
+  -- if c = $vswizzlop_(sh, swizzlop, c_1, c_2)
 
 
 rule Step_pure/vshuffle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (Pnn X M) i*) ~> (VCONST V128 c)
-  -- var c' : iN($lsize(Pnn))
-  -- if c'* = $lanes_(Pnn X M, c_1) $lanes_(Pnn X M, c_2)
-  -- if c = $invlanes_(Pnn X M, c'*[$(i*[k])]^(k<M))
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE sh i*)  ~>  (VCONST V128 c)
+  -- if c = $vshufflop_(sh, i*, c_1, c_2)
 
 
 rule Step_pure/vsplat:
-  (CONST $lunpack(Lnn) c_1) (VSPLAT (Lnn X M)) ~> (VCONST V128 c)
+  (CONST $lunpack(Lnn) c_1) (VSPLAT (Lnn X M))  ~>  (VCONST V128 c)
   -- if c = $invlanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M)
 
 
 rule Step_pure/vextract_lane-num:
-  (VCONST V128 c_1) (VEXTRACT_LANE (nt X M) i) ~> (CONST nt c_2)
+  (VCONST V128 c_1) (VEXTRACT_LANE (nt X M) i)  ~>  (CONST nt c_2)
   -- if c_2 = $lanes_(nt X M, c_1)[i]
 
 rule Step_pure/vextract_lane-pack:
-  (VCONST V128 c_1) (VEXTRACT_LANE (pt X M) sx i) ~> (CONST I32 c_2)
+  (VCONST V128 c_1) (VEXTRACT_LANE (pt X M) sx i)  ~>  (CONST I32 c_2)
   -- if c_2 = $extend__($psize(pt), 32, sx, $lanes_(pt X M, c_1)[i])
 
 
 rule Step_pure/vreplace_lane:
-  (VCONST V128 c_1) (CONST $lunpack(Lnn) c_2) (VREPLACE_LANE (Lnn X M) i) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (CONST $lunpack(Lnn) c_2) (VREPLACE_LANE (Lnn X M) i)  ~>  (VCONST V128 c)
   -- if c = $invlanes_(Lnn X M, $lanes_(Lnn X M, c_1)[[i] = $lpacknum_(Lnn, c_2)])
 
 
 rule Step_pure/vextunop:
-  (VCONST V128 c_1) (VEXTUNOP sh_2 sh_1 vextunop) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VEXTUNOP sh_2 sh_1 vextunop)  ~>  (VCONST V128 c)
   -- if $vextunop__(sh_1, sh_2, vextunop, c_1) = c
 
 
 rule Step_pure/vextbinop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop)  ~>  (VCONST V128 c)
   -- if $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c
 
 
+rule Step_pure/vextternop:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VEXTTERNOP sh_2 sh_1 vextternop)  ~>  (VCONST V128 c)
+  -- if $vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c
+
+
 rule Step_pure/vnarrow:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx) ~> (VCONST V128 c)
-  -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
-  -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
-  -- if cj_1* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*
-  -- if cj_2* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*
-  -- if c = $invlanes_(Jnn_2 X M_2, cj_1* cj_2*)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW sh_2 sh_1 sx)  ~>  (VCONST V128 c)
+  -- if c = $vnarrowop__(sh_1, sh_2, sx, c_1, c_2)
 
 
-rule Step_pure/vcvtop-full:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(Lnn_1 X M, c_1)
-  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*)
-  -- if c <- $invlanes_(Lnn_2 X M, cj*)*
-
-rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M_2) (Lnn_1 X M_1) vcvtop half eps) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(Lnn_1 X M_1, c_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
-  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*)
-  -- if c <- $invlanes_(Lnn_2 X M_2, cj*)*
-
-rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop eps zero) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(nt_1 X M_1, c_1)
-  -- if cj** = $setproduct_(lane_(nt_2), ($vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* ++ $zero(nt_2)^M_1))
-  -- if c <- $invlanes_(nt_2 X M_2, cj*)*
+rule Step_pure/vcvtop:
+  (VCONST V128 c_1) (VCVTOP sh_2 sh_1 vcvtop half? zero?)  ~>  (VCONST V128 c)
+  -- if c = $vcvtop__(sh_1, sh_2, vcvtop, half?, zero?, c_1)
 
 
 ;; Local instructions
@@ -841,7 +814,7 @@ rule Step/table.set-val:
 
 rule Step_read/table.size:
   z; (TABLE.SIZE x)  ~>  (CONST I32 n)
-  -- if |$table(z, x).REFS| = n  ;; TODO(2, rossberg): inline this?
+  -- if |$table(z, x).REFS| = n
 
 
 rule Step/table.grow-succeed:
@@ -1006,12 +979,12 @@ rule Step/store-num-val:
   -- if b* = $nbytes_(nt, c)
 
 rule Step/store-pack-oob:
-  z; (CONST I32 i) (CONST Inn c) (STORE nt n x ao)  ~>  z; TRAP
+  z; (CONST I32 i) (CONST Inn c) (STORE Inn n x ao)  ~>  z; TRAP
   ----
   -- if $(i + ao.OFFSET + n/8) > |$mem(z, x).BYTES|
 
 rule Step/store-pack-val:
-  z; (CONST I32 i) (CONST Inn c) (STORE nt n x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(n/8), b*); eps
+  z; (CONST I32 i) (CONST Inn c) (STORE Inn n x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(n/8), b*); eps
   ----
   ;; TODO(3, rossberg): enable otherwise?
   -- if b* = $ibytes_(n, $wrap__($size(Inn), n, c))
@@ -1109,3 +1082,12 @@ rule Step_read/memory.init-succ:
 
 rule Step/data.drop:
   z; (DATA.DROP x)  ~>  $with_data(z, x, eps); eps
+
+
+;; Expressions
+
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar") hint(tabular)
+
+rule Eval_expr:
+  z; instr*  ~>*  z'; val*
+  -- Steps: z; instr*  ~>*  z'; val*

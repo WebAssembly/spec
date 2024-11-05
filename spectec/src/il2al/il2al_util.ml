@@ -1,4 +1,5 @@
 open Il.Ast
+open Xl
 open Def
 open Util
 open Source
@@ -95,6 +96,6 @@ let rec add eq k v = function (* add a (k,v) to an assoc list *)
       (k', vs) :: add eq k v tl
 
 let group_by_context (rs: rule_clause list): ('a option * rule_clause list) list =
-  let eq_context = Option.equal (fun c1 c2 -> Il.Mixop.eq (case_of_case c1) (case_of_case c2)) in
+  let eq_context = Option.equal (fun c1 c2 -> Mixop.eq (case_of_case c1) (case_of_case c2)) in
   List.fold_left (fun acc r -> add eq_context (extract_context r) r acc) [] rs
 

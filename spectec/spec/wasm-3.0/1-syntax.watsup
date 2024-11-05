@@ -1,9 +1,8 @@
 ;;
-;; Lists
+;; Profiles
 ;;
 
-;; TODO(2, rossberg): enable writing X^n
-syntax list(syntax X) = X*  -- if |X*| < $(2^32)
+def $ND : bool  ;; non-determinism
 
 
 ;;
@@ -16,7 +15,7 @@ syntax bit hint(desc "bit") = 0 | 1
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
 syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uNX") =
-  0 | ... | 2^N-1
+  0 | ... | $nat$(2^N-1)
 syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sNX") =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
 syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iNX") =
@@ -53,11 +52,12 @@ syntax fN(N) hint(desc "floating-point number") hint(show f#%) hint(macro "fNX")
   | POS fNmag(N)  hint(show $(+%)) \
   | NEG fNmag(N)  hint(show $(-%))
 
+syntax exp hint(show e) hint(macro none) = int
 syntax fNmag(N) hint(desc "floating-point magnitude") hint(show fNmag) =
-  | NORM m n     hint(show $((1 + %*2^(-$M(N))) * 2^%))  -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) <= n <= 2^($E(N)-1)-1)
-  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^n))  -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) = n)
+  | NORM m exp   hint(show $((1 + %*2^(-$M(N))) * 2^%))   -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) <= exp <= 2^($E(N)-1)-1)
+  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^exp)) -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) = exp)
   | INF          hint(show infinity)
-  | NAN (m)      hint(show NAN#(%))                      -- if $(1 <= m < 2^$M(N))
+  | NAN (m)      hint(show NAN#(%))                       -- if $(1 <= m < 2^$M(N))
 
 syntax f32 = fN(32)
 syntax f64 = fN(64)
@@ -76,6 +76,16 @@ def $canon_(N) = $(2^($signif(N)-1))
 
 syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNX") =
   iN(N)
+
+syntax v128 = vN(128)
+
+
+;;
+;; Lists
+;;
+
+;; TODO(3, rossberg): enable writing X^n
+syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 
 
 ;;
@@ -110,9 +120,13 @@ syntax labelidx hint(desc "label index") = idx
 syntax localidx hint(desc "local index") = idx
 syntax fieldidx hint(desc "field index") = idx
 
+syntax externidx hint(desc "external index") hint(macro "%" "XX%") =
+  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx | TAG tagidx
+
 var x : idx
 var y : idx
 var l : labelidx
+var xx : externidx
 var x33 : s33 hint(show x)
 
 
@@ -124,9 +138,8 @@ var x33 : s33 hint(show x)
 
 ;; TODO(3, rossberg): add ability to do this inline
 syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
-;; HACK
-syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?
-syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?
+syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?  ;; HACK
+syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?  ;; HACK
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
@@ -155,6 +168,9 @@ syntax typeuse/syn hint(desc "type use") =
 syntax typeuse/sem =
   | ... | deftype | REC n
 
+syntax typevar hint(desc "type variable") =
+  | _IDX typeidx | REC nat
+
 syntax heaptype hint(desc "heap type") =
   | absheaptype | typeuse
 
@@ -170,6 +186,7 @@ syntax Inn hint(show I#N) hint(macro none) = I32 | I64
 syntax Fnn hint(show F#N) hint(macro none) = F32 | F64
 syntax Vnn hint(show V#N) hint(macro none) = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
+
 
 def $ANYREF    : reftype hint(show ANYREF)
 def $EQREF     : reftype hint(show EQREF)
@@ -193,9 +210,6 @@ def $NULLREF   = (REF NULL NONE)
 def $NULLFUNCREF = (REF NULL NOFUNC)
 def $NULLEXTERNREF = (REF NULL NOEXTERN)
 
-syntax resulttype hint(desc "result type") =
-  list(valtype)
-
 
 ;; Packed types
 
@@ -206,6 +220,12 @@ syntax storagetype hint(desc "storage type") = valtype | packtype
 syntax Pnn hint(show I#N) hint(macro none) = I8 | I16
 syntax Jnn hint(show I#N) hint(macro none) = Inn | Pnn
 syntax Lnn hint(show I#N) hint(macro none) = Inn | Fnn | Pnn
+
+
+;; Result types
+
+syntax resulttype hint(desc "result type") =
+  list(valtype)
 
 
 ;; Type definitions
@@ -237,25 +257,20 @@ syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
 
 ;; External types
 
-syntax limits hint(desc "limits") hint(macro "%" "L%") =
-  `[u32 .. u32]
+syntax limits hint(desc "limits") = `[u32 .. u32] hint(macro "L%")
 
-syntax globaltype hint(desc "global type") =
-  mut valtype
-syntax tabletype hint(desc "table type") =
-  limits reftype
-syntax memtype hint(desc "memory type") =
-  limits PAGE
-syntax tagtype hint(desc "tag type") =
-  deftype
-syntax elemtype hint(desc "element type") =
-  reftype
-syntax datatype hint(desc "data type") hint(macro "%" "%data") =
-  OK
+syntax globaltype hint(desc "global type") = mut valtype
+syntax tabletype hint(desc "table type") = limits reftype
+syntax memtype hint(desc "memory type") = limits PAGE
+syntax tagtype hint(desc "tag type") = deftype
+syntax elemtype hint(desc "element type") = reftype
+syntax datatype hint(desc "data type") = OK hint(macro "%data")
+
 syntax externtype hint(desc "external type") hint(macro "%" "XT%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype | TAG typeuse
 
-syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
+syntax moduletype hint(desc "module type") =
+  externtype* -> externtype* hint(macro "toM")
 
 
 ;; Meta variables
@@ -286,20 +301,37 @@ var yt : fieldtype
 var zt : storagetype
 var ok : datatype
 
+var tv : typevar
+var yy : typeuse hint(show y)
+var tu : typeuse
 
-;;
-;; Operators
-;;
 
-;; Constants
+;; Type sizes
+
+;; def |I n| = |F n| = |V n| = n        ;; TODO(2, rossberg): show this?
 
 def $size(numtype) : nat       hint(show |%|)
-def $isize(Inn) : nat          hint(show |%|)
 def $vsize(vectype) : nat      hint(show |%|)
 def $psize(packtype) : nat     hint(show |%|)
 def $lsize(lanetype) : nat     hint(show |%|)
 def $zsize(storagetype) : nat  hint(show |%|)
-def $lanetype(shape) : lanetype hint(macro "shlanetype")
+
+def $size(I32) = 32
+def $size(I64) = 64
+def $size(F32) = 32
+def $size(F64) = 64
+
+def $vsize(V128) = 128
+
+def $psize(I8) = 8
+def $psize(I16) = 16
+
+def $lsize(numtype) = $size(numtype)
+def $lsize(packtype) = $psize(packtype)
+
+def $zsize(numtype) = $size(numtype)
+def $zsize(vectype) = $vsize(vectype)
+def $zsize(packtype) = $psize(packtype)
 
 ;; TODO(2, rossberg): get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
 def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
@@ -308,6 +340,9 @@ def $sizenn2(numtype) : nat    hint(show N_2) hint(macro none)  ;; HACK!
 def $sizenn(nt) = $size(nt)
 def $sizenn1(nt) = $size(nt)
 def $sizenn2(nt) = $size(nt)
+
+def $vsizenn(vectype) : nat    hint(show N)   hint(macro none)  ;; HACK!
+def $vsizenn(vt) = $vsize(vt)
 
 def $psizenn(packtype) : nat   hint(show N)   hint(macro none)  ;; HACK!
 def $psizenn(pt) = $psize(pt)
@@ -318,6 +353,36 @@ def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
 def $lsizenn(lt) = $lsize(lt)
 def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
+
+
+;; Type unpacking
+
+def $lunpack(lanetype) : numtype  hint(show $unpack(%))
+def $lunpack(numtype) = numtype
+def $lunpack(packtype) = I32
+
+def $unpack(storagetype) : valtype
+def $unpack(valtype) = valtype
+def $unpack(packtype) = I32
+
+def $nunpack(storagetype) : numtype  hint(show $unpack(%)) hint(partial)
+def $nunpack(numtype) = numtype
+def $nunpack(packtype) = I32
+
+def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
+def $vunpack(vectype) = vectype
+
+def $cunpack(storagetype) : consttype hint(show $unpack(%)) hint(partial)
+def $cunpack(consttype) = consttype
+def $cunpack(packtype) = I32
+def $cunpack(lanetype) = $lunpack(lanetype)  ;; HACK
+
+
+;;
+;; Instructions
+;;
+
+;; Constants
 
 syntax num_(numtype)
 syntax num_(Inn) = iN($sizenn(Inn))
@@ -336,10 +401,6 @@ syntax lit_(storagetype)
 syntax lit_(numtype) = num_(numtype)
 syntax lit_(vectype) = vec_(vectype)
 syntax lit_(packtype) = pack_(packtype)
-
-def $zero(numtype) : num_(numtype) hint(show 0)
-def $zero(Inn) = 0
-def $zero(Fnn) = $fzero($size(Fnn))
 
 
 ;; Numeric operators
@@ -386,16 +447,35 @@ syntax cvtop__(Fnn_1, Fnn_2) =
   | DEMOTE       -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
 
 
-;; Vector operators
+;; Vector shapes
 
 syntax dim hint(desc "dimension") = `1 | `2 | `4 | `8 | `16
 syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2) hint(macro "%shape")
-syntax ishape hint(desc "shape") = Jnn X dim      hint(show %0#X#%2) hint(macro "%shape")
-syntax fshape hint(desc "shape") = Fnn X dim      hint(show %0#X#%2) hint(macro "%shape")
-syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2) hint(macro "%shape")
+  -- if $($lsize(lanetype) * dim = 128)
 
-def $dim(shape) : dim     hint(macro "shdim")
-def $shsize(shape) : nat  hint(show |%|)
+
+def $dim(shape) : dim  hint(macro "shdim")
+def $dim(Lnn X N) = N
+
+def $lanetype(shape) : lanetype  hint(macro "shlanetype")
+def $lanetype(Lnn X N) = Lnn
+
+def $unpackshape(shape) : numtype  hint(show $unpack(%))
+def $unpackshape(Lnn X N) = $lunpack(Lnn)
+
+
+syntax ishape hint(desc "integer shape") = shape -- if $lanetype(shape) = Jnn
+syntax bshape hint(desc "byte shape") = shape    -- if $lanetype(shape) = I8
+
+
+;; Vector operators
+
+syntax half__(shape_1, shape_2)
+syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
+syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
+
+syntax zero__(shape_1, shape_2)
+syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
 
 syntax vvunop hint(macro "%" "V%") = NOT
 syntax vvbinop hint(macro "%" "V%") = AND | ANDNOT | OR | XOR
@@ -416,9 +496,14 @@ syntax vbinop_(Jnn X M) =
   | MUL                                      -- if $lsizenn(Jnn) >= `16
   | AVGR U hint(show AVGR#_#%)               -- if $lsizenn(Jnn) <= `16
   | Q15MULR_SAT S hint(show Q15MULR_SAT#_#%) -- if $lsizenn(Jnn) = `16
+  | RELAXED_Q15MULR S hint(show RELAXED_Q15MULR#_#%) -- if $lsizenn(Jnn) = `16
   | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
-syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX | RELAXED_MIN | RELAXED_MAX
+
+syntax vternop_(shape) hint(macro "%" "V%")
+syntax vternop_(Jnn X M) = RELAXED_LANESELECT
+syntax vternop_(Fnn X M) = RELAXED_MADD | RELAXED_NMADD
 
 syntax vtestop_(shape) hint(macro "%" "V%")
 syntax vtestop_(Jnn X M) = ALL_TRUE
@@ -432,30 +517,11 @@ syntax vrelop_(Jnn X M) = EQ | NE
   | GE sx hint(show GE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 
-;; TODO(2, rossberg): internalise half and zero
-syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
-syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTEND sx hint(show EXTEND#_#%)
-    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
-syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
-  | CONVERT sx hint(show CONVERT#_#%)
-    -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
-syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
-  | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
-    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
-syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
-  | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
-  | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
-
-syntax half__(shape_1, shape_2)
-syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
-syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
-
-syntax zero__(shape_1, shape_2)
-syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
-
 syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
+
+syntax vswizzlop_(bshape) hint(macro "%" "V%")
+syntax vswizzlop_(I8 X M) = SWIZZLE | RELAXED_SWIZZLE
 
 syntax vextunop__(ishape_1, ishape_2) hint(macro "%" "V%")
 syntax vextunop__(Jnn_1 X M_1, Jnn_2 X M_2) =
@@ -468,6 +534,30 @@ syntax vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2) =
     -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
   | DOT S hint(show DOT#_#%)
     -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
+  | RELAXED_DOT S hint(show RELAXED_DOT#_#%)
+    -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `16
+
+syntax vextternop__(ishape_1, ishape_2) hint(macro "%" "V%")
+syntax vextternop__(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | RELAXED_DOT_ADD S hint(show RELAXED_DOT_ADD#_#%)
+    -- if $(4 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
+
+;; TODO(2, rossberg): internalise half and zero
+syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
+syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTEND sx hint(show EXTEND#_#%)
+    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
+syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
+  | CONVERT sx hint(show CONVERT#_#%)
+    -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
+syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
+  | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
+    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+  | RELAXED_TRUNC sx hint(show RELAXED_TRUNC#_#%)
+    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
+  | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
+  | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
 
 ;; Memory operators
@@ -477,9 +567,10 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 var ao : memarg
 
 syntax loadop_(numtype)
-syntax loadop_(Inn) =
-  sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
-;; syntax loadop_(Fnn) = |           ;; uninhabited
+syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
+
+syntax storeop_(numtype)
+syntax storeop_(Inn) = sz                      -- if sz < $sizenn(Inn)
 
 syntax vloadop_(vectype) hint(macro "%" "L%") =
   | SHAPE sz X M sx  hint(show %1#X#%3#_#%4) hint(macro "%shape") -- if $(sz * M = $vsize(vectype)/2)
@@ -487,15 +578,20 @@ syntax vloadop_(vectype) hint(macro "%" "L%") =
   | ZERO sz          hint(show %#_#ZERO) -- if sz >= `32
 
 
-;;
-;; Instructions
-;;
+;; Block types
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
   | _IDX funcidx
 
 var bt : blocktype
+
+
+;; Instructions
+
+syntax instr hint(desc "instruction")
+
+var in : instr
 
 syntax instr/parametric hint(desc "parametric instruction") =
   | NOP
@@ -560,18 +656,19 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VVTESTOP vectype vvtestop           hint(show %.##%)
   | VUNOP shape vunop_(shape)           hint(show ##%.##%)
   | VBINOP shape vbinop_(shape)         hint(show ##%.##%)
+  | VTERNOP shape vternop_(shape)       hint(show ##%.##%)
   | VTESTOP shape vtestop_(shape)       hint(show ##%.##%)
   | VRELOP shape vrelop_(shape)         hint(show ##%.##%)
   | VSHIFTOP ishape vshiftop_(ishape)   hint(show ##%.##%)
   | VBITMASK ishape                     hint(show ##%.BITMASK)   hint(macro "VBITMASK")
-  | VSWIZZLE ishape                     hint(show ##%.SWIZZLE)   hint(macro "VSWIZZLE")
-    -- if ishape = I8 X `16
-  | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
-    -- if ishape = I8 X `16 /\ |laneidx*| = `16
-    ;; TODO(3, rossberg): enable ^16 in type
+  | VSWIZZLOP bshape vswizzlop_(bshape) hint(show ##%.##%)
+  | VSHUFFLE bshape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
+    -- if |laneidx*| = $dim(bshape)
   | VEXTUNOP ishape_1 ishape_2 vextunop__(ishape_2, ishape_1)
     hint(show ##%1.##%3#_# ##%2)
   | VEXTBINOP ishape_1 ishape_2 vextbinop__(ishape_2, ishape_1)
+    hint(show ##%1.##%3#_# ##%2)
+  | VEXTTERNOP ishape_1 ishape_2 vextternop__(ishape_2, ishape_1)
     hint(show ##%1.##%3#_# ##%2)
   | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
@@ -579,7 +676,6 @@ syntax instr/vec hint(desc "vector instruction") = ...
     hint(show ##%1.%3#_# ##%2)
     hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO(2, rossberg): this is wrong when half is absent
     hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO(2, rossberg): this is wrong when half is present
-    -- if $lanetype(shape_1) =/= $lanetype(shape_2)
   | VSPLAT shape                        hint(show ##%.SPLAT) hint(macro "VSPLAT")
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
     -- if sx? = eps <=> $lanetype(shape) = numtype
@@ -658,7 +754,7 @@ syntax instr/elem hint(desc "element instruction") = ...
 
 syntax instr/memory hint(desc "memory instruction") = ...
   | LOAD numtype loadop_(numtype)? memidx memarg   hint(show %.LOAD % %) hint(show %.LOAD# ##% % %)
-  | STORE numtype sz? memidx memarg                hint(show %.STORE % %) hint(show %.STORE#% % %)
+  | STORE numtype storeop_(numtype)? memidx memarg hint(show %.STORE % %) hint(show %.STORE#% % %)
   | VLOAD vectype vloadop_(vectype)? memidx memarg hint(show %.LOAD % %) hint(show %.LOAD# ##% % %) hint(macro "V%")
   | VLOAD_LANE vectype sz memidx memarg laneidx    hint(show %.LOAD#%#_#LANE % % %) hint(macro "V%")
   | VSTORE vectype memidx memarg                   hint(show %.STORE % %) hint(macro "V%")
@@ -675,12 +771,11 @@ syntax instr/data hint(desc "data instruction") = ...
   | ...
 
 
+;; Expressions
+
 syntax expr hint(desc "expression") =
   instr*
 
-syntax instr hint(desc "instruction")
-
-var in : instr
 var e : expr
 
 
@@ -691,33 +786,19 @@ var e : expr
 syntax elemmode hint(desc "elem mode") hint(macro "%" "E%") = ACTIVE tableidx expr | PASSIVE | DECLARE
 syntax datamode hint(desc "data mode") hint(macro "%" "D%") = ACTIVE memidx expr | PASSIVE
 
-syntax type hint(desc "type definition") =
-  TYPE rectype
-syntax local hint(desc "local") =
-  LOCAL valtype
-syntax func hint(desc "function") =
-  FUNC typeidx local* expr
-syntax global hint(desc "global") =
-  GLOBAL globaltype expr
-syntax table hint(desc "table") =
-  TABLE tabletype expr
-syntax mem hint(desc "memory") =
-  MEMORY memtype
-syntax tag hint(desc "tag") =
-  TAG typeidx
-syntax elem hint(desc "table segment") =
-  ELEM reftype expr* elemmode
-syntax data hint(desc "memory segment") =
-  DATA byte* datamode
-syntax start hint(desc "start function") =
-  START funcidx
+syntax type hint(desc "type definition") = TYPE rectype
+syntax local hint(desc "local") = LOCAL valtype
+syntax func hint(desc "function") = FUNC typeidx local* expr
+syntax global hint(desc "global") = GLOBAL globaltype expr
+syntax table hint(desc "table") = TABLE tabletype expr
+syntax mem hint(desc "memory") = MEMORY memtype
+syntax tag hint(desc "tag") = TAG typeidx
+syntax elem hint(desc "table segment") = ELEM reftype expr* elemmode
+syntax data hint(desc "memory segment") = DATA byte* datamode
+syntax start hint(desc "start function") = START funcidx
 
-syntax externidx hint(desc "external index") hint(macro "%" "XX%") =
-  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx | TAG tagidx
-syntax export hint(desc "export") =
-  EXPORT name externidx
-syntax import hint(desc "import") =
-  IMPORT name name externtype
+syntax export hint(desc "export") = EXPORT name externidx
+syntax import hint(desc "import") = IMPORT name name externtype
 
 syntax module hint(desc "module") =
   MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
@@ -729,4 +810,3 @@ var glob : global
 var tab : table
 var im : import
 var ex : export
-var xx : externidx

@@ -9,11 +9,12 @@ let rec transform_expr f e =
     match e.it with
     | VarE _
     | BoolE _
-    | NatE _
+    | NumE _
     | TextE _ -> e.it
-    | UnE (op, e1) -> UnE (op, new_ e1)
-    | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
-    | CmpE (op, e1, e2) -> CmpE (op, new_ e1, new_ e2)
+    | CvtE (e1, nt1, nt2) -> CvtE (new_ e1, nt1, nt2)
+    | UnE (op, nt, e1) -> UnE (op, nt, new_ e1)
+    | BinE (op, nt, e1, e2) -> BinE (op, nt, new_ e1, new_ e2)
+    | CmpE (op, nt, e1, e2) -> CmpE (op, nt, new_ e1, new_ e2)
     | IdxE (e1, e2) -> IdxE (new_ e1, new_ e2)
     | SliceE (e1, e2, e3) -> SliceE (new_ e1, new_ e2, new_ e3)
     | UpdE (e1, p, e2) -> UpdE (new_ e1, p, new_ e2)

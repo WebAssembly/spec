@@ -123,7 +123,7 @@ and after_nl_nl = parse
   | indent* "|"[' ''\t'] { NL_BAR }
   | indent* '\n' { Lexing.new_line lexbuf; NL_NL_NL }
   | indent* line_comment '\n' { Lexing.new_line lexbuf; after_nl_nl lexbuf }
-  | "" { token lexbuf }
+  | "" { NL_NL }
 
 and token = parse
   | "(" { LPAREN }

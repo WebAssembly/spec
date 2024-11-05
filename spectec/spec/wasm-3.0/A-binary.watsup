@@ -217,9 +217,6 @@ grammar Binstr/control : instr =
   | 0x03 bt:Bblocktype (in:Binstr)* 0x0B => LOOP bt in*
   | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE eps
   | 0x04 bt:Bblocktype (in_1:Binstr)*
-    ;; TODO(2, rossberg): do not require 2 empty lines
-
-
     0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
   | 0x08 x:Btagidx => THROW x
   | 0x0A => THROW_REF
@@ -231,8 +228,7 @@ grammar Binstr/control : instr =
   | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x (_IDX y)
   | 0x12 x:Bfuncidx => RETURN_CALL x
   | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x (_IDX y)
-  | 0x1F bt:Bblocktype c*:Blist(Bcatch) (in:Binstr)* 0x0B =>
-      TRY_TABLE bt c* in*
+  | 0x1F bt:Bblocktype c*:Blist(Bcatch) (in:Binstr)* 0x0B => TRY_TABLE bt c* in*
   | ...
 
 grammar Bcatch : catch =
@@ -294,14 +290,8 @@ grammar Binstr/cast : instr = ...
   | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF ht)
   | 0xFB 23:Bu32 ht:Bheaptype => REF.CAST (REF NULL ht)
   | 0xFB 24:Bu32 (nul1, nul2):Bcastop
-    ;; TODO(2, rossberg): do not require 2 empty lines
-
-
     l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF nul1 ht_1) (REF nul2 ht_2)
   | 0xFB 25:Bu32 (nul1, nul2):Bcastop
-    ;; TODO(2, rossberg): do not require 2 empty lines
-
-
     l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF nul1 ht_1) (REF nul2 ht_2)
   | ...
 
@@ -632,8 +622,9 @@ grammar Binstr/vec-const : instr = ...
   | ...
 
 grammar Binstr/vec-shuffle : instr = ...
-  | 0xFD 13:Bu32 (l:Blaneidx)^16 => VSHUFFLE (I8 X `16) l
-  | 0xFD 14:Bu32 => VSWIZZLE (I8 X `16)
+  | 0xFD 13:Bu32 (l:Blaneidx)^16 => VSHUFFLE (I8 X `16) l^16
+  | 0xFD 14:Bu32 => VSWIZZLOP (I8 X `16) SWIZZLE
+  | 0xFD 256:Bu32 => VSWIZZLOP (I8 X `16) RELAXED_SWIZZLE
   | ...
 
 grammar Binstr/vec-splat : instr = ...
@@ -789,6 +780,7 @@ grammar Binstr/vec-un-i16x8 : instr = ...
 
 grammar Binstr/vec-bin-i16x8 : instr = ...
   | 0xFD 130:Bu32 => VBINOP (I16 X `8) (Q15MULR_SAT S)
+  | 0xFD 273:Bu32 => VBINOP (I16 X `8) (RELAXED_Q15MULR S)
   | ...
 
 grammar Binstr/vec-test-i16x8 : instr = ...
@@ -837,6 +829,7 @@ grammar Binstr/vec-extbin-i16x8 : instr = ...
   | 0xFD 157:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (EXTMUL S HIGH)
   | 0xFD 158:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (EXTMUL U LOW)
   | 0xFD 159:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (EXTMUL U HIGH)
+  | 0xFD 274:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (RELAXED_DOT S)
   | ...
 
 grammar Binstr/vec-extun-i32x4 : instr = ...
@@ -886,6 +879,10 @@ grammar Binstr/vec-extbin-i32x4 : instr = ...
   | 0xFD 189:Bu32 => VEXTBINOP (I32 X `4) (I16 X `8) (EXTMUL S HIGH)
   | 0xFD 190:Bu32 => VEXTBINOP (I32 X `4) (I16 X `8) (EXTMUL U LOW)
   | 0xFD 191:Bu32 => VEXTBINOP (I32 X `4) (I16 X `8) (EXTMUL U HIGH)
+  | ...
+
+grammar Binstr/vec-exttern-i32x4 : instr = ...
+  | 0xFD 275:Bu32 => VEXTTERNOP (I32 X `4) (I16 X `8) (RELAXED_DOT_ADD S)
   | ...
 
 grammar Binstr/vec-un-i64x2 : instr = ...
@@ -955,6 +952,13 @@ grammar Binstr/vec-bin-f32x4 : instr = ...
   | 0xFD 233:Bu32 => VBINOP (F32 X `4) MAX
   | 0xFD 234:Bu32 => VBINOP (F32 X `4) PMIN
   | 0xFD 235:Bu32 => VBINOP (F32 X `4) PMAX
+  | 0xFD 269:Bu32 => VBINOP (F32 X `4) RELAXED_MIN
+  | 0xFD 270:Bu32 => VBINOP (F32 X `4) RELAXED_MAX
+  | ...
+
+grammar Binstr/vec-tern-f32x4 : instr = ...
+  | 0xFD 261:Bu32 => VTERNOP (F32 X `4) RELAXED_MADD
+  | 0xFD 262:Bu32 => VTERNOP (F32 X `4) RELAXED_NMADD
   | ...
 
 grammar Binstr/vec-un-f64x2 : instr = ...
@@ -976,6 +980,13 @@ grammar Binstr/vec-bin-f64x2 : instr = ...
   | 0xFD 245:Bu32 => VBINOP (F64 X `2) MAX
   | 0xFD 246:Bu32 => VBINOP (F64 X `2) PMIN
   | 0xFD 247:Bu32 => VBINOP (F64 X `2) PMAX
+  | 0xFD 271:Bu32 => VBINOP (F64 X `2) RELAXED_MIN
+  | 0xFD 272:Bu32 => VBINOP (F64 X `2) RELAXED_MAX
+  | ...
+
+grammar Binstr/vec-tern-f64x2 : instr = ...
+  | 0xFD 263:Bu32 => VTERNOP (F64 X `2) RELAXED_MADD
+  | 0xFD 264:Bu32 => VTERNOP (F64 X `2) RELAXED_NMADD
   | ...
 
 grammar Binstr/vec-cvt : instr = ...
@@ -989,6 +1000,10 @@ grammar Binstr/vec-cvt : instr = ...
   | 0xFD 253:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (TRUNC_SAT U) ZERO
   | 0xFD 254:Bu32 => VCVTOP (F64 X `2) (I32 X `4) (CONVERT S) LOW
   | 0xFD 255:Bu32 => VCVTOP (F64 X `2) (I32 X `4) (CONVERT U) LOW
+  | 0xFD 257:Bu32 => VCVTOP (I32 X `4) (F32 X `4) (RELAXED_TRUNC S)
+  | 0xFD 258:Bu32 => VCVTOP (I32 X `4) (F32 X `4) (RELAXED_TRUNC U)
+  | 0xFD 259:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (RELAXED_TRUNC S) ZERO
+  | 0xFD 260:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (RELAXED_TRUNC U) ZERO
 
 
 ;; Expressions
@@ -1170,69 +1185,26 @@ grammar Btagsec : tag* hint(desc "tag section") =
 
 ;; Modules
 
-;; TODO(2, rossberg): avoid double empty lines
 grammar Bmagic : () = 0x00 0x61 0x73 0x6D => ()
 grammar Bversion : () = 0x01 0x00 0x00 0x00 => ()
 grammar Bmodule : module =
-  | Bmagic
-    Bversion
-
-
-    Bcustomsec*
-    type*:Btypesec
-
-
-    Bcustomsec*
-    import*:Bimportsec
-
-
-    Bcustomsec*
-    typeidx*:Bfuncsec
-
-
-    Bcustomsec*
-    table*:Btablesec
-
-
-    Bcustomsec*
-    mem*:Bmemsec
-
-
-    Bcustomsec*
-    tag*:Btagsec
-
-
-    Bcustomsec*
-    global*:Bglobalsec
-
-
-    Bcustomsec*
-    export*:Bexportsec
-
-
-    Bcustomsec*
-    start?:Bstartsec
-
-
-    Bcustomsec*
-    elem*:Belemsec
-
-
-    Bcustomsec*
-    n?:Bdatacntsec
-
-
-    Bcustomsec*
-    (local*, expr)*:Bcodesec
-
-
-    Bcustomsec*
-    data*:Bdatasec
-
-
+  | Bmagic Bversion
+    Bcustomsec* type*:Btypesec
+    Bcustomsec* import*:Bimportsec
+    Bcustomsec* typeidx*:Bfuncsec
+    Bcustomsec* table*:Btablesec
+    Bcustomsec* mem*:Bmemsec
+    Bcustomsec* tag*:Btagsec
+    Bcustomsec* global*:Bglobalsec
+    Bcustomsec* export*:Bexportsec
+    Bcustomsec* start?:Bstartsec
+    Bcustomsec* elem*:Belemsec
+    Bcustomsec* n?:Bdatacntsec
+    Bcustomsec* (local*, expr)*:Bcodesec
+    Bcustomsec* data*:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
     ----
     -- (if n = |data*|)?
-    -- if n? =/= eps \/ $dataidx_funcs(func*) = eps
+    -- if (n? =/= eps \/ $dataidx_funcs(func*) = eps)
     -- (if func = FUNC typeidx local* expr)*

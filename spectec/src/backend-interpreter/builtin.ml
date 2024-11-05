@@ -8,8 +8,8 @@ open Reference_interpreter
 open Ds
 
 (* Helper functions *)
-let i32_to_const i = CaseV ("CONST", [ nullary "I32"; Construct.al_of_int32 i ])
-let i64_to_const i = CaseV ("CONST", [ nullary "I64"; Construct.al_of_int64 i ])
+let i32_to_const i = CaseV ("CONST", [ nullary "I32"; Construct.al_of_nat32 i ])
+let i64_to_const i = CaseV ("CONST", [ nullary "I64"; Construct.al_of_nat64 i ])
 let f32_to_const f = CaseV ("CONST", [ nullary "F32"; Construct.al_of_float32 f ])
 let f64_to_const f = CaseV ("CONST", [ nullary "F64"; Construct.al_of_float64 f ])
 
@@ -27,7 +27,7 @@ let builtin () =
       CaseV ("DEF", [
         CaseV ("REC", [
           [| CaseV ("SUB", [some "FINAL"; listV [||]; ftype]) |] |> listV
-        ]); numV Z.zero
+        ]); natV Z.zero
       ]) in
     name, StrV [
       "TYPE", ref (if !Construct.version = 3 then dt else arrow);
@@ -62,10 +62,10 @@ let builtin () =
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (TupV [none "MUT"; nullary "I32"]);
-    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (TupV [none "MUT"; nullary "I64"]);
-    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (TupV [none "MUT"; nullary "F32"]);
-    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TupV [none "MUT"; nullary "F64"]);
+    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "I32"]));
+    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "I64"]));
+    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "F32"]));
+    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "F64"]));
   ] in
   (* Builtin tables *)
   let nulls = CaseV ("REF.NULL", [ nullary "FUNC" ]) |> Array.make 10 in
@@ -78,14 +78,14 @@ let builtin () =
   let tables = [
     "table",
     listV nulls
-    |> create_tableinst (TupV [ TupV [ numV (Z.of_int 10); numV (Z.of_int 20) ]; funcref ]);
+    |> create_tableinst (CaseV ("", [ CaseV ("[", [ natV (Z.of_int 10); natV (Z.of_int 20) ]); funcref ]));
   ] in
   (* Builtin memories *)
-  let zeros = numV Z.zero |> Array.make 0x10000 in
+  let zeros = natV Z.zero |> Array.make 0x10000 in
   let memories = [
     "memory",
     listV zeros
-    |> create_meminst (CaseV ("PAGE", [ TupV [ numV Z.one; numV (Z.of_int 2) ] ]));
+    |> create_meminst (CaseV ("PAGE", [ CaseV ("[", [ natV Z.one; natV (Z.of_int 2) ]) ]));
   ] in
   let tags = [] in
 
@@ -101,7 +101,7 @@ let builtin () =
       | _ -> assert false
     in
     let new_extern =
-      StrV [ "NAME", ref (TextV name); "ADDR", ref (CaseV (kind, [ numV addr ])) ]
+      StrV [ "NAME", ref (TextV name); "ADDR", ref (CaseV (kind, [ natV addr ])) ]
     in
 
     (* Update Store *)
@@ -147,7 +147,7 @@ let is_builtin = function
 
 let call name =
   let local =
-    WasmContext.get_current_frame ()
+    WasmContext.get_current_context "FRAME_"
     |> unwrap_framev
     |> strv_access "LOCALS"
     |> listv_nth
@@ -162,13 +162,13 @@ let call name =
   | "PRINT_I32" ->
     local 0
     |> as_const "I32"
-    |> al_to_int32
+    |> al_to_nat32
     |> I32.to_string_s
     |> Printf.printf "- print_i32: %s\n"
   | "PRINT_I64" ->
     local 0
     |> as_const "I64"
-    |> al_to_int64
+    |> al_to_nat64
     |> I64.to_string_s
     |> Printf.printf "- print_i64: %s\n"
   | "PRINT_F32" ->
@@ -184,7 +184,7 @@ let call name =
     |> F64.to_string
     |> Printf.printf "- print_f64: %s\n"
   | "PRINT_I32_F32" ->
-    let i32 = local 0 |> as_const "I32" |> al_to_int32 |> I32.to_string_s in
+    let i32 = local 0 |> as_const "I32" |> al_to_nat32 |> I32.to_string_s in
     let f32 = local 1 |> as_const "F32" |> al_to_float32 |> F32.to_string in
     Printf.printf "- print_i32_f32: %s %s\n" i32 f32
   | "PRINT_F64_F64" ->

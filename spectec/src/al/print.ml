@@ -1,9 +1,8 @@
 open Ast
+open Xl
 open Printf
 open Util
 open Source
-
-module Atom = El.Atom
 
 
 (* Helper functions *)
@@ -58,12 +57,8 @@ let rec string_of_record r =
 
 and string_of_value =
   function
-  | LabelV (v1, v2) ->
-    sprintf "Label_%s %s" (string_of_value v1) (string_of_value v2)
-  | FrameV (None, v2) -> sprintf "(Frame %s)" (string_of_value v2)
-  | FrameV (Some v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2)
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
-  | NumV n -> "0x" ^ Z.format "%X" n
+  | NumV n -> Num.to_string n
   | BoolV b -> string_of_bool b
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
@@ -82,26 +77,14 @@ and string_of_values sep = string_of_list string_of_value sep
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "!"
-  | MinusOp -> "-"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
 
 let string_of_binop = function
-  | AndOp -> "&&"
-  | OrOp -> "||"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "·"
-  | DivOp -> "/"
-  | ModOp -> "\\"
-  | ExpOp -> "^"
-  | EqOp -> "=="
-  | NeOp -> "!="
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "≤"
-  | GeOp -> "≥"
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 
 (* Iters *)
@@ -127,8 +110,9 @@ and string_of_record_expr r =
 
 and string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
+  | NumE n -> Num.to_string n
   | BoolE b -> string_of_bool b
+  | CvtE (e, _, t) -> sprintf "$%s$(%s)" (Il.Print.string_of_numtyp t) (string_of_expr e)
   | UnE (op, e) -> sprintf "%s(%s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -152,16 +136,9 @@ and string_of_expr expr =
   | MemE (e1, e2) ->
     sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
-  | ArityE e -> sprintf "arity(%s)" (string_of_expr e)
   | GetCurStateE -> "current_state()"
-  | GetCurLabelE -> "current_label()"
-  | GetCurFrameE -> "current_frame()"
-  | GetCurContextE -> "current_context()"
-  | FrameE (None, e2) ->
-    sprintf "callframe(%s)" (string_of_expr e2)
-  | FrameE (Some e1, e2) ->
-    sprintf "callframe(%s, %s)" (string_of_expr e1)
-      (string_of_expr e2)
+  | GetCurContextE None -> "current_context()"
+  | GetCurContextE (Some a) -> sprintf "current_context(%s)" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
@@ -171,10 +148,7 @@ and string_of_expr expr =
   | UpdE (e1, ps, e2) ->
     sprintf "update(%s%s, %s)" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
-  | ContE e -> sprintf "cont(%s)" (string_of_expr e)
   | ChooseE e -> sprintf "choose(%s)" (string_of_expr e)
-  | LabelE (e1, e2) ->
-    sprintf "label(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
@@ -185,6 +159,9 @@ and string_of_expr expr =
     let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
     (match op' with
     | [] -> "()"
+    | _::tl when List.length tl != List.length el ->
+      let res = String.concat ", " (List.map string_of_expr el) in
+      "(Invalid CaseE: " ^ (string_of_mixop op) ^ " (" ^ res ^ "))"
     | hd::tl ->
       let res =
         List.fold_left2 (
@@ -202,12 +179,6 @@ and string_of_expr expr =
   | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "valid(%s)" (string_of_expr e)
-  | TopLabelE -> "top_label()"
-    (* TODO: "type(top()) == label"*)
-  | TopFrameE -> "top_frame()"
-    (* TODO: "type(top()) == frame"*)
-  | TopHandlerE -> "top_handler()"
-    (* TODO: "type(top()) == handler"*)
   | TopValueE (Some e) -> sprintf "top_value(%s)" (string_of_expr e)
   | TopValueE None -> "top_value()"
   | TopValuesE e -> sprintf "top_values(%s)" (string_of_expr e)
@@ -267,12 +238,7 @@ let enter_block f instrs =
 (* Prefix for stack push/pop operations *)
 let string_of_stack_prefix expr =
   match expr.it with
-  | GetCurContextE
-  | GetCurFrameE
-  | GetCurLabelE
-  | ContE _
-  | LabelE _
-  | FrameE _
+  | GetCurContextE _
   | VarE ("F" | "L") -> ""
   | IterE _ -> ""
   | _ -> ""
@@ -396,11 +362,9 @@ let string_of_algorithm algo =
 (* Values *)
 
 let rec structured_string_of_value = function
-  | LabelV (v1, v2) -> "LabelV (" ^ structured_string_of_value v1 ^ "," ^ structured_string_of_value v2 ^ ")"
-  | FrameV _ -> "FrameV (TODO)"
   | ListV lv -> "ListV" ^ "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
-  | NumV n -> "NumV (" ^ Z.to_string n ^ ")"
+  | NumV n -> "NumV (" ^ Num.to_string n ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
   | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")"
   | CaseV (s, vl) -> "CaseV(" ^ s ^ ", [" ^ structured_string_of_values vl ^ "])"
@@ -432,8 +396,15 @@ and structured_string_of_record_expr r =
 
 and structured_string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
-  | BoolE b -> string_of_bool b
+  | NumE _ | BoolE _ -> string_of_expr expr
+  | CvtE (e, t1, t2) ->
+    "CvtE ("
+    ^ structured_string_of_expr e
+    ^ ", "
+    ^ Il.Print.string_of_numtyp t1
+    ^ ", "
+    ^ Il.Print.string_of_numtyp t2
+    ^ ")"
   | UnE (op, e) ->
     "UnE ("
     ^ string_of_unop op
@@ -473,12 +444,9 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | LenE e -> "LenE (" ^ structured_string_of_expr e ^ ")"
-  | ArityE e -> "ArityE (" ^ structured_string_of_expr e ^ ")"
   | GetCurStateE -> "GetCurStateE"
-  | GetCurLabelE -> "GetCurLabelE"
-  | GetCurFrameE -> "GetCurFrameE"
-  | GetCurContextE -> "GetCurContextE"
-  | FrameE _ -> "FrameE TODO"
+  | GetCurContextE None -> "GetCurContextE"
+  | GetCurContextE (Some a) -> sprintf "GetCurContextE (%s)" (string_of_atom a)
   | ListE el -> "ListE ([" ^ structured_string_of_exprs el ^ "])"
   | AccE (e, p) ->
     "AccE ("
@@ -505,14 +473,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | StrE r -> "StrE (" ^ structured_string_of_record_expr r ^ ")"
-  | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
   | ChooseE e1 -> "ChooseE (" ^ structured_string_of_expr e1 ^ ")"
-  | LabelE (e1, e2) ->
-    "LabelE ("
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ structured_string_of_expr e2
-    ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
   | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
   | IterE (e, (iter, xes)) ->
@@ -534,9 +495,6 @@ and structured_string_of_expr expr =
   | HasTypeE (e, t) ->
     sprintf "HasTypeE (%s, %s)" (structured_string_of_expr e) (string_of_typ t)
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
-  | TopLabelE -> "TopLabelE"
-  | TopFrameE -> "TopFrameE"
-  | TopHandlerE -> "TopHandlerE"
   | TopValueE None -> "TopValueE"
   | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")"
   | TopValuesE e -> "TopValuesE (" ^ structured_string_of_expr e ^ ")"

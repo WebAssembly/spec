@@ -1,13 +1,15 @@
 open Util.Source
+open Xl
 
 (* Terminals *)
 
-type atom = El.Atom.atom
-type mixop = Il.Ast.mixop
+type atom = Atom.atom
+type mixop = Mixop.mixop
 
 (* Types *)
 
 (* TODO: define AL type *)
+type numtyp = Num.typ
 type typ = Il.Ast.typ
 
 (* Identifiers *)
@@ -27,7 +29,7 @@ type ('a, 'b) record = ('a * 'b ref) list
 and store = (atom, value) record
 
 and value =
-  | NumV of Z.t                        (* number *)
+  | NumV of Num.num                    (* number *)
   | BoolV of bool                      (* boolean *)
   | TextV of string                    (* string *)
   | ListV of value growable_array      (* list of values *)
@@ -35,8 +37,6 @@ and value =
   | CaseV of id * value list           (* constructor *)
   | OptV of value option               (* optional value *)
   | TupV of value list                 (* tuple of values *)
-  | FrameV of value option * value     (* TODO: desugar using CaseV? *)
-  | LabelV of value * value            (* TODO: desugar using CaseV? *)
   | FnameV of id                       (* name of the first order function *)
 
 type extend_dir =                      (* direction of extension *)
@@ -45,29 +45,9 @@ type extend_dir =                      (* direction of extension *)
 
 (* Operators *)
 
-type unop =
-  | NotOp    (* `~` *)
-  | MinusOp  (* `-` *)
+type unop = [Bool.unop | Num.unop]
+type binop = [Bool.binop | Num.binop | Bool.cmpop | Num.cmpop]
 
-type binop =
-  (* arithmetic operation *)
-  | AddOp    (* `+` *)
-  | SubOp    (* `-` *)
-  | MulOp    (* `*` *)
-  | DivOp    (* `/` *)
-  | ModOp    (* `\` *)
-  | ExpOp    (* `^` *)
-  (* logical operation *)
-  | ImplOp   (* `=>` *)
-  | EquivOp  (* `<=>` *)
-  | AndOp    (* `/\` *)
-  | OrOp     (* `\/` *)
-  | EqOp     (* `=` *)
-  | NeOp     (* `=/=` *)
-  | LtOp     (* `<` *)
-  | GtOp     (* `>` *)
-  | LeOp     (* `<=` *)
-  | GeOp     (* `>=` *)
 
 (* Iteration *)
 
@@ -82,8 +62,9 @@ type iter =
 and expr = (expr', Il.Ast.typ) note_phrase
 and expr' =
   | VarE of id                                    (* varid *)
-  | NumE of Z.t                                   (* number *)
+  | NumE of Num.num                               (* number *)
   | BoolE of bool                                 (* boolean *)
+  | CvtE of expr * numtyp * numtyp                (* conversion *)
   | UnE of unop * expr                            (* unop expr *)
   | BinE of binop * expr * expr                   (* expr binop expr *)
   | AccE of expr * path                           (* expr `[` path `]` *)
@@ -101,25 +82,16 @@ and expr' =
   | IterE of expr * iterexp                       (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
-  | ArityE of expr                                (* "the arity of expr" *)
-  | FrameE of expr option * expr                  (* "the activation of expr (with arity expr)?" *)
-  | LabelE of expr * expr                         (* "the label whose arity is expr and whose continuation is expr" *)
   | GetCurStateE                                  (* "the current state" *)
-  | GetCurFrameE                                  (* "the current frame" *)
-  | GetCurLabelE                                  (* "the current lbael" *)
-  | GetCurContextE                                (* "the current context" *)
-  | ContE of expr                                 (* "the continuation of" expr *)
+  | GetCurContextE of atom option                 (* "the current context of certain (Some) or any (None) type" *)
   | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
   | IsCaseOfE of expr * atom                      (* expr is of the case atom *)
   | IsValidE of expr                              (* expr is valid *)
-  | ContextKindE of atom                          (* "the top of the stack is a" atom *)
+  | ContextKindE of atom                          (* "the fisrt non-value entry of the stack is a" atom *)
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
   | HasTypeE of expr * typ                        (* the type of expr is ty *)
-  | TopFrameE                                     (* "a frame is now on the top of the stack" *)
-  | TopLabelE                                     (* "a label is now on the top of the stack" *)
-  | TopHandlerE                                   (* "a handler is now on the top of the stack" *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)

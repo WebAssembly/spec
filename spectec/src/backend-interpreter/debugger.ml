@@ -5,19 +5,17 @@ open Print
 
 
 type state =
-  | Step
-  | StepInstr of string
-  | Continue
-  | Quit
+  | Step of int
+  | StepInstr of string * int
+  | Continue of int
 
 let debug = ref false
 let break_points = ref []
-let state = ref Step
-let command_cnt = ref 0
-let try_command () =
-  let cnt = !command_cnt in
-  if cnt > 0 then command_cnt := cnt - 1;
-  !command_cnt = 0
+let is_bp name =
+  List.exists
+    (fun bp -> bp = String.lowercase_ascii name || bp = String.uppercase_ascii name)
+    !break_points
+let state = ref (Step 1)
 
 let help_msg =
   "
@@ -44,24 +42,29 @@ let help_msg =
   "
 
 let allow_command ctx =
+  let is_entry name il = name |> lookup_algo |> body_of_algo = il in
+
   match !state with
-  | Step -> try_command ()
-  | StepInstr name when name == AlContext.get_name ctx ->
-    try_command ()
-  | Continue ->
+  | Step n ->
+    if n = 1 then
+      true
+    else
+      (state := Step (n-1); false)
+  | StepInstr (name, n) when name == AlContext.get_name ctx ->
+    if n = 1 then
+      true
+    else
+      (state := StepInstr (name, n-1); false)
+  | Continue n ->
     (match ctx with
     | AlContext.Al (name, _, il, _) :: _
-    | AlContext.Enter (name, il, _) :: _
-    when
-      List.exists
-        (fun bp ->
-          bp = String.lowercase_ascii name || bp = String.uppercase_ascii name)
-        !break_points &&
-      name |> lookup_algo |> body_of_algo = il
-    -> try_command ()
+    when is_bp name && is_entry name il ->
+      if n = 1 then
+        true
+      else
+        (state := Continue (n-1); false)
     | _ -> false
     )
-  | Quit -> false
   | _ -> false
 
 let rec do_debug ctx =
@@ -71,7 +74,8 @@ let rec do_debug ctx =
   |> handle_command ctx;
 and handle_command ctx = function
   | ("h" | "help") :: _ ->
-    print_endline help_msg
+    print_endline help_msg;
+    do_debug ctx
   | ("b" | "break") :: t -> break_points := !break_points @ t; do_debug ctx
   | ("rm" | "remove") :: t ->
     break_points := List.filter (fun e -> not (List.mem e t)) !break_points;
@@ -80,31 +84,31 @@ and handle_command ctx = function
     print_endline (String.concat " " !break_points);
     do_debug ctx
   | ("s" | "step") :: t ->
-    state := Step;
     (match t with
     | n :: _ when Option.is_some (int_of_string_opt n) ->
-      command_cnt := int_of_string n
-    | _ -> ()
+      state := Step (int_of_string n)
+    | _ ->
+      state := Step 1
     )
   | ("si" | "stepinstr") :: t ->
     (match ctx with
     | (AlContext.Al (name, _, il, _) | AlContext.Enter (name, il, _)) :: _
     when List.length il > 0 ->
-      state := StepInstr name;
       (match t with
       | n :: _ when Option.is_some (int_of_string_opt n) ->
-        command_cnt := int_of_string n
-      | _ -> ()
+        state := StepInstr (name, int_of_string n)
+      | _ ->
+        state := StepInstr (name, 1)
       )
     | _ ->
-      handle_command ctx ("step" :: t);
+      handle_command ctx ("step" :: t)
     )
   | ("c" | "continue") :: t ->
-    state := Continue;
     (match t with
     | n :: _ when Option.is_some (int_of_string_opt n) ->
-      command_cnt := int_of_string n
-    | _ -> ()
+      state := Continue (int_of_string n)
+    | _ ->
+      state := Continue 1
     )
   | "al" :: _ ->
     ctx
@@ -123,7 +127,8 @@ and handle_command ctx = function
       |> (fun arr -> Array.get arr idx)
       |> string_of_value
       |> print_endline;
-    with _ -> ());
+    with _ -> ()
+    );
     do_debug ctx
   | "lookup" :: s :: _ ->
     (match ctx with
@@ -131,11 +136,10 @@ and handle_command ctx = function
       lookup_env_opt s env
       |> Option.map string_of_value
       |> Option.iter print_endline;
-      do_debug ctx
     | _ -> ()
-    )
-  | ("q" | "quit") :: _ -> state := Quit
-  | [] -> ()
+    );
+    do_debug ctx
+  | ("q" | "quit") :: _ -> debug := false
   | _ -> do_debug ctx
 
 let run ctx =

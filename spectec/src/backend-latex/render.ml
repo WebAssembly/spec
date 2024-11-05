@@ -2,9 +2,8 @@ open Util
 open Source
 open El.Ast
 open El.Convert
+open Xl
 open Config
-
-module Atom = El.Atom
 
 
 (* Errors *)
@@ -132,6 +131,7 @@ type env =
     desc_typ : hints ref;
     desc_gram : hints ref;
     deco_typ : bool;
+    deco_gram : bool;
     deco_rule : bool;
     tab_rel : hints ref;
   }
@@ -155,6 +155,7 @@ let new_env config =
     desc_typ = ref Map.empty;
     desc_gram = ref Map.empty;
     deco_typ = false;
+    deco_gram = false;
     deco_rule = false;
     tab_rel = ref Map.empty;
   }
@@ -166,7 +167,9 @@ let env_with_config env config : env =
   {env with config}
 
 let with_syntax_decoration b env = {env with deco_typ = b}
+let with_grammar_decoration b env = {env with deco_gram = b}
 let with_rule_decoration b env = {env with deco_rule = b}
+
 let without_macros b env =
   if not b then env else
   env_with_config env {env.config with macros_for_ids = false}
@@ -407,6 +410,147 @@ Printf.printf "\n[env macro_atom]\n%s\n%!"
   env
 
 
+(* Rendering tables *)
+
+type col = Col of string | Br of [`Wide | `Narrow]
+type row = Row of col list | Sep
+type table = row list
+
+let rec string_of_row sep br = function
+  | [] -> ""
+  | (Col s)::(Br _)::cols -> s ^ br ^ string_of_row sep br cols
+  | (Col s)::cols -> s ^ sep ^ string_of_row sep br cols
+  | (Br _)::cols -> br ^ string_of_row sep br cols
+
+let rec string_of_table vsep vbr hsep hbr = function
+  | [] -> ""
+  | (Row cols)::Sep::rows -> string_of_row hsep hbr cols ^ vbr ^ string_of_table vsep vbr hsep hbr rows
+  | (Row cols)::rows -> string_of_row hsep hbr cols ^ vsep ^ string_of_table vsep vbr hsep hbr rows
+  | Sep::rows -> vbr ^ string_of_table vsep vbr hsep hbr rows
+
+let rec map_cols f = function
+  | [] -> []
+  | (Br w)::cols -> Br w :: map_cols f cols
+  | (Col s)::cols -> Col (f s) :: map_cols f cols
+
+let rec map_rows f = function
+  | [] -> []
+  | Sep::rows -> Sep :: map_rows f rows
+  | (Row cols)::rows -> Row (f cols) :: map_rows f rows
+
+let prefix_row (pre : col list) = function
+    | (Row cols)::rows -> (Row (pre @ cols))::rows
+    | rows -> (Row pre)::rows
+
+let rec prefix_rows (pre_hd : col list) (pre_tl : col list) = function
+  | [] -> [Row pre_hd]
+  | Sep::rows -> Sep :: prefix_rows pre_hd pre_tl rows
+  | (Row cols)::rows -> Row (pre_hd @ cols) :: map_rows (fun row -> pre_tl @ row) rows
+
+let prefix_rows_hd pre tab =
+  let empty = map_cols (fun _ -> "") pre in
+  prefix_rows pre empty tab
+
+let rec merge_cols sep = function
+  | [] -> []
+  | (Col s1)::(Col s2)::cols -> merge_cols sep (Col (s1 ^ sep ^ s2) :: cols)
+  | col::cols -> col :: merge_cols sep cols
+
+let concat_cols sep s = function
+  | (Col s')::cols -> Col (s ^ sep ^ s') :: cols
+  | cols -> Col s :: cols
+
+let concat_rows sep s = function
+  | (Row cols)::rows -> Row (concat_cols sep s cols) :: rows
+  | rows -> Row (concat_cols sep s []) :: rows
+
+let rec concat_cols_table sep cols tab =
+  match cols with
+  | [] -> tab
+  | [Col s] -> concat_rows sep s tab
+  | col::cols' -> prefix_row [col] (concat_cols_table sep cols' tab)
+
+let rec concat_table sep tab1 tab2 =
+  match tab1 with
+  | [] -> tab2
+  | [Row cols] -> concat_cols_table sep cols tab2
+  | row::tab1' -> row :: concat_table sep tab1' tab2
+
+let rec render_cols env ((fmt, indent_wide, indent_narrow) as cfg) i = function
+  | [] -> ""
+  | (Br w)::cols ->
+    let width = List.length fmt in
+    let indent = if w = `Wide then indent_wide else indent_narrow in
+    let fmt' = "l" :: List.map (fun _ -> "@{}l") (List.tl cols) in
+    let n = width - i in
+    (* Add spare &'s at the end of the current line to work around Latex
+     * strangeness (it will calculate the formula's width incorrectly,
+     * leading to bogus placement). *)
+    String.make (max 0 (n - 1)) '&' ^ " \\\\\n" ^
+    String.make indent '&' ^ " " ^
+    "\\multicolumn{" ^ string_of_int (width - indent) ^ "}{@{}l@{}}{\\quad\n" ^
+      (if n <= 1 then
+        render_cols env (fmt', 0, 0) 0 cols
+      else
+        render_table env "" fmt' 0 0 [Row cols]
+      ) ^
+    "\n}"
+  | (Col s)::[] -> s
+  | (Col "")::cols -> "& " ^ render_cols env cfg (i + 1) cols
+  | (Col s)::cols -> s ^ " & " ^ render_cols env cfg (i + 1) cols
+
+and render_rows env cfg = function
+  | [] -> ""
+  | Sep::rows -> "{} \\\\[-2ex]\n" ^ render_rows env cfg rows
+  | (Row r)::Sep::rows ->
+    render_cols env cfg 0 r ^ " \\\\[0.8ex]\n" ^
+    render_rows env cfg rows
+  | (Row r)::rows ->
+    render_cols env cfg 0 r ^ " \\\\\n" ^
+    render_rows env cfg rows
+
+and render_table env sp fmt indent_wide indent_narrow (tab : table) =
+  let fmt' = List.hd fmt ::
+    List.map (fun s -> if s.[0] = '@' then s else sp ^ s) (List.tl fmt) in
+  "\\begin{array}[t]{@{}" ^ String.concat "" fmt' ^ "@{}}\n" ^
+  render_rows env (fmt, indent_wide, indent_narrow) tab ^
+  "\\end{array}"
+
+
+let rec render_sep_defs f = function
+  | [] -> []
+  | {it = SepD; _}::ds -> Sep :: render_sep_defs f ds
+  | d::ds -> f d @ render_sep_defs f ds
+
+(*
+ * TODO(4, rossberg): Reconcile this; perhaps get rid of NL lists altogether.
+ * The NLs in different NL lists are currently interpreted differently:
+ *  - comma nl list (str): comma-nl => NL instead of WS
+ *  - bar nl list (alt): nl-bar => NL instead of WS
+ *  - dash nl list (prem): dash-dash => Sep instead of NL
+ *  - sym seq: nl-nl-nl => Sep instead of NL or WS
+ *  - sym alt: nl-bar => NL instead of WS
+ *)
+let rec render_nl_list env (sep : [`V | `H] * string) (f : env -> 'a -> row list) :
+  'a nl_list -> table =
+  function
+  | [] -> []
+  | [Elem x] -> f env x
+  | (Elem x)::Nl::xs when env.config.display ->
+    f env x @ render_nl_list env sep f (Nl::xs)
+  | (Elem x)::Nl::xs -> render_nl_list env sep f ((Elem x)::xs)
+  | (Elem x)::xs ->
+    let env' = {env with config = {env.config with display = false}} in
+    let rows1 = f env' x in
+    let rows2 = render_nl_list env sep f xs in
+    if fst sep = `V then rows1 @ rows2
+    else concat_table " " rows1 (concat_rows " " (snd sep) rows2)
+  | Nl::xs when env.config.display ->
+    let rows = render_nl_list env sep f xs in
+    if fst sep = `V then Sep :: rows else rows
+  | Nl::xs -> render_nl_list env sep f xs
+
+
 (* Show expansions *)
 
 exception Arity_mismatch
@@ -494,12 +638,15 @@ and expand_exp env ctxt e =
   | AtomE atom ->
     let atom' = expand_atom env ctxt atom in
     AtomE atom'
-  | BoolE _ | NatE _ | TextE _ | EpsE ->
+  | BoolE _ | NumE _ | TextE _ | EpsE ->
     e.it
   | VarE (id, args) ->
     let id' = expand_id env ctxt id in
     let args' = List.map (expand_arg env ctxt) args in
     VarE (id', args')
+  | CvtE (e1, nt) ->
+    let e1' = expand_exp env ctxt e1 in
+    CvtE (e1', nt)
   | UnE (op, e1) ->
     let e1' = expand_exp env ctxt e1 in
     UnE (op, e1')
@@ -904,34 +1051,34 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
 (* Operators *)
 
 let render_unop = function
-  | NotOp -> "\\neg"
-  | PlusOp -> "+"
-  | MinusOp -> "-"
-  | PlusMinusOp -> "\\pm"
-  | MinusPlusOp -> "\\mp"
+  | `NotOp -> "\\neg"
+  | `PlusOp -> "+"
+  | `MinusOp -> "-"
+  | `PlusMinusOp -> "\\pm"
+  | `MinusPlusOp -> "\\mp"
 
 let render_binop = function
-  | AndOp -> "\\land"
-  | OrOp -> "\\lor"
-  | ImplOp -> "\\Rightarrow"
-  | EquivOp -> "\\Leftrightarrow"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "\\cdot"
-  | DivOp -> "/"
-  | ModOp -> "\\mathbin{\\mathrm{mod}}"
-  | ExpOp -> assert false
+  | `AndOp -> "\\land"
+  | `OrOp -> "\\lor"
+  | `ImplOp -> "\\Rightarrow"
+  | `EquivOp -> "\\Leftrightarrow"
+  | `AddOp -> "+"
+  | `SubOp -> "-"
+  | `MulOp -> "\\cdot"
+  | `DivOp -> "/"
+  | `ModOp -> "\\mathbin{\\mathrm{mod}}"
+  | `PowOp -> assert false
 
 let render_cmpop = function
-  | EqOp -> "="
-  | NeOp -> "\\neq"
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "\\leq"
-  | GeOp -> "\\geq"
+  | `EqOp -> "="
+  | `NeOp -> "\\neq"
+  | `LtOp -> "<"
+  | `GtOp -> ">"
+  | `LeOp -> "\\leq"
+  | `GeOp -> "\\geq"
 
 let render_dots = function
-  | Dots -> [Elem "\\ldots"]
+  | Dots -> [Row [Col "\\dots"]]
   | NoDots -> []
 
 
@@ -949,44 +1096,69 @@ let rec render_iter env = function
 
 (* Types *)
 
-and render_typ env t =
+and render_typ env t : string =
+  render_exp env (exp_of_typ t)
+
+and render_nottyp env t : table =
   (*
-  Printf.eprintf "[render_typ %s] %s\n%!"
+  Printf.eprintf "[render_nottyp %s] %s\n%!"
     (string_of_region t.at) (El.Print.string_of_typ t);
   *)
   match t.it with
   | StrT tfs ->
-    "\\{ " ^
-    "\\begin{array}[t]{@{}l@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) tfs ^ " \\}" ^
-    "\\end{array}"
-  | CaseT (dots1, ts, tcases, dots2) ->
-    altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
-      (render_dots dots1 @ map_nl_list (render_typ env) ts @
-        map_nl_list (render_typcase env) tcases @ render_dots dots2)
+    [Row [Col (
+      "\\{ " ^
+      render_table env "@{}" ["l"; "l"] 0 0
+        (concat_table "" (render_nl_list env (`H, " ") render_typfield tfs) [Row [Col " \\}"]])
+    )]]
+  | CaseT (dots1, ts, tcs, dots2) ->
+    let render env = function
+      | `Dots -> render_dots Dots
+      | `Typ t -> render_nottyp env t
+      | `TypCase tc -> render_typcase env tc
+    in
+    let rhss =
+      render_nl_list env (`H, "~|~") render (
+        (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
+        map_nl_list (fun t -> `Typ t) ts @
+        map_nl_list (fun tc -> `TypCase tc) tcs @
+        (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+      )
+    in
+    if env.config.display then
+      rhss
+    else
+      [Row [Col (string_of_table " ~|~ " " ~|~ " "" "" rhss)]]
   | ConT tcon ->
     render_typcon env tcon
   | RangeT tes ->
-    altern_map_nl " ~|~ " "\\\\ &&|&\n" (render_typenum env) tes
+    render_nl_list env (`H, "~|~") render_typenum tes
+  | NumT `NatT ->
+    [Row [Col "0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
+  | NumT `IntT ->
+    [Row [Col "\\dots ~|~ {-2} ~|~ {-1} ~|~ 0 ~|~ 1 ~|~ 2 ~|~ \\dots"]]
   | _ ->
-    render_exp env (exp_of_typ t)
+    [Row [Col (render_typ env t)]]
 
 
 and render_typfield env (atom, (t, prems), _hints) =
-  render_fieldname env atom ^ "~" ^
-    render_conditions env (render_typ env t) "&&&" prems
+  prefix_rows_hd 
+    [Col (render_fieldname env atom ^ "~" ^ render_typ env t)]
+    (render_conditions env prems)
 
-and render_typcase env (_atom, (t, prems), _hints) =
-  render_conditions env (render_typ env t) "&&&" prems
+and render_typcase env (_atom, (t, prems), _hints) : row list =
+  prefix_rows_hd [Col (render_typ env t)] (render_conditions env prems)
 
-and render_typcon env ((t, prems), _hints) =
-  render_conditions env (render_typ env t) "&&&" prems
+and render_typcon env ((t, prems), _hints) : row list =
+  prefix_rows_hd [Col (render_typ env t)] (render_conditions env prems)
 
-and render_typenum env (e, eo) =
-  render_exp env e ^
-  match eo with
-  | None -> ""
-  | Some e2 -> " ~|~ \\ldots ~|~ " ^ render_exp env e2
+and render_typenum env (e, eo) : row list =
+  let r =
+    match eo with
+    | None -> ""
+    | Some e2 -> " ~|~ \\ldots ~|~ " ^ render_exp env e2
+  in
+  [Row [Col (render_exp env e ^ r)]]
 
 
 (* Expressions *)
@@ -1016,27 +1188,29 @@ and render_exp env e =
     render_apply render_varid render_exp env env.show_typ env.macro_typ id args
   | BoolE b ->
     render_atom env (Atom.(Atom (string_of_bool b) $$ e.at % info "bool"))
-  | NatE (DecOp, n) -> Z.to_string n
-  | NatE (HexOp, n) ->
+  | NumE (`DecOp, `Nat n) -> Z.to_string n
+  | NumE (`HexOp, `Nat n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
-  | NatE (CharOp, n) ->
+  | NumE (`CharOp, `Nat n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NatE (AtomOp, n) ->
+  | NumE (`AtomOp, `Nat n) ->
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
-  | TextE t -> "\\mbox{\\tt`" ^ t ^ "'}"
+  | NumE _ -> assert false
+  | TextE t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
+  | CvtE (e1, _) -> render_exp env e1
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
-  | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
+  | BinE (e1, `PowOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
-  | BinE (({it = NatE (DecOp, _); _} as e1), MulOp,
+  | BinE (({it = NumE (`DecOp, `Nat _); _} as e1), `MulOp,
       ({it = VarE _ | CallE (_, []) | ParenE _; _ } as e2)) ->
     render_exp env e1 ^ " \\, " ^ render_exp env e2
   | BinE (e1, op, e2) ->
@@ -1155,7 +1329,7 @@ and render_exp_seq' env = function
   | e1::e2::es when e1.at.right.line < e2.at.left.line ->
     let s1 = render_exp env e1 in
     let s2 = render_exp_seq' env (e2::es) in
-    s1 ^ " \\\\ " ^ s2
+    s1 ^ " \\\\\n  " ^ s2
   | e1::es ->
     let s1 = render_exp env e1 in
     let s2 = render_exp_seq' env es in
@@ -1197,37 +1371,43 @@ and render_prem env prem =
 
 and word s = "\\mbox{" ^ s ^ "}"
 
-and render_conditions env rhs tabs prems =
+and render_conditions env prems : row list =
   let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
-  if prems' = [] then rhs else
-  let rhs', prems'', tabs', begin_, end_ =
+  if prems' = [] then [] else
+  let br, prems'' =
     match prems' with
     | Nl::Nl::prems'' ->
       (* If premises start with double empty line, break and align below LHS. *)
-      let tabs' = String.sub tabs 0 (max 0 (String.length tabs - 2)) in
-      let rhs' = if String.starts_with ~prefix:"\\\\" rhs then rhs else
-        "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " }" in
-      rhs' ^ " \\\\\n  " ^ tabs',
-      prems'', tabs', " \\multicolumn{4}{@{}l@{}}{\\qquad\\quad ", "}"
-      (* If premises start with an empty line, break and align below RHS. *)
+      [Br `Wide], prems''
     | Nl::prems'' ->
-      let rhs' = if String.starts_with ~prefix:"\\\\" rhs then rhs else
-        "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " }" in
-      rhs' ^ " \\\\\n  " ^ tabs,
-      prems'', tabs, " \\multicolumn{2}{l@{}}{\\quad ", "}"
-    | _ -> rhs ^  "\n  &", prems', tabs ^ "&", "\\qquad ", ""
+      (* If premises start with an empty line, break and align below RHS. *)
+      [Br `Narrow], prems''
+    | _ -> [], prems'
   in
-  let prems''', first =
+  let prems''', pre =
     match prems'' with
     | [Elem {it = ElsePr; _}] -> [], word "otherwise"
-    | (Elem {it = ElsePr; _})::prems''' -> prems''', word "otherwise, if" ^ "~"
-    | _ -> prems'', word "if" ^ "~"
+    | (Elem {it = ElsePr; _})::prems''' -> prems''', word "otherwise, if"
+    | _ -> prems'', word "if"
   in
-  rhs' ^
-  begin_ ^ first ^
-    concat_map_nl (end_ ^ " \\\\\n  " ^ tabs' ^ begin_ ^ "{\\land}~") ""
-      (render_prem env) prems''' ^
-  end_
+  prefix_row br (
+    match prems''' with
+    | [] -> [Row [Col pre]]
+    | [Elem prem] -> [Row [Col ("\\quad " ^ pre ^ "~ " ^ render_prem env prem)]]
+    | _ ->
+      [Row [Col
+        ("\\quad\n" ^ render_table env "" ["l"] 0 0
+          (map_rows (merge_cols "~ ")
+            (prefix_rows [Col pre] [Col "{\\land}"]
+              (render_nl_list env (`V, " \\and ") render_condition prems''')
+            )
+          )
+        )
+      ]]
+  )
+
+and render_condition env prem =
+  [Row [Col (render_prem env prem)]]
 
 
 (* Grammars *)
@@ -1235,7 +1415,7 @@ and render_conditions env rhs tabs prems =
 and render_exp_as_sym env e =
   render_sym env (sym_of_exp e)
 
-and render_sym env g =
+and render_sym env g : string =
   (*
   Printf.eprintf "[render_sym %s] %s\n%!"
     (string_of_region g.at) (El.Print.string_of_sym g);
@@ -1244,23 +1424,23 @@ and render_sym env g =
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym
       env env.show_gram env.macro_gram id args
-  | NatG (DecOp, n) -> Z.to_string n
-  | NatG (HexOp, n) ->
+  | NumG (`DecOp, n) -> Z.to_string n
+  | NumG (`HexOp, n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
-  | NatG (CharOp, n) ->
+  | NumG (`CharOp, n) ->
     let fmt =
       if n < Z.of_int 0x100 then "%02X" else
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
-  | TextG t -> "`" ^ t ^ "'"
+  | NumG (`AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
+  | TextG t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | EpsG -> "\\epsilon"
-  | SeqG gs -> render_syms "~~" env gs
+  | SeqG gs -> render_sym_seq env gs
   | AltG gs -> render_syms " ~|~ " env gs
   | RangeG (g1, g2) ->
     render_sym env g1 ^ " ~|~ \\ldots ~|~ " ^ render_sym env g2
@@ -1273,29 +1453,63 @@ and render_sym env g =
     "{" ^ render_sym env g1 ^ "}" ^ "{" ^ render_sym env g2 ^ "}"
   | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
+(* TODO(3, rossberg): don't hard-code number of tabs *)
 and render_syms sep env gs =
-  altern_map_nl sep " \\\\ &&& " (render_sym env) gs
+  let br = if env.config.display then " \\\\\n&&& " else " " in
+  altern_map_nl sep br (render_sym env) gs
 
-and render_prod arrow env prod =
+(* TODO(3, rossberg): don't hard-code number of tabs *)
+and render_sym_seq env = function
+  | [] -> ""
+  | (Elem g1)::(Elem g2)::gs when g1.at.right.line < g2.at.left.line ->
+    let s1 = render_sym env g1 in
+    let s2 = render_sym_seq env (Elem g2::gs) in
+    s1 ^ " \\\\\n  &&& " ^ s2
+  | (Elem g1)::gs ->
+    let s1 = render_sym env g1 in
+    let s2 = render_sym_seq env gs in
+    if s1 <> "" && s2 <> "" then s1 ^ "~~" ^ s2 else s1 ^ s2
+  | Nl::gs ->
+    let s = render_sym_seq env gs in
+    " \\\\[0.8ex]\n  &&& " ^ s
+
+and render_prod env prod : row list =
   let (g, e, prems) = prod.it in
   match e.it, prems with
-  | (TupE [] | ParenE ({it = SeqE []; _}, _)), [] -> render_sym env g
+  | (TupE [] | ParenE ({it = SeqE []; _}, _)), [] ->
+    [Row [Col (render_sym env g)]]
+  | _ when not env.config.display ->
+    prefix_rows_hd
+      [Col (render_sym env g ^ " ~\\Rightarrow~ " ^ render_exp env e)]
+      (render_conditions env prems)
   | _ ->
-    render_sym env g ^ " " ^ arrow ^ " " ^
-      if g.at.right.line = e.at.left.line then
-        render_conditions env (render_exp env e) "&&&&&" prems
-      else
-        render_conditions env ("\\\\\n  &&& \\multicolumn{3}{@{}l@{}}{\\qquad " ^
-          render_exp env e ^ " }") "&&&&&" prems
+    prefix_rows_hd
+      ( Col (render_sym env g) ::
+        Col "\\quad\\Rightarrow\\quad{}" ::
+        if g.at.right.line = e.at.left.line then
+          Col (render_exp env e) :: []
+        else
+          Br `Narrow :: Col (render_exp env e) :: []
+      )
+      (render_conditions env prems)
 
-and render_gram arrow env gram =
+and render_gram env gram : table =
   let (dots1, prods, dots2) = gram.it in
-  altern_map_nl (if env.config.display then " \\\\ &&|&\n" else " ~|~ ")
-    " \\\\ &&|&\n" Fun.id
-    ( render_dots dots1 @
-      map_nl_list (render_prod arrow env) prods @
-      render_dots dots2
+  let render env = function
+    | `Dots -> render_dots Dots
+    | `Prod p -> render_prod env p
+  in
+  let rhss =
+    render_nl_list env (`H, "~|~") render (
+      (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
+      map_nl_list (fun p -> `Prod p) prods @
+      (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
     )
+  in
+  if env.config.display then
+    rhss
+  else
+    [Row [Col (string_of_table " ~|~ " " ~|~ " "" "" rhss)]]
 
 
 (* Definitions *)
@@ -1365,32 +1579,40 @@ let string_of_desc = function
 
 let render_typdeco env id =
   match env.deco_typ, string_of_desc (Map.find_opt id.it !(env.desc_typ)) with
-  | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
-  | _ -> "& "
+  | true, Some s -> "\\mbox{(" ^ s ^ ")}"
+  | _ -> ""
 
 let render_typdef env d =
   match d.it with
   | TypD (id1, _id2, args, t, _hints) ->
-    render_typdeco env id1 ^
-    render_apply render_typid render_exp env env.show_typ env.macro_typ id1 args ^
-    " &::=& " ^ render_typ env t
+    let lhs =
+      Col (render_typdeco env id1) ::
+      Col (render_apply render_typid render_exp
+        env env.show_typ env.macro_typ id1 args) :: []
+    in
+    let rhss = render_nottyp env t in
+    prefix_rows_hd lhs (prefix_rows [Col "::="] [Col "|"] rhss)
   | _ -> assert false
 
-let render_gramdef env d =
+let render_gramdeco env id =
+  match env.deco_gram, string_of_desc (Map.find_opt id.it !(env.desc_gram)) with
+  | true, Some s -> "\\mbox{(" ^ s ^ ")}"
+  | _ -> ""
+
+let render_gramdef env d : row list =
   match d.it with
   | GramD (id1, _id2, ps, _t, gram, _hints) ->
     let args = List.map arg_of_param ps in
-    let arrow =
-      if env.config.display
-      then "&\\quad\\Rightarrow&\\quad"
-      else "~\\Rightarrow~"
+    let lhs =
+      Col (render_gramdeco env id1) ::
+      Col (render_apply render_gramid render_exp_as_sym
+        env env.show_gram env.macro_gram id1 args) :: []
     in
-    "& " ^ render_apply render_gramid render_exp_as_sym
-      env env.show_gram env.macro_gram id1 args ^
-      " &::=& " ^ render_gram arrow env gram
+    let rhss = render_gram env gram in
+    prefix_rows_hd lhs (prefix_rows [Col "::="] [Col "|"] rhss)
   | _ -> assert false
 
-let render_ruledef env d =
+let render_ruledef_infer env d =
   match d.it with
   | RuleD (id1, id2, e, prems) ->
     let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
@@ -1402,10 +1624,9 @@ let render_ruledef env d =
       render_exp env e ^ "\n" ^
     "}" ^
     render_rule_deco env " \\, " id1 id2 ""
-  | _ -> failwith "render_ruledef"
+  | _ -> failwith "render_ruledef_infer"
 
-
-let render_ruledef_tabular env d =
+let render_ruledef env d : row list =
   match d.it with
   | RuleD (id1, id2, e, prems) ->
     let e1, op, e2 =
@@ -1413,27 +1634,37 @@ let render_ruledef_tabular env d =
       | InfixE (e1, op, e2) -> e1, op, e2
       | _ -> error e.at "unrecognized format for tabular rule, infix operator expected"
     in
-    render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
-      render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
+    prefix_rows_hd
+      ( Col (render_rule_deco env "" id1 id2 " \\quad") ::
+        Col (render_exp env e1) ::
+        Col (render_atom env op) ::
         if e1.at.right.line = e2.at.left.line then
-          render_conditions env (render_exp env e2) "&&&" prems
+          Col (render_exp env e2) :: []
         else
-          render_conditions env ("\\\\\n  & \\multicolumn{3}{@{}l@{}}{\\qquad " ^
-            render_exp env e2 ^ " }") "&&&" prems
-  | _ -> failwith "render_ruledef_tabular"
+          Br `Wide :: Col (render_exp env e2) :: []
+      )
+      (render_conditions env prems)
+  | _ -> failwith "render_ruledef"
 
-let render_funcdef env d =
+let render_funcdef env d : row list =
   match d.it with
   | DefD (id1, args, e, prems) ->
-    render_exp env (CallE (id1, args) $ d.at) ^ " &=& " ^
-      render_conditions env (render_exp env e) "&&" prems
+    prefix_rows_hd
+      ( Col (render_exp env (CallE (id1, args) $ d.at)) ::
+        Col "=" ::
+        if id1.at.right.line = e.at.left.line then
+          Col (render_exp env e) :: []
+        else
+          Br `Wide :: Col (render_exp env e) :: []
+      )
+      (render_conditions env prems)
   | _ -> failwith "render_funcdef"
 
-let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
+let rec render_sep_defs' sep br f = function
   | [] -> ""
-  | {it = SepD; _}::ds -> "{} \\\\[-2ex]\n" ^ render_sep_defs ~sep ~br f ds
-  | d::{it = SepD; _}::ds -> f d ^ br ^ render_sep_defs ~sep ~br f ds
-  | d::ds -> f d ^ sep ^ render_sep_defs ~sep ~br f ds
+  | {it = SepD; _}::ds -> "{} \\\\[-2ex]\n" ^ render_sep_defs' sep br f ds
+  | d::{it = SepD; _}::ds -> f d ^ br ^ render_sep_defs' sep br f ds
+  | d::ds -> f d ^ sep ^ render_sep_defs' sep br f ds
 
 
 let rec render_defs env = function
@@ -1442,37 +1673,39 @@ let rec render_defs env = function
     let sp = if env.config.display then "" else "@{~}" in
     match d.it with
     | TypD _ ->
+      (* Columns: decorator & lhs & ::=/| & rhs & premise *)
       let ds' = merge_typdefs ds in
       if List.length ds' > 1 && not env.config.display then
         error d.at "cannot render multiple syntax types in line";
-      let deco = if env.deco_typ then "l" ^ sp else "l@{}" in
-      "\\begin{array}{@{}" ^ deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
-        render_sep_defs (render_typdef env) ds' ^
-      "\\end{array}"
+      let sp_deco = if env.deco_typ then sp else "@{}" in
+      render_table env sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"] 1 3
+        (render_sep_defs (render_typdef env) ds')
     | GramD _ ->
+      (* Columns: decorator & lhs & ::=/| & rhs & => & attr & premise *)
       let ds' = merge_gramdefs ds in
       if List.length ds' > 1 && not env.config.display then
         error d.at "cannot render multiple grammars in line";
-      "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}l@{}l@{}}\n" ^
-        render_sep_defs (render_gramdef env) ds' ^
-      "\\end{array}"
+      let sp_deco = if env.deco_gram then sp else "@{}" in
+      render_table env sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 3
+        (render_sep_defs (render_gramdef env) ds')
     | RelD (_, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
     | RuleD (id1, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
-        "\\begin{array}{@{}l@{}r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
-          render_sep_defs (render_ruledef_tabular env) ds ^
-        "\\end{array}"
+        (* Columns: decorator & lhs & op & rhs & premise *)
+        let sp_deco = if env.deco_rule then sp else "@{}" in
+        render_table env sp ["l"; sp_deco ^ "r"; "c"; "l"; "@{}l"] 1 3
+          (render_sep_defs (render_ruledef env) ds)
       else
         "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
-          render_sep_defs ~sep:"\n\\qquad\n" ~br:"\n\\\\[3ex]\\displaystyle\n"
-            (render_ruledef env) ds ^
+          render_sep_defs' "\n\\qquad\n" "\n\\\\[3ex]\\displaystyle\n"
+            (render_ruledef_infer env) ds ^
         "\\end{array}"
     | DefD _ ->
-      "\\begin{array}{@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
-        render_sep_defs (render_funcdef env) ds ^
-      "\\end{array}"
+      (* Columns: lhs & = & rhs & premise *)
+      render_table env sp ["l"; "c"; "l"; "@{}l"] 0 2
+        (render_sep_defs (render_funcdef env) ds)
     | SepD ->
       " \\\\\n" ^
       render_defs env ds'

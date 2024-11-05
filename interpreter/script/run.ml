@@ -234,16 +234,6 @@ let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
   | ArithmeticNan -> "nan:arithmetic"
 
-let type_of_result r =
-  let open Types in
-  match r.it with
-  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
-  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
-  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
-  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
-  | RefResult (NullPat) -> RefT (Null, ExternHT)
-
 let string_of_num_pat (p : num_pat) =
   match p with
   | NumPat n -> Value.string_of_num n.it
@@ -263,15 +253,37 @@ let string_of_ref_pat (p : ref_pat) =
   | RefTypePat t -> Types.string_of_heap_type t
   | NullPat -> "null"
 
-let string_of_result r =
+let rec string_of_result r =
   match r.it with
   | NumResult np -> string_of_num_pat np
   | VecResult vp -> string_of_vec_pat vp
   | RefResult rp -> string_of_ref_pat rp
+  | EitherResult rs ->
+    "(" ^ String.concat " | " (List.map string_of_result rs) ^ ")"
 
 let string_of_results = function
   | [r] -> string_of_result r
   | rs -> "[" ^ String.concat " " (List.map string_of_result rs) ^ "]"
+
+let rec type_of_result r =
+  let open Types in
+  match r.it with
+  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
+  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
+  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
+  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
+  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
+  | RefResult (NullPat) -> RefT (Null, ExternHT)
+  | EitherResult rs ->
+    let ts = List.map type_of_result rs in
+    List.fold_left (fun t1 t2 ->
+      if Match.match_val_type [] t1 t2 then t2 else
+      if Match.match_val_type [] t2 t1 then t1 else
+      if Match.(top_of_val_type [] t1 = top_of_val_type [] t2) then
+        Match.top_of_val_type [] t1
+      else
+        BotT  (* should really be Top, but we don't have that :) *)
+    ) (List.hd ts) ts
 
 let print_results rs =
   let ts = List.map type_of_result rs in
@@ -308,7 +320,7 @@ let lookup category map x_opt at =
 
 let lookup_script = lookup "script" scripts
 let lookup_module = lookup "module" modules
-let lookup_instance = lookup "module" instances
+let lookup_instance = lookup "module instance" instances
 
 let lookup_registry module_name item_name _t =
   match Instance.export (Map.find module_name !registry) item_name with
@@ -406,18 +418,19 @@ let assert_ref_pat r p =
   | NullPat, Value.NullRef _ -> true
   | _ -> false
 
-let assert_pat v r =
+let rec assert_result v r =
   let open Value in
-  match v, r with
+  match v, r.it with
   | Num n, NumResult np -> assert_num_pat n np
   | Vec v, VecResult vp -> assert_vec_pat v vp
   | Ref r, RefResult rp -> assert_ref_pat r rp
+  | _, EitherResult rs -> List.exists (assert_result v) rs
   | _, _ -> false
 
-let assert_result at got expect =
+let assert_results at got expect =
   if
     List.length got <> List.length expect ||
-    List.exists2 (fun v r -> not (assert_pat v r.it)) got expect
+    not (List.for_all2 assert_result got expect)
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;
@@ -474,9 +487,9 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected custom validation error"
     )
 
-  | AssertUnlinkable (def, re) ->
+  | AssertUnlinkable (x_opt, re) ->
     trace "Asserting unlinkable...";
-    let m, cs = run_definition def in
+    let m, cs = lookup_module x_opt ass.at in
     if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
     (match
       let imports = Import.link m in
@@ -487,9 +500,9 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected linking error"
     )
 
-  | AssertUninstantiable (def, re) ->
+  | AssertUninstantiable (x_opt, re) ->
     trace "Asserting trap...";
-    let m, cs = run_definition def in
+    let m, cs = lookup_module x_opt ass.at in
     if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
     (match
       let imports = Import.link m in
@@ -503,7 +516,7 @@ let run_assertion ass =
   | AssertReturn (act, rs) ->
     trace ("Asserting return...");
     let vs = run_action act in
-    assert_result ass.at vs rs
+    assert_results ass.at vs rs
 
   | AssertException act ->
     trace ("Asserting exception...");
@@ -541,12 +554,16 @@ let rec run_command cmd =
       end
     end;
     bind "module" modules x_opt (m, cs);
-    bind "script" scripts x_opt [cmd];
+    bind "script" scripts x_opt [cmd]
+
+  | Instance (x1_opt, x2_opt) ->
+    quote := cmd :: !quote;
+    let m, cs = lookup_module x2_opt cmd.at in
     if not !Flags.dry then begin
       trace "Initializing...";
       let imports = Import.link m in
       let inst = Eval.init m imports in
-      bind "instance" instances x_opt inst
+      bind "instance" instances x1_opt inst
     end
 
   | Register (name, x_opt) ->

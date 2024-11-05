@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Xl
 
 
 (* Helpers *)
@@ -28,33 +29,20 @@ let string_of_id id =
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "~"
-  | PlusOp _ -> "+"
-  | MinusOp _ -> "-"
-  | PlusMinusOp _ -> "+-"
-  | MinusPlusOp _ -> "-+"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
+  | `PlusMinusOp -> "+-"
+  | `MinusPlusOp -> "-+"
 
 let string_of_binop = function
-  | AndOp -> "/\\"
-  | OrOp -> "\\/"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
-  | AddOp _ -> "+"
-  | SubOp _ -> "-"
-  | MulOp _ -> "*"
-  | DivOp _ -> "/"
-  | ModOp _ -> "\\"
-  | ExpOp _ -> "^"
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
 
 let string_of_cmpop = function
-  | EqOp -> "="
-  | NeOp -> "=/="
-  | LtOp _ -> "<"
-  | GtOp _ -> ">"
-  | LeOp _ -> "<="
-  | GeOp _ -> ">="
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
-let string_of_atom = El.Atom.to_string
+let string_of_atom = Atom.to_string
 let string_of_mixop = Mixop.to_string
 
 
@@ -69,12 +57,7 @@ let rec string_of_iter iter =
   | ListN (e, Some id) ->
     "^(" ^ string_of_id id ^ "<" ^ string_of_exp e ^ ")"
 
-and string_of_numtyp t =
-  match t with
-  | NatT -> "nat"
-  | IntT -> "int"
-  | RatT -> "rat"
-  | RealT -> "real"
+and string_of_numtyp = Num.string_of_typ
 
 and string_of_typ t =
   match t.it with
@@ -128,12 +111,12 @@ and string_of_exp e =
   match e.it with
   | VarE id -> string_of_id id
   | BoolE b -> string_of_bool b
-  | NatE n -> Z.to_string n
+  | NumE n -> Num.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
-  | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
-  | BinE (op, e1, e2) ->
+  | UnE (op, _, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
+  | BinE (op, _, e1, e2) ->
     "(" ^ string_of_exp e1 ^ space string_of_binop op ^ string_of_exp e2 ^ ")"
-  | CmpE (op, e1, e2) ->
+  | CmpE (op, _, e1, e2) ->
     "(" ^ string_of_exp e1 ^ space string_of_cmpop op ^ string_of_exp e2 ^ ")"
   | IdxE (e1, e2) -> string_of_exp e1 ^ "[" ^ string_of_exp e2 ^ "]"
   | SliceE (e1, e2, e3) ->
@@ -163,6 +146,8 @@ and string_of_exp e =
   | CatE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
   | CaseE (op, e1) ->
     string_of_mixop op ^ "_" ^ string_of_typ_name e.note ^ string_of_exp_args e1
+  | CvtE (e1, nt1, nt2) ->
+    "(" ^ string_of_exp e1 ^ " : " ^ string_of_numtyp nt1 ^ " <:> " ^ string_of_numtyp nt2 ^ ")"
   | SubE (e1, t1, t2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ " <: " ^ string_of_typ t2 ^ ")"
 
@@ -200,7 +185,7 @@ and string_of_iterexp (iter, xes) =
 and string_of_sym g =
   match g.it with
   | VarG (id, args) -> string_of_id id ^ string_of_args args
-  | NatG n -> Printf.sprintf "0x%02X" n
+  | NumG n -> Printf.sprintf "0x%02X" n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (List.map string_of_sym gs) ^ "}"

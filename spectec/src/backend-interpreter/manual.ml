@@ -41,7 +41,7 @@ let ref_type =
   (* exception *)
   | [CaseV ("REF.EXN_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXN"])
   (* array/func/struct addr *)
-  | [CaseV (name, [ NumV i ])]
+  | [CaseV (name, [ NumV (`Nat i) ])]
   when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
     let field_name = String.sub name 4 (String.length name - 9) in
     let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
@@ -109,13 +109,13 @@ let module_ok = function
       in
 
       CaseV ("->", [ externtypes; externidxs ])
-    with _ -> raise Exception.Invalid
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ()))
     )
 
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let externaddr_type = function
-  | [ CaseV (name, [ NumV z ]); t ] ->
+  | [ CaseV (name, [ NumV (`Nat z) ]); t ] ->
     (try
       let addr = Z.to_int z in
       let externaddr_type =
@@ -129,7 +129,7 @@ let externaddr_type = function
       in
       let extern_type = Construct.al_to_extern_type t in
       boolV (Match.match_extern_type [] externaddr_type extern_type)
-    with _ -> raise Exception.Invalid)
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Externaddr_type" vs
 
 let val_type = function
@@ -138,7 +138,7 @@ let val_type = function
     let val_type = Construct.al_to_val_type t in
     (try
       boolV (Match.match_val_type [] (Value.type_of_value value) val_type)
-    with _ -> raise Exception.Invalid)
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Val_type" vs
 
 let manual_map =

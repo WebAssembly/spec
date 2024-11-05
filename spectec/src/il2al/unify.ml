@@ -39,12 +39,12 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       let t = overlap_typ e1.note e2.note in
       { e1 with it = IterE (e, i); note = t }
     (* Not unified *)
-    | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
-      UnE (unop1, overlap e1 e2) |> replace_it
-    | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
-      BinE (binop1, overlap e1 e2, overlap e1' e2') |> replace_it
-    | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
-      CmpE (cmpop1, overlap e1 e2, overlap e1' e2') |> replace_it
+    | UnE (unop1, nt1, e1), UnE (unop2, nt2, e2) when unop1 = unop2 && nt1 = nt2 ->
+      UnE (unop1, nt1, overlap e1 e2) |> replace_it
+    | BinE (binop1, nt1, e1, e1'), BinE (binop2, nt2, e2, e2') when binop1 = binop2 && nt1 = nt2 ->
+      BinE (binop1, nt1, overlap e1 e2, overlap e1' e2') |> replace_it
+    | CmpE (cmpop1, nt1, e1, e1'), CmpE (cmpop2, nt2, e2, e2') when cmpop1 = cmpop2 && nt1 = nt2 ->
+      CmpE (cmpop1, nt1, overlap e1 e2, overlap e1' e2') |> replace_it
     | IdxE (e1, e1'), IdxE (e2, e2') ->
       IdxE (overlap e1 e2, overlap e1' e2') |> replace_it
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
@@ -126,9 +126,9 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
+      [IfPr (CmpE (`EqOp, `BoolT, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
       [ExpB (id, template.note) $ e.at]
-    | UnE (_, e1), UnE (_, e2)
+    | UnE (_, _, e1), UnE (_, _, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
     | IterE (e1, _), IterE (e2, _)
@@ -138,8 +138,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | TheE e1, TheE e2
     | CaseE (_, e1), CaseE (_, e2)
     | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
-    | BinE (_, e1, e1'), BinE (_, e2, e2')
-    | CmpE (_, e1, e1'), CmpE (_, e2, e2')
+    | BinE (_, _, e1, e1'), BinE (_, _, e2, e2')
+    | CmpE (_, _, e1, e1'), CmpE (_, _, e2, e2')
     | IdxE (e1, e1'), IdxE (e2, e2')
     | UpdE (e1, _, e1'), UpdE (e2, _, e2')
     | ExtE (e1, _, e1'), ExtE (e2, _, e2')
@@ -354,13 +354,47 @@ let unify_rule_def (rule: rule_def) : rule_def =
   in
   (instr_name, rel_id, new_clauses) $ rule.at
 
+let has_substring str sub =
+  let len_s = String.length str in
+  let len_sub = String.length sub in
+  let rec aux i =
+    if i > len_s - len_sub then false
+    else if String.sub str i len_sub = sub then true
+    else aux (i + 1)
+  in
+  aux 0
+
+let reorder_unified_args args prems =
+  (* Helpers *)
+  let has_uarg_on_rhs p =
+    match p.it with
+    | LetPr (_, {it = VarE id; _}, _) -> is_unified_id id.it
+    | _ -> false
+  in
+  let on_rhs p a =
+    match a.it with
+    | ExpA e -> has_substring (e |> Il.Print.string_of_exp) (rhs_of_prem p |> Il.Print.string_of_exp)
+    | _ -> false
+  in
+  let rec find_index f xs =
+    match xs with
+    | [] -> 0
+    | hd :: tl -> if f hd then 0 else 1 + find_index f tl
+  in
+  let index_of p = find_index (on_rhs p) args in
+  let cmp p1 p2 = index_of p1 - index_of p2 in
+
+  let uprems, prems = List.partition has_uarg_on_rhs prems in
+  let uprems' = List.sort cmp uprems in
+  uprems' @ prems
 
 let apply_template_to_def template def =
   match def.it with
   | DefD (binds, lhs, rhs, prems) ->
     let new_prems, new_binds = collect_unified_args template lhs in
     let animated_prems = Animate.animate_prems (free_list free_arg template) new_prems in
-    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ def.at
+    let reordered_prems = reorder_unified_args template animated_prems in
+    DefD (binds @ new_binds, template, rhs, (reordered_prems @ prems) |> prioritize_else) $ def.at
 
 let unify_defs defs =
   init_unified_idx();

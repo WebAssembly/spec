@@ -2,6 +2,7 @@ open Prose
 open Eq
 
 open Il
+open Xl
 open Al.Al_util
 open Il2al.Translate
 open Il2al.Il2al_util
@@ -28,19 +29,21 @@ let flatten_rec def =
 
 let is_context_rel def =
   match def.it with
-  | Ast.RelD (_, _, { it = TupT ((_, t) :: _); _}, _) ->
-    Il.Print.string_of_typ t = "context"
+  | Ast.RelD (id, _, { it = TupT ((_, t) :: _); _}, _) ->
+    Il.Print.string_of_typ t = "context" || id.it = "Expand"
   | _ -> false
+
 let is_empty_context_rel def =
   match def.it with
-  | Ast.RelD (_, [ { it = El.Atom.Turnstile; _} ] :: _, _, _) -> true
+  | Ast.RelD (_, [ { it = Atom.Turnstile; _} ] :: _, _, _) -> true
   | _ -> false
 
-let preprocess_il il =
+let extract_validation_il il =
   il
   |> List.concat_map flatten_rec
+  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
 
-let atomize atom' = atom' $$ no_region % (El.Atom.info "")
+let atomize atom' = atom' $$ no_region % (Atom.info "")
 
 let rel_has_id id rel =
   match rel.it with
@@ -60,28 +63,20 @@ let extract_rel_hint id =
     | _ -> None
   ) !Langs.il
 
-let cmpop_to_cmpop = function
-| Ast.EqOp -> Eq
-| Ast.NeOp -> Ne
-| Ast.LtOp _ -> Lt
-| Ast.GtOp _ -> Gt
-| Ast.LeOp _ -> Le
-| Ast.GeOp _ -> Ge
-
 let binop_to_binop = function
-  | Ast.AndOp -> And
-  | Ast.OrOp -> Or
-  | Ast.ImplOp -> Impl
-  | Ast.EquivOp -> Equiv
+  | `AndOp -> And
+  | `OrOp -> Or
+  | `ImplOp -> Impl
+  | `EquivOp -> Equiv
   | _ -> assert false
 
-let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
+let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
 
 (* CASE (?(())) ~> CASE
    CASE (?()) ~> () *)
 let recover_optional_singleton_constructor e =
   match e.it with
-  | Al.Ast.CaseE ([[atom]; [{it = El.Atom.Quest; _}]], [{it = OptE opt; _ }]) ->
+  | Al.Ast.CaseE ([[atom]; [{it = Quest; _}]], [{it = OptE opt; _ }]) ->
     (
       match opt with
       | None   -> Al.Ast.CaseE ([[]], [])
@@ -93,10 +88,10 @@ let recover_optional_singleton_constructor e =
 let remove_empty_arrow_sub e =
   match e.it with
   | Al.Ast.CaseE (
-      [[]; [{it = El.Atom.ArrowSub; _} as arrow]; []; []],
+      [[]; [{it = ArrowSub; _} as arrow]; []; []],
       [lhs; {it = ListE []; _}; rhs]
     ) ->
-    let it = Al.Ast.CaseE ([[];[{arrow with it = El.Atom.Arrow}];[]], [lhs; rhs]) in
+    let it = Al.Ast.CaseE ([[];[{arrow with it = Arrow}];[]], [lhs; rhs]) in
     {e with it}
   | _ -> e
 
@@ -126,7 +121,7 @@ type rel_kind =
   | OtherRel
 
 let get_rel_kind def =
-  let open El.Atom in
+  let open Atom in
   let valid_pattern = [[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
   let valid_with_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []] in
   let match_pattern = [[]; [atomize Turnstile]; [atomize Sub]; []] in
@@ -182,8 +177,8 @@ let exp_to_argexpr es = translate_argexp es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   match e.it with
-  | Ast.CmpE (GtOp _, {it = LenE ({it = DotE _; _} as arr); _}, index)
-  | Ast.CmpE (LtOp _, index, {it = LenE ({it = DotE _; _} as arr); _}) ->
+  | Ast.CmpE (`GtOp, _, {it = LenE ({it = DotE _; _} as arr); _}, index)
+  | Ast.CmpE (`LtOp, _, index, {it = LenE ({it = DotE _; _} as arr); _}) ->
     let note =
       match arr.note.it with
       | IterT (t, _) -> t
@@ -191,22 +186,21 @@ let rec if_expr_to_instrs e =
       in
     let e' = accE (exp_to_expr arr, Al.Ast.IdxP (exp_to_expr index) $ index.at) ~at:e.at ~note:note in
     [ IsDefinedS e' ]
-  | Ast.CmpE (op, e1, e2) ->
-    let op = cmpop_to_cmpop op in
+  | Ast.CmpE (op, _, e1, e2) ->
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
     [ match e2.it with LenE _ -> CmpS (e2, swap op, e1) | _ -> CmpS (e1, op, e2) ]
-  | Ast.BinE (Ast.AndOp, e1, e2) ->
+  | Ast.BinE (`AndOp, _, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
-  | Ast.BinE (op, e1, e2) ->
+  | Ast.BinE (op, _, e1, e2) ->
     let op = binop_to_binop op in
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match op, cond1, cond2 with
-      | Or, [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ], _ ->
+      | Or, [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, `EqOp, { it = OptE None; _ }) ], _ ->
         (* ~P \/ Q is equivalent to P -> Q *)
         IfS (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
-      | Or, [ CmpS (e1, Eq, e2) ], [ CmpS (e3, Eq, e4) ] when Al.Eq.eq_expr e1 e3 ->
+      | Or, [ CmpS (e1, `EqOp, e2) ], [ CmpS (e3, `EqOp, e4) ] when Al.Eq.eq_expr e1 e3 ->
         (* TODO: Change this not to use a set notation *)
         CondS (memE (e1, listE [e2; e4] ~note:(iterT e2.note List)) ~note:boolT)
       | _, [ stmt1 ], [ stmt2 ] -> BinS (stmt1, op, stmt2)
@@ -214,7 +208,7 @@ let rec if_expr_to_instrs e =
   | Ast.MemE _ ->
     [ CondS (exp_to_expr e) ]
   | _ ->
-    [ CmpS (exp_to_expr e, Eq, boolE true ~note:boolT) ]
+    [ CmpS (exp_to_expr e, `EqOp, boolE true ~note:boolT) ]
 
 
 let ctxs = ref Map.empty
@@ -257,7 +251,7 @@ let rec prem_to_instrs prem =
     if_expr_to_instrs e
   | Ast.RulePr (id, _, e) ->
     let rel =
-      match List.find_opt (rel_has_id id) !Langs.il with
+      match List.find_opt (rel_has_id id) !Langs.validation_il with
       | Some rel -> rel
       | None -> failwith ("Unknown relation id: " ^ id.it)
     in
@@ -510,9 +504,67 @@ let postprocess_prose defs =
 
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
-  !Langs.il
-  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
-  |> prose_of_rels
+  !Langs.validation_il |> prose_of_rels
+
+let get_state_arg_opt f =
+  let arg = ref (Al.Ast.TypA (Il.Ast.BoolT $ no_region)) in
+  let id = f $ no_region in
+  match Il.Env.find_opt_def (Il.Env.env_of_script !Langs.il) id with
+  | Some (params, _, _) ->
+    let param_state = List.find_opt (
+      fun param ->
+        match param.it with
+        | Il.Ast.ExpP (id, ({ it = VarT ({ it = "state"; _ }, _); _ } as typ)) ->
+          arg := ExpA ((Al.Ast.VarE "z") $$ id.at % typ);
+          true
+        | _ -> false
+    ) params in
+    if Option.is_some param_state then (
+      let param_state = Option.get param_state in
+      Some {param_state with it = !arg}
+    ) else None
+  | None ->
+    None
+
+let recover_state algo =
+
+  let recover_state_expr expr =
+    match expr.it with
+    | Al.Ast.CallE (f, args) ->
+      let arg_state = get_state_arg_opt f in
+      if Option.is_some arg_state then
+        let answer = {expr with it = Al.Ast.CallE (f, Option.get arg_state :: args)} in
+        answer
+      else expr
+    | _ -> expr
+  in
+
+  let recover_state_instr instr =
+    match instr.it with
+    | Al.Ast.PerformI (f, args) ->
+      let arg_state = get_state_arg_opt f in
+      if Option.is_some arg_state then
+        let answer = {instr with it = Al.Ast.PerformI (f, Option.get arg_state :: args)} in
+        [answer]
+      else [instr]
+    | _ -> [instr]
+  in
+
+  let walk_expr walker expr =
+    let expr1 = recover_state_expr expr in
+    Al.Walk.base_walker.walk_expr walker expr1
+  in
+  let walk_instr walker instr =
+    let instr1 = recover_state_instr instr in
+    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+  in
+  let walker = { Al.Walk.base_walker with
+    walk_expr = walk_expr;
+    walk_instr = walk_instr;
+  }
+  in
+  let algo' = walker.walk_algo walker algo in
+  algo'
 
 (** Entry for generating execution prose **)
 let gen_execution_prose () =
@@ -520,7 +572,7 @@ let gen_execution_prose () =
     (fun algo ->
       let algo =
         algo
-        |> Il2al.Transpile.recover_state
+        |> recover_state
         |> Il2al.Transpile.insert_state_binding
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter
@@ -530,7 +582,8 @@ let gen_execution_prose () =
 (** Main entry for generating prose **)
 let gen_prose el il al =
   Langs.el := el;
-  Langs.il := preprocess_il il;
+  Langs.validation_il := extract_validation_il il;
+  Langs.il := il;
   Langs.al := al;
 
   let validation_prose = gen_validation_prose () in

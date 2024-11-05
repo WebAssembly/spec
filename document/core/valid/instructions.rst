@@ -961,6 +961,20 @@ $${rule-prose: Instr_ok/vbinop}
 $${rule: Instr_ok/vbinop}
 
 
+.. _valid-vternop:
+
+:math:`\shape\K{.}\vternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-vtestop:
 
 :math:`\shape\K{.}\vtestop`
@@ -1017,18 +1031,19 @@ $${rule-prose: Instr_ok/vbitmask}
 $${rule: Instr_ok/vbitmask}
 
 
-.. _valid-vswizzle:
+.. _valid-vswizzlop:
 
-:math:`\K{i8x16.}\VSWIZZLE`
+:math:`\K{i8x16.}\viswizzlop`
 ...........................
 $${rule-prose: Instr_ok/vswizzle}
 
 .. todo::
   below is the official specification
+.............................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-$${rule: Instr_ok/vswizzle}
+$${rule: Instr_ok/vswizzlop}
 
 
 .. _valid-vshuffle:
@@ -1125,6 +1140,16 @@ $${rule-prose: Instr_ok/vextbinop}
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
 $${rule: Instr_ok/vextbinop}
+
+
+.. _valid-vextternop:
+
+:math:`\ishape_1\K{.}\VRELAXEDDOTADD\K{\_}\ishape_2\K{\_}\ishape_3`
+...................................................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+$${rule: Instr_ok/vextternop}
 
 
 .. _valid-vnarrow:
@@ -1837,7 +1862,7 @@ $${rule-prose: Catch_ok/catch}
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
@@ -1864,13 +1889,13 @@ $${rule-prose: Catch_ok/catch_ref}
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast (REF EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast (\REF~\EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
@@ -1904,12 +1929,11 @@ $${rule-prose: Catch_ok/catch_all_ref}
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[(REF EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
+* The :ref:`result type <syntax-resulttype>` :math:`[(\REF~\EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 $${rule: Catch_ok/catch_all_ref}
-
 
 
 .. _valid-br:

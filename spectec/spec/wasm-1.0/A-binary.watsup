@@ -181,16 +181,16 @@ grammar Binstr/memory : instr = ...
   | 0x29 ao:Bmemarg => LOAD I64 ao
   | 0x2A ao:Bmemarg => LOAD F32 ao
   | 0x2B ao:Bmemarg => LOAD F64 ao
-  | 0x2C ao:Bmemarg => LOAD I32 (8 _ S) ao
-  | 0x2D ao:Bmemarg => LOAD I32 (8 _ U) ao
-  | 0x2E ao:Bmemarg => LOAD I32 (16 _ S) ao
-  | 0x2F ao:Bmemarg => LOAD I32 (16 _ U) ao
-  | 0x30 ao:Bmemarg => LOAD I64 (8 _ S) ao
-  | 0x31 ao:Bmemarg => LOAD I64 (8 _ U) ao
-  | 0x32 ao:Bmemarg => LOAD I64 (16 _ S) ao
-  | 0x33 ao:Bmemarg => LOAD I64 (16 _ U) ao
-  | 0x34 ao:Bmemarg => LOAD I64 (32 _ S) ao
-  | 0x35 ao:Bmemarg => LOAD I64 (32 _ U) ao
+  | 0x2C ao:Bmemarg => LOAD I32 (8 S) ao
+  | 0x2D ao:Bmemarg => LOAD I32 (8 U) ao
+  | 0x2E ao:Bmemarg => LOAD I32 (16 S) ao
+  | 0x2F ao:Bmemarg => LOAD I32 (16 U) ao
+  | 0x30 ao:Bmemarg => LOAD I64 (8 S) ao
+  | 0x31 ao:Bmemarg => LOAD I64 (8 U) ao
+  | 0x32 ao:Bmemarg => LOAD I64 (16 S) ao
+  | 0x33 ao:Bmemarg => LOAD I64 (16 U) ao
+  | 0x34 ao:Bmemarg => LOAD I64 (32 S) ao
+  | 0x35 ao:Bmemarg => LOAD I64 (32 U) ao
   | 0x36 ao:Bmemarg => STORE I32 ao
   | 0x37 ao:Bmemarg => STORE I64 ao
   | 0x38 ao:Bmemarg => STORE F32 ao
@@ -522,50 +522,17 @@ grammar Bdatasec : data* hint(desc "data section") =
 
 grammar Bmodule : module =
   | 0x00 0x61 0x73 0x6D 1:Bu32
-    Bcustomsec*
-
-
-    type*:Btypesec
-    Bcustomsec*
-
-
-    import*:Bimportsec
-    Bcustomsec*
-
-
-    typeidx*:Bfuncsec
-    Bcustomsec*
-
-
-    table*:Btablesec
-    Bcustomsec*
-
-
-    mem*:Bmemsec
-    Bcustomsec*
-
-
-    global*:Bglobalsec
-    Bcustomsec*
-
-
-    export*:Bexportsec
-    Bcustomsec*
-
-
-    start?:Bstartsec
-    Bcustomsec*
-
-
-    elem*:Belemsec
-    Bcustomsec*
-
-
-    (local*, expr)*:Bcodesec
-    Bcustomsec*
-
-
-    data*:Bdatasec
+    Bcustomsec* type*:Btypesec
+    Bcustomsec* import*:Bimportsec
+    Bcustomsec* typeidx*:Bfuncsec
+    Bcustomsec* table*:Btablesec
+    Bcustomsec* mem*:Bmemsec
+    Bcustomsec* global*:Bglobalsec
+    Bcustomsec* export*:Bexportsec
+    Bcustomsec* start?:Bstartsec
+    Bcustomsec* elem*:Belemsec
+    Bcustomsec* (local*, expr)*:Bcodesec
+    Bcustomsec* data*:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func* global* table* mem* elem* data* start? export*
-    -- if (func = FUNC typeidx local* expr)*
+    -- (if func = FUNC typeidx local* expr)*

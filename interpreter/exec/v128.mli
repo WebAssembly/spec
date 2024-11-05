@@ -108,6 +108,8 @@ sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
+  val fma : t -> t -> t -> t
+  val fnma : t -> t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
   val pmin : t -> t -> t
@@ -163,6 +165,7 @@ sig
   val extmul_high_u : t -> t -> t
   val extadd_pairwise_s : t -> t
   val extadd_pairwise_u : t -> t
+  val dot_s : t -> t -> t
 end
 
 module I32x4_convert :
@@ -176,6 +179,7 @@ sig
   val extend_low_u : t -> t
   val extend_high_u : t -> t
   val dot_s : t -> t -> t
+  val dot_s_add : t -> t -> t -> t
   val extmul_low_s : t -> t -> t
   val extmul_high_s : t -> t -> t
   val extmul_low_u : t -> t -> t

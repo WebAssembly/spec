@@ -2,6 +2,7 @@ open Al.Ast
 open Prose
 open Printf
 open Util.Source
+open Xl
 
 (* Helpers *)
 
@@ -33,26 +34,14 @@ let string_of_typ = Il.Print.string_of_typ
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "not"
-  | MinusOp -> "-"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
 
 let string_of_binop = function
-  | AndOp -> "and"
-  | OrOp -> "or"
-  | ImplOp -> "implies"
-  | EquivOp -> "is equivalent to"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "·"
-  | DivOp -> "/"
-  | ModOp -> "\\"
-  | ExpOp -> "^"
-  | EqOp -> "is"
-  | NeOp -> "is not"
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "≤"
-  | GeOp -> "≥"
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 (* Iters *)
 
@@ -75,19 +64,20 @@ and string_of_record_expr r =
 
 and string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
+  | NumE n -> Num.to_string n
   | BoolE b -> string_of_bool b
-  | UnE (NotOp, { it = IsCaseOfE (e, a); _ }) ->
+  | CvtE (e, _, _) -> string_of_expr e  (* TODO: show? *)
+  | UnE (`NotOp, { it = IsCaseOfE (e, a); _ }) ->
     sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
-  | UnE (NotOp, { it = IsDefinedE e; _ }) ->
+  | UnE (`NotOp, { it = IsDefinedE e; _ }) ->
     sprintf "%s is not defined" (string_of_expr e)
-  | UnE (NotOp, { it = IsValidE e; _ }) ->
+  | UnE (`NotOp, { it = IsValidE e; _ }) ->
     sprintf "%s is not valid" (string_of_expr e)
-  | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
+  | UnE (`NotOp, { it = MatchE (e1, e2); _ }) ->
     sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
-  | UnE (NotOp, { it = MemE (e1, e2); _ }) ->
+  | UnE (`NotOp, { it = MemE (e1, e2); _ }) ->
     sprintf "%s is not contained in %s" (string_of_expr e1) (string_of_expr e2)
-  | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
+  | UnE (`NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -111,16 +101,9 @@ and string_of_expr expr =
   | MemE (e1, e2) ->
     sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
-  | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurStateE -> "the current state"
-  | GetCurLabelE -> "the current label"
-  | GetCurFrameE -> "the current frame"
-  | GetCurContextE -> "the current context"
-  | FrameE (None, e2) ->
-    sprintf "the activation of %s" (string_of_expr e2)
-  | FrameE (Some e1, e2) ->
-    sprintf "the activation of %s with arity %s" (string_of_expr e2)
-      (string_of_expr e1)
+  | GetCurContextE None -> "the current context"
+  | GetCurContextE (Some a) -> sprintf "the current %s context" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
@@ -130,14 +113,11 @@ and string_of_expr expr =
   | UpdE (e1, ps, e2) ->
     sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
-  | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | ChooseE e -> sprintf "an element of %s" (string_of_expr e)
-  | LabelE (e1, e2) ->
-    sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (op, el) ->
     (* Current rules for omitting parenthesis around a CaseE:
@@ -155,14 +135,11 @@ and string_of_expr expr =
     if has_no_arg || is_infix then s else "(" ^ s ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE a -> sprintf "the top of the stack is a %s" (string_of_atom a)
+  | ContextKindE a -> sprintf "the first non-value entry of the stack is a %s" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
-  | TopLabelE -> "a label is now on the top of the stack"
-  | TopFrameE -> "a frame is now on the top of the stack"
-  | TopHandlerE -> "a handler is now on the top of the stack"
   | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
   | TopValueE None -> "a value is on the top of the stack"
   | TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
@@ -257,14 +234,9 @@ let make_index depth =
 (* Prefix for stack push/pop operations *)
 let string_of_stack_prefix expr =
   match expr.it with
-  | GetCurContextE
-  | GetCurFrameE
-  | GetCurLabelE
-  | ContE _
-  | LabelE _
-  | FrameE _
+  | GetCurContextE _
   | VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
   | IterE _ -> "the values "
   | _ -> "the value "
 
@@ -397,12 +369,12 @@ let string_of_expr_with_type e =
   )
 
 let string_of_cmpop = function
-  | Eq -> "is"
-  | Ne -> "is different with"
-  | Lt -> "is less than"
-  | Gt -> "is greater than"
-  | Le -> "is less than or equal to"
-  | Ge -> "is greater than or equal to"
+  | `EqOp -> "is"
+  | `NeOp -> "is different with"
+  | `LtOp -> "is less than"
+  | `GtOp -> "is greater than"
+  | `LeOp -> "is less than or equal to"
+  | `GeOp -> "is greater than or equal to"
 
 let string_of_prose_binop = function
 | And -> "and"

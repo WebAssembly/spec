@@ -1,3 +1,4 @@
+open Xl
 open Prose
 open Printf
 open Util.Source
@@ -103,16 +104,11 @@ let render_type_desc t =
 let (let*) = Option.bind
 
 let al_to_el_unop = function
-  | Al.Ast.MinusOp -> Some El.Ast.MinusOp
+  | #Num.unop as op -> Some op
   | _ -> None
 
 let al_to_el_binop = function
-  | Al.Ast.AddOp -> Some El.Ast.AddOp
-  | Al.Ast.SubOp -> Some El.Ast.SubOp
-  | Al.Ast.MulOp -> Some El.Ast.MulOp
-  | Al.Ast.DivOp -> Some El.Ast.DivOp
-  | Al.Ast.ModOp -> Some El.Ast.ModOp
-  | Al.Ast.ExpOp -> Some El.Ast.ExpOp
+  | #Num.binop as op -> Some op
   | _ -> None
 
 let rec al_to_el_iter iter = match iter with
@@ -165,9 +161,12 @@ and al_to_el_args args =
 and al_to_el_expr expr =
   let exp' =
     match expr.it with
-    | Al.Ast.NumE i ->
-      let eli = El.Ast.NatE (El.Ast.DecOp, i) in
+    | Al.Ast.NumE n ->
+      let eli = El.Ast.NumE (`DecOp, n) in
       Some eli
+    | Al.Ast.CvtE (e, _, nt2) ->
+      let* ele = al_to_el_expr e in
+      Some (El.Ast.CvtE (ele, nt2))
     | Al.Ast.UnE (op, e) ->
       let* elop = al_to_el_unop op in
       let* ele = al_to_el_expr e in
@@ -296,16 +295,16 @@ and al_to_el_record record =
 (* Operators *)
 
 let render_prose_cmpop = function
-  | Eq -> " equal to"
-  | Ne -> " not equal to"
-  | Lt -> " less than"
-  | Gt -> " greater than"
-  | Le -> " less than or equal to"
-  | Ge -> " greater than or equal to"
+  | `EqOp -> " equal to"
+  | `NeOp -> " not equal to"
+  | `LtOp -> " less than"
+  | `GtOp -> " greater than"
+  | `LeOp -> " less than or equal to"
+  | `GeOp -> " greater than or equal to"
 
 let render_prose_cmpop_eps = function
-  | Eq -> ""
-  | Ne -> " not"
+  | `EqOp -> ""
+  | `NeOp -> " not"
   | op -> render_prose_cmpop op
 
 let render_prose_binop = function
@@ -315,26 +314,27 @@ let render_prose_binop = function
   | Equiv -> "if and only if"
 
 let render_al_unop = function
-  | Al.Ast.NotOp -> "not"
-  | Al.Ast.MinusOp -> "minus"
+  | `NotOp -> "not"
+  | `PlusOp -> "plus"
+  | `MinusOp -> "minus"
 
 let render_al_binop = function
-  | Al.Ast.AndOp -> "and"
-  | Al.Ast.OrOp -> "or"
-  | Al.Ast.ImplOp -> "implies"
-  | Al.Ast.EquivOp -> "if and only if"
-  | Al.Ast.AddOp -> "plus"
-  | Al.Ast.SubOp -> "minus"
-  | Al.Ast.MulOp -> "multiplied by"
-  | Al.Ast.DivOp -> "divided by"
-  | Al.Ast.ModOp -> "modulo"
-  | Al.Ast.ExpOp -> "to the power of"
-  | Al.Ast.EqOp -> "is"
-  | Al.Ast.NeOp -> "is not"
-  | Al.Ast.LtOp -> "is less than"
-  | Al.Ast.GtOp -> "is greater than"
-  | Al.Ast.LeOp -> "is less than or equal to"
-  | Al.Ast.GeOp -> "is greater than or equal to"
+  | `AndOp -> "and"
+  | `OrOp -> "or"
+  | `ImplOp -> "implies"
+  | `EquivOp -> "is equivalent to"
+  | `AddOp -> "plus"
+  | `SubOp -> "minus"
+  | `MulOp -> "multiplied by"
+  | `DivOp -> "divided by"
+  | `ModOp -> "modulo"
+  | `PowOp -> "to the power of"
+  | `EqOp -> "is"
+  | `NeOp -> "is not"
+  | `LtOp -> "is less than"
+  | `GtOp -> "is greater than"
+  | `LeOp -> "is less than or equal to"
+  | `GeOp -> "is greater than or equal to"
 
 (* Names *)
 
@@ -369,21 +369,22 @@ let rec render_expr env expr = match al_to_el_expr expr with
 and render_expr' env expr =
   match expr.it with
   | Al.Ast.BoolE b -> string_of_bool b
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
+  | Al.Ast.CvtE (e, _, _) -> render_expr' env e
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
     let se = render_expr env e in
     let sa = render_atom env a in
     sprintf "%s is not of the case %s" se sa
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not defined" se
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsValidE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not valid" se
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s does not match %s" se1 se2
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.MemE (e1, e2); _ }) ->
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.MemE (e1, e2); _ }) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s is not contained in %s" se1 se2
@@ -443,33 +444,16 @@ and render_expr' env expr =
     let loop = Al.Al_util.iterE (ids, (iter, [])) ~note:Al.Al_util.no_note in
     let sloop = render_expr env loop in
     sprintf "for all %s, %s" sloop se
-  | Al.Ast.ArityE e ->
-    let se = render_expr env e in
-    sprintf "the arity of %s" se
   | Al.Ast.GetCurStateE -> "the current state"
-  | Al.Ast.GetCurLabelE -> "the current label"
-  | Al.Ast.GetCurFrameE -> "the current frame"
-  | Al.Ast.GetCurContextE -> "the current context"
-  | Al.Ast.FrameE (None, e2) ->
-    let se2 = render_expr env e2 in
-    sprintf "the activation of %s" se2
-  | Al.Ast.FrameE (Some e1, e2) ->
-    let se1 = render_expr env e1 in
-    let se2 = render_expr env e2 in
-    sprintf "the activation of %s with arity %s" se2 se1
-  | Al.Ast.ContE e ->
-    let se = render_expr env e in
-    sprintf "the continuation of %s" se
+  | Al.Ast.GetCurContextE None -> "the current context"
+  | Al.Ast.GetCurContextE (Some a) ->
+    sprintf "the current %s context" (render_atom env a)
   | Al.Ast.ChooseE e ->
     let se = render_expr env e in
     sprintf "an element of %s" se
-  | Al.Ast.LabelE (e1, e2) ->
-    let se1 = render_expr env e1 in
-    let se2 = render_expr env e2 in
-    sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
   | Al.Ast.ContextKindE a ->
     let sa = render_atom env a in
-    sprintf "the top of the stack is a %s" sa
+    sprintf "the first non-value entry of the stack is a %s" sa
   | Al.Ast.IsDefinedE e ->
     let se = render_expr env e in
     sprintf "%s is defined" se
@@ -484,9 +468,6 @@ and render_expr' env expr =
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se
-  | Al.Ast.TopLabelE -> "a label is now on the top of the stack"
-  | Al.Ast.TopFrameE -> "a frame is now on the top of the stack"
-  | Al.Ast.TopHandlerE -> "a handler is now on the top of the stack"
   | Al.Ast.TopValueE (Some e) ->
     let se = render_expr env e in
     sprintf "a value of value type %s is on the top of the stack" se
@@ -659,14 +640,9 @@ and render_stmts env depth stmts =
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix expr =
   match expr.it with
-  | Al.Ast.GetCurContextE
-  | Al.Ast.GetCurFrameE
-  | Al.Ast.GetCurLabelE
-  | Al.Ast.ContE _
-  | Al.Ast.FrameE _
-  | Al.Ast.LabelE _
+  | Al.Ast.GetCurContextE _
   | Al.Ast.VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
 
@@ -738,7 +714,7 @@ let rec render_instr env algoname index depth instr =
       (render_expr env e)
   | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, iterexp); _ }) ->
     let elhs, erhs = al_invcalle_to_al_bine e id nl al in
-    let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
+    let ebin = Al.Al_util.binE (`EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
     let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
     sprintf "%s Let %s be the result for which %s."
       (render_order index depth)
@@ -799,9 +775,9 @@ let render_atom_title env name params =
      that are defined as LABEL_ or FRAME_ in the dsl *)
   let name' =
     match name.it with
-    | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
-    | El.Atom.Atom "frame" -> El.Atom.Atom "FRAME_"
-    | El.Atom.Atom s -> El.Atom.Atom (String.uppercase_ascii s)
+    | Atom.Atom "label" -> Atom.Atom "LABEL_"
+    | Atom.Atom "frame" -> Atom.Atom "FRAME_"
+    | Atom.Atom s -> Atom.Atom (String.uppercase_ascii s)
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in

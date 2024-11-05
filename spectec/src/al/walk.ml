@@ -33,19 +33,17 @@ let walk_path (walker: unit_walker) (path: path) : unit =
 
 let walk_expr (walker: unit_walker) (expr: expr) : unit =
   match expr.it with
-  | VarE _ | SubE _ | NumE _ | BoolE _ | GetCurStateE | GetCurLabelE
-  | GetCurContextE | GetCurFrameE | YetE _ | TopLabelE | TopFrameE
-  | TopHandlerE | TopValueE None | ContextKindE _ -> ()
+  | VarE _ | SubE _ | NumE _ | BoolE _ | GetCurStateE
+  | GetCurContextE _ | YetE _
+  | TopValueE None | ContextKindE _ -> ()
 
-  | UnE (_, e) | LenE e | ArityE e | ContE e
+  | CvtE (e, _, _) | UnE (_, e) | LenE e
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
   | TopValueE (Some e) | TopValuesE e | ChooseE e -> walker.walk_expr walker e
-  
+
   | BinE (_, e1, e2) | CompE (e1, e2) | CatE (e1, e2) | MemE (e1, e2)
-  | LabelE (e1, e2) | MatchE (e1, e2) ->
+  | MatchE (e1, e2) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2
-  | FrameE (e_opt, e) ->
-    Option.iter (walker.walk_expr walker) e_opt; walker.walk_expr walker e
   | CallE (_, al) | InvCallE (_, _, al) ->
     List.iter (walker.walk_arg walker) al
   | TupE el | ListE el | CaseE (_, el) ->
@@ -132,9 +130,9 @@ let walk_expr (walker: walker) (expr: expr) : expr =
   let walk_expr = walker.walk_expr walker in
   let it =
     match expr.it with
-    | NumE _ | BoolE _ | VarE _ | SubE _ | GetCurStateE | GetCurFrameE
-    | GetCurLabelE | GetCurContextE | ContextKindE _ | TopLabelE | TopFrameE
-    | TopHandlerE | YetE _ -> expr.it
+    | NumE _ | BoolE _ | VarE _ | SubE _ | GetCurStateE
+    | GetCurContextE _ | ContextKindE _ | YetE _ -> expr.it
+    | CvtE (e, t1, t2) -> CvtE (walk_expr e, t1, t2)
     | UnE (op, e) -> UnE (op, walk_expr e)
     | BinE (op, e1, e2) -> BinE (op, walk_expr e1, walk_expr e2)
     | CallE (id, al) -> CallE (id, List.map walk_arg al)
@@ -152,10 +150,6 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | CaseE (a, el) -> CaseE (a, List.map walk_expr el)
     | OptE e -> OptE (Option.map walk_expr e)
     | TupE el -> TupE (List.map walk_expr el)
-    | ArityE e -> ArityE (walk_expr e)
-    | FrameE (e1_opt, e2) -> FrameE (Option.map walk_expr e1_opt, walk_expr e2)
-    | LabelE (e1, e2) -> LabelE (walk_expr e1, walk_expr e2)
-    | ContE e' -> ContE (walk_expr e')
     | ChooseE e' -> ChooseE (walk_expr e')
     | IterE (e, (iter, xes)) -> IterE (walk_expr e, (walk_iter iter, List.map (fun (x, e) -> (x, walk_expr e)) xes))
     | IsCaseOfE (e, a) -> IsCaseOfE (walk_expr e, a)

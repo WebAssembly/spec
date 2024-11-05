@@ -1,4 +1,5 @@
 open Util.Source
+open Xl
 
 
 (* Lists *)
@@ -12,7 +13,7 @@ type 'a nl_list = 'a nl_elem list
 
 (* Terminals *)
 
-type nat = Z.t
+type num = Num.num
 type text = string
 type id = string phrase
 type atom = Atom.atom
@@ -31,11 +32,7 @@ type iter =
 
 and dots = Dots | NoDots
 
-and numtyp =
-  | NatT                         (* `nat` *)
-  | IntT                         (* `int` *)
-  | RatT                         (* `rat` *)
-  | RealT                        (* `real` *)
+and numtyp = Num.typ
 
 and typ = typ' phrase
 and typ' =
@@ -64,46 +61,26 @@ and typenum = exp * exp option                         (* exp (`|` exp (`|` `...
 
 (* Expressions *)
 
-and natop =
-  | DecOp   (* n *)
-  | HexOp   (* 0xhex *)
-  | CharOp  (* U+hex *)
-  | AtomOp  (* `n *)
+and numop =
+[
+  | `DecOp   (* n *)
+  | `HexOp   (* 0xhex *)
+  | `CharOp  (* U+hex *)
+  | `AtomOp  (* `n *)
+]
 
-and unop =
-  | NotOp   (* `~` *)
-  | PlusOp  (* `+` *)
-  | MinusOp (* `-` *)
-  | PlusMinusOp (* `+-` *)
-  | MinusPlusOp (* `-+` *)
-
-and binop =
-  | AndOp  (* `/\` *)
-  | OrOp   (* `\/` *)
-  | ImplOp (* `=>` *)
-  | EquivOp (* `<=>` *)
-  | AddOp  (* `+` *)
-  | SubOp  (* `-` *)
-  | MulOp  (* `*` *)
-  | DivOp  (* `/` *)
-  | ModOp  (* `\` *)
-  | ExpOp  (* `^` *)
-
-and cmpop =
-  | EqOp (* `=` *)
-  | NeOp (* `=/=` *)
-  | LtOp (* `<` *)
-  | GtOp (* `>` *)
-  | LeOp (* `<=` *)
-  | GeOp (* `>=` *)
+and unop = [Bool.unop | Num.unop | `PlusMinusOp | `MinusPlusOp]
+and binop = [Bool.binop | Num.binop]
+and cmpop = [Bool.cmpop | Num.cmpop]
 
 and exp = exp' phrase
 and exp' =
   | VarE of id * arg list        (* varid (`(` arg,* `)`)? *)
   | AtomE of atom                (* atom *)
   | BoolE of bool                (* bool *)
-  | NatE of natop * nat          (* nat *)
+  | NumE of numop * num          (* num *)
   | TextE of text                (* text *)
+  | CvtE of exp * numtyp         (* `$`numtyp `(` exp `)` *)
   | UnE of unop * exp            (* unop exp *)
   | BinE of exp * binop * exp    (* exp binop exp *)
   | CmpE of exp * cmpop * exp    (* exp cmpop exp *)
@@ -148,7 +125,7 @@ and path' =
 and sym = sym' phrase
 and sym' =
   | VarG of id * arg list                    (* gramid (`(` arg,* `)`)? *)
-  | NatG of natop * nat                      (* nat *)
+  | NumG of numop * Num.nat                  (* num *)
   | TextG of string                          (* `"`text`"` *)
   | EpsG                                     (* `eps` *)
   | SeqG of sym nl_list                      (* sym sym *)

@@ -4,16 +4,10 @@
 
 ;; General variables
 
-var i : nat
-var j : nat
-var k : nat
-
 syntax N hint(macro) = nat  ;; hack
 syntax M hint(macro) = nat  ;; hack
 syntax n hint(macro) = nat  ;; hack
 syntax m hint(macro) = nat  ;; hack
-
-var ii : int hint(show i)  ;; hack
 
 
 ;; General constants
@@ -25,9 +19,8 @@ def $Ki = 1024
 ;; General functions
 
 def $min(nat, nat) : nat
-def $min(0, j) = 0
-def $min(i, 0) = 0
-def $min($(i+1), $(j+1)) = $min(i, j)
+def $min(i, j) = i  -- if $(i <= j)
+def $min(i, j) = j  -- otherwise
 
 def $sum(nat*) : nat  ;; TODO: hint
 def $sum(eps) = 0
