@@ -3440,7 +3440,7 @@ Memory Instructions
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-load-extend>`, a value of :ref:`adress type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-load-extend>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
 
 7. Pop the value :math:`\X{at}.\CONST~i` from the stack.
 
