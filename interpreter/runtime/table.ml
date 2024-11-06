@@ -1,9 +1,8 @@
 open Types
 open Value
 
-type size = int64
-type index = int64
-type count = int32
+type size = address
+type offset = address
 
 type table = {mutable ty : table_type; mutable content : ref_ array}
 type t = table
@@ -19,17 +18,18 @@ let valid_limits {min; max} =
   | None -> true
   | Some m -> I64.le_u min m
 
-let valid_addr at i =
+let valid_size at i =
   match at with
-  | I32AddrType -> I64.le_u i 0xffff_ffffL
-  | I64AddrType -> true
+  | I32AT -> I64.le_u i 0xffff_ffffL
+  | I64AT -> true
 
 let create size r =
   try Lib.Array64.make size r
   with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
-let alloc (TableT (lim, at, t) as ty) r =
+let alloc (TableT (at, lim, t) as ty) r =
   assert Free.((ref_type t).types = Set.empty);
+  if not (valid_size at lim.min) then raise SizeOverflow;
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min r}
 
@@ -40,26 +40,26 @@ let type_of tab =
   tab.ty
 
 let addr_type_of tab =
-  let (TableT (_, at, _)) = type_of tab in at
+  let TableT (at, _, _) = type_of tab in at
 
-let index_of_num x =
+let addr_of_num x =
   match x with
   | I64 i -> i
   | I32 i -> I64_convert.extend_i32_u i
   | _ -> raise Type
 
 let grow tab delta r =
-  let TableT (lim, at, t) = tab.ty in
+  let TableT (at, lim, t) = tab.ty in
   assert (lim.min = size tab);
   let old_size = lim.min in
   let new_size = Int64.add old_size delta in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let lim' = {lim with min = new_size} in
-  if not (valid_addr at new_size) then raise SizeOverflow else
+  if not (valid_size at new_size) then raise SizeOverflow else
   if not (valid_limits lim') then raise SizeLimit else
   let after = create new_size r in
   Array.blit tab.content 0 after 0 (Array.length tab.content);
-  tab.ty <- TableT (lim', at, t);
+  tab.ty <- TableT (at, lim', t);
   tab.content <- after
 
 let load tab i =
@@ -67,7 +67,7 @@ let load tab i =
   Lib.Array64.get tab.content i
 
 let store tab i r =
-  let TableT (_lim, _at, t) = tab.ty in
+  let TableT (_at, _lim, t) = tab.ty in
   if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
   if i < 0L || i >= Lib.Array64.length tab.content then raise Bounds;
   Lib.Array64.set tab.content i r

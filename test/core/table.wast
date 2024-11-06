@@ -33,15 +33,15 @@
 
 (assert_invalid
   (module quote "(table 0x1_0000_0000 funcref)")
-  "table size must be at most 2^32-1"
+  "table size"
 )
 (assert_invalid
   (module quote "(table 0x1_0000_0000 0x1_0000_0000 funcref)")
-  "table size must be at most 2^32-1"
+  "table size"
 )
 (assert_invalid
   (module quote "(table 0 0x1_0000_0000 funcref)")
-  "table size must be at most 2^32-1"
+  "table size"
 )
 
 ;; Same as above but with i64 address types

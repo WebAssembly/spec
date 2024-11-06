@@ -21,7 +21,7 @@ Types
 In the description of the embedder interface, syntactic classes from the :ref:`abstract syntax <syntax>` and the :ref:`runtime's abstract machine <syntax-runtime>` are used as names for variables that range over the possible objects from that class.
 Hence, these syntactic classes can also be interpreted as types.
 
-For numeric parameters, notation like :math:`n:\u32` is used to specify a symbolic name in addition to the respective value range.
+For numeric parameters, notation like :math:`i:\u64` is used to specify a symbolic name in addition to the respective value range.
 
 
 .. _embed-bool:
@@ -165,7 +165,7 @@ Modules
 .. _embed-module-instantiate:
 
 :math:`\F{module\_instantiate}(\store, \module, \externval^\ast) : (\store, \moduleinst ~|~ \exception ~|~ \error)`
-....................................................................................................
+...................................................................................................................
 
 1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external values <syntax-externval>` :math:`\externval^\ast` as imports:
 

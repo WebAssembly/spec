@@ -281,19 +281,19 @@ let limits uN s =
   let flags = byte s in
   require (flags land 0xfa = 0) s (pos s - 1) "malformed limits flags";
   let has_max = (flags land 1 = 1) in
-  let is64 = (flags land 4 = 4) in
+  let at = if flags land 4 = 4 then I64AT else I32AT in
   let min = uN s in
   let max = opt uN has_max s in
-  {min; max}, is64
+  at, {min; max}
 
 let table_type s =
   let t = ref_type s in
-  let lim, is64 = limits u64 s in
-  TableT (lim, (if is64 then I64AddrType else I32AddrType), t)
+  let at, lim = limits u64 s in
+  TableT (at, lim, t)
 
 let memory_type s =
-  let lim, is64 = limits u64 s in
-  MemoryT (lim, if is64 then I64AddrType else I32AddrType)
+  let at, lim = limits u64 s in
+  MemoryT (at, lim)
 
 let global_type s =
   let t = val_type s in

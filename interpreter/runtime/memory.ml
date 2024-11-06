@@ -4,8 +4,7 @@ open Bigarray
 open Lib.Bigarray
 
 type size = int64  (* number of pages *)
-type address = int64
-type offset = int64
+type offset = address
 type count = int32
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
@@ -25,8 +24,12 @@ let valid_limits {min; max} =
   | None -> true
   | Some m -> I64.le_u min m
 
-let create n at =
-  if I64.gt_u n 0x10000L && at = I32AddrType then raise SizeOverflow else
+let valid_size at i =
+  match at with
+  | I32AT -> I64.le_u i 0xffffL
+  | I64AT -> true
+
+let create n =
   try
     let size = Int64.(mul n page_size) in
     let mem = Array1_64.create Int8_unsigned C_layout size in
@@ -34,10 +37,11 @@ let create n at =
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryT (lim, at) as ty) =
+let alloc (MemoryT (at, lim) as ty) =
   assert Free.((memory_type ty).types = Set.empty);
+  if not (valid_size at lim.min) then raise SizeOverflow;
   if not (valid_limits lim) then raise Type;
-  {ty; content = create lim.min at}
+  {ty; content = create lim.min}
 
 let bound mem =
   Array1_64.dim mem.content
@@ -49,31 +53,21 @@ let type_of mem =
   mem.ty
 
 let addr_type_of mem =
-  let (MemoryT (_, at)) = type_of mem in at
-
-let address_of_num x =
-  match x with
-  | I32 i -> I64_convert.extend_i32_u i
-  | I64 i -> i
-  | _ -> raise Type
-
-let address_of_value x =
-  match x with
-  | Num n -> address_of_num n
-  | _ -> raise Type
+  let MemoryT (at, _) = type_of mem in at
 
 let grow mem delta =
-  let MemoryT (lim, at) = mem.ty in
+  let MemoryT (at, lim) = mem.ty in
   assert (lim.min = size mem);
   let old_size = lim.min in
   let new_size = Int64.add old_size delta in
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let lim' = {lim with min = new_size} in
+  if not (valid_size at new_size) then raise SizeOverflow else
   if not (valid_limits lim') then raise SizeLimit else
-  let after = create new_size (addr_type_of mem) in
+  let after = create new_size in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
-  mem.ty <- MemoryT (lim', at);
+  mem.ty <- MemoryT (at, lim');
   mem.content <- after
 
 let load_byte mem a =

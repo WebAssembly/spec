@@ -513,15 +513,13 @@ A :ref:`table type <syntax-tabletype>` :math:`(\addrtype_1~\limits_1~\reftype_1)
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashnumtypematch \addrtype_1 \matchesnumtype \addrtype_2
-     \qquad
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
      \qquad
      C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2
      \qquad
      C \vdashreftypematch \reftype_2 \matchesreftype \reftype_1
    }{
-     C \vdashtabletypematch \addrtype_1~\limits_1~\reftype_1 \matchestabletype \addrtype_2~\limits_2~\reftype_2
+     C \vdashtabletypematch \addrtype~\limits_1~\reftype_1 \matchestabletype \addrtype~\limits_2~\reftype_2
    }
 
 
@@ -541,11 +539,9 @@ A :ref:`memory type <syntax-memtype>` :math:`(\addrtype_1~\limits_1)` matches :m
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashnumtypematch \addrtype_1 \matchesnumtype \addrtype_2
-     \qquad
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     C \vdashmemtypematch \limits_1 \matchesmemtype \limits_2
+     C \vdashmemtypematch \addrtype~\limits_1 \matchesmemtype \addrtype~\limits_2
    }
 
 

@@ -64,6 +64,7 @@ let mutability node = function
   | Cons -> node
   | Var -> Node ("mut", [node])
 
+let addr_type t = string_of_addr_type t
 let num_type t = string_of_num_type t
 let vec_type t = string_of_vec_type t
 let ref_type t =
@@ -77,7 +78,6 @@ let ref_type t =
   | (Null, ExnHT) -> "exnref"
   | t -> string_of_ref_type t
 
-let addr_type t = string_of_val_type (value_type_of_addr_type t)
 let heap_type t = string_of_heap_type t
 let val_type t = string_of_val_type t
 let storage_type t = string_of_storage_type t
@@ -657,13 +657,13 @@ let tag off i tag =
   )
 
 let table off i tab =
-  let {ttype = TableT (lim, at, t); tinit} = tab.it in
+  let {ttype = TableT (at, lim, t); tinit} = tab.it in
   Node ("table $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim,
     atom ref_type t :: list instr tinit.it
   )
 
 let memory off i mem =
-  let {mtype = MemoryT (lim, at)} = mem.it in
+  let {mtype = MemoryT (at, lim)} = mem.it in
   Node ("memory $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim, [])
 
 let is_elem_kind = function

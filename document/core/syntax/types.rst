@@ -366,7 +366,7 @@ The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purp
 Address Type
 ~~~~~~~~~~~~
 
-*Address types* classify the values that can be used to index into
+*Address types* are a subset of :ref:`number types <syntax-numtype>` that classify the values that can be used as offsets into
 :ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
 
 .. math::
@@ -380,13 +380,12 @@ Address Type
 Conventions
 ...........
 
-The *minimum* of two address types is defined as |I32| if either of the types are
-|I32|, and |I64| otherwise.
+The *minimum* of two address types is defined as the address type whose :ref:`bit width <bitwidth-numtype>` is the minimum of the two.
 
 .. math::
    \begin{array}{llll}
-   \atmin(\I64, \I64) &=& \I64 \\
-   \atmin(\X{at}_1, \X{at}_2) &=& \I32 & (\otherwise) \\
+   \atmin(\X{at}_1, \X{at}_2) &=& \X{at}_1 & (\iff |\X{at}_1| \leq |\X{at}_2|) \\
+   \atmin(\X{at}_1, \X{at}_2) &=& \X{at}_2 & (\otherwise) \\
    \end{array}
 
 
@@ -424,7 +423,7 @@ Memory Types
 .. math::
    \begin{array}{llrl}
    \production{memory type} & \memtype &::=&
-     ~\addrtype~\limits \\
+     \addrtype~\limits \\
    \end{array}
 
 The limits constrain the minimum and optionally the maximum size of a memory.
@@ -445,7 +444,7 @@ Table Types
 .. math::
    \begin{array}{llrl}
    \production{table type} & \tabletype &::=&
-     ~\addrtype~\limits ~\reftype \\
+     \addrtype~\limits~\reftype \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.

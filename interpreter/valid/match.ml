@@ -161,11 +161,12 @@ let match_global_type c (GlobalT (mut1, t1)) (GlobalT (mut2, t2)) =
   | Cons -> true
   | Var -> match_val_type c t2 t1
 
-let match_table_type c (TableT (lim1, at1, t1)) (TableT (lim2, at2, t2)) =
-  match_limits c lim1 lim2 && at1 = at2 && match_ref_type c t1 t2 && match_ref_type c t2 t1
+let match_table_type c (TableT (at1, lim1, t1)) (TableT (at2, lim2, t2)) =
+  at1 = at2 && match_limits c lim1 lim2 &&
+  match_ref_type c t1 t2 && match_ref_type c t2 t1
 
-let match_memory_type c (MemoryT (lim1, at1)) (MemoryT (lim2, at2)) =
-  match_limits c lim1 lim2 && at1 = at2
+let match_memory_type c (MemoryT (at1, lim1)) (MemoryT (at2, lim2)) =
+  at1 = at2 && match_limits c lim1 lim2
 
 let match_tag_type c (TagT dt1) (TagT dt2) =
   match_def_type c dt1 dt2 && match_def_type c dt2 dt1
