@@ -1496,11 +1496,11 @@ Table Instructions
 
 * Let :math:`\X{at}_2~\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
 
-* Let :math:`\X{at}` be the :ref:`minimum <aux-addrtype-min>` of :math:`\X{at}_1` and :math:`\X{at}_2`
-
 * The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
-* Then the instruction is valid with type :math:`[\X{at}_1~\X{at}_2~\atmin(\X{at}_1, \X{at}_2)] \to []`.
+* Let :math:`\X{at}` be the :ref:`minimum <aux-addrtype-min>` of :math:`\X{at}_1` and :math:`\X{at}_2`
+
+* Then the instruction is valid with type :math:`[\X{at}_1~\X{at}_2~\X{at}] \to []`.
 
 .. math::
    \frac{
@@ -1890,7 +1890,7 @@ Memory Instructions
 
 * Let :math:`\X{at}` be the :ref:`minimum <aux-addrtype-min>` of :math:`\X{at}_x` and :math:`\X{at}_y`
 
-* Then the instruction is valid with type :math:`[\X{at}_x~\X{at}_y~\atmin(\X{at}_x, \X{at}_y)] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}_x~\X{at}_y~\X{at}] \to []`.
 
 .. math::
    \frac{
