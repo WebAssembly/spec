@@ -5,8 +5,7 @@ type memory
 type t = memory
 
 type size = int64  (* number of pages *)
-type address = int64
-type offset = int64
+type offset = address
 type count = int32
 
 exception Type
@@ -22,8 +21,6 @@ val type_of : memory -> memory_type
 val addr_type_of : memory -> addr_type
 val size : memory -> size
 val bound : memory -> address
-val address_of_value : value -> address
-val address_of_num : num -> address
 val grow : memory -> size -> unit
   (* raises SizeLimit, SizeOverflow, OutOfMemory *)
 

@@ -48,6 +48,24 @@
   "size minimum must not be greater than maximum"
 )
 
+(assert_invalid
+  (module (memory i64 0x1_0000_0000_0001))
+  "memory size"
+)
+(assert_invalid
+  (module (memory i64 0 0x1_0000_0000_0001))
+  "memory size"
+)
+
+(assert_invalid
+  (module (memory (import "M" "m") i64 0x1_0000_0000_0001))
+  "memory size"
+)
+(assert_invalid
+  (module (memory (import "M" "m") i64 0 0x1_0000_0000_0001))
+  "memory size"
+)
+
 (module
   (memory i64 1)
   (data (i64.const 0) "ABC\a7D") (data (i64.const 20) "WASM")

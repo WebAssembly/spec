@@ -15,6 +15,10 @@ let v128_const n = VecConst (V128 n.it @@ n.at)
 let ref_null t = RefNull t
 let ref_func x = RefFunc x
 
+let at_const = function
+  | I32AT -> fun n -> i32_const (I32_convert.wrap_i64 n.it @@ n.at)
+  | I64AT -> i64_const
+
 let unreachable = Unreachable
 let nop = Nop
 let drop = Drop

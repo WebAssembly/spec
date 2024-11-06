@@ -89,13 +89,13 @@ let refer_func (c : context) x = refer "function" c.refs.Free.funcs x
 
 (* Types *)
 
-let check_limits le_u {min; max} range at msg =
-  require (le_u min range) at msg;
+let check_limits {min; max} range at msg =
+  require (I64.le_u min range) at msg;
   match max with
   | None -> ()
   | Some max ->
-    require (le_u max range) at msg;
-    require (le_u min max) at
+    require (I64.le_u max range) at msg;
+    require (I64.le_u min max) at
       "size minimum must not be greater than maximum"
 
 let check_num_type (c : context) (t : num_type) at =
@@ -151,29 +151,28 @@ let check_func_type (c : context) (ft : func_type) at =
   check_result_type c ts2 at
 
 let check_table_type (c : context) (tt : table_type) at =
-  let TableT (lim, _at, t) = tt in
+  let TableT (at_, lim, t) = tt in
   check_ref_type c t at;
-  match _at with
-  | I64AddrType ->
-    check_limits I64.le_u lim 0xffff_ffff_ffff_ffffL at
-      "table size must be at most 2^64-1"
-  | I32AddrType ->
-    check_limits I64.le_u lim 0xffff_ffffL at
-      "table size must be at most 2^32-1"
+  let sz, s =
+    match at_ with
+    | I32AT -> 0xffff_ffffL, "2^32-1 for i32"
+    | I64AT -> 0xffff_ffff_ffff_ffffL, "2^64-1 for i64"
+  in
+  check_limits lim sz at ("table size must be at most " ^ s)
 
 let check_memory_type (c : context) (mt : memory_type) at =
-  let MemoryT (lim, _at) = mt in
-  match _at with
-  | I32AddrType ->
-    check_limits I64.le_u lim 0x1_0000L at
-      "memory size must be at most 65536 pages (4GiB)"
-  | I64AddrType ->
-    check_limits I64.le_u lim 0x1_0000_0000_0000L at
-      "memory size must be at most 48 bits of pages"
+  let MemoryT (at_, lim) = mt in
+  let sz, s =
+    match at_ with
+    | I32AT -> 0x1_0000L, "2^16 pages (4 GiB) for i32"
+    | I64AT -> 0x1_0000_0000_0000L, "2^48 pages (256 TiB) for i64"
+  in
+  check_limits lim sz at ("memory size must be at most " ^ s)
 
 let check_global_type (c : context) (gt : global_type) at =
   let GlobalT (_mut, t) = gt in
   check_val_type c t at
+
 
 let check_str_type (c : context) (st : str_type) at =
   match st with
@@ -370,8 +369,8 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
   in
   require (1 lsl memop.align >= 1 && 1 lsl memop.align <= size) at
     "alignment must not be larger than natural";
-  let MemoryT (_lim, _at) = memory c (0l @@ at) in
-  if _at = I32AddrType then
+  let MemoryT (at_, _lim) = memory c (0l @@ at) in
+  if at_ = I32AT then
     require (I64.lt_u memop.offset 0x1_0000_0000L) at
       "offset out of range";
   memop.ty
@@ -518,12 +517,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     (ts1 @ [RefT (Null, DefHT (type_ c x))]) --> ts2, []
 
   | CallIndirect (x, y) ->
-    let TableT (lim, at, t) = table c x in
+    let TableT (at, _lim, t) = table c x in
     let FuncT (ts1, ts2) = func_type c y in
     require (match_ref_type c.types t (Null, FuncHT)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_ref_type t);
-    (ts1 @ [value_type_of_addr_type at]) --> ts2, []
+    (ts1 @ [NumT (num_type_of_addr_type at)]) --> ts2, []
 
   | ReturnCall x ->
     let FuncT (ts1, ts2) = as_func_str_type (expand_def_type (func c x)) in
@@ -542,13 +541,13 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     (ts1 @ [RefT (Null, DefHT (type_ c x))]) -->... [], []
 
   | ReturnCallIndirect (x, y) ->
-    let TableT (_lim, at, t) = table c x in
+    let TableT (at, _lim, t) = table c x in
     let FuncT (ts1, ts2) = func_type c y in
     require (match_result_type c.types ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_result_type c.results ^
        " but callee returns " ^ string_of_result_type ts2);
-    (ts1 @ [value_type_of_addr_type at]) -->... [], []
+    (ts1 @ [NumT (num_type_of_addr_type at)]) -->... [], []
 
   | Throw x ->
     let TagT dt = tag c x in
@@ -588,102 +587,105 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     [t] --> [], []
 
   | TableGet x ->
-    let TableT (_lim, at, rt) = table c x in
-    [value_type_of_addr_type at] --> [RefT rt], []
+    let TableT (at, _lim, rt) = table c x in
+    [NumT (num_type_of_addr_type at)] --> [RefT rt], []
 
   | TableSet x ->
-    let TableT (_lim, at, rt) = table c x in
-    [value_type_of_addr_type at; RefT rt] --> [], []
+    let TableT (at, _lim, rt) = table c x in
+    [NumT (num_type_of_addr_type at); RefT rt] --> [], []
 
   | TableSize x ->
-    let TableT (_lim, at, _rt) = table c x in
-    [] --> [value_type_of_addr_type at], []
+    let TableT (at, _lim, _rt) = table c x in
+    [] --> [NumT (num_type_of_addr_type at)], []
 
   | TableGrow x ->
-    let TableT (_lim, at, rt) = table c x in
-    [RefT rt; value_type_of_addr_type at] --> [value_type_of_addr_type at], []
+    let TableT (at, _lim, rt) = table c x in
+    [RefT rt; NumT (num_type_of_addr_type at)] -->
+      [NumT (num_type_of_addr_type at)], []
 
   | TableFill x ->
-    let TableT (_lim, at, rt) = table c x in
-    [value_type_of_addr_type at; RefT rt; value_type_of_addr_type at] --> [], []
+    let TableT (at, _lim, rt) = table c x in
+    [NumT (num_type_of_addr_type at); RefT rt; 
+      NumT (num_type_of_addr_type at)] --> [], []
 
   | TableCopy (x, y) ->
-    let TableT (_lim1, at1, t1) = table c x in
-    let TableT (_lim2, at2, t2) = table c y in
-    let at_min = min at1 at2 in
+    let TableT (at1, _lim1, t1) = table c x in
+    let TableT (at2, _lim2, t2) = table c y in
     require (match_ref_type c.types t2 t1) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
-    [value_type_of_addr_type at1; value_type_of_addr_type at2; value_type_of_addr_type at_min] --> [], []
+    [NumT (num_type_of_addr_type at1); NumT (num_type_of_addr_type at2);
+      NumT (num_type_of_addr_type (min at1 at2))] --> [], []
 
   | TableInit (x, y) ->
-    let TableT (_lim1, at, t1) = table c x in
+    let TableT (at, _lim1, t1) = table c x in
     let t2 = elem c y in
     require (match_ref_type c.types t2 t1) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
        " does not match table's element type " ^ string_of_ref_type t2);
-    [value_type_of_addr_type at; NumT I32T; NumT I32T] --> [], []
+    [NumT (num_type_of_addr_type at); NumT I32T; NumT I32T] --> [], []
 
   | ElemDrop x ->
     ignore (elem c x);
     [] --> [], []
 
   | Load (x, memop) ->
-    let MemoryT (_lim, at) = memory c x in
+    let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop num_size (Lib.Option.map fst) e.at in
-    [value_type_of_addr_type at] --> [NumT t], []
+    [NumT (num_type_of_addr_type at)] --> [NumT t], []
 
   | Store (x, memop) ->
-    let MemoryT (_lim, at) = memory c x in
+    let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop num_size (fun sz -> sz) e.at in
-    [value_type_of_addr_type at; NumT t] --> [], []
+    [NumT (num_type_of_addr_type at); NumT t] --> [], []
 
   | VecLoad (x, memop) ->
-    let MemoryT (_lim, at) = memory c x in
+    let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (Lib.Option.map fst) e.at in
-    [value_type_of_addr_type at] --> [VecT t], []
+    [NumT (num_type_of_addr_type at)] --> [VecT t], []
 
   | VecStore (x, memop) ->
-    let MemoryT (_lim, at) = memory c x in
+    let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun _ -> None) e.at in
-    [value_type_of_addr_type at; VecT t] --> [], []
+    [NumT (num_type_of_addr_type at); VecT t] --> [], []
 
   | VecLoadLane (x, memop, i) ->
-    let MemoryT (_lim, at) = memory c x in
+    let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
     require (i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
-    [value_type_of_addr_type at; VecT t] -->  [VecT t], []
+    [NumT (num_type_of_addr_type at); VecT t] -->  [VecT t], []
 
   | VecStoreLane (x, memop, i) ->
-    let MemoryT (_lim, at) = memory c x in
+    let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
     require (i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
-    [value_type_of_addr_type at; VecT t] -->  [], []
+    [NumT (num_type_of_addr_type at); VecT t] -->  [], []
 
   | MemorySize x ->
-    let MemoryT (_lim, at) = memory c x in
-    [] --> [value_type_of_addr_type at], []
+    let MemoryT (at, _lim) = memory c x in
+    [] --> [NumT (num_type_of_addr_type at)], []
 
   | MemoryGrow x ->
-    let MemoryT (_lim, at) = memory c x in
-    [value_type_of_addr_type at] --> [value_type_of_addr_type at], []
+    let MemoryT (at, _lim) = memory c x in
+    [NumT (num_type_of_addr_type at)] --> [NumT (num_type_of_addr_type at)], []
 
   | MemoryFill x ->
-    let MemoryT (_lim, at) = memory c x in
-    [value_type_of_addr_type at; NumT I32T; value_type_of_addr_type at] --> [], []
+    let MemoryT (at, _lim) = memory c x in
+    [NumT (num_type_of_addr_type at); NumT I32T;
+      NumT (num_type_of_addr_type at)] --> [], []
 
   | MemoryCopy (x, y)->
-    let MemoryT (_lib1, at1) = memory c x in
-    let MemoryT (_lib2, at2) = memory c y in
-    let at_min = min at1 at2 in
-    [value_type_of_addr_type at1; value_type_of_addr_type at2; value_type_of_addr_type at_min] --> [], []
+    let MemoryT (at1, _lib1) = memory c x in
+    let MemoryT (at2, _lib2) = memory c y in
+    [NumT (num_type_of_addr_type at1); NumT (num_type_of_addr_type at2);
+      NumT (num_type_of_addr_type (min at1 at2))] --> [], []
 
   | MemoryInit (x, y) ->
-    let MemoryT (_lib, at) = memory c x in
+    let MemoryT (at, _lib) = memory c x in
     let () = data c y in
-    [value_type_of_addr_type at; NumT I32T; NumT I32T] --> [], []
+    [NumT (num_type_of_addr_type at); NumT I32T; NumT I32T] --> [], []
 
   | DataDrop x ->
     let () = data c x in
@@ -1029,7 +1031,7 @@ let check_global (c : context) (glob : global) : context =
 
 let check_table (c : context) (tab : table) : context =
   let {ttype; tinit} = tab.it in
-  let TableT (_lim, _at, rt) = ttype in
+  let TableT (_at, _lim, rt) = ttype in
   check_table_type c ttype tab.at;
   check_const c tinit (RefT rt);
   {c with tables = c.tables @ [ttype]}
@@ -1048,11 +1050,11 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
   | Active {index; offset} ->
-    let TableT (_lim, at, et) = table c index in
+    let TableT (at, _lim, et) = table c index in
     require (match_ref_type c.types t et) mode.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t ^
        " does not match table's element type " ^ string_of_ref_type et);
-    check_const c offset (value_type_of_addr_type at)
+    check_const c offset (NumT (num_type_of_addr_type at))
   | Declarative -> ()
 
 let check_elem (c : context) (seg : elem_segment) : context =
@@ -1066,8 +1068,8 @@ let check_data_mode (c : context) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
   | Active {index; offset} ->
-    let MemoryT (_, at) = memory c index in
-    check_const c offset (value_type_of_addr_type at)
+    let MemoryT (at, _) = memory c index in
+    check_const c offset (NumT (num_type_of_addr_type at))
   | Declarative -> assert false
 
 let check_data (c : context) (seg : data_segment) : context =
