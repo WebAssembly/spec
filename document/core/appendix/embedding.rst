@@ -165,7 +165,7 @@ Modules
 .. _embed-module-instantiate:
 
 :math:`\F{module\_instantiate}(\store, \module, \externval^\ast) : (\store, \moduleinst ~|~ \exception ~|~ \error)`
-....................................................................................................
+...................................................................................................................
 
 1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external values <syntax-externval>` :math:`\externval^\ast` as imports:
 
