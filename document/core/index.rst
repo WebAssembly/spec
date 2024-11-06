@@ -3,7 +3,7 @@ WebAssembly Specification
 
 .. only:: html
 
-   | Release |release| + memory64 (Draft, |today|)
+   | Release |release| (Draft, |today|)
 
    | Editor: Andreas Rossberg
 

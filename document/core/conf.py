@@ -66,7 +66,7 @@ editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
 
 # The name of the GitHub repository this resides in
-repo = 'memory64'
+repo = 'spec'
 
 # The name of the proposal it represents, if any
 proposal = ''
