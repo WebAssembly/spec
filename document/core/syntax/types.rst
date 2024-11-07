@@ -362,8 +362,8 @@ The *minimum* of two address types is defined as the address type whose :ref:`bi
 
 .. math::
    \begin{array}{llll}
-   \atmin(\X{at}_1, \X{at}_2) &=& \X{at}_1 & (\iff |\X{at}_1| \leq |\X{at}_2|) \\
-   \atmin(\X{at}_1, \X{at}_2) &=& \X{at}_2 & (\otherwise) \\
+   \addrtypemin(\X{at}_1, \X{at}_2) &=& \X{at}_1 & (\iff |\X{at}_1| \leq |\X{at}_2|) \\
+   \addrtypemin(\X{at}_1, \X{at}_2) &=& \X{at}_2 & (\otherwise) \\
    \end{array}
 
 

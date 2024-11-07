@@ -8,7 +8,7 @@ type null = NoNull | Null
 type mut = Cons | Var
 type init = Set | Unset
 type final = NoFinal | Final
-type 'a limits = {min : 'a; max : 'a option}
+type limits = {min : int64; max : int64 option}
 
 type var = StatX of type_idx | RecX of int32
 
@@ -45,8 +45,8 @@ and sub_type = SubT of final * heap_type list * str_type
 and rec_type = RecT of sub_type list
 and def_type = DefT of rec_type * int32
 
-type table_type = TableT of addr_type * Int64.t limits * ref_type
-type memory_type = MemoryT of addr_type * Int64.t limits
+type table_type = TableT of addr_type * limits * ref_type
+type memory_type = MemoryT of addr_type * limits
 type global_type = GlobalT of mut * val_type
 type tag_type = TagT of def_type
 type local_type = LocalT of init * val_type
