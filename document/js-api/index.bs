@@ -46,7 +46,24 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         url: sec-returnifabrupt-shorthands
             text: !
             text: ?
-        text: Type; url: sec-ecmascript-data-types-and-values
+        url: sec-ecmascript-language-types-bigint-type
+            text: is a BigInt
+            text: is not a BigInt
+        url: sec-ecmascript-language-types-boolean-type
+            text: is a Boolean
+            text: is not a Boolean
+        url: sec-ecmascript-language-types-number-type
+            text: is a Number
+            text: is not a Number
+        url: sec-ecmascript-language-types-string-type
+            text: is a String
+            text: is not a String
+        url: sec-ecmascript-language-types-symbol-type
+            text: is a Symbol
+            text: is not a Symbol
+        url: sec-object-type
+            text: is an Object
+            text: is not an Object
         text: current Realm; url: current-realm
         text: Built-in Function Objects; url: sec-built-in-function-objects
         text: NativeError Object Structure; url: sec-nativeerror-object-structure
@@ -347,7 +364,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
         1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
-        1. If [=Type=](|o|) is not Object, throw a {{TypeError}} exception.
+        1. If |o| [=is not an Object=], throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
         1. If |externtype| is of the form [=func=] |functype|,
             1. If [$IsCallable$](|v|) is false, throw a {{LinkError}} exception.
@@ -359,10 +376,10 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let |externfunc| be the [=external value=] [=external value|func=] |funcaddr|.
             1. [=list/Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form [=global=] <var ignore>mut</var> |valtype|,
-            1. If [=Type=](|v|) is Number or BigInt,
-                1. If |valtype| is [=i64=] and [=Type=](|v|) is Number,
+            1. If |v| [=is a Number=] or |v| [=is a BigInt=],
+                1. If |valtype| is [=i64=] and |v| [=is a Number=],
                     1. Throw a {{LinkError}} exception.
-                1. If |valtype| is not [=i64=] and [=Type=](|v|) is BigInt,
+                1. If |valtype| is not [=i64=] and |v| [=is a BigInt=],
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
