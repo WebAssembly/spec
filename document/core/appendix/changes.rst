@@ -622,7 +622,7 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
 
 
 .. [#proposal-extconst]
-   https://github.com/WebAssembly/spec/blob/main/proposals/extended-const/
+   https://github.com/WebAssembly/spec/tree/main/proposals/extended-const/
 
 .. [#proposal-tailcall]
    https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
@@ -631,10 +631,10 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/
 
 .. [#proposal-multimem]
-   https://github.com/WebAssembly/spec/blob/main/proposals/multi-memory/
+   https://github.com/WebAssembly/spec/tree/main/proposals/multi-memory/
 
 .. [#proposal-addr64]
-   https://github.com/WebAssembly/spec/blob/main/proposals/memory64/
+   https://github.com/WebAssembly/spec/tree/main/proposals/memory64/
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
