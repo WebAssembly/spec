@@ -13,6 +13,7 @@ let forall_nl_list f xs = List.for_all f (filter_nl xs)
 let exists_nl_list f xs = List.exists f (filter_nl xs)
 let find_nl_list f xs = List.find_opt f (filter_nl xs)
 let iter_nl_list f xs = List.iter f (filter_nl xs)
+let fold_nl_list f y xs = List.fold_left f y (filter_nl xs)
 let map_filter_nl_list f xs = List.map f (filter_nl xs)
 let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
 let filter_nl_list f xs = List.filter (function Nl -> true | Elem x -> f x) xs
