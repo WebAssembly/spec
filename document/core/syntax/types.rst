@@ -309,6 +309,32 @@ $${syntax: {rectype subtype}}
 In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
 
 
+.. _index:: ! address type
+   pair: abstract syntax; address type
+   single: memory; address type
+   single: table; address type
+
+
+.. _syntax-addrtype:
+
+Address Type
+~~~~~~~~~~~~
+
+*Address types* are a subset of :ref:`number types <syntax-numtype>` that classify the values that can be used as offsets into
+:ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
+
+$${syntax: {addrtype}}
+
+.. _aux-addrtype-min:
+
+Conventions
+...........
+
+The *minimum* of two address types is defined as the address type whose :ref:`bit width <bitwidth-numtype>` is the minimum of the two.
+
+$${definition: minat}
+
+
 .. index:: ! limits, memory type, table type
    pair: abstract syntax; limits
    single: memory; limits

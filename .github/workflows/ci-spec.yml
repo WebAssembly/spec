@@ -2,12 +2,21 @@ name: CI for specs
 
 on:
   push:
+<<<<<<< HEAD
     branches: [ main ]
     paths: [ .github/**, document/**, spectec/** ]
 
   pull_request:
     branches: [ main ]
     paths: [ .github/**, document/**, spectec/** ]
+=======
+    branches: [ main, wasm-3.0 ]
+    paths: [ .github/**, document/** ]
+
+  pull_request:
+    branches: [ main, wasm-3.0 ]
+    paths: [ .github/**, document/** ]
+>>>>>>> upstream/wasm-3.0
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - name: Setup OCaml
@@ -27,7 +36,7 @@ jobs:
       - name: Setup Dune
         run: opam install --yes dune menhir mdx zarith && opam exec dune --version
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: Setup Bikeshed
@@ -52,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
@@ -67,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
@@ -136,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -155,7 +164,7 @@ jobs:
       - build-spec-versions
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Create output directory
         run: mkdir _output && cp document/index.html _output/index.html
       - name: Download core spec artifact
@@ -195,7 +204,7 @@ jobs:
           path: _output/versions
       - name: Publish to GitHub Pages
         if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           publish_dir: ./_output
           github_token: ${{ secrets.GITHUB_TOKEN }}

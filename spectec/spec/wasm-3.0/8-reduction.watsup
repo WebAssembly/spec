@@ -796,90 +796,91 @@ rule Step/global.set:
 ;; Table instructions
 
 rule Step_read/table.get-oob:
-  z; (CONST I32 i) (TABLE.GET x)  ~>  TRAP
+  z; (CONST at i) (TABLE.GET x)  ~>  TRAP
   -- if i >= |$table(z, x).REFS|
 
 rule Step_read/table.get-val:
-  z; (CONST I32 i) (TABLE.GET x)  ~>  $table(z,x).REFS[i]
+  z; (CONST at i) (TABLE.GET x)  ~>  $table(z,x).REFS[i]
   -- if i < |$table(z, x).REFS|
 
 rule Step/table.set-oob:
-  z; (CONST I32 i) ref (TABLE.SET x)  ~>  z; TRAP
+  z; (CONST at i) ref (TABLE.SET x)  ~>  z; TRAP
   -- if i >= |$table(z, x).REFS|
 
 rule Step/table.set-val:
-  z; (CONST I32 i) ref (TABLE.SET x)  ~>  $with_table(z, x, i, ref); eps
+  z; (CONST at i) ref (TABLE.SET x)  ~>  $with_table(z, x, i, ref); eps
   -- if i < |$table(z, x).REFS|
 
 
 rule Step_read/table.size:
-  z; (TABLE.SIZE x)  ~>  (CONST I32 n)
+  z; (TABLE.SIZE x)  ~>  (CONST at n)
   -- if |$table(z, x).REFS| = n
+  -- if $table(z, x).TYPE = at lim rt
 
 
 rule Step/table.grow-succeed:
-  z; ref (CONST I32 n) (TABLE.GROW x)  ~>  $with_tableinst(z, x, ti); (CONST I32 $(|$table(z, x).REFS|))
+  z; ref (CONST at n) (TABLE.GROW x)  ~>  $with_tableinst(z, x, ti); (CONST at $(|$table(z, x).REFS|))
   ----
   -- if ti = $growtable($table(z, x), n, ref)
 
 rule Step/table.grow-fail:
-  z; ref (CONST I32 n) (TABLE.GROW x)  ~>  z; (CONST I32 $invsigned_(32, $(-1)))
+  z; ref (CONST at n) (TABLE.GROW x)  ~>  z; (CONST at $invsigned_($size(at), $(-1)))
 
 
 rule Step_read/table.fill-oob:
-  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x)  ~>  TRAP
+  z; (CONST at i) val (CONST at n) (TABLE.FILL x)  ~>  TRAP
   -- if $(i + n) > |$table(z, x).REFS|
 
 rule Step_read/table.fill-zero:
-  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x)  ~>  eps
+  z; (CONST at i) val (CONST at n) (TABLE.FILL x)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/table.fill-succ:
-  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x)  ~>
-    (CONST I32 i) val (TABLE.SET x)
-    (CONST I32 $(i+1)) val (CONST I32 $(n-1)) (TABLE.FILL x)
+  z; (CONST at i) val (CONST at n) (TABLE.FILL x)  ~>
+    (CONST at i) val (TABLE.SET x)
+    (CONST at $(i+1)) val (CONST at $(n-1)) (TABLE.FILL x)
   -- otherwise
 
 
 rule Step_read/table.copy-oob:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>  TRAP
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>  TRAP
   ---- ----
-  -- if $(i + n) > |$table(z, y).REFS| \/ $(j + n) > |$table(z, x).REFS|
+  -- if $(i_1 + n) > |$table(z, x_1).REFS| \/ $(i_2 + n) > |$table(z, x_2).REFS|
 
 rule Step_read/table.copy-zero:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>  eps
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/table.copy-le:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>
-    (CONST I32 j) (CONST I32 i) (TABLE.GET y) (TABLE.SET x)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (TABLE.COPY x y)
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>
+    (CONST at_1 i_1) (CONST at_2 i_2) (TABLE.GET x_2) (TABLE.SET x_1)
+    (CONST at_1 $(i_1+1)) (CONST at_2 $(i_2+1)) (CONST at' $(n-1)) (TABLE.COPY x_1 x_2)
   -- otherwise
-  -- if j <= i
+  -- if i_1 <= i_2
 
 rule Step_read/table.copy-gt:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>
-    (CONST I32 $(j+n-1)) (CONST I32 $(i+n-1)) (TABLE.GET y) (TABLE.SET x)
-    (CONST I32 j) (CONST I32 i) (CONST I32 $(n-1)) (TABLE.COPY x y)
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>
+    (CONST at_1 $(i_1+n-1)) (CONST at_2 $(i_2+n-1)) (TABLE.GET x_2) (TABLE.SET x_1)
+    (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' $(n-1)) (TABLE.COPY x_1 x_2)
   -- otherwise
 
 
 rule Step_read/table.init-oob:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y)  ~>  TRAP
+  z; (CONST at i) (CONST I32 j) (CONST I32 n) (TABLE.INIT x y)  ~>  TRAP
   ---- ----
-  -- if $(i + n) > |$elem(z, y).REFS| \/ $(j + n) > |$table(z, x).REFS|
+  -- if $(i + n) > |$table(z, x).REFS| \/ $(j + n) > |$elem(z, y).REFS|
 
 rule Step_read/table.init-zero:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y)  ~>  eps
+  z; (CONST at i) (CONST I32 j) (CONST I32 n) (TABLE.INIT x y)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/table.init-succ:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y)  ~>
-    (CONST I32 j) $elem(z,y).REFS[i] (TABLE.SET x)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (TABLE.INIT x y)
+  z; (CONST at i) (CONST I32 j) (CONST I32 n) (TABLE.INIT x y)  ~>
+    (CONST at i) $elem(z, y).REFS[j] (TABLE.SET x)
+    (CONST at $(i+1)) (CONST I32 $(j+1)) (CONST I32 $(n-1)) (TABLE.INIT x y)
   -- otherwise
 
 
@@ -890,40 +891,40 @@ rule Step/elem.drop:
 ;; Memory instructions
 
 rule Step_read/load-num-oob:
-  z; (CONST I32 i) (LOAD nt x ao)  ~>  TRAP
+  z; (CONST at i) (LOAD nt x ao)  ~>  TRAP
   ----
   -- if $(i + ao.OFFSET + $size(nt)/8 > |$mem(z, x).BYTES|)
 
 rule Step_read/load-num-val:
-  z; (CONST I32 i) (LOAD nt x ao)  ~>  (CONST nt c)
+  z; (CONST at i) (LOAD nt x ao)  ~>  (CONST nt c)
   ----
   -- if $nbytes_(nt, c) = $mem(z, x).BYTES[i + ao.OFFSET : $size(nt)/8]
 
 rule Step_read/load-pack-oob:
-  z; (CONST I32 i) (LOAD Inn (n sx) x ao)  ~>  TRAP
+  z; (CONST at i) (LOAD Inn (n sx) x ao)  ~>  TRAP
   ----
   -- if $(i + ao.OFFSET + n/8 > |$mem(z, x).BYTES|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD Inn (n sx) x ao)  ~>  (CONST Inn $extend__(n, $size(Inn), sx, c))
+  z; (CONST at i) (LOAD Inn (n sx) x ao)  ~>  (CONST Inn $extend__(n, $size(Inn), sx, c))
   ----
   -- if $ibytes_(n, c) = $mem(z, x).BYTES[i + ao.OFFSET : n/8]
 
 rule Step_read/vload-oob:
-  z; (CONST I32 i) (VLOAD V128 x ao)  ~>  TRAP
+  z; (CONST at i) (VLOAD V128 x ao)  ~>  TRAP
   -- if $(i + ao.OFFSET + $vsize(V128)/8 > |$mem(z, x).BYTES|)
 
 rule Step_read/vload-val:
-  z; (CONST I32 i) (VLOAD V128 x ao)  ~>  (VCONST V128 c)
+  z; (CONST at i) (VLOAD V128 x ao)  ~>  (VCONST V128 c)
   -- if $vbytes_(V128, c) = $mem(z, x).BYTES[i + ao.OFFSET : $vsize(V128)/8]
 
 
 rule Step_read/vload-pack-oob:
-  z; (CONST I32 i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  TRAP
+  z; (CONST at i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  TRAP
   -- if $(i + ao.OFFSET + M * K/8) > |$mem(z, x).BYTES|
 
 rule Step_read/vload-pack-val:
-  z; (CONST I32 i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  (VCONST V128 c)
+  z; (CONST at i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  (VCONST V128 c)
   ---- ----
   -- (if $ibytes_(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<K)
   -- if c = $invlanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K)
@@ -931,11 +932,11 @@ rule Step_read/vload-pack-val:
 
 
 rule Step_read/vload-splat-oob:
-  z; (CONST I32 i) (VLOAD V128 (SPLAT N) x ao)  ~>  TRAP
+  z; (CONST at i) (VLOAD V128 (SPLAT N) x ao)  ~>  TRAP
   -- if $(i + ao.OFFSET + N/8) > |$mem(z, x).BYTES|
 
 rule Step_read/vload-splat-val:
-  z; (CONST I32 i) (VLOAD V128 (SPLAT N) x ao)  ~>  (VCONST V128 c)
+  z; (CONST at i) (VLOAD V128 (SPLAT N) x ao)  ~>  (VCONST V128 c)
   ----
   -- if $ibytes_(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
@@ -944,22 +945,22 @@ rule Step_read/vload-splat-val:
 
 
 rule Step_read/vload-zero-oob:
-  z; (CONST I32 i) (VLOAD V128 (ZERO N) x ao)  ~>  TRAP
+  z; (CONST at i) (VLOAD V128 (ZERO N) x ao)  ~>  TRAP
   -- if $(i + ao.OFFSET + N/8) > |$mem(z, x).BYTES|
 
 rule Step_read/vload-zero-val:
-  z; (CONST I32 i) (VLOAD V128 (ZERO N) x ao)  ~>  (VCONST V128 c)
+  z; (CONST at i) (VLOAD V128 (ZERO N) x ao)  ~>  (VCONST V128 c)
   ----
   -- if $ibytes_(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if c = $extend__(N, 128, U, j)
 
 
 rule Step_read/vload_lane-oob:
-  z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  TRAP
+  z; (CONST at i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  TRAP
   -- if $(i + ao.OFFSET + N/8) > |$mem(z, x).BYTES|
 
 rule Step_read/vload_lane-val:
-  z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  (VCONST V128 c)
+  z; (CONST at i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  (VCONST V128 c)
   ----
   -- if $ibytes_(N, k) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
@@ -968,42 +969,42 @@ rule Step_read/vload_lane-val:
 
 
 rule Step/store-num-oob:
-  z; (CONST I32 i) (CONST nt c) (STORE nt x ao)  ~>  z; TRAP
+  z; (CONST at i) (CONST nt c) (STORE nt x ao)  ~>  z; TRAP
   ----
   -- if $(i + ao.OFFSET + $size(nt)/8) > |$mem(z, x).BYTES|
 
 rule Step/store-num-val:
-  z; (CONST I32 i) (CONST nt c) (STORE nt x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $($size(nt)/8), b*); eps
+  z; (CONST at i) (CONST nt c) (STORE nt x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $($size(nt)/8), b*); eps
   ----
   ;; TODO(3, rossberg): enable otherwise?
   -- if b* = $nbytes_(nt, c)
 
 rule Step/store-pack-oob:
-  z; (CONST I32 i) (CONST Inn c) (STORE Inn n x ao)  ~>  z; TRAP
+  z; (CONST at i) (CONST Inn c) (STORE Inn n x ao)  ~>  z; TRAP
   ----
   -- if $(i + ao.OFFSET + n/8) > |$mem(z, x).BYTES|
 
 rule Step/store-pack-val:
-  z; (CONST I32 i) (CONST Inn c) (STORE Inn n x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(n/8), b*); eps
+  z; (CONST at i) (CONST Inn c) (STORE Inn n x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(n/8), b*); eps
   ----
   ;; TODO(3, rossberg): enable otherwise?
   -- if b* = $ibytes_(n, $wrap__($size(Inn), n, c))
 
 rule Step/vstore-oob:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  z; TRAP
+  z; (CONST at i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  z; TRAP
   -- if $(i + ao.OFFSET + $vsize(V128)/8) > |$mem(z, x).BYTES|
 
 rule Step/vstore-val:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $($vsize(V128)/8), b*); eps
+  z; (CONST at i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $($vsize(V128)/8), b*); eps
   -- if b* = $vbytes_(V128, c)
 
 
 rule Step/vstore_lane-oob:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  z; TRAP
+  z; (CONST at i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  z; TRAP
   -- if $(i + ao.OFFSET + N) > |$mem(z, x).BYTES|
 
 rule Step/vstore_lane-val:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(N/8), b*); eps
+  z; (CONST at i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(N/8), b*); eps
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
   -- if b* = $ibytes_(N, $lanes_(Jnn X M, c)[j])
@@ -1012,71 +1013,72 @@ rule Step/vstore_lane-val:
 rule Step_read/memory.size:
   z; (MEMORY.SIZE x)  ~>  (CONST I32 n)
   -- if $(n * $($(64 * $Ki))) = |$mem(z, x).BYTES|
+  -- if $mem(z, x).TYPE = at lim
 
 
 rule Step/memory.grow-succeed:
-  z; (CONST I32 n) (MEMORY.GROW x)  ~>  $with_meminst(z, x, mi); (CONST I32 $(|$mem(z, x).BYTES| / $($(64 * $Ki))))
+  z; (CONST at n) (MEMORY.GROW x)  ~>  $with_meminst(z, x, mi); (CONST at $(|$mem(z, x).BYTES| / $($(64 * $Ki))))
   ----
   -- if mi = $growmem($mem(z, x), n)
 
 rule Step/memory.grow-fail:
-  z; (CONST I32 n) (MEMORY.GROW x)  ~>  z; (CONST I32 $invsigned_(32, $(-1)))
+  z; (CONST at n) (MEMORY.GROW x)  ~>  z; (CONST at $invsigned_($size(at), $(-1)))
 
 
 rule Step_read/memory.fill-oob:
-  z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>  TRAP
+  z; (CONST at i) val (CONST at n) (MEMORY.FILL x)  ~>  TRAP
   -- if $(i + n) > |$mem(z, x).BYTES|
 
 rule Step_read/memory.fill-zero:
-  z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>  eps
+  z; (CONST at i) val (CONST at n) (MEMORY.FILL x)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/memory.fill-succ:
-  z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>
-    (CONST I32 i) val (STORE I32 8 x $memarg0)
-    (CONST I32 $(i+1)) val (CONST I32 $(n-1)) (MEMORY.FILL x)
+  z; (CONST at i) val (CONST at n) (MEMORY.FILL x)  ~>
+    (CONST at i) val (STORE I32 8 x $memarg0)
+    (CONST at $(i+1)) val (CONST at $(n-1)) (MEMORY.FILL x)
   -- otherwise
 
 
 rule Step_read/memory.copy-oob:
-  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>  TRAP
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>  TRAP
   ---- ----
   -- if $(i_1 + n) > |$mem(z, x_1).BYTES| \/ $(i_2 + n) > |$mem(z, x_2).BYTES|
 
 rule Step_read/memory.copy-zero:
-  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>  eps
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/memory.copy-le:
-  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
-    (CONST I32 i_1) (CONST I32 i_2) (LOAD I32 (8 U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
-    (CONST I32 $(i_1 + 1)) (CONST I32 $(i_2 + 1)) (CONST I32 $(n - 1)) (MEMORY.COPY x_1 x_2)
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>
+    (CONST at_1 i_1) (CONST at_2 i_2) (LOAD I32 (8 U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
+    (CONST at_1 $(i_1 + 1)) (CONST at_2 $(i_2 + 1)) (CONST at' $(n - 1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
   -- if i_1 <= i_2
 
 rule Step_read/memory.copy-gt:
-  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
-    (CONST I32 $(i_1+n-1)) (CONST I32 $(i_2+n-1)) (LOAD I32 (8 U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
-    (CONST I32 i_1) (CONST I32 i_2) (CONST I32 $(n-1)) (MEMORY.COPY x_1 x_2)
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>
+    (CONST at_1 $(i_1+n-1)) (CONST at_2 $(i_2+n-1)) (LOAD I32 (8 U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
+    (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' $(n-1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
 
 
 rule Step_read/memory.init-oob:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>  TRAP
+  z; (CONST at i) (CONST I32 j) (CONST I32 n) (MEMORY.INIT x y)  ~>  TRAP
   ---- ----
-  -- if $(i + n) > |$data(z, y).BYTES| \/ $(j + n) > |$mem(z, x).BYTES|
+  -- if $(i + n) > |$mem(z, x).BYTES| \/ $(j + n) > |$data(z, y).BYTES|
 
 rule Step_read/memory.init-zero:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>  eps
+  z; (CONST at i) (CONST I32 j) (CONST I32 n) (MEMORY.INIT x y)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/memory.init-succ:
-  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>
-    (CONST I32 j) (CONST I32 $data(z,y).BYTES[i]) (STORE I32 8 x $memarg0)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
+  z; (CONST at i) (CONST I32 j) (CONST I32 n) (MEMORY.INIT x y)  ~>
+    (CONST at i) (CONST I32 $data(z,y).BYTES[j]) (STORE I32 8 x $memarg0)
+    (CONST at $(i+1)) (CONST I32 $(j+1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
   -- otherwise
 
 

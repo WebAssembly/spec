@@ -36,7 +36,10 @@ let spectest = {
   global_f32: 666.6,
   global_f64: 666.6,
   table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),
-  memory: new WebAssembly.Memory({initial: 1, maximum: 2})
+  table64: new WebAssembly.Table(
+    {initial: 10n, maximum: 20n, element: 'anyfunc', address: 'i64'}),
+  memory: new WebAssembly.Memory({initial: 1, maximum: 2}),
+  memory64: new WebAssembly.Memory({initial: 1n, maximum: 2n, address: 'i64'})
 };
 
 let handler = {
@@ -236,7 +239,7 @@ let env () : env =
 let current_mod (env : env) = "$$" ^ string_of_int env.current_mod
 let of_mod_opt (env : env) = function
   | None -> current_mod env
-  | Some x -> x.it
+  | Some x -> "$" ^ x.it
 
 let current_inst (env : env) = "$" ^ string_of_int env.current_inst
 let of_inst_opt (env : env) = function
@@ -309,8 +312,15 @@ let value v =
   | Num n -> [Const (n @@ v.at) @@ v.at]
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
   | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type [] ht) @@ v.at]
+  | Ref (HostRef n) ->
+    [ Const (I32 n @@ v.at) @@ v.at;
+      Call (hostref_idx @@ v.at) @@ v.at;
+    ]
   | Ref (Extern.ExternRef (HostRef n)) ->
-    [Const (I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
+    [ Const (I32 n @@ v.at) @@ v.at;
+      Call (hostref_idx @@ v.at) @@ v.at;
+      ExternConvert Externalize @@ v.at;
+    ]
   | Ref _ -> assert false
 
 let invoke ft vs at =
@@ -357,8 +367,14 @@ let rec type_of_result res =
     ) (List.hd ts) ts
 
 let assert_return ress ts at =
+  let locals = ref [] in
   let rec test (res, t) =
-    if not (Match.match_val_type [] t (type_of_result res)) then
+    if
+      not (
+        Match.match_val_type [] t (type_of_result res) ||
+        Match.match_val_type [] (type_of_result res) t
+      )
+    then
       [ Br (0l @@ at) @@ at ]
     else
     match res.it with
@@ -434,7 +450,14 @@ let assert_return ress ts at =
     | RefResult (RefPat {it = HostRef n; _}) ->
       [ Const (Value.I32 n @@ at) @@ at;
         Call (hostref_idx @@ at) @@ at;
-        Call (eq_ref_idx @@ at)  @@ at;
+        Call (eq_ref_idx @@ at) @@ at;
+        Test (Value.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefResult (RefPat {it = Extern.ExternRef (HostRef n); _}) ->
+      [ Const (Value.I32 n @@ at) @@ at;
+        Call (hostref_idx @@ at) @@ at;
+        ExternConvert Externalize @@ at;
+        Call (eq_ref_idx @@ at) @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat _) ->
@@ -450,9 +473,13 @@ let assert_return ress ts at =
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | EitherResult ress ->
-      [ Block (ValBlockType None,
+      let idx = Lib.List32.length !locals in
+      locals := !locals @ [{ltype = t} @@ res.at];
+      [ LocalSet (idx @@ res.at) @@ res.at;
+        Block (ValBlockType None,
           List.map (fun resI ->
             Block (ValBlockType None,
+              [LocalGet (idx @@ resI.at) @@ resI.at] @
               test (resI, t) @
               [Br (1l @@ resI.at) @@ resI.at]
             ) @@ resI.at
@@ -460,7 +487,7 @@ let assert_return ress ts at =
           [Br (1l @@ at) @@ at]
         ) @@ at
       ]
-  in [], List.flatten (List.rev_map test (List.combine ress ts))
+  in !locals, List.flatten (List.rev_map test (List.combine ress ts))
 
 let i32 = NumT I32T
 let anyref = RefT (Null, AnyHT)
@@ -499,12 +526,20 @@ let wrap item_name wrap_action wrap_assertion at =
   in
   let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
+  (try
+    Valid.check_module m;  (* sanity check *)
+  with Valid.Invalid _ as exn ->
+    prerr_endline (string_of_region at ^
+      ": internal error in JS converter, invalid wrapper module generated:");
+    Sexpr.output stderr 80 (Arrange.module_ m);
+    raise exn
+  );
   Encode.encode m
 
 
 let is_js_num_type = function
-  | I32T -> true
-  | I64T | F32T | F64T -> false
+  | I32T | I64T -> true
+  | F32T | F64T -> false
 
 let is_js_vec_type = function
   | _ -> false
@@ -564,7 +599,7 @@ let of_num n =
   let open Value in
   match n with
   | I32 i -> I32.to_string_s i
-  | I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
+  | I64 i -> I64.to_string_s i ^ "n"
   | F32 z -> of_float (F32.to_float z)
   | F64 z -> of_float (F64.to_float z)
 
@@ -622,9 +657,6 @@ let rec of_definition def =
     try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
     with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
-let of_instance env x_opt =
-  "instance(" ^ of_mod_opt env x_opt ^ ")"
-
 let of_wrapper env x_opt name wrap_action wrap_assertion at =
   let x = of_inst_opt env x_opt in
   let bs = wrap name wrap_action wrap_assertion at in
@@ -677,9 +709,9 @@ let of_assertion env ass =
   | AssertInvalidCustom (def, _) ->
     "assert_invalid_custom(" ^ of_definition def ^ ");"
   | AssertUnlinkable (x_opt, _) ->
-    "assert_unlinkable(" ^ of_instance env x_opt ^ ");"
+    "assert_unlinkable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertUninstantiable (x_opt, _) ->
-    "assert_uninstantiable(" ^ of_instance env x_opt ^ ");"
+    "assert_uninstantiable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertReturn (act, ress) ->
     of_assertion' env act "assert_return" (List.map of_result ress)
       (Some (assert_return ress))
@@ -702,7 +734,7 @@ let of_command env cmd =
       | Quoted (_, s) ->
         unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind_mod env x_opt (unquote def);
-    "let " ^ current_mod env ^ " = " ^ of_definition def ^ ";\n" ^
+    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_mod_opt env x_opt ^ " = " ^ current_mod env ^ ";\n")
   | Instance (x1_opt, x2_opt) ->

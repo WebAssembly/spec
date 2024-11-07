@@ -23,6 +23,12 @@ Date: now
     "title": "WebAssembly Core Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
+  },
+  "WASMWEB": {
+    "href": "https://webassembly.github.io/spec/js-api/",
+    "title": "WebAssembly Web API Specification",
+    "publisher": "W3C WebAssembly Community Group",
+    "status": "Draft"
   }
 }
 </pre>
@@ -48,6 +54,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: SetFunctionLength; url: sec-setfunctionlength
         text: the Number value; url: sec-ecmascript-language-types-number-type
         text: is a Number; url: sec-ecmascript-language-types-number-type
+        text: is a BigInt; url: sec-ecmascript-language-types-bigint-type
         text: NumberToRawBytes; url: sec-numbertorawbytes
         text: Built-in Function Objects; url: sec-built-in-function-objects
         text: NativeError Object Structure; url: sec-nativeerror-object-structure
@@ -62,11 +69,19 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: NativeError Object Structure; url: sec-nativeerror-object-structure
         text: 𝔽; url: #𝔽
         text: ℤ; url: #ℤ
+        text: mathematical value; url: #mathematical-value
         text: SameValue; url: sec-samevalue
+        text: Array; url: sec-array-exotic-objects
+        text: BigInt; url: sec-ecmascript-language-types-bigint-type
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
+    text: embedding interface; url: appending/embedding.html
+    text: scope; url: intro/introduction.html#scope
     url: valid/modules.html#valid-module
         text: valid
         text: WebAssembly module validation
+    text: valid limits; url: valid/types.html#valid-limits
+    text: valid memtype; url: valid/types.html#valid-memtype
+    text: valid tabletype; url: valid/types.html#valid-tabletype
     text: module grammar; url: binary/modules.html#binary-module
     text: custom section; url: binary/modules.html#custom-section
     text: customsec; url: binary/modules.html#binary-customsec
@@ -122,9 +137,12 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: match_valtype; url: appendix/embedding.html#embed-match-valtype
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
+    text: address type; url: syntax/types.html#syntax-addrtype
+    text: limits; url: syntax/types.html#syntax-limits
     text: table type; url: syntax/types.html#syntax-tabletype
     text: table address; url: exec/runtime.html#syntax-tableaddr
     text: function address; url: exec/runtime.html#syntax-funcaddr
+    text: memory type; url: syntax/types.html#syntax-memtype
     text: memory address; url: exec/runtime.html#syntax-memaddr
     text: global address; url: exec/runtime.html#syntax-globaladdr
     text: tag address; url: exec/runtime.html#syntax-tagaddr
@@ -140,6 +158,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: exn_alloc; url: appendix/embedding.html#embed-exn-alloc
     text: exn_tag; url: appendix/embedding.html#embed-exn-tag
     text: exn_read; url: appendix/embedding.html#embed-exn-read
+    url: syntax/values.html#syntax-int
+        text: u32
+        text: u64
     url: syntax/types.html#syntax-numtype
         text: i32
         text: i64
@@ -201,6 +222,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
 urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
     type: dfn
         text: create a namespace object; url: create-a-namespace-object
+        text: [EnforceRange]; url: #EnforceRange
+        text: unsigned long; url: #idl-unsigned-long
+        text: js-unsigned-long; url: #js-unsigned-long
 urlPrefix: https://webassembly.github.io/js-types/js-api/; spec: WebAssembly JS API (JS Type Reflection)
     type: abstract-op; text: FromValueType; url: abstract-opdef-fromvaluetype
 urlPrefix: https://tc39.es/proposal-resizablearraybuffer/; spec: ResizableArrayBuffer proposal
@@ -226,7 +250,14 @@ emu-const {
 }
 </style>
 
-This API provides a way to access WebAssembly [[WEBASSEMBLY]] through a bridge to explicitly construct modules from JavaScript [[ECMASCRIPT]].
+<h2 id="intro">Introduction</h2>
+
+By design, the [=scope=] of the WebAssembly core specification [[WEBASSEMBLY]] does not include a description of how WebAssembly programs interact with their surrounding execution environment.
+Instead it defines an abstract [=embedding interface=] between WebAssembly and its environment, (called the *embedder*).
+It is only through this interface that an embedder interacts with the semantics of WebAssembly, and the embedder implements the connection between its host environment and the embedding API.
+This document describes the embedding of WebAssembly into JavaScript [[ECMASCRIPT]] environments, including how WebAssembly modules can be constructed and instantiated, how imported and exported functions are called, how data is exchanged, and how errors are handled.
+When the JavaScript environment is itself embedded in a Web browser, the Web API spec [[WASMWEB]] describes additional behavior relevant to the Web environment.
+
 
 <h2 id="sample">Sample API Usage</h2>
 
@@ -557,6 +588,13 @@ enum ImportExportKind {
   "tag"
 };
 
+enum AddressType {
+  "i32",
+  "i64",
+};
+
+typedef any AddressValue;
+
 dictionary ModuleExportDescriptor {
   required USVString name;
   required ImportExportKind kind;
@@ -661,14 +699,15 @@ Note: The use of this synchronous API is discouraged, as some implementations so
 
 <pre class="idl">
 dictionary MemoryDescriptor {
-  required [EnforceRange] unsigned long initial;
-  [EnforceRange] unsigned long maximum;
+  required AddressValue initial;
+  AddressValue maximum;
+  AddressType address;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Memory {
   constructor(MemoryDescriptor descriptor);
-  unsigned long grow([EnforceRange] unsigned long delta);
+  AddressValue grow(AddressValue delta);
   ArrayBuffer toFixedLengthBuffer();
   ArrayBuffer toResizableBuffer();
   readonly attribute ArrayBuffer buffer;
@@ -731,10 +770,11 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Memory">Memory(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
-    1. Let |initial| be |descriptor|["initial"].
-    1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
-    1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
-    1. Let |memtype| be { min |initial|, max |maximum| }.
+    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be |descriptor|["address"]; otherwise, let |addrtype| be "i32".
+    1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
+    1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
+    1. Let |memtype| be [=memory type=] |addrtype| { **min** |initial|, **max** |maximum| }.
+    1. If |memtype| is not [=valid memtype|valid=], throw a {{RangeError}} exception.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=mem_alloc=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -773,7 +813,11 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <div algorithm=dom-Memory-grow>
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memaddr| be **this**.\[[Memory]].
-    1. Return the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta|.
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |addrtype| be the [=address type=] in [=mem_type=](|store|, |memaddr|).
+    1. Let |delta64| be [=?=] [=AddressValueToU64=](|delta|, |addrtype|).
+    1. Let |ret| be the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta64|.
+    1. Return [=U64ToAddressValue=](|ret|, |addrtype|).
 </div>
 
 Immediately after a WebAssembly [=memory.grow=] instruction executes, perform the following steps:
@@ -851,17 +895,18 @@ enum TableKind {
 
 dictionary TableDescriptor {
   required TableKind element;
-  required [EnforceRange] unsigned long initial;
-  [EnforceRange] unsigned long maximum;
+  required AddressValue initial;
+  AddressValue maximum;
+  AddressType address;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Table {
   constructor(TableDescriptor descriptor, optional any value);
-  unsigned long grow([EnforceRange] unsigned long delta, optional any value);
-  any get([EnforceRange] unsigned long index);
-  undefined set([EnforceRange] unsigned long index, optional any value);
-  readonly attribute unsigned long length;
+  AddressValue grow(AddressValue delta, optional any value);
+  any get(AddressValue index);
+  undefined set(AddressValue index, optional any value);
+  readonly attribute AddressValue length;
 };
 </pre>
 
@@ -889,20 +934,21 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
 
 <div algorithm>
     The <dfn constructor for="Table">Table(|descriptor|, |value|)</dfn> constructor, when invoked, performs the following steps:
-    1. Let |elementType| be [=ToValueType=](|descriptor|["element"]).
-    1. If |elementType| is not a [=reftype=],
-        1. Throw a {{TypeError}} exception.
-    1. Let |initial| be |descriptor|["initial"].
-    1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be |descriptor|["maximum"]; otherwise, let |maximum| be empty.
-    1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
+    1. Let |elementtype| be [=ToValueType=](|descriptor|["element"]).
+    1. If |elementtype| is not a [=reftype=],
+        1. [=Throw=] a {{TypeError}} exception.
+    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be |descriptor|["address"]; otherwise, let |addrtype| be "i32".
+    1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
+    1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
+    1. Let |type| be the [=table type=] |addrtype| { <b>[=limits|min=]</b> |initial|, <b>[=limits|max=]</b> |maximum| } |elementType|.
+    1. If |type| is not [=valid tabletype|valid=], throw a {{RangeError}} exception.
     1. If |value| is missing,
-        1. Let |ref| be [=DefaultValue=](|elementType|).
+        1. Let |ref| be [=DefaultValue=](|elementtype|).
         1. Assert: |ref| is not [=error=].
     1. Otherwise,
         1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
-    1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|max=] |maximum|} |elementType|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|, |ref|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
+    1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|, |ref|). If allocation fails, throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=initialize a table object|Initialize=] **this** from |tableaddr|.
 </div>
@@ -912,13 +958,14 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |initialSize| be [=table_size=](|store|, |tableaddr|).
-    1. Let (<var ignore>limits</var>, |elementType|) be [=table_type=](|tableaddr|).
+    1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
+    1. Let |delta64| be [=?=] [=AddressValueToU64=](|delta|, |addrtype|).
     1. If |value| is missing,
-        1. Let |ref| be [=DefaultValue=](|elementType|).
+        1. Let |ref| be [=DefaultValue=](|elementtype|).
         1. If |ref| is [=error=], throw a {{TypeError}} exception.
     1. Otherwise,
-        1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
-    1. Let |result| be [=table_grow=](|store|, |tableaddr|, |delta|, |ref|).
+        1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementtype|).
+    1. Let |result| be [=table_grow=](|store|, |tableaddr|, |delta64|, |ref|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
 
         Note: The above exception can happen due to either insufficient memory or an invalid size parameter.
@@ -931,17 +978,20 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     The getter of the <dfn attribute for="Table">length</dfn> attribute of {{Table}}, when invoked, performs the following steps:
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Return [=table_size=](|store|, |tableaddr|).
+    1. Let |addrtype| be the [=address type=] in [=table_type=](|store|, |tableaddr|).
+    1. Let |length64| be [=table_size=](|store|, |tableaddr|).
+    1. Return [=U64ToAddressValue=](|length64|, |addrtype|).
 </div>
 
 <div algorithm>
     The <dfn method for="Table">get(|index|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (<var ignore>limits</var>, |elementType|) be [=table_type=](|store|, |tableaddr|).
-    1. If |elementType| is [=exnref=],
+    1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
+    1. If |elementtype| is [=exnref=],
         1. Throw a {{TypeError}} exception.
-    1. Let |result| be [=table_read=](|store|, |tableaddr|, |index|).
+    1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
+    1. Let |result| be [=table_read=](|store|, |tableaddr|, |index64|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
     1. Return [=ToJSValue=](|result|).
 </div>
@@ -950,16 +1000,16 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     The <dfn method for="Table">set(|index|, |value|)</dfn> method, when invoked, performs the following steps:
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (<var ignore>limits</var>, |elementType|) be [=table_type=](|store|, |tableaddr|).
-    1. If |elementType| is [=exnref=],
+    1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
+    1. If |elementtype| is [=exnref=],
         1. Throw a {{TypeError}} exception.
+    1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
     1. If |value| is missing,
-        1. Let |ref| be [=DefaultValue=](|elementType|).
+        1. Let |ref| be [=DefaultValue=](|elementtype|).
         1. If |ref| is [=error=], throw a {{TypeError}} exception.
     1. Otherwise,
-        1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
-    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |store| be [=table_write=](|store|, |tableaddr|, |index|, |ref|).
+        1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementtype|).
+    1. Let |store| be [=table_write=](|store|, |tableaddr|, |index64|, |ref|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
 </div>
@@ -1228,18 +1278,18 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
 1. Assert: |w| is not of the form [=ref.exn=] <var ignore>exnaddr</var>.
 1. If |w| is of the form [=i64.const=] |u64|,
     1. Let |i64| be [=signed_64=](|u64|).
-    1. Return [=ℤ=](|i64| interpreted as a mathematical value).
-1. If |w| is of the form [=i32.const=] |i32|,
-    1. Let |i32| be [=signed_32=](|i32|).
-    2. Return [=𝔽=](|i32| interpreted as a mathematical value).
+    1. Return [=ℤ=](|i64| interpreted as a [=mathematical value=]).
+1. If |w| is of the form [=i32.const=] |u32|,
+    1. Let |i32| be [=signed_32=](|u32|).
+    2. Return [=𝔽=](|i32| interpreted as a [=mathematical value=]).
 1. If |w| is of the form [=f32.const=] |f32|,
     1. If |f32| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
     1. If |f32| is [=nan=], return **NaN**.
-    1. Return [=𝔽=](|f32| interpreted as a mathematical value).
+    1. Return [=𝔽=](|f32| interpreted as a [=mathematical value=]).
 1. If |w| is of the form [=f64.const=] |f64|,
     1. If |f64| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
     1. If |f64| is [=nan=], return **NaN**.
-    1. Return [=𝔽=](|f64| interpreted as a mathematical value).
+    1. Return [=𝔽=](|f64| interpreted as a [=mathematical value=]).
 1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
 1. If |w| is of the form [=ref.i31=] |u31|,
     1. Let |i31| be [=signed_31=](|u31|).
@@ -1280,7 +1330,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is [=f32=],
     1. Let |number| be [=?=] [$ToNumber$](|v|).
     1. If |number| is **NaN**,
-        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> ≤ |n| < 2<sup>[=signif=](32)</sup>.
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> &leq; |n| &lt; 2<sup>[=signif=](32)</sup>.
         1. Let |f32| be [=nan=](n).
     1. Otherwise,
         1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode. [[IEEE-754]]
@@ -1288,7 +1338,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is [=f64=],
     1. Let |number| be [=?=] [$ToNumber$](|v|).
     1. If |number| is **NaN**,
-        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> ≤ |n| < 2<sup>[=signif=](64)</sup>.
+        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> &leq; |n| &lt; 2<sup>[=signif=](64)</sup>.
         1. Let |f64| be [=nan=](n).
     1. Otherwise,
         1. Let |f64| be |number|.
@@ -1329,6 +1379,32 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 
 </div>
 
+<div algorithm>
+The algorithm <dfn>AddressValueToU64</dfn>(|v|, |addrtype|) converts a JavaScript value to a WebAssembly [=u64=] for use in embedding operations. It is designed to act like [=[EnforceRange]=] [=unsigned long=] for {{AddressType}} "i32", and to extend these semantics to {{AddressType}} "i64", by performing the following steps:
+
+1. If |addrtype| is "i32",
+    1. Let |n| be [=?=] [$ConvertToInt$](|v|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
+
+        Note: This is equivalent to the [=js-unsigned-long|JS conversion rules=] for [=[EnforceRange]=] [=unsigned long=].
+    1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
+1. If |addrtype| is "i64",
+    1. Let |n| be [=?=] [$ToBigInt$](|v|).
+    1. If |n| &lt; 0 or |n| &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
+
+        Note: This operation is designed to emulate [=[EnforceRange]=].
+    1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
+1. Assert: This step is not reached.
+
+</div>
+
+<div algorithm>
+The algorithm <dfn>U64ToAddressValue</dfn>(|v|, |addrtype|) converts a [=u64=] value from a WebAssembly embedding operation to the correct variant of {{AddressValue}} for an {{AddressType}}, by performing the following steps:
+
+1. If |addrtype| is "i32", return [=𝔽=](|v| interpreted as a [=mathematical value=]).
+1. Else if |addrtype| is "i64", return [=ℤ=](|v| interpreted as a [=mathematical value=]).
+1. Assert: This step is not reached.
+
+</div>
 
 <h3 id="tags">Tags</h3>
 
@@ -1361,7 +1437,6 @@ To <dfn>initialize a Tag object</dfn> |tag| from a [=tag address=] |tagAddress|,
 </div>
 
 <div algorithm>
-
 To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress|, perform the following steps:
 
 1. Let |map| be the [=surrounding agent=]'s associated [=Tag object cache=].
@@ -1736,3 +1811,29 @@ In practice, an implementation may run out of resources for valid modules below 
 <p><em>This section is non-normative.</em></p>
 
 This document defines a host environment for WebAssembly. It enables a WebAssembly instance to [=import=] JavaScript objects and functions from an [=read the imports|import object=], but otherwise provides no access to the embedding environment. Thus a WebAssembly instance is bound to the same constraints as JavaScript.
+
+<h2 id="change-history">Change History</h2>
+
+<p><em>This section is non-normative.</em></p>
+
+<p>Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
+The following sections provide an overview of what has changed.</p>
+
+<h3 id="release-20">Release 2.0</h3>
+
+<h4 id="changes-multivalue" class="no-toc heading settled">Multiple Values</h4>
+Multiple values can be returned to and from JavaScript functions as an [=Array=] object.
+
+<h4 id="changes-bigint" class="no-toc heading settled">BigInt Integration</h4>
+WebAssembly [=i64=] values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as [=BigInt=] objects.
+
+<h4 id="changes-reftypes" class="no-toc heading settled">Reference Types</h4>
+JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as [=externref=] values.
+
+<h4 id="changes-multitable" class="no-toc heading settled">Multiple Tables</h4>
+Multiple tables can be exported and imported to and from JavaScript.
+
+<h3 id="release-30">Release 3.0</h3>
+
+<h4 id="changes-multimemory" class="no-toc heading settled">Multiple Memories</h4>
+Multiple memories can be exported and imported to and from JavaScript.

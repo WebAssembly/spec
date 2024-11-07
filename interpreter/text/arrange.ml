@@ -64,6 +64,7 @@ let mutability node = function
   | Cons -> node
   | Var -> Node ("mut", [node])
 
+let addr_type t = string_of_addr_type t
 let num_type t = string_of_num_type t
 let vec_type t = string_of_vec_type t
 let ref_type t =
@@ -456,14 +457,13 @@ let vec_splatop = vec_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop
 let vec_extractop = vec_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
 let vec_replaceop = vec_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
 
-
 let var x = nat32 x.it
 let num v = string_of_num v.it
 let vec v = string_of_vec v.it
 
 let memop name x typ {ty; align; offset; _} sz =
   typ ty ^ "." ^ name ^ " " ^ var x ^
-  (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
+  (if offset = 0L then "" else " offset=" ^ nat64 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat64 (Int64.shift_left 1L align))
 
 let loadop x op =
@@ -657,14 +657,14 @@ let tag off i tag =
   )
 
 let table off i tab =
-  let {ttype = TableT (lim, t); tinit} = tab.it in
-  Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
+  let {ttype = TableT (at, lim, t); tinit} = tab.it in
+  Node ("table $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim,
     atom ref_type t :: list instr tinit.it
   )
 
 let memory off i mem =
-  let {mtype = MemoryT lim} = mem.it in
-  Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
+  let {mtype = MemoryT (at, lim)} = mem.it in
+  Node ("memory $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim, [])
 
 let is_elem_kind = function
   | (NoNull, FuncHT) -> true

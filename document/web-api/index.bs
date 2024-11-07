@@ -18,12 +18,6 @@ Date: now
 
 <pre class='biblio'>
 {
-  "ECMA-262": {
-    "href": "https://tc39.github.io/ecma262",
-    "title": "ECMAScript® Language Specification",
-    "publisher": "ECMA TC39",
-    "status": "Current Editor's Draft"
-  },
   "WEBASSEMBLY": {
     "href": "https://webassembly.github.io/spec/core/",
     "title": "WebAssembly Core Specification",
@@ -46,7 +40,7 @@ Date: now
 </pre>
 
 <pre class="anchors">
-urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
+urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
     type: exception; for: ECMAScript
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
     type: interface
@@ -78,12 +72,16 @@ url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object
 </pre>
 
 <pre class='link-defaults'>
-spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
+spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:fetch; type:dfn; text:get
 spec:webidl; type:dfn; text:resolve
 </pre>
 
+
+<h2 id="intro">Introduction</h2>
 This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
+It describes the integration of WebAssembly into the broader Web platform, for example with
+additional APIs that are implemented by Web user agents but are outside the scope of JavaScript [[ECMASCRIPT]] itself.
 
 <h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
 
@@ -242,8 +240,8 @@ JavaScript.
 
 <h2 id="mediaType">Media-type Registration</h2>
 
-This section will be submitted to the Internet Engineering Steering Group (IESG) for
-review, approval, and registration with IANA.
+The media type `application/wasm` has been registered with the IANA media type database [[IANA-MEDIA-TYPES]],
+with the following <a href="https://www.iana.org/assignments/media-types/application/wasm">registration template</a>:
 
 application/wasm
 
@@ -312,3 +310,27 @@ application/wasm
  <dt>Author/Change Controller:</dt>
  <dd>W3C</dd>
 </dl></dd>
+</dl>
+
+<h2 id="security-considerations">Security and Privacy Considerations</h2>
+
+<p><em>This section is non-normative.</em></p>
+WebAssembly provides no access to the surrounding environment other than via the JavaScript API described in the [[WASMJS|JS API]] specification.
+Therefore, WebAssembly cannot collect or expose any information (personal, sensitive or otherwise) to Web sites or other parties beyond what can be collected, exposed or processed with JavaScript.
+WebAssembly memory has the same lifetime as the objects in the surrounding JavaScript environment and is not persisted or serialized (other than by copying it out to JavaScript and using existing serialization APIs).
+No access is provided to the underlying platform or hardware, or to other devices, or to the user agent’s native UI.
+
+WebAssembly is an additional program execution mechanism, and can be executed wherever JavaScript can be executed.
+Therefore the threat model is essentially the same as for JavaScript code, and has similar considerations for delivery (e.g. WebAssembly code should be protected in transit from active and passive network attackers)
+and policy (e.g. some loading mechanisms or execution are restricted via mechanisms such as the same-origin policy or Content Security Policy).
+
+<h2 id="change-history">Change History</h2>
+
+<p><em>This section is non-normative.</em></p>
+
+<p>Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
+The following sections provide an overview of what has changed.</p>
+
+<h3 id="release-20">Release 2.0</h3>
+<h4 id="changes-registration" class="no-toc heading settled">Media-type Registraton Completed</h4>
+The registration for the `application/wasm` media type has been successfully completed.

@@ -139,7 +139,7 @@ $${grammar: Brectype Bsubtype}
 Limits
 ~~~~~~
 
-:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present.
+:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present, and a flag for the :ref:`address type <syntax-addrtype>`.
 
 $${grammar: Blimits}
 

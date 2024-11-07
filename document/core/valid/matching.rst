@@ -287,7 +287,9 @@ $${rule: Limits_sub}
 Table Types
 ~~~~~~~~~~~
 
-A :ref:`table type <syntax-tabletype>` ${tabletype: (limits_1 reftype_1)} matches ${tabletype: (limits_1 reftype_1)} if and only if:
+A :ref:`table type <syntax-tabletype>` ${tabletype: (addrtype_1 limits_1 reftype_1)} matches ${tabletype: (addrtype_2 limits_1 reftype_1)} if and only if:
+
+* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -302,7 +304,9 @@ $${rule: Tabletype_sub}
 Memory Types
 ~~~~~~~~~~~~
 
-A :ref:`memory type <syntax-memtype>` ${memtype: (limits_1 PAGE)} matches ${memtype: (limits_2 PAGE)} if and only if:
+A :ref:`memory type <syntax-memtype>` ${memtype: (addrtype_1 limits_1 PAGE)} matches ${memtype: (addrtype_2 limits_2 PAGE)} if and only if:
+
+* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
