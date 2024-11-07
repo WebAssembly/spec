@@ -308,7 +308,7 @@ Allowed basic numeric computations in constant expressions. [#proposal-extconst]
   - |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
 
 .. note::
-   The :ref:`garbage collection <extension-gc>` added further constant instructions.
+   The :ref:`garbage collection <extension-gc>` extension added further constant instructions.
 
 
 .. index:: instruction, function, call
