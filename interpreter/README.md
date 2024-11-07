@@ -417,6 +417,9 @@ Commands are executed in sequence. Commands taking an optional module name refer
 
 After a module is _registered_ under a string name it is available for importing in other modules.
 
+The failure string in assertions exists for documentation purposes.
+The reference interpreter itself checks that the string is a prefix of the actual error message it generates.
+
 The script format supports additional syntax for defining modules.
 A module of the form `(module binary <string>*)` is given in binary form and will be decoded from the (concatenation of the) strings.
 A module of the form `(module quote <string>*)` is given in textual form and will be parsed from the (concatenation of the) strings. In both cases, decoding/parsing happens when the command is executed, not when the script is parsed, so that meta commands like `assert_malformed` can be used to check expected errors.
@@ -435,14 +438,14 @@ It also supports an "unchecked" mode (flag `-u`), in which module definitions ar
 When running scripts, the interpreter predefines a simple host module named `"spectest"` that has the following module type:
 ```
 (module
-  (global (export "global_i32") i32)
-  (global (export "global_i64") i64)
-  (global (export "global_f32") f32)
-  (global (export "global_f64") f64)
+  (global (export "global_i32") i32)      ;; value 666
+  (global (export "global_i64") i64)      ;; value 666
+  (global (export "global_f32") f32)      ;; value 666.6
+  (global (export "global_f64") f64)      ;; value 666.6
 
-  (table (export "table") 10 20 funcref)
+  (table (export "table") 10 20 funcref)  ;; null-initialized
 
-  (memory (export "memory") 1 2)
+  (memory (export "memory") 1 2)          ;; zero-initialized
 
   (func (export "print"))
   (func (export "print_i32") (param i32))
