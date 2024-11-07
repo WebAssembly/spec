@@ -198,7 +198,7 @@ let al_to_block_type: value -> block_type = function
   | CaseV ("_RESULT", [ vt_opt ]) -> ValBlockType (al_to_opt al_to_val_type vt_opt)
   | v -> error_value "block type" v
 
-let al_to_limits (default: int64): value -> int64 limits = function
+let al_to_limits (default: int64): value -> limits = function
   | CaseV ("[", [ min; max ]) ->
     let max' =
       match al_to_nat64 max with

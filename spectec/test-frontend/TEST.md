@@ -3357,8 +3357,8 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
 
   ;; 3-typing.watsup:670.1-674.47
-  rule call_indirect{C : context, x : idx, y : idx, `t_1*` : valtype*, `t_2*` : valtype*, at : addrtype, lim : limits, rt : reftype}:
-    `%|-%:%`(C, CALL_INDIRECT_instr(x, _IDX_typeuse(y)), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ [I32_valtype]), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+  rule call_indirect{C : context, x : idx, y : idx, `t_1*` : valtype*, at : addrtype, `t_2*` : valtype*, lim : limits, rt : reftype}:
+    `%|-%:%`(C, CALL_INDIRECT_instr(x, _IDX_typeuse(y)), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ [(at : addrtype <: valtype)]), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))
     -- Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
@@ -3386,8 +3386,8 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`}), [], `%`_resulttype(t_4*{t_4 <- `t_4*`})))
 
   ;; 3-typing.watsup:698.1-706.42
-  rule return_call_indirect{C : context, x : idx, y : idx, `t_3*` : valtype*, `t_1*` : valtype*, `t_4*` : valtype*, at : addrtype, lim : limits, rt : reftype, `t_2*` : valtype*, `t'_2*` : valtype*}:
-    `%|-%:%`(C, RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y)), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`} ++ [I32_valtype]), [], `%`_resulttype(t_4*{t_4 <- `t_4*`})))
+  rule return_call_indirect{C : context, x : idx, y : idx, `t_3*` : valtype*, `t_1*` : valtype*, at : addrtype, `t_4*` : valtype*, lim : limits, rt : reftype, `t_2*` : valtype*, `t'_2*` : valtype*}:
+    `%|-%:%`(C, RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y)), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`} ++ [(at : addrtype <: valtype)]), [], `%`_resulttype(t_4*{t_4 <- `t_4*`})))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))
     -- Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
@@ -5401,8 +5401,8 @@ rec {
 def $funcsxa(externaddr*) : funcaddr*
   ;; 6-runtime-aux.watsup:67.1-67.24
   def $funcsxa([]) = []
-  ;; 6-runtime-aux.watsup:68.1-68.47
-  def $funcsxa{fa : funcaddr, `xa*` : externaddr*}([FUNC_externaddr(fa)] ++ xa*{xa <- `xa*`}) = [fa] ++ $funcsxa(xa*{xa <- `xa*`})
+  ;; 6-runtime-aux.watsup:68.1-68.45
+  def $funcsxa{a : addr, `xa*` : externaddr*}([FUNC_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $funcsxa(xa*{xa <- `xa*`})
   ;; 6-runtime-aux.watsup:69.1-69.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -5415,8 +5415,8 @@ rec {
 def $globalsxa(externaddr*) : globaladdr*
   ;; 6-runtime-aux.watsup:71.1-71.26
   def $globalsxa([]) = []
-  ;; 6-runtime-aux.watsup:72.1-72.53
-  def $globalsxa{ga : globaladdr, `xa*` : externaddr*}([GLOBAL_externaddr(ga)] ++ xa*{xa <- `xa*`}) = [ga] ++ $globalsxa(xa*{xa <- `xa*`})
+  ;; 6-runtime-aux.watsup:72.1-72.51
+  def $globalsxa{a : addr, `xa*` : externaddr*}([GLOBAL_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $globalsxa(xa*{xa <- `xa*`})
   ;; 6-runtime-aux.watsup:73.1-73.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -5429,8 +5429,8 @@ rec {
 def $tablesxa(externaddr*) : tableaddr*
   ;; 6-runtime-aux.watsup:75.1-75.25
   def $tablesxa([]) = []
-  ;; 6-runtime-aux.watsup:76.1-76.50
-  def $tablesxa{ta : tableaddr, `xa*` : externaddr*}([TABLE_externaddr(ta)] ++ xa*{xa <- `xa*`}) = [ta] ++ $tablesxa(xa*{xa <- `xa*`})
+  ;; 6-runtime-aux.watsup:76.1-76.48
+  def $tablesxa{a : addr, `xa*` : externaddr*}([TABLE_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $tablesxa(xa*{xa <- `xa*`})
   ;; 6-runtime-aux.watsup:77.1-77.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -5443,8 +5443,8 @@ rec {
 def $memsxa(externaddr*) : memaddr*
   ;; 6-runtime-aux.watsup:79.1-79.23
   def $memsxa([]) = []
-  ;; 6-runtime-aux.watsup:80.1-80.44
-  def $memsxa{ma : memaddr, `xa*` : externaddr*}([MEM_externaddr(ma)] ++ xa*{xa <- `xa*`}) = [ma] ++ $memsxa(xa*{xa <- `xa*`})
+  ;; 6-runtime-aux.watsup:80.1-80.42
+  def $memsxa{a : addr, `xa*` : externaddr*}([MEM_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $memsxa(xa*{xa <- `xa*`})
   ;; 6-runtime-aux.watsup:81.1-81.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -5457,8 +5457,8 @@ rec {
 def $tagsxa(externaddr*) : tagaddr*
   ;; 6-runtime-aux.watsup:83.1-83.23
   def $tagsxa([]) = []
-  ;; 6-runtime-aux.watsup:84.1-84.44
-  def $tagsxa{ha : tagaddr, `xa*` : externaddr*}([TAG_externaddr(ha)] ++ xa*{xa <- `xa*`}) = [ha] ++ $tagsxa(xa*{xa <- `xa*`})
+  ;; 6-runtime-aux.watsup:84.1-84.42
+  def $tagsxa{a : addr, `xa*` : externaddr*}([TAG_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $tagsxa(xa*{xa <- `xa*`})
   ;; 6-runtime-aux.watsup:85.1-85.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -6641,9 +6641,10 @@ relation Step_read: `%~>%`(config, instr*)
     -- if (c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1)[[j!`%`_laneidx.0] = `%`_lane_(k!`%`_iN.0)]))
 
   ;; 8-reduction.watsup
-  rule memory.size{z : state, x : idx, n : n}:
+  rule memory.size{z : state, x : idx, n : n, at : addrtype, lim : limits}:
     `%~>%`(`%;%`_config(z, [MEMORY.SIZE_instr(x)]), [CONST_instr(I32_numtype, `%`_num_(n))])
     -- if ((n * (64 * $Ki)) = |$mem(z, x).BYTES_meminst|)
+    -- if ($mem(z, x).TYPE_meminst = `%%PAGE`_memtype(at, lim))
 
   ;; 8-reduction.watsup
   rule `memory.fill-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
@@ -6846,16 +6847,16 @@ relation Step: `%~>%`(config, config)
     -- if (M = (((128 : nat <:> rat) / (N : nat <:> rat)) : rat <:> nat))
     -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j!`%`_laneidx.0]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:1018.1-1021.37
+  ;; 8-reduction.watsup:1019.1-1022.37
   rule `memory.grow-succeed`{z : state, at : addrtype, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr((at : addrtype <: numtype), `%`_num_((((|$mem(z, x).BYTES_meminst| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat)))]))
     -- if (mi = $growmem($mem(z, x), n))
 
-  ;; 8-reduction.watsup:1023.1-1024.83
+  ;; 8-reduction.watsup:1024.1-1025.83
   rule `memory.grow-fail`{z : state, at : addrtype, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_($invsigned_($size((at : addrtype <: numtype)), - (1 : nat <:> int))))]))
 
-  ;; 8-reduction.watsup:1084.1-1085.51
+  ;; 8-reduction.watsup:1085.1-1086.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }
