@@ -1331,7 +1331,7 @@ $${rule: Instr_ok/vload_lane}
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
-* Then the instruction is valid with type :math:`[\I32~t] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~t] \to []`.
 
 $${rule: Instr_ok/vstore}
 

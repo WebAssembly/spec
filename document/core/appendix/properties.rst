@@ -559,7 +559,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      n = \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdashmeminst \{ \MITYPE~\limits, \MIBYTES~b^n \} : \addrtype~\limits
+     S \vdashmeminst \{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^n \} : \addrtype~\limits
    }
 
 
