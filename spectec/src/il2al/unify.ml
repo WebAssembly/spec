@@ -16,16 +16,59 @@ let error at msg = Error.error at "prose translation" msg
 
 (* Estimate appropriate id name for a given type *)
 
+module IdxMap = Map.Make(String)
+
+type env = (string * int) IdxMap.t
+
 let unified_prefix = "u"
-let _unified_idx = ref 0
-let _unified_idx_cache = ref None
-let init_unified_idx () = _unified_idx := 0; _unified_idx_cache := None
-let soft_init_unified_idx () =
-  match !_unified_idx_cache with
-  | None -> _unified_idx_cache := Some (!_unified_idx)
-  | Some n -> _unified_idx := n
-let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
-let gen_new_unified ty = (Al.Al_util.typ_to_var_name ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
+let env : env ref = ref IdxMap.empty
+let ienv : env ref = ref IdxMap.empty
+let ids_cache = ref None
+
+
+let init_env_bind m bind =
+  match bind.it with
+  | ExpB (id, t) ->
+    let typid = Al.Al_util.typ_to_var_name t in
+    (match IdxMap.find_opt typid m with
+    | Some (s, _) when (String.length s) <= (String.length id.it) -> m
+    | _ -> IdxMap.add typid (id.it, 0) m
+    )
+  | _ -> m
+
+let init_env_rule m rule =
+  match rule.it with
+  | RuleD (_, binds, _, _, _) -> List.fold_left init_env_bind m binds
+
+let init_env_clause m clause =
+  match clause.it with
+  | DefD (binds, _, _, _) -> List.fold_left init_env_bind m binds
+
+let init_ienv il =
+  let env' =
+    List.fold_left (fun m def ->
+      match def.it with
+      | RelD (_, _, _, rules) ->
+        List.fold_left init_env_rule m rules
+      | DecD (_, _, _, clauses) ->
+        List.fold_left init_env_clause m clauses
+      | _ -> m
+    ) IdxMap.empty il
+  in
+  ienv := env'
+
+let init_env () = env := IdxMap.empty; ids_cache := None
+
+let get_unified_idx typid =
+  let name, idx = IdxMap.find_opt typid !env |> Option.value ~default:(typid, 0) in
+  env := IdxMap.add typid (name, idx + 1) !env;
+  name, idx
+
+let gen_new_unified ty =
+  let typid = Al.Al_util.typ_to_var_name ty in
+  let name, idx = get_unified_idx typid in
+  name ^ "_" ^ unified_prefix ^ (string_of_int idx) $ no_region
+
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 
@@ -189,7 +232,7 @@ let apply_template_to_rule template rule =
     RuleD (id, binds, mixop, template, new_prems @ prems) $ rule.at
 
 let unify_rules rules =
-  init_unified_idx();
+  init_env();
 
   let concls = List.map (fun x -> let RuleD(_, _, _, e, _) = x.it in e) rules in
   let hd = List.hd concls in
@@ -321,16 +364,16 @@ let extract_rules def =
   | _ -> []
 
 let unify_ctxt (input_vars: string list) (clauses: rule_clause list) : rule_clause list =
-  soft_init_unified_idx();
   unify_rule_clauses is_encoded_ctxt input_vars clauses
 let unify_pop_and_winstr rule_def =
-  init_unified_idx();
+  init_env();
   unify_rule_clauses is_encoded_pop_or_winstr [] rule_def
 let unify_rule_def (rule: rule_def) : rule_def =
   let instr_name, rel_id, clauses = rule.it in
   let unified_clauses = unify_pop_and_winstr clauses in
   let pops, clauses' = extract_pops unified_clauses in
   let subgroups = group_by_context clauses' in
+  let sub_env = !env in
   let new_clauses =
     List.concat_map
       (function
@@ -346,6 +389,7 @@ let unify_rule_def (rule: rule_def) : rule_def =
               )
               pops
           in
+          env := sub_env;
           subgroup
           |> unify_ctxt popped_vars
           |> List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems)
@@ -397,7 +441,7 @@ let apply_template_to_def template def =
     DefD (binds @ new_binds, template, rhs, (reordered_prems @ prems) |> prioritize_else) $ def.at
 
 let unify_defs defs =
-  init_unified_idx();
+  init_env();
 
   let lhs_s = List.map (fun x -> let DefD(_, lhs, _, _) = x.it in lhs) defs in
   let hd = List.hd lhs_s in
@@ -413,6 +457,7 @@ let extract_helpers partial_funcs def =
   | _ -> None
 
 let unify (il: script) : rule_def list * helper_def list =
+  init_ienv il;
   let rule_defs =
     il
     |> List.concat_map extract_rules
