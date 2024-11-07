@@ -307,6 +307,17 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
 .. math::
    \begin{array}{llclll}
    \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Taddrtype^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tvec(\Telemexpr)~\text{)}~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~\Taddrtype^?~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\Taddrtype'\text{.const}~~\text{0}~\text{)}~~\Treftype~~\Tvec(\Telemexpr)~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, \\ & \qquad\qquad
+        \iff \Taddrtype? \neq \epsilon \wedge \Taddrtype' = \Taddrtype^? \vee \Taddrtype^? = \epsilon \wedge \Taddrtype' = \text{i32}) \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
      \text{(}~\text{table}~~\Tid^?~~\Taddrtype^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~\Taddrtype^?~~n~~n~~\Treftype~\text{)} \\ & \qquad
        \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\Taddrtype'\text{.const}~~\text{0}~\text{)}~~\Treftype~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx~\text{)})~\text{)}

@@ -301,6 +301,7 @@
 
 .. Types, meta functions
 
+.. |addrtypemin| mathdef:: \xref{syntax/types}{aux-addrtype-min}{\F{min}}
 .. |reftypediff| mathdef:: \xref{valid/conventions}{aux-reftypediff}{\setminus}
 
 .. |rollrt| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}}
@@ -311,7 +312,6 @@
 .. |unrollht| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}}
 
 .. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
-.. |atmin| mathdef:: \xref{syntax/types}{aux-addrtype-min}{\F{atmin}}
 
 .. |etfuncs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
 .. |ettables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}

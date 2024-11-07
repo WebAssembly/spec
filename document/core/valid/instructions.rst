@@ -1510,7 +1510,7 @@ Table Instructions
      \qquad
      C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
-     C \vdashinstr \TABLECOPY~x~y : [\X{at}_1~\X{at}_2~\atmin(\X{at}_1, \X{at}_2)] \to []
+     C \vdashinstr \TABLECOPY~x~y : [\X{at}_1~\X{at}_2~\addrtypemin(\X{at}_1, \X{at}_2)] \to []
    }
 
 
@@ -1898,7 +1898,7 @@ Memory Instructions
      \qquad
      C.\CMEMS[y] = \X{at}_y~\limits_y
    }{
-     C \vdashinstr \MEMORYCOPY~x~y : [\X{at}_x~\X{at}_y~\atmin(\X{at}_x, \X{at}_y)] \to []
+     C \vdashinstr \MEMORYCOPY~x~y : [\X{at}_x~\X{at}_y~\addrtypemin(\X{at}_x, \X{at}_y)] \to []
    }
 
 
