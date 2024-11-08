@@ -39,7 +39,6 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         url: sec-returnifabrupt-shorthands
             text: !
             text: ?
-        text: Type; url: sec-ecmascript-data-types-and-values
         url: sec-ecmascript-language-types-bigint-type
             text: is a BigInt
             text: is not a BigInt
