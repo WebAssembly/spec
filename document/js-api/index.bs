@@ -40,6 +40,24 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
             text: !
             text: ?
         text: Type; url: sec-ecmascript-data-types-and-values
+        url: sec-ecmascript-language-types-bigint-type
+            text: is a BigInt
+            text: is not a BigInt
+        url: sec-ecmascript-language-types-boolean-type
+            text: is a Boolean
+            text: is not a Boolean
+        url: sec-ecmascript-language-types-number-type
+            text: is a Number
+            text: is not a Number
+        url: sec-ecmascript-language-types-string-type
+            text: is a String
+            text: is not a String
+        url: sec-ecmascript-language-types-symbol-type
+            text: is a Symbol
+            text: is not a Symbol
+        url: sec-object-type
+            text: is an Object
+            text: is not an Object
         text: current Realm; url: current-realm
         text: ObjectCreate; url: sec-objectcreate
         text: CreateBuiltinFunction; url: sec-createbuiltinfunction
@@ -446,7 +464,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
             1. Let |o| be |builtinOrStringImports|[|moduleName|]
         1. Else,
             1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
-        1. If [=Type=](|o|) is not Object, throw a {{TypeError}} exception.
+        1. If |o| [=is not an Object=], throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
         1. If |externtype| is of the form [=external-type/func=] |functype|,
             1. If [$IsCallable$](|v|) is false, throw a {{LinkError}} exception.
@@ -461,9 +479,9 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
             1. If |v| [=implements=] {{Global}},
                 1. Let |globaladdr| be |v|.\[[Global]].
             1. Otherwise,
-                1. If |valtype| is [=i64=] and [=Type=](|v|) is not BigInt,
+                1. If |valtype| is [=i64=] and |v| [=is not a BigInt=],
                     1. Throw a {{LinkError}} exception.
-                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and [=Type=](|v|) is not Number,
+                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and |v| [=is not a Number=],
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
@@ -1814,7 +1832,7 @@ Note: The algorithms in this section refer to JS builtins defined on [=String=].
 
 The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. If [=Type=](|v|) is not [=String=]
+1. If |v| [=is not a String=]
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Return |v|
 
@@ -1856,7 +1874,7 @@ The |funcType| of this builtin is `(func (param externref) (result i32))`.
 <div algorithm="js-string-test">
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. If [=Type=](|v|) is not [=String=]
+1. If |v| [=is not a String=]
     1. Return 0
 1. Return 1
 
@@ -2017,9 +2035,9 @@ Note: Explicitly allow null strings to be compared for equality as that is meani
 
 When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
 
-1. If |first| is not null and [=Type=](|first|) is not [=String=]
+1. If |first| is not null and |first| [=is not a String=]
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. If |second| is not null and [=Type=](|second|) is not [=String=]
+1. If |second| is not null and |second| [=is not a String=]
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true
     1. Return 1.
