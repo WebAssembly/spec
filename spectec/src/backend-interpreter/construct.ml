@@ -1321,10 +1321,16 @@ let al_of_global_type = function
   | GlobalT (mut, vt) -> tupV [ al_of_mut mut; al_of_val_type vt ]
 
 let al_of_table_type = function
-  | TableT (at, limits, rt) -> tupV [ al_of_addr_type at; al_of_limits default_table_max limits; al_of_ref_type rt ]
+  | TableT (at, limits, rt) ->
+    match !version with
+    | 3 -> tupV [ al_of_addr_type at; al_of_limits default_table_max limits; al_of_ref_type rt ]
+    | _ -> tupV [                     al_of_limits default_table_max limits; al_of_ref_type rt ]
 
 let al_of_memory_type = function
-  | MemoryT (at, limits) -> CaseV ("PAGE", [ al_of_addr_type at; al_of_limits default_memory_max limits ])
+  | MemoryT (at, limits) ->
+    match !version with
+    | 3 -> CaseV ("PAGE", [ al_of_addr_type at; al_of_limits default_memory_max limits ])
+    | _ -> CaseV ("PAGE", [                     al_of_limits default_memory_max limits ])
 
 (* Construct value *)
 
