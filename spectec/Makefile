@@ -68,6 +68,17 @@ $(TESTDIRS): test-%: exe
 	@(cd $@ && dune runtest)
 
 
+# Spec
+
+.PHONY: spec spec-pdf
+
+spec:
+	(cd ../document/core && make main)
+
+spec-pdf:
+	(cd ../document/core && make pdf)
+
+
 # Cleanup
 
 .PHONY: clean distclean

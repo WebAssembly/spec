@@ -19,6 +19,8 @@ type t = value
 
 type ref_ += NullRef of heap_type
 
+type address = I64.t
+
 
 (* Injection & projection *)
 
@@ -280,6 +282,23 @@ let storage_bits_of_val st v =
 (* Conversion *)
 
 let value_of_bool b = Num (I32 (if b then 1l else 0l))
+
+let num_of_addr at i =
+  match at with
+  | I64AT -> I64 i
+  | I32AT -> I32 (I32_convert.wrap_i64 i)
+
+let addr_of_num x =
+  match x with
+  | I32 i -> I64_convert.extend_i32_u i
+  | I64 i -> i
+  | _ -> raise Type
+
+let addr_add n i =
+  num_of_addr (addr_type_of_num_type (type_of_num n)) (I64.add (addr_of_num n) i)
+let addr_sub n i =
+  num_of_addr (addr_type_of_num_type (type_of_num n)) (I64.sub (addr_of_num n) i)
+
 
 let string_of_num = function
   | I32 i -> I32.to_string_s i

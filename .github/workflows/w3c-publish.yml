@@ -1,10 +1,12 @@
-name: Publish to W3C TR space
+name: Validate/Publish to W3C TR space
 
 on:
   push:
     # Disable on fork
     # branches: [ main ]
     branches: [ main-only-on-spec-repo ]
+    paths: [ .github/**, document/** ]
+  pull_request:
     paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
@@ -25,30 +27,45 @@ on:
           - CRD
           - CR
 
+env:
+  YARN_ENABLE_IMMUTABLE_INSTALLS: false
+  W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
+
 jobs:
   publish-to-w3c-TR:
-    if: github.repository == 'WebAssembly/spec'
+    strategy:
+      fail-fast: false
+      matrix:
+        spec: [core, js-api, web-api]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Setup TexLive
+        if: ${{ matrix.spec == 'core' }}
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
+        if: ${{ matrix.spec == 'core' }}
         run: pip install six && pip install sphinx==5.1.0
-      - name: Publish all specs to their https://www.w3.org/TR/ URLs
-        run: cd document && make -e WD-echidna-CI
+      - name: Publish ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
+        if: env.W3C_ECHIDNA_TOKEN_CORE
+        run: cd document && make -e -C ${{ matrix.spec }} WD-echidna-CI
         env:
-          W3C_STATUS: ${{ github.event_name == 'push' && 'CRD' || inputs.w3c-status }}
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+          ECHIDNA_DRYRUN: ${{ !(github.event_name == 'push' && github.repository == 'WebAssembly/spec' && github.ref == 'refs/heads/main') }}
+      - name: Validate ${{ matrix.spec }} spec with Echidna
+        if: env.W3C_USERNAME
+        run: cd document && make -e -C ${{ matrix.spec }} WD-echidna
+        env:
+          W3C_USERNAME: ${{ secrets.W3C_USERNAME }}
+          W3C_PASSWORD: ${{ secrets.W3C_PASSWORD }}

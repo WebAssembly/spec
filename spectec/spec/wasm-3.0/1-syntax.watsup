@@ -141,6 +141,9 @@ syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
 syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?  ;; HACK
 syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?  ;; HACK
 
+syntax addrtype hint(desc "address type") =
+  | I32 | I64
+
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
 
@@ -257,11 +260,11 @@ syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
 
 ;; External types
 
-syntax limits hint(desc "limits") = `[u32 .. u32] hint(macro "L%")
+syntax limits hint(desc "limits") = `[u64 .. u64] hint(macro "L%")
 
 syntax globaltype hint(desc "global type") = mut valtype
-syntax tabletype hint(desc "table type") = limits reftype
-syntax memtype hint(desc "memory type") = limits PAGE
+syntax tabletype hint(desc "table type") = addrtype limits reftype
+syntax memtype hint(desc "memory type") = addrtype limits PAGE
 syntax tagtype hint(desc "memory type") = deftype
 syntax elemtype hint(desc "element type") = reftype
 syntax datatype hint(desc "data type") = OK hint(macro "%data")
@@ -278,7 +281,7 @@ syntax moduletype hint(desc "module type") =
 var lim : limits
 
 var t : valtype
-var at : tagtype
+var at : addrtype
 ;; var bt : blocktype  ;; defined below
 var ct : comptype
 var dt : deftype
@@ -287,7 +290,8 @@ var ft : functype
 var gt : globaltype
 var ht : heaptype
 ;; var it : instrtype  ;; defined in typing
-;; kt : conttype       ;; future extension
+var jt : tagtype
+;; var kt : conttype   ;; future extension
 var lt : lanetype
 var mt : memtype
 var nt : numtype

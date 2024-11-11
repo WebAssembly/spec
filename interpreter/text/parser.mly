@@ -364,6 +364,14 @@ string_list :
 
 /* Types */
 
+%inline addr_type :
+  | NUM_TYPE
+    { match $1 with
+      | I32T -> I32AT
+      | I64T -> I64AT
+      | _ -> error (at $sloc) "malformed address type" }
+  | /* empty */ { I32AT }  /* Sugar */
+
 null_opt :
   | /* empty */ { NoNull }
   | NULL { Null }
@@ -468,14 +476,14 @@ sub_type :
         List.map (fun y -> VarHT (StatX y.it)) ($4 c type_), $5 c x) }
 
 table_type :
-  | limits ref_type { fun c -> TableT ($1, $2 c) }
+  | addr_type limits ref_type { fun c -> TableT ($1, $2, $3 c) }
 
 memory_type :
-  | limits { fun c -> MemoryT $1 }
+  | addr_type limits { fun c -> MemoryT ($1, $2) }
 
 limits :
-  | NAT { {min = nat32 $1 $loc($1); max = None} }
-  | NAT NAT { {min = nat32 $1 $loc($1); max = Some (nat32 $2 $loc($2))} }
+  | NAT { {min = nat64 $1 $loc($1); max = None} }
+  | NAT NAT { {min = nat64 $1 $loc($1); max = Some (nat64 $2 $loc($2))} }
 
 type_use :
   | LPAR TYPE var RPAR { fun c -> $3 c type_ }
@@ -530,10 +538,10 @@ labeling_end_opt :
   | bind_var { [$1] }
 
 offset_ :
-  | OFFSET_EQ_NAT { nat32 $1 $sloc }
+  | OFFSET_EQ_NAT { nat64 $1 $sloc }
 
 offset_opt :
-  | /* empty */ { 0l }
+  | /* empty */ { 0L }
   | offset_ { $1 }
 
 align :
@@ -672,10 +680,10 @@ lane_imms :
     { fun instr at0 c -> instr (0l @@ at0) $2 $1
         (vec_lane_index $3 (at $loc($3))) }
   | align NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) $1 0l
+    { fun instr at0 c -> instr (0l @@ at0) $1 0L
        (vec_lane_index $2 (at $loc($2))) }
   | NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) None 0l
+    { fun instr at0 c -> instr (0l @@ at0) None 0L
         (vec_lane_index $1 (at $loc($1))) }
 
 
@@ -1111,7 +1119,7 @@ table_fields :
   | table_type const_expr1
     { fun c x loc -> [{ttype = $1 c; tinit = $2 c} @@ loc], [], [], [] }
   | table_type  /* Sugar */
-    { fun c x loc -> let TableT (_, (_, ht)) as ttype = $1 c in
+    { fun c x loc -> let TableT (_, _, (_, ht)) as ttype = $1 c in
       [{ttype; tinit = [RefNull ht @@ loc] @@ loc} @@ loc], [], [], [] }
   | inline_import table_type  /* Sugar */
     { fun c x loc ->
@@ -1121,26 +1129,26 @@ table_fields :
   | inline_export table_fields  /* Sugar */
     { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
+  | addr_type ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
     { fun c x loc ->
-      let offset = [i32_const (0l @@ loc) @@ loc] @@ loc in
-      let einit = $4 c :: $5 c in
-      let size = Lib.List32.length einit in
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      let einit = $5 c :: $6 c in
+      let size = Lib.List64.length einit in
       let emode = Active {index = x; offset} @@ loc in
-      let (_, ht) as etype = $1 c in
+      let (_, ht) as etype = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ loc],
+      [{ttype = TableT ($1, {min = size; max = Some size}, etype); tinit} @@ loc],
       [{etype; einit; emode} @@ loc],
       [], [] }
-  | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
+  | addr_type ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x loc ->
-      let offset = [i32_const (0l @@ loc) @@ loc] @@ loc in
-      let einit = $4 c in
-      let size = Lib.List32.length einit in
-      let emode = Active {index = x; offset} @@ loc in
-      let (_, ht) as etype = $1 c in
+      let (_, ht) as etype = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ loc],
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      let einit = $5 c in
+      let size = Lib.List64.length einit in
+      let emode = Active {index = x; offset} @@ loc in
+      [{ttype = TableT ($1, {min = size; max = Some size}, etype); tinit} @@ loc],
       [{etype; einit; emode} @@ loc],
       [], [] }
 
@@ -1173,12 +1181,12 @@ memory_fields :
   | inline_export memory_fields  /* Sugar */
     { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
-  | LPAR DATA string_list RPAR  /* Sugar */
+  | addr_type LPAR DATA string_list RPAR  /* Sugar */
     { fun c x loc ->
-      let offset = [i32_const (0l @@ loc) @@ loc] @@ loc in
-      let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
-      [{mtype = MemoryT {min = size; max = Some size}} @@ loc],
-      [{dinit = $3; dmode = Active {index = x; offset} @@ loc} @@ loc],
+      let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      [{mtype = MemoryT ($1, {min = size; max = Some size})} @@ loc],
+      [{dinit = $4; dmode = Active {index = x; offset} @@ loc} @@ loc],
       [], [] }
 
 tag :

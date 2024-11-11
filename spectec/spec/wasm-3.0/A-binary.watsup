@@ -171,18 +171,20 @@ grammar Brectype : rectype =
 
 ;; External types
 
-grammar Blimits : limits =
-  | 0x00 n:Bu32 => `[n .. $(2^32-1)]
-  | 0x01 n:Bu32 m:Bu32 => `[n .. m]
+grammar Blimits : (addrtype, limits) =
+  | 0x00 n:Bu64 => (I32, `[n .. $(2^64-1)])
+  | 0x01 n:Bu64 m:Bu64 => (I64, `[n .. m])
+  | 0x04 n:Bu64 => (I32, `[n .. $(2^64-1)])
+  | 0x05 n:Bu64 m:Bu64 => (I64, `[n .. m])
 
 grammar Bglobaltype : globaltype =
   | t:Bvaltype mut:Bmut => mut t
 
 grammar Btabletype : tabletype =
-  | rt:Breftype lim:Blimits => lim rt
+  | rt:Breftype (at,lim):Blimits => at lim rt
 
 grammar Bmemtype : memtype =
-  | lim:Blimits => lim PAGE
+  | (at,lim):Blimits => at lim PAGE
 
 grammar Btagtype : typeidx =
   | 0x00 x:Btypeidx => x
@@ -1062,7 +1064,7 @@ grammar Bfuncsec : typeidx* hint(desc "function section") =
 ;; Table section
 
 grammar Btable : table =
-  | tt:Btabletype => TABLE tt (REF.NULL ht)  -- if tt = lim (REF NULL? ht)
+  | tt:Btabletype => TABLE tt (REF.NULL ht)  -- if tt = at lim (REF NULL? ht)
   | 0x40 0x00 tt:Btabletype e:Bexpr => TABLE tt e
 
 grammar Btablesec : table* hint(desc "table section") =
