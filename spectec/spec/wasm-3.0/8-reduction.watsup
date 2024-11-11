@@ -1011,7 +1011,7 @@ rule Step/vstore_lane-val:
 
 
 rule Step_read/memory.size:
-  z; (MEMORY.SIZE x)  ~>  (CONST I32 n)
+  z; (MEMORY.SIZE x)  ~>  (CONST at n)
   -- if $(n * $($(64 * $Ki))) = |$mem(z, x).BYTES|
   -- if $mem(z, x).TYPE = at lim PAGE
 
