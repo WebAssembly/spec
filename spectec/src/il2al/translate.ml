@@ -269,6 +269,8 @@ and translate_exp exp =
     (* | [ [{it = Atom.LBrack; _}]; [{it = Atom.Dot2; _}]; [{it = Atom.RBrack; _}] ], [ e1; e2 ] *)
     | [ []; [{it = Atom.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at ~note
+    | [ []; []; []; []], [ e1; e2; e3 ] ->
+      tupE [ translate_exp e1; translate_exp e2; translate_exp e3 ] ~at ~note
     | _, _ when List.length op = List.length exps + 1 ->
       caseE (op, translate_argexp e) ~at ~note
     | _ -> yetE (Il.Print.string_of_exp exp) ~at ~note
