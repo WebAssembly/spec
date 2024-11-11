@@ -6641,8 +6641,8 @@ relation Step_read: `%~>%`(config, instr*)
     -- if (c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1)[[j!`%`_laneidx.0] = `%`_lane_(k!`%`_iN.0)]))
 
   ;; 8-reduction.watsup
-  rule memory.size{z : state, x : idx, n : n, at : addrtype, lim : limits}:
-    `%~>%`(`%;%`_config(z, [MEMORY.SIZE_instr(x)]), [CONST_instr(I32_numtype, `%`_num_(n))])
+  rule memory.size{z : state, x : idx, at : addrtype, n : n, lim : limits}:
+    `%~>%`(`%;%`_config(z, [MEMORY.SIZE_instr(x)]), [CONST_instr((at : addrtype <: numtype), `%`_num_(n))])
     -- if ((n * (64 * $Ki)) = |$mem(z, x).BYTES_meminst|)
     -- if ($mem(z, x).TYPE_meminst = `%%PAGE`_memtype(at, lim))
 

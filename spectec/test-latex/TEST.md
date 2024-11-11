@@ -10517,7 +10517,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.size}]} \quad & z ; (\mathsf{memory{.}size}~x) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n) & \quad
+{[\textsc{\scriptsize E{-}memory.size}]} \quad & z ; (\mathsf{memory{.}size}~x) & \hookrightarrow & ({\mathit{at}}{.}\mathsf{const}~n) & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ n \cdot 64 \, {\mathrm{Ki}} = {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
 {\land}~ z{.}\mathsf{mems}{}[x]{.}\mathsf{type} = {\mathit{at}}~{\mathit{lim}}~\mathsf{page} \\
