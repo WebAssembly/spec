@@ -309,12 +309,10 @@ $${syntax: {rectype subtype}}
 In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
 
 
-.. _index:: ! address type
+.. _index:: ! address type, number type, bit width
    pair: abstract syntax; address type
    single: memory; address type
    single: table; address type
-
-
 .. _syntax-addrtype:
 
 Address Type
@@ -333,38 +331,6 @@ Conventions
 The *minimum* of two address types is defined as the address type whose :ref:`bit width <bitwidth-numtype>` is the minimum of the two.
 
 $${definition: minat}
-
-
-.. _index:: ! address type
-   pair: abstract syntax; address type
-   single: memory; address type
-   single: table; address type
-.. _syntax-addrtype:
-
-Address Type
-~~~~~~~~~~~~
-
-*Address types* are a subset of :ref:`number types <syntax-numtype>` that classify the values that can be used as offsets into
-:ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
-
-.. math::
-   \begin{array}{llll}
-   \production{address type} & \addrtype &::=&
-     \I32 ~|~ \I64 \\
-   \end{array}
-
-.. _aux-addrtype-min:
-
-Conventions
-...........
-
-The *minimum* of two address types is defined as the address type whose :ref:`bit width <bitwidth-numtype>` is the minimum of the two.
-
-.. math::
-   \begin{array}{llll}
-   \addrtypemin(\X{at}_1, \X{at}_2) &=& \X{at}_1 & (\iff |\X{at}_1| \leq |\X{at}_2|) \\
-   \addrtypemin(\X{at}_1, \X{at}_2) &=& \X{at}_2 & (\otherwise) \\
-   \end{array}
 
 
 .. index:: ! limits, memory type, table type
