@@ -1114,7 +1114,7 @@ Memory Instructions
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
-* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\I32~\V128] \to []`.
 
 .. math::
    \frac{
