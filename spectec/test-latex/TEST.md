@@ -188,6 +188,82 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{xfoo}} & ::= & \mathsf{xbarnull} \\
+& & | & \mathsf{xbarun{\scriptstyle 0}}~\mathbb{N} \\
+& & | & \mathsf{xbarun{\scriptstyle 1}n}~\mathbb{N} \\
+& & | & \mathsf{xbarun{\scriptstyle 11}}~\mathbb{N} \\
+& & | & \mathsf{xbarunrest}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 0}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}n}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 11}}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 2}n}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 22}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 112}n}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1122}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 22}}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 2211}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbinrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1}n{\scriptstyle 2}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1122}rest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 2211}rest}~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& {\mathit{xxfoo}} & ::= & {\mathit{xfoo}}~\mathbb{N} \\
+& {\mathit{xxxfoo}} & ::= & \mathbb{N}~{\mathit{xfoo}}~\mathbb{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{xfoo}}(\mathsf{xbarnull}) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarun{\scriptstyle 0}}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarun{\scriptstyle 1}n}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarun{\scriptstyle 11}}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarunrest}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 0}}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}n}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 11}}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 2}n}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 22}}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 112}n}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1122}}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 22}}~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 2211}}~3~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbinrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~3~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1}n{\scriptstyle 2}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1122}rest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 2211}rest}~3~2~3) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{xxfoo}}(\mathsf{xbarnull}~9) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{xxxfoo}}(1~\mathsf{xbarnull}~9) & = & 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{fii}} & ::= & \mathsf{fii} \\
 & {\mathit{faa}} & ::= & \mathsf{faa} \\
 & {\mathit{foo}} & ::= & \mathsf{foo} \\
@@ -1288,6 +1364,82 @@ $$
 {\ShowMacroAtomArrow}(a~{\to}_{({c^\ast})}\,b_1~b_2) & = & 0 \\
 {\ShowMacroAtomArrow}(a~{\to}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
 {\ShowMacroAtomArrow}({\to}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\xfoo} & ::= & \XBARNULL \\
+& & | & \XBARUN0~\mathbb{N} \\
+& & | & \XBARUN1N~\mathbb{N} \\
+& & | & \XBARUN11~\mathbb{N} \\
+& & | & \XBARUNREST~\mathbb{N} \\
+& & | & \XBARBIN0~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1N~\mathbb{N} \\
+& & | & \XBARBIN11~\mathbb{N} \\
+& & | & \XBARBIN1N2N~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1N22~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN112N~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1122~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN22~\mathbb{N} \\
+& & | & \XBARBIN2211~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBINREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\XFOONAME1N2NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\XFOONAME1122REST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\XFOONAME2211REST~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& {\xxfoo} & ::= & {\xfoo}~\mathbb{N} \\
+& {\xxxfoo} & ::= & \mathbb{N}~{\xfoo}~\mathbb{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\xfoo}(\XBARNULL) & = & 0 \\
+{\xfoo}(\XBARUN0~2) & = & 0 \\
+{\xfoo}(\XBARUN1N~2) & = & 0 \\
+{\xfoo}(\XBARUN11~2) & = & 0 \\
+{\xfoo}(\XBARUNREST~2) & = & 0 \\
+{\xfoo}(\XBARBIN0~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1N~2) & = & 0 \\
+{\xfoo}(\XBARBIN11~2) & = & 0 \\
+{\xfoo}(\XBARBIN1N2N~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1N22~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN112N~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1122~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN22~3) & = & 0 \\
+{\xfoo}(\XBARBIN2211~3~2) & = & 0 \\
+{\xfoo}(\XBARBINREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~3~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~\XFOONAME1N2NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~\XFOONAME1122REST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~\XFOONAME2211REST~3~2~3) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\xxfoo}(\XBARNULL~9) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\xxxfoo}(1~\XBARNULL~9) & = & 0 \\
 \end{array}
 $$
 
