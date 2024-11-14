@@ -62,10 +62,10 @@ let builtin () =
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "I32"]));
-    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "I64"]));
-    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "F32"]));
-    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (CaseV ("", [none "MUT"; nullary "F64"]));
+    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (TupV [none "MUT"; nullary "I32"]);
+    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (TupV [none "MUT"; nullary "I64"]);
+    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (TupV [none "MUT"; nullary "F32"]);
+    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TupV [none "MUT"; nullary "F64"]);
   ] in
   (* Builtin tables *)
   let nulls = CaseV ("REF.NULL", [ nullary "FUNC" ]) |> Array.make 10 in
@@ -75,17 +75,33 @@ let builtin () =
     else
       nullary "FUNCREF"
   in
+  let mk_ttype nt =
+    let args = [ CaseV ("[", [ natV (Z.of_int 10); natV (Z.of_int 20) ]); funcref ] in
+    if !Construct.version = 3 then
+      TupV (CaseV (nt, []) :: args)
+    else
+      TupV args
+  in
   let tables = [
     "table",
-    listV nulls
-    |> create_tableinst (CaseV ("", [ CaseV ("[", [ natV (Z.of_int 10); natV (Z.of_int 20) ]); funcref ]));
+    listV nulls |> create_tableinst (mk_ttype "I32");
+    "table64",
+    listV nulls |> create_tableinst (mk_ttype "I64");
   ] in
   (* Builtin memories *)
   let zeros = natV Z.zero |> Array.make 0x10000 in
+  let mk_mtype nt =
+    let arg = CaseV ("[", [ natV Z.one; natV (Z.of_int 2) ]) in
+    if !Construct.version = 3 then
+      CaseV ("PAGE", [ CaseV (nt, []); arg ])
+    else
+      CaseV ("PAGE", [ arg ]);
+  in
   let memories = [
     "memory",
-    listV zeros
-    |> create_meminst (CaseV ("PAGE", [ CaseV ("[", [ natV Z.one; natV (Z.of_int 2) ]) ]));
+    listV zeros |> create_meminst (mk_mtype "I32");
+    "memory64",
+    listV zeros |> create_meminst (mk_mtype "I64");
   ] in
   let tags = [] in
 

@@ -114,7 +114,7 @@ let rec al_to_storage_type: value -> storage_type = function
   | v -> ValStorageT (al_to_val_type v)
 
 and al_to_field_type: value -> field_type = function
-  | CaseV ("", [ mut; st ]) -> FieldT (al_to_mut mut, al_to_storage_type st)
+  | TupV [ mut; st ] -> FieldT (al_to_mut mut, al_to_storage_type st)
   | v -> error_value "field type" v
 
 and al_to_result_type: value -> result_type = function
@@ -173,6 +173,11 @@ and al_to_ref_type: value -> ref_type = function
   | CaseV ("REF", [ n; ht ]) -> al_to_null n, al_to_heap_type ht
   | v -> error_value "ref type" v
 
+and al_to_addr_type: value -> addr_type = function
+  | CaseV ("I32", []) -> I32AT
+  | CaseV ("I64", []) -> I64AT
+  | v -> error_value "addr type" v
+
 and al_to_num_type: value -> num_type = function
   | CaseV ("I32", []) -> I32T
   | CaseV ("I64", []) -> I64T
@@ -193,27 +198,27 @@ let al_to_block_type: value -> block_type = function
   | CaseV ("_RESULT", [ vt_opt ]) -> ValBlockType (al_to_opt al_to_val_type vt_opt)
   | v -> error_value "block type" v
 
-let al_to_limits (default: int64): value -> int32 limits = function
+let al_to_limits (default: int64): value -> limits = function
   | CaseV ("[", [ min; max ]) ->
     let max' =
       match al_to_nat64 max with
       | i64 when default = i64 -> None
-      | _ -> Some (al_to_nat32 max)
+      | _ -> Some (al_to_nat64 max)
     in
-    { min = al_to_nat32 min; max = max' }
+    { min = al_to_nat64 min; max = max' }
   | v -> error_value "limits" v
 
 
 let al_to_global_type: value -> global_type = function
-  | CaseV ("", [ mut; vt ]) -> GlobalT (al_to_mut mut, al_to_val_type vt)
+  | TupV [ mut; vt ] -> GlobalT (al_to_mut mut, al_to_val_type vt)
   | v -> error_value "global type" v
 
 let al_to_table_type: value -> table_type = function
-  | CaseV ("", [ limits; rt ]) -> TableT (al_to_limits default_table_max limits, al_to_ref_type rt)
+  | TupV [ at; limits; rt ] -> TableT (al_to_addr_type at, al_to_limits default_table_max limits, al_to_ref_type rt)
   | v -> error_value "table type" v
 
 let al_to_memory_type: value -> memory_type = function
-  | CaseV ("PAGE", [ limits ]) -> MemoryT (al_to_limits default_memory_max limits)
+  | CaseV ("PAGE", [ at; limits ]) -> MemoryT (al_to_addr_type at, al_to_limits default_memory_max limits)
   | v -> error_value "memory type" v
 
 let al_to_tag_type: value -> tag_type = function
@@ -675,7 +680,7 @@ let al_to_memop (f: value -> 'p) : value list -> idx * (num_type, 'p) memop = fu
     {
       ty = al_to_num_type nt;
       align = Record.find "ALIGN" str |> al_to_nat;
-      offset = Record.find "OFFSET" str |> al_to_nat32;
+      offset = Record.find "OFFSET" str |> al_to_nat64;
       pack = f p;
     }
   | [ nt; p; idx; StrV str ] when !version >= 3 ->
@@ -683,13 +688,13 @@ let al_to_memop (f: value -> 'p) : value list -> idx * (num_type, 'p) memop = fu
     {
       ty = al_to_num_type nt;
       align = Record.find "ALIGN" str |> al_to_nat;
-      offset = Record.find "OFFSET" str |> al_to_nat32;
+      offset = Record.find "OFFSET" str |> al_to_nat64;
       pack = f p;
     }
   | v -> error_values "memop" v
 
 let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = function
-  | CaseV ("", [ p; ext ]) -> al_to_pack_size p, al_to_extension ext
+  | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
   | v -> error_value "pack size, extension" v
 
 let al_to_loadop: value list -> idx * loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
@@ -701,14 +706,14 @@ let al_to_vmemop' (f: value -> 'p): value list -> (vec_type, 'p) memop = functio
     {
       ty = V128T;
       align = Record.find "ALIGN" str |> al_to_nat;
-      offset = Record.find "OFFSET" str |> al_to_nat32;
+      offset = Record.find "OFFSET" str |> al_to_nat64;
       pack = f (natV Z.zero);
     }
   | [ p; StrV str ] ->
     {
       ty = V128T;
       align = Record.find "ALIGN" str |> al_to_nat;
-      offset = Record.find "OFFSET" str |> al_to_nat32;
+      offset = Record.find "OFFSET" str |> al_to_nat64;
       pack = f p;
     }
   | v -> error_values "vmemop" v
@@ -1244,7 +1249,7 @@ let rec al_of_storage_type = function
   | PackStorageT _ as st -> nullary (string_of_storage_type st)
 
 and al_of_field_type = function
-  | FieldT (mut, st) -> caseV ("", [ al_of_mut mut; al_of_storage_type st ])
+  | FieldT (mut, st) -> tupV [ al_of_mut mut; al_of_storage_type st ]
 
 and al_of_result_type rt = al_of_list al_of_val_type rt
 
@@ -1283,6 +1288,8 @@ and al_of_ref_type (null, ht) =
   else
     al_of_heap_type ht
 
+and al_of_addr_type at = string_of_addr_type at |> nullary
+
 and al_of_num_type nt = string_of_num_type nt |> nullary
 
 and al_of_vec_type vt = string_of_vec_type vt |> nullary
@@ -1304,20 +1311,26 @@ let al_of_blocktype = function
 let al_of_limits default limits =
   let max =
     match limits.max with
-    | Some v -> al_of_nat32 v
+    | Some v -> al_of_nat64 v
     | None -> al_of_nat64 default
   in
 
-  CaseV ("[", [ al_of_nat32 limits.min; max ]) (* TODO: Something better tan this is needed *)
+  CaseV ("[", [ al_of_nat64 limits.min; max ]) (* TODO: Something better tan this is needed *)
 
 let al_of_global_type = function
-  | GlobalT (mut, vt) -> caseV ("", [ al_of_mut mut; al_of_val_type vt ])
+  | GlobalT (mut, vt) -> tupV [ al_of_mut mut; al_of_val_type vt ]
 
 let al_of_table_type = function
-  | TableT (limits, rt) -> caseV ("", [ al_of_limits default_table_max limits; al_of_ref_type rt ])
+  | TableT (at, limits, rt) ->
+    match !version with
+    | 3 -> tupV [ al_of_addr_type at; al_of_limits default_table_max limits; al_of_ref_type rt ]
+    | _ -> tupV [                     al_of_limits default_table_max limits; al_of_ref_type rt ]
 
 let al_of_memory_type = function
-  | MemoryT limits -> CaseV ("PAGE", [ al_of_limits default_memory_max limits ])
+  | MemoryT (at, limits) ->
+    match !version with
+    | 3 -> CaseV ("PAGE", [ al_of_addr_type at; al_of_limits default_memory_max limits ])
+    | _ -> CaseV ("PAGE", [                     al_of_limits default_memory_max limits ])
 
 (* Construct value *)
 
@@ -1859,15 +1872,11 @@ let al_of_memop f idx memop =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_nat memop.align)
-    |> Record.add "OFFSET" (al_of_nat32 memop.offset)
+    |> Record.add "OFFSET" (al_of_nat64 memop.offset)
   in
   [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx idx @ [ StrV str ]
 
-let al_of_pack_size_extension (p, s) =
-  if !version = 3 then
-    caseV ("", [ al_of_pack_size p; al_of_extension s ])
-  else
-    tupV [ al_of_pack_size p; al_of_extension s ]
+let al_of_pack_size_extension (p, s) = tupV [ al_of_pack_size p; al_of_extension s ]
 
 let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
@@ -1877,7 +1886,7 @@ let al_of_vloadop idx vloadop =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_nat vloadop.align)
-    |> Record.add "OFFSET" (al_of_nat32 vloadop.offset)
+    |> Record.add "OFFSET" (al_of_nat64 vloadop.offset)
   in
 
   let vmemop = match vloadop.pack with
@@ -1896,7 +1905,7 @@ let al_of_vstoreop idx vstoreop =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_nat vstoreop.align)
-    |> Record.add "OFFSET" (al_of_nat32 vstoreop.offset)
+    |> Record.add "OFFSET" (al_of_nat64 vstoreop.offset)
   in
 
   al_of_vec_type V128T :: al_of_memidx idx @ [ StrV str ]
@@ -1907,7 +1916,7 @@ let al_of_vlaneop idx vlaneop laneidx =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_nat vlaneop.align)
-    |> Record.add "OFFSET" (al_of_nat32 vlaneop.offset)
+    |> Record.add "OFFSET" (al_of_nat64 vlaneop.offset)
   in
 
   [ al_of_vec_type V128T; al_of_pack_size pack_size ] @ al_of_memidx idx @ [ StrV str; al_of_nat laneidx ]
@@ -2094,7 +2103,7 @@ let al_of_global global =
 
 let al_of_table table =
   match !version with
-  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_case "" 0 ])
+  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_tup 0 ])
   | 2 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype ])
   | 3 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype; al_of_const table.it.tinit ])
   | _ -> failwith "Unsupported version"

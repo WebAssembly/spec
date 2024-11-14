@@ -41,11 +41,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 32}}} .. {\mathit{u{\kern-0.1em\scriptstyle 32}}} ] \\[0.8ex]
+\mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {\mathit{u{\kern-0.1em\scriptstyle 64}}} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(function type)} & {\mathit{functype}} & ::= & {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
-\mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{limits}}~{\mathit{reftype}} \\
-\mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{limits}}~\mathsf{page} \\[0.8ex]
+\mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
+\mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\[0.8ex]
 {} \\[-2ex]
 \mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{tag}~{\mathit{typeuse}} \\
 \end{array}
@@ -295,6 +295,7 @@ warning: syntax `absheaptype/syn` was never spliced
 warning: syntax `absheaptype/sem` was never spliced
 warning: syntax `addr` was never spliced
 warning: syntax `addrref` was never spliced
+warning: syntax `addrtype` was never spliced
 warning: syntax `arrayaddr` was never spliced
 warning: syntax `arrayinst` was never spliced
 warning: syntax `arraytype` was never spliced
@@ -1277,6 +1278,7 @@ warning: definition `fpmax_` was never spliced
 warning: definition `fpmin_` was never spliced
 warning: definition `frame` was never spliced
 warning: definition `free_absheaptype` was never spliced
+warning: definition `free_addrtype` was never spliced
 warning: definition `free_arraytype` was never spliced
 warning: definition `free_block` was never spliced
 warning: definition `free_blocktype` was never spliced
@@ -1330,6 +1332,7 @@ warning: definition `free_table` was never spliced
 warning: definition `free_tableidx` was never spliced
 warning: definition `free_tabletype` was never spliced
 warning: definition `free_tag` was never spliced
+warning: definition `free_tagtype` was never spliced
 warning: definition `free_type` was never spliced
 warning: definition `free_typeidx` was never spliced
 warning: definition `free_typeuse` was never spliced
@@ -1454,6 +1457,7 @@ warning: definition `memsxa` was never spliced
 warning: definition `memsxt` was never spliced
 warning: definition `memsxx` was never spliced
 warning: definition `min` was never spliced
+warning: definition `minat` was never spliced
 warning: definition `moduleinst` was never spliced
 warning: definition `narrow__` was never spliced
 warning: definition `nbytes_` was never spliced
@@ -1489,6 +1493,7 @@ warning: definition `sizenn1` was never spliced
 warning: definition `sizenn2` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
+warning: definition `subst_addrtype` was never spliced
 warning: definition `subst_all_deftype` was never spliced
 warning: definition `subst_all_deftypes` was never spliced
 warning: definition `subst_all_globaltype` was never spliced
@@ -1513,6 +1518,7 @@ warning: definition `subst_reftype` was never spliced
 warning: definition `subst_storagetype` was never spliced
 warning: definition `subst_subtype` was never spliced
 warning: definition `subst_tabletype` was never spliced
+warning: definition `subst_tagtype` was never spliced
 warning: definition `subst_typeuse` was never spliced
 warning: definition `subst_typevar` was never spliced
 warning: definition `subst_valtype` was never spliced
@@ -2038,6 +2044,7 @@ warning: definition prose `expon` was never spliced
 warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
 warning: definition prose `free_absheaptype` was never spliced
+warning: definition prose `free_addrtype` was never spliced
 warning: definition prose `free_arraytype` was never spliced
 warning: definition prose `free_block` was never spliced
 warning: definition prose `free_blocktype` was never spliced
@@ -2091,6 +2098,7 @@ warning: definition prose `free_table` was never spliced
 warning: definition prose `free_tableidx` was never spliced
 warning: definition prose `free_tabletype` was never spliced
 warning: definition prose `free_tag` was never spliced
+warning: definition prose `free_tagtype` was never spliced
 warning: definition prose `free_type` was never spliced
 warning: definition prose `free_typeidx` was never spliced
 warning: definition prose `free_typeuse` was never spliced
@@ -2184,6 +2192,7 @@ warning: definition prose `memsxa` was never spliced
 warning: definition prose `memsxt` was never spliced
 warning: definition prose `memsxx` was never spliced
 warning: definition prose `min` was never spliced
+warning: definition prose `minat` was never spliced
 warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
 warning: definition prose `opt_` was never spliced
@@ -2214,6 +2223,7 @@ warning: definition prose `sizenn1` was never spliced
 warning: definition prose `sizenn2` was never spliced
 warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
+warning: definition prose `subst_addrtype` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced
 warning: definition prose `subst_all_deftypes` was never spliced
 warning: definition prose `subst_all_globaltype` was never spliced
@@ -2238,6 +2248,7 @@ warning: definition prose `subst_reftype` was never spliced
 warning: definition prose `subst_storagetype` was never spliced
 warning: definition prose `subst_subtype` was never spliced
 warning: definition prose `subst_tabletype` was never spliced
+warning: definition prose `subst_tagtype` was never spliced
 warning: definition prose `subst_typeuse` was never spliced
 warning: definition prose `subst_typevar` was never spliced
 warning: definition prose `subst_valtype` was never spliced

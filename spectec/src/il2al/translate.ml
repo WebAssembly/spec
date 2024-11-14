@@ -73,6 +73,9 @@ let args_of_case e =
   | Il.CaseE (_, exp) -> [ exp ]
   | _ -> error e.at
     (sprintf "cannot get arguments of case expression `%s`" (Il.Print.string_of_exp e))
+let is_simple_separator = function
+  | [] | [{it = Atom.Semicolon; _}] -> true
+  | _ -> false
 
 let is_context exp =
   is_case exp &&
@@ -256,17 +259,18 @@ and translate_exp exp =
       | _ -> [ e ]
     in
     match (op, exps) with
-    (* Constructor *)
-    (* TODO: Need a better way to convert these CaseE into ConstructE *)
-    (* TODO: type *)
-    | [ []; [] ], [ e1 ] -> translate_exp e1
-    (* | [ []; []; [] ], [ e1; e2 ] *)
-    (* | [ [{it = Atom.LBrack; _}]; [{it = Atom.Dot2; _}]; [{it = Atom.RBrack; _}] ], [ e1; e2 ] *)
-    | [ []; [{it = Atom.Semicolon; _}]; [] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at ~note
-    | _, _ when List.length op = List.length exps + 1 ->
-      caseE (op, translate_argexp e) ~at ~note
-    | _ -> yetE (Il.Print.string_of_exp exp) ~at ~note
+    (* Singleton *)
+    | [ []; [] ], [ e1 ] ->
+      translate_exp e1
+    (* Tuple *)
+    | _ when List.for_all is_simple_separator op ->
+      tupE (List.map translate_exp exps) ~at ~note
+    (* Normal Case *)
+    | _ ->
+      if List.length op = List.length exps + 1 then
+        caseE (op, translate_argexp e) ~at ~note
+      else
+        error_exp exp "arity mismatch for CaseE mixop and args"
     )
   | Il.UncaseE (e, op) ->
     (match op with

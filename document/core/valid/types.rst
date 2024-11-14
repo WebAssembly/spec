@@ -438,13 +438,13 @@ $${rule: Limits_ok}
 Table Types
 ~~~~~~~~~~~
 
-:math:`\limits~\reftype`
-........................
+:math:`\addrtype~\limits~\reftype`
+..................................
 $${rule-prose: Tabletype_ok}
 .. todo::
  below is the official specification
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}-1`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|}-1`.
 
 * The reference type :math:`\reftype` must be :ref:`valid <valid-reftype>`.
 
@@ -461,13 +461,13 @@ $${rule: Tabletype_ok}
 Memory Types
 ~~~~~~~~~~~~
 
-:math:`\limits`
-...............
+:math:`\addrtype~\limits`
+.........................
 $${rule-prose: Memtype_ok}
 .. todo::
  below is the official specification
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{16}`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|-16}`.
 
 * Then the memory type is valid.
 

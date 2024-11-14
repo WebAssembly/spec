@@ -188,6 +188,82 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{xfoo}} & ::= & \mathsf{xbarnull} \\
+& & | & \mathsf{xbarun{\scriptstyle 0}}~\mathbb{N} \\
+& & | & \mathsf{xbarun{\scriptstyle 1}n}~\mathbb{N} \\
+& & | & \mathsf{xbarun{\scriptstyle 11}}~\mathbb{N} \\
+& & | & \mathsf{xbarunrest}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 0}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}n}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 11}}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 2}n}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 22}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 112}n}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1122}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 22}}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 2211}}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbinrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1}n{\scriptstyle 2}nrest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1122}rest}~\mathbb{N}~\mathbb{N} \\
+& & | & \mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 2211}rest}~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& {\mathit{xxfoo}} & ::= & {\mathit{xfoo}}~\mathbb{N} \\
+& {\mathit{xxxfoo}} & ::= & \mathbb{N}~{\mathit{xfoo}}~\mathbb{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{xfoo}}(\mathsf{xbarnull}) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarun{\scriptstyle 0}}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarun{\scriptstyle 1}n}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarun{\scriptstyle 11}}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarunrest}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 0}}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}n}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 11}}~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 2}n}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}n{\scriptstyle 22}}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 112}n}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1122}}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 22}}~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 2211}}~3~2) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbinrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~3~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1}n{\scriptstyle 2}nrest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 1122}rest}~2~3) & = & 0 \\
+{\mathrm{xfoo}}(\mathsf{xbarbin{\scriptstyle 1}nrest}~\mathsf{xfooname{\scriptstyle 2211}rest}~3~2~3) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{xxfoo}}(\mathsf{xbarnull}~9) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{xxxfoo}}(1~\mathsf{xbarnull}~9) & = & 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathit{fii}} & ::= & \mathsf{fii} \\
 & {\mathit{faa}} & ::= & \mathsf{faa} \\
 & {\mathit{foo}} & ::= & \mathsf{foo} \\
@@ -1288,6 +1364,82 @@ $$
 {\ShowMacroAtomArrow}(a~{\to}_{({c^\ast})}\,b_1~b_2) & = & 0 \\
 {\ShowMacroAtomArrow}(a~{\to}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
 {\ShowMacroAtomArrow}({\to}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\xfoo} & ::= & \XBARNULL \\
+& & | & \XBARUN0~\mathbb{N} \\
+& & | & \XBARUN1N~\mathbb{N} \\
+& & | & \XBARUN11~\mathbb{N} \\
+& & | & \XBARUNREST~\mathbb{N} \\
+& & | & \XBARBIN0~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1N~\mathbb{N} \\
+& & | & \XBARBIN11~\mathbb{N} \\
+& & | & \XBARBIN1N2N~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1N22~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN112N~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1122~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN22~\mathbb{N} \\
+& & | & \XBARBIN2211~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBINREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\XFOONAME1N2NREST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\XFOONAME1122REST~\mathbb{N}~\mathbb{N} \\
+& & | & \XBARBIN1NREST~\XFOONAME2211REST~\mathbb{N}~\mathbb{N}~\mathbb{N} \\
+& {\xxfoo} & ::= & {\xfoo}~\mathbb{N} \\
+& {\xxxfoo} & ::= & \mathbb{N}~{\xfoo}~\mathbb{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\xfoo}(\XBARNULL) & = & 0 \\
+{\xfoo}(\XBARUN0~2) & = & 0 \\
+{\xfoo}(\XBARUN1N~2) & = & 0 \\
+{\xfoo}(\XBARUN11~2) & = & 0 \\
+{\xfoo}(\XBARUNREST~2) & = & 0 \\
+{\xfoo}(\XBARBIN0~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1N~2) & = & 0 \\
+{\xfoo}(\XBARBIN11~2) & = & 0 \\
+{\xfoo}(\XBARBIN1N2N~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1N22~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN112N~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1122~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN22~3) & = & 0 \\
+{\xfoo}(\XBARBIN2211~3~2) & = & 0 \\
+{\xfoo}(\XBARBINREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~3~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~\XFOONAME1N2NREST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~\XFOONAME1122REST~2~3) & = & 0 \\
+{\xfoo}(\XBARBIN1NREST~\XFOONAME2211REST~3~2~3) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\xxfoo}(\XBARNULL~9) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\xxxfoo}(1~\XBARNULL~9) & = & 0 \\
 \end{array}
 $$
 
@@ -2474,6 +2626,7 @@ $$
 & {\mathsf{null}^?} & ::= & {\mathsf{null}^?} \\
 & {\mathsf{null}}{{{}_{1}^?}} & ::= & {\mathsf{null}^?} \\
 & {\mathsf{null}}{{{}_{2}^?}} & ::= & {\mathsf{null}^?} \\
+\mbox{(address type)} & {\mathit{addrtype}} & ::= & \mathsf{i{\scriptstyle 32}} ~|~ \mathsf{i{\scriptstyle 64}} \\
 \mbox{(number type)} & {\mathit{numtype}} & ::= & \mathsf{i{\scriptstyle 32}} ~|~ \mathsf{i{\scriptstyle 64}} ~|~ \mathsf{f{\scriptstyle 32}} ~|~ \mathsf{f{\scriptstyle 64}} \\
 \mbox{(vector type)} & {\mathit{vectype}} & ::= & \mathsf{v{\scriptstyle 128}} \\
 \mbox{(literal type)} & {\mathit{consttype}} & ::= & {\mathit{numtype}} ~|~ {\mathit{vectype}} \\
@@ -2607,10 +2760,10 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 32}}} .. {\mathit{u{\kern-0.1em\scriptstyle 32}}} ] \\
+\mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {\mathit{u{\kern-0.1em\scriptstyle 64}}} ] \\
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
-\mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{limits}}~{\mathit{reftype}} \\
-\mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{limits}}~\mathsf{page} \\
+\mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
+\mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\
 \mbox{(tag type)} & {\mathit{tagtype}} & ::= & {\mathit{deftype}} \\
 \mbox{(element type)} & {\mathit{elemtype}} & ::= & {\mathit{reftype}} \\
 \mbox{(data type)} & {\mathit{datatype}} & ::= & \mathsf{ok} \\
@@ -3239,6 +3392,15 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2) & = & {\mathit{at}}_1 & \quad \mbox{if}~ {|{\mathit{at}}_1|} \leq {|{\mathit{at}}_2|} \\
+{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2) & = & {\mathit{at}}_2 & \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
 (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~\mathsf{null}~{\mathit{ht}}_2) & = & (\mathsf{ref}~{\mathit{ht}}_1) \\
 (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~{\mathit{ht}}_2) & = & (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \\
 \end{array}
@@ -3283,7 +3445,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{tags}}(\epsilon) & = & \epsilon \\
-{\mathrm{tags}}((\mathsf{tag}~{\mathit{at}})~{{\mathit{xt}}^\ast}) & = & {\mathit{at}}~{\mathrm{tags}}({{\mathit{xt}}^\ast}) \\
+{\mathrm{tags}}((\mathsf{tag}~{\mathit{jt}})~{{\mathit{xt}}^\ast}) & = & {\mathit{jt}}~{\mathrm{tags}}({{\mathit{xt}}^\ast}) \\
 {\mathrm{tags}}({\mathit{externtype}}~{{\mathit{xt}}^\ast}) & = & {\mathrm{tags}}({{\mathit{xt}}^\ast}) & \mbox{otherwise} \\
 \end{array}
 $$
@@ -3304,6 +3466,12 @@ $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
 {{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathit{at}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {\mathit{at}} \\
 \end{array}
 $$
 
@@ -3406,13 +3574,19 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{({\mathit{lim}}~\mathsf{page})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {\mathit{lim}}~\mathsf{page} \\
+{({\mathit{at}}~{\mathit{lim}}~\mathsf{page})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {\mathit{at}}~{\mathit{lim}}~\mathsf{page} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{({\mathit{lim}}~{\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
+{({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {\mathit{at}}~{\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
 \end{array}
 $$
 
@@ -3422,6 +3596,7 @@ $$
 {(\mathsf{global}~{\mathit{gt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{global}~{{\mathit{gt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
 {(\mathsf{table}~{\mathit{tt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{table}~{{\mathit{tt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
 {(\mathsf{mem}~{\mathit{mt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
+{(\mathsf{tag}~{\mathit{jt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{tag}~{{\mathit{jt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
 \end{array}
 $$
 
@@ -3656,6 +3831,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}}) & = & \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) & = & \{ \begin{array}[t]{@{}l@{}}
  \}\end{array} \\
 \end{array}
@@ -3815,14 +3997,24 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{tabletype}}({\mathit{limits}}~{\mathit{reftype}}) & = & {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+{\mathrm{free}}_{\mathit{tabletype}}({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}}) & = & & \\
+ \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}}
+{\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}}) \oplus {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+\end{array}
+} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{memtype}}({\mathit{limits}}~\mathsf{page}) & = & \{ \begin{array}[t]{@{}l@{}}
- \}\end{array} \\
+{\mathrm{free}}_{\mathit{memtype}}({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page}) & = & {\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{tagtype}}({\mathit{deftype}}) & = & {\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}}) \\
 \end{array}
 $$
 
@@ -3845,6 +4037,7 @@ $$
 {\mathrm{free}}_{\mathit{externtype}}(\mathsf{global}~{\mathit{globaltype}}) & = & {\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}}) \\
 {\mathrm{free}}_{\mathit{externtype}}(\mathsf{table}~{\mathit{tabletype}}) & = & {\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}}) \\
 {\mathrm{free}}_{\mathit{externtype}}(\mathsf{mem}~{\mathit{memtype}}) & = & {\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}}) \\
+{\mathrm{free}}_{\mathit{externtype}}(\mathsf{tag}~{\mathit{tagtype}}) & = & {\mathrm{free}}_{\mathit{tagtype}}({\mathit{tagtype}}) \\
 \end{array}
 $$
 
@@ -4818,7 +5011,7 @@ C \vdash {\mathit{limits}} : {2^{32}} - 1
  \qquad
 C \vdash {\mathit{reftype}} : \mathsf{ok}
 }{
-C \vdash {\mathit{limits}}~{\mathit{reftype}} : \mathsf{ok}
+C \vdash {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}table}]}
 \qquad
 \end{array}
@@ -4829,7 +5022,7 @@ $$
 \frac{
 C \vdash {\mathit{limits}} : {2^{16}}
 }{
-C \vdash {\mathit{limits}}~\mathsf{page} : \mathsf{ok}
+C \vdash {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}mem}]}
 \qquad
 \end{array}
@@ -5439,7 +5632,7 @@ C \vdash {\mathit{reftype}}_1 \leq {\mathit{reftype}}_2
  \qquad
 C \vdash {\mathit{reftype}}_2 \leq {\mathit{reftype}}_1
 }{
-C \vdash {\mathit{limits}}_1~{\mathit{reftype}}_1 \leq {\mathit{limits}}_2~{\mathit{reftype}}_2
+C \vdash {\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1 \leq {\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2
 } \, {[\textsc{\scriptsize S{-}table}]}
 \qquad
 \end{array}
@@ -5450,7 +5643,7 @@ $$
 \frac{
 C \vdash {\mathit{limits}}_1 \leq {\mathit{limits}}_2
 }{
-C \vdash {\mathit{limits}}_1~\mathsf{page} \leq {\mathit{limits}}_2~\mathsf{page}
+C \vdash {\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page} \leq {\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page}
 } \, {[\textsc{\scriptsize S{-}mem}]}
 \qquad
 \end{array}
@@ -5799,13 +5992,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
  \qquad
 C \vdash {\mathit{rt}} \leq (\mathsf{ref}~\mathsf{null}~\mathsf{func})
  \qquad
 C{.}\mathsf{types}{}[y] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
 }{
-C \vdash \mathsf{call\_indirect}~x~y : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
+C \vdash \mathsf{call\_indirect}~x~y : {t_1^\ast}~{\mathit{at}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}call\_indirect}]}
 \qquad
 \end{array}
@@ -5862,7 +6055,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 \begin{array}{@{}c@{}}
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
  \qquad
 C \vdash {\mathit{rt}} \leq (\mathsf{ref}~\mathsf{null}~\mathsf{func})
  \\
@@ -5875,7 +6068,7 @@ C \vdash {t_2^\ast} \leq {{t'}_2^\ast}
 C \vdash {t_3^\ast} \rightarrow {t_4^\ast} : \mathsf{ok}
 \end{array}
 }{
-C \vdash \mathsf{return\_call\_indirect}~x~y : {t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_4^\ast}
+C \vdash \mathsf{return\_call\_indirect}~x~y : {t_3^\ast}~{t_1^\ast}~{\mathit{at}} \rightarrow {t_4^\ast}
 } \, {[\textsc{\scriptsize T{-}return\_call\_indirect}]}
 \qquad
 \end{array}
@@ -6665,9 +6858,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
 }{
-C \vdash \mathsf{table{.}get}~x : \mathsf{i{\scriptstyle 32}} \rightarrow {\mathit{rt}}
+C \vdash \mathsf{table{.}get}~x : {\mathit{at}} \rightarrow {\mathit{rt}}
 } \, {[\textsc{\scriptsize T{-}table.get}]}
 \qquad
 \end{array}
@@ -6676,9 +6869,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
 }{
-C \vdash \mathsf{table{.}set}~x : \mathsf{i{\scriptstyle 32}}~{\mathit{rt}} \rightarrow \epsilon
+C \vdash \mathsf{table{.}set}~x : {\mathit{at}}~{\mathit{rt}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}table.set}]}
 \qquad
 \end{array}
@@ -6687,9 +6880,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
 }{
-C \vdash \mathsf{table{.}size}~x : \epsilon \rightarrow \mathsf{i{\scriptstyle 32}}
+C \vdash \mathsf{table{.}size}~x : \epsilon \rightarrow {\mathit{at}}
 } \, {[\textsc{\scriptsize T{-}table.size}]}
 \qquad
 \end{array}
@@ -6698,9 +6891,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
 }{
-C \vdash \mathsf{table{.}grow}~x : {\mathit{rt}}~\mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{i{\scriptstyle 32}}
+C \vdash \mathsf{table{.}grow}~x : {\mathit{rt}}~{\mathit{at}} \rightarrow {\mathit{at}}
 } \, {[\textsc{\scriptsize T{-}table.grow}]}
 \qquad
 \end{array}
@@ -6709,9 +6902,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
 }{
-C \vdash \mathsf{table{.}fill}~x : \mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
+C \vdash \mathsf{table{.}fill}~x : {\mathit{at}}~{\mathit{rt}}~{\mathit{at}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}table.fill}]}
 \qquad
 \end{array}
@@ -6720,13 +6913,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x_1] = {\mathit{lim}}_1~{\mathit{rt}}_1
+C{.}\mathsf{tables}{}[x_1] = {\mathit{at}}_1~{\mathit{lim}}_1~{\mathit{rt}}_1
  \qquad
-C{.}\mathsf{tables}{}[x_2] = {\mathit{lim}}_2~{\mathit{rt}}_2
+C{.}\mathsf{tables}{}[x_2] = {\mathit{at}}_2~{\mathit{lim}}_2~{\mathit{rt}}_2
  \qquad
 C \vdash {\mathit{rt}}_2 \leq {\mathit{rt}}_1
 }{
-C \vdash \mathsf{table{.}copy}~x_1~x_2 : \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
+C \vdash \mathsf{table{.}copy}~x_1~x_2 : {\mathit{at}}_1~{\mathit{at}}_2~{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2) \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}table.copy}]}
 \qquad
 \end{array}
@@ -6735,13 +6928,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}_1
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}_1
  \qquad
 C{.}\mathsf{elems}{}[y] = {\mathit{rt}}_2
  \qquad
 C \vdash {\mathit{rt}}_2 \leq {\mathit{rt}}_1
 }{
-C \vdash \mathsf{table{.}init}~x~y : \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
+C \vdash \mathsf{table{.}init}~x~y : {\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}table.init}]}
 \qquad
 \end{array}
@@ -6763,9 +6956,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
 }{
-C \vdash \mathsf{memory{.}size}~x : \epsilon \rightarrow \mathsf{i{\scriptstyle 32}}
+C \vdash \mathsf{memory{.}size}~x : \epsilon \rightarrow {\mathit{at}}
 } \, {[\textsc{\scriptsize T{-}memory.size}]}
 \qquad
 \end{array}
@@ -6774,9 +6967,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
 }{
-C \vdash \mathsf{memory{.}grow}~x : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{i{\scriptstyle 32}}
+C \vdash \mathsf{memory{.}grow}~x : {\mathit{at}} \rightarrow {\mathit{at}}
 } \, {[\textsc{\scriptsize T{-}memory.grow}]}
 \qquad
 \end{array}
@@ -6785,9 +6978,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
 }{
-C \vdash \mathsf{memory{.}fill}~x : \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
+C \vdash \mathsf{memory{.}fill}~x : {\mathit{at}}~\mathsf{i{\scriptstyle 32}}~{\mathit{at}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}memory.fill}]}
 \qquad
 \end{array}
@@ -6796,11 +6989,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x_1] = {\mathit{mt}}_1
+C{.}\mathsf{mems}{}[x_1] = {\mathit{at}}_1~{\mathit{lim}}_1~\mathsf{page}
  \qquad
-C{.}\mathsf{mems}{}[x_2] = {\mathit{mt}}_2
+C{.}\mathsf{mems}{}[x_2] = {\mathit{at}}_2~{\mathit{lim}}_2~\mathsf{page}
 }{
-C \vdash \mathsf{memory{.}copy}~x_1~x_2 : \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
+C \vdash \mathsf{memory{.}copy}~x_1~x_2 : {\mathit{at}}_1~{\mathit{at}}_2~{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2) \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}memory.copy}]}
 \qquad
 \end{array}
@@ -6809,11 +7002,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 C{.}\mathsf{datas}{}[y] = \mathsf{ok}
 }{
-C \vdash \mathsf{memory{.}init}~x~y : \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
+C \vdash \mathsf{memory{.}init}~x~y : {\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}memory.init}]}
 \qquad
 \end{array}
@@ -6833,11 +7026,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
 }{
-C \vdash {\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow {\mathit{nt}}
+C \vdash {\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathit{nt}}
 } \, {[\textsc{\scriptsize T{-}load{-}val}]}
 \qquad
 \end{array}
@@ -6846,11 +7039,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8
 }{
-C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow {\mathsf{i}}{N}
+C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathsf{i}}{N}
 } \, {[\textsc{\scriptsize T{-}load{-}pack}]}
 \qquad
 \end{array}
@@ -6859,11 +7052,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
 }{
-C \vdash {\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}}~{\mathit{nt}} \rightarrow \epsilon
+C \vdash {\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathit{nt}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store{-}val}]}
 \qquad
 \end{array}
@@ -6872,11 +7065,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8
 }{
-C \vdash {{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{N} \rightarrow \epsilon
+C \vdash {{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathsf{i}}{N} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store{-}pack}]}
 \qquad
 \end{array}
@@ -6885,11 +7078,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|\mathsf{v{\scriptstyle 128}}|} / 8
 }{
-C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}val}]}
 \qquad
 \end{array}
@@ -6898,11 +7091,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8 \cdot N
 }{
-C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}pack}]}
 \qquad
 \end{array}
@@ -6911,11 +7104,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
 }{
-C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}splat}]}
 \qquad
 \end{array}
@@ -6924,11 +7117,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
 }{
-C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}zero}]}
 \qquad
 \end{array}
@@ -6937,13 +7130,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
  \qquad
 i < 128 / N
 }{
-C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \mathsf{v{\scriptstyle 128}}
+C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i : {\mathit{at}}~\mathsf{v{\scriptstyle 128}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload\_lane}]}
 \qquad
 \end{array}
@@ -6952,11 +7145,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|\mathsf{v{\scriptstyle 128}}|} / 8
 }{
-C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
+C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}} : {\mathit{at}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}vstore}]}
 \qquad
 \end{array}
@@ -6965,13 +7158,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
  \qquad
 i < 128 / N
 }{
-C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
+C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i : {\mathit{at}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}vstore\_lane}]}
 \qquad
 \end{array}
@@ -7327,7 +7520,7 @@ $$
 \frac{
 C \vdash {\mathit{tt}} : \mathsf{ok}
  \qquad
-{\mathit{tabletype}} = {\mathit{lim}}~{\mathit{rt}}
+{\mathit{tabletype}} = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
  \qquad
 C \vdash {\mathit{expr}} : {\mathit{rt}}~\mathsf{const}
 }{
@@ -7388,7 +7581,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}'}
+C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'}
  \qquad
 C \vdash {\mathit{rt}} \leq {\mathit{rt}'}
  \qquad
@@ -7533,9 +7726,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tags}{}[x] = {\mathit{at}}
+C{.}\mathsf{tags}{}[x] = {\mathit{jt}}
 }{
-C \vdash \mathsf{tag}~x : \mathsf{tag}~{\mathit{at}}
+C \vdash \mathsf{tag}~x : \mathsf{tag}~{\mathit{jt}}
 } \, {[\textsc{\scriptsize T{-}externidx{-}tag}]}
 \qquad
 \end{array}
@@ -7577,7 +7770,7 @@ $$
  \qquad
 ({C'} \vdash {\mathit{mem}} : {\mathit{mt}})^\ast
  \qquad
-({C'} \vdash {\mathit{tag}} : {\mathit{at}})^\ast
+({C'} \vdash {\mathit{tag}} : {\mathit{jt}})^\ast
  \qquad
 (C \vdash {\mathit{func}} : {\mathit{dt}})^\ast
  \\
@@ -7592,7 +7785,7 @@ $$
 {{\mathit{nm}}^\ast}~{\mathrm{disjoint}}
  \\
 C = {C'} \oplus \{ \begin{array}[t]{@{}l@{}}
-\mathsf{globals}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast} \}\end{array}
+\mathsf{globals}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast} \}\end{array}
  \\
 {C'} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{refs}~{x^\ast} \}\end{array}
@@ -7607,7 +7800,7 @@ C = {C'} \oplus \{ \begin{array}[t]{@{}l@{}}
  \qquad
 {{\mathit{mt}}_{\mathsf{i}}^\ast} = {\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad
-{{\mathit{at}}_{\mathsf{i}}^\ast} = {\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
+{{\mathit{jt}}_{\mathsf{i}}^\ast} = {\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
 \end{array}
 }{
 {\vdash}\, \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast} : {{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast} \rightarrow {{\mathit{xt}}_{\mathsf{e}}^\ast})
@@ -8798,7 +8991,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{funcs}}(\epsilon) & = & \epsilon \\
-{\mathrm{funcs}}((\mathsf{func}~{\mathit{fa}})~{{\mathit{xa}}^\ast}) & = & {\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{funcs}}((\mathsf{func}~a)~{{\mathit{xa}}^\ast}) & = & a~{\mathrm{funcs}}({{\mathit{xa}}^\ast}) \\
 {\mathrm{funcs}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) & = & {\mathrm{funcs}}({{\mathit{xa}}^\ast}) & \mbox{otherwise} \\
 \end{array}
 $$
@@ -8806,7 +8999,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{globals}}(\epsilon) & = & \epsilon \\
-{\mathrm{globals}}((\mathsf{global}~{\mathit{ga}})~{{\mathit{xa}}^\ast}) & = & {\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{globals}}((\mathsf{global}~a)~{{\mathit{xa}}^\ast}) & = & a~{\mathrm{globals}}({{\mathit{xa}}^\ast}) \\
 {\mathrm{globals}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) & = & {\mathrm{globals}}({{\mathit{xa}}^\ast}) & \mbox{otherwise} \\
 \end{array}
 $$
@@ -8814,7 +9007,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{tables}}(\epsilon) & = & \epsilon \\
-{\mathrm{tables}}((\mathsf{table}~{\mathit{ta}})~{{\mathit{xa}}^\ast}) & = & {\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{tables}}((\mathsf{table}~a)~{{\mathit{xa}}^\ast}) & = & a~{\mathrm{tables}}({{\mathit{xa}}^\ast}) \\
 {\mathrm{tables}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) & = & {\mathrm{tables}}({{\mathit{xa}}^\ast}) & \mbox{otherwise} \\
 \end{array}
 $$
@@ -8822,7 +9015,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{mems}}(\epsilon) & = & \epsilon \\
-{\mathrm{mems}}((\mathsf{mem}~{\mathit{ma}})~{{\mathit{xa}}^\ast}) & = & {\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{mems}}((\mathsf{mem}~a)~{{\mathit{xa}}^\ast}) & = & a~{\mathrm{mems}}({{\mathit{xa}}^\ast}) \\
 {\mathrm{mems}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) & = & {\mathrm{mems}}({{\mathit{xa}}^\ast}) & \mbox{otherwise} \\
 \end{array}
 $$
@@ -8830,7 +9023,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{tags}}(\epsilon) & = & \epsilon \\
-{\mathrm{tags}}((\mathsf{tag}~{\mathit{ha}})~{{\mathit{xa}}^\ast}) & = & {\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{tags}}((\mathsf{tag}~a)~{{\mathit{xa}}^\ast}) & = & a~{\mathrm{tags}}({{\mathit{xa}}^\ast}) \\
 {\mathrm{tags}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) & = & {\mathrm{tags}}({{\mathit{xa}}^\ast}) & \mbox{otherwise} \\
 \end{array}
 $$
@@ -9064,9 +9257,9 @@ $$
 {\mathrm{growtable}}({\mathit{tableinst}}, n, r) & = & {\mathit{tableinst}'} & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {\mathit{tableinst}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array} \\
+\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array} \\
 {\land}~ {\mathit{tableinst}'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~({}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array} \\
+\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array} \\
 {\land}~ {i'} = {|{{r'}^\ast}|} + n \leq j \\
 \end{array} \\
 \end{array}
@@ -9077,9 +9270,9 @@ $$
 {\mathrm{growmem}}({\mathit{meminst}}, n) & = & {\mathit{meminst}'} & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {\mathit{meminst}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~({}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array} \\
+\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array} \\
 {\land}~ {\mathit{meminst}'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~({}[ {i'} .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{(\mathtt{0x00})^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array} \\
+\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{(\mathtt{0x00})^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array} \\
 {\land}~ {i'} = {|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n \leq j \\
 \end{array} \\
 \end{array}
@@ -10234,23 +10427,15 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.get{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{table{.}get}~x) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
-{[\textsc{\scriptsize E{-}table.get{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{table{.}get}~x) & \hookrightarrow & z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] & \quad \mbox{if}~ i < {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
+{[\textsc{\scriptsize E{-}table.get{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{table{.}get}~x) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
+{[\textsc{\scriptsize E{-}table.get{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{table{.}get}~x) & \hookrightarrow & z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] & \quad \mbox{if}~ i < {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.set{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{ref}}~(\mathsf{table{.}set}~x) & \hookrightarrow & z ; \mathsf{trap} & \quad \mbox{if}~ i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
-{[\textsc{\scriptsize E{-}table.set{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{ref}}~(\mathsf{table{.}set}~x) & \hookrightarrow & z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}] ; \epsilon & \quad \mbox{if}~ i < {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.size}]} \quad & z ; (\mathsf{table{.}size}~x) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n) & \quad \mbox{if}~ {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} = n \\
+{[\textsc{\scriptsize E{-}table.set{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{ref}}~(\mathsf{table{.}set}~x) & \hookrightarrow & z ; \mathsf{trap} & \quad \mbox{if}~ i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
+{[\textsc{\scriptsize E{-}table.set{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{ref}}~(\mathsf{table{.}set}~x) & \hookrightarrow & z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}] ; \epsilon & \quad \mbox{if}~ i < {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
 \end{array}
 $$
 
@@ -10258,11 +10443,23 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & z ; {\mathit{ref}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}grow}~x) & \hookrightarrow & z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}] ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}) &  \\
+{[\textsc{\scriptsize E{-}table.size}]} \quad & z ; (\mathsf{table{.}size}~x) & \hookrightarrow & ({\mathit{at}}{.}\mathsf{const}~n) & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} = n \\
+{\land}~ z{.}\mathsf{tables}{}[x]{.}\mathsf{type} = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}} \\
+\end{array} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & z ; {\mathit{ref}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{table{.}grow}~x) & \hookrightarrow & z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}] ; ({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {\mathit{ti}} = {\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})
 } \\
-{[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & z ; {\mathit{ref}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}grow}~x) & \hookrightarrow & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})}) \\
+{[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & z ; {\mathit{ref}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{table{.}grow}~x) & \hookrightarrow & z ; ({\mathit{at}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{{|{\mathit{at}}|}}^{{-1}}}}{({-1})}) \\
 \end{array}
 $$
 
@@ -10270,39 +10467,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.fill{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}fill}~x) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
-{[\textsc{\scriptsize E{-}table.fill{-}zero}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}fill}~x) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
-{[\textsc{\scriptsize E{-}table.fill{-}succ}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}fill}~x) & \hookrightarrow & & \\
+{[\textsc{\scriptsize E{-}table.fill{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{table{.}fill}~x) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \\
+{[\textsc{\scriptsize E{-}table.fill{-}zero}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{table{.}fill}~x) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
+{[\textsc{\scriptsize E{-}table.fill{-}succ}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{table{.}fill}~x) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{table{.}set}~x) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}fill}~x) \end{array} & \mbox{otherwise} \\
-\end{array}
-} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.copy{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x~y) & \hookrightarrow & \mathsf{trap} &  \\
-& \multicolumn{4}{@{}l@{}}{\quad
-\quad \mbox{if}~ i + n > {|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|} \lor j + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}
-} \\
-{[\textsc{\scriptsize E{-}table.copy{-}zero}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x~y) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
-{[\textsc{\scriptsize E{-}table.copy{-}le}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x~y) & \hookrightarrow & & \\
-& \multicolumn{4}{@{}l@{}}{\quad
-\begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{table{.}get}~y)~(\mathsf{table{.}set}~x) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}copy}~x~y) \end{array} & \quad \mbox{otherwise, if}~ j \leq i \\
-\end{array}
-} \\
-{[\textsc{\scriptsize E{-}table.copy{-}gt}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x~y) & \hookrightarrow & & \\
-& \multicolumn{4}{@{}l@{}}{\quad
-\begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)~(\mathsf{table{.}get}~y)~(\mathsf{table{.}set}~x) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}copy}~x~y) \end{array} & \mbox{otherwise} \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{table{.}set}~x) \\
+  ({\mathit{at}}{.}\mathsf{const}~i + 1)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}fill}~x) \end{array} & \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -10312,16 +10483,42 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.init{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~y) & \hookrightarrow & \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}table.copy{-}oob}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x_1~x_2) & \hookrightarrow & \mathsf{trap} &  \\
 & \multicolumn{4}{@{}l@{}}{\quad
-\quad \mbox{if}~ i + n > {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|} \lor j + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}
+\quad \mbox{if}~ i_1 + n > {|z{.}\mathsf{tables}{}[x_1]{.}\mathsf{refs}|} \lor i_2 + n > {|z{.}\mathsf{tables}{}[x_2]{.}\mathsf{refs}|}
 } \\
-{[\textsc{\scriptsize E{-}table.init{-}zero}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~y) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
-{[\textsc{\scriptsize E{-}table.init{-}succ}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~y) & \hookrightarrow & & \\
+{[\textsc{\scriptsize E{-}table.copy{-}zero}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x_1~x_2) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
+{[\textsc{\scriptsize E{-}table.copy{-}le}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x_1~x_2) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]~(\mathsf{table{.}set}~x) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}init}~x~y) \end{array} & \mbox{otherwise} \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~(\mathsf{table{.}get}~x_2)~(\mathsf{table{.}set}~x_1) \\
+  ({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise, if}~ i_1 \leq i_2 \\
+\end{array}
+} \\
+{[\textsc{\scriptsize E{-}table.copy{-}gt}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{table{.}copy}~x_1~x_2) & \hookrightarrow & & \\
+& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1 + n - 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)~(\mathsf{table{.}get}~x_2)~(\mathsf{table{.}set}~x_1) \\
+  ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}copy}~x_1~x_2) \end{array} & \mbox{otherwise} \\
+\end{array}
+} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}table.init{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~y) & \hookrightarrow & \mathsf{trap} &  \\
+& \multicolumn{4}{@{}l@{}}{\quad
+\quad \mbox{if}~ i + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|} \lor j + n > {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}
+} \\
+{[\textsc{\scriptsize E{-}table.init{-}zero}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~y) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
+{[\textsc{\scriptsize E{-}table.init{-}succ}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~y) & \hookrightarrow & & \\
+& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}{.}\mathsf{const}~i)~z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]~(\mathsf{table{.}set}~x) \\
+  ({\mathit{at}}{.}\mathsf{const}~i + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{table{.}init}~x~y) \end{array} & \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -10339,24 +10536,24 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}load{-}num{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}load{-}num{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}load{-}num{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & ({\mathit{nt}}{.}\mathsf{const}~c) &  \\
+{[\textsc{\scriptsize E{-}load{-}num{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & ({\mathit{nt}}{.}\mathsf{const}~c) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathit{nt}}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]
 } \\
-{[\textsc{\scriptsize E{-}load{-}pack{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{n~{\mathit{sx}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}load{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{n~{\mathit{sx}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{n~{\mathit{sx}}}~x~{\mathit{ao}}) & \hookrightarrow & ({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)}) &  \\
+{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{n~{\mathit{sx}}}~x~{\mathit{ao}}) & \hookrightarrow & ({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)}) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]
 } \\
-{[\textsc{\scriptsize E{-}vload{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) & \quad \mbox{if}~ {{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] \\
+{[\textsc{\scriptsize E{-}vload{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) & \quad \mbox{if}~ {{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] \\
 \end{array}
 $$
 
@@ -10364,8 +10561,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vload{-}pack{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}pack{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
+{[\textsc{\scriptsize E{-}vload{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -10380,8 +10577,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vload{-}splat{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}splat{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
+{[\textsc{\scriptsize E{-}vload{-}splat{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}splat{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -10398,8 +10595,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vload{-}zero{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}zero{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
+{[\textsc{\scriptsize E{-}vload{-}zero{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}zero{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -10414,8 +10611,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vload\_lane{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload\_lane{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
+{[\textsc{\scriptsize E{-}vload\_lane{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload\_lane{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -10432,24 +10629,24 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}store{-}num{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{const}~c)~({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}store{-}num{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{const}~c)~({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}store{-}num{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{const}~c)~({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}] ; \epsilon &  \\
+{[\textsc{\scriptsize E{-}store{-}num{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathit{nt}}{.}\mathsf{const}~c)~({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}] ; \epsilon &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {b^\ast} = {{\mathrm{bytes}}}_{{\mathit{nt}}}(c)
 } \\
-{[\textsc{\scriptsize E{-}store{-}pack{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}store{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}] ; \epsilon &  \\
+{[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{i}}{N}{.}\mathsf{const}~c)~({{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}] ; \epsilon &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {b^\ast} = {{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))
 } \\
-{[\textsc{\scriptsize E{-}vstore{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vstore{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}] ; \epsilon & \quad \mbox{if}~ {b^\ast} = {{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c) \\
+{[\textsc{\scriptsize E{-}vstore{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z ; \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vstore{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}] ; \epsilon & \quad \mbox{if}~ {b^\ast} = {{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c) \\
 \end{array}
 $$
 
@@ -10457,8 +10654,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vstore\_lane{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z ; \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vstore\_lane{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}] ; \epsilon & \quad
+{[\textsc{\scriptsize E{-}vstore\_lane{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z ; \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vstore\_lane{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}] ; \epsilon & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ N = {|{\mathsf{i}}{N}|} \\
 {\land}~ M = 128 / N \\
@@ -10471,7 +10668,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.size}]} \quad & z ; (\mathsf{memory{.}size}~x) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n) & \quad \mbox{if}~ n \cdot 64 \, {\mathrm{Ki}} = {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}memory.size}]} \quad & z ; (\mathsf{memory{.}size}~x) & \hookrightarrow & ({\mathit{at}}{.}\mathsf{const}~n) & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ n \cdot 64 \, {\mathrm{Ki}} = {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{\land}~ z{.}\mathsf{mems}{}[x]{.}\mathsf{type} = {\mathit{at}}~{\mathit{lim}}~\mathsf{page} \\
+\end{array} \\
 \end{array}
 $$
 
@@ -10479,11 +10680,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.grow{-}succeed}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}grow}~x) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}] ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}}) &  \\
+{[\textsc{\scriptsize E{-}memory.grow{-}succeed}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{memory{.}grow}~x) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}] ; ({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}}) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {\mathit{mi}} = {\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)
 } \\
-{[\textsc{\scriptsize E{-}memory.grow{-}fail}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}grow}~x) & \hookrightarrow & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})}) \\
+{[\textsc{\scriptsize E{-}memory.grow{-}fail}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{memory{.}grow}~x) & \hookrightarrow & z ; ({\mathit{at}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{{|{\mathit{at}}|}}^{{-1}}}}{({-1})}) \\
 \end{array}
 $$
 
@@ -10491,13 +10692,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.fill{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}fill}~x) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + n > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}memory.fill{-}zero}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}fill}~x) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
-{[\textsc{\scriptsize E{-}memory.fill{-}succ}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}fill}~x) & \hookrightarrow & & \\
+{[\textsc{\scriptsize E{-}memory.fill{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{memory{.}fill}~x) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + n > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}memory.fill{-}zero}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{memory{.}fill}~x) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
+{[\textsc{\scriptsize E{-}memory.fill{-}succ}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n)~(\mathsf{memory{.}fill}~x) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)~{\mathit{val}}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}fill}~x) \end{array} & \mbox{otherwise} \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x) \\
+  ({\mathit{at}}{.}\mathsf{const}~i + 1)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}fill}~x) \end{array} & \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -10507,23 +10708,23 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.copy{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}memory.copy{-}oob}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & \mathsf{trap} &  \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \quad \mbox{if}~ i_1 + n > {|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|} \lor i_2 + n > {|z{.}\mathsf{mems}{}[x_2]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}memory.copy{-}zero}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
-{[\textsc{\scriptsize E{-}memory.copy{-}le}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
+{[\textsc{\scriptsize E{-}memory.copy{-}zero}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
+{[\textsc{\scriptsize E{-}memory.copy{-}le}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise, if}~ i_1 \leq i_2 \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
+  ({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise, if}~ i_1 \leq i_2 \\
 \end{array}
 } \\
-{[\textsc{\scriptsize E{-}memory.copy{-}gt}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
+{[\textsc{\scriptsize E{-}memory.copy{-}gt}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \mbox{otherwise} \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1 + n - 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
+  ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -10533,16 +10734,16 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.init{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~x~y) & \hookrightarrow & \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}memory.init{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~x~y) & \hookrightarrow & \mathsf{trap} &  \\
 & \multicolumn{4}{@{}l@{}}{\quad
-\quad \mbox{if}~ i + n > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|} \lor j + n > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
+\quad \mbox{if}~ i + n > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \lor j + n > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}memory.init{-}zero}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~x~y) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
-{[\textsc{\scriptsize E{-}memory.init{-}succ}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~x~y) & \hookrightarrow & & \\
+{[\textsc{\scriptsize E{-}memory.init{-}zero}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~x~y) & \hookrightarrow & \epsilon & \quad \mbox{otherwise, if}~ n = 0 \\
+{[\textsc{\scriptsize E{-}memory.init{-}succ}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~x~y) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i])~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x) \\
-  (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}init}~x~y) \end{array} & \mbox{otherwise} \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j])~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x) \\
+  ({\mathit{at}}{.}\mathsf{const}~i + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}init}~x~y) \end{array} & \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -10627,11 +10828,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{alloctable}}(s, {}[ i .. j ]~{\mathit{rt}}, {\mathit{ref}}) & = & (s \oplus \{ \begin{array}[t]{@{}l@{}}
+{\mathrm{alloctable}}(s, {\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}, {\mathit{ref}}) & = & (s \oplus \{ \begin{array}[t]{@{}l@{}}
 \mathsf{tables}~{\mathit{tableinst}} \}\end{array}, {|s{.}\mathsf{tables}|}) &  \\
  \multicolumn{4}{@{}l@{}}{\quad
 \quad \mbox{if}~ {\mathit{tableinst}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}
+\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}
 } \\
 \end{array}
 $$
@@ -10649,11 +10850,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{allocmem}}(s, {}[ i .. j ]~\mathsf{page}) & = & (s \oplus \{ \begin{array}[t]{@{}l@{}}
+{\mathrm{allocmem}}(s, {\mathit{at}}~{}[ i .. j ]~\mathsf{page}) & = & (s \oplus \{ \begin{array}[t]{@{}l@{}}
 \mathsf{mems}~{\mathit{meminst}} \}\end{array}, {|s{.}\mathsf{mems}|}) &  \\
  \multicolumn{4}{@{}l@{}}{\quad
 \quad \mbox{if}~ {\mathit{meminst}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~({}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{(\mathtt{0x00})^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}
+\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{(\mathtt{0x00})^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}
 } \\
 \end{array}
 $$
@@ -10683,10 +10884,10 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {{{\mathrm{alloctag}}^\ast}}{(s, \epsilon)} & = & (s, \epsilon) \\
-{{{\mathrm{alloctag}}^\ast}}{(s, {\mathit{at}}~{{\mathit{at}'}^\ast})} & = & (s_2, {\mathit{aa}}~{{\mathit{aa}'}^\ast}) & \quad
+{{{\mathrm{alloctag}}^\ast}}{(s, {\mathit{jt}}~{{\mathit{jt}'}^\ast})} & = & (s_2, {\mathit{ja}}~{{\mathit{ja}'}^\ast}) & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ (s_1, {\mathit{aa}}) = {\mathrm{alloctag}}(s, {\mathit{at}}) \\
-{\land}~ (s_2, {{\mathit{aa}'}^\ast}) = {{{\mathrm{alloctag}}^\ast}}{(s_1, {{\mathit{at}'}^\ast})} \\
+\mbox{if}~ (s_1, {\mathit{ja}}) = {\mathrm{alloctag}}(s, {\mathit{jt}}) \\
+{\land}~ (s_2, {{\mathit{ja}'}^\ast}) = {{{\mathrm{alloctag}}^\ast}}{(s_1, {{\mathit{jt}'}^\ast})} \\
 \end{array} \\
 \end{array}
 $$
@@ -11075,11 +11276,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{limits}} & ::= & \mathtt{0x00}~~n{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & {}[ n .. {2^{32}} - 1 ] \\
-& & | & \mathtt{0x01}~~n{:}{\mathtt{u32}}~~m{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & {}[ n .. m ] \\
+& {\mathtt{limits}} & ::= & \mathtt{0x00}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 32}}, {}[ n .. {2^{64}} - 1 ]) \\
+& & | & \mathtt{0x01}~~n{:}{\mathtt{u64}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 64}}, {}[ n .. m ]) \\
+& & | & \mathtt{0x04}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 32}}, {}[ n .. {2^{64}} - 1 ]) \\
+& & | & \mathtt{0x05}~~n{:}{\mathtt{u64}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 64}}, {}[ n .. m ]) \\
 & {\mathtt{globaltype}} & ::= & t{:}{\mathtt{valtype}}~~{\mathsf{mut}^?}{:}{\mathtt{mut}} & \quad\Rightarrow\quad{} & {\mathsf{mut}^?}~t \\
-& {\mathtt{tabletype}} & ::= & {\mathit{rt}}{:}{\mathtt{reftype}}~~{\mathit{lim}}{:}{\mathtt{limits}} & \quad\Rightarrow\quad{} & {\mathit{lim}}~{\mathit{rt}} \\
-& {\mathtt{memtype}} & ::= & {\mathit{lim}}{:}{\mathtt{limits}} & \quad\Rightarrow\quad{} & {\mathit{lim}}~\mathsf{page} \\
+& {\mathtt{tabletype}} & ::= & {\mathit{rt}}{:}{\mathtt{reftype}}~~({\mathit{at}}, {\mathit{lim}}){:}{\mathtt{limits}} & \quad\Rightarrow\quad{} & {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}} \\
+& {\mathtt{memtype}} & ::= & ({\mathit{at}}, {\mathit{lim}}){:}{\mathtt{limits}} & \quad\Rightarrow\quad{} & {\mathit{at}}~{\mathit{lim}}~\mathsf{page} \\
 & {\mathtt{tagtype}} & ::= & \mathtt{0x00}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & x \\
 \end{array}
 $$
@@ -11765,7 +11968,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{table}} & ::= & {\mathit{tt}}{:}{\mathtt{tabletype}} & \quad\Rightarrow\quad{} & \mathsf{table}~{\mathit{tt}}~(\mathsf{ref{.}null}~{\mathit{ht}}) & \quad \mbox{if}~ {\mathit{tt}} = {\mathit{lim}}~(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}) \\
+& {\mathtt{table}} & ::= & {\mathit{tt}}{:}{\mathtt{tabletype}} & \quad\Rightarrow\quad{} & \mathsf{table}~{\mathit{tt}}~(\mathsf{ref{.}null}~{\mathit{ht}}) & \quad \mbox{if}~ {\mathit{tt}} = {\mathit{at}}~{\mathit{lim}}~(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}) \\
 & & | & \mathtt{0x40}~~\mathtt{0x00}~~{\mathit{tt}}{:}{\mathtt{tabletype}}~~e{:}{\mathtt{expr}} & \quad\Rightarrow\quad{} & \mathsf{table}~{\mathit{tt}}~e \\
 \mbox{(table section)} & {\mathtt{tablesec}} & ::= & {{\mathit{tab}}^\ast}{:}{{\mathtt{section}}}_{4}({\mathtt{list}}({\mathtt{table}})) & \quad\Rightarrow\quad{} & {{\mathit{tab}}^\ast} \\
 \end{array}

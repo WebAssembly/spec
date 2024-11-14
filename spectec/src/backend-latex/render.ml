@@ -567,6 +567,7 @@ type ctxt =
     templ : string list option;  (* current macro template *)
     args : arg list;             (* epansion arguments *)
     next : int ref;              (* argument counter *)
+    max : int ref;               (* highest used argument (to detect arity) *)
   }
 
 let macro_template env macro name =
@@ -737,7 +738,9 @@ and expand_exp env ctxt e =
   | HoleE (`Num i) ->
     (match List.nth_opt ctxt.args i with
     | None -> raise Arity_mismatch
-    | Some arg -> ctxt.next := i + 1;
+    | Some arg ->
+      ctxt.next := i + 1;
+      ctxt.max := max !(ctxt.max) i;
       match !(arg.it) with
       | ExpA eJ -> ArithE eJ
       | _ -> CallE ("" $ e.at, [arg])
@@ -750,6 +753,7 @@ and expand_exp env ctxt e =
       with Failure _ -> raise Arity_mismatch
     in
     ctxt.next := List.length ctxt.args;
+    ctxt.max := max !(ctxt.max) (!(ctxt.next) - 1);
     SeqE (List.map (function
       | {it = {contents = ExpA e}; _} ->
         (* Guard exp arguments against being reinterpreted as sym
@@ -804,7 +808,7 @@ and expand_arg env ctxt a =
  * and the function `render` for rendering the resulting expression.
  * If no hint can be found, fall back to the default of rendering `f`.
  *)
-let render_expand render env (show : hints ref) macro id args f =
+let render_expand render env (show : hints ref) macro id args f : string * arg list =
   match Map.find_opt id.it !show with
   | None ->
 (*
@@ -813,11 +817,11 @@ Printf.printf "[expand not found %s]\n%!" id.it;
 Printf.printf "%s\n%!" (String.concat " " (List.map fst (Map.bindings !show)))
 ));
 *)
-   f ()
+   f (), []
   | Some showexps ->
     let templ = macro_template env macro id.it in
     let rec attempt = function
-      | [] -> f ()
+      | [] -> f (), []
       | showexp::showexps' ->
         try
 (*
@@ -827,10 +831,12 @@ Printf.printf "[expand attempt %s %s] %s\n%!" id.it m (El.Print.string_of_exp sh
 );
 *)
           let env' = local_env env in
-          let e = expand_exp env' {macro; templ; args; next = ref 1} showexp in
+          let ctxt = {macro; templ; args; next = ref 1; max = ref 0} in
+          let e = expand_exp env' ctxt showexp in
+          let args' = Lib.List.drop (!(ctxt.max) + 1) args in
           (* Avoid cyclic expansion *)
           show := Map.remove id.it !show;
-          Fun.protect (fun () -> render env' e)
+          Fun.protect (fun () -> render env' e, args')
             ~finally:(fun () -> show := Map.add id.it showexps !show)
         with Arity_mismatch -> attempt showexps'
           (* HACK: Ignore arity mismatches, such that overloading notation works,
@@ -856,7 +862,7 @@ let render_apply render_id render_exp env show macro id args =
         "}" ^ !render_args_fwd env args'
       else
         render_id env id ^ !render_args_fwd env args
-    )
+    ) |> fst
 
 
 (* Identifiers *)
@@ -936,7 +942,7 @@ let rec render_id_sub style show macro env first at = function
       if not first then render_id' env style s2 None else
       render_expand !render_exp_fwd env show macro
         (s3 $ at) [ref (ExpA (VarE (s3 $ at, []) $ at)) $ at]
-        (fun () -> render_id' env style s2 (macro_template env macro s3))
+        (fun () -> render_id' env style s2 (macro_template env macro s3)) |> fst
     in
     let s5 = s4 ^ ticks in
     (if String.length s5 = 1 then s5 else "{" ^ s5 ^ "}") ^
@@ -1045,7 +1051,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | BigMul -> "\\Pi"
           | BigCat -> "\\bigoplus"
           | _ -> "\\" ^ Atom.name atom
-    )
+    ) |> fst
 
 
 (* Operators *)
@@ -1227,8 +1233,15 @@ and render_exp env e =
 if atom.it = Atom.Atom "X" && String.contains e.at.left.file 'A' then
 Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e.at) atom.note.Atom.def;
 *)
-      render_expand render_exp env env.show_atom env.macro_atom
+      (match render_expand render_exp env env.show_atom env.macro_atom
         (typed_id atom) args (fun () -> render_exp_seq env es)
+      with
+      | _, args' when List.length args' + 1 = List.length args ->
+        (* HACK for nullary contructors *)
+        (* TODO(4, rossberg): handle inner constructors more generally *)
+        render_exp_seq env es
+      | s, _ -> s
+      )
     | _ -> render_exp_seq env es
     )
   | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
@@ -1276,14 +1289,14 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
         | true, _ -> "{" ^ render_exps "," env (as_tup_exp e2) ^ "} {}"
         | false, _ -> render_exp env e2
         )
-      )
+      ) |> fst
   | BrackE (l, e1, r) ->
     let id = typed_id l in
     let el = AtomE l $ l.at in
     let er = AtomE r $ r.at in
     let args = List.map arg_of_exp ([el] @ as_seq_exp e1 @ [er]) in
     render_expand render_exp env env.show_atom env.macro_atom id args
-      (fun () -> render_atom env l ^ space (render_exp env) e1 ^ render_atom env r)
+      (fun () -> render_atom env l ^ space (render_exp env) e1 ^ render_atom env r) |> fst
   | CallE (id, [arg]) when id.it = "" -> (* expansion result only *)
     render_arg env arg
   | CallE (id, args) when id.it = "" ->  (* expansion result only *)

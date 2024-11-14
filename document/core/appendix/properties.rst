@@ -512,10 +512,10 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: table type, table instance, limits, function address
 .. _valid-tableinst:
 
-:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\limits~t), \TIREFS~\reff^\ast \}`
-...............................................................................................
+:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^\ast \}`
+.........................................................................................................
 
-* The :ref:`table type <syntax-tabletype>` :math:`\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
+* The :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 * The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
 
@@ -525,11 +525,11 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
   * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
 
-* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\limits~t`.
+* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t`.
 
 .. math::
    \frac{
-     \vdashtabletype \limits~t : \OKtabletype
+     \vdashtabletype \addrtype~\limits~t : \OKtabletype
      \qquad
      n = \limits.\LMIN
      \qquad
@@ -537,37 +537,37 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      (\vdashreftypematch t' \subvaltypematch t)^n
    }{
-     S \vdashtableinst \{ \TITYPE~(\limits~t), \TIREFS~\reff^n \} : \limits~t
+     S \vdashtableinst \{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^n \} : \addrtype~\limits~t
    }
 
 
 .. index:: memory type, memory instance, limits, byte
 .. _valid-meminst:
 
-:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\limits, \MIBYTES~b^\ast \}`
-.......................................................................................
+:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^\ast \}`
+...................................................................................................
 
-* The :ref:`memory type <syntax-memtype>` :math:`\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
+* The :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 * The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\limits`.
+* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits`.
 
 .. math::
    \frac{
-     \vdashmemtype \limits : \OKmemtype
+     \vdashmemtype \addrtype~\limits : \OKmemtype
      \qquad
      n = \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdashmeminst \{ \MITYPE~\limits, \MIBYTES~b^n \} : \limits
+     S \vdashmeminst \{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^n \} : \addrtype~\limits
    }
 
 
 .. index:: global type, global instance, value, mutability
 .. _valid-globalinst:
 
-:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GITYPE~(\mut~t), \GIVALUE~\val \}`
-.........................................................................................
+:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GITYPE~\mut~t, \GIVALUE~\val \}`
+.......................................................................................
 
 * The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
 
@@ -585,7 +585,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      \vdashvaltypematch t' \subvaltypematch t
    }{
-     S \vdashglobalinst \{ \GITYPE~(\mut~t), \GIVALUE~\val \} : \mut~t
+     S \vdashglobalinst \{ \GITYPE~\mut~t, \GIVALUE~\val \} : \mut~t
    }
 
 

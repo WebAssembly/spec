@@ -260,12 +260,12 @@ rule Globaltype_ok:
   -- Valtype_ok: C |- t : OK
 
 rule Tabletype_ok:
-  C |- limits reftype : OK
+  C |- addrtype limits reftype : OK
   -- Limits_ok: C |- limits : $(2^32 - 1)
   -- Reftype_ok: C |- reftype : OK
 
 rule Memtype_ok:
-  C |- limits PAGE : OK
+  C |- addrtype limits PAGE : OK
   -- Limits_ok: C |- limits : $(2^16)
 
 rule Tagtype_ok:
@@ -511,13 +511,13 @@ rule Globaltype_sub/var:
   -- Valtype_sub: C |- valtype_2 <: valtype_1
 
 rule Tabletype_sub:
-  C |- limits_1 reftype_1 <: limits_2 reftype_2
+  C |- addrtype limits_1 reftype_1 <: addrtype limits_2 reftype_2
   -- Limits_sub: C |- limits_1 <: limits_2
   -- Reftype_sub: C |- reftype_1 <: reftype_2
   -- Reftype_sub: C |- reftype_2 <: reftype_1
 
 rule Memtype_sub:
-  C |- limits_1 PAGE <: limits_2 PAGE
+  C |- addrtype limits_1 PAGE <: addrtype limits_2 PAGE
   -- Limits_sub: C |- limits_1 <: limits_2
 
 rule Tagtype_sub:
@@ -668,8 +668,8 @@ rule Instr_ok/call_ref:
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
 
 rule Instr_ok/call_indirect:
-  C |- CALL_INDIRECT x (_IDX y) : t_1* I32 -> t_2*
-  -- if C.TABLES[x] = lim rt
+  C |- CALL_INDIRECT x (_IDX y) : t_1* at -> t_2*
+  -- if C.TABLES[x] = at lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
   -- Expand: C.TYPES[y] ~~ FUNC (t_1* -> t_2*)
 
@@ -696,8 +696,8 @@ rule Instr_ok/return_call_ref:
 
 ;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call_indirect:
-  C |- RETURN_CALL_INDIRECT x (_IDX y) : t_3* t_1* I32 -> t_4*
-  -- if C.TABLES[x] = lim rt
+  C |- RETURN_CALL_INDIRECT x (_IDX y) : t_3* t_1* at -> t_4*
+  -- if C.TABLES[x] = at lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
   ----
   -- Expand: C.TYPES[y] ~~ FUNC (t_1* -> t_2*)
@@ -1004,34 +1004,34 @@ rule Instr_ok/global.set:
 ;; Table instructions
 
 rule Instr_ok/table.get:
-  C |- TABLE.GET x : I32 -> rt
-  -- if C.TABLES[x] = lim rt
+  C |- TABLE.GET x : at -> rt
+  -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.set:
-  C |- TABLE.SET x : I32 rt -> eps
-  -- if C.TABLES[x] = lim rt
+  C |- TABLE.SET x : at rt -> eps
+  -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.size:
-  C |- TABLE.SIZE x : eps -> I32
-  -- if C.TABLES[x] = lim rt
+  C |- TABLE.SIZE x : eps -> at
+  -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.grow:
-  C |- TABLE.GROW x : rt I32 -> I32
-  -- if C.TABLES[x] = lim rt
+  C |- TABLE.GROW x : rt at -> at
+  -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.fill:
-  C |- TABLE.FILL x : I32 rt I32 -> eps
-  -- if C.TABLES[x] = lim rt
+  C |- TABLE.FILL x : at rt at -> eps
+  -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.copy:
-  C |- TABLE.COPY x_1 x_2 : I32 I32 I32 -> eps
-  -- if C.TABLES[x_1] = lim_1 rt_1
-  -- if C.TABLES[x_2] = lim_2 rt_2
+  C |- TABLE.COPY x_1 x_2 : at_1 at_2 $minat(at_1, at_2) -> eps
+  -- if C.TABLES[x_1] = at_1 lim_1 rt_1
+  -- if C.TABLES[x_2] = at_2 lim_2 rt_2
   -- Reftype_sub: C |- rt_2 <: rt_1
 
 rule Instr_ok/table.init:
-  C |- TABLE.INIT x y : I32 I32 I32 -> eps
-  -- if C.TABLES[x] = lim rt_1
+  C |- TABLE.INIT x y : at I32 I32 -> eps
+  -- if C.TABLES[x] = at lim rt_1
   -- if C.ELEMS[y] = rt_2
   -- Reftype_sub: C |- rt_2 <: rt_1
 
@@ -1043,25 +1043,25 @@ rule Instr_ok/elem.drop:
 ;; Memory instructions
 
 rule Instr_ok/memory.size:
-  C |- MEMORY.SIZE x : eps -> I32
-  -- if C.MEMS[x] = mt
+  C |- MEMORY.SIZE x : eps -> at
+  -- if C.MEMS[x] = at lim PAGE
 
 rule Instr_ok/memory.grow:
-  C |- MEMORY.GROW x : I32 -> I32
-  -- if C.MEMS[x] = mt
+  C |- MEMORY.GROW x : at -> at
+  -- if C.MEMS[x] = at lim PAGE
 
 rule Instr_ok/memory.fill:
-  C |- MEMORY.FILL x : I32 I32 I32 -> eps
-  -- if C.MEMS[x] = mt
+  C |- MEMORY.FILL x : at I32 at -> eps
+  -- if C.MEMS[x] = at lim PAGE
 
 rule Instr_ok/memory.copy:
-  C |- MEMORY.COPY x_1 x_2 : I32 I32 I32 -> eps
-  -- if C.MEMS[x_1] = mt_1
-  -- if C.MEMS[x_2] = mt_2
+  C |- MEMORY.COPY x_1 x_2 : at_1 at_2 $minat(at_1, at_2) -> eps
+  -- if C.MEMS[x_1] = at_1 lim_1 PAGE
+  -- if C.MEMS[x_2] = at_2 lim_2 PAGE
 
 rule Instr_ok/memory.init:
-  C |- MEMORY.INIT x y : I32 I32 I32 -> eps
-  -- if C.MEMS[x] = mt
+  C |- MEMORY.INIT x y : at I32 I32 -> eps
+  -- if C.MEMS[x] = at lim PAGE
   -- if C.DATAS[y] = OK
 
 rule Instr_ok/data.drop:
@@ -1070,76 +1070,76 @@ rule Instr_ok/data.drop:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD nt (N sx)? x memarg : I32 -> nt
-  -- if C.MEMS[x] = mt
+  C |- LOAD nt (N sx)? x memarg : at -> nt
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
   -- if N? = eps \/ nt = Inn
 ;)
 
 rule Instr_ok/load-val:
-  C |- LOAD nt x memarg : I32 -> nt
-  -- if C.MEMS[x] = mt
+  C |- LOAD nt x memarg : at -> nt
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M sx) x memarg : I32 -> Inn
-  -- if C.MEMS[x] = mt
+  C |- LOAD Inn (M sx) x memarg : at -> Inn
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= M/8)
 
 (;
 rule Instr_ok/store:
-  C |- STORE nt N? x memarg : I32 nt -> eps
-  -- if C.MEMS[x] = mt
+  C |- STORE nt N? x memarg : at nt -> eps
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
   -- if N? = eps \/ nt = Inn
 ;)
 
 rule Instr_ok/store-val:
-  C |- STORE nt x memarg : I32 nt -> eps
-  -- if C.MEMS[x] = mt
+  C |- STORE nt x memarg : at nt -> eps
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
 
 rule Instr_ok/store-pack:
-  C |- STORE Inn M x memarg : I32 Inn -> eps
-  -- if C.MEMS[x] = mt
+  C |- STORE Inn M x memarg : at Inn -> eps
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= M/8)
 
 rule Instr_ok/vload-val:
-  C |- VLOAD V128 x memarg : I32 -> V128
-  -- if C.MEMS[x] = mt
+  C |- VLOAD V128 x memarg : at -> V128
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vload-pack:
-  C |- VLOAD V128 (SHAPE M X N sx) x memarg : I32 -> V128
-  -- if C.MEMS[x] = mt
+  C |- VLOAD V128 (SHAPE M X N sx) x memarg : at -> V128
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD V128 (SPLAT N) x memarg : I32 -> V128
-  -- if C.MEMS[x] = mt
+  C |- VLOAD V128 (SPLAT N) x memarg : at -> V128
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= N/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD V128 (ZERO N) x memarg : I32 -> V128
-  -- if C.MEMS[x] = mt
+  C |- VLOAD V128 (ZERO N) x memarg : at -> V128
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= N/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE V128 N x memarg i : I32 V128 -> V128
-  -- if C.MEMS[x] = mt
+  C |- VLOAD_LANE V128 N x memarg i : at V128 -> V128
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= N/8)
   -- if $(i < 128/N)
 
 rule Instr_ok/vstore:
-  C |- VSTORE V128 x memarg : I32 V128 -> eps
-  -- if C.MEMS[x] = mt
+  C |- VSTORE V128 x memarg : at V128 -> eps
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE V128 N x memarg i : I32 V128 -> eps
-  -- if C.MEMS[x] = mt
+  C |- VSTORE_LANE V128 N x memarg i : at V128 -> eps
+  -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= N/8)
   -- if $(i < 128/N)
 
@@ -1286,7 +1286,7 @@ rule Global_ok:
 rule Table_ok:
   C |- TABLE tabletype expr : tabletype
   -- Tabletype_ok: C |- tt : OK
-  -- if tabletype = lim rt
+  -- if tabletype = at lim rt
   -- Expr_ok_const: C |- expr : rt CONST
 
 rule Mem_ok:
@@ -1309,7 +1309,7 @@ rule Data_ok:
 
 rule Elemmode_ok/active:
   C |- ACTIVE x expr : rt
-  -- if C.TABLES[x] = lim rt'
+  -- if C.TABLES[x] = at lim rt'
   -- Reftype_sub: C |- rt <: rt'
   -- Expr_ok_const: C |- expr : I32 CONST
 
@@ -1364,8 +1364,8 @@ rule Externidx_ok/mem:
   -- if C.MEMS[x] = mt
 
 rule Externidx_ok/tag:
-  C |- TAG x : TAG at
-  -- if C.TAGS[x] = at
+  C |- TAG x : TAG jt
+  -- if C.TAGS[x] = jt
 
 
 ;; Modules
@@ -1387,7 +1387,7 @@ rule Module_ok:
   -- Globals_ok: C' |- global* : gt*
   -- (Table_ok: C' |- table : tt)*
   -- (Mem_ok: C' |- mem : mt)*
-  -- (Tag_ok: C' |- tag : at)*
+  -- (Tag_ok: C' |- tag : jt)*
   -- (Func_ok: C |- func : dt)*
   ----
   -- (Elem_ok: C |- elem : rt)*
@@ -1396,7 +1396,7 @@ rule Module_ok:
   -- (Export_ok: C |- export : nm xt_E)*
   -- if $disjoint_(name, nm*)
   ----
-  -- if C = C' ++ {GLOBALS gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, TAGS at_I* at*, ELEMS rt*, DATAS ok*}
+  -- if C = C' ++ {GLOBALS gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, TAGS jt_I* jt*, ELEMS rt*, DATAS ok*}
   ----
   -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*, REFS x*}
   -- if x* = $funcidx_nonfuncs(global* table* mem* elem* data*)
@@ -1405,7 +1405,7 @@ rule Module_ok:
   -- if gt_I* = $globalsxt(xt_I*)
   -- if tt_I* = $tablesxt(xt_I*)
   -- if mt_I* = $memsxt(xt_I*)
-  -- if at_I* = $tagsxt(xt_I*)
+  -- if jt_I* = $tagsxt(xt_I*)
 
 
 rule Types_ok/empty:

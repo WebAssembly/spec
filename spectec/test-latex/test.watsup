@@ -134,6 +134,124 @@ def $ShowMacroAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
 
 
 ;;
+;; Expansions
+;;
+
+;; Atoms
+
+syntax xfoo =
+  | XFOONULL             hint(show XBARNULL)
+  | XFOOUN0 nat          hint(show XBARUN0)
+  | XFOOUN1N nat         hint(show XBARUN1N %)
+  | XFOOUN11 nat         hint(show XBARUN11 %1)
+  | XFOOUNREST nat       hint(show XBARUNREST %%)
+  | XFOOBIN0 nat nat     hint(show XBARBIN0)
+  | XFOOBIN1N nat nat    hint(show XBARBIN1N %)
+  | XFOOBIN11 nat nat    hint(show XBARBIN11 %1)
+  | XFOOBIN1N2N nat nat  hint(show XBARBIN1N2N % %)
+  | XFOOBIN1N22 nat nat  hint(show XBARBIN1N22 % %2)
+  | XFOOBIN112N nat nat  hint(show XBARBIN112N %1 %)
+  | XFOOBIN1122 nat nat  hint(show XBARBIN1122 %1 %2)
+  | XFOOBIN22 nat nat    hint(show XBARBIN22 %2)
+  | XFOOBIN2211 nat nat  hint(show XBARBIN2211 %2 %1)
+  | XFOOBINREST nat nat  hint(show XBARBINREST %%)
+  | XFOOBIN1NREST nat nat  hint(show XBARBIN1NREST % %%)
+  | XFOOBIN11REST nat nat  hint(show XBARBIN1NREST %1 %%)
+  | XFOOBIN22REST nat nat  hint(show XBARBIN1NREST %2 %%)
+  | XFOOBIN1N2NREST nat nat  hint(show XBARBIN1NREST % % %%)
+  | XFOOBIN1122REST nat nat  hint(show XBARBIN1NREST %1 %2 %%)
+  | XFOOBIN2211REST nat nat  hint(show XBARBIN1NREST %2 %1 %%)
+  | XFOONAME1N2NREST nat nat  hint(show XBARBIN1NREST %0 % % %%)
+  | XFOONAME1122REST nat nat  hint(show XBARBIN1NREST %0 %1 %2 %%)
+  | XFOONAME2211REST nat nat  hint(show XBARBIN1NREST %0 %2 %1 %%)
+
+syntax xxfoo = xfoo nat
+syntax xxxfoo = nat xfoo nat
+
+def $xfoo(xfoo) : nat
+def $xfoo(XFOONULL) = 0
+def $xfoo(XFOOUN0 2) = 0
+def $xfoo(XFOOUN1N 2) = 0
+def $xfoo(XFOOUN11 2) = 0
+def $xfoo(XFOOUNREST 2) = 0
+def $xfoo(XFOOBIN0 2 3) = 0
+def $xfoo(XFOOBIN1N 2 3) = 0
+def $xfoo(XFOOBIN11 2 3) = 0
+def $xfoo(XFOOBIN1N2N 2 3) = 0
+def $xfoo(XFOOBIN1N22 2 3) = 0
+def $xfoo(XFOOBIN112N 2 3) = 0
+def $xfoo(XFOOBIN1122 2 3) = 0
+def $xfoo(XFOOBIN22 2 3) = 0
+def $xfoo(XFOOBIN2211 2 3) = 0
+def $xfoo(XFOOBINREST 2 3) = 0
+def $xfoo(XFOOBIN1NREST 2 3) = 0
+def $xfoo(XFOOBIN11REST 2 3) = 0
+def $xfoo(XFOOBIN22REST 2 3) = 0
+def $xfoo(XFOOBIN1N2NREST 2 3) = 0
+def $xfoo(XFOOBIN1122REST 2 3) = 0
+def $xfoo(XFOOBIN2211REST 2 3) = 0
+def $xfoo(XFOONAME1N2NREST 2 3) = 0
+def $xfoo(XFOONAME1122REST 2 3) = 0
+def $xfoo(XFOONAME2211REST 2 3) = 0
+
+def $xxfoo(xxfoo) : nat
+def $xxfoo(XFOONULL 9) = 0
+(; The following are not supported yet
+def $xxfoo(XFOOUN0 2 9) = 0
+def $xxfoo(XFOOUN1N 2 9) = 0
+def $xxfoo(XFOOUN11 2 9) = 0
+def $xxfoo(XFOOUNREST 2 9) = 0
+def $xxfoo(XFOOBIN0 2 3 9) = 0
+def $xxfoo(XFOOBIN1N 2 3 9) = 0
+def $xxfoo(XFOOBIN11 2 3 9) = 0
+def $xxfoo(XFOOBIN1N2N 2 3 9) = 0
+def $xxfoo(XFOOBIN1N22 2 3 9) = 0
+def $xxfoo(XFOOBIN112N 2 3 9) = 0
+def $xxfoo(XFOOBIN1122 2 3 9) = 0
+def $xxfoo(XFOOBIN22 2 3 9) = 0
+def $xxfoo(XFOOBIN2211 2 3 9) = 0
+def $xxfoo(XFOOBINREST 2 3 9) = 0
+def $xxfoo(XFOOBIN1NREST 2 3 9) = 0
+def $xxfoo(XFOOBIN11REST 2 3 9) = 0
+def $xxfoo(XFOOBIN22REST 2 3 9) = 0
+def $xxfoo(XFOOBIN1N2NREST 2 3 9) = 0
+def $xxfoo(XFOOBIN1122REST 2 3 9) = 0
+def $xxfoo(XFOOBIN2211REST 2 3 9) = 0
+def $xxfoo(XFOONAME1N2NREST 2 3 9) = 0
+def $xxfoo(XFOONAME1122REST 2 3 9) = 0
+def $xxfoo(XFOONAME2211REST 2 3 9) = 0
+;)
+
+def $xxxfoo(xxxfoo) : nat
+def $xxxfoo(1 XFOONULL 9) = 0
+(; The following are not supported yet
+def $xxxfoo(1 XFOOUN0 2 9) = 0
+def $xxxfoo(1 XFOOUN1N 2 9) = 0
+def $xxxfoo(1 XFOOUN11 2 9) = 0
+def $xxxfoo(1 XFOOUNREST 2 9) = 0
+def $xxxfoo(1 XFOOBIN0 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN11 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N2N 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N22 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN112N 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1122 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN22 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN2211 2 3 9) = 0
+def $xxxfoo(1 XFOOBINREST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1NREST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN11REST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN22REST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N2NREST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1122REST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN2211REST 2 3 9) = 0
+def $xxxfoo(1 XFOONAME1N2NREST 2 3 9) = 0
+def $xxxfoo(1 XFOONAME1122REST 2 3 9) = 0
+def $xxxfoo(1 XFOONAME2211REST 2 3 9) = 0
+;)
+
+
+;;
 ;; Macro hints
 ;;
 

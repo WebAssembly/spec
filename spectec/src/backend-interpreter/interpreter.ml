@@ -371,12 +371,12 @@ and eval_expr env expr =
   (* TODO : This should be replaced with executing the validation algorithm *)
   | IsValidE e ->
     let valid_lim k = function
-      | CaseV ("[", [ NumV (`Nat n); NumV (`Nat m) ]) -> n <= m && m <= k
+      | TupV [ NumV (`Nat n); NumV (`Nat m) ] -> n <= m && m <= k
       | _ -> false
     in
     (match eval_expr env e with
     (* valid_tabletype *)
-    | CaseV ("", [ lim; _ ]) -> valid_lim (Z.of_int 0xffffffff) lim |> boolV
+    | TupV [ lim; _ ] -> valid_lim (Z.of_int 0xffffffff) lim |> boolV
     (* valid_memtype *)
     | CaseV ("PAGE", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
     (* valid_other *)
@@ -444,7 +444,6 @@ and assign lhs rhs env =
       assign e v env
     ) env' xes
   | TupE lhs_s, TupV rhs_s
-  | TupE lhs_s, CaseV ("", rhs_s)
     when List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
@@ -455,13 +454,6 @@ and assign lhs rhs env =
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
       List.fold_right2 assign lhs_s rhs_s env
     | None when "" = rhs_tag ->
-      List.fold_right2 assign lhs_s rhs_s env
-    | _ -> fail_expr lhs
-      (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))
-    )
-  | CaseE (op, lhs_s), TupV rhs_s when List.length lhs_s = List.length rhs_s ->
-    (match get_atom op with
-    | None ->
       List.fold_right2 assign lhs_s rhs_s env
     | _ -> fail_expr lhs
       (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))

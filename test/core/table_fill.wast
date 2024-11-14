@@ -12,6 +12,16 @@
   (func (export "get") (param $i i32) (result externref)
     (table.get $t (local.get $i))
   )
+
+  (table $t64 i64 10 externref)
+
+  (func (export "fill-t64") (param $i i64) (param $r externref) (param $n i64)
+    (table.fill $t64 (local.get $i) (local.get $r) (local.get $n))
+  )
+
+  (func (export "get-t64") (param $i i64) (result externref)
+    (table.get $t64 (local.get $i))
+  )
 )
 
 (assert_return (invoke "get" (i32.const 1)) (ref.null extern))
@@ -68,6 +78,61 @@
   "out of bounds table access"
 )
 
+;; Same as above but for t64
+
+(assert_return (invoke "get-t64" (i64.const 1)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 2)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 3)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 4)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 5)) (ref.null extern))
+
+(assert_return (invoke "fill-t64" (i64.const 2) (ref.extern 1) (i64.const 3)))
+(assert_return (invoke "get-t64" (i64.const 1)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 2)) (ref.extern 1))
+(assert_return (invoke "get-t64" (i64.const 3)) (ref.extern 1))
+(assert_return (invoke "get-t64" (i64.const 4)) (ref.extern 1))
+(assert_return (invoke "get-t64" (i64.const 5)) (ref.null extern))
+
+(assert_return (invoke "fill-t64" (i64.const 4) (ref.extern 2) (i64.const 2)))
+(assert_return (invoke "get-t64" (i64.const 3)) (ref.extern 1))
+(assert_return (invoke "get-t64" (i64.const 4)) (ref.extern 2))
+(assert_return (invoke "get-t64" (i64.const 5)) (ref.extern 2))
+(assert_return (invoke "get-t64" (i64.const 6)) (ref.null extern))
+
+(assert_return (invoke "fill-t64" (i64.const 4) (ref.extern 3) (i64.const 0)))
+(assert_return (invoke "get-t64" (i64.const 3)) (ref.extern 1))
+(assert_return (invoke "get-t64" (i64.const 4)) (ref.extern 2))
+(assert_return (invoke "get-t64" (i64.const 5)) (ref.extern 2))
+
+(assert_return (invoke "fill-t64" (i64.const 8) (ref.extern 4) (i64.const 2)))
+(assert_return (invoke "get-t64" (i64.const 7)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 8)) (ref.extern 4))
+(assert_return (invoke "get-t64" (i64.const 9)) (ref.extern 4))
+
+(assert_return (invoke "fill-t64" (i64.const 9) (ref.null extern) (i64.const 1)))
+(assert_return (invoke "get-t64" (i64.const 8)) (ref.extern 4))
+(assert_return (invoke "get-t64" (i64.const 9)) (ref.null extern))
+
+(assert_return (invoke "fill-t64" (i64.const 10) (ref.extern 5) (i64.const 0)))
+(assert_return (invoke "get-t64" (i64.const 9)) (ref.null extern))
+
+(assert_trap
+  (invoke "fill-t64" (i64.const 8) (ref.extern 6) (i64.const 3))
+  "out of bounds table access"
+)
+(assert_return (invoke "get-t64" (i64.const 7)) (ref.null extern))
+(assert_return (invoke "get-t64" (i64.const 8)) (ref.extern 4))
+(assert_return (invoke "get-t64" (i64.const 9)) (ref.null extern))
+
+(assert_trap
+  (invoke "fill-t64" (i64.const 11) (ref.null extern) (i64.const 0))
+  "out of bounds table access"
+)
+
+(assert_trap
+  (invoke "fill-t64" (i64.const 11) (ref.null extern) (i64.const 10))
+  "out of bounds table access"
+)
 
 ;; Type errors
 
