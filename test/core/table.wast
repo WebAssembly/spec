@@ -6,6 +6,7 @@
 (module (table 0 1 funcref))
 (module (table 1 256 funcref))
 (module (table 0 65536 funcref))
+(module definition (table 0xffff_ffff funcref))
 (module (table 0 0xffff_ffff funcref))
 
 (module (table 1 (ref null func)))
@@ -54,6 +55,7 @@
 (module (table i64 0 65536 funcref))
 (module (table i64 0 0xffff_ffff funcref))
 (module (table i64 0 0x1_0000_0000 funcref))
+(module definition (table i64 0xffff_ffff_ffff_ffff funcref))
 (module (table i64 0 0xffff_ffff_ffff_ffff funcref))
 
 (module (table i64 0 funcref) (table i64 0 funcref))
