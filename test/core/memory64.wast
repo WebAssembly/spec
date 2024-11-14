@@ -5,7 +5,7 @@
 (module (memory i64 0 1))
 (module (memory i64 1 256))
 (module (memory i64 0 65536))
-(module (memory i64 0x1_0000_0000_0000))
+(module definition (memory i64 0x1_0000_0000_0000))
 (module (memory i64 0 0x1_0000_0000_0000))
 
 (module (memory i64 (data)) (func (export "memsize") (result i64) (memory.size)))
