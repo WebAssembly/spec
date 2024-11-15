@@ -15390,7 +15390,11 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not valid, then:
+
+   a. Fail.
+
+#. Let :math:`{\mathit{rt}}` be the type of :math:`{\mathit{ref}}`.
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
@@ -15413,7 +15417,11 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not valid, then:
+
+   a. Fail.
+
+#. Let :math:`{\mathit{rt}}` be the type of :math:`{\mathit{ref}}`.
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
@@ -15828,7 +15836,11 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not valid, then:
+
+   a. Fail.
+
+#. Let :math:`{\mathit{rt}'}` be the type of :math:`{\mathit{ref}}`.
 
 #. If :math:`{\mathit{rt}'}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
 
@@ -15849,7 +15861,11 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not valid, then:
+
+   a. Fail.
+
+#. Let :math:`{\mathit{rt}'}` be the type of :math:`{\mathit{ref}}`.
 
 #. If :math:`{\mathit{rt}'}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
 
@@ -22009,13 +22025,25 @@ watsup 0.4 generator
 ..................................................................................
 
 
-1. Let :math:`({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` be the type of :math:`{\mathit{module}}`.
+1. If :math:`{\mathit{module}}` is not valid, then:
+
+   a. Fail.
+
+#. Let :math:`({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` be the type of :math:`{\mathit{module}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{externaddr}}`, and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`, the type of :math:`{\mathit{externaddr}}` is :math:`{\mathit{xt}}_{\mathsf{i}}`.
+#. If :math:`{|{\mathit{externaddr*}}|}` is not :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}`, then:
+
+   a. Fail.
+
+#. For all :math:`{\mathit{externaddr}}`, and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`:
+
+   a. If :math:`{\mathit{externaddr}}` is not valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
+
+      1) Fail.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
@@ -22094,7 +22122,15 @@ watsup 0.4 generator
 
 #. Let :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` be :math:`{\mathit{functype}}_0`.
 
-#. Assert: Due to validation, for all :math:`t_1`, and :math:`{\mathit{val}}` in :math:`{(t_1, {\mathit{val}})^\ast}`, the type of :math:`{\mathit{val}}` is :math:`t_1`.
+#. If :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}` is not :math:`{|{\mathit{val*}}|}`, then:
+
+   a. Fail.
+
+#. For all :math:`t_1`, and :math:`{\mathit{val}}` in :math:`{(t_1, {\mathit{val}})^\ast}`:
+
+   a. If :math:`{\mathit{val}}` is not valid with type :math:`t_1`, then:
+
+      1) Fail.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -27093,10 +27129,11 @@ evalglobals z globaltype_u0* expr_u1*
 12. Return [val] :: val'*.
 
 instantiate z module externaddr*
-1. Let (xt_I* -> xt_E*) be the type of module.
+1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-4. Assert: Due to validation, the type of externaddr is xt_I*.
+4. If not $Externaddr_type(externaddr, xt_I)*, then:
+  a. Fail.
 5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 7. Assert: Due to validation, start is of the case START?.
@@ -27135,7 +27172,8 @@ invoke funcaddr val*
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 4. Let (t_1* -> t_2*) be functype_0.
-5. Assert: Due to validation, the type of val is t_1*.
+5. If not $Val_type(val, t_1)*, then:
+  a. Fail.
 6. Let k be |t_2*|.
 7. Push the evaluation context (FRAME_ k { f }) to the stack.
 8. Push the values val* to the stack.
