@@ -654,7 +654,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
     valid_expr env expr2;
     check_match source expr1.note expr2.note;
     new_env
-  | TrapI | NopI | ReturnI None | ExitI _ -> env
+  | TrapI | FailI | NopI | ReturnI None | ExitI _ -> env
   | ThrowI expr ->
     if not (sub_typ (get_base_typ expr.note) (varT "val")) then
       error_mismatch source (get_base_typ expr.note) (varT "val");

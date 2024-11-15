@@ -970,7 +970,15 @@ let rec enforce_return' il =
     | IfI (c, il1, il2) ->
       (match enforce_return il1, enforce_return il2 with
       | [], [] -> enforce_return' tl
-      | new_il, [] -> rev new_il @ (assertI c ~at:at :: tl)
+      | new_il, [] -> 
+        (* HARDCODE: handling patial function *)
+        (match c.it with
+        | IterE ({ it = CallE (id, _); _ }, _)
+          when List.mem id ["Externaddr_type"; "Val_type"] ->
+            rev new_il @ (ifI (neg c, [failI () ~at: at], [])) :: tl
+        | _ ->
+          rev new_il @ (assertI c ~at:at :: tl)
+        )
       | [], new_il -> rev new_il @ (assertI (neg c) ~at:at :: tl)
       | new_il1, new_il2 -> ifI (c, new_il1, new_il2) ~at:at :: tl
       )

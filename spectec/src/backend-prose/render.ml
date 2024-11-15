@@ -66,8 +66,8 @@ let e2a e = Al.Ast.ExpA e $ e.at
 let a2e a =
   match a.it with
   | Al.Ast.ExpA e -> e
-  | Al.Ast.TypA _ -> error a.at "Caannot render inverse function with type argument"
-  | Al.Ast.DefA _ -> error a.at "Caannot render inverse function with def argument"
+  | Al.Ast.TypA _ -> error a.at "Cannot render inverse function with type argument"
+  | Al.Ast.DefA _ -> error a.at "Cannot render inverse function with def argument"
 
 let al_invcalle_to_al_bine e id nl al =
   let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
@@ -180,7 +180,7 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, al) ->
-      (match Prose_util.extract_prose_hint id with
+      (match Prose_util.find_relation id with
       | Some _ ->
         None
       | _ ->
@@ -401,9 +401,13 @@ and render_expr' env expr =
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.CallE (id, al) ->
-    let prose_hint = Option.get (Prose_util.extract_prose_hint id) in
+    let _relation = Option.get (Prose_util.find_relation id) in
     let args = List.map (render_arg env) al in
-    Prose_util.apply_prose_hint id prose_hint args
+    (match args with
+    | [arg1; arg2] -> arg1 ^ " is valid with type " ^ arg2
+    | [arg] -> "the type of " ^ arg
+    | _ -> error expr.at "Invalid arity for relation call";
+    )
   | Al.Ast.InvCallE (id, nl, al) ->
     let e =
       if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N" ~note:Al.Al_util.no_note
@@ -603,8 +607,91 @@ let render_stack_prefix expr =
 let rec render_al_instr env algoname index depth instr =
   match instr.it with
   | Al.Ast.IfI (c, il, []) ->
-    sprintf "%s If %s, then:%s" (render_order index depth)
-      (render_expr env c) (render_al_instrs env algoname (depth + 1) il)
+    (match c.it, il with
+    | Al.Ast.UnE (Al.Ast.NotOp, ({ it = Al.Ast.IterE (e, (iter, xes)); _ } as itere)),
+      ([{ it = Al.Ast.FailI; _ }] as faili) when al_to_el_expr itere = None ->
+      let se = render_expr env e in
+      let ids = List.map fst xes in
+      let loop_header, cond = (match iter with
+      | Al.Ast.ListN (e, Some id) ->
+        assert (ids = [ id ]);
+        let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
+        let sid = render_expr env eid in
+        let elb = Al.Al_util.numE Z.zero ~note:Al.Al_util.no_note in
+        let selb = render_expr env elb in
+        let eub =
+          Al.Al_util.binE (
+            Al.Ast.SubOp,
+            e,
+            Al.Al_util.numE Z.one ~note:Al.Al_util.no_note)
+          ~note:Al.Al_util.no_note
+        in
+        let seub = render_expr env eub in
+        sprintf "For all %s from %s to %s" sid selb seub, se
+      | _ ->
+        let eids = List.map (fun id -> Al.Al_util.varE id ~note:Al.Al_util.no_note) ids in
+        let sids = List.map (fun eid -> render_expr env eid) eids in
+        let sids =
+          match sids with
+          | [] -> ""
+          | [ sid ] -> sid
+          | _ ->
+              let sids, sid_last =
+                List.rev sids |> List.tl |> List.rev,
+                List.rev sids |> List.hd
+              in
+              String.concat ", " sids ^ ", and " ^ sid_last
+        in
+        let eiter =
+          match eids with
+          | [] -> assert false
+          | [ eid ] -> eid
+          | _ -> Al.Al_util.tupE eids ~note:Al.Al_util.no_note
+        in
+        let eiter = Al.Al_util.iterE (eiter, (iter, [])) ~note:Al.Al_util.no_note in
+        let siter = render_expr env eiter in
+        sprintf "For all %s in %s" sids siter, se
+      ) in
+
+      let negate_cond cond =
+        let rec aux idx =
+          if idx > String.length cond - 2 then
+            "not " ^ cond
+          else if String.sub cond idx 2 = "is" then
+            let before = String.sub cond 0 (idx + 2) in
+            let after = String.sub cond (idx + 2) (String.length cond - (idx + 2)) in
+            before ^ " not" ^ after
+          else
+            aux (idx + 1)
+        in
+        aux 0
+      in
+      let neg_cond = negate_cond cond in
+
+      let length_check_string = (match xes with
+      | [(_, iter1); (_, iter2)] ->
+        let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
+        let len1 = Al.Ast.LenE iter1 |> to_expr in
+        let len2 = Al.Ast.LenE iter2 |> to_expr in
+        let not_equal = Al.Ast.BinE (Al.Ast.NeOp, len1, len2) |> to_expr in
+        let check_instr = Al.Ast.IfI (not_equal, faili, []) $$ (no_region, 0) in
+        render_al_instr env algoname index depth check_instr ^ "\n\n"
+      | _ -> ""
+      ) in
+
+      let for_index = render_order index (depth) in
+      let if_index = render_order (ref 0) (depth + 1) in
+      sprintf "%s%s %s:\n\n%s If %s, then:%s"
+        length_check_string
+        for_index
+        loop_header
+        (repeat indent (depth + 1) ^ if_index)
+        neg_cond
+        (render_al_instrs env algoname (depth + 2) faili)
+    | _ ->
+      sprintf "%s If %s, then:%s" (render_order index depth)
+        (render_expr env c) (render_al_instrs env algoname (depth + 1) il)
+  )
   | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
     let if_index = render_order index depth in
     let else_if_index = render_order index depth in
@@ -682,10 +769,24 @@ let rec render_al_instr env algoname index depth instr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (id, [{ it = ExpA arge; _ }]); _ } as e))
+    when Option.is_some (Prose_util.find_relation id) ->
+    let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
+    let to_instr instr' = instr' $$ (no_region, 0) in
+    let is_valid = Al.Ast.IsValidE arge |> to_expr in
+    let not_valid = Al.Ast.UnE (Al.Ast.NotOp, is_valid) |> to_expr in
+    let faili = [Al.Ast.FailI |> to_instr] in
+    let check_instr = Al.Ast.IfI (not_valid, faili, []) |> to_instr in
+    let valid_check_string = render_al_instr env algoname index depth check_instr in
+    sprintf "%s\n\n%s Let %s be %s."
+      valid_check_string
+      (render_order index depth) (render_expr env n)
+      (render_expr env e)
   | Al.Ast.LetI (n, e) ->
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
       (render_expr env e)
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
+  | Al.Ast.FailI -> sprintf "%s Fail." (render_order index depth)
   | Al.Ast.ThrowI e ->
     sprintf "%s Throw the exception %s as a result." (render_order index depth) (render_expr env e)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
@@ -719,6 +820,15 @@ and render_al_instrs env algoname depth instrs =
   let index = ref 0 in
   List.fold_left
     (fun sinstrs i ->
+      (* let relation_calls = Prose_util.find_relation_call i in
+      if (List.length relation_calls > 0) then (
+        print_endline "Relation call found!!";
+        print_endline (Al.Print.string_of_instr i);
+        List.iter (fun (expr, hint) ->
+          print_endline (Al.Print.string_of_expr expr);
+          print_endline hint;
+        ) relation_calls;
+      ); *)
       sinstrs ^ "\n\n" ^ repeat indent depth ^ render_al_instr env algoname index depth i)
     "" instrs
 
