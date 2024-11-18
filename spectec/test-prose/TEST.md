@@ -22035,7 +22035,7 @@ watsup 0.4 generator
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. If :math:`{|{\mathit{externaddr*}}|}` is not :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}`, then:
+#. If :math:`{|{{\mathit{externaddr}}^\ast}|}` is not :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`, then:
 
    a. Fail.
 
@@ -22122,7 +22122,7 @@ watsup 0.4 generator
 
 #. Let :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` be :math:`{\mathit{functype}}_0`.
 
-#. If :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}` is not :math:`{|{\mathit{val*}}|}`, then:
+#. If :math:`{|{t_1^\ast}|}` is not :math:`{|{{\mathit{val}}^\ast}|}`, then:
 
    a. Fail.
 

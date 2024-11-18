@@ -610,9 +610,9 @@ let rec render_al_instr env algoname index depth instr =
     (match c.it, il with
     | Al.Ast.UnE (Al.Ast.NotOp, ({ it = Al.Ast.IterE (e, (iter, xes)); _ } as itere)),
       ([{ it = Al.Ast.FailI; _ }] as faili) when al_to_el_expr itere = None ->
-      let se = render_expr env e in
+      let cond = render_expr env e in
       let ids = List.map fst xes in
-      let loop_header, cond = (match iter with
+      let loop_header, eiters = (match iter with
       | Al.Ast.ListN (e, Some id) ->
         assert (ids = [ id ]);
         let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
@@ -627,7 +627,7 @@ let rec render_al_instr env algoname index depth instr =
           ~note:Al.Al_util.no_note
         in
         let seub = render_expr env eub in
-        sprintf "For all %s from %s to %s" sid selb seub, se
+        sprintf "For all %s from %s to %s" sid selb seub, [ eid ]
       | _ ->
         let eids = List.map (fun id -> Al.Al_util.varE id ~note:Al.Al_util.no_note) ids in
         let sids = List.map (fun eid -> render_expr env eid) eids in
@@ -649,8 +649,9 @@ let rec render_al_instr env algoname index depth instr =
           | _ -> Al.Al_util.tupE eids ~note:Al.Al_util.no_note
         in
         let eiter = Al.Al_util.iterE (eiter, (iter, [])) ~note:Al.Al_util.no_note in
+        let eiters = List.map (fun eid -> Al.Al_util.iterE (eid, (iter, [])) ~note:Al.Al_util.no_note) eids in
         let siter = render_expr env eiter in
-        sprintf "For all %s in %s" sids siter, se
+        sprintf "For all %s in %s" sids siter, eiters
       ) in
 
       let negate_cond cond =
@@ -668,11 +669,11 @@ let rec render_al_instr env algoname index depth instr =
       in
       let neg_cond = negate_cond cond in
 
-      let length_check_string = (match xes with
-      | [(_, iter1); (_, iter2)] ->
+      let length_check_string = (match eiters with
+      | [eiter1; eiter2] ->
         let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
-        let len1 = Al.Ast.LenE iter1 |> to_expr in
-        let len2 = Al.Ast.LenE iter2 |> to_expr in
+        let len1 = Al.Ast.LenE eiter1 |> to_expr in
+        let len2 = Al.Ast.LenE eiter2 |> to_expr in
         let not_equal = Al.Ast.BinE (Al.Ast.NeOp, len1, len2) |> to_expr in
         let check_instr = Al.Ast.IfI (not_equal, faili, []) $$ (no_region, 0) in
         render_al_instr env algoname index depth check_instr ^ "\n\n"
