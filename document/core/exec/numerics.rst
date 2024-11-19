@@ -2248,7 +2248,7 @@ where:
    \begin{array}{@{}lcll}
    \ivrelaxedswizzlelane(i^n, j) &=& i[j] & (\iff j < 16) \\
    \ivrelaxedswizzlelane(i^n, j) &=& 0 & (\iff \signed_8(j) < 0) \\
-   \ivrelaxedswizzlelane(i^n, j) &=& \relaxed(R_{\F{swizzle}})[ 0, i[j \mod n] ] & (\otherwise) \\
+   \ivrelaxedswizzlelane(i^n, j) &=& \relaxed(R_{\F{swizzle}})[ 0, i^n[j \mod n] ] & (\otherwise) \\
    \end{array}
 
 .. note::

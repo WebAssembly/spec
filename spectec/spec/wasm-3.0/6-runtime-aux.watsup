@@ -65,23 +65,23 @@ def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))    hint(macro "mem
 def $tagsxa(externaddr*) : tagaddr*       hint(show $tags(%))    hint(macro "tagsxa")
 
 def $funcsxa(eps) = eps
-def $funcsxa((FUNC fa) xa*) = fa $funcsxa(xa*)
+def $funcsxa((FUNC a) xa*) = a $funcsxa(xa*)
 def $funcsxa(externaddr xa*) = $funcsxa(xa*)  -- otherwise
 
 def $globalsxa(eps) = eps
-def $globalsxa((GLOBAL ga) xa*) = ga $globalsxa(xa*)
+def $globalsxa((GLOBAL a) xa*) = a $globalsxa(xa*)
 def $globalsxa(externaddr xa*) = $globalsxa(xa*)  -- otherwise
 
 def $tablesxa(eps) = eps
-def $tablesxa((TABLE ta) xa*) = ta $tablesxa(xa*)
+def $tablesxa((TABLE a) xa*) = a $tablesxa(xa*)
 def $tablesxa(externaddr xa*) = $tablesxa(xa*)  -- otherwise
 
 def $memsxa(eps) = eps
-def $memsxa((MEM ma) xa*) = ma $memsxa(xa*)
+def $memsxa((MEM a) xa*) = a $memsxa(xa*)
 def $memsxa(externaddr xa*) = $memsxa(xa*)  -- otherwise
 
 def $tagsxa(eps) = eps
-def $tagsxa((TAG ha) xa*) = ha $tagsxa(xa*)
+def $tagsxa((TAG a) xa*) = a $tagsxa(xa*)
 def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 
 
@@ -185,11 +185,11 @@ def $growtable(tableinst, nat, ref) : tableinst hint(partial)
 def $growmem(meminst, nat) : meminst            hint(partial)
 
 def $growtable(tableinst, n, r) = tableinst'
-  -- if tableinst = { TYPE (`[i .. j] rt), REFS r'* }
-  -- if tableinst' = { TYPE (`[i' .. j] rt), REFS r'* r^n }
+  -- if tableinst = { TYPE (at `[i .. j] rt), REFS r'* }
+  -- if tableinst' = { TYPE (at `[i' .. j] rt), REFS r'* r^n }
   -- if $(i' = |r'*| + n <= j)
 
 def $growmem(meminst, n) = meminst'
-  -- if meminst = { TYPE (`[i .. j] PAGE), BYTES b* }
-  -- if meminst' = { TYPE (`[i' .. j] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
+  -- if meminst = { TYPE (at `[i .. j] PAGE), BYTES b* }
+  -- if meminst' = { TYPE (at `[i' .. j] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
   -- if $(i' = |b*| / (64 * $Ki) + n <= j)

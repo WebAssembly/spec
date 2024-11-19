@@ -12120,7 +12120,7 @@ watsup 0.4 generator
    * :math:`t` is valid.
 
 
-* :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if and only if:
+* :math:`({\mathit{addrtype}}, {\mathit{limits}}, {\mathit{reftype}})` is valid if and only if:
 
 
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{32}} - 1`.
@@ -12128,7 +12128,7 @@ watsup 0.4 generator
    * :math:`{\mathit{reftype}}` is valid.
 
 
-* :math:`({\mathit{limits}}~\mathsf{page})` is valid if and only if:
+* :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is valid if and only if:
 
 
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
@@ -12220,7 +12220,7 @@ watsup 0.4 generator
       * :math:`{\mathit{valtype}}_2` matches :math:`{\mathit{valtype}}_1`.
 
 
-* :math:`({\mathit{limits}}_1, {\mathit{reftype}}_1)` matches :math:`({\mathit{limits}}_2, {\mathit{reftype}}_2)` if and only if:
+* :math:`({\mathit{addrtype}}, {\mathit{limits}}_1, {\mathit{reftype}}_1)` matches :math:`({\mathit{addrtype}}, {\mathit{limits}}_2, {\mathit{reftype}}_2)` if and only if:
 
 
    * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
@@ -12230,7 +12230,7 @@ watsup 0.4 generator
    * :math:`{\mathit{reftype}}_2` matches :math:`{\mathit{reftype}}_1`.
 
 
-* :math:`({\mathit{limits}}_1~\mathsf{page})` matches :math:`({\mathit{limits}}_2~\mathsf{page})` if and only if:
+* :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` matches :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page})` if and only if:
 
 
    * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
@@ -12511,14 +12511,14 @@ watsup 0.4 generator
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
 
 
-* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`({t_1^\ast}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+* :math:`(\mathsf{call\_indirect}~x~y)` is valid with type :math:`({t_1^\ast}~{\mathit{at}}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
 
    * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{func})`.
 
@@ -12561,14 +12561,14 @@ watsup 0.4 generator
    * :math:`({t_3^\ast}~{\rightarrow}_{\epsilon}\,{t_4^\ast})` is valid.
 
 
-* :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{t_4^\ast})` if and only if:
+* :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with type :math:`({t_3^\ast}~{t_1^\ast}~{\mathit{at}}~{\rightarrow}_{\epsilon}\,{t_4^\ast})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
    * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
 
    * :math:`{\mathit{rt}}` matches :math:`(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{func})`.
 
@@ -13005,68 +13005,68 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{globals}{}[x]` must be equal to :math:`((\mathsf{mut}~()~{}^?), t)`.
 
 
-* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathit{rt}})` if and only if:
+* :math:`(\mathsf{table{.}get}~x)` is valid with type :math:`({\mathit{at}}~{\rightarrow}_{\epsilon}\,{\mathit{rt}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
-
-
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
-
-
-* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
+* :math:`(\mathsf{table{.}set}~x)` is valid with type :math:`({\mathit{at}}~{\mathit{rt}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`({\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
-
-
-   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
-
-
-* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{table{.}size}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,{\mathit{at}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
 
 
-* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{table{.}grow}~x)` is valid with type :math:`({\mathit{rt}}~{\mathit{at}}~{\rightarrow}_{\epsilon}\,{\mathit{at}})` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+
+
+* :math:`(\mathsf{table{.}fill}~x)` is valid with type :math:`({\mathit{at}}~{\mathit{rt}}~{\mathit{at}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+
+
+* :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with type :math:`({\mathit{at}}_1~{\mathit{at}}_2~{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_1`.
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_1]` must be equal to :math:`({\mathit{lim}}_1, {\mathit{rt}}_1)`.
+   * :math:`C{.}\mathsf{tables}{}[x_1]` must be equal to :math:`({\mathit{at}}_1, {\mathit{lim}}_1, {\mathit{rt}}_1)`.
 
-   * :math:`C{.}\mathsf{tables}{}[x_2]` must be equal to :math:`({\mathit{lim}}_2, {\mathit{rt}}_2)`.
+   * :math:`C{.}\mathsf{tables}{}[x_2]` must be equal to :math:`({\mathit{at}}_2, {\mathit{lim}}_2, {\mathit{rt}}_2)`.
 
    * :math:`{\mathit{rt}}_2` matches :math:`{\mathit{rt}}_1`.
 
 
-* :math:`(\mathsf{table{.}init}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{table{.}init}~x~y)` is valid with type :math:`({\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
    * :math:`{|C{.}\mathsf{elems}|}` must be greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}}_1)`.
+   * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}}_1)`.
 
    * :math:`C{.}\mathsf{elems}{}[y]` must be equal to :math:`{\mathit{rt}}_2`.
 
@@ -13081,50 +13081,50 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{elems}{}[x]` must be equal to :math:`{\mathit{rt}}`.
 
 
-* :math:`(\mathsf{memory{.}size}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
+* :math:`(\mathsf{memory{.}size}~x)` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,{\mathit{at}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
 
-* :math:`(\mathsf{memory{.}grow}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\mathsf{i{\scriptstyle 32}})` if and only if:
-
-
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
-
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
-
-
-* :math:`(\mathsf{memory{.}fill}~x)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{memory{.}grow}~x)` is valid with type :math:`({\mathit{at}}~{\rightarrow}_{\epsilon}\,{\mathit{at}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
 
-* :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{memory{.}fill}~x)` is valid with type :math:`({\mathit{at}}~\mathsf{i{\scriptstyle 32}}~{\mathit{at}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+
+
+* :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with type :math:`({\mathit{at}}_1~{\mathit{at}}_2~{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x_1`.
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x_2`.
 
-   * :math:`C{.}\mathsf{mems}{}[x_1]` must be equal to :math:`{\mathit{mt}}_1`.
+   * :math:`C{.}\mathsf{mems}{}[x_1]` must be equal to :math:`({\mathit{at}}_1~{\mathit{lim}}_1~\mathsf{page})`.
 
-   * :math:`C{.}\mathsf{mems}{}[x_2]` must be equal to :math:`{\mathit{mt}}_2`.
+   * :math:`C{.}\mathsf{mems}{}[x_2]` must be equal to :math:`({\mathit{at}}_2~{\mathit{lim}}_2~\mathsf{page})`.
 
 
-* :math:`(\mathsf{memory{.}init}~x~y)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{memory{.}init}~x~y)` is valid with type :math:`({\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
    * :math:`{|C{.}\mathsf{datas}|}` must be greater than :math:`y`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
@@ -13137,12 +13137,12 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}})` if and only if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`({\mathit{at}}~{\rightarrow}_{\epsilon}\,{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * Either:
 
@@ -13165,12 +13165,12 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`({\mathit{at}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * Either:
 
@@ -13193,12 +13193,12 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`({\mathit{at}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * Either:
 
@@ -13221,34 +13221,34 @@ watsup 0.4 generator
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`({\mathit{at}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
 
    * :math:`i` must be less than :math:`128 / N`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with type :math:`({\mathit{at}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`({\mathit{at}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
 
@@ -13426,7 +13426,7 @@ watsup 0.4 generator
 
    * :math:`{\mathit{tt}}` is valid.
 
-   * :math:`{\mathit{tabletype}}` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+   * :math:`{\mathit{tabletype}}` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
 
    * :math:`{\mathit{expr}}` is valid with type :math:`{\mathit{rt}}`.
 
@@ -13456,7 +13456,7 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{tables}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{lim}}, {\mathit{rt}'})`.
+      * :math:`C{.}\mathsf{tables}{}[x]` must be equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}'})`.
 
       * :math:`{\mathit{rt}}` matches :math:`{\mathit{rt}'}`.
 
@@ -13566,11 +13566,11 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~x)`.
 
-      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{at}})`.
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{jt}})`.
 
       * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{tags}{}[x]` must be equal to :math:`{\mathit{at}}`.
+      * :math:`C{.}\mathsf{tags}{}[x]` must be equal to :math:`{\mathit{jt}}`.
 
 
 * :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with type :math:`{\mathit{name}}` and :math:`{\mathit{xt}}` if and only if:
@@ -13628,7 +13628,7 @@ watsup 0.4 generator
 
    * :math:`{|{\mathit{mt*}}|}` must be equal to :math:`{|{\mathit{mem*}}|}`.
 
-   * :math:`{|{\mathit{tag*}}|}` must be equal to :math:`{|{\mathit{at*}}|}`.
+   * :math:`{|{\mathit{tag*}}|}` must be equal to :math:`{|{\mathit{jt*}}|}`.
 
    * :math:`{|{\mathit{func*}}|}` must be equal to :math:`{|{\mathit{dt*}}|}`.
 
@@ -13656,9 +13656,9 @@ watsup 0.4 generator
 
       * Under the context :math:`{C'}`, :math:`{\mathit{mem}}` is valid with type :math:`{\mathit{mt}}`.
 
-   * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
+   * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
 
-      * Under the context :math:`{C'}`, :math:`{\mathit{tag}}` is valid with type :math:`{\mathit{at}}`.
+      * Under the context :math:`{C'}`, :math:`{\mathit{tag}}` is valid with type :math:`{\mathit{jt}}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
@@ -13682,11 +13682,11 @@ watsup 0.4 generator
 
    * YetI: $disjoint_(syntax name, nm*{nm <- `nm*`}).
 
-   * :math:`C` must be equal to :math:`{C'}{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]`.
+   * :math:`C` must be equal to :math:`{C'}{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]`.
 
    * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}))`.
+   * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}, {{\mathit{table}}^\ast}, {{\mathit{mem}}^\ast}, {{\mathit{elem}}^\ast}, {{\mathit{data}}^\ast}))`.
 
    * :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
@@ -13696,7 +13696,7 @@ watsup 0.4 generator
 
    * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * :math:`{{\mathit{jt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast})` if and only if:
@@ -15717,9 +15717,9 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
@@ -15734,9 +15734,11 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
+#. Let :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{type}`.
+
 #. Let :math:`n` be :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`.
 
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+#. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` to the stack.
 
 
 :math:`\mathsf{table{.}fill}~x`
@@ -15745,17 +15747,17 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
@@ -15767,44 +15769,44 @@ watsup 0.4 generator
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` to the stack.
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i + 1)` to the stack.
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~n - 1)` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
 
 
-:math:`\mathsf{table{.}copy}~x~y`
-.................................
+:math:`\mathsf{table{.}copy}~x_1~x_2`
+.....................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}'}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_2` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_1` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+#. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
+#. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x_1]{.}\mathsf{refs}|}`, then:
 
    a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x_2]{.}\mathsf{refs}|}`, then:
 
    a. Trap.
 
@@ -15814,37 +15816,37 @@ watsup 0.4 generator
 
 #. Else:
 
-   a. If :math:`j` is less than or equal to :math:`i`, then:
+   a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+      1) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~x_2)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x_1)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)` to the stack.
 
    #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+      1) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1 + n - 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~x_2)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x_1)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}'}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
+   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)`.
 
 
 :math:`\mathsf{table{.}init}~x~y`
@@ -15859,17 +15861,17 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
    a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
    a. Trap.
 
@@ -15877,17 +15879,17 @@ watsup 0.4 generator
 
    a. Do nothing.
 
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
+   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
@@ -15900,9 +15902,9 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
 
@@ -15947,9 +15949,9 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
@@ -16028,9 +16030,9 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -16055,9 +16057,13 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
+#. Assert: Due to validation, :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{type}` is of the case :math:`\mathsf{page}`.
+
+#. Let :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})` be :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{type}`.
+
 #. Let :math:`n \cdot 64 \, {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`.
 
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+#. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` to the stack.
 
 
 :math:`\mathsf{memory{.}fill}~x`
@@ -16066,17 +16072,17 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -16088,17 +16094,17 @@ watsup 0.4 generator
 
 #. Else:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` to the stack.
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
    #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i + 1)` to the stack.
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~n - 1)` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{memory{.}fill}~x)`.
 
@@ -16109,17 +16115,17 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}'}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_2` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
+#. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_1` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
+#. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
 #. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|}`, then:
 
@@ -16137,33 +16143,33 @@ watsup 0.4 generator
 
    a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+      1) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)` to the stack.
 
    #. Else:
 
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+      1) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1 + n - 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}'}{.}\mathsf{const}~n - 1)` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)`.
 
@@ -16180,17 +16186,17 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
    a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
    a. Trap.
 
@@ -16198,17 +16204,17 @@ watsup 0.4 generator
 
    a. Do nothing.
 
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+#. Else if :math:`j` is less than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i])` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j])` to the stack.
 
    #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i + 1)` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
@@ -16404,9 +16410,9 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
@@ -16421,9 +16427,9 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
@@ -16433,13 +16439,13 @@ watsup 0.4 generator
 
    a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
 
    #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{{|{\mathit{at}}|}}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`\mathsf{elem{.}drop}~x`
@@ -16461,9 +16467,9 @@ watsup 0.4 generator
 
 #. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
@@ -16504,9 +16510,9 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -16527,9 +16533,9 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -16554,21 +16560,21 @@ watsup 0.4 generator
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
 
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Either:
 
    a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
 
 #. Or:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{{|{\mathit{at}}|}}^{{-1}}}}{({-1})})` to the stack.
 
 
 :math:`\mathsf{data{.}drop}~x`
@@ -17278,6 +17284,17 @@ watsup 0.4 generator
 #. Return :math:`\mathsf{i{\scriptstyle 64}}`.
 
 
+:math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`
+........................................................
+
+
+1. If :math:`{|{\mathit{at}}_1|}` is less than or equal to :math:`{|{\mathit{at}}_2|}`, then:
+
+   a. Return :math:`{\mathit{at}}_1`.
+
+#. Return :math:`{\mathit{at}}_2`.
+
+
 :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~(\mathsf{null}~{{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)~{\mathit{ht}}_2)`
 ............................................................................................................................................................................
 
@@ -17387,9 +17404,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{tag}`, then:
 
-   a. Let :math:`(\mathsf{tag}~{\mathit{at}})` be :math:`{\mathit{externtype}}_0`.
+   a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{at}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
+   #. Return :math:`{\mathit{jt}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -17587,6 +17604,13 @@ watsup 0.4 generator
 1. Return :math:`({{t_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~\rightarrow~{{t_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
 
 
+:math:`{{\mathit{at}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+...........................................................................
+
+
+1. Return :math:`{\mathit{at}}`.
+
+
 :math:`{({\mathsf{mut}^?}, t)}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
 ...................................................................................
 
@@ -17594,18 +17618,25 @@ watsup 0.4 generator
 1. Return :math:`({\mathsf{mut}^?}, {t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({\mathit{lim}}, {\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-.............................................................................................
+:math:`{({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+............................................................................................................
 
 
-1. Return :math:`({\mathit{lim}}, {{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathit{at}}, {\mathit{lim}}, {{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({\mathit{lim}}~\mathsf{page})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-............................................................................................
+:math:`{({\mathit{at}}~{\mathit{lim}}~\mathsf{page})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+..........................................................................................................
 
 
-1. Return :math:`({\mathit{lim}}~\mathsf{page})`.
+1. Return :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+
+
+:math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+...........................................................................
+
+
+1. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 
 :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -17630,11 +17661,17 @@ watsup 0.4 generator
 
    #. Return :math:`(\mathsf{table}~{{\mathit{tt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
+#. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`, then:
 
-#. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`(\mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+   #. Return :math:`(\mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+
+#. Assert: Due to validation, :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{tag}`.
+
+#. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Return :math:`(\mathsf{tag}~{{\mathit{jt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{({{\mathit{xt}}_1^\ast}~\rightarrow~{{\mathit{xt}}_2^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -17903,6 +17940,13 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
 
+:math:`{\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}})`
+................................................................
+
+
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+
+
 :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`
 ..............................................................
 
@@ -18151,18 +18195,25 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{tabletype}}(({\mathit{limits}}, {\mathit{reftype}}))`
-.....................................................................................
+:math:`{\mathrm{free}}_{\mathit{tabletype}}(({\mathit{addrtype}}, {\mathit{limits}}, {\mathit{reftype}}))`
+..........................................................................................................
 
 
-1. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
+1. Return `$free_addrtype(addrtype) ++ $free_reftype(reftype)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{memtype}}(({\mathit{limits}}~\mathsf{page}))`
-.............................................................................
+:math:`{\mathrm{free}}_{\mathit{memtype}}(({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page}))`
+.................................................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`{\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}})`.
+
+
+:math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{deftype}})`
+..............................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}})`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elemtype}}({\mathit{reftype}})`
@@ -18201,11 +18252,17 @@ watsup 0.4 generator
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
+#. If :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`, then:
 
-#. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
+
+#. Assert: Due to validation, :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{tag}`.
+
+#. Let :math:`(\mathsf{tag}~{\mathit{tagtype}})` be :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Return :math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{tagtype}})`.
 
 
 :math:`{\mathrm{free}}_{\mathit{moduletype}}(({{\mathit{externtype}}_1^\ast}~\rightarrow~{{\mathit{externtype}}_2^\ast}))`
@@ -19132,8 +19189,8 @@ watsup 0.4 generator
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}))`
-..................................................................................................................................................
+:math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}, {{\mathit{table}}^\ast}, {{\mathit{mem}}^\ast}, {{\mathit{elem}}^\ast}, {{\mathit{data}}^\ast}))`
+......................................................................................................................................................
 
 
 1. Return :math:`{\mathrm{funcidx}}((\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon))`.
@@ -20831,9 +20888,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{func}~a)` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -20852,9 +20909,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{global}~a)` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -20873,9 +20930,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{table}~a)` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -20894,9 +20951,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{mem}~a)` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -20915,9 +20972,9 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{tag}`, then:
 
-   a. Let :math:`(\mathsf{tag}~{\mathit{ha}})` be :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{tag}~a)` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -21220,13 +21277,13 @@ watsup 0.4 generator
 ........................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
 
 #. If :math:`{|{{r'}^\ast}|} + n` is less than or equal to :math:`j`, then:
 
    a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-   #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+   #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
    #. Return :math:`{\mathit{tableinst}'}`.
 
@@ -21235,13 +21292,13 @@ watsup 0.4 generator
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
 
 #. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n` is less than or equal to :math:`j`, then:
 
    a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{meminst}'}`.
 
@@ -21372,11 +21429,11 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}((({}[~i~..~j~]), {\mathit{rt}}), {\mathit{ref}})`
-..............................................................................
+:math:`{\mathrm{alloctable}}(({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}), {\mathit{ref}})`
+.............................................................................................
 
 
-1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -21408,11 +21465,11 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}((({}[~i~..~j~])~\mathsf{page}))`
-...........................................................
+:math:`{\mathrm{allocmem}}(({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}))`
+.........................................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
@@ -21459,13 +21516,13 @@ watsup 0.4 generator
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{at}}~{{\mathit{at}'}^\ast}` be :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{jt}}~{{\mathit{jt}'}^\ast}` be :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{aa}}` be :math:`{\mathrm{alloctag}}({\mathit{at}})`.
+#. Let :math:`{\mathit{ja}}` be :math:`{\mathrm{alloctag}}({\mathit{jt}})`.
 
-#. Let :math:`{{\mathit{aa}'}^\ast}` be :math:`{\mathrm{alloctags}}({{\mathit{at}'}^\ast})`.
+#. Let :math:`{{\mathit{ja}'}^\ast}` be :math:`{\mathrm{alloctags}}({{\mathit{jt}'}^\ast})`.
 
-#. Return :math:`{\mathit{aa}}~{{\mathit{aa}'}^\ast}`.
+#. Return :math:`{\mathit{ja}}~{{\mathit{ja}'}^\ast}`.
 
 
 :math:`{\mathrm{allocelem}}({\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
@@ -22228,12 +22285,12 @@ Globaltype_ok
   - the value type t is valid.
 
 Tabletype_ok
-- the table type (limits, reftype) is valid if and only if:
+- the table type (addrtype, limits, reftype) is valid if and only if:
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
 Memtype_ok
-- the memory type (limits PAGE) is valid if and only if:
+- the memory type (addrtype limits PAGE) is valid if and only if:
   - the limits limits is valid with the nat (2 ^ 16).
 
 Tagtype_ok
@@ -22288,13 +22345,13 @@ Globaltype_sub
     - the value type valtype_2 matches the value type valtype_1.
 
 Tabletype_sub
-- the table type (limits_1, reftype_1) matches the table type (limits_2, reftype_2) if and only if:
+- the table type (addrtype, limits_1, reftype_1) matches the table type (addrtype, limits_2, reftype_2) if and only if:
   - the limits limits_1 matches the limits limits_2.
   - the reference type reftype_1 matches the reference type reftype_2.
   - the reference type reftype_2 matches the reference type reftype_1.
 
 Memtype_sub
-- the memory type (limits_1 PAGE) matches the memory type (limits_2 PAGE) if and only if:
+- the memory type (addrtype limits_1 PAGE) matches the memory type (addrtype limits_2 PAGE) if and only if:
   - the limits limits_1 matches the limits limits_2.
 
 Tagtype_sub
@@ -22461,10 +22518,10 @@ Instr_ok/call_ref
   - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
 
 Instr_ok/call_indirect
-- the instr (CALL_INDIRECT x (_IDX y)) is valid with the instruction type (t_1* :: [I32] ->_ [] t_2*) if and only if:
+- the instr (CALL_INDIRECT x (_IDX y)) is valid with the instruction type (t_1* :: [at] ->_ [] t_2*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
   - the reference type rt matches the reference type (REF (NULL ?(()) ?) FUNC).
   - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
 
@@ -22490,10 +22547,10 @@ Instr_ok/return_call_ref
   - the instruction type (t_3* ->_ [] t_4*) is valid.
 
 Instr_ok/return_call_indirect
-- the instr (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type (t_3* :: t_1* :: [I32] ->_ [] t_4*) if and only if:
+- the instr (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type (t_3* :: t_1* :: [at] ->_ [] t_4*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
   - the reference type rt matches the reference type (REF (NULL ?(()) ?) FUNC).
   - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
   - C.RETURN is ?(t'_2*).
@@ -22790,43 +22847,43 @@ Instr_ok/global.set
   - C.GLOBALS[x] is ((MUT ?(()) ?), t).
 
 Instr_ok/table.get
-- the instr (TABLE.GET x) is valid with the instruction type ([I32] ->_ [] [rt]) if and only if:
+- the instr (TABLE.GET x) is valid with the instruction type ([at] ->_ [] [rt]) if and only if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
 
 Instr_ok/table.set
-- the instr (TABLE.SET x) is valid with the instruction type ([I32, rt] ->_ [] []) if and only if:
+- the instr (TABLE.SET x) is valid with the instruction type ([at, rt] ->_ [] []) if and only if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
 
 Instr_ok/table.size
-- the instr (TABLE.SIZE x) is valid with the instruction type ([] ->_ [] [I32]) if and only if:
+- the instr (TABLE.SIZE x) is valid with the instruction type ([] ->_ [] [at]) if and only if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
 
 Instr_ok/table.grow
-- the instr (TABLE.GROW x) is valid with the instruction type ([rt, I32] ->_ [] [I32]) if and only if:
+- the instr (TABLE.GROW x) is valid with the instruction type ([rt, at] ->_ [] [at]) if and only if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
 
 Instr_ok/table.fill
-- the instr (TABLE.FILL x) is valid with the instruction type ([I32, rt, I32] ->_ [] []) if and only if:
+- the instr (TABLE.FILL x) is valid with the instruction type ([at, rt, at] ->_ [] []) if and only if:
   - |C.TABLES| is greater than x.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (at, lim, rt).
 
 Instr_ok/table.copy
-- the instr (TABLE.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] ->_ [] []) if and only if:
+- the instr (TABLE.COPY x_1 x_2) is valid with the instruction type ([at_1, at_2, $minat(at_1, at_2)] ->_ [] []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
-  - C.TABLES[x_1] is (lim_1, rt_1).
-  - C.TABLES[x_2] is (lim_2, rt_2).
+  - C.TABLES[x_1] is (at_1, lim_1, rt_1).
+  - C.TABLES[x_2] is (at_2, lim_2, rt_2).
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/table.init
-- the instr (TABLE.INIT x y) is valid with the instruction type ([I32, I32, I32] ->_ [] []) if and only if:
+- the instr (TABLE.INIT x y) is valid with the instruction type ([at, I32, I32] ->_ [] []) if and only if:
   - |C.TABLES| is greater than x.
   - |C.ELEMS| is greater than y.
-  - C.TABLES[x] is (lim, rt_1).
+  - C.TABLES[x] is (at, lim, rt_1).
   - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
 
@@ -22836,32 +22893,32 @@ Instr_ok/elem.drop
   - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
-- the instr (MEMORY.SIZE x) is valid with the instruction type ([] ->_ [] [I32]) if and only if:
+- the instr (MEMORY.SIZE x) is valid with the instruction type ([] ->_ [] [at]) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
 
 Instr_ok/memory.grow
-- the instr (MEMORY.GROW x) is valid with the instruction type ([I32] ->_ [] [I32]) if and only if:
+- the instr (MEMORY.GROW x) is valid with the instruction type ([at] ->_ [] [at]) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
 
 Instr_ok/memory.fill
-- the instr (MEMORY.FILL x) is valid with the instruction type ([I32, I32, I32] ->_ [] []) if and only if:
+- the instr (MEMORY.FILL x) is valid with the instruction type ([at, I32, at] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
 
 Instr_ok/memory.copy
-- the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] ->_ [] []) if and only if:
+- the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type ([at_1, at_2, $minat(at_1, at_2)] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x_1.
   - |C.MEMS| is greater than x_2.
-  - C.MEMS[x_1] is mt_1.
-  - C.MEMS[x_2] is mt_2.
+  - C.MEMS[x_1] is (at_1 lim_1 PAGE).
+  - C.MEMS[x_2] is (at_2 lim_2 PAGE).
 
 Instr_ok/memory.init
-- the instr (MEMORY.INIT x y) is valid with the instruction type ([I32, I32, I32] ->_ [] []) if and only if:
+- the instr (MEMORY.INIT x y) is valid with the instruction type ([at, I32, I32] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x.
   - |C.DATAS| is greater than y.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - C.DATAS[y] is OK.
 
 Instr_ok/data.drop
@@ -22870,9 +22927,9 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type ([I32] ->_ [] [valtype_u3]) if and only if:
+- the instr (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type ([at] ->_ [] [valtype_u3]) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - Either:
     - numtype_u0 is nt.
     - loadop__u2? is ?().
@@ -22885,9 +22942,9 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE numtype_u0 storeop__u2? x memarg) is valid with the instruction type ([I32, valtype_u3] ->_ [] []) if and only if:
+- the instr (STORE numtype_u0 storeop__u2? x memarg) is valid with the instruction type ([at, valtype_u3] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - Either:
     - numtype_u0 is nt.
     - storeop__u2? is ?().
@@ -22900,9 +22957,9 @@ Instr_ok/store
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instr (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type ([I32] ->_ [] [V128]) if and only if:
+- the instr (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type ([at] ->_ [] [V128]) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - Either:
     - vloadop__u0? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
@@ -22917,22 +22974,22 @@ Instr_ok/vload
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload_lane
-- the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] [V128]) if and only if:
+- the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type ([at, V128] ->_ [] [V128]) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
 Instr_ok/vstore
-- the instr (VSTORE V128 x memarg) is valid with the instruction type ([I32, V128] ->_ [] []) if and only if:
+- the instr (VSTORE V128 x memarg) is valid with the instruction type ([at, V128] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vstore_lane
-- the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] []) if and only if:
+- the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type ([at, V128] ->_ [] []) if and only if:
   - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
+  - C.MEMS[x] is (at lim PAGE).
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
@@ -23044,7 +23101,7 @@ Global_ok
 Table_ok
 - the table (TABLE tabletype expr) is valid with the table type tabletype if and only if:
   - the table type tt is valid.
-  - tabletype is (lim, rt).
+  - tabletype is (at, lim, rt).
   - the expression expr is valid with the value type rt.
   - the expression expr is constant.
 
@@ -23062,7 +23119,7 @@ Elemmode_ok
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
-    - C.TABLES[x] is (lim, rt').
+    - C.TABLES[x] is (at, lim, rt').
     - the reference type rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
@@ -23127,9 +23184,9 @@ Externidx_ok
     - C.MEMS[x] is mt.
   - Or:
     - externidx_u0 is (TAG x).
-    - externtype_u1 is (TAG at).
+    - externtype_u1 is (TAG jt).
     - |C.TAGS| is greater than x.
-    - C.TAGS[x] is at.
+    - C.TAGS[x] is jt.
 
 Export_ok
 - the export (EXPORT name externidx) is valid with the name name and the external type xt if and only if:
@@ -23162,7 +23219,7 @@ Module_ok
   - |xt_I*| is |import*|.
   - |tt*| is |table*|.
   - |mt*| is |mem*|.
-  - |tag*| is |at*|.
+  - |tag*| is |jt*|.
   - |func*| is |dt*|.
   - |rt*| is |elem*|.
   - |ok*| is |data*|.
@@ -23176,8 +23233,8 @@ Module_ok
     - Under the context C', the table table is valid with the table type tt.
   - For all mem in mem* and mt in mt*,
     - Under the context C', the memory mem is valid with the memory type mt.
-  - For all at in at* and tag in tag*,
-    - Under the context C', the tag tag is valid with the memory type at.
+  - For all jt in jt* and tag in tag*,
+    - Under the context C', the tag tag is valid with the memory type jt.
   - For all dt in dt* and func in func*,
     - the function func is valid with the defined type dt.
   - For all elem in elem* and rt in rt*,
@@ -23189,14 +23246,14 @@ Module_ok
   - For all export in export* and nm in nm* and xt_E in xt_E*,
     - the export export is valid with the name nm and the external type xt_E.
   - Yet: $disjoint_(syntax name, nm*{nm <- `nm*`})
-  - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by at_I* :: at* with .ELEMS appended by rt* with .DATAS appended by ok*.
+  - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
   - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
+  - x* is $funcidx_nonfuncs((global*, table*, mem*, elem*, data*)).
   - dt_I* is $funcsxt(xt_I*).
   - gt_I* is $globalsxt(xt_I*).
   - tt_I* is $tablesxt(xt_I*).
   - mt_I* is $memsxt(xt_I*).
-  - at_I* is $tagsxt(xt_I*).
+  - jt_I* is $tagsxt(xt_I*).
 
 NotationTypingInstrScheme
 - the instr sequence [instr_u0] is valid with the function type (valtype_u1* -> valtype_u3*) if and only if:
@@ -24164,97 +24221,98 @@ Step_read/global.get x
 
 Step_read/table.get x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST i) from the stack.
 4. If (i >= |$table(z, x).REFS|), then:
   a. Trap.
 5. Push the value $table(z, x).REFS[i] to the stack.
 
 Step_read/table.size x
 1. Let z be the current state.
-2. Let n be |$table(z, x).REFS|.
-3. Push the value (I32.CONST n) to the stack.
+2. Let (at, lim, rt) be $table(z, x).TYPE.
+3. Let n be |$table(z, x).REFS|.
+4. Push the value (at.CONST n) to the stack.
 
 Step_read/table.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type at is on the top of the stack.
+7. Pop the value (numtype_0.CONST i) from the stack.
 8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
 9. If (n = 0), then:
   a. Do nothing.
 10. Else:
-  a. Push the value (I32.CONST i) to the stack.
+  a. Push the value (at.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
+  d. Push the value (at.CONST (i + 1)) to the stack.
   e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
+  f. Push the value (at.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.FILL x).
 
-Step_read/table.copy x y
+Step_read/table.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$table(z, y).REFS|), then:
+2. Assert: Due to validation, a value of value type at' is on the top of the stack.
+3. Pop the value (at'.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type at_2 is on the top of the stack.
+5. Pop the value (at_2.CONST i_2) from the stack.
+6. Assert: Due to validation, a value of value type at_1 is on the top of the stack.
+7. Pop the value (at_1.CONST i_1) from the stack.
+8. If ((i_1 + n) > |$table(z, x_1).REFS|), then:
   a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
+9. If ((i_2 + n) > |$table(z, x_2).REFS|), then:
   a. Trap.
 10. If (n = 0), then:
   a. Do nothing.
 11. Else:
-  a. If (j <= i), then:
-    1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
+  a. If (i_1 <= i_2), then:
+    1) Push the value (at_1.CONST i_1) to the stack.
+    2) Push the value (at_2.CONST i_2) to the stack.
+    3) Execute the instruction (TABLE.GET x_2).
+    4) Execute the instruction (TABLE.SET x_1).
+    5) Push the value (at_1.CONST (i_1 + 1)) to the stack.
+    6) Push the value (at_2.CONST (i_2 + 1)) to the stack.
   b. Else:
-    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (TABLE.COPY x y).
+    1) Push the value (at_1.CONST ((i_1 + n) - 1)) to the stack.
+    2) Push the value (at_2.CONST ((i_2 + n) - 1)) to the stack.
+    3) Execute the instruction (TABLE.GET x_2).
+    4) Execute the instruction (TABLE.SET x_1).
+    5) Push the value (at_1.CONST i_1) to the stack.
+    6) Push the value (at_2.CONST i_2) to the stack.
+  c. Push the value (at'.CONST (n - 1)) to the stack.
+  d. Execute the instruction (TABLE.COPY x_1 x_2).
 
 Step_read/table.init x y
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$elem(z, y).REFS|), then:
+5. Pop the value (I32.CONST j) from the stack.
+6. Assert: Due to validation, a value of value type at is on the top of the stack.
+7. Pop the value (at.CONST i) from the stack.
+8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
+9. If ((j + n) > |$elem(z, y).REFS|), then:
   a. Trap.
 10. If (n = 0), then:
   a. Do nothing.
-11. Else if (i < |$elem(z, y).REFS|), then:
-  a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(z, y).REFS[i] to the stack.
+11. Else if (j < |$elem(z, y).REFS|), then:
+  a. Push the value (at.CONST i) to the stack.
+  b. Push the value $elem(z, y).REFS[j] to the stack.
   c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
+  d. Push the value (at.CONST (i + 1)) to the stack.
+  e. Push the value (I32.CONST (j + 1)) to the stack.
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
 Step_read/load numtype_u0 loadop__u2? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST i) from the stack.
 4. If loadop__u2? is not defined, then:
   a. Let nt be numtype_u0.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
@@ -24276,8 +24334,8 @@ Step_read/load numtype_u0 loadop__u2? x ao
 
 Step_read/vload V128 vloadop__u0? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST i) from the stack.
 4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) /\ vloadop__u0? is not defined), then:
   a. Trap.
 5. If vloadop__u0? is not defined, then:
@@ -24316,8 +24374,8 @@ Step_read/vload_lane V128 N x ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value of value type at is on the top of the stack.
+5. Pop the value (at.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be ($vsize(V128) / N).
@@ -24329,38 +24387,40 @@ Step_read/vload_lane V128 N x ao j
 
 Step_read/memory.size x
 1. Let z be the current state.
-2. Let (n * (64 * $Ki())) be |$mem(z, x).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
+2. Assert: Due to validation, $mem(z, x).TYPE is of the case PAGE.
+3. Let (at lim PAGE) be $mem(z, x).TYPE.
+4. Let (n * (64 * $Ki())) be |$mem(z, x).BYTES|.
+5. Push the value (at.CONST n) to the stack.
 
 Step_read/memory.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type at is on the top of the stack.
+7. Pop the value (numtype_0.CONST i) from the stack.
 8. If ((i + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
 9. If (n = 0), then:
   a. Do nothing.
 10. Else:
-  a. Push the value (I32.CONST i) to the stack.
+  a. Push the value (at.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
+  d. Push the value (at.CONST (i + 1)) to the stack.
   e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
+  f. Push the value (at.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.FILL x).
 
 Step_read/memory.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i_1) from the stack.
+2. Assert: Due to validation, a value of value type at' is on the top of the stack.
+3. Pop the value (at'.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type at_2 is on the top of the stack.
+5. Pop the value (at_2.CONST i_2) from the stack.
+6. Assert: Due to validation, a value of value type at_1 is on the top of the stack.
+7. Pop the value (at_1.CONST i_1) from the stack.
 8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
   a. Trap.
 9. If ((i_2 + n) > |$mem(z, x_2).BYTES|), then:
@@ -24369,20 +24429,20 @@ Step_read/memory.copy x_1 x_2
   a. Do nothing.
 11. Else:
   a. If (i_1 <= i_2), then:
-    1) Push the value (I32.CONST i_1) to the stack.
-    2) Push the value (I32.CONST i_2) to the stack.
+    1) Push the value (at_1.CONST i_1) to the stack.
+    2) Push the value (at_2.CONST i_2) to the stack.
     3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (I32.CONST (i_1 + 1)) to the stack.
-    6) Push the value (I32.CONST (i_2 + 1)) to the stack.
+    5) Push the value (at_1.CONST (i_1 + 1)) to the stack.
+    6) Push the value (at_2.CONST (i_2 + 1)) to the stack.
   b. Else:
-    1) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+    1) Push the value (at_1.CONST ((i_1 + n) - 1)) to the stack.
+    2) Push the value (at_2.CONST ((i_2 + n) - 1)) to the stack.
     3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (I32.CONST i_1) to the stack.
-    6) Push the value (I32.CONST i_2) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
+    5) Push the value (at_1.CONST i_1) to the stack.
+    6) Push the value (at_2.CONST i_2) to the stack.
+  c. Push the value (at'.CONST (n - 1)) to the stack.
   d. Execute the instruction (MEMORY.COPY x_1 x_2).
 
 Step_read/memory.init x y
@@ -24390,21 +24450,21 @@ Step_read/memory.init x y
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$data(z, y).BYTES|), then:
+5. Pop the value (I32.CONST j) from the stack.
+6. Assert: Due to validation, a value of value type at is on the top of the stack.
+7. Pop the value (at.CONST i) from the stack.
+8. If ((i + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
-9. If ((j + n) > |$mem(z, x).BYTES|), then:
+9. If ((j + n) > |$data(z, y).BYTES|), then:
   a. Trap.
 10. If (n = 0), then:
   a. Do nothing.
-11. Else if (i < |$data(z, y).BYTES|), then:
-  a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(z, y).BYTES[i]) to the stack.
+11. Else if (j < |$data(z, y).BYTES|), then:
+  a. Push the value (at.CONST i) to the stack.
+  b. Push the value (I32.CONST $data(z, y).BYTES[j]) to the stack.
   c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
+  d. Push the value (at.CONST (i + 1)) to the stack.
+  e. Push the value (I32.CONST (j + 1)) to the stack.
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.INIT x y).
 
@@ -24498,24 +24558,24 @@ Step/table.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value of value type at is on the top of the stack.
+5. Pop the value (at.CONST i) from the stack.
 6. If (i >= |$table(z, x).REFS|), then:
   a. Trap.
 7. Perform $with_table(z, x, i, ref).
 
 Step/table.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value ref from the stack.
 6. Either:
   a. Let ti be $growtable($table(z, x), n, ref).
-  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  b. Push the value (at.CONST |$table(z, x).REFS|) to the stack.
   c. Perform $with_tableinst(z, x, ti).
 7. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+  a. Push the value (at.CONST $invsigned_($size(at), (- 1))) to the stack.
 
 Step/elem.drop x
 1. Let z be the current state.
@@ -24525,8 +24585,8 @@ Step/store numtype_u0 storeop__u2? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type numtype_u3 is on the top of the stack.
 3. Pop the value (numtype_u3.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value of value type at is on the top of the stack.
+5. Pop the value (at.CONST i) from the stack.
 6. Let nt be numtype_u3.
 7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) /\ ((numtype_u0 = nt) /\ storeop__u2? is not defined)), then:
   a. Trap.
@@ -24546,8 +24606,8 @@ Step/vstore V128 x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value of value type at is on the top of the stack.
+5. Pop the value (at.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let b* be $vbytes_(V128, c).
@@ -24557,8 +24617,8 @@ Step/vstore_lane V128 N x ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value of value type at is on the top of the stack.
+5. Pop the value (at.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
@@ -24570,14 +24630,14 @@ Step/vstore_lane V128 N x ao j
 
 Step/memory.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
+2. Assert: Due to validation, a value of value type at is on the top of the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Either:
   a. Let mi be $growmem($mem(z, x), n).
-  b. Push the value (I32.CONST (|$mem(z, x).BYTES| / (64 * $Ki()))) to the stack.
+  b. Push the value (at.CONST (|$mem(z, x).BYTES| / (64 * $Ki()))) to the stack.
   c. Perform $with_meminst(z, x, mi).
 5. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+  a. Push the value (at.CONST $invsigned_($size(at), (- 1))) to the stack.
 
 Step/data.drop x
 1. Let z be the current state.
@@ -24902,6 +24962,11 @@ JN N_u0
 4. Assert: Due to validation, (N_u0 = 64).
 5. Return I64.
 
+minat at_1 at_2
+1. If ($size(at_1) <= $size(at_2)), then:
+  a. Return at_1.
+2. Return at_2.
+
 diffrt (REF nul1 ht_1) (REF (NULL _u0? ?) ht_2)
 1. If (_u0? = ?(())), then:
   a. Return (REF (NULL ?() ?) ht_1).
@@ -24953,8 +25018,8 @@ tagsxt externtype_u0*
   a. Return [].
 2. Let [externtype_0] :: xt* be externtype_u0*.
 3. If externtype_0 is of the case TAG, then:
-  a. Let (TAG at) be externtype_0.
-  b. Return [at] :: $tagsxt(xt*).
+  a. Let (TAG jt) be externtype_0.
+  b. Return [jt] :: $tagsxt(xt*).
 4. Let [externtype] :: xt* be externtype_u0*.
 5. Return $tagsxt(xt*).
 
@@ -25046,14 +25111,20 @@ subst_deftype (DEF qt i) tv* tu*
 subst_functype (t_1* -> t_2*) tv* tu*
 1. Return ($subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*).
 
+subst_addrtype at tv* tu*
+1. Return at.
+
 subst_globaltype (mut, t) tv* tu*
 1. Return (mut, $subst_valtype(t, tv*, tu*)).
 
-subst_tabletype (lim, rt) tv* tu*
-1. Return (lim, $subst_reftype(rt, tv*, tu*)).
+subst_tabletype (at, lim, rt) tv* tu*
+1. Return (at, lim, $subst_reftype(rt, tv*, tu*)).
 
-subst_memtype (lim PAGE) tv* tu*
-1. Return (lim PAGE).
+subst_memtype (at lim PAGE) tv* tu*
+1. Return (at lim PAGE).
+
+subst_tagtype dt tv* tu*
+1. Return $subst_deftype(dt, tv*, tu*).
 
 subst_externtype externtype_u0 tv* tu*
 1. If externtype_u0 is of the case FUNC, then:
@@ -25065,9 +25136,12 @@ subst_externtype externtype_u0 tv* tu*
 3. If externtype_u0 is of the case TABLE, then:
   a. Let (TABLE tt) be externtype_u0.
   b. Return (TABLE $subst_tabletype(tt, tv*, tu*)).
-4. Assert: Due to validation, externtype_u0 is of the case MEM.
-5. Let (MEM mt) be externtype_u0.
-6. Return (MEM $subst_memtype(mt, tv*, tu*)).
+4. If externtype_u0 is of the case MEM, then:
+  a. Let (MEM mt) be externtype_u0.
+  b. Return (MEM $subst_memtype(mt, tv*, tu*)).
+5. Assert: Due to validation, externtype_u0 is of the case TAG.
+6. Let (TAG jt) be externtype_u0.
+7. Return (TAG $subst_tagtype(jt, tv*, tu*)).
 
 subst_moduletype (xt_1* -> xt_2*) tv* tu*
 1. Return ($subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*).
@@ -25188,6 +25262,9 @@ free_externidx externidx_u0
 5. Let (MEM memidx) be externidx_u0.
 6. Return $free_memidx(memidx).
 
+free_addrtype addrtype
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
 free_numtype numtype
 1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 
@@ -25301,11 +25378,14 @@ free_deftype (DEF rectype n)
 free_globaltype (mut, valtype)
 1. Return $free_valtype(valtype).
 
-free_tabletype (limits, reftype)
-1. Return $free_reftype(reftype).
+free_tabletype (addrtype, limits, reftype)
+1. Return $free_addrtype(addrtype) ++ $free_reftype(reftype).
 
-free_memtype (limits PAGE)
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+free_memtype (addrtype limits PAGE)
+1. Return $free_addrtype(addrtype).
+
+free_tagtype deftype
+1. Return $free_deftype(deftype).
 
 free_elemtype reftype
 1. Return $free_reftype(reftype).
@@ -25323,9 +25403,12 @@ free_externtype externtype_u0
 3. If externtype_u0 is of the case TABLE, then:
   a. Let (TABLE tabletype) be externtype_u0.
   b. Return $free_tabletype(tabletype).
-4. Assert: Due to validation, externtype_u0 is of the case MEM.
-5. Let (MEM memtype) be externtype_u0.
-6. Return $free_memtype(memtype).
+4. If externtype_u0 is of the case MEM, then:
+  a. Let (MEM memtype) be externtype_u0.
+  b. Return $free_memtype(memtype).
+5. Assert: Due to validation, externtype_u0 is of the case TAG.
+6. Let (TAG tagtype) be externtype_u0.
+7. Return $free_tagtype(tagtype).
 
 free_moduletype (externtype_1* -> externtype_2*)
 1. Return $free_list($free_externtype(externtype_1)*) ++ $free_list($free_externtype(externtype_2)*).
@@ -25773,7 +25856,7 @@ default_ valtype_u0
 7. Assert: Due to validation, (nul_0 = (NULL ?() ?)).
 8. Return ?().
 
-funcidx_nonfuncs (global* table* mem* elem* data*)
+funcidx_nonfuncs (global*, table*, mem*, elem*, data*)
 1. Return $funcidx_module((MODULE [] [] [] global* table* mem* [] elem* data* ?() [])).
 
 relaxed2 i X X_1 X_2
@@ -26576,8 +26659,8 @@ funcsxa externaddr_u0*
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr_u0*.
 3. If externaddr_0 is of the case FUNC, then:
-  a. Let (FUNC fa) be externaddr_0.
-  b. Return [fa] :: $funcsxa(xa*).
+  a. Let (FUNC a) be externaddr_0.
+  b. Return [a] :: $funcsxa(xa*).
 4. Let [externaddr] :: xa* be externaddr_u0*.
 5. Return $funcsxa(xa*).
 
@@ -26586,8 +26669,8 @@ globalsxa externaddr_u0*
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr_u0*.
 3. If externaddr_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externaddr_0.
-  b. Return [ga] :: $globalsxa(xa*).
+  a. Let (GLOBAL a) be externaddr_0.
+  b. Return [a] :: $globalsxa(xa*).
 4. Let [externaddr] :: xa* be externaddr_u0*.
 5. Return $globalsxa(xa*).
 
@@ -26596,8 +26679,8 @@ tablesxa externaddr_u0*
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr_u0*.
 3. If externaddr_0 is of the case TABLE, then:
-  a. Let (TABLE ta) be externaddr_0.
-  b. Return [ta] :: $tablesxa(xa*).
+  a. Let (TABLE a) be externaddr_0.
+  b. Return [a] :: $tablesxa(xa*).
 4. Let [externaddr] :: xa* be externaddr_u0*.
 5. Return $tablesxa(xa*).
 
@@ -26606,8 +26689,8 @@ memsxa externaddr_u0*
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr_u0*.
 3. If externaddr_0 is of the case MEM, then:
-  a. Let (MEM ma) be externaddr_0.
-  b. Return [ma] :: $memsxa(xa*).
+  a. Let (MEM a) be externaddr_0.
+  b. Return [a] :: $memsxa(xa*).
 4. Let [externaddr] :: xa* be externaddr_u0*.
 5. Return $memsxa(xa*).
 
@@ -26616,8 +26699,8 @@ tagsxa externaddr_u0*
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr_u0*.
 3. If externaddr_0 is of the case TAG, then:
-  a. Let (TAG ha) be externaddr_0.
-  b. Return [ha] :: $tagsxa(xa*).
+  a. Let (TAG a) be externaddr_0.
+  b. Return [a] :: $tagsxa(xa*).
 4. Let [externaddr] :: xa* be externaddr_u0*.
 5. Return $tagsxa(xa*).
 
@@ -26750,17 +26833,17 @@ add_exninst exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
-1. Let { TYPE: (([ i .. j ]), rt); REFS: r'*; } be tableinst.
+1. Let { TYPE: (at, ([ i .. j ]), rt); REFS: r'*; } be tableinst.
 2. If ((|r'*| + n) <= j), then:
   a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: (([ i' .. j ]), rt); REFS: r'* :: r^n; }.
+  b. Let tableinst' be { TYPE: (at, ([ i' .. j ]), rt); REFS: r'* :: r^n; }.
   c. Return tableinst'.
 
 growmem meminst n
-1. Let { TYPE: (([ i .. j ]) PAGE); BYTES: b*; } be meminst.
+1. Let { TYPE: (at ([ i .. j ]) PAGE); BYTES: b*; } be meminst.
 2. If (((|b*| / (64 * $Ki())) + n) <= j), then:
   a. Let i' be ((|b*| / (64 * $Ki())) + n).
-  b. Let meminst' be { TYPE: (([ i' .. j ]) PAGE); BYTES: b* :: 0^(n * (64 * $Ki())); }.
+  b. Let meminst' be { TYPE: (at ([ i' .. j ]) PAGE); BYTES: b* :: 0^(n * (64 * $Ki())); }.
   c. Return meminst'.
 
 blocktype_ z blocktype_u0
@@ -26823,8 +26906,8 @@ allocglobals globaltype_u0* val_u1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable (([ i .. j ]), rt) ref
-1. Let tableinst be { TYPE: (([ i .. j ]), rt); REFS: ref^i; }.
+alloctable (at, ([ i .. j ]), rt) ref
+1. Let tableinst be { TYPE: (at, ([ i .. j ]), rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.
@@ -26840,8 +26923,8 @@ alloctables tabletype_u0* ref_u1*
 7. Let ta'* be $alloctables(tabletype'*, ref'*).
 8. Return [ta] :: ta'*.
 
-allocmem (([ i .. j ]) PAGE)
-1. Let meminst be { TYPE: (([ i .. j ]) PAGE); BYTES: 0^(i * (64 * $Ki())); }.
+allocmem (at ([ i .. j ]) PAGE)
+1. Let meminst be { TYPE: (at ([ i .. j ]) PAGE); BYTES: 0^(i * (64 * $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append meminst to the s.MEMS.
 4. Return a.
@@ -26863,10 +26946,10 @@ alloctag tagtype
 alloctags tagtype_u0*
 1. If (tagtype_u0* = []), then:
   a. Return [].
-2. Let [at] :: at'* be tagtype_u0*.
-3. Let aa be $alloctag(at).
-4. Let aa'* be $alloctags(at'*).
-5. Return [aa] :: aa'*.
+2. Let [jt] :: jt'* be tagtype_u0*.
+3. Let ja be $alloctag(jt).
+4. Let ja'* be $alloctags(jt'*).
+5. Return [ja] :: ja'*.
 
 allocelem elemtype ref*
 1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.

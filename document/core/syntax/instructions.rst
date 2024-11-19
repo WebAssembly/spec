@@ -338,12 +338,9 @@ In the case of loads, a sign extension mode ${:sx} is then required to select ap
 Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of ${:V128}. Each lane is half its usual size, and the sign extension mode ${:sx} then specifies how the smaller lane is extended to the larger lane.
 Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
-The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
+The static address offset is added to the dynamic address operand, yielding a 33-bit or 65-bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
-
-.. note::
-   Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The ${:MEMORY.SIZE} instruction returns the current size of a memory.
 The ${:MEMORY.GROW} instruction grows a memory by a given delta and returns the previous size, or ${:$(-1)} if enough memory cannot be allocated.
