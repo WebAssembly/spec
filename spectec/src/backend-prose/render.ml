@@ -585,9 +585,8 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         (render_hd_expr env e)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
-      let template = String.split_on_char '%' s in
       let args = List.map (render_expr_with_type env) es in
-      Prose_util.alternate template args |> String.concat ""
+      Prose_util.apply_prose_hint s args
     | YetS s -> sprintf "YetS: %s" s
     | _ -> assert false
 
