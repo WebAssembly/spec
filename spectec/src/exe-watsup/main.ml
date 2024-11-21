@@ -135,7 +135,8 @@ let argspec = Arg.align (
     " Generate interpreter";
   "--debug", Arg.Unit (fun () -> Backend_interpreter.Debugger.debug := true),
     " Debug interpreter";
-
+  "--no-unified-vars", Arg.Unit (fun () -> Il2al.Unify.rename := true),
+    " Do not use unified variables in AL";
   "--latex-macros", Arg.Set latex_macros, " Splice Latex with macro invocations";
 
   "--print-el", Arg.Set print_el, " Print EL";
@@ -211,9 +212,9 @@ let () =
     let match_algo_name algo_name al_elt =
       algo_name = "" ||
       (match al_elt.Util.Source.it with
-      | Al.Ast.RuleA (a, _, _, _) -> 
+      | Al.Ast.RuleA (a, _, _, _) ->
         Al.Print.string_of_atom a = String.uppercase_ascii algo_name
-      | Al.Ast.FuncA (id , _, _) -> 
+      | Al.Ast.FuncA (id , _, _) ->
         id = String.lowercase_ascii algo_name)
     in
 

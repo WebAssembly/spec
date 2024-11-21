@@ -1157,7 +1157,6 @@ let rec translate_rgroup' (rule: rule_def) =
  * `rgroup` -> `Al.Algo` *)
 
 and translate_rgroup (rule: rule_def) =
-
   let instr_name, rel_id, rgroup = rule.it in
   let winstr = extract_winstr (List.hd rgroup) rule.at in
   let instrs = translate_rgroup' rule in

@@ -2,6 +2,7 @@
 free_??? are equivalent to those in Il.Free module, except
 1. i in e^(i<n) is not considered free.
 2. n in e^n can be not considered free, depending on flag.
+3. include free functions for defs defined in def.ml.
 *)
 open Util
 open Source
@@ -84,3 +85,29 @@ let rec free_prem ignore_listN prem =
     let free1 = fp prem' in
     let bound, free2 = fi iter in
     diff (union free1 free2) bound
+
+
+(* For unification *)
+
+let free_params params =
+  List.fold_left (fun s param -> free_param param |> union s) empty params
+
+let free_clauses cls =
+  List.fold_left (fun s c -> union s (free_clause c)) empty cls
+
+let free_rules rules =
+  List.fold_left (fun s r -> union s (free_rule r)) empty rules
+
+let free_rule_def rd =
+  let (_, _, clauses) = rd.it in
+  List.fold_left (fun s c ->
+    let lhs, rhs, prems = c in
+    List.fold_left (fun s p -> union s (Il.Free.free_prem p)) s prems
+    |> union (Il.Free.free_exp lhs)
+    |> union (Il.Free.free_exp rhs)
+  ) empty clauses
+
+let free_helper_def hd =
+  let (_, clauses, _) = hd.it in
+  free_clauses clauses
+

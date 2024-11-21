@@ -11,17 +11,22 @@ open Def
 open Il2al_util
 
 
+let rename = ref false
+
 (* Error *)
 
 let error at msg = Error.error at "prose translation" msg
 
 
-(* Environment for type names and indexes *)
+(* Environment for unified ids *)
 
 module Map = Map.Make(String)
 
 type idxs = (string * int) Map.t
-type env = { mutable idxs : idxs; }
+type env = {
+  mutable idxs : idxs;
+  frees : sets;
+}
 
 let unified_prefix = "u"
 let imap : idxs ref = ref Map.empty
@@ -34,7 +39,7 @@ let init_var m id t =
   (* Use the shortest and non-empty name *)
   | Some (s, _) when String.length s <= len -> m
   | _ when len = 0 -> m
-  | _ -> Map.add typid (nid, 0) m
+  | _ -> Map.add typid (nid, 1) m
 
 let init_map_bind m bind =
   match bind.it with
@@ -56,23 +61,90 @@ let init_map il =
   in
   imap := env'
 
-let init_env () = { idxs = !imap }
+let init_env frees = { idxs = !imap; frees }
 
 
 (* Estimate appropriate id name for a given type *)
+let rec avoid_collision env (name, idx) =
+  let name' = name ^ "_" ^ unified_prefix ^ (string_of_int idx) in
+  if Set.mem name' env.frees.varid || Set.mem name' env.frees.typid then
+    avoid_collision env (name, idx + 1)
+  else
+    name, idx
 
 let get_unified_idx env typid =
   let idxs = env.idxs in
-  let name, idx = Map.find_opt typid idxs |> Option.value ~default:(typid, 0) in
+  let name, idx =
+    Map.find_opt typid idxs
+    |> Option.value ~default:(typid, 1)
+    |> avoid_collision env
+  in
+
   env.idxs <- Map.add typid (name, idx + 1) idxs;
   name, idx
 
 let gen_new_unified env ty =
   let typid = Al.Al_util.typ_to_var_name ty in
   let name, idx = get_unified_idx env typid in
-  name ^ "_" ^ unified_prefix ^(string_of_int idx) $ no_region
+  name ^ "_" ^ unified_prefix ^ (string_of_int idx) $ no_region
 
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
+
+let extract_unified_idx id =
+  let ss, s = String.split_on_char '_' id |> Util.Lib.List.split_last in
+  if String.starts_with ~prefix:unified_prefix s then
+    (try
+      let ss = String.concat "_" ss in
+      let s = String.sub s 1 (String.length s - 1) |> int_of_string in
+      Some (ss, s)
+    with Failure _ -> None)
+  else
+    None
+
+(* Rename unified ids to non-unified ones *)
+
+let rename_string env s =
+  match extract_unified_idx s with
+  | Some (base_name, idx) ->
+    (match Map.find_opt base_name env.idxs with
+    | Some (_, idx') when idx' <= 2 ->
+      if Set.mem base_name env.frees.varid
+      then base_name ^ "_" ^ (string_of_int idx) else base_name
+    | _ -> base_name ^ "_" ^ (string_of_int idx))
+  | None -> s
+
+let rename_id env id = { id with it = rename_string env id.it }
+
+let rename_iterexp env (iter, ides) = (iter, List.map (fun (id, e) -> (rename_id env id, e)) ides)
+
+let rename_exp env exp =
+  {exp with it = match exp.it with
+  | VarE id -> VarE (rename_id env id)
+  | exp' -> exp'
+  }
+
+let rename_prem env p =
+  {p with it = match p.it with
+  | LetPr (e1, e2, ss) -> LetPr (e1, e2, List.map (rename_string env) ss)
+  | p' -> p' }
+
+let rename_rule_def (env, rd) =
+  if not !rename then rd else
+  let transformer = { Il_walk.base_transformer with
+    transform_exp = rename_exp env;
+    transform_prem = rename_prem env;
+    transform_iterexp = rename_iterexp env;
+  } in
+  Il_walk.transform_rule_def transformer rd
+
+let rename_helper_def (env, hd) =
+  if not !rename then hd else
+  let transformer = { Il_walk.base_transformer with
+    transform_exp = rename_exp env;
+    transform_prem = rename_prem env;
+    transform_iterexp = rename_iterexp env;
+    } in
+  Il_walk.transform_helper_def transformer hd
 
 let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
@@ -239,6 +311,7 @@ let unify_rules env rules =
   let tl = List.tl concls in
   let template = List.fold_left (overlap env) hd tl in
   List.map (apply_template_to_rule template) rules
+  (* |> rename_rules *)
 
 
 (** 2. Reduction rules **)
@@ -389,7 +462,7 @@ let unify_rule_def (env: env) (rule: rule_def) : rule_def =
               )
               pops
           in
-          let sub_env = { idxs = env.idxs } in
+          let sub_env = { idxs = env.idxs; frees = env.frees } in
           subgroup
           |> unify_ctxt sub_env popped_vars
           |> List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems)
@@ -447,12 +520,15 @@ let unify_defs env defs =
   let template = List.fold_left (List.map2 (overlap_arg env)) hd tl in
   List.map (apply_template_to_def template) defs
 
+let unify_helper_def env hd =
+  match hd.it with
+  | (id, clauses, partial) -> (id, unify_defs env clauses, partial) $ hd.at
+
 let extract_helpers partial_funcs def =
   match def.it with
   | DecD (id, _, _, clauses) when List.length clauses > 0 ->
     let partial = if List.mem id partial_funcs then Partial else Total in
-    let env = init_env () in
-    Some ((id, unify_defs env clauses, partial) $ def.at)
+    Some ((id, clauses, partial) $ def.at)
   | _ -> None
 
 let unify (il: script) : rule_def list * helper_def list =
@@ -462,10 +538,12 @@ let unify (il: script) : rule_def list * helper_def list =
     |> List.concat_map extract_rules
     |> group_rules
     |> List.map (
-      fun rule_def ->
-        let env = init_env () in
-        unify_rule_def env rule_def
+      fun rd ->
+        let frees = Free.free_rule_def rd in
+        let env = init_env frees in
+        (env, unify_rule_def env rd)
     )
+    |> List.map rename_rule_def
   in
 
   let partial_funcs =
@@ -478,6 +556,16 @@ let unify (il: script) : rule_def list * helper_def list =
     in
     List.filter_map get_partial_func il
   in
-  let helper_defs = List.filter_map (extract_helpers partial_funcs) il in
+  let helper_defs =
+    il
+    |> List.filter_map (extract_helpers partial_funcs)
+    |> List.map (
+      fun hd ->
+        let frees = Free.free_helper_def hd in
+        let env = init_env frees in
+        (env, unify_helper_def env hd)
+    )
+    |> List.map rename_helper_def
+  in
 
   rule_defs, helper_defs
