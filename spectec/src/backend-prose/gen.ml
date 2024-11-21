@@ -344,7 +344,7 @@ let prose_of_rules name mk_concl rules =
 let proses_of_rel mk_concl def =
   match def.it with
   | Ast.RelD (rel_id, _, _, rules) ->
-    let frees = Il2al.Free.free_rules rules in
+    let frees = (Il2al.Free.free_rules rules).varid in
     let unified_rules = Il2al.Unify.(unify_rules (init_env frees) rules) in
     let merged_prose = prose_of_rules rel_id.it mk_concl unified_rules in
     let unmerged_proses = if List.length rules < 2 then [] else
@@ -397,7 +397,7 @@ let proses_of_valid_instr_rel rel =
   let grouped_proses =
     groups
     |> List.map (fun (name, id, rules) ->
-        let frees = Il2al.Free.free_rules rules in
+        let frees = (Il2al.Free.free_rules rules).varid in
         name, id, Il2al.Unify.(unify_rules (init_env frees) rules
       ))
     |> List.map vrule_group_to_prose

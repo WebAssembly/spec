@@ -25,7 +25,7 @@ module Map = Map.Make(String)
 type idxs = (string * int) Map.t
 type env = {
   mutable idxs : idxs;
-  frees : sets;
+  frees : Set.t;
 }
 
 let unified_prefix = "u"
@@ -36,8 +36,9 @@ let init_var m id t =
   let nid = id.it |> Str.global_replace (Str.regexp "[^a-zA-Z]") "" in
   let len = String.length nid in
   match Map.find_opt typid m with
-  (* Use the shortest and non-empty name *)
-  | Some (s, _) when String.length s <= len -> m
+  (* Use the shortest non-empty name. Prioritize typid than others. *)
+  | Some (s, _) when String.length s < len -> m
+  | Some (s, _) when s = typid && String.length s = len -> m
   | _ when len = 0 -> m
   | _ -> Map.add typid (nid, 1) m
 
@@ -50,12 +51,18 @@ let init_map_rule m rule =
   match rule.it with
   | RuleD (_, binds, _, _, _) -> List.fold_left init_map_bind m binds
 
+let init_map_clause m clause =
+  match clause.it with
+  | DefD (binds, _, _, _) -> List.fold_left init_map_bind m binds
+
 let init_map il =
   let env' =
     List.fold_left (fun m def ->
       match def.it with
       | RelD (_, _, _, rules) ->
         List.fold_left init_map_rule m rules
+      | DecD (_, _, _, clauses) ->
+        List.fold_left init_map_clause m clauses
       | _ -> m
     ) Map.empty il
   in
@@ -65,20 +72,22 @@ let init_env frees = { idxs = !imap; frees }
 
 
 (* Estimate appropriate id name for a given type *)
-let rec avoid_collision env (name, idx) =
+let rec avoid_collision env name idx =
   let name' = name ^ "_" ^ unified_prefix ^ (string_of_int idx) in
-  if Set.mem name' env.frees.varid || Set.mem name' env.frees.typid then
-    avoid_collision env (name, idx + 1)
+  if Set.mem name' env.frees then
+    avoid_collision env name (idx + 1)
   else
     name, idx
 
 let get_unified_idx env typid =
   let idxs = env.idxs in
-  let name, idx =
-    Map.find_opt typid idxs
-    |> Option.value ~default:(typid, 1)
-    |> avoid_collision env
+  let n, i =
+    match Map.find_opt typid idxs with
+    | Some (n, i) ->
+      if String.length n >= String.length typid then typid, i else n, i
+    | None -> typid, 1
   in
+  let name, idx = avoid_collision env n i in
 
   env.idxs <- Map.add typid (name, idx + 1) idxs;
   name, idx
@@ -108,7 +117,7 @@ let rename_string env s =
   | Some (base_name, idx) ->
     (match Map.find_opt base_name env.idxs with
     | Some (_, idx') when idx' <= 2 ->
-      if Set.mem base_name env.frees.varid
+      if Set.mem base_name env.frees
       then base_name ^ "_" ^ (string_of_int idx) else base_name
     | _ -> base_name ^ "_" ^ (string_of_int idx))
   | None -> s
@@ -129,6 +138,7 @@ let rename_prem env p =
   | p' -> p' }
 
 let rename_rule_def (env, rd) =
+  (* Print.string_of_rule_def rd |> print_endline; *)
   if not !rename then rd else
   let transformer = { Il_walk.base_transformer with
     transform_exp = rename_exp env;
@@ -138,6 +148,7 @@ let rename_rule_def (env, rd) =
   Il_walk.transform_rule_def transformer rd
 
 let rename_helper_def (env, hd) =
+  (* Print.string_of_helper_def hd |> print_endline; *)
   if not !rename then hd else
   let transformer = { Il_walk.base_transformer with
     transform_exp = rename_exp env;
@@ -539,7 +550,7 @@ let unify (il: script) : rule_def list * helper_def list =
     |> group_rules
     |> List.map (
       fun rd ->
-        let frees = Free.free_rule_def rd in
+        let frees = (Free.free_rule_def rd).varid in
         let env = init_env frees in
         (env, unify_rule_def env rd)
     )
@@ -561,7 +572,7 @@ let unify (il: script) : rule_def list * helper_def list =
     |> List.filter_map (extract_helpers partial_funcs)
     |> List.map (
       fun hd ->
-        let frees = Free.free_helper_def hd in
+        let frees = (Free.free_helper_def hd).varid in
         let env = init_env frees in
         (env, unify_helper_def env hd)
     )
