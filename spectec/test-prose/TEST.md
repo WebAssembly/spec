@@ -12775,6 +12775,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Defaultable: `%|-%`(context, valtype)
 
 
 
@@ -14643,11 +14644,9 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
 
-  * :math:`{|{\mathit{zt*}}|}` is equal to :math:`{|{\mathit{val*}}|}`.
+  * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
-  * For all :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}` and :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
-
-    * The value :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is equal to :math:`{\mathit{val}}`.
+    * A default value of the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` exists.
 
 
 
@@ -14699,7 +14698,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-  * The value :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is equal to :math:`{\mathit{val}}`.
+  * A default value of the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` exists.
 
 
 
@@ -24499,6 +24498,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Defaultable: `%|-%`(context, valtype)
 Numtype_ok
 - the number type numtype is valid.
 
@@ -25461,9 +25461,8 @@ Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut, zt)*).
-  - |zt*| is |val*|.
-  - For all val in val* and zt in zt*:
-    - the value $default_($unpack(zt)) is ?(val).
+  - For all zt in zt*:
+    - A default value of the value type $unpack(zt) exists.
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [$unpack(zt)] if:
@@ -25489,7 +25488,7 @@ Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
-  - the value $default_($unpack(zt)) is ?(val).
+  - A default value of the value type $unpack(zt) exists.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type $unpack(zt)^n -> [(REF (_IDX x))] if:

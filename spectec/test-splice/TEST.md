@@ -8,6 +8,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Defaultable: `%|-%`(context, valtype)
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -701,6 +702,7 @@ warning: rule `Comptype_sub/func` was never spliced
 warning: rule `Data_ok` was never spliced
 warning: rule `Datamode_ok/active` was never spliced
 warning: rule `Datamode_ok/passive` was never spliced
+warning: rule `Defaultable` was never spliced
 warning: rule `Deftype_ok` was never spliced
 warning: rule `Deftype_sub/refl` was never spliced
 warning: rule `Deftype_sub/super` was never spliced
