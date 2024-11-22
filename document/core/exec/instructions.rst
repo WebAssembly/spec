@@ -4226,11 +4226,11 @@ Control Instructions
 
 2. Assert: due to :ref:`validation <valid-throw>`, :math:`F.\AMODULE.\MITAGS[x]` exists.
 
-3. Let :math:`ta` be the :ref:`tag address <syntax-tagaddr>` :math:`F.\AMODULE.\MITAGS[x]`.
+3. Let :math:`\X{ta}` be the :ref:`tag address <syntax-tagaddr>` :math:`F.\AMODULE.\MITAGS[x]`.
 
-4. Assert: due to :ref:`validation <valid-throw>`, :math:`S.\STAGS[ta]` exists.
+4. Assert: due to :ref:`validation <valid-throw>`, :math:`S.\STAGS[\X{ta}]` exists.
 
-5. Let :math:`\X{ti}` be the :ref:`tag instance <syntax-taginst>` :math:`S.\STAGS[ta]`.
+5. Let :math:`\X{ti}` be the :ref:`tag instance <syntax-taginst>` :math:`S.\STAGS[\X{ta}]`.
 
 6. Let :math:`[t^n] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`\X{ti}.\TAGITYPE`.
 
@@ -4238,13 +4238,15 @@ Control Instructions
 
 8. Pop the :math:`n` values :math:`\val^n` from the stack.
 
-9. Let :math:`\X{ea}` be the :ref:`exception address <syntax-exnaddr>` resulting from :ref:`allocating <alloc-exception>` an exception instance with tag address :math:`ta` and initializer values :math:`\val^n`.
+9. Let :math:`\X{exn}` be the :ref:`exception instance <syntax-exninst>` :math:`\{\EITAG~\X{ta}, \EIFIELDS~\val^n\}`.
 
-10. Let :math:`\X{exn}` be :math:`S.\SEXNS[ea]`
+10. Let :math:`\X{ea}` be the length of :math:`S.\SEXNS`.
 
-11. Push the value :math:`\REFEXNADDR~\X{ea}` to the stack.
+11. Append :math:`\X{exn}` to :math:`S.\SEXNS`.
 
-12. Execute the instruction |THROWREF|.
+12. Push the value :math:`\REFEXNADDR~\X{ea}` to the stack.
+
+13. Execute the instruction |THROWREF|.
 
 .. math::
    ~\\[-1ex]
