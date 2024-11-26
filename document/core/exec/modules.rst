@@ -385,10 +385,6 @@ $${definition: allocmodule}
 
 Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
 
-$${definition-prose: allocXs}
-
-.. todo:: (0) Update prose for TODOs
-
 $${definition: allocXs}
 $${definition-ignore: allocfuncs allocglobals alloctables allocmems allocelems allocdatas}
 
