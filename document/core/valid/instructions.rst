@@ -1034,12 +1034,11 @@ $${rule: Instr_ok/vbitmask}
 .. _valid-vswizzlop:
 
 :math:`\K{i8x16.}\vswizzlop`
-...........................
+............................
 $${rule-prose: Instr_ok/vswizzlop}
 
 .. todo::
   below is the official specification
-.............................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
