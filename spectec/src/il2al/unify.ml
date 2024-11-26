@@ -83,8 +83,8 @@ let get_unified_idx env typid =
   let idxs = env.idxs in
   let n, i =
     match Map.find_opt typid idxs with
-    | Some (n, i) ->
-      if String.length n >= String.length typid then typid, i else n, i
+    | Some (n, i) when String.length n >= String.length typid -> typid, i
+    | Some (n, i) -> n, i
     | None -> typid, 1
   in
   let name, idx = avoid_collision env n i in
@@ -138,7 +138,6 @@ let rename_prem env p =
   | p' -> p' }
 
 let rename_rule_def (env, rd) =
-  (* Print.string_of_rule_def rd |> print_endline; *)
   if not !rename then rd else
   let transformer = { Il_walk.base_transformer with
     transform_exp = rename_exp env;
@@ -148,7 +147,6 @@ let rename_rule_def (env, rd) =
   Il_walk.transform_rule_def transformer rd
 
 let rename_helper_def (env, hd) =
-  (* Print.string_of_helper_def hd |> print_endline; *)
   if not !rename then hd else
   let transformer = { Il_walk.base_transformer with
     transform_exp = rename_exp env;

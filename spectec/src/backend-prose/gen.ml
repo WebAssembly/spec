@@ -21,6 +21,10 @@ let print_yet_prem prem fname =
 (* Helpers *)
 
 module Map = Map.Make(String)
+module Set = Set.Make(String)
+
+let rec gen_new_var frees v =
+  if Set.mem v frees then gen_new_var frees (v ^ "'") else v $ no_region
 
 let flatten_rec def =
   match def.it with
@@ -319,9 +323,48 @@ let extract_triplet_rule rule =
       (Print.string_of_exp exp
       |> Printf.sprintf "exp `%s` cannot be a rule for the triple-argument relation")
 
+
+let collect_non_trivial frees m exp =
+  match exp.it with
+  | Ast.CallE (_, _) ->
+    let fresh = gen_new_var frees "t" in
+    let var = Ast.VarE fresh $$ exp.at % exp.note in
+    m := Map.add fresh.it (var, exp) !m;
+    var
+  | Ast.IterE ({ it = Ast.VarE id; _ }, (((Ast.List | Ast.List1), _) as ie)) when Map.mem id.it !m ->
+    let (_, exp') = Map.find id.it !m in
+    m := Map.add id.it (exp, {exp with it = Ast.IterE (exp', ie)}) !m;
+    exp
+  | _ -> exp
+
+let preprocess_exp frees m exp =
+  let open Il2al.Il_walk in
+  let transformer = { base_transformer with
+    transform_exp = collect_non_trivial frees m;
+  } in
+  transform_exp transformer exp
+
+let preprocess_rule m rule =
+  let frees = (Free.free_rule rule).varid in
+  { rule with it = match rule.it with
+    | Ast.RuleD (id, bs, ops, exp, prems) ->
+      Ast.RuleD (id, bs, ops, preprocess_exp frees m exp, prems)}
+
+let postprocess_rules m rule =
+  let binds = Map.fold (fun _ (v, e) acc ->
+    LetS (exp_to_expr v, exp_to_expr e) :: acc) !m []
+  in
+  match rule with
+  | RuleD (anchor, concl, prems) -> RuleD (anchor, concl, prems @ binds)
+  | _ -> assert false
+
 (** Main translation for rules **)
 let prose_of_rules name mk_concl rules =
-  let rule = List.hd rules in
+  let bindings = ref Map.empty in
+  let rule =
+    List.hd rules
+    |> preprocess_rule bindings
+  in
   init_ctxs ();
 
   (* anchor *)
@@ -339,6 +382,7 @@ let prose_of_rules name mk_concl rules =
   ) in
 
   RuleD (anchor, concl, prems)
+  |> postprocess_rules bindings
 
 
 let proses_of_rel mk_concl def =

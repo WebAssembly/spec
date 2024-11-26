@@ -70,7 +70,7 @@ let rewrite_id (_, xes) id =
 let rec rewrite_iterexp' iterexp pr =
   let transformer =
     { Il_walk.base_transformer with transform_exp = rewrite iterexp } in
-  let new_ = Il_walk.transform_expr transformer in
+  let new_ = Il_walk.transform_exp transformer in
   match pr with
   | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
@@ -100,7 +100,7 @@ let recover_id (_, xes) id =
 let rec recover_iterexp' iterexp pr =
   let transformer =
     { Il_walk.base_transformer with transform_exp = recover iterexp } in
-  let new_ = Il_walk.transform_expr transformer in
+  let new_ = Il_walk.transform_exp transformer in
   match pr with
   | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
