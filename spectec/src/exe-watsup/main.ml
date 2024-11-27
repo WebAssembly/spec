@@ -176,7 +176,7 @@ let () =
     Il.Valid.valid il;
 
     (match !target with
-    | Prose _ (* | Splice _ *) | Interpreter _ ->
+    | Prose _ | Splice _ | Interpreter _ ->
       enable_pass Sideconditions;
     | _ when !print_al || !print_al_o <> "" ->
       enable_pass Sideconditions;
