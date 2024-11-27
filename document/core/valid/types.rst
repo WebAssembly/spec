@@ -17,6 +17,7 @@ Number Types
 $${rule-prose: Numtype_ok}
 .. todo::
  below is the official specification
+
 :ref:`Number types <syntax-numtype>` are always valid.
 
 $${rule: Numtype_ok}
@@ -32,6 +33,7 @@ Vector Types
 $${rule-prose: Vectype_ok}
 .. todo::
  below is the official specification
+
 :ref:`Vector types <syntax-vectype>` are always valid.
 
 $${rule: Vectype_ok}

@@ -79,6 +79,7 @@ $${rule-prose: Instr_ok/nop}
 
 .. todo::
  below is the official specification
+
 * The instruction is valid with type :math:`[] \to []`.
 
 $${rule: Instr_ok/nop}
@@ -901,6 +902,7 @@ $${rule-prose: Instr_ok/vvbinop}
  below is the official specification
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
 $${rule: Instr_ok/vvbinop}
 
 .. _valid-vvternop:
@@ -1332,8 +1334,9 @@ $${rule: Instr_ok/table.set}
 $${rule-prose: Instr_ok/table.size}
 
 .. todo::
-   (*) - [Erase last statement]
  below is the official specification
+
+ (*) - [Erase last statement]
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1482,6 +1485,7 @@ $${rule: Instr_ok/load-val}
 $${rule-prose: Instr_ok/load-pack}
 .. todo::
  below is the official specification
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
@@ -1523,6 +1527,7 @@ $${rule: Instr_ok/store-val}
 $${rule-prose: Instr_ok/store-pack}
 .. todo::
  below is the official specification
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
@@ -1560,6 +1565,7 @@ $${rule: Instr_ok/vload-val}
 $${rule-prose: Instr_ok/vload-pack}
 .. todo::
  below is the official specification
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
@@ -1580,6 +1586,7 @@ $${rule: Instr_ok/vload-pack}
 $${rule-prose: Instr_ok/vload-splat}
 .. todo::
  below is the official specification
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
@@ -1600,6 +1607,7 @@ $${rule: Instr_ok/vload-splat}
 $${rule-prose: Instr_ok/vload-zero}
 .. todo::
  below is the official specification
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
@@ -1889,6 +1897,7 @@ $${rule-prose: Instr_ok/try_table}
    below is the official specification.
 
    (*)- [changed notation for context]
+
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
@@ -2364,6 +2373,7 @@ $${rule: Instr_ok/throw}
 $${rule-prose: Instr_ok/throw_ref}
 
 .. todo::
+ below is the official specification
 
 * The instruction is valid with type :math:`[t_1^\ast~\EXNREF] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
@@ -2390,6 +2400,7 @@ $${rule-prose: Instrs_ok}
  below is the official specification
 
 * The empty instruction sequence is valid with type :math:`[] \to []`.
+
 $${rule: Instrs_ok/empty}
 
 
