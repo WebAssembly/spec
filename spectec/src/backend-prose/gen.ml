@@ -24,7 +24,7 @@ module Map = Map.Make(String)
 module Set = Set.Make(String)
 
 let rec gen_new_var frees v =
-  if Set.mem v frees then gen_new_var frees (v ^ "'") else v $ no_region
+  if Set.mem v frees then gen_new_var frees (v ^ "'") else v
 
 let flatten_rec def =
   match def.it with
@@ -207,20 +207,20 @@ let ctxs = ref Map.empty
 let init_ctxs () = ctxs := Map.empty
 
 (* Hardcoded convention: Bind extension of a context to another context *)
-let ctx_to_instr expr =
+let ctx_to_instr frees expr =
   let s = Al.Print.string_of_expr expr in
   match Map.find_opt s !ctxs with
   | Some ctx -> [], Some ctx
   | None ->
-    let var = Al.Ast.VarE "C'" $$ expr.at % expr.note in
+    let var = Al.Ast.VarE (gen_new_var frees "C'") $$ expr.at % expr.note in
     ctxs := Map.add s var !ctxs;
     [ ContextS (var, expr) ], Some var
 
 (* Hardcoded convention: "The rules implicitly assume a given context C" *)
-let extract_context c =
+let extract_context frees c =
   match c.it with
   | Al.Ast.VarE "C" -> [], None
-  | Al.Ast.ExtE ({ it = VarE _; _ }, _ps, _e, _dir) -> ctx_to_instr c
+  | Al.Ast.ExtE ({ it = VarE _; _ }, _ps, _e, _dir) -> ctx_to_instr frees c
   | _ -> [], Some c
 
 let inject_ctx' c stmt =
@@ -229,8 +229,8 @@ let inject_ctx' c stmt =
   | IsConstS (None, e) -> IsConstS (Some c, e)
   | _ -> stmt
 
-let inject_ctx c stmts =
-  match extract_context c with
+let inject_ctx frees c stmts =
+  match extract_context frees c with
   | stmt, None -> stmt @ stmts
   | stmt, Some ctx -> stmt @ (List.map (inject_ctx' ctx) stmts)
 
@@ -246,6 +246,7 @@ let rec prem_to_instrs prem =
       | Some rel -> rel
       | None -> failwith ("Unknown relation id: " ^ id.it)
     in
+    let frees = (Free.free_prem prem).varid in
     let args = exp_to_argexpr e in
     ( match extract_rel_hint id with
     | Some hint ->
@@ -262,13 +263,13 @@ let rec prem_to_instrs prem =
       | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
       | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
       (* context *)
-      | ValidRel,      [c; e]         -> [ IsValidS (None, e, []) ] |> inject_ctx c
-      | ValidInstrRel, [c; e; t]      -> [ IsValidS (None, e, [t]) ] |> inject_ctx c
-      | ValidWithRel,  [c; e; e']     -> [ IsValidS (None, e, [e']) ] |> inject_ctx c
+      | ValidRel,      [c; e]         -> [ IsValidS (None, e, []) ] |> inject_ctx frees c
+      | ValidInstrRel, [c; e; t]      -> [ IsValidS (None, e, [t]) ] |> inject_ctx frees c
+      | ValidWithRel,  [c; e; e']     -> [ IsValidS (None, e, [e']) ] |> inject_ctx frees c
       | MatchRel,      [_; t1; t2]    -> [ MatchesS (t1, t2) ]
-      | ConstRel,      [c; e]         -> [ IsConstS (None, e) ] |> inject_ctx c
-      | ValidConstRel, [c; e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ] |> inject_ctx c
-      | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ] |> inject_ctx c
+      | ConstRel,      [c; e]         -> [ IsConstS (None, e) ] |> inject_ctx frees c
+      | ValidConstRel, [c; e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ] |> inject_ctx frees c
+      | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ] |> inject_ctx frees c
       (* others *)
       | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]
       | _,              _             -> assert false )
@@ -327,7 +328,7 @@ let extract_triplet_rule rule =
 let collect_non_trivial frees m exp =
   match exp.it with
   | Ast.CallE (_, _) ->
-    let fresh = gen_new_var frees "t" in
+    let fresh = (gen_new_var frees "t") $ no_region in
     let var = Ast.VarE fresh $$ exp.at % exp.note in
     m := Map.add fresh.it (var, exp) !m;
     var
