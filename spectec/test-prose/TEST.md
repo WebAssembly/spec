@@ -4622,7 +4622,7 @@ The instruction :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?` is va
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
-    * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
+    * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -5253,7 +5253,7 @@ The instruction :math:`\epsilon~{}^?` is valid with the function type :math:`t~t
 
   * The value type :math:`t` matches the value type :math:`{t'}`.
 
-  * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
+  * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -12804,7 +12804,7 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is v
 
   * Either:
 
-    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to abstract heap type.
+    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{absheaptype}}`.
 
   * Or:
 
@@ -12862,18 +12862,18 @@ The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
 
   * Either:
 
-    * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to number type.
+    * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}`.
 
     * The number type :math:`{\mathit{numtype}}` is valid.
 
   * Or:
 
-    * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to vector type.
+    * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}`.
 
     * The vector type :math:`{\mathit{vectype}}` is valid.
   * Or:
 
-    * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to reference type.
+    * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}`.
 
     * The reference type :math:`{\mathit{reftype}}` is valid.
   * Or:
@@ -12952,13 +12952,13 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` i
 
   * Either:
 
-    * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to value type.
+    * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}`.
 
     * The value type :math:`{\mathit{valtype}}` is valid.
 
   * Or:
 
-    * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to packed type.
+    * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{packtype}}`.
 
     * The packed type :math:`{\mathit{packtype}}` is valid.
 
@@ -13140,21 +13140,21 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matc
     * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{eq}`.
   * Or:
 
-    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to defined type.
+    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
     * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{struct}`.
 
     * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
   * Or:
 
-    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to defined type.
+    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
     * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{array}`.
 
     * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
   * Or:
 
-    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to defined type.
+    * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
     * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{func}`.
 
@@ -14251,7 +14251,7 @@ The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
     * The value type :math:`t` matches the value type :math:`{t'}`.
 
-    * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
+    * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -14756,7 +14756,7 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instr
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-  * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to number type or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to vector type.
+  * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -14845,7 +14845,7 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the inst
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
 
-  * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to number type or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to vector type.
+  * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -15359,7 +15359,7 @@ The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction
 
   * The value type :math:`t` matches the value type :math:`{t'}`.
 
-  * The value type :math:`{t'}` is equal to number type or :math:`{t'}` is equal to vector type.
+  * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 

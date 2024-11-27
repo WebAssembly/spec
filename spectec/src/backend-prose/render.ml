@@ -295,16 +295,16 @@ and al_to_el_record record =
 (* Operators *)
 
 let render_prose_cmpop = function
-  | `EqOp -> " equal to"
-  | `NeOp -> " not equal to"
-  | `LtOp -> " less than"
-  | `GtOp -> " greater than"
-  | `LeOp -> " less than or equal to"
-  | `GeOp -> " greater than or equal to"
+  | `EqOp -> "is equal to"
+  | `NeOp -> "is not equal to"
+  | `LtOp -> "is less than"
+  | `GtOp -> "is greater than"
+  | `LeOp -> "is less than or equal to"
+  | `GeOp -> "is greater than or equal to"
 
 let render_prose_cmpop_eps = function
-  | `EqOp -> ""
-  | `NeOp -> " not"
+  | `EqOp -> "is"
+  | `NeOp -> "is not"
   | op -> render_prose_cmpop op
 
 let render_prose_binop = function
@@ -547,23 +547,13 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
     | CondS e ->
       sprintf "%s"
         (render_expr env e)
-    | CmpS (e1, cmpop, ({ it = Al.Ast.SubE (id, t); _ } as e2)) when (Il.Print.string_of_typ_name t) = id ->
-      let rhs =
-        match render_type_desc t with
-        | None -> render_expr env e2
-        | Some desc -> desc
-      in
-      sprintf "%s is%s %s"
-        (render_hd_expr env e1)
-        (render_prose_cmpop cmpop)
-        rhs
     | CmpS (e1, cmpop, e2) ->
       let cmpop, rhs =
         match e2.it with
         | OptE None -> render_prose_cmpop_eps cmpop, "absent"
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
-      sprintf "%s is%s %s" (render_hd_expr env e1) cmpop rhs
+      sprintf "%s %s %s" (render_hd_expr env e1) cmpop rhs
     | IsValidS (c_opt, e, es) ->
       sprintf "%s%s is valid%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
