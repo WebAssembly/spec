@@ -92,8 +92,8 @@ let rec free_prem ignore_listN prem =
 let free_params params =
   List.fold_left (fun s param -> free_param param |> union s) empty params
 
-let free_clauses cls =
-  List.fold_left (fun s c -> union s (free_clause c)) empty cls
+let free_clauses clss =
+  List.fold_left (fun s c -> union s (free_clause c)) empty clss
 
 let free_rules rules =
   List.fold_left (fun s r -> union s (free_rule r)) empty rules

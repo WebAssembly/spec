@@ -73,7 +73,7 @@ let init_env frees = { idxs = !imap; frees }
 
 (* Estimate appropriate id name for a given type *)
 let rec avoid_collision env name idx =
-  let name' = name ^ "_" ^ unified_prefix ^ (string_of_int idx) in
+  let name' = name ^ "_" ^ (string_of_int idx) in
   if Set.mem name' env.frees then
     avoid_collision env name (idx + 1)
   else
@@ -81,13 +81,14 @@ let rec avoid_collision env name idx =
 
 let get_unified_idx env typid =
   let idxs = env.idxs in
+  let len = String.length typid in
   let n, i =
     match Map.find_opt typid idxs with
-    | Some (n, i) when String.length n >= String.length typid -> typid, i
+    | Some (n, i) when String.length n >= len && len > 0 -> typid, i
     | Some (n, i) -> n, i
     | None -> typid, 1
   in
-  let name, idx = avoid_collision env n i in
+  let name, idx = if !rename then avoid_collision env n i else n, i in
 
   env.idxs <- Map.add typid (name, idx + 1) idxs;
   name, idx
@@ -112,14 +113,9 @@ let extract_unified_idx id =
 
 (* Rename unified ids to non-unified ones *)
 
-let rename_string env s =
+let rename_string _env s =
   match extract_unified_idx s with
-  | Some (base_name, idx) ->
-    (match Map.find_opt base_name env.idxs with
-    | Some (_, idx') when idx' <= 2 ->
-      if Set.mem base_name env.frees
-      then base_name ^ "_" ^ (string_of_int idx) else base_name
-    | _ -> base_name ^ "_" ^ (string_of_int idx))
+  | Some (base_name, idx) -> base_name ^ "_" ^ (string_of_int idx)
   | None -> s
 
 let rename_id env id = { id with it = rename_string env id.it }
