@@ -58,6 +58,7 @@ jobs:
         if: ${{ matrix.spec == 'core' }}
         run: pip install six && pip install sphinx==5.1.0
       - name: Publish ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
+        if: env.W3C_ECHIDNA_TOKEN_CORE
         run: cd document && make -e -C ${{ matrix.spec }} WD-echidna-CI
         env:
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
