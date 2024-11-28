@@ -2083,15 +2083,15 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{store}}`
-........................
+:math:`z{.}\mathsf{store}`
+..........................
 
 
 1. Return.
 
 
-:math:`{\mathrm{frame}}`
-........................
+:math:`z{.}\mathsf{frame}`
+..........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2099,8 +2099,8 @@ watsup 0.4 generator
 #. Return :math:`f`.
 
 
-:math:`{\mathrm{funcaddr}}`
-...........................
+:math:`z{.}\mathsf{module}{.}\mathsf{funcs}`
+............................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2108,36 +2108,36 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{funcinst}}`
-...........................
+:math:`z{.}\mathsf{funcs}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{globalinst}}`
-.............................
+:math:`z{.}\mathsf{globals}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`{\mathrm{tableinst}}`
-............................
+:math:`z{.}\mathsf{tables}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`{\mathrm{meminst}}`
-..........................
+:math:`z{.}\mathsf{mems}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`{\mathrm{moduleinst}}`
-.............................
+:math:`z{.}\mathsf{module}`
+...........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2145,8 +2145,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{type}}(x)`
-..........................
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2154,8 +2154,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{func}}(x)`
-..........................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2163,8 +2163,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`{\mathrm{global}}(x)`
-............................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2172,8 +2172,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`{\mathrm{table}}(x)`
-...........................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2181,8 +2181,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`{\mathrm{mem}}(x)`
-.........................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2190,8 +2190,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`{\mathrm{local}}(x)`
-...........................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2199,8 +2199,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`{\mathrm{with}}_{\mathit{local}}(x, v)`
-..............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2208,8 +2208,8 @@ watsup 0.4 generator
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{global}}(x, v)`
-...............................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2217,8 +2217,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{table}}(x, i, a)`
-.................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = a]`
+.............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2226,8 +2226,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`a`.
 
 
-:math:`{\mathrm{with}}_{\mathit{tableinst}}(x, {\mathit{ti}})`
-..............................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2235,8 +2235,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{mem}}(x, i, j, {b^\ast})`
-.........................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2244,8 +2244,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{meminst}}(x, {\mathit{mi}})`
-............................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2367,8 +2367,8 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
-....................................................................
+:math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`
+.......................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
@@ -2384,8 +2384,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-....................................................................................................................
+:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.......................................................................................................................
 
 
 1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -2394,15 +2394,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`.
+#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`.
 
-#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
+#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
 
 #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
-.....................................................................
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
 
 
 1. Let :math:`{\mathit{gi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
@@ -2414,8 +2414,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-....................................................................................................................................................................
+:math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.......................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -2432,15 +2432,15 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}((i, j))`
-.....................................
+:math:`{\mathrm{alloctable}}(s, (i, j))`
+........................................
 
 
 1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
@@ -2452,8 +2452,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}({{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...................................................................................................
+:math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+......................................................................................................
 
 
 1. If :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -2462,15 +2462,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}({\mathit{tabletype}})`.
+#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}})`.
 
-#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}'}^\ast})`.
+#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}((i, j))`
-...................................
+:math:`{\mathrm{allocmem}}(s, (i, j))`
+......................................
 
 
 1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(i, j),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
@@ -2482,8 +2482,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}({{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+..................................................................................................
 
 
 1. If :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -2492,9 +2492,9 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}({\mathit{memtype}})`.
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}'}^\ast})`.
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
@@ -2528,8 +2528,8 @@ watsup 0.4 generator
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
-......................................................................................................
+:math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
+.........................................................................................................
 
 
 1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
@@ -2572,27 +2572,27 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast}` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast}` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast}` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast}` is :math:`{{\mathit{ma}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
-......................................................................................................................................................................................................................
+:math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+.........................................................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{funcaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
@@ -2609,13 +2609,13 @@ watsup 0.4 generator
 
 #. Replace :math:`s{.}\mathsf{tables}{}[{\mathit{moduleinst}}{.}\mathsf{tables}{}[0]]{.}\mathsf{refs}{}[i : {|{a^\ast}|}]` with :math:`{a^\ast}`.
 
-#. Perform :math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {{i'}^\ast}, {{{a'}^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {{i'}^\ast}, {{{a'}^\ast}^\ast})`.
 
 #. Return.
 
 
-:math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
-..................................................................................................................................................................................................................
+:math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+.....................................................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
@@ -2632,12 +2632,12 @@ watsup 0.4 generator
 
 #. Replace :math:`s{.}\mathsf{mems}{}[{\mathit{moduleinst}}{.}\mathsf{mems}{}[0]]{.}\mathsf{bytes}{}[i : {|{b^\ast}|}]` with :math:`{b^\ast}`.
 
-#. Perform :math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {{i'}^\ast}, {{{b'}^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {{i'}^\ast}, {{{b'}^\ast}^\ast})`.
 
 #. Return.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+:math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
 ..................................................................................
 
 
@@ -2691,13 +2691,13 @@ watsup 0.4 generator
 
 #. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Perform :math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
 
-#. Perform :math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
 #. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
@@ -2710,7 +2710,7 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}(z, {\mathit{fa}}, {{\mathit{val}}^{n}})`
+:math:`{\mathrm{invoke}}(s, {\mathit{fa}}, {{\mathit{val}}^{n}})`
 .................................................................
 
 
@@ -3832,78 +3832,78 @@ memsxa externaddr_u0*
 4. Let [externaddr] :: xv* be externaddr_u0*.
 5. Return $memsxa(xv*).
 
-store
+store z
 1. Return.
 
-frame
+frame z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.
 
-funcaddr
+funcaddr z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst z
 1. Return s.FUNCS.
 
-globalinst
+globalinst z
 1. Return s.GLOBALS.
 
-tableinst
+tableinst z
 1. Return s.TABLES.
 
-meminst
+meminst z
 1. Return s.MEMS.
 
-moduleinst
+moduleinst z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.
 
-type x
+type z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TYPES[x].
 
-func x
+func z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
+global z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
+table z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
+mem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
 
-local x
+local z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.LOCALS[x].
 
-with_local x v
+with_local z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace f.LOCALS[x] with v.
 
-with_global x v
+with_global z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table x i a
+with_table z x i a
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
 
-with_tableinst x ti
+with_tableinst z x ti
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem x i j b*
+with_mem z x i j b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst x mi
+with_meminst z x mi
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
@@ -3961,7 +3961,7 @@ mems externaddr_u0*
 4. Let [externaddr] :: externaddr'* be externaddr_u0*.
 5. Return $mems(externaddr'*).
 
-allocfunc moduleinst func
+allocfunc s moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
@@ -3969,21 +3969,21 @@ allocfunc moduleinst func
 5. Append fi to the s.FUNCS.
 6. Return a.
 
-allocfuncs moduleinst func_u0*
+allocfuncs s moduleinst func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
 2. Let [func] :: func'* be func_u0*.
-3. Let fa be $allocfunc(moduleinst, func).
-4. Let fa'* be $allocfuncs(moduleinst, func'*).
+3. Let fa be $allocfunc(s, moduleinst, func).
+4. Let fa'* be $allocfuncs(s, moduleinst, func'*).
 5. Return [fa] :: fa'*.
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
 3. Append gi to the s.GLOBALS.
 4. Return a.
 
-allocglobals globaltype_u0* val_u1*
+allocglobals s globaltype_u0* val_u1*
 1. If (globaltype_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
   b. Return [].
@@ -3991,36 +3991,36 @@ allocglobals globaltype_u0* val_u1*
   a. Let [globaltype] :: globaltype'* be globaltype_u0*.
   b. Assert: Due to validation, (|val_u1*| ≥ 1).
   c. Let [val] :: val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable (i, j)
+alloctable s (i, j)
 1. Let ti be { TYPE: (i, j); REFS: ?()^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
 
-alloctables tabletype_u0*
+alloctables s tabletype_u0*
 1. If (tabletype_u0* is []), then:
   a. Return [].
 2. Let [tabletype] :: tabletype'* be tabletype_u0*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
+3. Let ta be $alloctable(s, tabletype).
+4. Let ta'* be $alloctables(s, tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem (i, j)
+allocmem s (i, j)
 1. Let mi be { TYPE: (i, j); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
 
-allocmems memtype_u0*
+allocmems s memtype_u0*
 1. If (memtype_u0* is []), then:
   a. Return [].
 2. Let [memtype] :: memtype'* be memtype_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
 instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
@@ -4037,7 +4037,7 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 5. Let (MEM x) be externidx_u0.
 6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
-allocmodule module externaddr* val*
+allocmodule s module externaddr* val*
 1. Let fa_ex* be $funcs(externaddr*).
 2. Let ga_ex* be $globals(externaddr*).
 3. Let ma_ex* be $mems(externaddr*).
@@ -4058,17 +4058,17 @@ allocmodule module externaddr* val*
 18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
 19. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
 20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi*; }.
-21. Let funcaddr_0* be $allocfuncs(moduleinst, func^n_func).
+21. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
 22. Assert: Due to validation, (funcaddr_0* is fa*).
-23. Let globaladdr_0* be $allocglobals(globaltype^n_global, val*).
+23. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
 24. Assert: Due to validation, (globaladdr_0* is ga*).
-25. Let tableaddr_0* be $alloctables(tabletype^n_table).
+25. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
 26. Assert: Due to validation, (tableaddr_0* is ta*).
-27. Let memaddr_0* be $allocmems(memtype^n_mem).
+27. Let memaddr_0* be $allocmems(s, memtype^n_mem).
 28. Assert: Due to validation, (memaddr_0* is ma*).
 29. Return moduleinst.
 
-initelem moduleinst u32_u0* funcaddr_u1**
+initelem s moduleinst u32_u0* funcaddr_u1**
 1. If ((u32_u0* is []) and (funcaddr_u1** is [])), then:
   a. Return.
 2. Assert: Due to validation, (|funcaddr_u1**| ≥ 1).
@@ -4076,10 +4076,10 @@ initelem moduleinst u32_u0* funcaddr_u1**
 4. Assert: Due to validation, (|u32_u0*| ≥ 1).
 5. Let [i] :: i'* be u32_u0*.
 6. Replace s.TABLES[moduleinst.TABLES[0]].REFS[i : |a*|] with ?(a)*.
-7. Perform $initelem(moduleinst, i'*, a'**).
+7. Perform $initelem(s, moduleinst, i'*, a'**).
 8. Return.
 
-initdata moduleinst u32_u0* byte_u1**
+initdata s moduleinst u32_u0* byte_u1**
 1. If ((u32_u0* is []) and (byte_u1** is [])), then:
   a. Return.
 2. Assert: Due to validation, (|byte_u1**| ≥ 1).
@@ -4087,10 +4087,10 @@ initdata moduleinst u32_u0* byte_u1**
 4. Assert: Due to validation, (|u32_u0*| ≥ 1).
 5. Let [i] :: i'* be u32_u0*.
 6. Replace s.MEMS[moduleinst.MEMS[0]].BYTES[i : |b*|] with b*.
-7. Perform $initdata(moduleinst, i'*, b'**).
+7. Perform $initdata(s, moduleinst, i'*, b'**).
 8. Return.
 
-instantiate z module externaddr*
+instantiate s module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -4116,17 +4116,17 @@ instantiate z module externaddr*
 23. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 24. Let [val]* be $eval_expr(expr_G)*.
 25. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-26. Let moduleinst be $allocmodule(module, externaddr*, val*).
+26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
-28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
-29. Perform $initdata(moduleinst, i_D*, b**).
+28. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+29. Perform $initdata(s, moduleinst, i_D*, b**).
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 31. If (CALL x')? is defined, then:
   a. Execute the instruction (CALL x').
 32. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 33. Return f.MODULE.
 
-invoke z fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
 2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
@@ -8696,15 +8696,15 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{store}}`
-........................
+:math:`z{.}\mathsf{store}`
+..........................
 
 
 1. Return.
 
 
-:math:`{\mathrm{frame}}`
-........................
+:math:`z{.}\mathsf{frame}`
+..........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8712,8 +8712,8 @@ watsup 0.4 generator
 #. Return :math:`f`.
 
 
-:math:`{\mathrm{funcaddr}}`
-...........................
+:math:`z{.}\mathsf{module}{.}\mathsf{funcs}`
+............................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8721,50 +8721,50 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{funcinst}}`
-...........................
+:math:`z{.}\mathsf{funcs}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{globalinst}}`
-.............................
+:math:`z{.}\mathsf{globals}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`{\mathrm{tableinst}}`
-............................
+:math:`z{.}\mathsf{tables}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`{\mathrm{meminst}}`
-..........................
+:math:`z{.}\mathsf{mems}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`{\mathrm{eleminst}}`
-...........................
+:math:`z{.}\mathsf{elems}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{elems}`.
 
 
-:math:`{\mathrm{datainst}}`
-...........................
+:math:`z{.}\mathsf{datas}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
 
 
-:math:`{\mathrm{moduleinst}}`
-.............................
+:math:`z{.}\mathsf{module}`
+...........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8772,8 +8772,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{type}}(x)`
-..........................
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8781,8 +8781,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{func}}(x)`
-..........................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8790,8 +8790,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`{\mathrm{global}}(x)`
-............................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8799,8 +8799,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`{\mathrm{table}}(x)`
-...........................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8808,8 +8808,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`{\mathrm{mem}}(x)`
-.........................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8817,8 +8817,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`{\mathrm{elem}}(x)`
-..........................
+:math:`z{.}\mathsf{elems}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8826,8 +8826,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
-:math:`{\mathrm{data}}(x)`
-..........................
+:math:`z{.}\mathsf{datas}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8835,8 +8835,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-:math:`{\mathrm{local}}(x)`
-...........................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8844,8 +8844,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`{\mathrm{with}}_{\mathit{local}}(x, v)`
-..............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8853,8 +8853,8 @@ watsup 0.4 generator
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{global}}(x, v)`
-...............................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8862,8 +8862,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{table}}(x, i, r)`
-.................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+.............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8871,8 +8871,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
 
 
-:math:`{\mathrm{with}}_{\mathit{tableinst}}(x, {\mathit{ti}})`
-..............................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8880,8 +8880,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{mem}}(x, i, j, {b^\ast})`
-.........................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8889,8 +8889,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{meminst}}(x, {\mathit{mi}})`
-............................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8898,8 +8898,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{elem}}(x, {r^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+..............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -8907,8 +8907,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{data}}(x, {b^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+...............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9055,8 +9055,8 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
-....................................................................
+:math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`
+.......................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
@@ -9072,8 +9072,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-....................................................................................................................
+:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.......................................................................................................................
 
 
 1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -9082,15 +9082,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`.
+#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`.
 
-#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
+#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
 
 #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
-.....................................................................
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
 
 
 1. Let :math:`{\mathit{gi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
@@ -9102,8 +9102,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-....................................................................................................................................................................
+:math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.......................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -9120,15 +9120,15 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}))`
-......................................................
+:math:`{\mathrm{alloctable}}(s, ((i, j), {\mathit{rt}}))`
+.........................................................
 
 
 1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
@@ -9140,8 +9140,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}({{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...................................................................................................
+:math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+......................................................................................................
 
 
 1. If :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -9150,15 +9150,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}({\mathit{tabletype}})`.
+#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}})`.
 
-#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}'}^\ast})`.
+#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(((i, j)~\mathsf{page}))`
-...................................................
+:math:`{\mathrm{allocmem}}(s, ((i, j)~\mathsf{page}))`
+......................................................
 
 
 1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
@@ -9170,8 +9170,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}({{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+..................................................................................................
 
 
 1. If :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -9180,15 +9180,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}({\mathit{memtype}})`.
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}'}^\ast})`.
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{allocelem}}({\mathit{rt}}, {{\mathit{ref}}^\ast})`
-..................................................................
+:math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`
+.....................................................................
 
 
 1. Let :math:`{\mathit{ei}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{rt}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
@@ -9200,8 +9200,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}({{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
-......................................................................................................................................................................
+:math:`{\mathrm{allocelems}}(s, {{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
+.........................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
@@ -9216,15 +9216,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}({\mathit{rt}}, {{\mathit{ref}}^\ast})`.
+#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`.
 
-#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{\mathrm{allocelems}}({{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{\mathrm{allocelems}}(s, {{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})`.
 
 #. Return :math:`{\mathit{ea}}~{{\mathit{ea}'}^\ast}`.
 
 
-:math:`{\mathrm{allocdata}}({{\mathit{byte}}^\ast})`
-....................................................
+:math:`{\mathrm{allocdata}}(s, {{\mathit{byte}}^\ast})`
+.......................................................
 
 
 1. Let :math:`{\mathit{di}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
@@ -9236,8 +9236,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}({{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
-....................................................................................................
+:math:`{\mathrm{allocdatas}}(s, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast})`
+.......................................................................................................
 
 
 1. If :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}` is :math:`\epsilon`, then:
@@ -9246,9 +9246,9 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}^\ast}`.
 
-#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}({{\mathit{byte}}^\ast})`.
+#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {{\mathit{byte}}^\ast})`.
 
-#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{\mathrm{allocdatas}}({{{\mathit{byte}'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{\mathrm{allocdatas}}(s, {{{\mathit{byte}'}^\ast}^\ast})`.
 
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
@@ -9282,8 +9282,8 @@ watsup 0.4 generator
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
-....................................................................................................................................
+:math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
+.......................................................................................................................................
 
 
 1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
@@ -9338,27 +9338,27 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast}` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast}` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast}` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast}` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{\mathrm{allocelems}}({{\mathit{rt}}^{n_{\mathit{elem}}}}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{\mathrm{allocelems}}(s, {{\mathit{rt}}^{n_{\mathit{elem}}}}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{elemaddr}}_0^\ast}` is :math:`{{\mathit{ea}}^\ast}`.
 
-#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{\mathrm{allocdatas}}({({{\mathit{byte}}^\ast})^{n_{\mathit{data}}}})`.
+#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{\mathrm{allocdatas}}(s, {({{\mathit{byte}}^\ast})^{n_{\mathit{data}}}})`.
 
 #. Assert: Due to validation, :math:`{{\mathit{dataaddr}}_0^\ast}` is :math:`{{\mathit{da}}^\ast}`.
 
@@ -9405,7 +9405,7 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+:math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
 ..................................................................................
 
 
@@ -9457,7 +9457,7 @@ watsup 0.4 generator
 
 #. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -9476,7 +9476,7 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}(z, {\mathit{fa}}, {{\mathit{val}}^{n}})`
+:math:`{\mathrm{invoke}}(s, {\mathit{fa}}, {{\mathit{val}}^{n}})`
 .................................................................
 
 
@@ -11856,100 +11856,100 @@ memsxa externaddr_u0*
 4. Let [externaddr] :: xv* be externaddr_u0*.
 5. Return $memsxa(xv*).
 
-store
+store z
 1. Return.
 
-frame
+frame z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.
 
-funcaddr
+funcaddr z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst z
 1. Return s.FUNCS.
 
-globalinst
+globalinst z
 1. Return s.GLOBALS.
 
-tableinst
+tableinst z
 1. Return s.TABLES.
 
-meminst
+meminst z
 1. Return s.MEMS.
 
-eleminst
+eleminst z
 1. Return s.ELEMS.
 
-datainst
+datainst z
 1. Return s.DATAS.
 
-moduleinst
+moduleinst z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.
 
-type x
+type z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TYPES[x].
 
-func x
+func z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
+global z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
+table z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
+mem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
 
-elem x
+elem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data x
+data z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local x
+local z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.LOCALS[x].
 
-with_local x v
+with_local z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace f.LOCALS[x] with v.
 
-with_global x v
+with_global z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table x i r
+with_table z x i r
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
-with_tableinst x ti
+with_tableinst z x ti
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem x i j b*
+with_mem z x i j b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst x mi
+with_meminst z x mi
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
-with_elem x r*
+with_elem z x r*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
-with_data x b*
+with_data z x b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
@@ -12019,7 +12019,7 @@ mems externaddr_u0*
 4. Let [externaddr] :: externaddr'* be externaddr_u0*.
 5. Return $mems(externaddr'*).
 
-allocfunc moduleinst func
+allocfunc s moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
@@ -12027,21 +12027,21 @@ allocfunc moduleinst func
 5. Append fi to the s.FUNCS.
 6. Return a.
 
-allocfuncs moduleinst func_u0*
+allocfuncs s moduleinst func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
 2. Let [func] :: func'* be func_u0*.
-3. Let fa be $allocfunc(moduleinst, func).
-4. Let fa'* be $allocfuncs(moduleinst, func'*).
+3. Let fa be $allocfunc(s, moduleinst, func).
+4. Let fa'* be $allocfuncs(s, moduleinst, func'*).
 5. Return [fa] :: fa'*.
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
 3. Append gi to the s.GLOBALS.
 4. Return a.
 
-allocglobals globaltype_u0* val_u1*
+allocglobals s globaltype_u0* val_u1*
 1. If (globaltype_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
   b. Return [].
@@ -12049,67 +12049,67 @@ allocglobals globaltype_u0* val_u1*
   a. Let [globaltype] :: globaltype'* be globaltype_u0*.
   b. Assert: Due to validation, (|val_u1*| ≥ 1).
   c. Let [val] :: val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ((i, j), rt)
+alloctable s ((i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); REFS: (REF.NULL rt)^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
 
-alloctables tabletype_u0*
+alloctables s tabletype_u0*
 1. If (tabletype_u0* is []), then:
   a. Return [].
 2. Let [tabletype] :: tabletype'* be tabletype_u0*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
+3. Let ta be $alloctable(s, tabletype).
+4. Let ta'* be $alloctables(s, tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem ((i, j) PAGE)
+allocmem s ((i, j) PAGE)
 1. Let mi be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
 
-allocmems memtype_u0*
+allocmems s memtype_u0*
 1. If (memtype_u0* is []), then:
   a. Return [].
 2. Let [memtype] :: memtype'* be memtype_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
-allocelem rt ref*
+allocelem s rt ref*
 1. Let ei be { TYPE: rt; REFS: ref*; }.
 2. Let a be |s.ELEMS|.
 3. Append ei to the s.ELEMS.
 4. Return a.
 
-allocelems reftype_u0* ref_u1**
+allocelems s reftype_u0* ref_u1**
 1. If ((reftype_u0* is []) and (ref_u1** is [])), then:
   a. Return [].
 2. Assert: Due to validation, (|ref_u1**| ≥ 1).
 3. Let [ref*] :: ref'** be ref_u1**.
 4. Assert: Due to validation, (|reftype_u0*| ≥ 1).
 5. Let [rt] :: rt'* be reftype_u0*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
+6. Let ea be $allocelem(s, rt, ref*).
+7. Let ea'* be $allocelems(s, rt'*, ref'**).
 8. Return [ea] :: ea'*.
 
-allocdata byte*
+allocdata s byte*
 1. Let di be { BYTES: byte*; }.
 2. Let a be |s.DATAS|.
 3. Append di to the s.DATAS.
 4. Return a.
 
-allocdatas byte_u0**
+allocdatas s byte_u0**
 1. If (byte_u0** is []), then:
   a. Return [].
 2. Let [byte*] :: byte'** be byte_u0**.
-3. Let da be $allocdata(byte*).
-4. Let da'* be $allocdatas(byte'**).
+3. Let da be $allocdata(s, byte*).
+4. Let da'* be $allocdatas(s, byte'**).
 5. Return [da] :: da'*.
 
 instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
@@ -12126,7 +12126,7 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 5. Let (MEM x) be externidx_u0.
 6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
-allocmodule module externaddr* val* ref**
+allocmodule s module externaddr* val* ref**
 1. Let fa_ex* be $funcs(externaddr*).
 2. Let ga_ex* be $globals(externaddr*).
 3. Let ma_ex* be $mems(externaddr*).
@@ -12153,17 +12153,17 @@ allocmodule module externaddr* val* ref**
 24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
 25. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
 26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-27. Let funcaddr_0* be $allocfuncs(moduleinst, func^n_func).
+27. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
 28. Assert: Due to validation, (funcaddr_0* is fa*).
-29. Let globaladdr_0* be $allocglobals(globaltype^n_global, val*).
+29. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
 30. Assert: Due to validation, (globaladdr_0* is ga*).
-31. Let tableaddr_0* be $alloctables(tabletype^n_table).
+31. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
 32. Assert: Due to validation, (tableaddr_0* is ta*).
-33. Let memaddr_0* be $allocmems(memtype^n_mem).
+33. Let memaddr_0* be $allocmems(s, memtype^n_mem).
 34. Assert: Due to validation, (memaddr_0* is ma*).
-35. Let elemaddr_0* be $allocelems(rt^n_elem, ref**).
+35. Let elemaddr_0* be $allocelems(s, rt^n_elem, ref**).
 36. Assert: Due to validation, (elemaddr_0* is ea*).
-37. Let dataaddr_0* be $allocdatas(byte*^n_data).
+37. Let dataaddr_0* be $allocdatas(s, byte*^n_data).
 38. Assert: Due to validation, (dataaddr_0* is da*).
 39. Return moduleinst.
 
@@ -12186,7 +12186,7 @@ rundata (DATA byte* datamode_u0) i
 5. Let n be |byte*|.
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-instantiate z module externaddr*
+instantiate s module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -12211,7 +12211,7 @@ instantiate z module externaddr*
 22. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 23. Let [ref]** be $eval_expr(expr_E)**.
 24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
+25. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
 27. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 28. Execute the sequence (instr_E*).
@@ -12221,7 +12221,7 @@ instantiate z module externaddr*
 31. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 32. Return f.MODULE.
 
-invoke z fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
@@ -21201,15 +21201,15 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{store}}`
-........................
+:math:`z{.}\mathsf{store}`
+..........................
 
 
 1. Return.
 
 
-:math:`{\mathrm{frame}}`
-........................
+:math:`z{.}\mathsf{frame}`
+..........................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21217,8 +21217,8 @@ watsup 0.4 generator
 #. Return :math:`f`.
 
 
-:math:`{\mathrm{tagaddr}}`
-..........................
+:math:`z{.}\mathsf{tags}`
+.........................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21226,8 +21226,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
 
 
-:math:`{\mathrm{moduleinst}}`
-.............................
+:math:`z{.}\mathsf{module}`
+...........................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21235,78 +21235,78 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{funcinst}}`
-...........................
+:math:`z{.}\mathsf{funcs}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{globalinst}}`
-.............................
+:math:`z{.}\mathsf{globals}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`{\mathrm{tableinst}}`
-............................
+:math:`z{.}\mathsf{tables}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`{\mathrm{meminst}}`
-..........................
+:math:`z{.}\mathsf{mems}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`{\mathrm{taginst}}`
-..........................
+:math:`z{.}\mathsf{tags}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{tags}`.
 
 
-:math:`{\mathrm{eleminst}}`
-...........................
+:math:`z{.}\mathsf{elems}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{elems}`.
 
 
-:math:`{\mathrm{datainst}}`
-...........................
+:math:`z{.}\mathsf{datas}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
 
 
-:math:`{\mathrm{structinst}}`
-.............................
+:math:`z{.}\mathsf{structs}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{structs}`.
 
 
-:math:`{\mathrm{arrayinst}}`
-............................
+:math:`z{.}\mathsf{arrays}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`{\mathrm{exninst}}`
-..........................
+:math:`z{.}\mathsf{exns}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{exns}`.
 
 
-:math:`{\mathrm{type}}(x)`
-..........................
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21314,8 +21314,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{func}}(x)`
-..........................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21323,8 +21323,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`{\mathrm{global}}(x)`
-............................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21332,8 +21332,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`{\mathrm{table}}(x)`
-...........................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21341,8 +21341,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`{\mathrm{mem}}(x)`
-.........................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21350,8 +21350,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`{\mathrm{tag}}(x)`
-.........................
+:math:`z{.}\mathsf{tags}{}[x]`
+..............................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21359,8 +21359,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
 
-:math:`{\mathrm{elem}}(x)`
-..........................
+:math:`z{.}\mathsf{elems}{}[x]`
+...............................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21368,8 +21368,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
-:math:`{\mathrm{data}}(x)`
-..........................
+:math:`z{.}\mathsf{datas}{}[x]`
+...............................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21377,8 +21377,8 @@ watsup 0.4 generator
 #. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-:math:`{\mathrm{local}}(x)`
-...........................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21386,8 +21386,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`{\mathrm{with}}_{\mathit{local}}(x, v)`
-..............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21395,8 +21395,8 @@ watsup 0.4 generator
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{global}}(x, v)`
-...............................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21404,8 +21404,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{table}}(x, i, r)`
-.................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+.............................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21413,8 +21413,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
 
 
-:math:`{\mathrm{with}}_{\mathit{tableinst}}(x, {\mathit{ti}})`
-..............................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21422,8 +21422,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{mem}}(x, i, j, {b^\ast})`
-.........................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21431,8 +21431,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{meminst}}(x, {\mathit{mi}})`
-............................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21440,8 +21440,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{elem}}(x, {r^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+..............................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21449,8 +21449,8 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{data}}(x, {b^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+...............................................................
 
 
 1. Let :math:`({{\mathsf{frame}}_{}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -21458,36 +21458,36 @@ watsup 0.4 generator
 #. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{struct}}(a, i, {\mathit{fv}})`
-..............................................................
+:math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+............................................................................
 
 
 1. Replace :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{array}}(a, i, {\mathit{fv}})`
-.............................................................
+:math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+...........................................................................
 
 
 1. Replace :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`{\mathrm{add}}_{\mathit{structinst}}({{\mathit{si}}^\ast})`
-..................................................................
+:math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
+...........................................................................
 
 
 1. Append :math:`{{\mathit{si}}^\ast}` to :math:`s{.}\mathsf{structs}`.
 
 
-:math:`{\mathrm{add}}_{\mathit{arrayinst}}({{\mathit{ai}}^\ast})`
-.................................................................
+:math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
+..........................................................................
 
 
 1. Append :math:`{{\mathit{ai}}^\ast}` to :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`{\mathrm{add}}_{\mathit{exninst}}({{\mathit{exn}}^\ast})`
-................................................................
+:math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
+.........................................................................
 
 
 1. Append :math:`{{\mathit{exn}}^\ast}` to :math:`s{.}\mathsf{exns}`.
@@ -21567,8 +21567,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{deftype}'}^\ast}~{{\mathit{deftype}}^\ast}`.
 
 
-:math:`{\mathrm{allocfunc}}({\mathit{deftype}}, {\mathit{code}}, {\mathit{moduleinst}})`
-........................................................................................
+:math:`{\mathrm{allocfunc}}(s, {\mathit{deftype}}, {\mathit{code}}, {\mathit{moduleinst}})`
+...........................................................................................
 
 
 1. Let :math:`{\mathit{funcinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{deftype}},\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{code}} \}\end{array}`.
@@ -21580,8 +21580,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{code}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})`
-......................................................................................................................................................................................................................................
+:math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{code}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})}`
+...................................................................................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -21604,15 +21604,15 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}`.
 
-   #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
+   #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
 
-   #. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({{\mathit{dt}'}^\ast}, {{{\mathit{code}}'}^\ast}, {{\mathit{moduleinst}'}^\ast})`.
+   #. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{dt}'}^\ast}, {{{\mathit{code}}'}^\ast}, {{\mathit{moduleinst}'}^\ast})}`.
 
    #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
-.....................................................................
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
 
 
 1. Let :math:`{\mathit{globalinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
@@ -21624,8 +21624,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-....................................................................................................................................................................
+:math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+.................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -21642,15 +21642,15 @@ watsup 0.4 generator
 
    #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})}`.
 
    #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(((i, j), {\mathit{rt}}), {\mathit{ref}})`
-......................................................................
+:math:`{\mathrm{alloctable}}(s, ((i, j), {\mathit{rt}}), {\mathit{ref}})`
+.........................................................................
 
 
 1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
@@ -21662,8 +21662,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}({{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..................................................................................................................................................................
+:math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+...............................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
@@ -21678,15 +21678,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}({\mathit{tabletype}}, {\mathit{ref}})`.
+#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}}, {\mathit{ref}})`.
 
-#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}'}^\ast}, {{\mathit{ref}'}^\ast})`.
+#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}'}^\ast}, {{\mathit{ref}'}^\ast})}`.
 
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(((i, j)~\mathsf{page}))`
-...................................................
+:math:`{\mathrm{allocmem}}(s, ((i, j)~\mathsf{page}))`
+......................................................
 
 
 1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~((i, j)~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
@@ -21698,8 +21698,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}({{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})}`
+............................................................................................................
 
 
 1. If :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -21708,15 +21708,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}({\mathit{memtype}})`.
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}'}^\ast})`.
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}'}^\ast})}`.
 
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctag}}({\mathit{tagtype}})`
-...............................................
+:math:`{\mathrm{alloctag}}(s, {\mathit{tagtype}})`
+..................................................
 
 
 1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
@@ -21728,8 +21728,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctags}}({{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})}`
+............................................................................................................
 
 
 1. If :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -21738,15 +21738,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{at}}~{{\mathit{at}'}^\ast}` be :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{aa}}` be :math:`{\mathrm{alloctag}}({\mathit{at}})`.
+#. Let :math:`{\mathit{aa}}` be :math:`{\mathrm{alloctag}}(s, {\mathit{at}})`.
 
-#. Let :math:`{{\mathit{aa}'}^\ast}` be :math:`{\mathrm{alloctags}}({{\mathit{at}'}^\ast})`.
+#. Let :math:`{{\mathit{aa}'}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{at}'}^\ast})}`.
 
 #. Return :math:`{\mathit{aa}}~{{\mathit{aa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocelem}}({\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
-........................................................................
+:math:`{\mathrm{allocelem}}(s, {\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
+...........................................................................
 
 
 1. Let :math:`{\mathit{eleminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{elemtype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
@@ -21758,8 +21758,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}({{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
-.......................................................................................................................................................................
+:math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})}`
+....................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
@@ -21774,15 +21774,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}({\mathit{rt}}, {{\mathit{ref}}^\ast})`.
+#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`.
 
-#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{\mathrm{allocelems}}({{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})}`.
 
 #. Return :math:`{\mathit{ea}}~{{\mathit{ea}'}^\ast}`.
 
 
-:math:`{\mathrm{allocdata}}(\mathsf{ok}, {{\mathit{byte}}^\ast})`
-.................................................................
+:math:`{\mathrm{allocdata}}(s, \mathsf{ok}, {{\mathit{byte}}^\ast})`
+....................................................................
 
 
 1. Let :math:`{\mathit{datainst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
@@ -21794,8 +21794,8 @@ watsup 0.4 generator
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}({{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})`
-........................................................................................................................................................................
+:math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast})}`
+.....................................................................................................................................................................................
 
 
 1. If :math:`{{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{byte}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}^\ast}` is :math:`\epsilon`, then:
@@ -21810,9 +21810,9 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{datatype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}({\mathit{ok}}, {b^\ast})`.
+#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {\mathit{ok}}, {b^\ast})`.
 
-#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{\mathrm{allocdatas}}({{\mathit{ok}'}^\ast}, {{{b'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{ok}'}^\ast}, {{{b'}^\ast}^\ast})}`.
 
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
@@ -21859,8 +21859,8 @@ watsup 0.4 generator
 1. Return :math:`{{\mathrm{allocexport}}({\mathit{moduleinst}}, {\mathit{export}})^\ast}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
-..................................................................................................................................................................................................
+:math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
+.....................................................................................................................................................................................................
 
 
 1. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
@@ -21925,31 +21925,31 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[y]^\ast})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{ea}}^\ast}`.
 
-#. Let :math:`{n_0^\ast}` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+#. Let :math:`{n_0^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
 
 #. Assert: Due to validation, :math:`{n_0^\ast}` is :math:`{{\mathit{da}}^\ast}`.
 
@@ -22012,7 +22012,7 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`z`.
 
-#. Let :math:`a` be :math:`{\mathrm{allocglobal}}({\mathit{gt}}, {\mathit{val}})`.
+#. Let :math:`a` be :math:`{\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})`.
 
 #. Append :math:`a` to :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
 
@@ -22021,7 +22021,7 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+:math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
 ..................................................................................
 
 
@@ -22091,7 +22091,7 @@ watsup 0.4 generator
 
 #. Pop the evaluation context :math:`({{\mathsf{frame}}_{0}}{\{}~f~\})` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -22110,8 +22110,8 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}({\mathit{funcaddr}}, {{\mathit{val}}^\ast})`
-.....................................................................
+:math:`{\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast})`
+........................................................................
 
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
@@ -22153,8 +22153,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-:math:`{\mathrm{allocXs}}({\mathit{TODO}}, {\mathit{TODO}}, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-................................................................................................................................................................
+:math:`{{{\mathrm{allocX}}^\ast}}{({\mathit{TODO}}, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+.........................................................................................................................................................
 
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
@@ -22171,9 +22171,9 @@ watsup 0.4 generator
 
    #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-   #. Let :math:`a` be :math:`{\mathrm{allocX}}({\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
+   #. Let :math:`a` be :math:`{\mathrm{allocX}}(s, {\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
 
-   #. Let :math:`{{a'}^\ast}` be :math:`{\mathrm{allocXs}}({\mathit{TODO}}, {\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})`.
+   #. Let :math:`{{a'}^\ast}` be :math:`{{{\mathrm{allocX}}^\ast}}{({\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})}`.
 
    #. Return :math:`a~{{a'}^\ast}`.
 
@@ -26748,132 +26748,132 @@ tagsxa externaddr_u0*
 4. Let [externaddr] :: xa* be externaddr_u0*.
 5. Return $tagsxa(xa*).
 
-store
+store z
 1. Return.
 
-frame
+frame z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.
 
-tagaddr
+tagaddr z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TAGS.
 
-moduleinst
+moduleinst z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.
 
-funcinst
+funcinst z
 1. Return s.FUNCS.
 
-globalinst
+globalinst z
 1. Return s.GLOBALS.
 
-tableinst
+tableinst z
 1. Return s.TABLES.
 
-meminst
+meminst z
 1. Return s.MEMS.
 
-taginst
+taginst z
 1. Return s.TAGS.
 
-eleminst
+eleminst z
 1. Return s.ELEMS.
 
-datainst
+datainst z
 1. Return s.DATAS.
 
-structinst
+structinst z
 1. Return s.STRUCTS.
 
-arrayinst
+arrayinst z
 1. Return s.ARRAYS.
 
-exninst
+exninst z
 1. Return s.EXNS.
 
-type x
+type z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TYPES[x].
 
-func x
+func z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
+global z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
+table z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
+mem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
 
-tag x
+tag z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TAGS[f.MODULE.TAGS[x]].
 
-elem x
+elem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data x
+data z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local x
+local z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.LOCALS[x].
 
-with_local x v
+with_local z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace f.LOCALS[x] with ?(v).
 
-with_global x v
+with_global z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table x i r
+with_table z x i r
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
-with_tableinst x ti
+with_tableinst z x ti
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem x i j b*
+with_mem z x i j b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst x mi
+with_meminst z x mi
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
-with_elem x r*
+with_elem z x r*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
-with_data x b*
+with_data z x b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
-with_struct a i fv
+with_struct z a i fv
 1. Replace s.STRUCTS[a].FIELDS[i] with fv.
 
-with_array a i fv
+with_array z a i fv
 1. Replace s.ARRAYS[a].FIELDS[i] with fv.
 
-add_structinst si*
+add_structinst z si*
 1. Append si* to the s.STRUCTS.
 
-add_arrayinst ai*
+add_arrayinst z ai*
 1. Append ai* to the s.ARRAYS.
 
-add_exninst exn*
+add_exninst z exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
@@ -26911,13 +26911,13 @@ alloctypes type_u0*
 7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
 8. Return deftype'* :: deftype*.
 
-allocfunc deftype funccode moduleinst
+allocfunc s deftype funccode moduleinst
 1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode; }.
 2. Let a be |s.FUNCS|.
 3. Append funcinst to the s.FUNCS.
 4. Return a.
 
-allocfuncs deftype_u0* code_u1* moduleinst_u2*
+allocfuncs s deftype_u0* code_u1* moduleinst_u2*
 1. If (deftype_u0* is []), then:
   a. Assert: Due to validation, (code_u1* is []).
   b. Assert: Due to validation, (moduleinst_u2* is []).
@@ -26928,17 +26928,17 @@ allocfuncs deftype_u0* code_u1* moduleinst_u2*
   c. Let [funccode] :: funccode'* be code_u1*.
   d. Assert: Due to validation, (|moduleinst_u2*| ≥ 1).
   e. Let [moduleinst] :: moduleinst'* be moduleinst_u2*.
-  f. Let fa be $allocfunc(dt, funccode, moduleinst).
-  g. Let fa'* be $allocfuncs(dt'*, funccode'*, moduleinst'*).
+  f. Let fa be $allocfunc(s, dt, funccode, moduleinst).
+  g. Let fa'* be $allocfuncs(s, dt'*, funccode'*, moduleinst'*).
   h. Return [fa] :: fa'*.
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let globalinst be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
 3. Append globalinst to the s.GLOBALS.
 4. Return a.
 
-allocglobals globaltype_u0* val_u1*
+allocglobals s globaltype_u0* val_u1*
 1. If (globaltype_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
   b. Return [].
@@ -26946,87 +26946,87 @@ allocglobals globaltype_u0* val_u1*
   a. Let [globaltype] :: globaltype'* be globaltype_u0*.
   b. Assert: Due to validation, (|val_u1*| ≥ 1).
   c. Let [val] :: val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ((i, j), rt) ref
+alloctable s ((i, j), rt) ref
 1. Let tableinst be { TYPE: ((i, j), rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.
 
-alloctables tabletype_u0* ref_u1*
+alloctables s tabletype_u0* ref_u1*
 1. If ((tabletype_u0* is []) and (ref_u1* is [])), then:
   a. Return [].
 2. Assert: Due to validation, (|ref_u1*| ≥ 1).
 3. Let [ref] :: ref'* be ref_u1*.
 4. Assert: Due to validation, (|tabletype_u0*| ≥ 1).
 5. Let [tabletype] :: tabletype'* be tabletype_u0*.
-6. Let ta be $alloctable(tabletype, ref).
-7. Let ta'* be $alloctables(tabletype'*, ref'*).
+6. Let ta be $alloctable(s, tabletype, ref).
+7. Let ta'* be $alloctables(s, tabletype'*, ref'*).
 8. Return [ta] :: ta'*.
 
-allocmem ((i, j) PAGE)
+allocmem s ((i, j) PAGE)
 1. Let meminst be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append meminst to the s.MEMS.
 4. Return a.
 
-allocmems memtype_u0*
+allocmems s memtype_u0*
 1. If (memtype_u0* is []), then:
   a. Return [].
 2. Let [memtype] :: memtype'* be memtype_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
-alloctag tagtype
+alloctag s tagtype
 1. Let taginst be { TYPE: tagtype; }.
 2. Let a be |s.TAGS|.
 3. Append taginst to the s.TAGS.
 4. Return a.
 
-alloctags tagtype_u0*
+alloctags s tagtype_u0*
 1. If (tagtype_u0* is []), then:
   a. Return [].
 2. Let [at] :: at'* be tagtype_u0*.
-3. Let aa be $alloctag(at).
-4. Let aa'* be $alloctags(at'*).
+3. Let aa be $alloctag(s, at).
+4. Let aa'* be $alloctags(s, at'*).
 5. Return [aa] :: aa'*.
 
-allocelem elemtype ref*
+allocelem s elemtype ref*
 1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.
 2. Let a be |s.ELEMS|.
 3. Append eleminst to the s.ELEMS.
 4. Return a.
 
-allocelems elemtype_u0* ref_u1**
+allocelems s elemtype_u0* ref_u1**
 1. If ((elemtype_u0* is []) and (ref_u1** is [])), then:
   a. Return [].
 2. Assert: Due to validation, (|ref_u1**| ≥ 1).
 3. Let [ref*] :: ref'** be ref_u1**.
 4. Assert: Due to validation, (|elemtype_u0*| ≥ 1).
 5. Let [rt] :: rt'* be elemtype_u0*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
+6. Let ea be $allocelem(s, rt, ref*).
+7. Let ea'* be $allocelems(s, rt'*, ref'**).
 8. Return [ea] :: ea'*.
 
-allocdata OK byte*
+allocdata s OK byte*
 1. Let datainst be { BYTES: byte*; }.
 2. Let a be |s.DATAS|.
 3. Append datainst to the s.DATAS.
 4. Return a.
 
-allocdatas datatype_u0* byte_u1**
+allocdatas s datatype_u0* byte_u1**
 1. If ((datatype_u0* is []) and (byte_u1** is [])), then:
   a. Return [].
 2. Assert: Due to validation, (|byte_u1**| ≥ 1).
 3. Let [b*] :: b'** be byte_u1**.
 4. Assert: Due to validation, (|datatype_u0*| ≥ 1).
 5. Let [ok] :: ok'* be datatype_u0*.
-6. Let da be $allocdata(ok, b*).
-7. Let da'* be $allocdatas(ok'*, b'**).
+6. Let da be $allocdata(s, ok, b*).
+7. Let da'* be $allocdatas(s, ok'*, b'**).
 8. Return [da] :: da'*.
 
 allocexport moduleinst (EXPORT name externidx_u0)
@@ -27049,7 +27049,7 @@ allocexport moduleinst (EXPORT name externidx_u0)
 allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
-allocmodule module externaddr* val_G* ref_T* ref_E**
+allocmodule s module externaddr* val_G* ref_T* ref_E**
 1. Let fa_I* be $funcsxa(externaddr*).
 2. Let ga_I* be $globalsxa(externaddr*).
 3. Let aa_I* be $tagsxa(externaddr*).
@@ -27081,19 +27081,19 @@ allocmodule module externaddr* val_G* ref_T* ref_E**
 29. Let (FUNC x local* expr_F)* be func*.
 30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
 31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-32. Let n_0* be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+32. Let n_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
 33. Assert: Due to validation, (n_0* is fa*).
-34. Let n_0* be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
+34. Let n_0* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
 35. Assert: Due to validation, (n_0* is ga*).
-36. Let n_0* be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
+36. Let n_0* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
 37. Assert: Due to validation, (n_0* is ta*).
-38. Let n_0* be $allocmems($subst_all_memtype(memtype, dt*)*).
+38. Let n_0* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
 39. Assert: Due to validation, (n_0* is ma*).
-40. Let n_0* be $alloctags(dt*[y]*).
+40. Let n_0* be $alloctags(s, dt*[y]*).
 41. Assert: Due to validation, (n_0* is aa*).
-42. Let n_0* be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
+42. Let n_0* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
 43. Assert: Due to validation, (n_0* is ea*).
-44. Let n_0* be $allocdatas(OK^|data*|, byte**).
+44. Let n_0* be $allocdatas(s, OK^|data*|, byte**).
 45. Assert: Due to validation, (n_0* is da*).
 46. Return moduleinst.
 
@@ -27123,12 +27123,12 @@ evalglobals z globaltype_u0* expr_u1*
 6. Let [gt] :: gt'* be globaltype_u0*.
 7. Let [val] be $eval_expr(expr).
 8. Let f be z.
-9. Let a be $allocglobal(gt, val).
+9. Let a be $allocglobal(s, gt, val).
 10. Append a to the f.MODULE.GLOBALS.
 11. Let val'* be $evalglobals(z, gt'*, expr'*).
 12. Return [val] :: val'*.
 
-instantiate z module externaddr*
+instantiate s module externaddr*
 1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
@@ -27157,7 +27157,7 @@ instantiate z module externaddr*
 25. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
 26. Let [ref_E]** be $eval_expr(expr_E)**.
 27. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
+28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence (instr_E*).
@@ -27167,7 +27167,7 @@ instantiate z module externaddr*
 34. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 35. Return f.MODULE.
 
-invoke funcaddr val*
+invoke s funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
@@ -27185,7 +27185,7 @@ invoke funcaddr val*
 14. Pop the values val^k from the stack.
 15. Return val^k.
 
-allocXs X Y X_u0* Y_u1*
+allocXs s X Y X_u0* Y_u1*
 1. If (X_u0* is []), then:
   a. Assert: Due to validation, (Y_u1* is []).
   b. Return [].
@@ -27193,8 +27193,8 @@ allocXs X Y X_u0* Y_u1*
   a. Let [X] :: X'* be X_u0*.
   b. Assert: Due to validation, (|Y_u1*| ≥ 1).
   c. Let [Y] :: Y'* be Y_u1*.
-  d. Let a be $allocX(X, Y, X, Y).
-  e. Let a'* be $allocXs(X, Y, X'*, Y'*).
+  d. Let a be $allocX(s, X, Y, X, Y).
+  e. Let a'* be $allocXs(s, X, Y, X'*, Y'*).
   f. Return [a] :: a'*.
 
 var X

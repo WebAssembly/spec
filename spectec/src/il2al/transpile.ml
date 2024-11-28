@@ -720,41 +720,6 @@ let remove_state algo =
     | rule -> rule
   }
 
-let insert_state_binding algo =
-  let state_count = ref 0 in
-
-  let count_state e =
-    (match e.it with
-    | VarE "z" -> state_count := !state_count + 1
-    | _ -> ());
-    e
-  in
-
-  let walk_expr walker expr = 
-    let expr1 = count_state expr in
-    Al.Walk.base_walker.walk_expr walker expr1
-  in
-  let walker = { Walk.base_walker with walk_expr = walk_expr; } in
-  let algo' = walker.walk_algo walker algo in
-  if !state_count > 0 then (
-    match algo.it with
-    | RuleA _ ->
-      { algo' with it =
-        match algo'.it with
-        | FuncA (name, params, body) ->
-          let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
-          FuncA (name, params, body)
-        | RuleA (name, anchor, params, body) ->
-          let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
-          RuleA (name, anchor, params, body)
-      }
-    | FuncA (id, args, instrs) ->
-        let answer = {algo with it = FuncA (id, {at = no; it = ExpA (varE "z" ~note:stateT); note = ()} :: args, instrs)} in
-        answer
-  )
-  else algo'
-
-
 (* Insert "Let f be the current frame" if necessary. *)
 let insert_frame_binding instrs =
   let open Free in
