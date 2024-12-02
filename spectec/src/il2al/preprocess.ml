@@ -133,7 +133,7 @@ let rec preprocess_prem prem =
     (* Expand: `dt` ~~ `ct` *)
     | [[]; [approx]; []], TupE [dt; ct] when approx.it = Approx ->
       (* `$expanddt(dt) = ct` *)
-      let expanddt = 
+      let expanddt =
         CallE ("expanddt" $ prem.at, [ExpA dt $ dt.at]) $$ prem.at % ct.note
       in
       let new_prem =

@@ -10,6 +10,12 @@ let name_of_rule rule =
   match rule.it with
   | RuleD (id, _, _, _, _) ->
     String.split_on_char '-' id.it |> List.hd
+let full_name_of_rule rule =
+  match rule.it with
+  | RuleD (id, _, _, _, _) -> id.it
+let prems_of_rule rule =
+  match rule.it with
+  | RuleD (_, _, _, _, prems) -> prems
 
 let lhs_of_prem pr =
   match pr.it with

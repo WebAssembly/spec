@@ -1,6 +1,6 @@
 (library
   (name il2al)
-  (libraries util il al)
+  (libraries util il al str)
   (modules
     animate
     unify
@@ -14,5 +14,6 @@
     encode
     def
     il2al_util
+    print
   )
 )

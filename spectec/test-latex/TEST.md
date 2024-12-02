@@ -2764,7 +2764,7 @@ $$
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\
-\mbox{(memory type)} & {\mathit{tagtype}} & ::= & {\mathit{deftype}} \\
+\mbox{(tag type)} & {\mathit{tagtype}} & ::= & {\mathit{deftype}} \\
 \mbox{(element type)} & {\mathit{elemtype}} & ::= & {\mathit{reftype}} \\
 \mbox{(data type)} & {\mathit{datatype}} & ::= & \mathsf{ok} \\
 \mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{tag}~{\mathit{typeuse}} \\
@@ -3299,8 +3299,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{elemmode}} & ::= & \mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}} ~|~ \mathsf{passive} ~|~ \mathsf{declare} \\
-& {\mathit{datamode}} & ::= & \mathsf{active}~{\mathit{memidx}}~{\mathit{expr}} ~|~ \mathsf{passive} \\
+\mbox{(element mode)} & {\mathit{elemmode}} & ::= & \mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}} ~|~ \mathsf{passive} ~|~ \mathsf{declare} \\
+\mbox{(data mode)} & {\mathit{datamode}} & ::= & \mathsf{active}~{\mathit{memidx}}~{\mathit{expr}} ~|~ \mathsf{passive} \\
 \mbox{(type definition)} & {\mathit{type}} & ::= & \mathsf{type}~{\mathit{rectype}} \\
 \mbox{(local)} & {\mathit{local}} & ::= & \mathsf{local}~{\mathit{valtype}} \\
 \mbox{(function)} & {\mathit{func}} & ::= & \mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}} \\
@@ -5727,6 +5727,8 @@ $\boxed{{\mathit{context}} \vdash {{\mathit{instr}}^\ast} : {\mathit{instrtype}}
 
 $\boxed{{\mathit{context}} \vdash {\mathit{expr}} : {\mathit{resulttype}}}$
 
+$\boxed{{\vdash}\, {\mathit{valtype}}~\mathsf{defaultable}}$
+
 \vspace{1ex}
 
 $$
@@ -5897,7 +5899,7 @@ C \vdash {t^\ast} \leq C{.}\mathsf{labels}{}[{l'}]
  \qquad
 C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{
-C \vdash \mathsf{br\_table}~{l^\ast}~{l'} : {t_1^\ast}~{t^\ast} \rightarrow {t_2^\ast}
+C \vdash \mathsf{br\_table}~{l^\ast}~{l'} : {t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}br\_table}]}
 \qquad
 \end{array}
@@ -6356,7 +6358,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}
  \qquad
-({{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})} = {\mathit{val}})^\ast
+({\vdash}\, {\mathrm{unpack}}({\mathit{zt}})~\mathsf{defaultable})^\ast
 }{
 C \vdash \mathsf{struct{.}new\_default}~x : \epsilon \rightarrow (\mathsf{ref}~x)
 } \, {[\textsc{\scriptsize T{-}struct.new\_default}]}
@@ -6410,7 +6412,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
  \qquad
-{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})} = {\mathit{val}}
+{\vdash}\, {\mathrm{unpack}}({\mathit{zt}})~\mathsf{defaultable}
 }{
 C \vdash \mathsf{array{.}new\_default}~x : \mathsf{i{\scriptstyle 32}} \rightarrow (\mathsf{ref}~x)
 } \, {[\textsc{\scriptsize T{-}array.new\_default}]}
@@ -6484,7 +6486,6 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{array}~(\mathsf{mut}~{\mathit{zt}})
 }{
 C \vdash \mathsf{array{.}len} : (\mathsf{ref}~\mathsf{null}~\mathsf{array}) \rightarrow \mathsf{i{\scriptstyle 32}}
 } \, {[\textsc{\scriptsize T{-}array.len}]}
@@ -8968,6 +8969,17 @@ $$
 {{\mathrm{default}}}_{{\mathsf{v}}{N}} & = & ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
 {{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} & = & (\mathsf{ref{.}null}~{\mathit{ht}}) \\
 {{\mathrm{default}}}_{\mathsf{ref}~{\mathit{ht}}} & = & \epsilon \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{{\mathrm{default}}}_{t} = {\mathit{val}}
+}{
+{\vdash}\, t~\mathsf{defaultable}
+} \, {[\textsc{\scriptsize Defaultable}]}
+\qquad
 \end{array}
 $$
 

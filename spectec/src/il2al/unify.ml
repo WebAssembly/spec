@@ -10,87 +10,209 @@ open Source
 open Def
 open Il2al_util
 
+
+let rename = ref false
+
+(* Error *)
+
 let error at msg = Error.error at "prose translation" msg
 
-(* Unifying lhs *)
 
-(* Estimate appropriate id name for a given type *)
+(* Environment for unified ids *)
+
+module Map = Map.Make(String)
+
+type idxs = (string * int) Map.t
+type env = {
+  mutable idxs : idxs;
+  frees : Set.t;
+}
 
 let unified_prefix = "u"
-let _unified_idx = ref 0
-let _unified_idx_cache = ref None
-let init_unified_idx () = _unified_idx := 0; _unified_idx_cache := None
-let soft_init_unified_idx () =
-  match !_unified_idx_cache with
-  | None -> _unified_idx_cache := Some (!_unified_idx)
-  | Some n -> _unified_idx := n
-let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
-let gen_new_unified ty = (Al.Al_util.typ_to_var_name ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
+let imap : idxs ref = ref Map.empty
+
+let init_var m id t =
+  let typid = Al.Al_util.typ_to_var_name t in
+  let nid = id.it |> Str.global_replace (Str.regexp "[^a-zA-Z]") "" in
+  let len = String.length nid in
+  match Map.find_opt typid m with
+  (* Use the shortest non-empty name. Prioritize typid than others. *)
+  | Some (s, _) when String.length s < len -> m
+  | Some (s, _) when s = typid && String.length s = len -> m
+  | _ when len = 0 -> m
+  | _ -> Map.add typid (nid, 1) m
+
+let init_map_bind m bind =
+  match bind.it with
+  | ExpB (id, t) -> init_var m id t
+  | _ -> m
+
+let init_map_rule m rule =
+  match rule.it with
+  | RuleD (_, binds, _, _, _) -> List.fold_left init_map_bind m binds
+
+let init_map_clause m clause =
+  match clause.it with
+  | DefD (binds, _, _, _) -> List.fold_left init_map_bind m binds
+
+let init_map il =
+  let env' =
+    List.fold_left (fun m def ->
+      match def.it with
+      | RelD (_, _, _, rules) ->
+        List.fold_left init_map_rule m rules
+      | DecD (_, _, _, clauses) ->
+        List.fold_left init_map_clause m clauses
+      | _ -> m
+    ) Map.empty il
+  in
+  imap := env'
+
+let init_env frees = { idxs = !imap; frees }
+
+
+(* Estimate appropriate id name for a given type *)
+let rec avoid_collision env name idx =
+  let name' = name ^ "_" ^ (string_of_int idx) in
+  if Set.mem name' env.frees then
+    avoid_collision env name (idx + 1)
+  else
+    name, idx
+
+let get_unified_idx env typid =
+  let idxs = env.idxs in
+  let len = String.length typid in
+  let n, i =
+    match Map.find_opt typid idxs with
+    | Some (n, i) when String.length n >= len && len > 0 -> typid, i
+    | Some (n, i) -> n, i
+    | None -> typid, 1
+  in
+  let name, idx = if !rename then avoid_collision env n i else n, i in
+
+  env.idxs <- Map.add typid (name, idx + 1) idxs;
+  name, idx
+
+let gen_new_unified env ty =
+  let typid = Al.Al_util.typ_to_var_name ty in
+  let name, idx = get_unified_idx env typid in
+  name ^ "_" ^ unified_prefix ^ (string_of_int idx) $ no_region
+
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
+let extract_unified_idx id =
+  let ss, s = String.split_on_char '_' id |> Util.Lib.List.split_last in
+  if String.starts_with ~prefix:unified_prefix s then
+    (try
+      let ss = String.concat "_" ss in
+      let s = String.sub s 1 (String.length s - 1) |> int_of_string in
+      Some (ss, s)
+    with Failure _ -> None)
+  else
+    None
 
-let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
+(* Rename unified ids to non-unified ones *)
+
+let rename_string _env s =
+  match extract_unified_idx s with
+  | Some (base_name, idx) -> base_name ^ "_" ^ (string_of_int idx)
+  | None -> s
+
+let rename_id env id = { id with it = rename_string env id.it }
+
+let rename_iterexp env (iter, ides) = (iter, List.map (fun (id, e) -> (rename_id env id, e)) ides)
+
+let rename_exp env exp =
+  {exp with it = match exp.it with
+  | VarE id -> VarE (rename_id env id)
+  | exp' -> exp'
+  }
+
+let rename_prem env p =
+  {p with it = match p.it with
+  | LetPr (e1, e2, ss) -> LetPr (e1, e2, List.map (rename_string env) ss)
+  | p' -> p' }
+
+let rename_rule_def (env, rd) =
+  if not !rename then rd else
+  let transformer = { Il_walk.base_transformer with
+    transform_exp = rename_exp env;
+    transform_prem = rename_prem env;
+    transform_iterexp = rename_iterexp env;
+  } in
+  Il_walk.transform_rule_def transformer rd
+
+let rename_helper_def (env, hd) =
+  if not !rename then hd else
+  let transformer = { Il_walk.base_transformer with
+    transform_exp = rename_exp env;
+    transform_prem = rename_prem env;
+    transform_iterexp = rename_iterexp env;
+    } in
+  Il_walk.transform_helper_def transformer hd
+
+let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
   match e1.it, e2.it with
     (* Already unified *)
     | VarE id, _ when is_unified_id id.it ->
       e1
     | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
-      let t = overlap_typ e1.note e2.note in
+      let t = overlap_typ env e1.note e2.note in
       { e1 with it = IterE (e, i); note = t }
     (* Not unified *)
     | UnE (unop1, nt1, e1), UnE (unop2, nt2, e2) when unop1 = unop2 && nt1 = nt2 ->
-      UnE (unop1, nt1, overlap e1 e2) |> replace_it
+      UnE (unop1, nt1, overlap env e1 e2) |> replace_it
     | BinE (binop1, nt1, e1, e1'), BinE (binop2, nt2, e2, e2') when binop1 = binop2 && nt1 = nt2 ->
-      BinE (binop1, nt1, overlap e1 e2, overlap e1' e2') |> replace_it
+      BinE (binop1, nt1, overlap env e1 e2, overlap env e1' e2') |> replace_it
     | CmpE (cmpop1, nt1, e1, e1'), CmpE (cmpop2, nt2, e2, e2') when cmpop1 = cmpop2 && nt1 = nt2 ->
-      CmpE (cmpop1, nt1, overlap e1 e2, overlap e1' e2') |> replace_it
+      CmpE (cmpop1, nt1, overlap env e1 e2, overlap env e1' e2') |> replace_it
     | IdxE (e1, e1'), IdxE (e2, e2') ->
-      IdxE (overlap e1 e2, overlap e1' e2') |> replace_it
+      IdxE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-      SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'') |> replace_it
+      SliceE (overlap env e1 e2, overlap env e1' e2', overlap env e1'' e2'') |> replace_it
     | UpdE (e1, path1, e1'), UpdE (e2, path2, e2') when eq_path path1 path2 ->
-      UpdE (overlap e1 e2, path1, overlap e1' e2') |> replace_it
+      UpdE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
     | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
-      ExtE (overlap e1 e2, path1, overlap e1' e2') |> replace_it
+      ExtE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
     | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2) |> replace_it
+      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap env e1 e2)) efs1 efs2) |> replace_it
     | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
-      DotE (overlap e1 e2, atom1) |> replace_it
+      DotE (overlap env e1 e2, atom1) |> replace_it
     | CompE (e1, e1'), CompE (e2, e2') ->
-      CompE (overlap e1 e2, overlap e1' e2') |> replace_it
+      CompE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | LenE e1, LenE e2 ->
-      LenE (overlap e1 e2) |> replace_it
+      LenE (overlap env e1 e2) |> replace_it
     | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
-      TupE (List.map2 overlap es1 es2) |> replace_it
+      TupE (List.map2 (overlap env) es1 es2) |> replace_it
     | CallE (id1, as1), CallE (id2, as2) when eq_id id1 id2 ->
-      CallE (id1, List.map2 overlap_arg as1 as2) |> replace_it
+      CallE (id1, List.map2 (overlap_arg env) as1 as2) |> replace_it
     | IterE (e1, itere1), IterE (e2, itere2) when eq_iterexp itere1 itere2 ->
-      IterE (overlap e1 e2, itere1) |> replace_it
+      IterE (overlap env e1 e2, itere1) |> replace_it
     | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
-      ProjE (overlap e1 e2, i1) |> replace_it
+      ProjE (overlap env e1 e2, i1) |> replace_it
     | UncaseE (e1, op1), UncaseE (e2, op2) when eq_mixop op1 op2 ->
-      UncaseE (overlap e1 e2, op1) |> replace_it
+      UncaseE (overlap env e1 e2, op1) |> replace_it
     | OptE (Some e1), OptE (Some e2) ->
-      OptE (Some (overlap e1 e2)) |> replace_it
+      OptE (Some (overlap env e1 e2)) |> replace_it
     | TheE e1, TheE e2 ->
-      TheE (overlap e1 e2) |> replace_it
+      TheE (overlap env e1 e2) |> replace_it
     | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
-      ListE (List.map2 overlap es1 es2) |> replace_it
+      ListE (List.map2 (overlap env) es1 es2) |> replace_it
     | CatE (e1, e1'), CatE (e2, e2') ->
-      CatE (overlap e1 e2, overlap e1' e2') |> replace_it
+      CatE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | MemE (e1, e1'), MemE (e2, e2') ->
-      MemE (overlap e1 e2, overlap e1' e2') |> replace_it
+      MemE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
-      CaseE (mixop1, overlap e1 e2) |> replace_it
+      CaseE (mixop1, overlap env e1 e2) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
-      SubE (overlap e1 e2, typ1, typ1') |> replace_it
+      SubE (overlap env e1 e2, typ1, typ1') |> replace_it
     (* HARDCODE: Unifying CatE with non-CatE *)
-    | CatE ({ it = IterE (_, (ListN _, _)); _ } as e1', _), _ -> overlap e1 { e2 with it = CatE (e1', e2) }
-    | _, CatE ({ it = IterE (_, (ListN _, _)); _ } as e2', _) -> overlap { e1 with it = CatE (e2', e1) } e2
+    | CatE ({ it = IterE (_, (ListN _, _)); _ } as e1', _), _ -> overlap env e1 { e2 with it = CatE (e1', e2) }
+    | _, CatE ({ it = IterE (_, (ListN _, _)); _ } as e2', _) -> overlap env { e1 with it = CatE (e2', e1) } e2
     | _ ->
-      let ty = overlap_typ e1.note e2.note in
-      let id = gen_new_unified ty in
+      let ty = overlap_typ env e1.note e2.note in
+      let id = gen_new_unified env ty in
       let it =
         match ty.it with
         | IterT (ty1, iter) ->
@@ -99,23 +221,23 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       in
       { e1 with it; note = ty }
 
-and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
+and overlap_arg env a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
-    | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
+    | ExpA e1, ExpA e2 -> ExpA (overlap env e1 e2)
     | TypA _, TypA _
     | DefA _, DefA _
     | GramA _, GramA _ -> a1.it
     | _, _ -> assert false
   ) $ a1.at
 
-and overlap_typ t1 t2 = if eq_typ t1 t2 then t1 else
+and overlap_typ env t1 t2 = if eq_typ t1 t2 then t1 else
   (match t1.it, t2.it with
     | VarT (id1, args1), VarT (id2, args2) when id1 = id2 ->
-      VarT (id1, List.map2 overlap_arg args1 args2)
+      VarT (id1, List.map2 (overlap_arg env) args1 args2)
     | TupT ets1, TupT ets2 when List.for_all2 (fun (e1, _) (e2, _) -> eq_exp e1 e2) ets1 ets2 ->
-      TupT (List.map2 (fun (e1, t1) (_, t2) -> (e1, overlap_typ t1 t2)) ets1 ets2)
+      TupT (List.map2 (fun (e1, t1) (_, t2) -> (e1, (overlap_typ env) t1 t2)) ets1 ets2)
     | IterT (t1, iter1), IterT (t2, iter2) when eq_iter iter1 iter2 ->
-      IterT (overlap_typ t1 t2, iter1)
+      IterT (overlap_typ env t1 t2, iter1)
     | _ -> assert false (* Unreachable due to IL validation *)
   ) $ t1.at
 
@@ -188,14 +310,13 @@ let apply_template_to_rule template rule =
     let new_prems, _ = collect_unified template exp in
     RuleD (id, binds, mixop, template, new_prems @ prems) $ rule.at
 
-let unify_rules rules =
-  init_unified_idx();
-
+let unify_rules env rules =
   let concls = List.map (fun x -> let RuleD(_, _, _, e, _) = x.it in e) rules in
   let hd = List.hd concls in
   let tl = List.tl concls in
-  let template = List.fold_left overlap hd tl in
+  let template = List.fold_left (overlap env) hd tl in
   List.map (apply_template_to_rule template) rules
+  (* |> rename_rules *)
 
 
 (** 2. Reduction rules **)
@@ -212,7 +333,7 @@ let apply_template_to_prems template prems idx =
       new_prem :: new_prems)
   ) prems
 
-let unify_enc premss encs =
+let unify_enc env premss encs =
   let idxs = List.map fst encs in
   let ps = List.map snd encs in
 
@@ -221,7 +342,7 @@ let unify_enc premss encs =
   let hd = List.hd es in
   let tl = List.tl es in
 
-  let template = List.fold_left overlap hd tl in
+  let template = List.fold_left (overlap env) hd tl in
 
   List.map2 (apply_template_to_prems template) premss idxs
 
@@ -280,11 +401,11 @@ let replace_prems r prems =
   let lhs, rhs, _ = r in
   lhs, rhs, prems
 
-let unify_rule_clauses pred input_vars (clauses: rule_clause list) =
+let unify_rule_clauses env pred input_vars (clauses: rule_clause list) =
   let premss = List.map (fun g -> let _, _, prems = g in prems) clauses in
   let encss = List.map (extract_encs pred) premss in
   let unifiable_encss = filter_unifiable encss in
-  let new_premss = List.fold_left unify_enc (lift premss) unifiable_encss |> unlift in
+  let new_premss = List.fold_left (unify_enc env) (lift premss) unifiable_encss |> unlift in
   let animated_premss = List.map (Animate.animate_prems {empty with varid = Set.of_list (input_vars @ Encode.input_vars)}) new_premss in
 
   List.map2 replace_prems clauses animated_premss
@@ -320,15 +441,15 @@ let extract_rules def =
   | RelD (id, _, _, rules) -> List.map (fun rule -> id, rule) rules
   | _ -> []
 
-let unify_ctxt (input_vars: string list) (clauses: rule_clause list) : rule_clause list =
-  soft_init_unified_idx();
-  unify_rule_clauses is_encoded_ctxt input_vars clauses
-let unify_pop_and_winstr rule_def =
-  init_unified_idx();
-  unify_rule_clauses is_encoded_pop_or_winstr [] rule_def
-let unify_rule_def (rule: rule_def) : rule_def =
+let unify_ctxt (env: env) (input_vars: string list) (clauses: rule_clause list) : rule_clause list =
+  unify_rule_clauses env is_encoded_ctxt input_vars clauses
+
+let unify_pop_and_winstr env rule_def =
+  unify_rule_clauses env is_encoded_pop_or_winstr [] rule_def
+
+let unify_rule_def (env: env) (rule: rule_def) : rule_def =
   let instr_name, rel_id, clauses = rule.it in
-  let unified_clauses = unify_pop_and_winstr clauses in
+  let unified_clauses = unify_pop_and_winstr env clauses in
   let pops, clauses' = extract_pops unified_clauses in
   let subgroups = group_by_context clauses' in
   let new_clauses =
@@ -346,8 +467,9 @@ let unify_rule_def (rule: rule_def) : rule_def =
               )
               pops
           in
+          let sub_env = { idxs = env.idxs; frees = env.frees } in
           subgroup
-          |> unify_ctxt popped_vars
+          |> unify_ctxt sub_env popped_vars
           |> List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems)
       )
       subgroups
@@ -396,28 +518,37 @@ let apply_template_to_def template def =
     let reordered_prems = reorder_unified_args template animated_prems in
     DefD (binds @ new_binds, template, rhs, (reordered_prems @ prems) |> prioritize_else) $ def.at
 
-let unify_defs defs =
-  init_unified_idx();
-
+let unify_defs env defs =
   let lhs_s = List.map (fun x -> let DefD(_, lhs, _, _) = x.it in lhs) defs in
   let hd = List.hd lhs_s in
   let tl = List.tl lhs_s in
-  let template = List.fold_left (List.map2 overlap_arg) hd tl in
+  let template = List.fold_left (List.map2 (overlap_arg env)) hd tl in
   List.map (apply_template_to_def template) defs
+
+let unify_helper_def env hd =
+  match hd.it with
+  | (id, clauses, partial) -> (id, unify_defs env clauses, partial) $ hd.at
 
 let extract_helpers partial_funcs def =
   match def.it with
   | DecD (id, _, _, clauses) when List.length clauses > 0 ->
     let partial = if List.mem id partial_funcs then Partial else Total in
-    Some ((id, unify_defs clauses, partial) $ def.at)
+    Some ((id, clauses, partial) $ def.at)
   | _ -> None
 
 let unify (il: script) : rule_def list * helper_def list =
+  init_map il;
   let rule_defs =
     il
     |> List.concat_map extract_rules
     |> group_rules
-    |> List.map unify_rule_def
+    |> List.map (
+      fun rd ->
+        let frees = (Free.free_rule_def rd).varid in
+        let env = init_env frees in
+        (env, unify_rule_def env rd)
+    )
+    |> List.map rename_rule_def
   in
 
   let partial_funcs =
@@ -430,6 +561,16 @@ let unify (il: script) : rule_def list * helper_def list =
     in
     List.filter_map get_partial_func il
   in
-  let helper_defs = List.filter_map (extract_helpers partial_funcs) il in
+  let helper_defs =
+    il
+    |> List.filter_map (extract_helpers partial_funcs)
+    |> List.map (
+      fun hd ->
+        let frees = (Free.free_helper_def hd).varid in
+        let env = init_env frees in
+        (env, unify_helper_def env hd)
+    )
+    |> List.map rename_helper_def
+  in
 
   rule_defs, helper_defs

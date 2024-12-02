@@ -288,7 +288,7 @@ let frameE ?(at = no) ~note (arity, e) =
 
 let get_atom op =
   match List.find_opt (fun al -> List.length al <> 0) op with
-  | Some al -> Some(List.hd al)
+  | Some al -> Some (List.hd al)
   | None -> None
 
 let name_of_mixop = Mixop.name
