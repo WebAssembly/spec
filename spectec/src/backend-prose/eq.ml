@@ -29,6 +29,8 @@ let rec eq_stmt i1 i2 =
       && eq_expr e11 e21
   | IsDefinedS e1, IsDefinedS e2 ->
       eq_expr e1 e2
+  | IsDefaultableS e1, IsDefaultableS e2 ->
+      eq_expr e1 e2
   | IfS (e11, il1), IfS (e21, il2) ->
       eq_expr e11 e21
       && List.for_all2 eq_stmt il1 il2

@@ -415,6 +415,9 @@ let rec raw_string_of_single_stmt stmt =
   | IsDefinedS e ->
     sprintf "%s exists"
       (string_of_expr_with_type e)
+  | IsDefaultableS e ->
+    sprintf "%s is defaultable"
+      (string_of_expr_with_type e)
   | ContextS (e1, e2) ->
     sprintf "%s is the context %s"
       (string_of_expr_with_type e1)

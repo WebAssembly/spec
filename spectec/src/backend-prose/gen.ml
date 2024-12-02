@@ -102,9 +102,10 @@ let remove_empty_arrow_sub e =
   * 2. C? |- i : t (where i is a wasm instruction)
   * 3. C? |- e : e
   * 4. C? |- t <: t
-  * 5. C? |- e : CONST
+  * 5. C? |- e CONST
   * 6. C? |- e : e CONST
   * 7. C? |- e : e e
+  * 8. |- e DEFAULTABLE
 **)
 
 type rel_kind =
@@ -115,6 +116,7 @@ type rel_kind =
   | ConstRel
   | ValidConstRel
   | ValidWith2Rel
+  | DefaultableRel
   | OtherRel
 
 let get_rel_kind def =
@@ -125,6 +127,7 @@ let get_rel_kind def =
   let const_pattern = [[]; [atomize Turnstile]; [atomize (Atom "CONST")]] in
   let valid_const_pattern = [[]; [atomize Turnstile]; [atomize Colon]; [atomize (Atom "CONST")]] in
   let valid_with2_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []; []] in
+  let defaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "DEFAULTABLE")]] in
 
   let has_instr_as_second typ =
     match typ.it with
@@ -147,6 +150,8 @@ let get_rel_kind def =
         ValidConstRel
       else if match_mixop valid_with2_pattern then
         ValidWith2Rel
+      else if match_mixop defaultable_pattern then
+        DefaultableRel
       else
         OtherRel
   | _ -> OtherRel
@@ -262,6 +267,7 @@ let rec prem_to_instrs prem =
       | ConstRel,      [e]         -> [ IsConstS (None, e) ]
       | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
       | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
+      | DefaultableRel, [e]        -> [ IsDefaultableS (e) ]
       (* context *)
       | ValidRel,      [c; e]         -> [ IsValidS (None, e, []) ] |> inject_ctx frees c
       | ValidInstrRel, [c; e; t]      -> [ IsValidS (None, e, [t]) ] |> inject_ctx frees c
@@ -457,7 +463,7 @@ let proses_of_valid_instr_rel rel =
 
   grouped_proses @ ungrouped_proses
 
-(** 3. C |- e : e **)
+(** 3. C |- expr : expr **)
 let proses_of_valid_with_rel = proses_of_rel (fun rule ->
   let e1, e2 = extract_pair_rule rule in
   IsValidS (None, exp_to_expr e1, [exp_to_expr e2]))
@@ -467,20 +473,25 @@ let proses_of_match_rel = proses_of_rel (fun rule ->
   let e1, e2 = extract_pair_rule rule in
   MatchesS (exp_to_expr e1, exp_to_expr e2))
 
-(** 5. C |- x CONST **)
+(** 5. C |- expr CONST **)
 let proses_of_const_rel = proses_of_rel (fun rule ->
   let e = extract_single_rule rule in
   IsConstS (None, exp_to_expr e))
 
-(** 6. C |- e : e CONST **)
+(** 6. C |- expr : expr CONST **)
 let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
 
-(** 7. C |- e : e e **)
+(** 7. C |- expr : expr expr **)
 let proses_of_valid_with2_rel = proses_of_rel (fun rule ->
   let e1, e2, e3 = extract_triplet_rule rule in
   IsValidS (None, exp_to_expr e1, [exp_to_expr e2; exp_to_expr e3]))
 
-(** 8. Others **)
+(** 8. |- expr DEFAULTABLE **)
+let proses_of_defaultable_rel = proses_of_rel (fun rule ->
+  let e = extract_single_rule rule in
+  IsDefaultableS (exp_to_expr e))
+
+(** 9. Others **)
 let proses_of_other_rel rel = ( match rel.it with
   | Ast.RelD (rel_id, mixop, args, _) ->
     "Untranslated relation " ^ rel_id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
@@ -495,6 +506,7 @@ let prose_of_rel rel = match get_rel_kind rel with
   | ConstRel      -> proses_of_const_rel rel
   | ValidConstRel -> proses_of_valid_const_rel rel
   | ValidWith2Rel -> proses_of_valid_with2_rel rel
+  | DefaultableRel    -> proses_of_defaultable_rel rel
   | OtherRel      -> proses_of_other_rel rel
 
 let prose_of_rels = List.concat_map prose_of_rel

@@ -593,3 +593,25 @@ $${rule-prose: Externtype_ok/global}
 * Then the external type is valid.
 
 $${rule: Externtype_ok/global}
+
+Defaultable Types
+~~~~~~~~~~~~~~~~~
+
+A type is *defaultable* if it has a :ref:`default value <default-val>` for initialization.
+
+Value Types
+...........
+
+$${rule-prose: Defaultable}
+.. todo::
+ below is the official specification
+
+* A defaultable :ref:`value type <syntax-valtype>` :math:`t` must be:
+
+  - either a :ref:`number type <syntax-numtype>`,
+
+  - or a :ref:`vector type <syntax-vectype>`,
+
+  - or a :ref:`nullable reference type <syntax-numtype>`.
+
+$${rule: Defaultable}

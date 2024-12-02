@@ -3250,10 +3250,10 @@ def $default_(valtype : valtype) : val?
   def $default_{ht : heaptype}(REF_valtype(`NULL%?`_nul(?()), ht)) = ?()
 
 ;; 3-typing.watsup
-relation Defaultable: `|-%`(valtype)
+relation Defaultable: `|-%DEFAULTABLE`(valtype)
   ;; 6-runtime-aux.watsup
   rule _{t : valtype, val : val}:
-    `|-%`(t)
+    `|-%DEFAULTABLE`(t)
     -- if ($default_(t) = ?(val))
 
 ;; 3-typing.watsup
@@ -3496,11 +3496,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, STRUCT.NEW_instr(x), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)*{zt <- `zt*`}), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
 
-  ;; 3-typing.watsup:819.1-822.36
+  ;; 3-typing.watsup:819.1-822.48
   rule struct.new_default{C : context, x : idx, `mut*` : mut*, `zt*` : storagetype*}:
     `%|-%:%`(C, STRUCT.NEW_DEFAULT_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
-    -- (Defaultable: `|-%`($unpack(zt)))*{zt <- `zt*`}
+    -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt)))*{zt <- `zt*`}
 
   ;; 3-typing.watsup:824.1-828.39
   rule struct.get{C : context, `sx?` : sx?, x : idx, i : u32, zt : storagetype, `yt*` : fieldtype*, mut : mut}:
@@ -3520,11 +3520,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, ARRAY.NEW_instr(x), `%->_%%`_instrtype(`%`_resulttype([$unpack(zt) I32_valtype]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 3-typing.watsup:842.1-845.33
+  ;; 3-typing.watsup:842.1-845.45
   rule array.new_default{C : context, x : idx, mut : mut, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_DEFAULT_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- Defaultable: `|-%`($unpack(zt))
+    -- Defaultable: `|-%DEFAULTABLE`($unpack(zt))
 
   ;; 3-typing.watsup:847.1-849.42
   rule array.new_fixed{C : context, x : idx, n : n, zt : storagetype, mut : mut}:

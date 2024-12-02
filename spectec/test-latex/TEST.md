@@ -5727,7 +5727,7 @@ $\boxed{{\mathit{context}} \vdash {{\mathit{instr}}^\ast} : {\mathit{instrtype}}
 
 $\boxed{{\mathit{context}} \vdash {\mathit{expr}} : {\mathit{resulttype}}}$
 
-$\boxed{{\vdash}\, {\mathit{valtype}}}$
+$\boxed{{\vdash}\, {\mathit{valtype}}~\mathsf{defaultable}}$
 
 \vspace{1ex}
 
@@ -6358,7 +6358,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}
  \qquad
-({\vdash}\, {\mathrm{unpack}}({\mathit{zt}}))^\ast
+({\vdash}\, {\mathrm{unpack}}({\mathit{zt}})~\mathsf{defaultable})^\ast
 }{
 C \vdash \mathsf{struct{.}new\_default}~x : \epsilon \rightarrow (\mathsf{ref}~x)
 } \, {[\textsc{\scriptsize T{-}struct.new\_default}]}
@@ -6412,7 +6412,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
  \qquad
-{\vdash}\, {\mathrm{unpack}}({\mathit{zt}})
+{\vdash}\, {\mathrm{unpack}}({\mathit{zt}})~\mathsf{defaultable}
 }{
 C \vdash \mathsf{array{.}new\_default}~x : \mathsf{i{\scriptstyle 32}} \rightarrow (\mathsf{ref}~x)
 } \, {[\textsc{\scriptsize T{-}array.new\_default}]}
@@ -8977,7 +8977,7 @@ $$
 \frac{
 {{\mathrm{default}}}_{t} = {\mathit{val}}
 }{
-{\vdash}\, t
+{\vdash}\, t~\mathsf{defaultable}
 } \, {[\textsc{\scriptsize Defaultable}]}
 \qquad
 \end{array}

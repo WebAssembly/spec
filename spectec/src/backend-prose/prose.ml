@@ -14,6 +14,7 @@ type stmt =
 | MatchesS of expr * expr
 | IsConstS of expr option * expr
 | IsDefinedS of expr
+| IsDefaultableS of expr
 | IfS of expr * stmt list
 | ForallS of (expr * expr) list * stmt list
 | EitherS of stmt list list

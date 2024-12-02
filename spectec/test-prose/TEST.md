@@ -12785,7 +12785,6 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Defaultable: `|-%`valtype
 
 
 
@@ -14211,6 +14210,14 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is valid if:
   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
   * The value type sequence :math:`(\mathsf{ref}~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+
+
+
+
+The value type :math:`t` is defaultable if:
+
+
+  * The value :math:`{{\mathrm{default}}}_{t}` is equal to :math:`{\mathit{val}}`.
 
 
 
@@ -24539,7 +24546,6 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Defaultable: `|-%`valtype
 Numtype_ok
 - the number type numtype is valid.
 
@@ -25276,6 +25282,10 @@ Catch_ok/catch_all_ref
 - the catch clause (CATCH_ALL_REF l) is valid if:
   - the result type C.LABELS[l] exists.
   - the value type sequence [(REF EXN)] matches C.LABELS[l].
+
+Defaultable
+- the value type t is defaultable if:
+  - the value $default_(t) is ?(val).
 
 Instr_ok/nop
 - the instruction NOP is valid with the instruction type [] -> [].

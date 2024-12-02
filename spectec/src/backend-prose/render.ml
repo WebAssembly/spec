@@ -573,6 +573,9 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
     | IsDefinedS e ->
       sprintf "%s exists"
         (render_hd_expr env e)
+    | IsDefaultableS e ->
+      sprintf "%s is defaultable"
+        (render_hd_expr env e)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
       let args = List.map (render_expr_with_type env) es in
