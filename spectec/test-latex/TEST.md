@@ -3169,7 +3169,7 @@ $$
 \mbox{(instruction)} & {\mathit{instr}} & ::= & \mathsf{nop} \\
 & & | & \mathsf{unreachable} \\
 & & | & \mathsf{drop} \\
-& & | & \mathsf{select}~{{{\mathit{valtype}}^\ast}^?} \\
+& & | & \mathsf{select}~{({{\mathit{valtype}}^\ast})^?} \\
 & & | & \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\
@@ -3299,7 +3299,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(elem mode)} & {\mathit{elemmode}} & ::= & \mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}} ~|~ \mathsf{passive} ~|~ \mathsf{declare} \\
+\mbox{(element mode)} & {\mathit{elemmode}} & ::= & \mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}} ~|~ \mathsf{passive} ~|~ \mathsf{declare} \\
 \mbox{(data mode)} & {\mathit{datamode}} & ::= & \mathsf{active}~{\mathit{memidx}}~{\mathit{expr}} ~|~ \mathsf{passive} \\
 \mbox{(type definition)} & {\mathit{type}} & ::= & \mathsf{type}~{\mathit{rectype}} \\
 \mbox{(local)} & {\mathit{local}} & ::= & \mathsf{local}~{\mathit{valtype}} \\

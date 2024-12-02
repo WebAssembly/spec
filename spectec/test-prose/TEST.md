@@ -291,7 +291,7 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :mat
 
 
 
-The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
   * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
@@ -3048,7 +3048,7 @@ Instr_ok/br_if
   - C.LABELS[l] is t?.
 
 Instr_ok/br_table
-- the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t? -> t_2* if:
+- the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t? :: [I32] -> t_2* if:
   - the result type C.LABELS[l'] exists.
   - the number type t? is C.LABELS[l'].
   - For all l in l*:
@@ -4685,7 +4685,7 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :mat
 
 
 
-The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
   * For all :math:`l` in :math:`{l^\ast}`:
@@ -10194,7 +10194,7 @@ Instr_ok/br_if
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
-- the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t* -> t_2* if:
+- the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t* :: [I32] -> t_2* if:
   - For all l in l*:
     - the result type C.LABELS[l] exists.
   - For all l in l*:
@@ -14236,7 +14236,7 @@ The instruction :math:`\mathsf{drop}` is valid with the instruction type :math:`
 
 
 
-The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{}^?` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
   * The value type :math:`t` is valid.
@@ -15344,7 +15344,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
 
 
-The instruction :math:`(\mathsf{select}~t)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`t~{}^?` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
   * The value type :math:`t` is valid.
@@ -15352,7 +15352,7 @@ The instruction :math:`(\mathsf{select}~t)` is valid with the instruction type :
 
 
 
-The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`\epsilon~{}^?` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
   * The value type :math:`t` is valid.
@@ -15831,12 +15831,12 @@ The tag :math:`(\mathsf{tag}~x)` is valid with the tag type :math:`C{.}\mathsf{t
 
 
 
-The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the element type :math:`{\mathit{rt}}` if:
+The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the element type :math:`{\mathit{rt}}` if:
 
 
   * Either:
 
-    * The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+    * The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -15850,15 +15850,15 @@ The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
   * Or:
 
-    * The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{passive}`.
+    * The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{passive}`.
   * Or:
 
-    * The elem mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{declare}`.
+    * The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{declare}`.
 
 
 
 
-The elem mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the element type :math:`{\mathit{rt}}` if:
+The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the element type :math:`{\mathit{rt}}` if:
 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -15874,12 +15874,12 @@ The elem mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the elem
 
 
 
-The elem mode :math:`\mathsf{passive}` is valid with the element type :math:`{\mathit{rt}}`.
+The element mode :math:`\mathsf{passive}` is valid with the element type :math:`{\mathit{rt}}`.
 
 
 
 
-The elem mode :math:`\mathsf{declare}` is valid with the element type :math:`{\mathit{rt}}`.
+The element mode :math:`\mathsf{declare}` is valid with the element type :math:`{\mathit{rt}}`.
 
 
 
@@ -15895,7 +15895,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\as
 
     * :math:`{\mathit{expr}}` is const.
 
-  * The elem mode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
+  * The element mode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
 
 
@@ -20906,7 +20906,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{select}`, then:
 
-  a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{({{\mathit{valtype}}^\ast})^?}~{}^?` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
   #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
 
@@ -25289,7 +25289,7 @@ Instr_ok/drop
   - the value type t is valid.
 
 Instr_ok/select
-- the instruction (SELECT t_u1?) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT() t_u1? ?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - Either:
     - the value type sequence t_u1? is ?([t]).
@@ -25858,11 +25858,11 @@ Instr_ok/vstore_lane
   - i is less than (128 / N).
 
 Instr_ok/select-expl
-- the instruction (SELECT ?([t])) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT() ?([t]) ?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
 
 Instr_ok/select-impl
-- the instruction (SELECT ?()) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT() ?() ?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - t matches the value type t'.
   - t' is numtype or t' is vectype.
@@ -26115,7 +26115,7 @@ Tag_ok
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype).
 
 Elemmode_ok
-- the elem mode elemmode_u1 is valid with the element type rt if:
+- the element mode elemmode_u1 is valid with the element type rt if:
   - Either:
     - elemmode_u1 is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
@@ -26129,7 +26129,7 @@ Elemmode_ok
     - elemmode_u1 is DECLARE.
 
 Elemmode_ok/active
-- the elem mode (ACTIVE x expr) is valid with the element type rt if:
+- the element mode (ACTIVE x expr) is valid with the element type rt if:
   - the table type C.TABLES[x] exists.
   - C.TABLES[x] is (at, lim, rt').
   - rt matches the reference type rt'.
@@ -26137,10 +26137,10 @@ Elemmode_ok/active
   - expr is constant.
 
 Elemmode_ok/passive
-- the elem mode PASSIVE is valid with rt.
+- the element mode PASSIVE is valid with rt.
 
 Elemmode_ok/declare
-- the elem mode DECLARE is valid with rt.
+- the element mode DECLARE is valid with rt.
 
 Elem_ok
 - the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if:
@@ -26148,7 +26148,7 @@ Elem_ok
   - For all expr in expr*:
     - the expression expr is valid with elemtype.
     - expr is constant.
-  - the elem mode elemmode is valid with elemtype.
+  - the element mode elemmode is valid with elemtype.
 
 Datamode_ok
 - the data mode datamode_u1 is valid with the data type OK if:
@@ -28525,7 +28525,7 @@ free_instr instr_u1
 3. If (instr_u1 = DROP), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 4. If instr_u1 is of the case SELECT, then:
-  a. Let (SELECT valtype*?) be instr_u1.
+  a. Let (SELECT() valtype*? ?) be instr_u1.
   b. Return $free_opt($free_list($free_valtype(valtype)*)?).
 5. If instr_u1 is of the case BLOCK, then:
   a. Let (BLOCK blocktype instr*) be instr_u1.
