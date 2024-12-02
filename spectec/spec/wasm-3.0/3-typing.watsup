@@ -558,7 +558,7 @@ relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")   hint(m
 
 ;; forward declaration, defined in runtime-aux
 def $default_(valtype) : val?
-relation Defaultable: context |- valtype hint(prose "A default value of %2 exists")
+relation Defaultable: |- valtype hint(prose "A default value of %1 exists")
 
 ;; Parametric instructions
 
@@ -819,7 +819,7 @@ rule Instr_ok/struct.new:
 rule Instr_ok/struct.new_default:
   C |- STRUCT.NEW_DEFAULT x : eps -> (REF (_IDX x))
   -- Expand: C.TYPES[x] ~~ STRUCT (mut zt)*
-  -- (Defaultable: C |- $unpack(zt))*
+  -- (Defaultable: |- $unpack(zt))*
 
 rule Instr_ok/struct.get:
   C |- STRUCT.GET sx? x i : (REF NULL (_IDX x)) -> $unpack(zt)
@@ -842,7 +842,7 @@ rule Instr_ok/array.new:
 rule Instr_ok/array.new_default:
   C |- ARRAY.NEW_DEFAULT x : I32 -> (REF (_IDX x))
   -- Expand: C.TYPES[x] ~~ ARRAY (mut zt)
-  -- Defaultable: C |- $unpack(zt)
+  -- Defaultable: |- $unpack(zt)
 
 rule Instr_ok/array.new_fixed:
   C |- ARRAY.NEW_FIXED x n : $unpack(zt)^n -> (REF (_IDX x))

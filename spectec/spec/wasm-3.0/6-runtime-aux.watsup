@@ -43,8 +43,8 @@ def $default_(Vnn) = (VCONST Vnn 0)
 def $default_(REF NULL ht) = (REF.NULL ht)
 def $default_(REF ht) = eps
 
-;;relation Defaultable: context |- valtype hint(prose "A default value of %2 exists") ;; forward-declared in typing
-rule Defaultable: C |- t                 -- if $default_(t) = val
+;;relation Defaultable: |- valtype hint(prose "A default value of %1 exists") ;; forward-declared in typing
+rule Defaultable: |- t                 -- if $default_(t) = val
 
 
 ;; Packed fields

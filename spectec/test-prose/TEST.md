@@ -12785,7 +12785,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Defaultable: `%|-%`(context, valtype)
+Untranslated relation Defaultable: `|-%`valtype
 
 
 
@@ -24539,7 +24539,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Defaultable: `%|-%`(context, valtype)
+Untranslated relation Defaultable: `|-%`valtype
 Numtype_ok
 - the number type numtype is valid.
 
