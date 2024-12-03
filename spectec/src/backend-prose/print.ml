@@ -370,7 +370,7 @@ let string_of_expr_with_type e =
 
 let string_of_cmpop = function
   | `EqOp -> "is"
-  | `NeOp -> "is different with"
+  | `NeOp -> "is different from"
   | `LtOp -> "is less than"
   | `GtOp -> "is greater than"
   | `LeOp -> "is less than or equal to"

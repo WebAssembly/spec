@@ -252,6 +252,11 @@ atom_ :
   | atom_escape { $1 }
 atom_escape :
   | TICK EQ { Atom.Equal }
+  | TICK NE { Atom.NotEqual }
+  | TICK LT { Atom.Less }
+  | TICK GT { Atom.Greater }
+  | TICK LE { Atom.LessEqual }
+  | TICK GE { Atom.GreaterEqual }
   | TICK MEM { Atom.Mem }
   | TICK QUEST { Atom.Quest }
   | TICK PLUS { Atom.Plus }

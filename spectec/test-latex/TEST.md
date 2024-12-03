@@ -5727,7 +5727,9 @@ $\boxed{{\mathit{context}} \vdash {{\mathit{instr}}^\ast} : {\mathit{instrtype}}
 
 $\boxed{{\mathit{context}} \vdash {\mathit{expr}} : {\mathit{resulttype}}}$
 
-$\boxed{{\vdash}\, {\mathit{valtype}}~\mathsf{defaultable}}$
+$\boxed{{{\mathrm{default}}}_{{\mathit{valtype}}} \neq \epsilon}$
+
+$\boxed{{{\mathrm{default}}}_{{\mathit{valtype}}} = \epsilon}$
 
 \vspace{1ex}
 
@@ -6358,7 +6360,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}
  \qquad
-({\vdash}\, {\mathrm{unpack}}({\mathit{zt}})~\mathsf{defaultable})^\ast
+({{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})} \neq \epsilon)^\ast
 }{
 C \vdash \mathsf{struct{.}new\_default}~x : \epsilon \rightarrow (\mathsf{ref}~x)
 } \, {[\textsc{\scriptsize T{-}struct.new\_default}]}
@@ -6412,7 +6414,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
  \qquad
-{\vdash}\, {\mathrm{unpack}}({\mathit{zt}})~\mathsf{defaultable}
+{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})} \neq \epsilon
 }{
 C \vdash \mathsf{array{.}new\_default}~x : \mathsf{i{\scriptstyle 32}} \rightarrow (\mathsf{ref}~x)
 } \, {[\textsc{\scriptsize T{-}array.new\_default}]}
@@ -8960,8 +8962,6 @@ $$
 
 \vspace{1ex}
 
-\vspace{1ex}
-
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{default}}}_{{\mathsf{i}}{N}} & = & ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
@@ -8975,10 +8975,21 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{{\mathrm{default}}}_{t} = {\mathit{val}}
+{{\mathrm{default}}}_{t} \neq \epsilon
 }{
-{\vdash}\, t~\mathsf{defaultable}
+{{\mathrm{default}}}_{t} \neq \epsilon
 } \, {[\textsc{\scriptsize Defaultable}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{{\mathrm{default}}}_{t} = \epsilon
+}{
+{{\mathrm{default}}}_{t} = \epsilon
+} \, {[\textsc{\scriptsize Nondefaultable}]}
 \qquad
 \end{array}
 $$

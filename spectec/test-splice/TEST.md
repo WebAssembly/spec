@@ -10,6 +10,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Nondefaultable: `|-%NONDEFAULTABLE`valtype
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -901,6 +902,7 @@ warning: rule `Mem_ok` was never spliced
 warning: rule `Memtype_ok` was never spliced
 warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
+warning: rule `Nondefaultable` was never spliced
 warning: rule `NotationReduct/2` was never spliced
 warning: rule `NotationReduct/3` was never spliced
 warning: rule `NotationReduct/4` was never spliced

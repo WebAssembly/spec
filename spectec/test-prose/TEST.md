@@ -12785,6 +12785,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Nondefaultable: `|-%NONDEFAULTABLE`valtype
 
 
 
@@ -14217,7 +14218,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is valid if:
 The value type :math:`t` is defaultable if:
 
 
-  * The value :math:`{{\mathrm{default}}}_{t}` is equal to :math:`{\mathit{val}}`.
+  * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
 
 
 
@@ -14667,7 +14668,7 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 
   * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
-    * A default value of the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` exists.
+    * A :ref:`default value <default-val>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -14725,7 +14726,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 
   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-  * A default value of the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` exists.
+  * A :ref:`default value <default-val>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -15747,13 +15748,13 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
     * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{set}`.
 
-    * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
+    * A :ref:`default value <default-val>` for value type the value type :math:`t` is defined.
 
   * Or:
 
     * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{unset}`.
 
-    * The value :math:`{{\mathrm{default}}}_{t}` is absent.
+    * A :ref:`default value <default-val>` for value type the value type :math:`t` is not defined.
 
 
 
@@ -15761,7 +15762,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}, t)` if:
 
 
-  * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
+  * A :ref:`default value <default-val>` for value type the value type :math:`t` is defined.
 
 
 
@@ -15769,7 +15770,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}, t)` if:
 
 
-  * The value :math:`{{\mathrm{default}}}_{t}` is absent.
+  * A :ref:`default value <default-val>` for value type the value type :math:`t` is not defined.
 
 
 
@@ -24546,6 +24547,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Nondefaultable: `|-%NONDEFAULTABLE`valtype
 Numtype_ok
 - the number type numtype is valid.
 
@@ -25285,7 +25287,7 @@ Catch_ok/catch_all_ref
 
 Defaultable
 - the value type t is defaultable if:
-  - the value $default_(t) is ?(val).
+  - the value $default_(t) is different from ?().
 
 Instr_ok/nop
 - the instruction NOP is valid with the instruction type [] -> [].
@@ -25515,7 +25517,7 @@ Instr_ok/struct.new_default
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut, zt)*).
   - For all zt in zt*:
-    - A default value of the value type $unpack(zt) exists.
+    - A :ref:`default value <default-val>` for value type the value type $unpack(zt) is defined.
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF NULL (_IDX x))] -> [t] if:
@@ -25544,7 +25546,7 @@ Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
-  - A default value of the value type $unpack(zt) exists.
+  - A :ref:`default value <default-val>` for value type the value type $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF (_IDX x))] if:
@@ -26079,18 +26081,18 @@ Local_ok
 - the local (LOCAL t) is valid with the local type (init_u1, t) if:
   - Either:
     - the initialization status init_u1 is SET.
-    - the value $default_(t) is different with ?().
+    - A :ref:`default value <default-val>` for value type the value type t is defined.
   - Or:
     - init_u1 is UNSET.
-    - $default_(t) is ?().
+    - A :ref:`default value <default-val>` for value type t is not defined.
 
 Local_ok/set
 - the local (LOCAL t) is valid with the local type (SET, t) if:
-  - the value $default_(t) is different with ?().
+  - A :ref:`default value <default-val>` for value type the value type t is defined.
 
 Local_ok/unset
 - the local (LOCAL t) is valid with the local type (UNSET, t) if:
-  - the value $default_(t) is ?().
+  - A :ref:`default value <default-val>` for value type the value type t is not defined.
 
 Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
