@@ -364,7 +364,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 8. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, do:
 
-   a. Let :math:`\reftype_i` be the element :ref:`reference type <syntax-reftype>` obtained by `instantiating <type-inst>` :math:`\elem_i.\ETYPE` in :math:`\moduleinst` defined below.
+   a. Let :math:`\reftype_i` be the element :ref:`reference type <syntax-reftype>` obtained by :ref:`instantiating <type-inst>` :math:`\elem_i.\ETYPE` in :math:`\moduleinst` defined below.
 
    b. Let :math:`\elemaddr_i` be the :ref:`element address <syntax-elemaddr>` resulting from :ref:`allocating <alloc-elem>` a :ref:`element instance <syntax-eleminst>` of :ref:`reference type <syntax-reftype>` :math:`\reftype_i` with contents :math:`(\reff_{\F{e}}^\ast)^\ast[i]`.
 
