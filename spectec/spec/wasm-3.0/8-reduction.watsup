@@ -2,10 +2,10 @@
 ;; Reduction
 ;;
 
-relation Step: config ~> config       hint(show "E") hint(macro "stepto") hint(tabular)
-relation Step_pure: instr* ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
-relation Step_read: config ~> instr*  hint(show "E") hint(macro "stepto") hint(tabular)
-relation Steps: config ~>* config     hint(show "E") hint(macro "steptostar") hint(tabular)
+relation Step: config ~> config       hint(name "E") hint(macro "stepto") hint(tabular)
+relation Step_pure: instr* ~> instr*  hint(name "E") hint(macro "stepto") hint(tabular)
+relation Step_read: config ~> instr*  hint(name "E") hint(macro "stepto") hint(tabular)
+relation Steps: config ~>* config     hint(name "E") hint(macro "steptostar") hint(tabular)
 
 
 ;; Structural
@@ -1088,7 +1088,7 @@ rule Step/data.drop:
 
 ;; Expressions
 
-relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(macro "steptostar") hint(tabular)
+relation Eval_expr: state; expr ~>* state; val*  hint(name "E-expr") hint(macro "steptostar") hint(tabular)
 
 rule Eval_expr:
   z; instr*  ~>*  z'; val*

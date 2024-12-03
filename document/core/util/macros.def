@@ -1368,8 +1368,6 @@
 .. |allocexport| mathdef:: \xref{exec/modules}{alloc-export}{\F{allocexport}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
-.. |allocexn| mathdef:: \xref{exec/modules}{alloc-exception}{\F{allocexn}}
-
 .. |evalglobal| mathdef:: \xref{exec/modules}{eval-globals}{\F{evalglobal}}
 
 .. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}

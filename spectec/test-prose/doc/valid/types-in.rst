@@ -22,7 +22,7 @@ $${rule: Vectype_ok}
 Heap Types
 ~~~~~~~~~~
 
-$${rule+: 
+$${rule+:
   Heaptype_ok/*
 }
 
@@ -47,7 +47,7 @@ $${rule+:
 Block Types
 ~~~~~~~~~~~
 
-$${rule+: 
+$${rule+:
   Blocktype_ok/*
 }
 
@@ -86,7 +86,7 @@ $${rule+:
 Field Types
 ~~~~~~~~~~~
 
-$${rule+: 
+$${rule+:
   Packtype_ok
   Storagetype_ok/*
   Fieldtype_ok
@@ -159,3 +159,8 @@ External Types
 $${rule+:
   Externtype_ok/*
 }
+
+Defaultable Types
+~~~~~~~~~~~~~~~~~
+
+$${rule: Defaultable}

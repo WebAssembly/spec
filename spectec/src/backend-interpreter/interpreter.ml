@@ -313,7 +313,7 @@ and eval_expr env expr =
   | CaseE (op, el) ->
     (match (get_atom op) with
     | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
-    | None -> fail_expr expr "inner mixop of caseE is empty"
+    | None -> caseV ("", List.map (eval_expr env) el)
     )
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
@@ -452,6 +452,8 @@ and assign lhs rhs env =
   | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
     (match get_atom op with
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
+      List.fold_right2 assign lhs_s rhs_s env
+    | None when "" = rhs_tag ->
       List.fold_right2 assign lhs_s rhs_s env
     | _ -> fail_expr lhs
       (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))

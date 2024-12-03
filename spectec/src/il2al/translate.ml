@@ -86,11 +86,6 @@ let is_context exp =
     | _ -> false)
   | _ -> false
 
-let name_of_rule rule =
-  match rule.it with
-  | Il.RuleD (id, _, _, _, _) ->
-    String.split_on_char '-' id.it |> List.hd
-
 let args_of_clause clause =
   match clause.it with
   | Il.DefD (_, args, _, _) -> args
@@ -768,18 +763,18 @@ and handle_special_lhs lhs rhs free_ids =
     )]
   (* Normal cases *)
   | CaseE (op, es) ->
-    let tag = get_atom op |> Option.get in
+    let tag_opt = get_atom op in
     let bindings, es' = extract_non_names es in
-    let rec inject_isCaseOf expr =
+    let rec inject_isCaseOf tag expr =
       match expr.it with
       | IterE (inner_expr, iterexp) ->
-        IterE (inject_isCaseOf inner_expr, iterexp) $$ expr.at % boolT
+        IterE (inject_isCaseOf tag inner_expr, iterexp) $$ expr.at % boolT
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
     in
-    (match tag with
-    | { it = Atom.Atom _; _} ->
+    (match tag_opt with
+    | Some ({ it = Atom.Atom _; _} as tag) ->
       [ ifI (
-        inject_isCaseOf rhs,
+        inject_isCaseOf tag  rhs,
         letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
         []
@@ -1162,7 +1157,6 @@ let rec translate_rgroup' (rule: rule_def) =
  * `rgroup` -> `Al.Algo` *)
 
 and translate_rgroup (rule: rule_def) =
-
   let instr_name, rel_id, rgroup = rule.it in
   let winstr = extract_winstr (List.hd rgroup) rule.at in
   let instrs = translate_rgroup' rule in

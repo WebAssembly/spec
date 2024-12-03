@@ -23,8 +23,11 @@ val free_path : path -> sets
 val free_prem : prem -> sets
 val free_arg : arg -> sets
 val free_def : def -> sets
+val free_rule : rule -> sets
+val free_clause : clause -> sets
 val free_prod : prod -> sets
 val free_deftyp : deftyp -> sets
+val free_param : param -> sets
 
 val bound_typbind : exp * typ -> sets
 val bound_bind : bind -> sets

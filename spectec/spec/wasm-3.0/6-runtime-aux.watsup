@@ -35,13 +35,18 @@ def $Ki = 1024
 
 ;; Default values
 
-;;def $default_(valtype) : val?  ;; forward-declared in typing
-
+def $default_(valtype) : val?
 def $default_(Inn) = (CONST Inn 0)
 def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
 def $default_(Vnn) = (VCONST Vnn 0)
 def $default_(REF NULL ht) = (REF.NULL ht)
 def $default_(REF ht) = eps
+
+;;relation Defaultable: |- valtype DEFAULTABLE ;; forward-declared in typing
+rule Defaultable: |- t DEFAULTABLE -- if $default_(t) =/= eps
+
+;;relation Nondefaultable: |- valtype NONDEFAULTABLE ;; forward-declared in typing
+rule Nondefaultable: |- t NONDEFAULTABLE -- if $default_(t) = eps
 
 
 ;; Packed fields

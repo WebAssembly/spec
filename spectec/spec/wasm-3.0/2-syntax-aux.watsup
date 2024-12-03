@@ -230,6 +230,7 @@ def $unrolldt(DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype
 def $expanddt(deftype) = comptype              -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
 relation Expand: deftype ~~ comptype hint(macro "%expanddt") hint(tabular)
+  hint(prose "The :ref:`expansion <aux-expand-deftype>` of %1 is %2")  ;; TODO(3, ?): avoid hardcoding reST
 rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
 

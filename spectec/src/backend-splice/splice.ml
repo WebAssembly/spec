@@ -102,11 +102,11 @@ let env_def env def =
 
 let env_prose env prose =
   match prose with
-  | Iff (anchor, _, _, _) -> (* TODO *)
+  | RuleD (anchor, _, _) -> (* TODO *)
     env.rule_prose <- Map.add anchor {ralgo = prose; use = ref 0} env.rule_prose
-  | Algo ({ it = Al.Ast.RuleA (_, anchor, _, _); _ }) ->
+  | AlgoD ({ it = Al.Ast.RuleA (_, anchor, _, _); _ }) ->
     env.rule_prose <- Map.add anchor {ralgo = prose; use = ref 0} env.rule_prose
-  | Algo ({ it = Al.Ast.FuncA (id, _, _); _}) ->
+  | AlgoD ({ it = Al.Ast.FuncA (id, _, _); _}) ->
     env.def_prose <- Map.add id {falgo = prose; use = ref 0} env.def_prose
 
 let env (config : config) pdsts odsts elab el pr : env =

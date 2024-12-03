@@ -185,7 +185,7 @@ rule Instr_ok/br_if:
   -- if C.LABELS[l] = t?
 
 rule Instr_ok/br_table:
-  C |- BR_TABLE l* l' : t_1* t? -> t_2*
+  C |- BR_TABLE l* l' : t_1* t? I32 -> t_2*
   -- if t? = C.LABELS[l']
   -- if (t? = C.LABELS[l])*
 

@@ -133,6 +133,7 @@ type env =
     deco_typ : bool;
     deco_gram : bool;
     deco_rule : bool;
+    name_rel : hints ref;
     tab_rel : hints ref;
   }
 
@@ -157,6 +158,7 @@ let new_env config =
     deco_typ = false;
     deco_gram = false;
     deco_rule = false;
+    name_rel = ref Map.empty;
     tab_rel = ref Map.empty;
   }
 
@@ -228,6 +230,7 @@ let env_hintdef env hd =
   | RelH (id, hints) ->
     env_hints "macro" env.macro_rel id hints;
     env_hints "show" env.show_rel id hints;
+    env_hints "name" env.name_rel id hints;
     env_hints "tabular" env.tab_rel id hints
   | VarH (id, hints) ->
     env_hints "macro" env.macro_var id hints;
@@ -328,7 +331,7 @@ let env_def env d : (id * typ list) list =
     []
   | RelD (id, t, hints) ->
     env_hintdef env (RelH (id, hints) $ d.at);
-    env_typ env id t hints;
+    env_typcon env id ((t, []), hints);
     []
   | VarD (id, _t, hints) ->
     env.vars := Set.add id.it !(env.vars);
@@ -592,7 +595,7 @@ let nonmacro_atom atom =
   | Atom s -> s = "_"
   | Dot
   | Comma | Semicolon
-  | Colon | Equal
+  | Colon | Equal | Less | Greater
   | Quest | Plus | Star
   | LParen | RParen
   | LBrack | RBrack
@@ -969,12 +972,12 @@ let render_gramid env id = render_id `Token env.show_gram env.macro_gram env id
 
 let render_ruleid env id1 id2 =
   let id1' =
-    match Map.find_opt id1.it !(env.show_rel) with
+    match Map.find_opt id1.it !(env.name_rel) with
     | None -> id1.it
     | Some [] -> assert false
     | Some ({it = TextE s; _}::_) -> s
     | Some ({at; _}::_) ->
-      error at "malformed `show` hint for relation"
+      error at "malformed `name` hint for relation"
   in
   let id2' = if id2.it = "" then "" else "-" ^ id2.it in
   "\\textsc{\\scriptsize " ^ dash_id (quote_id (id1' ^ id2')) ^ "}"
@@ -1017,6 +1020,8 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | Semicolon -> ";"
       | Colon -> ":"
       | Equal -> "="
+      | Less -> "<"
+      | Greater -> ">"
       | Quest -> "{}^?"
       | Plus -> "{}^+"
       | Star -> "{}^\\ast"
@@ -1037,6 +1042,9 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | Dot2 -> ".."
           | Dot3 -> "\\ldots"
           | Assign -> ":="
+          | NotEqual -> "\\neq"
+          | LessEqual-> "\\leq"
+          | GreaterEqual -> "\\geq"
           | Arrow | ArrowSub -> "\\rightarrow"
           | Arrow2 | Arrow2Sub -> "\\Rightarrow"
           | Sub -> "\\leq"

@@ -134,7 +134,7 @@ and string_of_expr expr =
   | CatE (e1, e2) ->
     sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
-    sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
+    sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | GetCurStateE -> "current_state()"
   | GetCurContextE None -> "current_context()"

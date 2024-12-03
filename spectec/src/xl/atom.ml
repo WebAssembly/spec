@@ -25,6 +25,11 @@ and atom' =
   | Sup                          (* `:>` *)
   | Assign                       (* `:=` *)
   | Equal                        (* ``=` *)
+  | NotEqual                     (* ``=/=` *)
+  | Less                         (* ``<` *)
+  | Greater                      (* ``>` *)
+  | LessEqual                    (* ``<=` *)
+  | GreaterEqual                 (* ``>=` *)
   | Equiv                        (* `==` *)
   | Approx                       (* `~~` *)
   | SqArrow                      (* `~>` *)
@@ -90,6 +95,11 @@ let to_string atom =
   | Sup -> ":>"
   | Assign -> ":="
   | Equal -> "="
+  | NotEqual -> "=/="
+  | Less -> "<"
+  | Greater -> ">"
+  | LessEqual -> "<="
+  | GreaterEqual -> ">="
   | Equiv -> "=="
   | Approx -> "~~"
   | SqArrow -> "~>"
@@ -141,6 +151,11 @@ let name atom =
   | Sup -> "sup"                  (* Latex: \geq or :> *)
   | Assign -> "assign"            (* Latex: := *)
   | Equal -> "eq"
+  | NotEqual -> "neq"             (* Latex: \neq *)
+  | Less -> "lt"                  (* Latex: < *)
+  | Greater -> "gt"               (* Latex: > *)
+  | LessEqual -> "leq"            (* Latex: \leq *)
+  | GreaterEqual -> "geq"         (* Latex: \geq *)
   | Equiv -> "equiv"
   | Approx -> "approx"
   | SqArrow -> "sqarrow"          (* Latex: \hookrightarrow *)
