@@ -1,3 +1,26 @@
+(*
+
+Elaboration of expressions is type-directed, in order to disambiguate syntax.
+Effectively, it implements custom parsing based on type definitions.
+
+The trickiest bit are iterations, since they can be empty. It is further
+complicated by the ability of various expression forms to return iterations.
+
+We call _generic_ expressions those that can generally have any type. These are:
+
+- VarE, IdxE, DotE, ParenE, CallE, TypE
+- SeqE, SliceE, UpdE, ExtE, CommaE, CatE, IterE
+
+
+e1 e2... : t*  -->  ( eps : t* ) ; ( e1 e2... )     ;; t* empty
+|
+e1 e2... : t*  -->  ( e1 : t* ) ++ ( e2... : t* )   ;; sequencing
+
+g : t*         -->  
+|
+e : t*         -->  [( e : t )]
+*)
+
 open Util
 open Source
 open El
@@ -571,9 +594,9 @@ and as_variant_typ phrase env dir t at : (typcase list * dots) attempt =
   | VarT (id, args) -> as_variant_typid' phrase env id args at
   | _ -> fail_dir_typ env at phrase dir t "| ..."
 
-let case_has_args env t op at : bool =
-  let cases, _ = checkpoint (as_variant_typ "" env Check t at) in
-  let t, _prems = find_case_sub cases op at t in
+let case_has_args env t op : bool =
+  let cases, _ = checkpoint (as_variant_typ "" env Check t op.at) in
+  let t, _prems = find_case_sub cases op op.at t in
   match t.it with
   | SeqT ({it = AtomT _; _}::_) -> true
   | _ -> false
@@ -1307,13 +1330,13 @@ and elab_exp' env e t : Il.exp' attempt =
     let* ts = as_tup_typ "tuple" env Check t e.at in
     let* es' = elab_exp_list env es ts e.at in
     Ok (Il.TupE es')
+(* TODO: remove *)
   | SeqE [] when is_empty_typ env t ->
     let* e', t' = infer_exp env e in
     cast_exp' "empty expression" env e' t' t
   | EpsE | SeqE _ when is_iter_typ env t ->
-    let es = unseq_exp e in
     let* t1, iter = as_iter_typ "" env Check t e.at in
-    elab_exp_iter' env es (t1, iter) t e.at
+    elab_exp_iter' env (unseq_exp e) (t1, iter) t e.at
   | EpsE
   | AtomE _
   | InfixE _
@@ -1386,8 +1409,9 @@ and elab_exp_iter' env es (t1, iter) t at : Il.exp' attempt =
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1; _}::_, _
-    when is_variant_typ env t1 && case_has_args env t1 atom at1 ->
+  (* TODO: use backtracking *)
+  | {it = AtomE atom; _}::_, _
+    when is_variant_typ env t1 && case_has_args env t1 atom ->
     let* cases, _dots = as_variant_typ "" env Check t1 at in
     let* e' = elab_exp_variant env (expand_id env t1) (SeqE es $ at) cases t1 at in
     Ok (lift_exp' e' iter)
@@ -1395,6 +1419,12 @@ and elab_exp_iter' env es (t1, iter) t at : Il.exp' attempt =
   (* An empty sequence represents the None case for options *)
   | [], Opt ->
     Ok (Il.OptE None)
+  | [e1], Opt ->
+    let* e1' = elab_exp env e1 t1 in
+    Ok (Il.OptE (Some e1'))
+  | _::_::_, Opt ->
+    fail_typ env at "expression" t
+
   (* An empty sequence represents the Nil case for lists *)
   | [], List ->
     Ok (Il.ListE [])
@@ -1404,8 +1434,8 @@ and elab_exp_iter' env es (t1, iter) t at : Il.exp' attempt =
     let* e2' = elab_exp_iter env es2 (t1, iter) t at in
     Ok (cat_exp' e1' e2')
 
-  | _, _ ->
-    fail_typ env at "expression" t
+  | _, (List1 | ListN _) ->
+    assert false
 
 and elab_exp_notation env tid e nt t : Il.exp attempt =
   (* Convert notation into applications of mixin operators *)
@@ -1537,8 +1567,8 @@ and elab_exp_notation_iter' env tid es (t1, iter) t at : Il.exp' attempt =
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1; _}::_, _
-    when is_variant_typ env t1 && case_has_args env t1 atom at1 ->
+  | {it = AtomE atom; _}::_, _
+    when is_variant_typ env t1 && case_has_args env t1 atom ->
     let* cases, _ = as_variant_typ "expression" env Check t1 at in
     let* e' = elab_exp_variant env (expand_id env t1) (SeqE es $ at) cases t1 at in
     Ok (lift_exp' e' iter)
@@ -1573,7 +1603,7 @@ and elab_exp_variant env tid e cases t at : Il.exp attempt =
     | BrackE (atom, _, _) -> Ok atom
     | _ -> fail_typ env at "expression" t
   in
-  let* t1, _prems = attempt (find_case_sub cases atom at) t in
+  let* t1, _prems = attempt (find_case_sub cases atom atom.at) t in
   let* es', _s = elab_exp_notation' env tid e t1 in
   let t2 = expand_singular env t $ at in
   let t2' = elab_typ env t2 in
