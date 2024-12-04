@@ -3,6 +3,7 @@ open Print
 open Walk
 open Util
 open Source
+open Xl
 
 let (let*) = Option.bind
 
@@ -22,6 +23,7 @@ end
 let rec get_subst lhs rhs s =
   match lhs.it, rhs.it with
   | VarE id, _ -> Some (Subst.add id rhs s)
+  | CvtE (e1, nt11, nt12), CvtE (e2, nt21, nt22) when nt11 = nt21 && nt12 = nt22 -> get_subst e1 e2 s
   | UnE (op1, e1), UnE (op2, e2) when op1 = op2 -> get_subst e1 e2 s
   | OptE (Some e1), OptE (Some e2) ->
     get_subst e1 e2 s
@@ -50,6 +52,17 @@ let get_subst_arg param arg s =
 
 let ($>) it e = {e with it}
 
+let of_bool_exp = function
+  | BoolE b -> Some b
+  | _ -> None
+
+let of_num_exp = function
+  | NumE n -> Some n
+  | _ -> None
+
+let to_bool_exp b = BoolE b
+let to_num_exp n = NumE n
+
 let as_opt_exp e =
   match e.it with
   | OptE eo -> eo
@@ -62,13 +75,13 @@ let as_list_exp e =
     
 let is_head_normal_exp e =
   match e.it with
-  | BoolE _ | NumE _ | UnE (MinusOp, {it = NumE _; _}) | SubE _
+  | BoolE _ | NumE _ | SubE _
   | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _-> true
   | _ -> false
     
 let rec is_normal_exp e =
   match e.it with
-  | BoolE _ | NumE _ | UnE (MinusOp, {it = NumE _; _}) | SubE _ -> true
+  | BoolE _ | NumE _ | SubE _ -> true
   | ListE es | TupE es | CaseE (_, es) -> List.for_all is_normal_exp es
   | OptE None -> true
   | OptE (Some e) -> is_normal_exp e
@@ -82,84 +95,65 @@ let rec reduce_exp s e : expr =
   ) @@ fun _ ->
   match e.it with
   | VarE _ | BoolE _ | NumE _ -> e
+  | CvtE (e1, _, nt) ->
+    let e1' = reduce_exp s e1 in
+    (match e1'.it with
+    | NumE n ->
+      (match Num.cvt nt n with
+      | Some n' -> NumE n' $> e
+      | None -> e1'
+      )
+    | _ -> e1'
+    )
   | UnE (op, e1) ->
     let e1' = reduce_exp s e1 in
     (match op, e1'.it with
-    | NotOp, BoolE b -> BoolE (not b) $> e
-    | NotOp, UnE (NotOp, e11) -> e11
-    | MinusOp, UnE (MinusOp, e11) -> e11
+    | #Bool.unop as op', BoolE b1 -> BoolE (Bool.un op' b1) $> e
+    | #Num.unop as op', NumE n1 ->
+      (match Num.un op' n1 with
+      | Some n -> NumE n
+      | None -> UnE (op, e1')
+      ) $> e
+    | `NotOp, UnE (`NotOp, e11') -> e11'
+    | `MinusOp, UnE (`MinusOp, e11') -> e11'
     | _ -> UnE (op, e1') $> e
     )
   | BinE (op, e1, e2) ->
     let e1' = reduce_exp s e1 in
     let e2' = reduce_exp s e2 in
-    (match op, e1'.it, e2'.it with
-    | AndOp, BoolE true, _ -> e2'
-    | AndOp, BoolE false, _ -> e1'
-    | AndOp, _, BoolE true -> e1'
-    | AndOp, _, BoolE false -> e2'
-    | OrOp, BoolE true, _ -> e1'
-    | OrOp, BoolE false, _ -> e2'
-    | OrOp, _, BoolE true -> e2'
-    | OrOp, _, BoolE false -> e1'
-    | ImplOp, BoolE b1, BoolE b2 -> BoolE (not b1 || b2) $> e
-    | ImplOp, BoolE true, _ -> e2'
-    | ImplOp, BoolE false, _ -> BoolE true $> e
-    | ImplOp, _, BoolE true -> e2'
-    | ImplOp, _, BoolE false -> UnE (NotOp, e1') $> e
-    | EquivOp, BoolE b1, BoolE b2 -> BoolE (b1 = b2) $> e
-    | EquivOp, BoolE true, _ -> e2'
-    | EquivOp, BoolE false, _ -> UnE (NotOp, e2') $> e
-    | EquivOp, _, BoolE true -> e1'
-    | EquivOp, _, BoolE false -> UnE (NotOp, e1') $> e
-    | AddOp, NumE n1, NumE n2 -> NumE Z.(n1 + n2) $> e
-    | AddOp, NumE z0, _ when z0 = Z.zero -> e2'
-    | AddOp, _, NumE z0 when z0 = Z.zero -> e1'
-    | SubOp, NumE n1, NumE n2 when n1 >= n2 -> NumE Z.(n1 - n2) $> e
-    | SubOp, NumE z0, _ when z0 = Z.zero -> UnE (MinusOp, e2') $> e
-    | SubOp, _, NumE z0 when z0 = Z.zero -> e1'
-    | MulOp, NumE n1, NumE n2 -> NumE Z.(n1 * n2) $> e
-    | MulOp, NumE z1, _ when z1 = Z.one -> e2'
-    | MulOp, _, NumE z1 when z1 = Z.one -> e1'
-    | DivOp, NumE n1, NumE n2 when Z.(n2 <> zero && rem n1 n2 = zero) -> NumE Z.(n1 / n2) $> e
-    | DivOp, NumE z0, _ when z0 = Z.zero -> e1'
-    | DivOp, _, NumE z1 when z1 = Z.one -> e1'
-    | ModOp, NumE n1, NumE n2 -> NumE Z.(rem n1 n2) $> e
-    | ModOp, NumE z0, _ when z0 = Z.zero -> e1'
-    | ModOp, _, NumE z1 when z1 = Z.one -> NumE Z.zero $> e
-    | ExpOp, NumE n1, NumE n2 when n2 >= Z.zero -> NumE Z.(n1 ** to_int n2) $> e
-    | ExpOp, NumE z01, _ when z01 = Z.zero || z01 = Z.one -> e1'
-    | ExpOp, _, NumE z0 when z0 = Z.zero -> NumE Z.one $> e
-    | ExpOp, _, NumE z1 when z1 = Z.one -> e1'
-    | EqOp, _, _ when Eq.eq_expr e1' e2' -> BoolE true $> e
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false $> e
-    | NeOp, _, _ when Eq.eq_expr e1' e2' -> BoolE false $> e
-    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true $> e
-    | LtOp, NumE n1, NumE n2 -> BoolE (n1 < n2) $> e
-    | LtOp, UnE (MinusOp, {it = NumE n1; _}), UnE (MinusOp, {it = NumE n2; _}) -> BoolE (n2 < n1) $> e
-    | LtOp, UnE (MinusOp, {it = NumE _; _}), NumE _ -> BoolE true $> e
-    | LtOp, NumE _, UnE (MinusOp, {it = NumE _; _}) -> BoolE false $> e
-    | GtOp, NumE n1, NumE n2 -> BoolE (n1 > n2) $> e
-    | GtOp, UnE (MinusOp, {it = NumE n1; _}), UnE (MinusOp, {it = NumE n2; _}) -> BoolE (n2 > n1) $> e
-    | GtOp, UnE (MinusOp, {it = NumE _; _}), NumE _ -> BoolE false $> e
-    | GtOp, NumE _, UnE (MinusOp, {it = NumE _; _}) -> BoolE true $> e
-    | LeOp, NumE n1, NumE n2 -> BoolE (n1 <= n2) $> e
-    | LeOp, UnE (MinusOp, {it = NumE n1; _}), UnE (MinusOp, {it = NumE n2; _}) -> BoolE (n2 <= n1) $> e
-    | LeOp, UnE (MinusOp, {it = NumE _; _}), NumE _ -> BoolE true $> e
-    | LeOp, NumE _, UnE (MinusOp, {it = NumE _; _}) -> BoolE false $> e
-    | GeOp, NumE n1, NumE n2 -> BoolE (n1 >= n2) $> e
-    | GeOp, UnE (MinusOp, {it = NumE n1; _}), UnE (MinusOp, {it = NumE n2; _}) -> BoolE (n2 >= n1) $> e
-    | GeOp, UnE (MinusOp, {it = NumE _; _}), NumE _ -> BoolE false $> e
-    | GeOp, NumE _, UnE (MinusOp, {it = NumE _; _}) -> BoolE true $> e
-    | _ -> BinE (op, e1', e2') $> e
-    )
+    (match op with
+    | #Bool.binop as op' ->
+      (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
+      | None -> BinE (op, e1', e2')
+      | Some e' -> e'
+      )
+    | #Num.binop as op' ->
+      (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
+      | None -> BinE (op, e1', e2')
+      | Some e' -> e'
+      )
+    | #Num.cmpop as op' ->
+      (match of_num_exp e1'.it, of_num_exp e2'.it with
+      | Some n1, Some n2 ->
+        (match Num.cmp op' n1 n2 with
+        | Some b -> to_bool_exp b
+        | None -> BinE (op, e1', e2')
+        )
+      | _, _ -> BinE (op, e1', e2')
+      )
+    | `EqOp when Eq.eq_expr e1' e2' -> BoolE true
+    | `NeOp when Eq.eq_expr e1' e2' -> BoolE false
+    | `EqOp when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | `NeOp when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
+    | #Bool.cmpop -> BinE (op, e1', e2')
+    ) $> e
   | AccE (e1, p) ->
     (match p.it with
     | IdxP e2 ->
       let e1' = reduce_exp s e1 in
       let e2' = reduce_exp s e2 in
       (match e1'.it, e2'.it with
-      | ListE es, NumE i when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
+      | ListE es, NumE (`Nat i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
       | _ -> AccE (e1', IdxP e2' $ p.at) $> e
       )
     | SliceP (e2, e3) ->
@@ -167,14 +161,14 @@ let rec reduce_exp s e : expr =
       let e2' = reduce_exp s e2 in
       let e3' = reduce_exp s e3 in
       (match e1'.it, e2'.it, e3'.it with
-      | ListE es, NumE i, NumE n when Z.(i + n) < Z.of_int (List.length es) ->
+      | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
         ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es))
       | _ -> AccE (e1', SliceP (e2', e3') $ p.at)
       ) $> e
     | DotP atom ->
       let e1' = reduce_exp s e1 in
       (match e1'.it with
-      | StrE efs -> !(snd (List.find (fun (atomN, _) -> El.Atom.eq atomN atom) efs))
+      | StrE efs -> !(snd (List.find (fun (atomN, _) -> Atom.eq atomN atom) efs))
       | _ -> AccE (e1', DotP atom $ p.at) $> e
       )
     )
@@ -205,7 +199,7 @@ let rec reduce_exp s e : expr =
     | OptE _, OptE None -> e1'.it
     | StrE efs1, StrE efs2 ->
       let merge (atom1, e1) (atom2, e2) =
-        assert (El.Atom.eq atom1 atom2);
+        assert (Atom.eq atom1 atom2);
         (atom1, ref (reduce_exp s (CompE (!e1, !e2) $> !e1)))
       in StrE (List.map2 merge efs1 efs2)
     | _ -> CompE (e1', e2')
@@ -225,7 +219,7 @@ let rec reduce_exp s e : expr =
   | LenE e1 ->
     let e1' = reduce_exp s e1 in
     (match e1'.it with
-    | ListE es -> NumE (Z.of_int (List.length es))
+    | ListE es -> NumE (`Nat (Z.of_int (List.length es)))
     | _ -> LenE e1'
     ) $> e
   | TupE es -> TupE (List.map (reduce_exp s) es) $> e
@@ -256,11 +250,11 @@ let rec reduce_exp s e : expr =
       | List | List1 ->
         let n = List.length (as_list_exp (List.hd es')) in
         if iter' = List || n >= 1 then
-          let en = NumE (Z.of_int n) $$ e.at % (Il.Ast.NumT NatT $ e.at) in
+          let en = NumE (`Nat (Z.of_int n)) $$ e.at % (Il.Ast.NumT `NatT $ e.at) in
           reduce_exp s (IterE (e1', (ListN (en, None), xes')) $> e)
         else
           IterE (e1', iterexp') $> e
-      | ListN ({it = NumE n'; _}, ido) ->
+      | ListN ({it = NumE (`Nat n'); _}, ido) ->
         let ess' = List.map as_list_exp es' in
         let ns = List.map List.length ess' in
         let n = Z.to_int n' in
@@ -270,7 +264,7 @@ let rec reduce_exp s e : expr =
             let s = List.fold_right2 Subst.add ids esI' Subst.empty in
             let s' =
               Option.fold ido ~none:s ~some:(fun id ->
-                let en = NumE (Z.of_int i) $$ no_region % (Il.Ast.NumT NatT $ no_region) in
+                let en = NumE (`Nat (Z.of_int i)) $$ no_region % (Il.Ast.NumT `NatT $ no_region) in
                 Subst.add id en s
               )
             in Subst.subst_exp s' e1'
@@ -312,7 +306,7 @@ and reduce_path s e p f =
       let e1' = reduce_exp s e1 in
       let f' e' p1' =
         match e'.it, e1'.it with
-        | ListE es, NumE i when i < Z.of_int (List.length es) ->
+        | ListE es, NumE (`Nat i) when i < Z.of_int (List.length es) ->
           ListE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $> e'
         | _ ->
           f e' (ps @ [IdxP (e1') $> p'])
@@ -323,7 +317,7 @@ and reduce_path s e p f =
       let e2' = reduce_exp s e2 in
       let f' e' p1' =
         match e'.it, e1'.it, e2'.it with
-        | ListE es, NumE i, NumE n when Z.(i + n) < Z.of_int (List.length es) ->
+        | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
           let e1' = ListE Lib.List.(take (Z.to_int i) es) $> e' in
           let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
           let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in
@@ -337,7 +331,7 @@ and reduce_path s e p f =
         match e'.it with
         | StrE efs ->
           StrE (List.map (fun (atomI, eI) ->
-            if El.Atom.eq atomI atom then (atomI, ref (f !eI p1')) else (atomI, eI)) efs) $> e'
+            if Atom.eq atomI atom then (atomI, ref (f !eI p1')) else (atomI, eI)) efs) $> e'
         | _ ->
           f e' (ps @ [DotP (atom) $> p'])
       in

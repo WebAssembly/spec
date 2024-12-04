@@ -64,6 +64,7 @@ let mutability node = function
   | Cons -> node
   | Var -> Node ("mut", [node])
 
+let addr_type t = string_of_addr_type t
 let num_type t = string_of_num_type t
 let vec_type t = string_of_vec_type t
 let ref_type t =
@@ -258,6 +259,10 @@ struct
     | "32x4" -> "64x2"
     | _ -> assert false
 
+  let without_high_bit = function
+    | "8x16" -> "7x16"
+    | _ -> assert false
+
   let voidop xxxx = function (_ : void) -> .
 
   let itestop xxxx (op : itestop) = match op with
@@ -300,6 +305,13 @@ struct
     | NarrowU -> "narrow_i" ^ double xxxx ^ "_u"
     | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat is)
     | Swizzle -> "swizzle"
+    | RelaxedSwizzle -> "relaxed_swizzle"
+    | RelaxedQ15MulRS -> "relaxed_q15mulr_s"
+    | RelaxedDot -> "relaxed_dot_i" ^ half xxxx ^ "_i" ^ without_high_bit (half xxxx) ^ "_s"
+
+  let iternop xxxx (op : iternop) = match op with
+    | RelaxedLaneselect -> "relaxed_laneselect"
+    | RelaxedDotAdd -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "_add_s"
 
   let fbinop xxxx (op : fbinop) = match op with
     | Add -> "add"
@@ -310,6 +322,12 @@ struct
     | Max -> "max"
     | Pmin -> "pmin"
     | Pmax -> "pmax"
+    | RelaxedMin -> "relaxed_min"
+    | RelaxedMax -> "relaxed_max"
+
+  let fternop xxxx (op : fternop) = match op with
+    | RelaxedMadd -> "relaxed_madd"
+    | RelaxedNmadd-> "relaxed_nmadd"
 
   let irelop xxxx (op : irelop) = match op with
     | Eq -> "eq"
@@ -342,6 +360,10 @@ struct
     | TruncSatUF32x4 -> "trunc_sat_f32x4_u"
     | TruncSatSZeroF64x2 -> "trunc_sat_f64x2_s_zero"
     | TruncSatUZeroF64x2 -> "trunc_sat_f64x2_u_zero"
+    | RelaxedTruncSF32x4 -> "relaxed_trunc_f32x4_s"
+    | RelaxedTruncUF32x4 -> "relaxed_trunc_f32x4_u"
+    | RelaxedTruncSZeroF64x2 -> "relaxed_trunc_f64x2_s_zero"
+    | RelaxedTruncUZeroF64x2 -> "relaxed_trunc_f64x2_u_zero"
 
   let fcvtop xxxx (op : fcvtop) = match op with
     | DemoteZeroF64x2  -> "demote_f64x2_zero"
@@ -421,6 +443,7 @@ let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
 let vec_unop = vec_shape_oper (V128Op.iunop, V128Op.iunop, V128Op.funop)
 let vec_binop = vec_shape_oper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
+let vec_ternop = vec_shape_oper (V128Op.iternop, V128Op.iternop, V128Op.fternop)
 let vec_testop = vec_shape_oper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
 let vec_relop = vec_shape_oper (V128Op.irelop, V128Op.irelop, V128Op.frelop)
 let vec_cvtop = vec_shape_oper (V128Op.icvtop, V128Op.icvtop, V128Op.fcvtop)
@@ -434,14 +457,13 @@ let vec_splatop = vec_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop
 let vec_extractop = vec_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
 let vec_replaceop = vec_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
 
-
 let var x = nat32 x.it
 let num v = string_of_num v.it
 let vec v = string_of_vec v.it
 
 let memop name x typ {ty; align; offset; _} sz =
   typ ty ^ "." ^ name ^ " " ^ var x ^
-  (if offset = 0l then "" else " offset=" ^ nat32 offset) ^
+  (if offset = 0L then "" else " offset=" ^ nat64 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat64 (Int64.shift_left 1L align))
 
 let loadop x op =
@@ -583,6 +605,7 @@ let rec instr e =
     | VecTest op -> vec_testop op, []
     | VecUnary op -> vec_unop op, []
     | VecBinary op -> vec_binop op, []
+    | VecTernary op -> vec_ternop op, []
     | VecCompare op -> vec_relop op, []
     | VecConvert op -> vec_cvtop op, []
     | VecShift op -> vec_shiftop op, []
@@ -634,14 +657,14 @@ let tag off i tag =
   )
 
 let table off i tab =
-  let {ttype = TableT (lim, t); tinit} = tab.it in
-  Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
+  let {ttype = TableT (at, lim, t); tinit} = tab.it in
+  Node ("table $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim,
     atom ref_type t :: list instr tinit.it
   )
 
 let memory off i mem =
-  let {mtype = MemoryT lim} = mem.it in
-  Node ("memory $" ^ nat (off + i) ^ " " ^ limits nat32 lim, [])
+  let {mtype = MemoryT (at, lim)} = mem.it in
+  Node ("memory $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim, [])
 
 let is_elem_kind = function
   | (NoNull, FuncHT) -> true
@@ -869,11 +892,12 @@ let ref_pat = function
   | RefTypePat t -> Node ("ref." ^ heap_type t, [])
   | NullPat -> Node ("ref.null", [])
 
-let result mode res =
+let rec result mode res =
   match res.it with
   | NumResult np -> num_pat mode np
   | VecResult vp -> vec_pat mode vp
   | RefResult rp -> ref_pat rp
+  | EitherResult ress -> Node ("either", List.map (result mode) ress)
 
 let instance (x1_opt, x2_opt) =
   Node ("module instance" ^ var_opt x1_opt ^ var_opt x2_opt, [])

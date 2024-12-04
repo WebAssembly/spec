@@ -68,7 +68,9 @@ let rewrite_id (_, xes) id =
   ) xes
   |> get_or_else id
 let rec rewrite_iterexp' iterexp pr =
-  let new_ = Il_walk.transform_expr (rewrite iterexp) in
+  let transformer =
+    { Il_walk.base_transformer with transform_exp = rewrite iterexp } in
+  let new_ = Il_walk.transform_exp transformer in
   match pr with
   | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
@@ -96,7 +98,9 @@ let recover_id (_, xes) id =
   ) xes
   |> get_or_else id
 let rec recover_iterexp' iterexp pr =
-  let new_ = Il_walk.transform_expr (recover iterexp) in
+  let transformer =
+    { Il_walk.base_transformer with transform_exp = recover iterexp } in
+  let new_ = Il_walk.transform_exp transformer in
   match pr with
   | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
@@ -107,12 +111,20 @@ let rec recover_iterexp' iterexp pr =
   | IterPr (pr, (iter, xes)) -> IterPr (recover_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
 and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
 
+(* is this assign premise a if-let? *)
+let is_cond_assign prem =
+  match prem.it with
+  | LetPr ({it = CaseE (_, _); _}, _, _) -> true
+  | _ -> false
 
-(* is this assign premise encoded premise for pop? *)
+(* is this assign premise encoded premise for popping one value? *)
 let is_pop env row =
   is_assign env row &&
   match (unwrap row).it with
-  | LetPr (_, rhs, _) -> Il.Print.string_of_typ rhs.note = "stackT"
+  | LetPr (_, {it = CallE (_, {it = ExpA n; _} :: _); note; _}, _) when Il.Print.string_of_typ note = "stackT" ->
+    (match n.it with
+    | NumE (`Nat i) -> Z.equal i (Z.one)
+    | _ -> false)
   | _ -> false
 
 (* iteratively select pop, condition and assignment premises,
@@ -161,7 +173,11 @@ and select_assign prems acc env fb =
         fb := (len, acc @ List.map unwrap non_assigns);
       None
     | _ ->
-      let assigns' = List.map unwrap assigns in
+      let cond_assigns, non_cond_assigns =
+        List.map unwrap assigns
+        |> List.partition is_cond_assign
+      in
+      let assigns' = cond_assigns @ non_cond_assigns in
       let new_env = assigns
         |> List.map targets
         |> List.concat
@@ -264,7 +280,7 @@ let rec rows_of_prem vars len i p =
   match p.it with
   | IfPr e ->
     (match e.it with
-      | CmpE (EqOp, l, r) ->
+      | CmpE (`EqOp, _, l, r) ->
         [ Condition, p, [i] ]
         @ rows_of_eq vars len i l r p.at
         @ rows_of_eq vars len i r l p.at

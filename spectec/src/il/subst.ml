@@ -136,10 +136,10 @@ and subst_exp s e =
     | None -> VarE id
     | Some e' -> e'.it
     )
-  | BoolE _ | NatE _ | TextE _ -> e.it
-  | UnE (op, e1) -> UnE (op, subst_exp s e1)
-  | BinE (op, e1, e2) -> BinE (op, subst_exp s e1, subst_exp s e2)
-  | CmpE (op, e1, e2) -> CmpE (op, subst_exp s e1, subst_exp s e2)
+  | BoolE _ | NumE _ | TextE _ -> e.it
+  | UnE (op, ot, e1) -> UnE (op, ot, subst_exp s e1)
+  | BinE (op, ot, e1, e2) -> BinE (op, ot, subst_exp s e1, subst_exp s e2)
+  | CmpE (op, ot, e1, e2) -> CmpE (op, ot, subst_exp s e1, subst_exp s e2)
   | IdxE (e1, e2) -> IdxE (subst_exp s e1, subst_exp s e2)
   | SliceE (e1, e2, e3) -> SliceE (subst_exp s e1, subst_exp s e2, subst_exp s e3)
   | UpdE (e1, p, e2) -> UpdE (subst_exp s e1, subst_path s p, subst_exp s e2)
@@ -161,6 +161,7 @@ and subst_exp s e =
   | ListE es -> ListE (subst_list subst_exp s es)
   | CatE (e1, e2) -> CatE (subst_exp s e1, subst_exp s e2)
   | CaseE (op, e1) -> CaseE (op, subst_exp s e1)
+  | CvtE (e1, nt1, nt2) -> CvtE (subst_exp s e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
   ) $$ e.at % subst_typ s e.note
 
@@ -187,7 +188,7 @@ and subst_iterexp s (iter, xes) =
 and subst_sym s g =
   (match g.it with
   | VarG (id, args) -> VarG (subst_gramid s id, List.map (subst_arg s) args)
-  | NatG _ | TextG _ -> g.it
+  | NumG _ | TextG _ -> g.it
   | EpsG -> EpsG
   | SeqG gs -> SeqG (subst_list subst_sym s gs)
   | AltG gs -> AltG (subst_list subst_sym s gs)

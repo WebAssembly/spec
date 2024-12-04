@@ -1,6 +1,7 @@
+open Value
+
 type data
 type t = data
-type address = Memory.address
 
 exception Bounds
 

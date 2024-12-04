@@ -10,7 +10,7 @@ open Ds
 (* Errors *)
 
 module Assert = Reference_interpreter.Error.Make ()
-let error_interpret at msg = Error.error at "interpreter" msg
+let _error_interpret at msg = Error.error at "interpreter" msg
 
 (* Logging *)
 
@@ -59,10 +59,17 @@ let try_run runner target =
       runner target
     with
     | Exception.Error (at, msg, step) ->
-      let msg' = msg ^ " (interpreting " ^ step ^ ")" in
-      error_interpret at msg'
+      let msg' = msg ^ " (interpreting " ^ step ^ " at " ^ Source.string_of_region at ^ ")" in
+      (* error_interpret at msg' *)
+      prerr_endline msg';
+      fail
+    | Exception.Invalid (e, _) ->
+      let msg = "validation failure (" ^ Printexc.to_string e ^ ")" in
+      prerr_endline msg;
+      fail
     | e ->
-      prerr_endline (Printexc.to_string e); fail
+      prerr_endline (Printexc.to_string e);
+      fail
   in
   result, Sys.time () -. start_time
 
@@ -105,7 +112,7 @@ let get_export_addr name modulename =
     |> args_of_casev
   in
   try List.hd vl with Failure _ ->
-    failwith ("Function export doesn't contains function address")
+    failwith ("Function export doesn't contain function address")
 
 (** Main functions **)
 
@@ -121,7 +128,7 @@ let get_global_value module_name globalname =
 
   let index = get_export_addr globalname module_name in
   index
-  |> al_to_int
+  |> al_to_nat
   |> listv_nth (Store.access "GLOBALS")
   |> strv_access "VALUE"
   |> Array.make 1
@@ -131,7 +138,7 @@ let instantiate module_ =
   log "[Instantiating module...]\n";
 
   match al_of_module module_, List.map get_externaddr module_.it.imports with
-  | exception _ -> raise Exception.Invalid
+  | exception exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ()))
   | al_module, externaddrs ->
     Interpreter.instantiate [ al_module; listV_of_list externaddrs ]
 
@@ -155,7 +162,7 @@ let test_assertion assertion =
   match assertion.it with
   | AssertReturn (action, expected) ->
     let result = run_action action |> al_to_list al_to_value in
-    Run.assert_result no_region result expected;
+    Run.assert_results no_region result expected;
     success
   | AssertTrap (action, re) -> (
     try
@@ -178,14 +185,14 @@ let test_assertion assertion =
     )
   | AssertInvalid (def, re) when !Construct.version = 3 ->
     (match def |> module_of_def |> instantiate |> ignore with
-    | exception Exception.Invalid -> success
+    | exception Exception.Invalid _ -> success
     | _ ->
       Run.assert_message assertion.at "validation" "module instance" re;
       fail
     )
   | AssertInvalidCustom (def, re) when !Construct.version = 3 ->
     (match def |> module_of_def |> instantiate |> ignore with
-    | exception Exception.Invalid -> success
+    | exception Exception.Invalid _ -> success
     | _ ->
       Run.assert_message assertion.at "validation" "module instance" re;
       fail
@@ -221,9 +228,17 @@ let run_command command =
       run_command' command
     with
     | Exception.Error (at, msg, step) ->
-      let msg' = msg ^ " (interpreting " ^ step ^ ")" in
+      let msg' = msg ^ " (interpreting " ^ step ^ " at " ^ Source.string_of_region at ^ ")" in
       command.at |> string_of_region |> print_endline;
-      error_interpret at msg'
+      (* error_interpret at msg' *)
+      print_endline ("- Test failed at " ^ string_of_region command.at ^
+        " (" ^ msg' ^ ")");
+      fail
+    | Exception.Invalid (e, backtrace) ->
+      print_endline ("- Test failed at " ^ string_of_region command.at ^
+        " (" ^ Printexc.to_string e ^ ")");
+      Printexc.print_raw_backtrace stdout backtrace;
+      fail
     | e ->
       print_endline ("- Test failed at " ^ string_of_region command.at ^
         " (" ^ Printexc.to_string e ^ ")");
@@ -307,9 +322,18 @@ let rec run_file path args =
     (* Check file extension *)
     match Filename.extension path with
     | ".wast" ->
-      path
-      |> parse_file path Parse.Script.parse_file
-      |> run_wast path
+      let (m1, n1), time1 =
+        path
+        |> parse_file path Parse.Script.parse_file
+        |> run_wast path
+      in
+      let (m2, n2), time2 =
+        match args with
+        | path' :: args' when Sys.file_exists path -> run_file  path' args'
+        | path' :: _ -> failwith ("file " ^ path' ^ " does not exist")
+        | [] -> pass, 0.0
+      in
+      (m1 + m2, n1 + n2), time1 +. time2
     | ".wat" ->
       path
       |> parse_file path Parse.Module.parse_file
@@ -319,8 +343,8 @@ let rec run_file path args =
       In_channel.with_open_bin path In_channel.input_all
       |> parse_file path (Decode.decode path)
       |> run_wasm args
-    | _ -> pass, 0.
-  with Decode.Code _ | Parse.Syntax _ -> pass, 0.
+    | _ -> pass, 0.0
+  with Decode.Code _ | Parse.Syntax _ -> pass, 0.0
 
 and run_dir path =
   path
@@ -343,4 +367,5 @@ let run = function
         print_endline ((string_of_int !num_parse_fail) ^ " parsing fail");
       print_runner_result "Total" result;
     )
-  | _ -> failwith "Cannot find file to run"
+  | path :: _ -> failwith ("file " ^ path ^ " does not exist")
+  | [] -> failwith "no file to run"

@@ -21,7 +21,7 @@ Types
 In the description of the embedder interface, syntactic classes from the :ref:`abstract syntax <syntax>` and the :ref:`runtime's abstract machine <syntax-runtime>` are used as names for variables that range over the possible objects from that class.
 Hence, these syntactic classes can also be interpreted as types.
 
-For numeric parameters, notation like :math:`n:\u32` is used to specify a symbolic name in addition to the respective value range.
+For numeric parameters, notation like :math:`i:\u64` is used to specify a symbolic name in addition to the respective value range.
 
 
 .. _embed-bool:
@@ -164,8 +164,8 @@ Modules
 .. index:: instantiation, module instance
 .. _embed-module-instantiate:
 
-:math:`\F{module\_instantiate}(\store, \module, \externaddr^\ast) : (\store, \moduleinst ~|~ \error)`
-.....................................................................................................
+:math:`\F{module\_instantiate}(\store, \module, \externaddr^\ast) : (\store, \moduleinst ~|~ \exception ~|~ \error)`
+....................................................................................................................
 
 1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external addresses <syntax-externaddr>` :math:`\externaddr^\ast` as imports:
 
@@ -383,7 +383,7 @@ Tables
 
 .. _embed-table-read:
 
-:math:`\F{table\_read}(\store, \tableaddr, i:\u32) : \reff ~|~ \error`
+:math:`\F{table\_read}(\store, \tableaddr, i:\u64) : \reff ~|~ \error`
 ......................................................................
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
@@ -401,7 +401,7 @@ Tables
 
 .. _embed-table-write:
 
-:math:`\F{table\_write}(\store, \tableaddr, i:\u32, \reff) : \store ~|~ \error`
+:math:`\F{table\_write}(\store, \tableaddr, i:\u64, \reff) : \store ~|~ \error`
 ...............................................................................
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
@@ -421,7 +421,7 @@ Tables
 
 .. _embed-table-size:
 
-:math:`\F{table\_size}(\store, \tableaddr) : \u32`
+:math:`\F{table\_size}(\store, \tableaddr) : \u64`
 ..................................................
 
 1. Return the length of :math:`\store.\STABLES[\tableaddr].\TIREFS`.
@@ -437,7 +437,7 @@ Tables
 
 .. _embed-table-grow:
 
-:math:`\F{table\_grow}(\store, \tableaddr, n:\u32, \reff) : \store ~|~ \error`
+:math:`\F{table\_grow}(\store, \tableaddr, n:\u64, \reff) : \store ~|~ \error`
 ..............................................................................
 
 1. Try :ref:`growing <grow-table>` the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]` by :math:`n` elements with initialization value :math:`\reff`:
@@ -495,7 +495,7 @@ Memories
 
 .. _embed-mem-read:
 
-:math:`\F{mem\_read}(\store, \memaddr, i:\u32) : \byte ~|~ \error`
+:math:`\F{mem\_read}(\store, \memaddr, i:\u64) : \byte ~|~ \error`
 ..................................................................
 
 1. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
@@ -513,12 +513,12 @@ Memories
 
 .. _embed-mem-write:
 
-:math:`\F{mem\_write}(\store, \memaddr, i:\u32, \byte) : \store ~|~ \error`
+:math:`\F{mem\_write}(\store, \memaddr, i:\u64, \byte) : \store ~|~ \error`
 ...........................................................................
 
 1. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-2. If :math:`\u32` is larger than or equal to the length of :math:`\X{mi}.\MIBYTES`, then return :math:`\ERROR`.
+2. If :math:`i` is larger than or equal to the length of :math:`\X{mi}.\MIBYTES`, then return :math:`\ERROR`.
 
 3. Replace :math:`\X{mi}.\MIBYTES[i]` with :math:`\byte`.
 
@@ -533,7 +533,7 @@ Memories
 
 .. _embed-mem-size:
 
-:math:`\F{mem\_size}(\store, \memaddr) : \u32`
+:math:`\F{mem\_size}(\store, \memaddr) : \u64`
 ..............................................
 
 1. Return the length of :math:`\store.\SMEMS[\memaddr].\MIBYTES` divided by the :ref:`page size <page-size>`.
@@ -549,7 +549,7 @@ Memories
 
 .. _embed-mem-grow:
 
-:math:`\F{mem\_grow}(\store, \memaddr, n:\u32) : \store ~|~ \error`
+:math:`\F{mem\_grow}(\store, \memaddr, n:\u64) : \store ~|~ \error`
 ...................................................................
 
 1. Try :ref:`growing <grow-mem>` the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]` by :math:`n` :ref:`pages <page-size>`:

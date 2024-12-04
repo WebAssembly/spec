@@ -8,7 +8,7 @@ val run_string : string -> bool
 val run_file : string -> bool
 val run_stdin : unit -> unit
 
-val assert_result : Source.region ->
+val assert_results : Source.region ->
   Value.value list -> Script.result list -> unit (* raises Assert *)
 val assert_message : Source.region ->
   string -> string -> string -> unit (* raises Assert *)

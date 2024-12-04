@@ -1,4 +1,5 @@
 open Il.Ast
+open Xl
 open Def
 open Util
 open Source
@@ -12,6 +13,12 @@ let name_of_rule rule =
   match rule.it with
   | RuleD (id, _, _, _, _) ->
     String.split_on_char '-' id.it |> List.hd
+let full_name_of_rule rule =
+  match rule.it with
+  | RuleD (id, _, _, _, _) -> id.it
+let prems_of_rule rule =
+  match rule.it with
+  | RuleD (_, _, _, _, prems) -> prems
 
 let lhs_of_prem pr =
   match pr.it with
@@ -92,7 +99,7 @@ let rec add eq k v = function (* add a (k,v) to an assoc list *)
       (k', vs) :: add eq k v tl
 
 let group_by_context (rs: rule_clause list): ('a option * rule_clause list) list =
-  let eq_context = Option.equal (fun c1 c2 -> Il.Mixop.eq (case_of_case c1) (case_of_case c2)) in
+  let eq_context = Option.equal (fun c1 c2 -> Mixop.eq (case_of_case c1) (case_of_case c2)) in
   List.fold_left (fun acc r -> add eq_context (extract_context r) r acc) [] rs
 
 let find_hint id hintdefs =
@@ -129,10 +136,10 @@ let rec typ_to_var_name ty =
     | Some hint -> let _, t = subst_hint hint.hintexp args in t
     )
   | Il.Ast.BoolT -> "b"
-  | Il.Ast.NumT NatT -> "n"
-  | Il.Ast.NumT IntT -> "i"
-  | Il.Ast.NumT RatT -> "q"
-  | Il.Ast.NumT RealT -> "r"
+  | Il.Ast.NumT `NatT -> "n"
+  | Il.Ast.NumT `IntT -> "i"
+  | Il.Ast.NumT `RatT -> "q"
+  | Il.Ast.NumT `RealT -> "r"
   | Il.Ast.TextT -> "s"
   | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
   | Il.Ast.IterT _ -> failwith (Il.Print.string_of_typ ty)

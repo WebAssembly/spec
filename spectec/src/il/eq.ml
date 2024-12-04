@@ -1,7 +1,6 @@
 open Util.Source
 open Ast
-
-module Atom = El.Atom
+open Xl
 
 
 (* Helpers *)
@@ -67,11 +66,12 @@ and eq_typcase (op1, (_binds1, t1, prems1), _) (op2, (_binds2, t2, prems2), _) =
 and eq_exp e1 e2 =
   match e1.it, e2.it with
   | VarE id1, VarE id2 -> eq_id id1 id2
-  | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
-  | BinE (op1, e11, e12), BinE (op2, e21, e22) ->
-    op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
-  | CmpE (op1, e11, e12), CmpE (op2, e21, e22) ->
-    op1 = op2 && eq_exp e11 e21 && eq_exp e12 e22
+  | UnE (op1, ot1, e11), UnE (op2, ot2, e21) ->
+    op1 = op2 && ot1 = ot2 && eq_exp e11 e21
+  | BinE (op1, ot1, e11, e12), BinE (op2, ot2, e21, e22) ->
+    op1 = op2 && ot1 = ot2 && eq_exp e11 e21 && eq_exp e12 e22
+  | CmpE (op1, ot1, e11, e12), CmpE (op2, ot2, e21, e22) ->
+    op1 = op2 && ot1 = ot2 && eq_exp e11 e21 && eq_exp e12 e22
   | LenE e11, LenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)
@@ -94,6 +94,8 @@ and eq_exp e1 e2 =
   | ProjE (e1, i1), ProjE (e2, i2) -> eq_exp e1 e2 && i1 = i2
   | TheE e1, TheE e2 -> eq_exp e1 e2
   | CaseE (op1, e1), CaseE (op2, e2) -> eq_mixop op1 op2 && eq_exp e1 e2
+  | CvtE (e1, nt11, nt12), CvtE (e2, nt21, nt22) ->
+    eq_exp e1 e2 && nt11 = nt21 && nt12 = nt22
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
     eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
   | _, _ -> e1.it = e2.it

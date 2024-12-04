@@ -137,10 +137,11 @@ and check_exp env ctx e =
     List.iter (check_arg env ctx) args
   | AtomE _
   | BoolE _
-  | NatE _
+  | NumE _
   | TextE _
   | SizeE _
   | EpsE -> ()
+  | CvtE (e1, _)
   | UnE (_, e1)
   | DotE (e1, _)
   | LenE e1
@@ -196,7 +197,7 @@ and check_sym env ctx g =
   | VarG (id, args) ->
     check_gramid env ctx id;
     List.iter (check_arg env ctx) args
-  | NatG _
+  | NumG _
   | TextG _
   | EpsG -> ()
   | SeqG gs
@@ -346,7 +347,7 @@ let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
               (Env.find id.it env))
         in
         List.fold_left union
-          (Env.singleton id.it (NumT NatT $ id.at, List.map fst iterexps'))
+          (Env.singleton id.it (NumT `NatT $ id.at, List.map fst iterexps'))
           occurs
     in
     ListN (e', id_opt), (occur1, occur2)
@@ -357,19 +358,19 @@ and annot_exp env e : Il.Ast.exp * occur =
     match e.it with
     | VarE id when id.it <> "_" && Env.mem id.it env ->
       VarE id, Env.singleton id.it (e.note, Env.find id.it env)
-    | VarE _ | BoolE _ | NatE _ | TextE _ ->
+    | VarE _ | BoolE _ | NumE _ | TextE _ ->
       e.it, Env.empty
-    | UnE (op, e1) ->
+    | UnE (op, nt, e1) ->
       let e1', occur1 = annot_exp env e1 in
-      UnE (op, e1'), occur1
-    | BinE (op, e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
-      BinE (op, e1', e2'), union occur1 occur2
-    | CmpE (op, e1, e2) ->
+      UnE (op, nt, e1'), occur1
+    | BinE (op, nt, e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in
-      CmpE (op, e1', e2'), union occur1 occur2
+      BinE (op, nt, e1', e2'), union occur1 occur2
+    | CmpE (op, nt, e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      CmpE (op, nt, e1', e2'), union occur1 occur2
     | IdxE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in
@@ -440,6 +441,9 @@ and annot_exp env e : Il.Ast.exp * occur =
     | CaseE (atom, e1) ->
       let e1', occur1 = annot_exp env e1 in
       CaseE (atom, e1'), occur1
+    | CvtE (e1, nt1, nt2) ->
+      let e1', occur1 = annot_exp env e1 in
+      CvtE (e1', nt1, nt2), occur1
     | SubE (e1, t1, t2) ->
       let e1', occur1 = annot_exp env e1 in
       SubE (e1', t1, t2), occur1
@@ -494,7 +498,7 @@ and annot_sym env g : Il.Ast.sym * occur =
     | VarG (id, as1) ->
       let as1', occurs = List.split (List.map (annot_arg env) as1) in
       VarG (id, as1'), List.fold_left union Env.empty occurs
-    | NatG _ | TextG _ | EpsG ->
+    | NumG _ | TextG _ | EpsG ->
       g.it, Env.empty
     | SeqG gs ->
       let gs', occurs = List.split (List.map (annot_sym env) gs) in

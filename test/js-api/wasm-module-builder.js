@@ -934,7 +934,7 @@ class WasmModuleBuilder {
 
   addTable(type, initial_size, max_size = undefined, init_expr = undefined) {
     if (type == kWasmI32 || type == kWasmI64 || type == kWasmF32 ||
-        type == kWasmF64 || type == kWasmS128 || type == kWasmStmt) {
+        type == kWasmF64 || type == kWasmS128 || type == kWasmVoid) {
       throw new Error('Tables must be of a reference type');
     }
     if (init_expr != undefined) checkExpr(init_expr);
@@ -966,7 +966,7 @@ class WasmModuleBuilder {
     }
     let type_index = (typeof type) == "number" ? type : this.addType(type);
     this.imports.push({module: module, name: name, kind: kExternalFunction,
-                       type: type_index});
+                       type_index: type_index});
     return this.num_imported_funcs++;
   }
 

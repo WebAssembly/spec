@@ -35,9 +35,9 @@ def $allocglobals(s, globaltype globaltype'*, val val'*) = (s_2, ga ga'*)
   -- if (s_2, ga'*) = $allocglobals(s_1, globaltype'*, val'*)
 
 def $alloctable(store, tabletype, ref) : (store, tableaddr)
-def $alloctable(s, `[i .. j] rt, ref) = (s ++ {TABLES tableinst}, |s.TABLES|)
+def $alloctable(s, at `[i .. j] rt, ref) = (s ++ {TABLES tableinst}, |s.TABLES|)
   ---- ----
-  -- if tableinst = { TYPE (`[i .. j] rt), REFS ref^i }
+  -- if tableinst = { TYPE (at `[i .. j] rt), REFS ref^i }
 
 def $alloctables(store, tabletype*, ref*) : (store, tableaddr*) hint(show $alloctable*#((%,%,%)))
 def $alloctables(s, eps, eps) = (s, eps)
@@ -46,9 +46,9 @@ def $alloctables(s, tabletype tabletype'*, ref ref'*) = (s_2, ta ta'*)
   -- if (s_2, ta'*) = $alloctables(s_1, tabletype'*, ref'*)
 
 def $allocmem(store, memtype) : (store, memaddr)
-def $allocmem(s, `[i .. j] PAGE) = (s ++ {MEMS meminst}, |s.MEMS|)
+def $allocmem(s, at `[i .. j] PAGE) = (s ++ {MEMS meminst}, |s.MEMS|)
   ---- ----
-  -- if meminst = { TYPE (`[i .. j] PAGE), BYTES (0x00)^(i * $($(64 * $Ki))) }
+  -- if meminst = { TYPE (at `[i .. j] PAGE), BYTES (0x00)^(i * $($(64 * $Ki))) }
 
 def $allocmems(store, memtype*) : (store, memaddr*) hint(show $allocmem*#((%,%)))
 def $allocmems(s, eps) = (s, eps)
@@ -63,9 +63,9 @@ def $alloctag(s, tagtype) = (s ++ {TAGS taginst}, |s.TAGS|)
 
 def $alloctags(store, tagtype*) : (store, tagaddr*) hint(show $alloctag*#((%,%)))
 def $alloctags(s, eps) = (s, eps)
-def $alloctags(s, at at'*) = (s_2, aa aa'*)
-  -- if (s_1, aa) = $alloctag(s, at)
-  -- if (s_2, aa'*) = $alloctags(s_1, at'*)
+def $alloctags(s, jt jt'*) = (s_2, ja ja'*)
+  -- if (s_1, ja) = $alloctag(s, jt)
+  -- if (s_2, ja'*) = $alloctags(s_1, jt'*)
 
 def $allocelem(store, elemtype, ref*) : (store, elemaddr)
 def $allocelem(s, elemtype, ref*) = (s ++ {ELEMS eleminst}, |s.ELEMS|)

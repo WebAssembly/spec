@@ -3,6 +3,7 @@ open Ds
 open Al
 open Ast
 open Al_util
+open Xl
 open Construct
 open Print
 open Util
@@ -62,12 +63,12 @@ let dispatch_fname f env =
   | _ -> f
 
 let rec create_sub_env (iter, xes) env =
-  let length_to_list l = List.init l al_of_int in
+  let length_to_list l = List.init l al_of_nat in
 
   let xe_to_values (x, e) =
     match iter with
     | ListN (e_n, Some x') when x = x' ->
-      eval_expr env e_n |> al_to_int |> length_to_list
+      eval_expr env e_n |> al_to_nat |> length_to_list
     | Opt ->
       eval_expr env e |> unwrap_optv |> Option.to_list
     | _ ->
@@ -85,7 +86,7 @@ and access_path env base path =
   match path.it with
   | IdxP e' ->
     let a = base |> unwrap_listv_to_array in
-    let i = eval_expr env e' |> al_to_int in
+    let i = eval_expr env e' |> al_to_nat in
     begin try Array.get a i with
     | Invalid_argument _ ->
       fail_path path
@@ -94,8 +95,8 @@ and access_path env base path =
     end
   | SliceP (e1, e2) ->
     let a = base |> unwrap_listv_to_array in
-    let i1 = eval_expr env e1 |> al_to_int in
-    let i2 = eval_expr env e2 |> al_to_int in
+    let i1 = eval_expr env e1 |> al_to_nat in
+    let i2 = eval_expr env e2 |> al_to_nat in
     Array.sub a i1 i2 |> listV
   | DotP str -> (
     let str = Print.string_of_atom str in
@@ -110,13 +111,13 @@ and replace_path env base path v_new =
   match path.it with
   | IdxP e' ->
     let a = unwrap_listv_to_array base |> Array.copy in
-    let i = eval_expr env e' |> al_to_int in
+    let i = eval_expr env e' |> al_to_nat in
     Array.set a i v_new;
     listV a
   | SliceP (e1, e2) ->
     let a = unwrap_listv_to_array base |> Array.copy in
-    let i1 = eval_expr env e1 |> al_to_int in
-    let i2 = eval_expr env e2 |> al_to_int in
+    let i1 = eval_expr env e1 |> al_to_nat in
+    let i2 = eval_expr env e2 |> al_to_nat in
     Array.blit (unwrap_listv_to_array v_new) 0 a i1 i2;
     listV a
   | DotP str ->
@@ -200,28 +201,42 @@ and eval_expr env expr =
 
   match expr.it with
   (* Value *)
-  | NumE i -> numV i
+  | NumE n -> numV n
+  | BoolE b -> boolV b
   (* Numeric Operation *)
-  | UnE (MinusOp, inner_e) -> eval_expr env inner_e |> al_to_z |> Z.neg |> numV
-  | UnE (NotOp, e) -> eval_expr env e |> to_bool e |> not |> boolV
+  | CvtE (e1, _, nt) ->
+    (match eval_expr env e1 with
+    | NumV n1 ->
+      (match Num.cvt nt n1 with
+      | Some n -> numV n
+      | None -> fail_expr expr ("conversion not defined for " ^ string_of_value (NumV n1))
+      )
+    | _ -> fail_expr expr "type mismatch for conversion operation"
+    )
+  | UnE (op, e1) ->
+    (match op, eval_expr env e1 with
+    | #Bool.unop as op', v -> Bool.un op' (to_bool e1 v) |> boolV
+    | #Num.unop as op', NumV n1 ->
+      (match Num.un op' n1 with
+      | Some n -> numV n
+      | None -> fail_expr expr ("unary operation `" ^ Num.string_of_unop op' ^ "` not defined for " ^ string_of_value (NumV n1))
+      )
+    | _ -> fail_expr expr "type mismatch for unary operation"
+    )
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
-    | AddOp, NumV i1, NumV i2 -> Z.add i1 i2 |> numV
-    | SubOp, NumV i1, NumV i2 -> Z.sub i1 i2 |> numV
-    | MulOp, NumV i1, NumV i2 -> Z.mul i1 i2 |> numV
-    | DivOp, NumV i1, NumV i2 -> Z.div i1 i2 |> numV
-    | ModOp, NumV i1, NumV i2 -> Z.rem i1 i2 |> numV
-    | ExpOp, NumV i1, NumV i2 -> Z.pow i1 (Z.to_int i2) |> numV
-    | AndOp, b1, b2 -> boolV (to_bool e1 b1 && to_bool e2 b2)
-    | OrOp, b1, b2 -> boolV (to_bool e1 b1 || to_bool e2 b2)
-    | ImplOp, b1, b2 -> boolV (not (to_bool e1 b1) || to_bool e2 b2)
-    | EquivOp, b1, b2 -> boolV (to_bool e1 b1 = to_bool e2 b2)
-    | EqOp, v1, v2 -> boolV (v1 = v2)
-    | NeOp, v1, v2 -> boolV (v1 <> v2)
-    | LtOp, v1, v2 -> boolV (v1 < v2)
-    | GtOp, v1, v2 -> boolV (v1 > v2)
-    | LeOp, v1, v2 -> boolV (v1 <= v2)
-    | GeOp, v1, v2 -> boolV (v1 >= v2)
+    | #Bool.binop as op', v1, v2 -> Bool.bin op' (to_bool e1 v1) (to_bool e2 v2) |> boolV
+    | #Num.binop as op', NumV n1, NumV n2 ->
+      (match Num.bin op' n1 n2 with
+      | Some n -> numV n
+      | None -> fail_expr expr ("binary operation `" ^ Num.string_of_binop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
+      )
+    | #Bool.cmpop as op', v1, v2 -> boolV (Bool.cmp op' v1 v2)
+    | #Num.cmpop as op', NumV n1, NumV n2 ->
+      (match Num.cmp op' n1 n2 with
+      | Some b -> boolV b
+      | None -> fail_expr expr ("comparison operation `" ^ Num.string_of_cmpop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
+      )
     | _ -> fail_expr expr "type mismatch for binary operation"
     )
   (* Set Operation *)
@@ -268,7 +283,7 @@ and eval_expr env expr =
     let a2 = eval_expr env e2 |> unwrap_seq_to_array in
     Array.append a1 a2 |> listV
   | LenE e ->
-    eval_expr env e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> numV
+    eval_expr env e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> natV
   | StrE r ->
     r |> Record.map Print.string_of_atom (eval_expr env) |> strV
   | AccE (e, p) ->
@@ -298,7 +313,7 @@ and eval_expr env expr =
   | CaseE (op, el) ->
     (match (get_atom op) with
     | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
-    | None -> fail_expr expr "inner mixop of caseE is empty"
+    | None -> caseV ("", List.map (eval_expr env) el)
     )
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
@@ -320,7 +335,7 @@ and eval_expr env expr =
   (* Optimized getter for list init *)
   | IterE (e1, (ListN (e2, None), [])) ->
     let v = eval_expr env e1 in
-    let i = eval_expr env e2 |> al_to_int in
+    let i = eval_expr env e2 |> al_to_nat in
     if i > 1024 * 64 * 1024 (* 1024 pages *) then
       raise Exception.OutOfMemory
     else
@@ -356,7 +371,7 @@ and eval_expr env expr =
   (* TODO : This should be replaced with executing the validation algorithm *)
   | IsValidE e ->
     let valid_lim k = function
-      | TupV [ NumV n; NumV m ] -> n <= m && m <= k
+      | TupV [ NumV (`Nat n); NumV (`Nat m) ] -> n <= m && m <= k
       | _ -> false
     in
     (match eval_expr env e with
@@ -382,7 +397,7 @@ and eval_expr env expr =
     (* TODO: type check *)
     boolV (List.length (WasmContext.get_value_stack ()) > 0)
   | TopValuesE e ->
-    let i = eval_expr env e |> al_to_int in
+    let i = eval_expr env e |> al_to_nat in
     boolV (List.length (WasmContext.get_value_stack ()) >= i)
   | _ -> fail_expr expr "cannot evaluate expr"
 
@@ -412,7 +427,7 @@ and assign lhs rhs env =
     let env' =
       match iter with
       | ListN (expr, None) ->
-        let length = numV_of_int (List.length vs) in
+        let length = natV_of_int (List.length vs) in
         assign expr length env
       | ListN _ ->
         fail_expr lhs "invalid assignment: iter with index cannot be an assignment target"
@@ -438,21 +453,31 @@ and assign lhs rhs env =
     (match get_atom op with
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
       List.fold_right2 assign lhs_s rhs_s env
+    | None when "" = rhs_tag ->
+      List.fold_right2 assign lhs_s rhs_s env
     | _ -> fail_expr lhs
       (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))
     )
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
+  | CvtE (e1, nt, _), NumV n ->
+    (match Num.cvt nt n with
+    | Some n' -> assign e1 (NumV n') env
+    | None -> fail_expr lhs ("inverse conversion not defined for " ^ string_of_value (NumV n))
+    )
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
     let invop =
       match binop with
-      | AddOp -> Z.sub
-      | SubOp -> Z.add
-      | MulOp -> Z.div
-      | DivOp -> Z.mul
-      | ExpOp -> fail_expr lhs "invalid assignment: ExpOp cannot be an assignment target"
+      | `AddOp -> `SubOp
+      | `SubOp -> `AddOp
+      | `MulOp -> `DivOp
+      | `DivOp -> `MulOp
       | _ -> fail_expr lhs "invalid assignment: logical binop cannot be an assignment target" in
-    let v = eval_expr env e2 |> al_to_z |> invop m |> numV in
+    let v =
+      match Num.bin invop m (eval_expr env e2 |> unwrap_numv) with
+      | Some n -> numV n
+      | None -> fail_expr lhs ("invalid assignment: inverted binop not defined for " ^ string_of_value rhs)
+    in
     assign e1 v env
   | CatE _, ListV vs -> assign_split lhs !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
@@ -468,7 +493,7 @@ and assign_split lhs vs env =
     let get_fixed_length e =
       match e.it with
       | ListE es -> Some (List.length es)
-      | IterE (_, (ListN (e, None), _)) -> Some (al_to_int (eval_expr env e))
+      | IterE (_, (ListN (e, None), _)) -> Some (al_to_nat (eval_expr env e))
       | _ -> None
     in
     match get_fixed_length ep, get_fixed_length es with
@@ -540,7 +565,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | PopI e ->
     (match e.it with
-    | CaseE ([{it = El.Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
+    | CaseE ([{it = Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
       (match WasmContext.pop_context () with
       | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
@@ -548,7 +573,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, (ListN (e_n, None), [name', e'])) when name = name' ->
-      let i = eval_expr env e_n |> al_to_int in
+      let i = eval_expr env e_n |> al_to_nat in
       let v =
         List.init i (fun _ -> WasmContext.pop_value ())
         |> List.rev
@@ -596,14 +621,14 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     AlContext.decrease_depth ctx
   | ReplaceI (e1, { it = IdxP e2; _ }, e3) ->
     let a = eval_expr env e1 |> unwrap_listv_to_array in
-    let i = eval_expr env e2 |> al_to_int in
+    let i = eval_expr env e2 |> al_to_nat in
     let v = eval_expr env e3 in
     Array.set a i v;
     ctx
   | ReplaceI (e1, { it = SliceP (e2, e3); _ }, e4) ->
     let a1 = eval_expr env e1 |> unwrap_listv_to_array in (* dest *)
-    let i1 = eval_expr env e2 |> al_to_int in   (* start index *)
-    let i2 = eval_expr env e3 |> al_to_int in   (* length *)
+    let i1 = eval_expr env e2 |> al_to_nat in   (* start index *)
+    let i2 = eval_expr env e3 |> al_to_nat in   (* length *)
     let a2 = eval_expr env e4 |> unwrap_listv_to_array in (* src *)
     assert (Array.length a2 = i2);
     Array.blit a2 0 a1 i1 i2;

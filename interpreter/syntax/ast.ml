@@ -64,13 +64,19 @@ struct
               | AddSatS | AddSatU | SubSatS | SubSatU | DotS | Q15MulRSatS
               | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
               | Swizzle | Shuffle of int list | NarrowS | NarrowU
+              | RelaxedSwizzle | RelaxedQ15MulRS | RelaxedDot
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
+              | RelaxedMin | RelaxedMax
+  type iternop = RelaxedLaneselect | RelaxedDotAdd
+  type fternop = RelaxedMadd | RelaxedNmadd
   type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type frelop = Eq | Ne | Lt | Le | Gt | Ge
   type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
               | ExtAddPairwiseS | ExtAddPairwiseU
               | TruncSatSF32x4 | TruncSatUF32x4
               | TruncSatSZeroF64x2 | TruncSatUZeroF64x2
+              | RelaxedTruncSF32x4 | RelaxedTruncUF32x4
+              | RelaxedTruncSZeroF64x2 | RelaxedTruncUZeroF64x2
   type fcvtop = DemoteZeroF64x2 | PromoteLowF32x4
               | ConvertSI32x4 | ConvertUI32x4
   type ishiftop = Shl | ShrS | ShrU
@@ -84,6 +90,7 @@ struct
   type testop = (itestop, itestop, itestop, itestop, void, void) V128.laneop
   type unop = (iunop, iunop, iunop, iunop, funop, funop) V128.laneop
   type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) V128.laneop
+  type ternop = (iternop, iternop, iternop, iternop, fternop, fternop) V128.laneop
   type relop = (irelop, irelop, irelop, irelop, frelop, frelop) V128.laneop
   type cvtop = (icvtop, icvtop, icvtop, icvtop, fcvtop, fcvtop) V128.laneop
   type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) V128.laneop
@@ -108,6 +115,7 @@ type vec_testop = (V128Op.testop) Value.vecop
 type vec_relop = (V128Op.relop) Value.vecop
 type vec_unop = (V128Op.unop) Value.vecop
 type vec_binop = (V128Op.binop) Value.vecop
+type vec_ternop = (V128Op.ternop) Value.vecop
 type vec_cvtop = (V128Op.cvtop) Value.vecop
 type vec_shiftop = (V128Op.shiftop) Value.vecop
 type vec_bitmaskop = (V128Op.bitmaskop) Value.vecop
@@ -119,7 +127,7 @@ type vec_splatop = (V128Op.splatop) Value.vecop
 type vec_extractop = (V128Op.extractop) Value.vecop
 type vec_replaceop = (V128Op.replaceop) Value.vecop
 
-type ('t, 'p) memop = {ty : 't; align : int; offset : int32; pack : 'p}
+type ('t, 'p) memop = {ty : 't; align : int; offset : int64; pack : 'p}
 type loadop = (num_type, (pack_size * extension) option) memop
 type storeop = (num_type, pack_size option) memop
 
@@ -226,6 +234,7 @@ and instr' =
   | VecCompare of vec_relop           (* vector comparison *)
   | VecUnary of vec_unop              (* unary vector operator *)
   | VecBinary of vec_binop            (* binary vector operator *)
+  | VecTernary of vec_ternop          (* ternary vector operator *)
   | VecConvert of vec_cvtop           (* vector conversion *)
   | VecShift of vec_shiftop           (* vector shifts *)
   | VecBitmask of vec_bitmaskop       (* vector masking *)

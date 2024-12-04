@@ -5,11 +5,11 @@
 ;; Signed numbers
 
 def $signed_(N, nat) : int
-def $signed_(N, i) = i           -- if $(0 <= 2^(N-1))
+def $signed_(N, i) = i           -- if $(i < 2^(N-1))
 def $signed_(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
 
 def $invsigned_(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))
-def $invsigned_(N, ii) = j       -- if $signed_(N, j) = ii
+def $invsigned_(N, i) = j        -- if $signed_(N, j) = i
 
 
 ;; TODO

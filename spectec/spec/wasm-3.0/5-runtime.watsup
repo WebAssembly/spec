@@ -1,6 +1,8 @@
 ;;
-;; Addresses
+;; Values
 ;;
+
+;; Addresses
 
 syntax addr hint(desc "address") = nat
 syntax funcaddr hint(desc "function address") = addr
@@ -22,11 +24,7 @@ var a : addr
 var xa : externaddr
 
 
-;;
 ;; Values
-;;
-
-;; Basic values
 
 syntax num hint(desc "number value") =
   | CONST numtype num_(numtype)          hint(show %.CONST %%)
@@ -47,15 +45,15 @@ syntax val hint(desc "value") =
   | num | vec | ref
 
 syntax result hint(desc "result") =
-  | _VALS val* | _EXN (REF.EXN_ADDR exnaddr) THROW_REF | TRAP
+  | _VALS val* | `(REF.EXN_ADDR exnaddr) THROW_REF | TRAP
+
 
 var r : ref
-var v : val
 var res : result
 
 
 ;;
-;; Configurations
+;; Store
 ;;
 
 ;; Instances
@@ -65,29 +63,41 @@ syntax funccode hint(show code) hint(macro "funccode") = func | hostfunc
 
 syntax funcinst hint(desc "function instance") hint(macro "%" "FI%") =
   { TYPE deftype, MODULE moduleinst, CODE funccode }
+
 syntax globalinst hint(desc "global instance") hint(macro "%" "GI%") =
   { TYPE globaltype, VALUE val }
+
 syntax tableinst hint(desc "table instance") hint(macro "%" "TI%") =
   { TYPE tabletype, REFS ref* }
+
 syntax meminst hint(desc "memory instance") hint(macro "%" "MI%") =
   { TYPE memtype, BYTES byte* }
+
 syntax taginst hint(desc "tag instance") hint(macro "%" "HI%") =
   { TYPE tagtype }
+
 syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
   { TYPE elemtype, REFS ref* }
+
 syntax datainst hint(desc "data instance") hint(macro "%" "DI%") =
   { BYTES byte* }
+
 syntax exportinst hint(desc "export instance") hint(macro "%" "XI%") =
   { NAME name, ADDR externaddr }
 
+
 syntax packval hint(desc "packed value") =
   | PACK packtype iN($psizenn(packtype))    hint(show %.PACK %)
+
 syntax fieldval hint(desc "field value") =
   | val | packval
+
 syntax structinst hint(desc "structure instance") hint(macro "%" "SI%") =
   { TYPE deftype, FIELDS fieldval* }
+
 syntax arrayinst hint(desc "array instance") hint(macro "%" "AI%") =
   { TYPE deftype, FIELDS fieldval* }
+
 syntax exninst hint(desc "exception instance") hint(macro "%" "EI%") =
   { TAG tagaddr, FIELDS val* }
 
@@ -119,7 +129,7 @@ var fv : fieldval
 var pv : packval
 
 
-;; Configurations proper
+;; State
 
 syntax store hint(desc "store") hint(macro "%" "S%") =
   { FUNCS funcinst*,
@@ -136,17 +146,12 @@ syntax store hint(desc "store") hint(macro "%" "S%") =
 syntax frame hint(desc "frame") hint(macro "%" "A%") =
   { LOCALS (val?)*, MODULE moduleinst }
 
-syntax state hint(desc "state") = store; frame
-syntax config hint(desc "configuration") = state; instr*
-
-var s : store
-var f : frame
-var z : state
-
 
 ;;
+;; Configurations
+;;
+
 ;; Administrative Instructions
-;;
 
 syntax instr/admin hint(desc "administrative instruction") =
   | ...
@@ -156,7 +161,11 @@ syntax instr/admin hint(desc "administrative instruction") =
   | HANDLER_ n `{catch*} instr* hint(show HANDLER_%#% %%)
   | TRAP
 
-syntax evalctx hint(desc "evaluation context") =
-  | LABEL_ n `{instr*}   hint(show LABEL_%#% %%)
-  | FRAME_ n `{frame}    hint(show FRAME_%#% %%)
-  | HANDLER_ n `{catch*} hint(show HANDLER_%#% %%)
+
+;; Configurations
+
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; instr*
+
+var s : store
+var z : state

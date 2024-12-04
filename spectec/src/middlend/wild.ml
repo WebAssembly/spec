@@ -139,9 +139,9 @@ and t_epe env x k = ternary t_exp t_path t_exp env x k
 
 and t_exp' env e : bind list * exp' =
   match e with
-  | VarE _ | BoolE _ | NatE _ | TextE _ | OptE None -> [], e
+  | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None -> [], e
 
-  | UnE (uo, exp) -> t_e env exp (fun exp' -> UnE (uo, exp'))
+  | UnE (uo, nto, exp) -> t_e env exp (fun exp' -> UnE (uo, nto, exp'))
   | DotE (exp, a) -> t_e env exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e env exp (fun exp' -> LenE exp')
   | CallE (f, args) -> t_list t_arg env args (fun args' -> CallE (f, args'))
@@ -150,10 +150,11 @@ and t_exp' env e : bind list * exp' =
   | OptE (Some exp) -> t_e env exp (fun exp' -> OptE (Some exp'))
   | TheE exp -> t_e env exp (fun exp' -> TheE exp')
   | CaseE (mixop, exp) -> t_e env exp (fun exp' -> CaseE (mixop, exp'))
+  | CvtE (exp, a, b) -> t_e env exp (fun exp' -> CvtE (exp', a, b))
   | SubE (exp, a, b) -> t_e env exp (fun exp' -> SubE (exp', a, b))
 
-  | BinE (bo, exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
-  | CmpE (co, exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> CmpE (co, e1', e2'))
+  | BinE (bo, nto, exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> BinE (bo, nto, e1', e2'))
+  | CmpE (co, nto, exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> CmpE (co, nto, e1', e2'))
   | IdxE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> IdxE (e1', e2'))
   | CompE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> CompE (e1', e2'))
   | CatE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> CatE (e1', e2'))

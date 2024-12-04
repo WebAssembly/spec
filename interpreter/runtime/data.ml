@@ -1,6 +1,5 @@
 type data = string ref
 type t = data
-type address = Memory.address
 
 exception Bounds
 

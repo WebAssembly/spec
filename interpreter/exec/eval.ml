@@ -122,13 +122,13 @@ let subst_of (inst : module_inst) = function
 
 let any_ref (inst : module_inst) x i at =
   try Table.load (table inst x) i with Table.Bounds ->
-    Trap.error at ("undefined element " ^ Int32.to_string i)
+    Trap.error at ("undefined element " ^ Int64.to_string i)
 
 let func_ref (inst : module_inst) x i at =
   match any_ref inst x i at with
   | FuncRef f -> f
-  | NullRef _ -> Trap.error at ("uninitialized element " ^ Int32.to_string i)
-  | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
+  | NullRef _ -> Trap.error at ("uninitialized element " ^ Int64.to_string i)
+  | _ -> Crash.error at ("type mismatch for element " ^ Int64.to_string i)
 
 let block_type (inst : module_inst) bt at =
   match bt with
@@ -158,25 +158,25 @@ let split n (vs : 'a stack) at = take n vs at, drop n vs at
  *)
 
 let mem_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (Memory.bound (memory frame.inst x))
+  let mem = (memory frame.inst x) in
+  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
+    (Memory.bound mem)
 
 let data_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
     (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64_convert.extend_i32_u (Table.size (table frame.inst x)))
+  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
+    (Table.size (table frame.inst x))
 
 let elem_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64_convert.extend_i32_u (Elem.size (elem frame.inst x)))
+  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
+    (Elem.size (elem frame.inst x))
 
 let array_oob a i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
     (I64_convert.extend_i32_u (Aggr.array_length a))
-
 
 let rec step (c : config) : config =
   let vs, es = c.code in
@@ -263,8 +263,9 @@ let rec step (c : config) : config =
       | CallRef _x, Ref (FuncRef f) :: vs ->
         vs, [Invoke f @@ e.at]
 
-      | CallIndirect (x, y), Num (I32 i) :: vs ->
-        let f = func_ref c.frame.inst x i e.at in
+      | CallIndirect (x, y), Num i :: vs ->
+        let i_64 = addr_of_num i in
+        let f = func_ref c.frame.inst x i_64 e.at in
         if Match.match_def_type [] (Func.type_of f) (type_ c.frame.inst y) then
           vs, [Invoke f @@ e.at]
         else
@@ -351,85 +352,96 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
-      | TableGet x, Num (I32 i) :: vs' ->
-        (try Ref (Table.load (table c.frame.inst x) i) :: vs', []
+      | TableGet x, Num i :: vs' ->
+        let i_64 = addr_of_num i in
+        (try Ref (Table.load (table c.frame.inst x) i_64) :: vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
-      | TableSet x, Ref r :: Num (I32 i) :: vs' ->
-        (try Table.store (table c.frame.inst x) i r; vs', []
+      | TableSet x, Ref r :: Num i :: vs' ->
+        let i_64 = addr_of_num i in
+        (try Table.store (table c.frame.inst x) i_64 r; vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
       | TableSize x, vs ->
-        Num (I32 (Table.size (table c.frame.inst x))) :: vs, []
+        let tab = table c.frame.inst x in
+        Num (num_of_addr (Table.addr_type_of tab) (Table.size tab)) :: vs, []
 
-      | TableGrow x, Num (I32 delta) :: Ref r :: vs' ->
+      | TableGrow x, Num n :: Ref r :: vs' ->
+        let n_64 = addr_of_num n in
         let tab = table c.frame.inst x in
         let old_size = Table.size tab in
         let result =
-          try Table.grow tab delta r; old_size
-          with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1l
-        in Num (I32 result) :: vs', []
+          try Table.grow tab n_64 r; old_size
+          with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1L
+        in Num (num_of_addr (Table.addr_type_of tab) result) :: vs', []
 
-      | TableFill x, Num (I32 n) :: Ref r :: Num (I32 i) :: vs' ->
+      | TableFill x, Num n :: Ref r :: Num i :: vs' ->
+        let n_64 = addr_of_num n in
+        let i_64 = addr_of_num i in
         if table_oob c.frame x i n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
-          let _ = assert (I32.lt_u i 0xffff_ffffl) in
+          let _ = assert (I64.lt_u i_64 0xffff_ffff_ffff_ffffL) in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 i @@ e.at));
+            Plain (Const (i @@ e.at));
             Refer r;
             Plain (TableSet x);
-            Plain (Const (I32 (I32.add i 1l) @@ e.at));
+            Plain (Const (addr_add i 1L @@ e.at));
             Refer r;
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (TableFill x);
           ]
 
-      | TableCopy (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | TableCopy (x, y), Num n :: Num s :: Num d :: vs' ->
+        let n_64 = addr_of_num n in
+        let s_64 = addr_of_num s in
+        let d_64 = addr_of_num d in
         if table_oob c.frame x d n || table_oob c.frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
-        else if I32.le_u d s then
+        else if I64.le_u d_64 s_64 then
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (d @@ e.at));
+            Plain (Const (s @@ e.at));
             Plain (TableGet y);
             Plain (TableSet x);
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (addr_add d 1L @@ e.at));
+            Plain (Const (addr_add s 1L @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (TableCopy (x, y));
           ]
         else (* d > s *)
-          let n' = I32.sub n 1l in
+          let n' = I64.sub n_64 1L in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 (I32.add d n') @@ e.at));
-            Plain (Const (I32 (I32.add s n') @@ e.at));
+            Plain (Const (addr_add d n' @@ e.at));
+            Plain (Const (addr_add s n' @@ e.at));
             Plain (TableGet y);
             Plain (TableSet x);
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
-            Plain (Const (I32 n' @@ e.at));
+            Plain (Const (d @@ e.at));
+            Plain (Const (s @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (TableCopy (x, y));
           ]
 
-      | TableInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | TableInit (x, y), Num n :: Num s :: Num d :: vs' ->
+        let n_64 = addr_of_num n in
+        let s_64 = addr_of_num s in
         if table_oob c.frame x d n || elem_oob c.frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
           let seg = elem c.frame.inst y in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Refer (Elem.load seg s);
+            Plain (Const (d @@ e.at));
+            Refer (Elem.load seg s_64);
             Plain (TableSet x);
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (addr_add d 1L @@ e.at));
+            Plain (Const (addr_add s 1L @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (TableInit (x, y));
           ]
 
@@ -438,164 +450,170 @@ let rec step (c : config) : config =
         Elem.drop seg;
         vs, []
 
-      | Load (x, {offset; ty; pack; _}), Num (I32 i) :: vs' ->
+      | Load (x, {offset; ty; pack; _}), Num i :: vs' ->
+        let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
-        let a = I64_convert.extend_i32_u i in
         (try
           let n =
             match pack with
-            | None -> Memory.load_num mem a offset ty
-            | Some (sz, ext) -> Memory.load_num_packed sz ext mem a offset ty
+            | None -> Memory.load_num mem i_64 offset ty
+            | Some (sz, ext) -> Memory.load_num_packed sz ext mem i_64 offset ty
           in Num n :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store (x, {offset; pack; _}), Num n :: Num (I32 i) :: vs' ->
+      | Store (x, {offset; pack; _}), Num n :: Num i :: vs' ->
+        let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
-        let a = I64_convert.extend_i32_u i in
         (try
           (match pack with
-          | None -> Memory.store_num mem a offset n
-          | Some sz -> Memory.store_num_packed sz mem a offset n
+          | None -> Memory.store_num mem i_64 offset n
+          | Some sz -> Memory.store_num_packed sz mem i_64 offset n
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | VecLoad (x, {offset; ty; pack; _}), Num (I32 i) :: vs' ->
+      | VecLoad (x, {offset; ty; pack; _}), Num i :: vs' ->
+        let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
-        let a = I64_convert.extend_i32_u i in
         (try
           let v =
             match pack with
-            | None -> Memory.load_vec mem a offset ty
-            | Some (sz, ext) -> Memory.load_vec_packed sz ext mem a offset ty
+            | None -> Memory.load_vec mem i_64 offset ty
+            | Some (sz, ext) -> Memory.load_vec_packed sz ext mem i_64 offset ty
           in Vec v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | VecStore (x, {offset; _}), Vec v :: Num (I32 i) :: vs' ->
+      | VecStore (x, {offset; _}), Vec v :: Num i :: vs' ->
+        let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
-        let addr = I64_convert.extend_i32_u i in
         (try
-          Memory.store_vec mem addr offset v;
+          Memory.store_vec mem i_64 offset v;
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | VecLoadLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+      | VecLoadLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num i :: vs' ->
+        let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
-        let addr = I64_convert.extend_i32_u i in
         (try
           let v =
             match pack with
             | Pack8 ->
               V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem addr offset I32T))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem i_64 offset I32T))
             | Pack16 ->
               V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem addr offset I32T))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem i_64 offset I32T))
             | Pack32 ->
               V128.I32x4.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num mem addr offset I32T))
+                (I32Num.of_num 0 (Memory.load_num mem i_64 offset I32T))
             | Pack64 ->
               V128.I64x2.replace_lane j v
-                (I64Num.of_num 0 (Memory.load_num mem addr offset I64T))
+                (I64Num.of_num 0 (Memory.load_num mem i_64 offset I64T))
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | VecStoreLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+      | VecStoreLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num i :: vs' ->
+        let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
-        let addr = I64_convert.extend_i32_u i in
         (try
           (match pack with
           | Pack8 ->
-            Memory.store_num_packed Pack8 mem addr offset (I32 (V128.I8x16.extract_lane_s j v))
+            Memory.store_num_packed Pack8 mem i_64 offset (I32 (V128.I8x16.extract_lane_s j v))
           | Pack16 ->
-            Memory.store_num_packed Pack16 mem addr offset (I32 (V128.I16x8.extract_lane_s j v))
+            Memory.store_num_packed Pack16 mem i_64 offset (I32 (V128.I16x8.extract_lane_s j v))
           | Pack32 ->
-            Memory.store_num mem addr offset (I32 (V128.I32x4.extract_lane_s j v))
+            Memory.store_num mem i_64 offset (I32 (V128.I32x4.extract_lane_s j v))
           | Pack64 ->
-            Memory.store_num mem addr offset (I64 (V128.I64x2.extract_lane_s j v))
+            Memory.store_num mem i_64 offset (I64 (V128.I64x2.extract_lane_s j v))
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | MemorySize x, vs ->
         let mem = memory c.frame.inst x in
-        Num (I32 (Memory.size mem)) :: vs, []
+        Num (num_of_addr (Memory.addr_type_of mem) (Memory.size mem)) :: vs, []
 
-      | MemoryGrow x, Num (I32 delta) :: vs' ->
+      | MemoryGrow x, Num n :: vs' ->
+        let n_64 = addr_of_num n in
         let mem = memory c.frame.inst x in
         let old_size = Memory.size mem in
         let result =
-          try Memory.grow mem delta; old_size
-          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
-        in Num (I32 result) :: vs', []
+          try Memory.grow mem n_64; old_size
+          with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1L
+        in Num (num_of_addr (Memory.addr_type_of mem) result) :: vs', []
 
-      | MemoryFill x, Num (I32 n) :: Num k :: Num (I32 i) :: vs' ->
+      | MemoryFill x, Num n :: Num k :: Num i :: vs' ->
+        let n_64 = addr_of_num n in
         if mem_oob c.frame x i n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 i @@ e.at));
+            Plain (Const (i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
-            Plain (Const (I32 (I32.add i 1l) @@ e.at));
+              (x, {ty = I32T; align = 0; offset = 0L; pack = Some Pack8}));
+            Plain (Const (addr_add i 1L @@ e.at));
             Plain (Const (k @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (MemoryFill x);
           ]
 
-      | MemoryCopy (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | MemoryCopy (x, y), Num n :: Num s :: Num d :: vs' ->
+        let n_64 = addr_of_num n in
+        let s_64 = addr_of_num s in
+        let d_64 = addr_of_num d in
         if mem_oob c.frame x d n || mem_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
-        else if I32.le_u d s then
+        else if I64.le_u d_64 s_64 then
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (d @@ e.at));
+            Plain (Const (s @@ e.at));
             Plain (Load
-              (y, {ty = I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)}));
+              (y, {ty = I32T; align = 0; offset = 0L; pack = Some (Pack8, ZX)}));
             Plain (Store
-              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+              (x, {ty = I32T; align = 0; offset = 0L; pack = Some Pack8}));
+            Plain (Const (addr_add d 1L @@ e.at));
+            Plain (Const (addr_add s 1L @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (MemoryCopy (x, y));
           ]
         else (* d > s *)
-          let n' = I32.sub n 1l in
+          let n' = I64.sub n_64 1L in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 (I32.add d n') @@ e.at));
-            Plain (Const (I32 (I32.add s n') @@ e.at));
+            Plain (Const (addr_add d n' @@ e.at));
+            Plain (Const (addr_add s n' @@ e.at));
             Plain (Load
-              (y, {ty = I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)}));
+              (y, {ty = I32T; align = 0; offset = 0L; pack = Some (Pack8, ZX)}));
             Plain (Store
-              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
-            Plain (Const (I32 n' @@ e.at));
+              (x, {ty = I32T; align = 0; offset = 0L; pack = Some Pack8}));
+            Plain (Const (d @@ e.at));
+            Plain (Const (s @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (MemoryCopy (x, y));
           ]
 
-      | MemoryInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | MemoryInit (x, y), Num n :: Num s :: Num d :: vs' ->
+        let n_64 = addr_of_num n in
+        let s_64 = addr_of_num s in
         if mem_oob c.frame x d n || data_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
           let seg = data c.frame.inst y in
-          let a = I64_convert.extend_i32_u s in
-          let b = Data.load_byte seg a in
+          let b = Data.load_byte seg s_64 in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
-            Plain (Const (I32 d @@ e.at));
+            Plain (Const (d @@ e.at));
             Plain (Const (I32 (I32.of_int_u (Char.code b)) @@ e.at));
             Plain (Store
-              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+              (x, {ty = I64T; align = 0; offset = 0L; pack = Some Pack8}));
+            Plain (Const (addr_add d 1L @@ e.at));
+            Plain (Const (addr_add s 1L @@ e.at));
+            Plain (Const (addr_sub n 1L @@ e.at));
             Plain (MemoryInit (x, y));
           ]
 
@@ -708,28 +726,33 @@ let rec step (c : config) : config =
           with Failure _ -> Crash.error e.at "type mismatch packing value"
         in Ref (Aggr.ArrayRef array) :: vs'', []
 
-      | ArrayNewElem (x, y), Num (I32 n) :: Num (I32 s) :: vs' ->
+      | ArrayNewElem (x, y), Num n :: Num s :: vs' ->
+        let n_64 = addr_of_num n in
+        let s_64 = addr_of_num s in
         if elem_oob c.frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else
           let seg = elem c.frame.inst y in
-          let rs = Lib.List32.init n (fun i -> Elem.load seg (Int32.add s i)) in
+          let rs = Lib.List64.init n_64
+            (fun i -> Elem.load seg (Int64.add s_64 i)) in
           let args = List.map (fun r -> Ref r) rs in
           let array =
             try Aggr.alloc_array (type_ c.frame.inst x) args
             with Failure _ -> Crash.error e.at "type mismatch packing value"
           in Ref (Aggr.ArrayRef array) :: vs', []
 
-      | ArrayNewData (x, y), Num (I32 n) :: Num (I32 s) :: vs' ->
+      | ArrayNewData (x, y), Num n :: Num s :: vs' ->
+        let n_64 = addr_of_num n in
+        let s_64 = addr_of_num s in
         if data_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else
           let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
-          let args = Lib.List32.init n
+          let args = Lib.List64.init n_64
             (fun i ->
-              let a = I32.(add s (mul i (I32.of_int_u (storage_size st)))) in
-              Data.load_val_storage seg (I64_convert.extend_i32_u a) st
+              let a = I64.(add s_64 (mul i (I64.of_int_u (storage_size st)))) in
+              Data.load_val_storage seg a st
             )
           in
           let array =
@@ -844,17 +867,18 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitData (x, y),
-        Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
+        Num (I32 n) :: Num s :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
+        let s_64 = addr_of_num s in
         if array_oob a d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if data_oob c.frame y s n then
+        else if data_oob c.frame y s (I64 (I64_convert.extend_i32_u n)) then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
         else
           let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
-          let v = Data.load_val_storage seg (I64_convert.extend_i32_u s) st in
+          let v = Data.load_val_storage seg s_64 st in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 d @@ e.at));
@@ -862,7 +886,7 @@ let rec step (c : config) : config =
             Plain (ArraySet x);
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s (I32.of_int_u (storage_size st))) @@ e.at));
+            Plain (Const (addr_add s (I64.of_int_u (storage_size st)) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayInitData (x, y));
           ]
@@ -872,16 +896,17 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitElem (x, y),
-        Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
+        Num (I32 n) :: Num s :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
+        let s_64 = addr_of_num s in
         if array_oob a d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if elem_oob c.frame y s n then
+        else if elem_oob c.frame y s (I64 (I64_convert.extend_i32_u n)) then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
         else
           let seg = elem c.frame.inst y in
-          let v = Ref (Elem.load seg s) in
+          let v = Ref (Elem.load seg s_64) in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 d @@ e.at));
@@ -889,7 +914,7 @@ let rec step (c : config) : config =
             Plain (ArraySet x);
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (addr_add s 1L @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayInitElem (x, y));
           ]
@@ -942,6 +967,10 @@ let rec step (c : config) : config =
 
       | VecBinary binop, Vec n2 :: Vec n1 :: vs' ->
         (try Vec (Eval_vec.eval_binop binop n1 n2) :: vs', []
+        with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
+
+      | VecTernary ternop, Vec v3 :: Vec v2 :: Vec v1 :: vs' ->
+        (try Vec (Eval_vec.eval_ternop ternop v1 v2 v3) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecCompare relop, Vec n2 :: Vec n1 :: vs' ->
@@ -1138,7 +1167,6 @@ let eval_const (inst : module_inst) (const : const) : value =
   match eval c with
   | [v] -> v
   | vs -> Crash.error const.at "wrong number of results on stack"
-
 
 (* Modules *)
 

@@ -2,11 +2,7 @@
 ;; General definitions
 ;;
 
-;; General variables
-
-var i : nat
-var j : nat
-var k : nat
+;; General variable conventions
 
 syntax N hint(macro none) = nat  ;; hack
 syntax M hint(macro none) = nat  ;; hack
@@ -14,25 +10,20 @@ syntax K hint(macro none) = nat  ;; hack
 syntax n hint(macro none) = nat  ;; hack
 syntax m hint(macro none) = nat  ;; hack
 
-var ii : int hint(show i)  ;; hack
 
-
-;; General constants
-
-def $Ki : nat hint(macro none)
-def $Ki = 1024
-
-
-;; General functions
+;; General numeric functions
 
 def $min(nat, nat) : nat
-def $min(0, j) = 0
-def $min(i, 0) = 0
-def $min($(i+1), $(j+1)) = $min(i, j)
+def $min(i, j) = i  -- if $(i <= j)
+def $min(i, j) = j  -- otherwise
 
 def $sum(nat*) : nat  hint(show (+) %) hint(macro none)
 def $sum(eps) = 0
 def $sum(n n'*) = $(n + $sum(n'*))
+
+def $prod(nat*) : nat  hint(show (*) %) hint(macro none)
+def $prod(eps) = 1
+def $prod(n n'*) = $(n * $prod(n'*))
 
 
 ;; General sequence functions
@@ -53,6 +44,9 @@ def $concat_(syntax X, (w*) (w'*)*) = w* ++ $concat_(X, (w'*)*)
 def $concatn_(syntax X, (X*)*, nat) : X*  hint(show (++) %2)
 def $concatn_(syntax X, eps, n) = eps
 def $concatn_(syntax X, (w^n) (w'^n)*, n) = w^n $concatn_(X, (w'^n)*, n)
+
+
+;; Set functions
 
 def $disjoint_(syntax X, X*) : bool  hint(show %2 $disjoint) hint(macro none)
 def $disjoint_(syntax X, eps) = true

@@ -2,6 +2,7 @@
 free_??? are equivalent to those in Il.Free module, except
 1. i in e^(i<n) is not considered free.
 2. n in e^n can be not considered free, depending on flag.
+3. include free functions for defs defined in def.ml.
 *)
 open Util
 open Source
@@ -19,11 +20,11 @@ let rec free_exp ignore_listN e =
   let fa = free_arg ignore_listN in
   match e.it with
   | VarE id -> free_varid id
-  | BoolE _ | NatE _ | TextE _ -> empty
-  | UnE (_, e1) | LenE e1 | TheE e1 | SubE (e1, _, _)
+  | BoolE _ | NumE _ | TextE _ -> empty
+  | CvtE (e1, _, _) | UnE (_, _, e1) | LenE e1 | TheE e1 | SubE (e1, _, _)
   | DotE (e1, _) | CaseE (_, e1) | ProjE (e1, _) | UncaseE (e1, _) ->
     f e1
-  | BinE (_, e1, e2) | CmpE (_, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) ->
+  | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
   | SliceE (e1, e2, e3) -> free_list f [e1; e2; e3]
   | OptE eo -> free_opt f eo
@@ -84,3 +85,29 @@ let rec free_prem ignore_listN prem =
     let free1 = fp prem' in
     let bound, free2 = fi iter in
     diff (union free1 free2) bound
+
+
+(* For unification *)
+
+let free_params params =
+  List.fold_left (fun s param -> free_param param |> union s) empty params
+
+let free_clauses clss =
+  List.fold_left (fun s c -> union s (free_clause c)) empty clss
+
+let free_rules rules =
+  List.fold_left (fun s r -> union s (free_rule r)) empty rules
+
+let free_rule_def rd =
+  let (_, _, clauses) = rd.it in
+  List.fold_left (fun s c ->
+    let lhs, rhs, prems = c in
+    List.fold_left (fun s p -> union s (Il.Free.free_prem p)) s prems
+    |> union (Il.Free.free_exp lhs)
+    |> union (Il.Free.free_exp rhs)
+  ) empty clauses
+
+let free_helper_def hd =
+  let (_, clauses, _) = hd.it in
+  free_clauses clauses
+

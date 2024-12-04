@@ -19,6 +19,7 @@ NAME          = WebAssembly
 DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
 DEADLINE      = $(shell date -d "+30 days" +%Y-%m-%d 2>/dev/null || date -v +30d +%Y-%m-%d)
+ECHIDNA_DRYRUN = true
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -239,9 +240,11 @@ WD-echidna: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		--user '$(W3C_USERNAME):$(W3C_PASSWORD)' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
-		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+		-F "decision=$(DECISION_URL)" \
+		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
 	@echo
-	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
 .PHONY: WD-echidna-CI
 WD-echidna-CI: WD-tar
@@ -253,9 +256,11 @@ WD-echidna-CI: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
-		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+		-F "decision=$(DECISION_URL)" \
+		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
 	@echo
-	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
 .PHONY: diff
 diff: bikeshed

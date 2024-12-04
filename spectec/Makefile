@@ -52,7 +52,7 @@ TESTDIRS = $(shell ls -d test-*)
 
 .PHONY: test testpromote $(TESTDIRS)
 
-test: exe $(TESTDIRS) dunetest
+test: exe $(TESTDIRS)
 
 dunetest:
 	@echo "#### Running (dune runtest)"
@@ -64,6 +64,19 @@ testpromote:
 $(TESTDIRS): test-%: exe
 	@echo "#### Running (cd $@; make test)"
 	@(cd $@ && ((make test >$(LOG) 2>&1 && (grep warning $(LOG) || true)) || (cat $(LOG) && echo "####>" Failure running $@. See log above. && false)))
+	@echo "#### Running (cd $@; dune runtest)"
+	@(cd $@ && dune runtest)
+
+
+# Spec
+
+.PHONY: spec spec-pdf
+
+spec:
+	(cd ../document/core && make main)
+
+spec-pdf:
+	(cd ../document/core && make pdf)
 
 
 # Cleanup

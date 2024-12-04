@@ -17,6 +17,7 @@ val reduce_arg : env -> arg -> arg
 val equiv_functyp : env -> param list * typ -> param list * typ -> bool
 val equiv_typ : env -> typ -> typ -> bool
 val sub_typ : env -> typ -> typ -> bool
+val narrow_typ : env -> typ -> typ -> bool
 
 val match_iter : env -> subst -> iter -> iter -> subst option
 val match_exp : env -> subst -> exp -> exp -> subst option

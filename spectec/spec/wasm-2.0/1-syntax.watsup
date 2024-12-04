@@ -16,7 +16,7 @@ syntax bit hint(desc "bit") = 0 | 1
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
 syntax uN(N) hint(desc "unsigned integer") hint(show u#%) =
-  0 | ... | 2^N-1
+  0 | ... | $nat$(2^N-1)
 syntax sN(N) hint(desc "signed integer") hint(show s#%) =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
 syntax iN(N) hint(desc "integer") hint(show i#%) =
@@ -53,11 +53,12 @@ syntax fN(N) hint(desc "floating-point number") hint(show f#%) =
   | POS fNmag(N)  hint(show $(+%)) \
   | NEG fNmag(N)  hint(show $(-%))
 
-syntax fNmag(N) hint(desc "floating-point magnitude") hint(show f#%#mag) =
-  | NORM m n     hint(show $((1 + %*2^(-$M(N))) * 2^%))  -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) <= n <= 2^($E(N)-1)-1)
-  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^n))  -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) = n)
+syntax exp hint(show e) = int
+syntax fNmag(N) hint(desc "floating-point magnitude") hint(show fNmag) =
+  | NORM m exp   hint(show $((1 + %*2^(-$M(N))) * 2^%))   -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) <= exp <= 2^($E(N)-1)-1)
+  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^exp)) -- if $(m < 2^$M(N) /\ 2-2^($E(N)-1) = exp)
   | INF          hint(show infinity)
-  | NAN (m)      hint(show NAN#%)                        -- if $(1 <= m < 2^$M(N))
+  | NAN (m)      hint(show NAN#(%))                       -- if $(1 <= m < 2^$M(N))
 
 syntax f32 = fN(32)
 syntax f64 = fN(64)
@@ -241,6 +242,7 @@ def $zero(Fnn) = $fzero($size(Fnn))
 ;; Numeric operators
 
 syntax sx hint(desc "signedness") = U | S
+syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax unop_(numtype)
 syntax unop_(Inn) = CLZ | CTZ | POPCNT | EXTEND n
@@ -341,6 +343,9 @@ syntax vextbinop_(Jnn X N) =
 syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 
 var ao : memarg
+
+syntax loadop_(numtype)
+syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
 
 syntax vloadop =
   | SHAPE nat X nat sx  hint(show %#X#%#_#%)
@@ -461,13 +466,10 @@ syntax instr/elem hint(desc "element instruction") = ...
   | ELEM.DROP elemidx
   | ...
  
-syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
-
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD numtype (sz _ sx)? memarg             hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-    -- (if numtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | STORE numtype sz? memarg                   hint(show %.STORE % %)   hint(show %.STORE#% % %)
-    -- (if numtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
+  | LOAD numtype loadop_(numtype)? memarg      hint(show %.LOAD % %) hint(show %.LOAD# ##% %)
+  | STORE numtype sz? memarg                   hint(show %.STORE % %)   hint(show %.STORE#% %)
+    -- (if numtype = Inn /\ sz < $sizenn(Inn))?
   | VLOAD vectype vloadop? memarg              hint(show %.LOAD % %) hint(show %.LOAD#% % %)
   | VLOAD_LANE vectype sz memarg laneidx       hint(show %.LOAD#%#_#LANE % % %)
   | VSTORE vectype memarg                      hint(show %.STORE % %)

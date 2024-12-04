@@ -11,6 +11,15 @@
     (table.grow (local.get $init) (local.get $sz))
   )
   (func (export "size") (result i32) (table.size $t))
+
+  (table $t64 i64 0 externref)
+
+  (func (export "get-t64") (param $i i64) (result externref) (table.get $t64 (local.get $i)))
+  (func (export "set-t64") (param $i i64) (param $r externref) (table.set $t64 (local.get $i) (local.get $r)))
+  (func (export "grow-t64") (param $sz i64) (param $init externref) (result i64)
+    (table.grow $t64 (local.get $init) (local.get $sz))
+  )
+  (func (export "size-t64") (result i64) (table.size $t64))
 )
 
 (assert_return (invoke "size") (i32.const 0))
@@ -37,6 +46,30 @@
 (assert_trap (invoke "set" (i32.const 5) (ref.extern 2)) "out of bounds table access")
 (assert_trap (invoke "get" (i32.const 5)) "out of bounds table access")
 
+;; Similar to above but for t64
+(assert_return (invoke "size-t64") (i64.const 0))
+(assert_trap (invoke "set-t64" (i64.const 0) (ref.extern 2)) "out of bounds table access")
+(assert_trap (invoke "get-t64" (i64.const 0)) "out of bounds table access")
+
+(assert_return (invoke "grow-t64" (i64.const 1) (ref.null extern)) (i64.const 0))
+(assert_return (invoke "size-t64") (i64.const 1))
+(assert_return (invoke "get-t64" (i64.const 0)) (ref.null extern))
+(assert_return (invoke "set-t64" (i64.const 0) (ref.extern 2)))
+(assert_return (invoke "get-t64" (i64.const 0)) (ref.extern 2))
+(assert_trap (invoke "set-t64" (i64.const 1) (ref.extern 2)) "out of bounds table access")
+(assert_trap (invoke "get-t64" (i64.const 1)) "out of bounds table access")
+
+(assert_return (invoke "grow-t64" (i64.const 4) (ref.extern 3)) (i64.const 1))
+(assert_return (invoke "size-t64") (i64.const 5))
+(assert_return (invoke "get-t64" (i64.const 0)) (ref.extern 2))
+(assert_return (invoke "set-t64" (i64.const 0) (ref.extern 2)))
+(assert_return (invoke "get-t64" (i64.const 0)) (ref.extern 2))
+(assert_return (invoke "get-t64" (i64.const 1)) (ref.extern 3))
+(assert_return (invoke "get-t64" (i64.const 4)) (ref.extern 3))
+(assert_return (invoke "set-t64" (i64.const 4) (ref.extern 4)))
+(assert_return (invoke "get-t64" (i64.const 4)) (ref.extern 4))
+(assert_trap (invoke "set-t64" (i64.const 5) (ref.extern 2)) "out of bounds table access")
+(assert_trap (invoke "get-t64" (i64.const 5)) "out of bounds table access")
 
 ;; Reject growing to size outside i32 value range
 (module

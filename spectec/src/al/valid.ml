@@ -2,12 +2,11 @@ open Util
 open Source
 open Il.Ast
 open Ast
+open Xl
 open Al_util
 open Print
 open Free
 
-
-module Atom = El.Atom
 module IlEval = Il.Eval
 
 (* Error *)
@@ -176,7 +175,7 @@ and ground_typ_of (typ: typ) : typ =
     let typ' = IlEnv.find_var !il_env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
-  | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
+  | VarT (id, _) when id.it = "fN" -> NumT `RealT $ typ.at
   | VarT (id, args) ->
     get_deftyps id args
     |> unify_deftyps_opt
@@ -415,7 +414,7 @@ let check_case source exprs typ =
   | _ -> error_case source typ
 
 let find_case source cases op =
-  match List.find_opt (fun (op', _, _) -> Il.Mixop.eq op' op) cases with
+  match List.find_opt (fun (op', _, _) -> Mixop.eq op' op) cases with
   | Some (_op, x, _hints) -> x
   | None -> error_valid "unknown case" source (string_of_mixop op)
 
@@ -473,33 +472,36 @@ and valid_expr env (expr: expr) : unit =
   | NumE _ -> check_num source expr.note;
   | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | ContextKindE _ ->
     check_bool source expr.note;
-  | UnE (NotOp, expr') ->
+  | CvtE (expr', _, _) ->
+    check_num source expr.note;
+    check_num source expr'.note;
+  | UnE (#Bool.unop, expr') ->
     valid_expr env expr';
     check_bool source expr.note;
     check_bool source expr'.note;
-  | UnE (MinusOp, expr') ->
+  | UnE (#Num.unop, expr') ->
     valid_expr env expr';
     check_num source expr.note;
     check_num source expr'.note;
-  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
+  | BinE (#Num.binop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_num source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE ((LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+  | BinE (#Num.cmpop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_num source expr1.note;
     check_num source expr2.note;
-  | BinE ((ImplOp|EquivOp|AndOp|OrOp), expr1, expr2) ->
+  | BinE (#Bool.binop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
     check_bool source expr1.note;
     check_bool source expr2.note;
-  | BinE ((EqOp|NeOp), expr1, expr2) ->
+  | BinE (#Bool.cmpop, expr1, expr2) ->
     valid_expr env expr1;
     valid_expr env expr2;
     check_bool source expr.note;
@@ -547,10 +549,24 @@ and valid_expr env (expr: expr) : unit =
     List.iter (valid_expr env) exprs;
     check_tuple source exprs expr.note;
   | CaseE (op, exprs) ->
-    List.iter (valid_expr env) exprs;
-    let tcs = get_typcases source expr.note in
-    let _binds, typ, _prems = find_case source tcs op in
-    check_case source exprs typ;
+    let is_evalctx_id id =
+      let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
+        let atom = mixop |> List.hd |> List.hd in
+        match atom.it with
+        | Atom.Atom s -> Some s
+        | _ -> None
+      ) (get_typcases source evalctxT) in
+      List.mem id evalctx_ids
+    in
+    (match op with
+    | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
+      check_case source exprs (TupT [] $ no_region)
+    | _ -> 
+      List.iter (valid_expr env) exprs;
+      let tcs = get_typcases source expr.note in
+      let _binds, typ, _prems = find_case source tcs op in
+      check_case source exprs typ;
+    )
   | CallE (id, args) ->
     List.iter (valid_arg env) args;
     check_call source id args expr.note;

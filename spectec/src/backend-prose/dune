@@ -10,5 +10,6 @@
     render
     macro
     langs
-    eq)
+    eq
+    prose_util)
 )

@@ -1,7 +1,6 @@
 open Il
 open Ast
 open Util.Source
-open El.Atom
 open Def
 open Il2al_util
 
@@ -13,7 +12,7 @@ let rec transform_rulepr_prem prem =
     prem
     |> transform_rulepr_prem
     |> (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
-  | IfPr ({ it = CmpE (EqOp, { it = CallE (id, args); note; at }, rhs); _ })
+  | IfPr ({ it = CmpE (`EqOp, _, { it = CallE (id, args); note; at }, rhs); _ })
   when List.mem id.it !typing_functions ->
     IfPr (CallE (id, args @ [ExpA rhs $ rhs.at]) $$ at % note) $ prem.at
   | _ -> prem
@@ -39,7 +38,7 @@ let transform_rulepr = List.map transform_rulepr_def
 (* Remove or *)
 let remove_or_exp e =
   match e.it with (* TODO: recursive *)
-  | BinE (OrOp, e1, e2) -> [ e1; e2 ]
+  | BinE (`OrOp, _, e1, e2) -> [ e1; e2 ]
   | _ -> [ e ]
 
 let rec remove_or_prem prem =
@@ -96,7 +95,7 @@ let remove_or def =
 let is_block_context_exp e =
   match e.it with
   (* instr* =/= [] *)
-  | CmpE (NeOp, e1, e2) ->
+  | CmpE (`NeOp, _, e1, e2) ->
     begin match e1.it, e2.it with
     | IterE (var, (List, _)), ListE []
     | ListE [], IterE (var, (List, _)) ->
@@ -134,11 +133,11 @@ let rec preprocess_prem prem =
     (* Expand: `dt` ~~ `ct` *)
     | [[]; [approx]; []], TupE [dt; ct] when approx.it = Approx ->
       (* `$expanddt(dt) = ct` *)
-      let expanddt = 
+      let expanddt =
         CallE ("expanddt" $ prem.at, [ExpA dt $ dt.at]) $$ prem.at % ct.note
       in
       let new_prem =
-        IfPr (CmpE (EqOp, expanddt, ct) $$ prem.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, `BoolT, expanddt, ct) $$ prem.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)
@@ -165,7 +164,7 @@ let rec preprocess_prem prem =
         CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note
       in
       let new_prem =
-        IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, `BoolT, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)
@@ -178,7 +177,7 @@ let rec preprocess_prem prem =
     | _ -> [ prem ]
     )
   (* Split -- if e1 /\ e2 *)
-  | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
+  | IfPr ( { it = BinE (`AndOp, _, e1, e2); _ } ) ->
     preprocess_prem (IfPr e1 $ prem.at) @ preprocess_prem (IfPr e2 $ prem.at)
   | _ -> [ prem ]
 
@@ -219,11 +218,8 @@ let flatten_rec def =
 
 let preprocess (il: script) : rule_def list * helper_def list =
 
-  let not_translate = ["typing.watsup"] in
   let is_al_target def =
-    let f = fun name -> String.ends_with ~suffix:name def.at.left.file in
     match def.it with
-    | _ when List.exists f not_translate -> None
     | DecD (id, _, _, _) when id.it = "utf8" -> None
     | RelD (id, mixop, t, rules) when List.mem id.it [ "Step"; "Step_read"; "Step_pure" ] ->
       (* HARDCODE: Exclude administrative rules *)

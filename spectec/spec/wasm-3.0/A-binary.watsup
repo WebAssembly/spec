@@ -171,18 +171,20 @@ grammar Brectype : rectype =
 
 ;; External types
 
-grammar Blimits : limits =
-  | 0x00 n:Bu32 => `[n .. $(2^32-1)]
-  | 0x01 n:Bu32 m:Bu32 => `[n .. m]
+grammar Blimits : (addrtype, limits) =
+  | 0x00 n:Bu64 => (I32, `[n .. $(2^64-1)])
+  | 0x01 n:Bu64 m:Bu64 => (I64, `[n .. m])
+  | 0x04 n:Bu64 => (I32, `[n .. $(2^64-1)])
+  | 0x05 n:Bu64 m:Bu64 => (I64, `[n .. m])
 
 grammar Bglobaltype : globaltype =
   | t:Bvaltype mut:Bmut => mut t
 
 grammar Btabletype : tabletype =
-  | rt:Breftype lim:Blimits => lim rt
+  | rt:Breftype (at,lim):Blimits => at lim rt
 
 grammar Bmemtype : memtype =
-  | lim:Blimits => lim PAGE
+  | (at,lim):Blimits => at lim PAGE
 
 grammar Btagtype : typeidx =
   | 0x00 x:Btypeidx => x
@@ -622,8 +624,9 @@ grammar Binstr/vec-const : instr = ...
   | ...
 
 grammar Binstr/vec-shuffle : instr = ...
-  | 0xFD 13:Bu32 (l:Blaneidx)^16 => VSHUFFLE (I8 X `16) l
-  | 0xFD 14:Bu32 => VSWIZZLE (I8 X `16)
+  | 0xFD 13:Bu32 (l:Blaneidx)^16 => VSHUFFLE (I8 X `16) l^16
+  | 0xFD 14:Bu32 => VSWIZZLOP (I8 X `16) SWIZZLE
+  | 0xFD 256:Bu32 => VSWIZZLOP (I8 X `16) RELAXED_SWIZZLE
   | ...
 
 grammar Binstr/vec-splat : instr = ...
@@ -779,6 +782,7 @@ grammar Binstr/vec-un-i16x8 : instr = ...
 
 grammar Binstr/vec-bin-i16x8 : instr = ...
   | 0xFD 130:Bu32 => VBINOP (I16 X `8) (Q15MULR_SAT S)
+  | 0xFD 273:Bu32 => VBINOP (I16 X `8) (RELAXED_Q15MULR S)
   | ...
 
 grammar Binstr/vec-test-i16x8 : instr = ...
@@ -827,6 +831,7 @@ grammar Binstr/vec-extbin-i16x8 : instr = ...
   | 0xFD 157:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (EXTMUL S HIGH)
   | 0xFD 158:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (EXTMUL U LOW)
   | 0xFD 159:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (EXTMUL U HIGH)
+  | 0xFD 274:Bu32 => VEXTBINOP (I16 X `8) (I8 X `16) (RELAXED_DOT S)
   | ...
 
 grammar Binstr/vec-extun-i32x4 : instr = ...
@@ -876,6 +881,10 @@ grammar Binstr/vec-extbin-i32x4 : instr = ...
   | 0xFD 189:Bu32 => VEXTBINOP (I32 X `4) (I16 X `8) (EXTMUL S HIGH)
   | 0xFD 190:Bu32 => VEXTBINOP (I32 X `4) (I16 X `8) (EXTMUL U LOW)
   | 0xFD 191:Bu32 => VEXTBINOP (I32 X `4) (I16 X `8) (EXTMUL U HIGH)
+  | ...
+
+grammar Binstr/vec-exttern-i32x4 : instr = ...
+  | 0xFD 275:Bu32 => VEXTTERNOP (I32 X `4) (I16 X `8) (RELAXED_DOT_ADD S)
   | ...
 
 grammar Binstr/vec-un-i64x2 : instr = ...
@@ -945,6 +954,13 @@ grammar Binstr/vec-bin-f32x4 : instr = ...
   | 0xFD 233:Bu32 => VBINOP (F32 X `4) MAX
   | 0xFD 234:Bu32 => VBINOP (F32 X `4) PMIN
   | 0xFD 235:Bu32 => VBINOP (F32 X `4) PMAX
+  | 0xFD 269:Bu32 => VBINOP (F32 X `4) RELAXED_MIN
+  | 0xFD 270:Bu32 => VBINOP (F32 X `4) RELAXED_MAX
+  | ...
+
+grammar Binstr/vec-tern-f32x4 : instr = ...
+  | 0xFD 261:Bu32 => VTERNOP (F32 X `4) RELAXED_MADD
+  | 0xFD 262:Bu32 => VTERNOP (F32 X `4) RELAXED_NMADD
   | ...
 
 grammar Binstr/vec-un-f64x2 : instr = ...
@@ -966,6 +982,13 @@ grammar Binstr/vec-bin-f64x2 : instr = ...
   | 0xFD 245:Bu32 => VBINOP (F64 X `2) MAX
   | 0xFD 246:Bu32 => VBINOP (F64 X `2) PMIN
   | 0xFD 247:Bu32 => VBINOP (F64 X `2) PMAX
+  | 0xFD 271:Bu32 => VBINOP (F64 X `2) RELAXED_MIN
+  | 0xFD 272:Bu32 => VBINOP (F64 X `2) RELAXED_MAX
+  | ...
+
+grammar Binstr/vec-tern-f64x2 : instr = ...
+  | 0xFD 263:Bu32 => VTERNOP (F64 X `2) RELAXED_MADD
+  | 0xFD 264:Bu32 => VTERNOP (F64 X `2) RELAXED_NMADD
   | ...
 
 grammar Binstr/vec-cvt : instr = ...
@@ -979,6 +1002,10 @@ grammar Binstr/vec-cvt : instr = ...
   | 0xFD 253:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (TRUNC_SAT U) ZERO
   | 0xFD 254:Bu32 => VCVTOP (F64 X `2) (I32 X `4) (CONVERT S) LOW
   | 0xFD 255:Bu32 => VCVTOP (F64 X `2) (I32 X `4) (CONVERT U) LOW
+  | 0xFD 257:Bu32 => VCVTOP (I32 X `4) (F32 X `4) (RELAXED_TRUNC S)
+  | 0xFD 258:Bu32 => VCVTOP (I32 X `4) (F32 X `4) (RELAXED_TRUNC U)
+  | 0xFD 259:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (RELAXED_TRUNC S) ZERO
+  | 0xFD 260:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (RELAXED_TRUNC U) ZERO
 
 
 ;; Expressions
@@ -1037,7 +1064,7 @@ grammar Bfuncsec : typeidx* hint(desc "function section") =
 ;; Table section
 
 grammar Btable : table =
-  | tt:Btabletype => TABLE tt (REF.NULL ht)  -- if tt = lim (REF NULL? ht)
+  | tt:Btabletype => TABLE tt (REF.NULL ht)  -- if tt = at lim (REF NULL? ht)
   | 0x40 0x00 tt:Btabletype e:Bexpr => TABLE tt e
 
 grammar Btablesec : table* hint(desc "table section") =

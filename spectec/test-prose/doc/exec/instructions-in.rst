@@ -151,7 +151,7 @@ $${rule-prose: Step_pure/vtestop}
 
 \
 
-$${rule+: Step_pure/vtestop-*}
+$${rule+: Step_pure/vtestop}
 
 .. _exec-vbitmask:
 
@@ -175,7 +175,7 @@ $${rule-prose: Step_pure/vcvtop}
 
 \
 
-$${rule+: Step_pure/vcvtop-*}
+$${rule+: Step_pure/vcvtop}
 
 .. _exec-vextunop:
 

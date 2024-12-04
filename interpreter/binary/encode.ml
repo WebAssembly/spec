@@ -61,7 +61,6 @@ struct
     if -64L <= i && i < 64L then byte b
     else (byte (b lor 0x80); s64 (Int64.shift_right i 7))
 
-  let u1 i = u64 Int64.(logand (of_int i) 1L)
   let u32 i = u64 Int64.(logand (of_int32 i) 0xffffffffL)
   let s7 i = s64 (Int64.of_int i)
   let s32 i = s64 (Int64.of_int32 i)
@@ -70,12 +69,13 @@ struct
   let f64 x = word64 (F64.to_bits x)
   let v128 v = String.iter (put s) (V128.to_bits v)
 
+  let flag b i = if b then 1 lsl i else 0
+
   let len i =
     if Int32.to_int (Int32.of_int i) <> i then
       Code.error Source.no_region "length out of bounds";
     u32 (Int32.of_int i)
 
-  let bool b = u1 (if b then 1 else 0)
   let string bs = len (String.length bs); put_string s bs
   let name n = string (Utf8.encode n)
   let list f xs = List.iter f xs
@@ -194,14 +194,15 @@ struct
     | RecT [st] -> sub_type st
     | RecT sts -> s7 (-0x32); vec sub_type sts
 
-  let limits uN {min; max} =
-    bool (max <> None); uN min; opt uN max
+  let limits at {min; max} =
+    let flags = flag (max <> None) 0 + flag (at = I64AT) 2 in
+    byte flags; u64 min; opt u64 max
 
   let table_type = function
-    | TableT (lim, t) -> ref_type t; limits u32 lim
+    | TableT (at, lim, t) -> ref_type t; limits at lim
 
   let memory_type = function
-    | MemoryT lim -> limits u32 lim
+    | MemoryT (at, lim) -> limits at lim
 
   let global_type = function
     | GlobalT (mut, t) -> val_type t; mutability mut
@@ -229,7 +230,7 @@ struct
       Int32.(logor (of_int align) (if has_var then 0x40l else 0x00l)) in
     u32 flags;
     if has_var then var x;
-    u32 offset
+    u64 offset
 
   let block_type = function
     | VarBlockType x -> var_type s33 (StatX x.it)
@@ -741,6 +742,7 @@ struct
     | VecBinary (V128 (I8x16 V128Op.MaxS)) -> vecop 0x78l
     | VecBinary (V128 (I8x16 V128Op.MaxU)) -> vecop 0x79l
     | VecBinary (V128 (I8x16 V128Op.AvgrU)) -> vecop 0x7bl
+    | VecBinary (V128 (I8x16 V128Op.RelaxedSwizzle)) -> vecop 0x100l
     | VecBinary (V128 (I16x8 V128Op.NarrowS)) -> vecop 0x85l
     | VecBinary (V128 (I16x8 V128Op.NarrowU)) -> vecop 0x86l
     | VecBinary (V128 (I16x8 V128Op.Add)) -> vecop 0x8el
@@ -760,6 +762,8 @@ struct
     | VecBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> vecop 0x9el
     | VecBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> vecop 0x9fl
     | VecBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> vecop 0x82l
+    | VecBinary (V128 (I16x8 V128Op.RelaxedQ15MulRS)) -> vecop 0x111l
+    | VecBinary (V128 (I16x8 V128Op.RelaxedDot)) -> vecop 0x112l
     | VecBinary (V128 (I32x4 V128Op.Add)) -> vecop 0xael
     | VecBinary (V128 (I32x4 V128Op.Sub)) -> vecop 0xb1l
     | VecBinary (V128 (I32x4 V128Op.MinS)) -> vecop 0xb6l
@@ -787,6 +791,8 @@ struct
     | VecBinary (V128 (F32x4 V128Op.Max)) -> vecop 0xe9l
     | VecBinary (V128 (F32x4 V128Op.Pmin)) -> vecop 0xeal
     | VecBinary (V128 (F32x4 V128Op.Pmax)) -> vecop 0xebl
+    | VecBinary (V128 (F32x4 V128Op.RelaxedMin)) -> vecop 0x10dl
+    | VecBinary (V128 (F32x4 V128Op.RelaxedMax)) -> vecop 0x10el
     | VecBinary (V128 (F64x2 V128Op.Add)) -> vecop 0xf0l
     | VecBinary (V128 (F64x2 V128Op.Sub)) -> vecop 0xf1l
     | VecBinary (V128 (F64x2 V128Op.Mul)) -> vecop 0xf2l
@@ -795,8 +801,22 @@ struct
     | VecBinary (V128 (F64x2 V128Op.Max)) -> vecop 0xf5l
     | VecBinary (V128 (F64x2 V128Op.Pmin)) -> vecop 0xf6l
     | VecBinary (V128 (F64x2 V128Op.Pmax)) -> vecop 0xf7l
+    | VecBinary (V128 (F64x2 V128Op.RelaxedMin)) -> vecop 0x10fl
+    | VecBinary (V128 (F64x2 V128Op.RelaxedMax)) -> vecop 0x110l
     | VecBinary (V128 _) ->
       error e.at "illegal binary vector instruction"
+
+    | VecTernary (V128 (F32x4 V128Op.RelaxedMadd)) -> vecop 0x105l
+    | VecTernary (V128 (F32x4 V128Op.RelaxedNmadd)) -> vecop 0x106l
+    | VecTernary (V128 (F64x2 V128Op.RelaxedMadd)) -> vecop 0x107l
+    | VecTernary (V128 (F64x2 V128Op.RelaxedNmadd)) -> vecop 0x108l
+    | VecTernary (V128 (I8x16 V128Op.RelaxedLaneselect)) -> vecop 0x109l
+    | VecTernary (V128 (I16x8 V128Op.RelaxedLaneselect)) -> vecop 0x10al
+    | VecTernary (V128 (I32x4 V128Op.RelaxedLaneselect)) -> vecop 0x10bl
+    | VecTernary (V128 (I64x2 V128Op.RelaxedLaneselect)) -> vecop 0x10cl
+    | VecTernary (V128 (I32x4 V128Op.RelaxedDotAdd)) -> vecop 0x113l
+    | VecTernary (V128 _) ->
+      error e.at "illegal ternary vector instruction"
 
     | VecConvert (V128 (I8x16 _)) ->
       error e.at "illegal i8x16 conversion instruction"
@@ -818,6 +838,10 @@ struct
     | VecConvert (V128 (I32x4 V128Op.TruncSatUF32x4)) -> vecop 0xf9l
     | VecConvert (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> vecop 0xfcl
     | VecConvert (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> vecop 0xfdl
+    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncSF32x4)) -> vecop 0x101l
+    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncUF32x4)) -> vecop 0x102l
+    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncSZeroF64x2)) -> vecop 0x103l
+    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncUZeroF64x2)) -> vecop 0x104l
     | VecConvert (V128 (I64x2 V128Op.ExtendLowS)) -> vecop 0xc7l
     | VecConvert (V128 (I64x2 V128Op.ExtendHighS)) -> vecop 0xc8l
     | VecConvert (V128 (I64x2 V128Op.ExtendLowU)) -> vecop 0xc9l
@@ -948,7 +972,7 @@ struct
   let table tab =
     let {ttype; tinit} = tab.it in
     match ttype, tinit.it with
-    | TableT (_, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
+    | TableT (_, _at, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
       table_type ttype
     | _ -> op 0x40; op 0x00; table_type ttype; const tinit
 

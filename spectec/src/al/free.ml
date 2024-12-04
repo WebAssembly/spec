@@ -24,6 +24,7 @@ let rec free_expr expr =
   | YetE _ -> IdSet.empty
   | VarE id
   | SubE (id, _) -> free_id id
+  | CvtE (e, _, _)
   | UnE (_, e)
   | LenE e
   | ChooseE e -> free_expr e

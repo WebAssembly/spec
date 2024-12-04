@@ -2,6 +2,7 @@ open Al.Ast
 open Prose
 open Printf
 open Util.Source
+open Xl
 
 (* Helpers *)
 
@@ -23,25 +24,8 @@ let string_of_nullable_list stringifier left sep right = function
   | l -> string_of_list stringifier left sep right l
 
 let indent_depth = ref 0
-let indent () = ((List.init !indent_depth (fun _ -> "  ")) |> String.concat "") ^ "-"
+let indent () = ((List.init !indent_depth (fun _ -> "  ")) |> String.concat "") ^ "- "
 
-let extract_desc_hint = List.find_map (function
-  | El.Ast.{ hintid = id; hintexp = { it = TextE desc; _ } }
-    when id.it = "desc" -> Some desc
-  | _ -> None)
-let rec extract_desc typ = match typ.it with
-  | Il.Ast.IterT (typ, _) -> extract_desc typ ^ " sequence"
-  | _ ->
-    let name = Il.Print.string_of_typ typ in
-    match !Langs.el |> List.find_map (fun def ->
-      match def.it with
-      | El.Ast.TypD (id, subid, _, _, hints)
-        when id.it = name && (subid.it = "" || (* HARDCODE *) subid.it = "syn") ->
-        extract_desc_hint hints
-      | _ -> None)
-    with
-    | Some desc -> desc
-    | None -> name
 
 
 let string_of_atom = El.Print.string_of_atom
@@ -50,26 +34,14 @@ let string_of_typ = Il.Print.string_of_typ
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "not"
-  | MinusOp -> "-"
+  | #Bool.unop as op -> Bool.string_of_unop op
+  | #Num.unop as op -> Num.string_of_unop op
 
 let string_of_binop = function
-  | AndOp -> "and"
-  | OrOp -> "or"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "·"
-  | DivOp -> "/"
-  | ModOp -> "\\"
-  | ExpOp -> "^"
-  | EqOp -> "is"
-  | NeOp -> "is not"
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "≤"
-  | GeOp -> "≥"
+  | #Bool.binop as op -> Bool.string_of_binop op
+  | #Num.binop as op -> Num.string_of_binop op
+  | #Bool.cmpop as op -> Bool.string_of_cmpop op
+  | #Num.cmpop as op -> Num.string_of_cmpop op
 
 (* Iters *)
 
@@ -92,17 +64,20 @@ and string_of_record_expr r =
 
 and string_of_expr expr =
   match expr.it with
-  | NumE i -> Z.to_string i
+  | NumE n -> Num.to_string n
   | BoolE b -> string_of_bool b
-  | UnE (NotOp, { it = IsCaseOfE (e, a); _ }) ->
+  | CvtE (e, _, _) -> string_of_expr e  (* TODO: show? *)
+  | UnE (`NotOp, { it = IsCaseOfE (e, a); _ }) ->
     sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
-  | UnE (NotOp, { it = IsDefinedE e; _ }) ->
+  | UnE (`NotOp, { it = IsDefinedE e; _ }) ->
     sprintf "%s is not defined" (string_of_expr e)
-  | UnE (NotOp, { it = IsValidE e; _ }) ->
+  | UnE (`NotOp, { it = IsValidE e; _ }) ->
     sprintf "%s is not valid" (string_of_expr e)
-  | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
+  | UnE (`NotOp, { it = MatchE (e1, e2); _ }) ->
     sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
-  | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
+  | UnE (`NotOp, { it = MemE (e1, e2); _ }) ->
+    sprintf "%s is not contained in %s" (string_of_expr e1) (string_of_expr e2)
+  | UnE (`NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -125,7 +100,7 @@ and string_of_expr expr =
   | CatE (e1, e2) ->
     sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
-    sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
+    sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | GetCurStateE -> "the current state"
   | GetCurContextE None -> "the current context"
@@ -143,23 +118,22 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE ([[ atom ]], []) -> string_of_atom atom
   | CaseE (op, el) ->
-    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
-    (match op' with
-    | [] -> "()"
-    | hd::tl ->
-      let res =
-        List.fold_left2 (
-          fun acc a e ->
-            let a' = if a = "" then "" else " " ^ a in
-            let acc' = if acc = "" then "" else acc ^ " " in
-            acc' ^ string_of_expr e ^ a'
-        ) hd tl el in
-      "(" ^ res ^ ")"
-    )
+    (* Current rules for omitting parenthesis around a CaseE:
+       1) Has no argument
+       2) Is infix notation *)
+    let op' = List.map (string_of_list string_of_atom "" "" "") op in
+    let el' = List.map string_of_expr el in
+
+    let s = Prose_util.alternate op' el'
+    |> List.filter (fun s -> s <> "")
+    |> String.concat " " in
+
+    let has_no_arg = List.length el = 0 in
+    let is_infix = List.hd op' = "" && String.concat "" op' <> "" in
+    if has_no_arg || is_infix then s else "(" ^ s ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE a -> sprintf "the first non-value entry of the stack is a %s" (string_of_atom a)
@@ -383,86 +357,127 @@ let string_of_algorithm algo = match algo.it with
         "" params
     ^ string_of_instrs instrs ^ "\n"
 
-let string_of_expr_with_type e = "the " ^ extract_desc e.note ^ " " ^ string_of_expr e
+let render_type_visit = ref []
+let init_render_type () = render_type_visit := []
+let string_of_expr_with_type e =
+  let s = string_of_expr e in
+  if List.mem s !render_type_visit then s else (
+    render_type_visit := s :: !render_type_visit;
+    let t = Prose_util.extract_desc e.note in
+    if t = "" then
+      string_of_expr e
+    else
+      "the " ^ t ^ " " ^ string_of_expr e
+  )
 
 let string_of_cmpop = function
-  | Eq -> "is"
-  | Ne -> "is different with"
-  | Lt -> "is less than"
-  | Gt -> "is greater than"
-  | Le -> "is less than or equal to"
-  | Ge -> "is greater than or equal to"
+  | `EqOp -> "is"
+  | `NeOp -> "is different with"
+  | `LtOp -> "is less than"
+  | `GtOp -> "is greater than"
+  | `LeOp -> "is less than or equal to"
+  | `GeOp -> "is greater than or equal to"
 
-let rec string_of_instr = function
-  | LetI (e1, e2) ->
-      sprintf "%s Let %s be %s." (indent ())
-        (string_of_expr e1)
-        (string_of_expr e2)
-  | CmpI (e1, cmpop, e2) ->
-      sprintf "%s %s %s %s." (indent ())
-        (string_of_expr e1)
-        (string_of_cmpop cmpop)
-        (string_of_expr e2)
-  | MemI (e1, e2) ->
-      sprintf "%s %s is contained in %s." (indent ())
-        (string_of_expr e1)
-        (string_of_expr e2)
-  | IsValidI (c_opt, e, es) ->
-      sprintf "%s %s%s is valid%s." (indent ())
-        (string_of_opt "Under the context " string_of_expr ", " c_opt)
-        (string_of_expr_with_type e)
-        (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
-  | MatchesI (e1, e2) ->
-      sprintf "%s %s matches %s." (indent ())
-        (string_of_expr_with_type e1)
-        (string_of_expr_with_type e2)
-  | IsConstI (c_opt, e) ->
-      sprintf "%s %s%s is constant." (indent ())
-        (string_of_opt "Under the context " string_of_expr ", " c_opt)
-        (string_of_expr_with_type e)
-  | IfI (c, is) ->
-      sprintf "%s If %s, \n%s" (indent ())
-        (string_of_expr c)
-        (indented_string_of_instrs is)
-  | ForallI (iters, is) ->
-      let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
-      sprintf "%s For all %s,\n%s" (indent ())
-        (string_of_list string_of_iter "" " and " "" iters)
-        (indented_string_of_instrs is)
-  | EquivI (e1, e2) ->
-      sprintf "%s (%s) if and only if (%s)." (indent ())
-        (string_of_expr e2)
-        (string_of_expr e1)
-  | EitherI iss ->
-      sprintf "%s Either:\n%s" (indent ())
-        (string_of_list indented_string_of_instrs "" ("\n" ^ indent () ^ " Or:\n") "" iss)
-  | YetI s -> indent () ^ " Yet: " ^ s
+let string_of_prose_binop = function
+| `AndOp -> "and"
+| `OrOp -> "or"
+| `ImplOp -> "implies"
+| `EquivOp -> "if and only if"
 
-and indented_string_of_instr i =
+let rec raw_string_of_single_stmt stmt =
+  match stmt with
+  | LetS (e1, e2) ->
+    sprintf "Let %s be %s"
+      (string_of_expr e1)
+      (string_of_expr_with_type e2)
+  | CondS e ->
+    sprintf "%s"
+      (string_of_expr e)
+  | CmpS (e1, cmpop, e2) ->
+    sprintf "%s %s %s"
+      (string_of_expr_with_type e1)
+      (string_of_cmpop cmpop)
+      (string_of_expr e2)
+  | IsValidS (c_opt, e, es) ->
+    sprintf "%s%s is valid%s"
+      (string_of_opt "Under the context " string_of_expr ", " c_opt)
+      (string_of_expr_with_type e)
+      (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
+  | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
+    sprintf "%s matches itself"
+      (string_of_expr_with_type e1)
+  | MatchesS (e1, e2) ->
+    sprintf "%s matches %s"
+      (string_of_expr_with_type e1)
+      (string_of_expr_with_type e2)
+  | IsConstS (c_opt, e) ->
+    sprintf "%s%s is constant"
+      (string_of_opt "Under the context " string_of_expr ", " c_opt)
+      (string_of_expr_with_type e)
+  | IsDefinedS e ->
+    sprintf "%s exists"
+      (string_of_expr_with_type e)
+  | IsDefaultableS e ->
+    sprintf "%s is defaultable"
+      (string_of_expr_with_type e)
+  | ContextS (e1, e2) ->
+    sprintf "%s is the context %s"
+      (string_of_expr_with_type e1)
+      (string_of_expr e2)
+  | RelS (s, es) ->
+    let args = List.map string_of_expr_with_type es in
+    Prose_util.apply_prose_hint s args
+  | YetS s -> indent () ^ " Yet: " ^ s
+  | _ -> assert false
+
+
+and raw_string_of_stmt stmt =
+  let string_of_block ss = "\n" ^ indented_string_of_stmts ss in
+  match stmt with
+  | IfS (c, ss) ->
+    sprintf "If %s, then:%s"
+      (string_of_expr c)
+      (string_of_block ss)
+  | ForallS (iters, ss) ->
+    let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
+    sprintf "For all %s:%s"
+      (string_of_list string_of_iter "" " and " "" iters)
+      (string_of_block ss)
+  | EitherS sss ->
+    string_of_list string_of_block "Either:" ("\n" ^ indent () ^ "Or:") "" sss
+  | BinS (s1, binop, s2) ->
+    sprintf "%s %s %s."
+      (raw_string_of_single_stmt s1)
+      (string_of_prose_binop binop)
+      (raw_string_of_single_stmt s2)
+  | _ -> raw_string_of_single_stmt stmt ^ "."
+
+and string_of_stmt stmt = indent () ^ raw_string_of_stmt stmt
+
+and indented_string_of_stmt i =
   indent_depth := !indent_depth + 1;
-  let result = string_of_instr i in
+  let result = string_of_stmt i in
   indent_depth := !indent_depth - 1;
   result
 
-and indented_string_of_instrs is =
-  (string_of_list indented_string_of_instr "" "\n" "" is)
+and indented_string_of_stmts is =
+  (string_of_list indented_string_of_stmt "" "\n" "" is)
 
 let string_of_def = function
-| Iff (anchor, _e, concl, []) ->
+| RuleD (anchor, concl, []) ->
     anchor
-    (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
-    ^ string_of_instr concl ^ "\n"
-| Iff (anchor, _e, concl, prems) ->
-    let concl_str = string_of_instr concl in
+    ^ string_of_stmt concl ^ "\n"
+| RuleD (anchor, concl, prems) ->
+    init_render_type ();
+    let concl_str = string_of_stmt concl in
     let drop_last x = String.sub x 0 (String.length x - 1) in
     anchor
-    (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ drop_last concl_str
-    ^ " if and only if:\n"
-    ^ string_of_list indented_string_of_instr "" "\n" "\n" prems
-| Algo algo -> string_of_algorithm algo
+    ^ " if:\n"
+    ^ string_of_list indented_string_of_stmt "" "\n" "\n" prems
+| AlgoD algo -> string_of_algorithm algo
 
 let string_of_prose prose = List.map string_of_def prose |> String.concat "\n"
 

@@ -100,24 +100,28 @@ For the other integer instructions, the use of two's complement for the signed i
 .. _syntax-vvtestop:
 .. _syntax-vtestop:
 .. _syntax-vrelop:
+.. _syntax-vswizzlop:
 .. _syntax-vshiftop:
 .. _syntax-vunop:
 .. _syntax-vbinop:
+.. _syntax-vternop:
 .. _syntax-vextunop:
 .. _syntax-vextbinop:
+.. _syntax-vextternop:
 .. _syntax-vcvtop:
 .. _syntax-instr-vec:
+.. _syntax-instr-vec-relaxed:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {lanetype dim shape ishape} half__ zero__ laneidx instr/vec}
+$${syntax: {lanetype dim shape ishape bshape} half__ zero__ laneidx instr/vec}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop__ vextbinop__ vcvtop__
+  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_ vextunop__ vextbinop__ vextternop__ vcvtop__
 }
 
 Vector instructions have a naming convention involving a *shape* prefix that
@@ -313,6 +317,7 @@ The ${:ELEM.DROP} instruction prevents further use of a passive element segment.
 .. _syntax-storen:
 .. _syntax-memarg:
 .. _syntax-loadop:
+.. _syntax-storeop:
 .. _syntax-vloadop:
 .. _syntax-lanewidth:
 .. _syntax-instr-memory:
@@ -322,7 +327,7 @@ Memory Instructions
 
 Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
-$${syntax: memarg loadop_ vloadop_ {instr/memory instr/data}}
+$${syntax: memarg loadop_ storeop_ vloadop_ {instr/memory instr/data}}
 
 Memory is accessed with ${:LOAD} and ${:STORE} instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory argument* ${:memarg} that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
@@ -333,12 +338,9 @@ In the case of loads, a sign extension mode ${:sx} is then required to select ap
 Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of ${:V128}. Each lane is half its usual size, and the sign extension mode ${:sx} then specifies how the smaller lane is extended to the larger lane.
 Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
-The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
+The static address offset is added to the dynamic address operand, yielding a 33-bit or 65-bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
-
-.. note::
-   Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The ${:MEMORY.SIZE} instruction returns the current size of a memory.
 The ${:MEMORY.GROW} instruction grows a memory by a given delta and returns the previous size, or ${:$(-1)} if enough memory cannot be allocated.

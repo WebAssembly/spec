@@ -27,15 +27,24 @@ def $inst_memtype(moduleinst, mt) = $subst_all_memtype(mt, dt*)
 ;; Auxiliary definitions on Values
 ;;
 
+;; Constants
+
+def $Ki : nat hint(macro none)
+def $Ki = 1024
+
+
 ;; Default values
 
-def $default_(valtype) : val?
+;;def $default_(valtype) : val?  ;; forward-declared in typing
 
 def $default_(Inn) = (CONST Inn 0)
 def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
 def $default_(Vnn) = (VCONST Vnn 0)
 def $default_(REF NULL ht) = (REF.NULL ht)
 def $default_(REF ht) = eps
+
+;;relation Defaultable: |- valtype DEFAULTABLE ;; forward-declared in typing
+rule Defaultable: |- t DEFAULTABLE -- if $default_(t) = val
 
 
 ;; Packed fields
@@ -50,7 +59,7 @@ def $unpackfield_(valtype, eps, val) = val
 def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $extend__($psize(packtype), 32, sx, i)
 
 
-;; Projections
+;; Address filtering
 
 def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxa")
 def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxa")
@@ -59,23 +68,23 @@ def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))    hint(macro "mem
 def $tagsxa(externaddr*) : tagaddr*       hint(show $tags(%))    hint(macro "tagsxa")
 
 def $funcsxa(eps) = eps
-def $funcsxa((FUNC fa) xa*) = fa $funcsxa(xa*)
+def $funcsxa((FUNC a) xa*) = a $funcsxa(xa*)
 def $funcsxa(externaddr xa*) = $funcsxa(xa*)  -- otherwise
 
 def $globalsxa(eps) = eps
-def $globalsxa((GLOBAL ga) xa*) = ga $globalsxa(xa*)
+def $globalsxa((GLOBAL a) xa*) = a $globalsxa(xa*)
 def $globalsxa(externaddr xa*) = $globalsxa(xa*)  -- otherwise
 
 def $tablesxa(eps) = eps
-def $tablesxa((TABLE ta) xa*) = ta $tablesxa(xa*)
+def $tablesxa((TABLE a) xa*) = a $tablesxa(xa*)
 def $tablesxa(externaddr xa*) = $tablesxa(xa*)  -- otherwise
 
 def $memsxa(eps) = eps
-def $memsxa((MEM ma) xa*) = ma $memsxa(xa*)
+def $memsxa((MEM a) xa*) = a $memsxa(xa*)
 def $memsxa(externaddr xa*) = $memsxa(xa*)  -- otherwise
 
 def $tagsxa(eps) = eps
-def $tagsxa((TAG ha) xa*) = ha $tagsxa(xa*)
+def $tagsxa((TAG a) xa*) = a $tagsxa(xa*)
 def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 
 
@@ -83,7 +92,7 @@ def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 ;; Auxiliary definitions on State
 ;;
 
-;; Short-hands
+;; Access
 
 def $store(state) : store             hint(show %.STORE) hint(macro "Z%")
 def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
@@ -179,11 +188,11 @@ def $growtable(tableinst, nat, ref) : tableinst hint(partial)
 def $growmem(meminst, nat) : meminst            hint(partial)
 
 def $growtable(tableinst, n, r) = tableinst'
-  -- if tableinst = { TYPE (`[i .. j] rt), REFS r'* }
-  -- if tableinst' = { TYPE (`[i' .. j] rt), REFS r'* r^n }
+  -- if tableinst = { TYPE (at `[i .. j] rt), REFS r'* }
+  -- if tableinst' = { TYPE (at `[i' .. j] rt), REFS r'* r^n }
   -- if $(i' = |r'*| + n <= j)
 
 def $growmem(meminst, n) = meminst'
-  -- if meminst = { TYPE (`[i .. j] PAGE), BYTES b* }
-  -- if meminst' = { TYPE (`[i' .. j] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
+  -- if meminst = { TYPE (at `[i .. j] PAGE), BYTES b* }
+  -- if meminst' = { TYPE (at `[i' .. j] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
   -- if $(i' = |b*| / (64 * $Ki) + n <= j)

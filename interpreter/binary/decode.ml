@@ -100,8 +100,8 @@ let rec sN n s =
   then (if b land 0x40 = 0 then x else Int64.(logor x (logxor (-1L) 0x7fL)))
   else Int64.(logor x (shift_left (sN (n - 7) s) 7))
 
-let u1 s = Int64.to_int (uN 1 s)
 let u32 s = Int64.to_int32 (uN 32 s)
+let u64 s = uN 64 s
 let s7 s = Int64.to_int (sN 7 s)
 let s32 s = Int64.to_int32 (sN 32 s)
 let s33 s = I32_convert.wrap_i64 (sN 33 s)
@@ -116,7 +116,6 @@ let len32 s =
   if I32.le_u n (Int32.of_int (len s - pos)) then Int32.to_int n else
     error s pos "length out of bounds"
 
-let bool s = (u1 s = 1)
 let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
@@ -279,19 +278,22 @@ let rec_type s =
 
 
 let limits uN s =
-  let has_max = bool s in
+  let flags = byte s in
+  require (flags land 0xfa = 0) s (pos s - 1) "malformed limits flags";
+  let has_max = (flags land 1 = 1) in
+  let at = if flags land 4 = 4 then I64AT else I32AT in
   let min = uN s in
   let max = opt uN has_max s in
-  {min; max}
+  at, {min; max}
 
 let table_type s =
   let t = ref_type s in
-  let lim = limits u32 s in
-  TableT (lim, t)
+  let at, lim = limits u64 s in
+  TableT (at, lim, t)
 
 let memory_type s =
-  let lim = limits u32 s in
-  MemoryT lim
+  let at, lim = limits u64 s in
+  MemoryT (at, lim)
 
 let global_type s =
   let t = val_type s in
@@ -317,7 +319,7 @@ let memop s =
   let has_var = Int32.logand flags 0x40l <> 0l in
   let x = if has_var then at var s else Source.(0l @@ no_region) in
   let align = Int32.(to_int (logand flags 0x3fl)) in
-  let offset = u32 s in
+  let offset = u64 s in
   x, align, offset
 
 let block_type s =
@@ -963,6 +965,26 @@ let rec instr s =
     | 0xfdl -> i32x4_trunc_sat_f64x2_u_zero
     | 0xfel -> f64x2_convert_low_i32x4_s
     | 0xffl -> f64x2_convert_low_i32x4_u
+    | 0x100l -> i8x16_relaxed_swizzle
+    | 0x101l -> i32x4_relaxed_trunc_f32x4_s
+    | 0x102l -> i32x4_relaxed_trunc_f32x4_u
+    | 0x103l -> i32x4_relaxed_trunc_f64x2_s_zero
+    | 0x104l -> i32x4_relaxed_trunc_f64x2_u_zero
+    | 0x105l -> f32x4_relaxed_madd
+    | 0x106l -> f32x4_relaxed_nmadd
+    | 0x107l -> f64x2_relaxed_madd
+    | 0x108l -> f64x2_relaxed_nmadd
+    | 0x109l -> i8x16_relaxed_laneselect
+    | 0x10al -> i16x8_relaxed_laneselect
+    | 0x10bl -> i32x4_relaxed_laneselect
+    | 0x10cl -> i64x2_relaxed_laneselect
+    | 0x10dl -> f32x4_relaxed_min
+    | 0x10el -> f32x4_relaxed_max
+    | 0x10fl -> f64x2_relaxed_min
+    | 0x110l -> f64x2_relaxed_max
+    | 0x111l -> i16x8_relaxed_q15mulr_s
+    | 0x112l -> i16x8_relaxed_dot_i8x16_i7x16_s
+    | 0x113l -> i32x4_relaxed_dot_i8x16_i7x16_add_s
     | n -> illegal s pos (I32.to_int_u n)
     )
 
@@ -1077,7 +1099,7 @@ let table s =
     );
     (fun s ->
       let at = region s (pos s) (pos s) in
-      let TableT (_, (_, ht)) as ttype = table_type s in
+      let TableT (_, _at, (_, ht)) as ttype = table_type s in
       {ttype; tinit = [RefNull ht @@ at] @@ at}
     );
   ] s

@@ -17,11 +17,7 @@ New instances of
 :ref:`globals <syntax-globalinst>`,
 :ref:`tags <syntax-taginst>`,
 :ref:`element segments <syntax-eleminst>`, and
-:ref:`data segments <syntax-datainst>`,
-as well as of dynamic data types like
-:ref:`structures <syntax-structinst>`,
-:ref:`arrays <syntax-arrayinst>`, or
-:ref:`exceptions <syntax-exninst>`,
+:ref:`data segments <syntax-datainst>`
 are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the following auxiliary functions.
 
 
@@ -66,10 +62,11 @@ $${definition-prose: alloctable}
 
 1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` of the table to allocate and :math:`\reff` the initialization value.
 
-2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
-                                                                                                      3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
+2. Let :math:`(\addrtype~\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
-4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype', \TIREFS~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
+3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
+
+4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype, \TIREFS~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
 
 5. Append :math:`\tableinst` to the |STABLES| of :math:`S`.
 
@@ -90,7 +87,7 @@ $${definition-prose: allocmem}
 
 1. Let :math:`\memtype` be the :ref:`memory type <syntax-memtype>` of the memory to allocate.
 
-2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
+2. Let :math:`(\addrtype~\{\LMIN~n, \LMAX~m^?\})` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
@@ -124,32 +121,6 @@ $${definition-prose: alloctag}
 5. Return :math:`a`.
 
 $${definition: alloctag}
-
-.. index:: exception, exception instance, exception address, tag address
-.. _alloc-exception:
-
-:ref:`Exceptions <syntax-exninst>`
-..................................
-
-1. Let :math:`ta` be the :ref:`tag address <syntax-tagaddr>` associated with the exception to allocate and :math:`\EIFIELDS~\val^\ast` be the values to initialize the exception with.
-
-2. Let :math:`a` be the first free :ref:`exception address <syntax-exnaddr>` in :math:`S`.
-
-3. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\{ \EITAG~ta, \EIFIELDS~\val^\ast \}`.
-
-4. Append :math:`\exninst` to the |SEXNS| of :math:`S`.
-
-5. Return :math:`a`.
-
-.. math::
-   \begin{array}{rlll}
-   \allocexn(S, \tagaddr, \val^\ast) &=& S', \exnaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \exnaddr &=& |S.\SEXNS| \\
-   \exninst &=& \{ \EITAG~\tagaddr, \EIFIELDS~\val^\ast \} \\
-   S' &=& S \compose \{\SEXNS~\exninst\} \\
-   \end{array}
-
 
 .. index:: global, global instance, global address, global type, value type, mutability, value
 .. _alloc-global:
@@ -232,17 +203,15 @@ $${definition-prose: growtable}
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIREFS`.
 
-3. If :math:`\X{len}` is larger than or equal to :math:`2^{32}`, then fail.
+3. Let :math:`(\addrtype~\limits~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
 
-4. Let :math:`\limits~t` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
+4. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+5. If the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~\reftype)` is not :ref:`valid <valid-tabletype>`, then fail.
 
-6. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+6. Append :math:`\reff^n` to :math:`\tableinst.\TIREFS`.
 
-7. Append :math:`\reff^n` to :math:`\tableinst.\TIREFS`.
-
-8. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`\limits'~t`.
+7. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~t)`.
 
 $${definition: growtable}
 
@@ -261,17 +230,15 @@ $${definition-prose: growmem}
 
 3. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\meminst.\MIBYTES` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-4. If :math:`\X{len}` is larger than :math:`2^{16}`, then fail.
+4. Let :math:`(\addrtype~\limits)` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
 
-5. Let :math:`\limits` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
+5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-6. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+6. If the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')` is not :ref:`valid <valid-memtype>`, then fail.
 
-7. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+7. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIBYTES`.
 
-8. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIBYTES`.
-
-9. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`\limits'`.
+8. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')`.
 
 $${definition: growmem}
 
@@ -377,7 +344,7 @@ and list of :ref:`reference <syntax-ref>` lists for the module's :ref:`element s
 
 24. Let :math:`\exportinst^\ast` be the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
 
-25. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~\deftype^\ast,` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MITAGS~\tagaddr_{\F{mod}}^\ast`, :math:`\MIEXPORTS~\exportinst^\ast\}`.
+25. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~\deftype^\ast,` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MITAGS~\tagaddr_{\F{mod}}^\ast`, :math:`\MIELEMS~\elemaddr^\ast,` :math:`\MIDATAS~\dataaddr^\ast,` :math:`\MIEXPORTS~\exportinst^\ast\}`.
 
 26. Return :math:`\moduleinst`.
 

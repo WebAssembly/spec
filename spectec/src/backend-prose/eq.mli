@@ -1,3 +1,3 @@
 open Prose
 
-val eq_instr : instr -> instr -> bool
+val eq_stmt : stmt -> stmt -> bool

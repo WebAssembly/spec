@@ -25,7 +25,9 @@ sig
 
   val index_of : 'a -> 'a list -> int option
   val index_where : ('a -> bool) -> 'a list -> int option
-  val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
+
+  val map3 : ('a -> 'b -> 'c -> 'd) -> 'a list -> 'b list -> 'c list -> 'd list
+  val map_pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module List32 :
@@ -44,13 +46,24 @@ sig
   val index_where : ('a -> bool) -> 'a list -> int32 option
 end
 
-module Array32 :
+module List64 :
 sig
-  val make : int32 -> 'a -> 'a array
-  val length : 'a array -> int32
-  val get : 'a array -> int32 -> 'a
-  val set : 'a array -> int32 -> 'a -> unit
-  val blit : 'a array -> int32 -> 'a array -> int32 -> int32 -> unit
+  val init : int64 -> (int64 -> 'a) -> 'a list
+  val make : int64 -> 'a -> 'a list
+  val length : 'a list -> int64
+  val nth : 'a list -> int64 -> 'a (* raises Failure *)
+  val take : int64 -> 'a list -> 'a list (* raises Failure *)
+  val drop : int64 -> 'a list -> 'a list (* raises Failure *)
+  val mapi : (int64 -> 'a -> 'b) -> 'a list -> 'b list
+end
+
+module Array64 :
+sig
+  val make : int64 -> 'a -> 'a array
+  val length : 'a array -> int64
+  val get : 'a array -> int64 -> 'a
+  val set : 'a array -> int64 -> 'a -> unit
+  val blit : 'a array -> int64 -> 'a array -> int64 -> int64 -> unit
 end
 
 module Bigarray :

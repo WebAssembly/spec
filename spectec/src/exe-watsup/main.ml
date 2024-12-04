@@ -107,7 +107,7 @@ let add_arg source =
 let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
   "--" ^ pass_flag pass, Arg.Unit (fun () -> enable_pass pass), " " ^ pass_desc pass
 
-let argspec = Arg.align
+let argspec = Arg.align (
 [
   "-v", Arg.Unit banner, " Show version";
   "-p", Arg.Unit (fun () -> file_kind := Patch), " Patch files";
@@ -135,7 +135,8 @@ let argspec = Arg.align
     " Generate interpreter";
   "--debug", Arg.Unit (fun () -> Backend_interpreter.Debugger.debug := true),
     " Debug interpreter";
-
+  "--no-unified-vars", Arg.Unit (fun () -> Il2al.Unify.rename := true),
+    " Do not use unified variables in AL";
   "--latex-macros", Arg.Set latex_macros, " Splice Latex with macro invocations";
 
   "--print-el", Arg.Set print_el, " Print EL";
@@ -148,11 +149,11 @@ let argspec = Arg.align
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
-  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
+  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " Wasm version to assume for tests (default: 3)";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
-]
+] )
 
 
 (* Main *)
@@ -175,7 +176,7 @@ let () =
     Il.Valid.valid il;
 
     (match !target with
-    | Prose _ (* | Splice _ *) | Interpreter _ ->
+    | Prose _ | Splice _ | Interpreter _ ->
       enable_pass Sideconditions;
     | _ when !print_al || !print_al_o <> "" ->
       enable_pass Sideconditions;
@@ -211,9 +212,9 @@ let () =
     let match_algo_name algo_name al_elt =
       algo_name = "" ||
       (match al_elt.Util.Source.it with
-      | Al.Ast.RuleA (a, _, _, _) -> 
+      | Al.Ast.RuleA (a, _, _, _) ->
         Al.Print.string_of_atom a = String.uppercase_ascii algo_name
-      | Al.Ast.FuncA (id , _, _) -> 
+      | Al.Ast.FuncA (id , _, _) ->
         id = String.lowercase_ascii algo_name)
     in
 
