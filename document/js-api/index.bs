@@ -1213,7 +1213,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> ≤ |n| < 2<sup>[=signif=](32)</sup>.
         1. Let |f32| be [=nan=](n).
     1. Otherwise,
-        1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2008 round to nearest, ties to even mode. [[IEEE-754]]
+        1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2019 round to nearest, ties to even mode. [[IEEE-754]]
     1. Return [=f32.const=] |f32|.
 1. If |type| is [=f64=],
     1. Let |number| be [=?=] [$ToNumber$](|v|).
