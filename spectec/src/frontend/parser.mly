@@ -802,9 +802,7 @@ param_ :
 
 
 def :
-  | def_ { $1 $ $sloc }
-  | NL_NL def
-    { $2 }
+  | def_ NL_NL* { $1 $ $loc($1) }
 def_ :
   | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* exit_scope
     { FamD ($2, List.map El.Convert.param_of_arg $4, $7) }
@@ -874,7 +872,7 @@ hint :
 (* Scripts *)
 
 script :
-  | def* EOF { $1 }
+  | NL_NL* def* EOF { $2 }
 
 typ_eof :
   | typ EOF { $1 }
