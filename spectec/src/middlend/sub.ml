@@ -151,7 +151,8 @@ and t_exp' env = function
   | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
   | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
-  | LenE exp -> LenE exp
+  | LiftE exp -> LiftE (t_exp env exp)
+  | LenE exp -> LenE (t_exp env exp)
   | TupE es -> TupE (List.map (t_exp env) es)
   | CallE (a, args) -> CallE (a, t_args env args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)

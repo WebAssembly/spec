@@ -37,7 +37,7 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
   | GetCurContextE _ | YetE _
   | TopValueE None | ContextKindE _ -> ()
 
-  | CvtE (e, _, _) | UnE (_, e) | LenE e
+  | CvtE (e, _, _) | UnE (_, e) | LiftE e | LenE e
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
   | TopValueE (Some e) | TopValuesE e | ChooseE e -> walker.walk_expr walker e
 
@@ -141,6 +141,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | CompE (e1, e2) -> CompE (walk_expr e1, walk_expr e2)
     | CatE (e1, e2) -> CatE (walk_expr e1, walk_expr e2)
     | MemE (e1, e2) -> MemE (walk_expr e1, walk_expr e2)
+    | LiftE e -> LiftE (walk_expr e)
     | LenE e -> LenE (walk_expr e)
     | StrE r -> StrE (Record.map (fun x -> x) walk_expr r)
     | AccE (e, p) -> AccE (walk_expr e, walk_path p)

@@ -26,6 +26,7 @@ let rec free_expr expr =
   | SubE (id, _) -> free_id id
   | CvtE (e, _, _)
   | UnE (_, e)
+  | LiftE e
   | LenE e
   | ChooseE e -> free_expr e
   | BinE (_, e1, e2)

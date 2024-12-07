@@ -430,6 +430,9 @@ and annot_exp env e : Il.Ast.exp * occur =
     | ListE es ->
       let es', occurs = List.split (List.map (annot_exp env) es) in
       ListE es', List.fold_left union Env.empty occurs
+    | LiftE e1 ->
+      let e1', occur1 = annot_exp env e1 in
+      LiftE e1', occur1
     | MemE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in

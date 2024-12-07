@@ -278,6 +278,8 @@ and eval_expr env expr =
     in
     (id, Array.append !arr1 !arr2 |> listV |> ref)
     ) s1 |> strV
+  | LiftE e1 ->
+    eval_expr env e1 |> unwrap_optv |> Option.to_list |> listV_of_list
   | CatE (e1, e2) ->
     let a1 = eval_expr env e1 |> unwrap_seq_to_array in
     let a2 = eval_expr env e2 |> unwrap_seq_to_array in

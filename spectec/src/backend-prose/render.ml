@@ -199,6 +199,9 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       if (List.length elel > 0) then Some (El.Ast.SeqE elel)
       else Some (El.Ast.EpsE)
+    | Al.Ast.LiftE e ->
+      let* ele = al_to_el_expr e in
+      Some ele.it
     | Al.Ast.AccE (e, p) ->
       let* ele = al_to_el_expr e in
       (match p.it with
@@ -434,6 +437,8 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s is contained in %s" se1 se2
+  | Al.Ast.LiftE e ->
+    render_expr env e
   | Al.Ast.LenE e ->
     let se = render_expr env e in
     sprintf "the length of %s" se

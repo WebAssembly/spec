@@ -307,7 +307,7 @@ rule Step_pure/vswizzle:
 rule Step_pure/vshuffle:
   (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (Pnn X N) i*) ~> (VCONST V128 c)
   -- var c' : iN($lsize(Pnn))
-  -- if c'* = $lanes_(Pnn X N, c_1) $lanes_(Pnn X N, c_2)
+  -- if c'* = $lanes_(Pnn X N, c_1) ++ $lanes_(Pnn X N, c_2)
   -- if c = $invlanes_(Pnn X N, c'*[$(i*[k])]^(k<N))
 
 

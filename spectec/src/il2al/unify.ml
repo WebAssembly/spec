@@ -199,6 +199,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       TheE (overlap env e1 e2) |> replace_it
     | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
       ListE (List.map2 (overlap env) es1 es2) |> replace_it
+    | LiftE e1, LiftE e2 ->
+      LiftE (overlap env e1 e2) |> replace_it
     | CatE (e1, e1'), CatE (e2, e2') ->
       CatE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | MemE (e1, e1'), MemE (e2, e2') ->
@@ -252,6 +254,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
       [ExpB (id, template.note) $ e.at]
     | UnE (_, _, e1), UnE (_, _, e2)
     | DotE (e1, _), DotE (e2, _)
+    | LiftE e1, LiftE e2
     | LenE e1, LenE e2
     | IterE (e1, _), IterE (e2, _)
     | ProjE (e1, _), ProjE (e2, _)

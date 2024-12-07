@@ -216,6 +216,13 @@ let rec reduce_exp s e : expr =
     | ListE es2' when is_normal_exp e1' && List.for_all is_normal_exp es2' -> BoolE false
     | _ -> MemE (e1', e2')
     ) $> e
+  | LiftE e1 ->
+    let e1' = reduce_exp s e1 in
+    (match e1'.it with
+    | OptE None -> ListE []
+    | OptE (Some e11) -> ListE [e11]
+    | _ -> LiftE e1'
+    ) $> e
   | LenE e1 ->
     let e1' = reduce_exp s e1 in
     (match e1'.it with

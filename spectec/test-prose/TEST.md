@@ -296,7 +296,7 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the fun
 
   * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-  * The number type :math:`{t^?}` is equal to :math:`C{.}\mathsf{labels}{}[{l'}]`.
+  * The result type :math:`{t^?}` is equal to :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
   * For all :math:`l` in :math:`{l^\ast}`:
 
@@ -304,7 +304,7 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the fun
 
   * For all :math:`l` in :math:`{l^\ast}`:
 
-    * The number type :math:`{t^?}` is equal to :math:`C{.}\mathsf{labels}{}[l]`.
+    * The result type :math:`{t^?}` is equal to :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -2845,9 +2845,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
-#. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
-
-  a. Execute the instruction :math:`(\mathsf{call}~{x'})`.
+#. Execute the sequence :math:`{(\mathsf{call}~{x'})^?}`.
 
 #. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
@@ -3050,7 +3048,7 @@ Instr_ok/br_if
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the function type t_1* :: t? :: [I32] -> t_2* if:
   - the result type C.LABELS[l'] exists.
-  - the number type t? is C.LABELS[l'].
+  - the result type t? is C.LABELS[l'].
   - For all l in l*:
     - the result type C.LABELS[l] exists.
   - For all l in l*:
@@ -4279,8 +4277,7 @@ instantiate z module externaddr*
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(moduleinst, i_D*, b**).
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
-31. If (CALL x')? is defined, then:
-  a. Execute the instruction (CALL x').
+31. Execute the sequence ((CALL x')?).
 32. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 33. Return f.MODULE.
 
@@ -9942,9 +9939,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
 
-#. If :math:`{(\mathsf{call}~x)^?}` is defined, then:
-
-  a. Execute the instruction :math:`(\mathsf{call}~x)`.
+#. Execute the sequence :math:`{(\mathsf{call}~x)^?}`.
 
 #. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
@@ -12749,8 +12744,7 @@ instantiate z module externaddr*
 27. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 28. Execute the sequence (instr_E*).
 29. Execute the sequence (instr_D*).
-30. If (CALL x)? is defined, then:
-  a. Execute the instruction (CALL x).
+30. Execute the sequence ((CALL x)?).
 31. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 32. Return f.MODULE.
 
@@ -13901,7 +13895,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
 
-  * The index sequence :math:`{x^\ast}` is equal to :math:`{x_2^\ast} \setminus {x_1^\ast}`.
+  * The local index sequence :math:`{x^\ast}` is equal to :math:`{x_2^\ast} \setminus {x_1^\ast}`.
 
   * :math:`{|{\mathit{x*}}|}` is equal to :math:`{|{\mathit{t*}}|}`.
 
@@ -16235,7 +16229,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-  * The index sequence :math:`{x^\ast}` is equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}, {{\mathit{table}}^\ast}, {{\mathit{mem}}^\ast}, {{\mathit{elem}}^\ast}, {{\mathit{data}}^\ast}))`.
+  * The function index sequence :math:`{x^\ast}` is equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}, {{\mathit{table}}^\ast}, {{\mathit{mem}}^\ast}, {{\mathit{elem}}^\ast}, {{\mathit{data}}^\ast}))`.
 
   * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is equal to :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
@@ -24286,33 +24280,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
+#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
+#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
+#. Let :math:`{\mathit{tagaddr}}_0` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{aa}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{tagaddr}}_0` is :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{elemaddr}}_0` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{elemaddr}}_0` is :math:`{{\mathit{ea}}^\ast}`.
 
-#. Let :math:`n_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{dataaddr}}_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`{\mathit{dataaddr}}_0` is :math:`{{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -24450,9 +24444,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
 
-#. If :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` is defined, then:
-
-  a. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
+#. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{s}}^?}`.
 
 #. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
@@ -25126,7 +25118,7 @@ Instrtype_sub
 - the instruction type t_11* ->_ x_1* t_12* matches the instruction type t_21* ->_ x_2* t_22* if:
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
-  - the index sequence x* is $setminus_(localidx, x_2*, x_1*).
+  - the local index sequence x* is $setminus_(localidx, x_2*, x_1*).
   - |x*| is |t*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
@@ -26329,7 +26321,7 @@ Module_ok
   - $disjoint_(name, nm*) is true.
   - the context C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
   - the context C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - the index sequence x* is $funcidx_nonfuncs((global*, table*, mem*, elem*, data*)).
+  - the function index sequence x* is $funcidx_nonfuncs((global*, table*, mem*, elem*, data*)).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
   - the global type sequence gt_I* is $globalsxt(xt_I*).
   - the table type sequence tt_I* is $tablesxt(xt_I*).
@@ -30133,20 +30125,20 @@ allocmodule module externaddr* val_G* ref_T* ref_E**
 29. Let (FUNC x local* expr_F)* be func*.
 30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
 31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-32. Let n_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-33. Assert: Due to validation, (n_0 = fa*).
-34. Let n_0 be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
-35. Assert: Due to validation, (n_0 = ga*).
-36. Let n_0 be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
-37. Assert: Due to validation, (n_0 = ta*).
-38. Let n_0 be $allocmems($subst_all_memtype(memtype, dt*)*).
-39. Assert: Due to validation, (n_0 = ma*).
-40. Let n_0 be $alloctags(dt*[y]*).
-41. Assert: Due to validation, (n_0 = aa*).
-42. Let n_0 be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
-43. Assert: Due to validation, (n_0 = ea*).
-44. Let n_0 be $allocdatas(OK^|data*|, byte**).
-45. Assert: Due to validation, (n_0 = da*).
+32. Let funcaddr_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+33. Assert: Due to validation, (funcaddr_0 = fa*).
+34. Let globaladdr_0 be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
+35. Assert: Due to validation, (globaladdr_0 = ga*).
+36. Let tableaddr_0 be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
+37. Assert: Due to validation, (tableaddr_0 = ta*).
+38. Let memaddr_0 be $allocmems($subst_all_memtype(memtype, dt*)*).
+39. Assert: Due to validation, (memaddr_0 = ma*).
+40. Let tagaddr_0 be $alloctags(dt*[y]*).
+41. Assert: Due to validation, (tagaddr_0 = aa*).
+42. Let elemaddr_0 be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
+43. Assert: Due to validation, (elemaddr_0 = ea*).
+44. Let dataaddr_0 be $allocdatas(OK^|data*|, byte**).
+45. Assert: Due to validation, (dataaddr_0 = da*).
 46. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemmode_u1)
@@ -30213,8 +30205,7 @@ instantiate z module externaddr*
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence (instr_E*).
 32. Execute the sequence (instr_D*).
-33. If instr_S? is defined, then:
-  a. Execute the instruction instr_S.
+33. Execute the sequence (instr_S?).
 34. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 35. Return f.MODULE.
 

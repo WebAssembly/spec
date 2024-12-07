@@ -80,6 +80,7 @@ let rec t_exp env e : prem list =
   | UncaseE (exp, _)
   | OptE (Some exp)
   | TheE exp
+  | LiftE exp
   | CaseE (_, exp)
   | CvtE (exp, _, _)
   | SubE (exp, _, _)

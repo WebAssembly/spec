@@ -132,6 +132,7 @@ and t_exp' n e : eqns * exp' =
   | UncaseE (exp, mo) -> t_e n exp (fun exp' -> UncaseE (exp', mo))
   | OptE (Some exp) -> t_e n exp (fun exp' -> OptE (Some exp'))
   | TheE exp -> t_e n exp (fun exp' -> TheE exp')
+  | LiftE exp -> t_e n exp (fun exp' -> LiftE exp')
   | CaseE (mixop, exp) -> t_e n exp (fun exp' -> CaseE (mixop, exp'))
   | CvtE (exp, a, b) -> t_e n exp (fun exp' -> CvtE (exp', a, b))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))

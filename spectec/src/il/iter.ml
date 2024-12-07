@@ -127,7 +127,7 @@ and exp e =
   | BinE (op, ot, e1, e2) -> binop op; optyp ot; exp e1; exp e2
   | CmpE (op, ot, e1, e2) -> cmpop op; optyp ot; exp e1; exp e2
   | TupE es | ListE es -> list exp es
-  | ProjE (e1, _) | TheE e1 | LenE e1 -> exp e1
+  | ProjE (e1, _) | TheE e1 | LiftE e1 | LenE e1 -> exp e1
   | CaseE (op, e1) -> mixop op; exp e1
   | UncaseE (e1, op) -> exp e1; mixop op
   | OptE eo -> opt exp eo

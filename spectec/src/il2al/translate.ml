@@ -192,6 +192,7 @@ and translate_exp exp =
   (* List *)
   | Il.LenE inner_exp -> lenE (translate_exp inner_exp) ~at ~note
   | Il.ListE exps -> listE (List.map translate_exp exps) ~at ~note
+  | Il.LiftE inner_exp -> liftE (translate_exp inner_exp) ~at ~note
   | Il.IdxE (exp1, exp2) ->
     accE (translate_exp exp1, idxP (translate_exp exp2)) ~at ~note
   | Il.SliceE (exp1, exp2, exp3) ->
