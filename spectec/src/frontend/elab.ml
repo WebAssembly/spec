@@ -281,11 +281,11 @@ let indent n = String.make (2*n) ' '
 let rec msg_trace n = function
   | Trace (_, _, [trace]) -> msg_trace n trace
   | Trace (at, msg, traces) ->
-    indent n ^ string_of_region at ^ ": " ^ msg_traces (n + 1) msg traces
+    indent n ^ string_of_region at ^ ": " ^ msg_traces n msg traces
 
 and msg_traces n msg = function
   | [] -> Printf.printf "[msg] %s\n%!" msg;msg
-  | traces -> msg ^ ", because\n" ^ String.concat "\n" (List.map (msg_trace n) traces)
+  | traces -> msg ^ ", because\n" ^ String.concat "\n" (List.map (msg_trace (n + 1)) traces)
 
 let rec error_trace = function
   | Trace (_, _, [trace]) -> error_trace trace
@@ -1340,11 +1340,11 @@ and elab_exp_plain' env e t : Il.exp' attempt =
     let iter2' = elab_iterexp env iter2 in
     let* e1' = elab_exp env e1 t1 in
     let e' = Il.IterE (e1', iter2') in
-    match iter, iter2 with
+    match iter2, iter with
     | Opt, Opt -> Ok e'
     | Opt, _ ->
       Ok (Il.LiftE (e' $$ e.at % (Il.IterT (elab_typ env t1, Opt) $ e1.at)))
-    | _, Opt -> fail_typ env e.at "iteration expression" t
+    | _, Opt -> fail_typ env e.at "iteration" t
     | _, _ -> Ok e'
 
 and elab_exp_list env es ts at : Il.exp list attempt =
