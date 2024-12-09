@@ -4753,7 +4753,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
-     \wedge & S \vdashdeftypematch F.\AMODULE.\MITYPES[y] \matchesdeftype f.\FITYPE)
+     \wedge & S \vdashdeftypematch f.\FITYPE \matchesdeftype F.\AMODULE.\MITYPES[y])
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
