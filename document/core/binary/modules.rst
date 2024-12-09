@@ -356,7 +356,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
      4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~(\REF~\FUNC), \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
