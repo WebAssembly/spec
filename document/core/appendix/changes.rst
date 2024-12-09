@@ -162,6 +162,8 @@ Added more precise types for references [#proposal-typedref]_.
 
 * Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
 
+* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-nullable <syntax-nullable>` :ref:`reference type <syntax-reftype>`.
+
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
 
