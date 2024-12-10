@@ -979,7 +979,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1004,7 +1004,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1071,7 +1071,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1088,7 +1088,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1153,7 +1153,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1170,11 +1170,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1191,7 +1191,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1204,11 +1204,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1221,7 +1221,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`t_1` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1290,7 +1290,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1368,7 +1368,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1452,11 +1452,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
 #. Pop the value :math:`(t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1495,7 +1495,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -5888,7 +5888,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5913,7 +5913,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5980,7 +5980,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5997,7 +5997,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6062,7 +6062,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6079,11 +6079,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6100,7 +6100,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6113,11 +6113,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6130,7 +6130,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6147,7 +6147,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -6164,7 +6164,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6177,11 +6177,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6194,15 +6194,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6215,7 +6215,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6228,7 +6228,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6245,11 +6245,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6266,7 +6266,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6285,11 +6285,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6302,11 +6302,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6321,7 +6321,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6336,11 +6336,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6361,11 +6361,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6399,7 +6399,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6438,7 +6438,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6451,7 +6451,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6464,11 +6464,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6481,11 +6481,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6506,7 +6506,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................................................................................................................................................................................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6643,7 +6643,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6732,7 +6732,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6760,7 +6760,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6768,7 +6768,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6803,15 +6803,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6868,15 +6868,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6915,7 +6915,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6962,7 +6962,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7039,11 +7039,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7081,7 +7081,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -7089,7 +7089,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7124,15 +7124,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7189,15 +7189,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7262,11 +7262,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7283,11 +7283,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -7319,11 +7319,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7362,11 +7362,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7385,11 +7385,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7416,7 +7416,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -10937,7 +10937,7 @@ Step_pure/cvtop nt_2 nt_1 cvtop
 5. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
 3. If ref is of the case REF.NULL, then:
   a. Push the value (I32.CONST 1) to the stack.
@@ -11473,7 +11473,7 @@ Step/global.set x
 
 Step/table.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -11485,7 +11485,7 @@ Step/table.grow x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type ref is on the top of the stack.
 5. Pop the value ref from the stack.
 6. Either:
   a. Let ti be $growtable($table(z, x), n, ref).
@@ -16344,7 +16344,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16369,7 +16369,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16444,7 +16444,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16461,7 +16461,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16609,7 +16609,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16626,11 +16626,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16647,7 +16647,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16660,11 +16660,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16677,7 +16677,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16694,7 +16694,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16705,7 +16705,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -16722,7 +16722,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -16737,11 +16737,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}_2` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
@@ -16772,7 +16772,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -16791,7 +16791,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16808,7 +16808,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -16827,7 +16827,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -16846,7 +16846,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16861,11 +16861,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16880,15 +16880,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16903,7 +16903,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16916,7 +16916,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16933,11 +16933,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16954,15 +16954,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16979,7 +16979,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16992,11 +16992,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17009,11 +17009,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17026,7 +17026,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17039,11 +17039,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17056,11 +17056,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17088,7 +17088,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17127,7 +17127,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{N})`.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17140,7 +17140,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17153,11 +17153,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17170,15 +17170,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17191,11 +17191,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17208,7 +17208,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17268,11 +17268,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not valid, then:
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
 
   a. Fail.
 
@@ -17295,11 +17295,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not valid, then:
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
 
   a. Fail.
 
@@ -17339,7 +17339,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17427,7 +17427,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-    1) Assert: Due to validation, a value is on the top of the stack.
+    1) Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
     #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17472,7 +17472,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17708,11 +17708,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not valid, then:
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
 
   a. Fail.
 
@@ -17733,11 +17733,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not valid, then:
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
 
   a. Fail.
 
@@ -17779,7 +17779,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17810,7 +17810,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17835,11 +17835,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17862,11 +17862,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17897,11 +17897,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17934,7 +17934,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17957,7 +17957,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17965,11 +17965,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18020,23 +18020,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` from the stack.
 
@@ -18149,19 +18149,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18214,19 +18214,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18313,7 +18313,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18343,7 +18343,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18351,7 +18351,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
@@ -18386,15 +18386,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}'}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}'}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_2` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_2` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_1` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18451,15 +18451,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18498,7 +18498,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18545,7 +18545,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18622,11 +18622,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18668,7 +18668,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18676,7 +18676,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
@@ -18711,15 +18711,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}'}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}'}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_2` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_2` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_1` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18776,15 +18776,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18883,7 +18883,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18941,11 +18941,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -19002,11 +19002,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19023,11 +19023,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -19059,11 +19059,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19102,11 +19102,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19125,11 +19125,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19156,7 +19156,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -24401,7 +24401,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................................................
 
 
-1. If :math:`{\mathit{module}}` is not valid, then:
+1. If :math:`{\mathit{module}}` is not :ref:`valid <valid-val>`, then:
 
   a. Fail.
 
@@ -24417,7 +24417,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. For all :math:`{\mathit{externaddr}}`, and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`:
 
-  a. If :math:`{\mathit{externaddr}}` is not valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
+  a. If :math:`{\mathit{externaddr}}` is not :ref:`valid <valid-val>` with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
 
     1) Fail.
 
@@ -24504,7 +24504,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. For all :math:`t_1`, and :math:`{\mathit{val}}` in :math:`{(t_1, {\mathit{val}})^\ast}`:
 
-  a. If :math:`{\mathit{val}}` is not valid with type :math:`t_1`, then:
+  a. If :math:`{\mathit{val}}` is not :ref:`valid <valid-val>` with type :math:`t_1`, then:
 
     1) Fail.
 
@@ -26587,7 +26587,7 @@ Step_pure/ref.i31
 3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
 
 Step_pure/ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
 3. If ref is of the case REF.NULL, then:
   a. Push the value (I32.CONST 1) to the stack.
@@ -26595,16 +26595,16 @@ Step_pure/ref.is_null
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/ref.as_non_null
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
 3. If ref is of the case REF.NULL, then:
   a. Trap.
 4. Push the value ref to the stack.
 
 Step_pure/ref.eq
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref_2 from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type ref is on the top of the stack.
 4. Pop the value ref_1 from the stack.
 5. If ref_1 is of the case REF.NULL, then:
   a. If ref_2 is of the case REF.NULL, then:
@@ -26619,7 +26619,7 @@ Step_pure/ref.eq
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/i31.get sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type instr is on the top of the stack.
 2. Pop the value instr_u1 from the stack.
 3. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -26636,7 +26636,7 @@ Step_pure/array.new x
 6. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_pure/extern.convert_any
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type instr is on the top of the stack.
 2. Pop the value instr_u1 from the stack.
 3. If instr_u1 is of the case REF.NULL, then:
   a. Push the value (REF.NULL EXTERN) to the stack.
@@ -26645,7 +26645,7 @@ Step_pure/extern.convert_any
   b. Push the value (REF.EXTERN addrref) to the stack.
 
 Step_pure/any.convert_extern
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type instr is on the top of the stack.
 2. Pop the value instr_u1 from the stack.
 3. If instr_u1 is of the case REF.NULL, then:
   a. Push the value (REF.NULL ANY) to the stack.
@@ -26853,7 +26853,7 @@ Step_read/loop bt instr*
 
 Step_read/br_on_cast l rt_1 rt_2
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
 5. Push the value ref to the stack.
@@ -26864,7 +26864,7 @@ Step_read/br_on_cast l rt_1 rt_2
 
 Step_read/br_on_cast_fail l rt_1 rt_2
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
 5. Push the value ref to the stack.
@@ -26883,7 +26883,7 @@ Step_read/call x
 
 Step_read/call_ref yy
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -26925,7 +26925,7 @@ Step_read/return_call_ref yy
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if the first non-value entry of the stack is a FRAME_, then:
-  a. Assert: Due to validation, a value is on the top of the stack.
+  a. Assert: Due to validation, a value of value type instr is on the top of the stack.
   b. Pop the value instr_u1 from the stack.
   c. If instr_u1 is of the case REF.NULL, then:
     1) Pop all values val* from the top of the stack.
@@ -26947,7 +26947,7 @@ Step_read/return_call_ref yy
 
 Step_read/throw_ref
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27061,7 +27061,7 @@ Step_read/ref.func x
 
 Step_read/ref.test rt
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt' be $Ref_type(ref).
 5. If rt' matches $inst_reftype(f.MODULE, rt), then:
@@ -27071,7 +27071,7 @@ Step_read/ref.test rt
 
 Step_read/ref.cast rt
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt' be $Ref_type(ref).
 5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
@@ -27091,7 +27091,7 @@ Step_read/struct.new_default x
 
 Step_read/struct.get sx? x i
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27150,7 +27150,7 @@ Step_read/array.get sx? x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type instr is on the top of the stack.
 5. Pop the value instr_u1 from the stack.
 6. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27166,7 +27166,7 @@ Step_read/array.get sx? x
 
 Step_read/array.len
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27183,7 +27183,7 @@ Step_read/array.fill x
 5. Pop the value val from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type instr is on the top of the stack.
 9. Pop the value instr_u1 from the stack.
 10. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27212,11 +27212,11 @@ Step_read/array.copy x_1 x_2
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type instr is on the top of the stack.
 7. Pop the value instr_u1 from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value is on the top of the stack.
+10. Assert: Due to validation, a value of value type instr is on the top of the stack.
 11. Pop the value instr_u2 from the stack.
 12. If (instr_u2 is of the case REF.NULL /\ the type of instr_u1 is ref), then:
   a. Trap.
@@ -27277,7 +27277,7 @@ Step_read/array.init_elem x y
 5. Pop the value (I32.CONST j) from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type instr is on the top of the stack.
 9. Pop the value instr_u1 from the stack.
 10. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27309,7 +27309,7 @@ Step_read/array.init_data x y
 5. Pop the value (I32.CONST j) from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type instr is on the top of the stack.
 9. Pop the value instr_u1 from the stack.
 10. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27629,7 +27629,7 @@ Step/struct.set x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type instr is on the top of the stack.
 5. Pop the value instr_u1 from the stack.
 6. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27659,7 +27659,7 @@ Step/array.set x
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type instr is on the top of the stack.
 7. Pop the value instr_u1 from the stack.
 8. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27686,7 +27686,7 @@ Step/global.set x
 
 Step/table.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Assert: Due to validation, a value of value type at is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
@@ -27698,7 +27698,7 @@ Step/table.grow x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type at is on the top of the stack.
 3. Pop the value (at.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type ref is on the top of the stack.
 5. Pop the value ref from the stack.
 6. Either:
   a. Let ti be $growtable($table(z, x), n, ref).

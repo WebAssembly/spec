@@ -26,6 +26,19 @@ let rec merge_pop_assert' instrs =
         let e1 = { e1 with it = TopValueE (Some hd) } in
         let i1 = { i1 with it = AssertI e1 } in
         merge_helper (i2 :: i1 :: acc) il
+      | VarE id ->
+        let id = (
+          match String.index_opt id '_' with
+          | Some i -> String.sub id 0 i
+          | None -> id
+        ) in
+        if id <> "val" then (
+          let te = VarE id $$ no_region % (Il.Ast.VarT (id $ no_region, []) $ no_region)  in
+          let e1 = { e1 with it = TopValueE (Some te) } in
+          let i1 = { i1 with it = AssertI e1 } in
+          merge_helper (i2 :: i1 :: acc) il
+        )
+        else merge_helper (i1 :: acc) (i2 :: il)
       | _ -> merge_helper (i1 :: acc) (i2 :: il)
       )
     | i :: il -> merge_helper (i :: acc) il

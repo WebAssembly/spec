@@ -377,8 +377,7 @@ let render_el_exp env exp =
 let render_arg env arg = 
   let el_arg = match al_to_el_arg arg with
   | None ->
-    print_endline ("untranslated arg: " ^ (Al.Print.string_of_arg arg));
-    El.Ast.(TypA (VarT ("TODI" $ arg.at, []) $ arg.at))
+    El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at))
   | Some arg' -> arg'
   in
   ref (el_arg) $ no_region
@@ -404,8 +403,15 @@ and render_expr' env expr =
     let se = render_expr env e in
     sprintf "%s is not defined" se
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsValidE e; _ }) ->
+    let typ_name = Il.Print.string_of_typ_name e.note in
+    let vref =
+      if Macro.find_section env.macro ("valid-" ^ typ_name) then
+        ":ref:`valid <valid-" ^ typ_name ^ ">`"
+      else
+        ":ref:`valid <valid-val>`"
+    in
     let se = render_expr env e in
-    sprintf "%s is not valid" se
+    sprintf "%s is not %s" se vref
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
@@ -438,7 +444,8 @@ and render_expr' env expr =
   | Al.Ast.CallE (_, al) ->
     let args = List.map (render_arg env) al in
     (match args with
-    | [arg1; arg2] -> arg1 ^ " is valid with type " ^ arg2
+    | [arg1; arg2] ->
+      arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
     | [arg] -> "the type of " ^ arg
     | _ -> error expr.at "Invalid arity for relation call";
     )
@@ -534,11 +541,50 @@ and render_expr' env expr =
     let st = Option.value (render_type_desc t) ~default:(Il.Print.string_of_typ t) in
     sprintf "the type of %s is %s" se st
   | Al.Ast.IsValidE e ->
+    let typ_name = Il.Print.string_of_typ_name e.note in
+    let vref =
+      if Macro.find_section env.macro ("valid-" ^ typ_name) then
+        ":ref:`valid <valid-" ^ typ_name ^ ">`"
+      else
+        ":ref:`valid <valid-val>`"
+    in
     let se = render_expr env e in
-    sprintf "%s is valid" se
+    sprintf "%s is %s" se vref
   | Al.Ast.TopValueE (Some e) ->
-    let se = render_expr env e in
-    sprintf "a value of value type %s is on the top of the stack" se
+    let desc_hint = Prose_util.extract_desc e.note in
+    (* HARDCODE: cross-reference for number type and vector type *)
+    let value =
+      (match desc_hint with
+      | "" -> 
+        let se = render_expr env e in
+        let vtref =
+          ":ref:`value type <syntax-valtype>`"
+        in
+        sprintf "a value of %s %s" vtref se
+      | "number type" -> 
+        let se = render_expr env e in
+        let vtref =
+          ":ref:`number type <syntax-numtype>`"
+        in
+        sprintf "a value of %s %s" vtref se
+      | "vector type" -> 
+        let se = render_expr env e in
+        let vtref =
+          ":ref:`vector type <syntax-vectype>`"
+        in
+        sprintf "a value of %s %s" vtref se
+      | _ -> 
+        let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
+        let article =
+          if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
+            "an"
+          else
+            "a"
+        in
+        sprintf "%s :ref:`%s <syntax-%s>`" article desc_hint (Al.Print.string_of_expr e)
+      )
+    in
+    sprintf "%s is on the top of the stack" value
   | Al.Ast.TopValueE None -> "a value is on the top of the stack"
   | Al.Ast.TopValuesE e ->
     let se = render_expr env e in
@@ -845,9 +891,10 @@ let rec render_instr env algoname index depth instr =
       (repeat indent depth ^ or_index)
       (render_instrs env algoname (depth + 1) il2)
   | Al.Ast.AssertI c ->
+    let lname = String.lowercase_ascii algoname in
     let vref =
-      if Macro.find_section env.macro ("valid-" ^ algoname) then
-        ":ref:`validation <valid-" ^ algoname ^">`"
+      if Macro.find_section env.macro ("valid-" ^ lname) then
+        ":ref:`validation <valid-" ^ lname ^ ">`"
       else
         "validation"
     in
