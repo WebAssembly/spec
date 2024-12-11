@@ -540,14 +540,6 @@ and as_variant_typ phrase env dir t at : (typcase list * dots) attempt =
   | VarT (id, args) -> as_variant_typid' phrase env id args at
   | _ -> fail_dir_typ env at phrase dir t "| ..."
 
-let case_has_args env t op : bool =
-  let cases, _ = checkpoint (as_variant_typ "" env Check t op.at) in
-  let t, _prems = find_case_sub cases op op.at t in
-  match t.it with
-  | SeqT ({it = AtomT _; _}::_) -> true
-  | _ -> false
-  | exception Error _ -> false
-
 
 let is_x_typ as_x_typ env t =
   match as_x_typ "" env Check t no_region with
@@ -1266,7 +1258,7 @@ and elab_exp_plain' env e t : Il.exp' attempt =
     let* es' = elab_exp_list env es ts e.at in
     Ok (Il.TupE es')
   | ListE es ->
-    let* t1, iter = as_iter_typ "tuple" env Check t e.at in
+    let* t1, iter = as_iter_typ "list" env Check t e.at in
     if iter <> List then fail_typ env e.at "list" t else
     let ts = List.init (List.length es) (fun _ -> t1) in
     let* es' = elab_exp_list env es ts e.at in
@@ -1349,15 +1341,6 @@ and elab_exp_iter' env es (t1, iter) t at : Il.exp' attempt =
     (function Ok e' -> fmt "%s" (il_exp (e' $$ at % elab_typ env t)) | _ -> "fail")
   ) @@ fun _ ->
   match es, iter with
-  (* If the sequence actually starts with a non-nullary constructor,
-   * then assume this is a singleton iteration and fallback to variant *)
-  (* TODO: use backtracking *)
-  | {it = AtomE atom; _}::_, _
-    when is_variant_typ env t1 && case_has_args env t1 atom ->
-    let* cases, _dots = as_variant_typ "" env Check t1 at in
-    let* e' = elab_exp_variant env (expand_id env t1) (SeqE es $ at) cases t1 at in
-    Ok (lift_exp' e' iter)
-
   | [], Opt ->
     Ok (Il.OptE None)
   | [e1], Opt ->
