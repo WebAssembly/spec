@@ -70,13 +70,13 @@ let as_arith_exp e =
 
 let as_paren_exp e =
   match e.it with
-  | ParenE (e1, _) -> e1
+  | ParenE e1 -> e1
   | _ -> e
 
 let as_tup_exp e =
   match e.it with
   | TupE es -> es
-  | ParenE (e1, _) -> [e1]
+  | ParenE e1 -> [e1]
   | _ -> [e]
 
 let as_seq_exp e =
@@ -86,7 +86,7 @@ let as_seq_exp e =
 
 let rec fuse_exp e deep =
   match e.it with
-  | ParenE (e1, b) when deep -> ParenE (fuse_exp e1 false, b) $ e.at
+  | ParenE e1 when deep -> ParenE (fuse_exp e1 false) $ e.at
   | IterE (e1, iter) -> IterE (fuse_exp e1 deep, iter) $ e.at
   | SeqE (e1::es) -> List.fold_left (fun e1 e2 -> FuseE (e1, e2) $ e.at) e1 es
   | _ -> e
@@ -638,6 +638,7 @@ let rec expand_iter env ctxt iter =
   | ListN (e, id_opt) -> ListN (expand_exp env ctxt e, id_opt)
 
 and expand_exp env ctxt e =
+  (* Involves side effects, be careful to order recursive calls! *)
   (match e.it with
   | AtomE atom ->
     let atom' = expand_atom env ctxt atom in
@@ -665,6 +666,9 @@ and expand_exp env ctxt e =
   | SeqE es ->
     let es' = List.map (expand_exp env ctxt) es in
     SeqE es'
+  | ListE es ->
+    let es' = List.map (expand_exp env ctxt) es in
+    ListE es'
   | IdxE (e1, e2) ->
     let e1' = expand_exp env ctxt e1 in
     let e2' = expand_exp env ctxt e2 in
@@ -708,9 +712,9 @@ and expand_exp env ctxt e =
     LenE e1'
   | SizeE id ->
     SizeE id
-  | ParenE (e1, b) ->
+  | ParenE e1 ->
     let e1' = expand_exp env ctxt e1 in
-    ParenE (e1', b)
+    ParenE e1'
   | TupE es ->
     let es' = List.map (expand_exp env ctxt) es in
     TupE es'
@@ -1102,7 +1106,7 @@ let rec render_iter env = function
   | Opt -> "^?"
   | List -> "^\\ast"
   | List1 -> "^{+}"
-  | ListN ({it = ParenE (e, _); _}, None) | ListN (e, None) ->
+  | ListN ({it = ParenE e; _}, None) | ListN (e, None) ->
     "^{" ^ render_exp env e ^ "}"
   | ListN (e, Some id) ->
     "^{" ^ render_varid env id ^ "<" ^ render_exp env e ^ "}"
@@ -1222,7 +1226,7 @@ and render_exp env e =
   | TextE t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
   | CvtE (e1, _) -> render_exp env e1
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
-  | BinE (e1, `PowOp, ({it = ParenE (e2, _); _ } | e2)) ->
+  | BinE (e1, `PowOp, ({it = ParenE e2; _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
   | BinE (({it = NumE (`DecOp, `Nat _); _} as e1), `MulOp,
       ({it = VarE _ | CallE (_, []) | ParenE _; _ } as e2)) ->
@@ -1252,6 +1256,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
       )
     | _ -> render_exp_seq env es
     )
+  | ListE es -> "{}[" ^ render_exp_seq env es ^ "]"
   | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
   | SliceE (e1, e2, e3) ->
     render_exp env e1 ^
@@ -1273,10 +1278,10 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
   | MemE (e1, e2) -> render_exp env e1 ^ " \\in " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
   | SizeE id -> "||" ^ render_gramid env id ^ "||"
-  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1, _)
+  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1)
     when render_atom env atom = "" ->
     render_exp env e1
-  | ParenE (e1, _) -> "(" ^ render_exp env e1 ^ ")"
+  | ParenE e1 -> "(" ^ render_exp env e1 ^ ")"
   | TupE es -> "(" ^ render_exps ", " env es ^ ")"
   | InfixE (e1, atom, e2) ->
     let id = typed_id atom in
@@ -1323,7 +1328,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     let es = e2' :: flatten_fuse_exp_rev e1 in
     String.concat "" (List.map (fun e -> "{" ^ render_exp env e ^ "}") (List.rev es))
   | UnparenE {it = ArithE e1; _} -> render_exp env (UnparenE e1 $ e.at)
-  | UnparenE ({it = ParenE (e1, _); _} | e1) -> render_exp env e1
+  | UnparenE ({it = ParenE e1; _} | e1) -> render_exp env e1
   | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
   | LatexE s -> s
@@ -1497,7 +1502,7 @@ and render_sym_seq env = function
 and render_prod env prod : row list =
   let (g, e, prems) = prod.it in
   match e.it, prems with
-  | (TupE [] | ParenE ({it = SeqE []; _}, _)), [] ->
+  | (TupE [] | ParenE {it = SeqE []; _}), [] ->
     [Row [Col (render_sym env g)]]
   | _ when not env.config.display ->
     prefix_rows_hd

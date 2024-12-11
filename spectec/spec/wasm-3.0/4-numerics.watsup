@@ -674,7 +674,7 @@ def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, half, eps, v_1) = v
   -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
 def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, eps, zero, v_1) = v
   -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)
-  -- if c** = $setproduct_(lane_(Lnn_2), ($lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* ++ $zero(Lnn_2)^M_1))
+  -- if c** = $setproduct_(lane_(Lnn_2), ($lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* ++ [$zero(Lnn_2)]^M_1))
   -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
 
 def $vnarrowop__(Jnn_1 X M_1, Jnn_2 X M_2, sx, v_1, v_2) = v

@@ -145,7 +145,7 @@ and check_exp env ctx e =
   | UnE (_, e1)
   | DotE (e1, _)
   | LenE e1
-  | ParenE (e1, _)
+  | ParenE e1
   | BrackE (_, e1, _)
   | TypE (e1, _)
   | ArithE e1 -> check_exp env ctx e1
@@ -168,6 +168,7 @@ and check_exp env ctx e =
     check_path env ctx p;
     check_exp env ctx e2
   | SeqE es
+  | ListE es
   | TupE es -> List.iter (check_exp env ctx) es
   | StrE efs -> iter_nl_list (fun (_, eI) -> check_exp env ctx eI) efs
   | CallE (_, args) -> List.iter (check_arg env ctx) args

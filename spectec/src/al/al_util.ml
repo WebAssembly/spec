@@ -111,8 +111,8 @@ let iter_var ?(at = no) x iter t =
     ~at:at ~note:iter_note
 
 
-    let some x = caseV (x, [optV (Some (tupV []))])
-let none x = caseV (x, [optV None])
+let some x = optV (Some (caseV (x, [])))
+let none _x = optV None
 
 
 (* Failures *)

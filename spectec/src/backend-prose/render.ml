@@ -236,7 +236,7 @@ and al_to_el_expr expr =
       let ele =
         match ele.it with
         | El.Ast.IterE (_, eliter2) when eliter2 <> eliter ->
-          El.Ast.ParenE (ele, `Insig) $ ele.at
+          El.Ast.ParenE ele $ ele.at
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
@@ -250,7 +250,7 @@ and al_to_el_expr expr =
       (match elal, elel with
       | _, [] -> Some ele
       | None :: Some _ :: _, _ -> Some ele
-      | _ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      | _ -> Some (El.Ast.ParenE (ele $ no_region))
       )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
@@ -788,7 +788,7 @@ let render_atom_title env name params =
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
   let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
-  | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
+  | Some ({ it = El.Ast.ParenE exp; _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
 

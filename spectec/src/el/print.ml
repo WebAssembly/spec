@@ -138,7 +138,8 @@ and string_of_exp e =
   | CmpE (e1, op, e2) ->
     string_of_exp e1 ^ space string_of_cmpop op ^ string_of_exp e2
   | EpsE -> "eps"
-  | SeqE es -> "{" ^ string_of_exps " " es ^ "}"
+  | SeqE es -> string_of_exps " " es
+  | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | IdxE (e1, e2) -> string_of_exp e1 ^ "[" ^ string_of_exp e2 ^ "]"
   | SliceE (e1, e2, e3) ->
     string_of_exp e1 ^
@@ -156,8 +157,7 @@ and string_of_exp e =
   | MemE (e1, e2) -> string_of_exp e1 ^ " <- " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | SizeE id -> "||" ^ string_of_gramid id ^ "||"
-  | ParenE (e, signif) ->
-    "(" ^ string_of_exp e ^ ")" ^ (match signif with `Sig -> "!" | `Insig -> "")
+  | ParenE e -> "(" ^ string_of_exp e ^ ")"
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | InfixE (e1, atom, e2) ->
     string_of_exp e1 ^ space string_of_atom atom ^ string_of_exp e2

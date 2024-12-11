@@ -365,7 +365,7 @@ rule Step_pure/vcvtop-half:
 rule Step_pure/vcvtop-zero:
   (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop eps zero) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X M_1, c_1)
-  -- if cj** = $setproduct_(lane_(nt_2), ($vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* ++ $zero(nt_2)^M_1))
+  -- if cj** = $setproduct_(lane_(nt_2), ($vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* ++ [$zero(nt_2)]^M_1))
   -- if c <- $invlanes_(nt_2 X M_2, cj*)*
 
 

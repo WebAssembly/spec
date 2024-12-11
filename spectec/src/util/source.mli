@@ -7,9 +7,12 @@ val no_pos : pos
 val no_region : region
 val region_of_file : string -> region
 
+val before_region : region -> region
+val after_region : region -> region
 val over_region : region list -> region
 
 val string_of_pos : pos -> string
+val string_of_range : pos -> pos -> string
 val string_of_region : region -> string
 
 
