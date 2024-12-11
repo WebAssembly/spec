@@ -5,8 +5,8 @@
 // Static limits
 const kJSEmbeddingMaxTypes = 1000000;
 const kJSEmbeddingMaxFunctions = 1000000;
-const kJSEmbeddingMaxImports = 100000;
-const kJSEmbeddingMaxExports = 100000;
+const kJSEmbeddingMaxImports = 1000000;
+const kJSEmbeddingMaxExports = 1000000;
 const kJSEmbeddingMaxGlobals = 1000000;
 const kJSEmbeddingMaxDataSegments = 100000;
 
