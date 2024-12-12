@@ -5745,7 +5745,7 @@ relation Val_type: `%|-%:%`(store, val, valtype)
 ;; 7-runtime-typing.watsup
 rec {
 
-;; 7-runtime-typing.watsup:67.1-67.96
+;; 7-runtime-typing.watsup:67.1-67.59
 relation Externaddr_type: `%|-%:%`(store, externaddr, externtype)
   ;; 7-runtime-typing.watsup:69.1-71.30
   rule func{s : store, a : addr, funcinst : funcinst}:

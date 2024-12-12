@@ -29,25 +29,12 @@ type env = {
 }
 
 let unified_prefix = "u"
-let _unified_idx = ref 0
-let _unified_idx_cache = ref None
-let _init_unified_idx () = _unified_idx := 0; _unified_idx_cache := None
-let _soft_init_unified_idx () =
-  match !_unified_idx_cache with
-  | None -> _unified_idx_cache := Some (!_unified_idx)
-  | Some n -> _unified_idx := n
-let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
-let _gen_new_unified ty = Il2al_util.typ_to_var_exp ty ~post_fix:("_" ^ unified_prefix ^ (string_of_int (get_unified_idx())))
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 let rec is_unified_exp e = match e.it with
   | IterE (e', _) -> is_unified_exp e'
   | VarE id -> is_unified_id id.it
   | _ -> false
-let rec _get_unified_id e = match e.it with
-  | IterE (e', _) -> _get_unified_id e'
-  | VarE id -> id
-  | _ -> assert (false)
 let imap : idxs ref = ref Map.empty
 
 let init_var m id t =
