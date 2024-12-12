@@ -64,7 +64,7 @@ rule Val_type/ref:
 ;; Typing external addresses
 ;;
 
-relation Externaddr_type: store |- externaddr : externtype    hint(prose %2 %3 -> %2.type = %3)
+relation Externaddr_type: store |- externaddr : externtype
 
 rule Externaddr_type/func:
   s |- FUNC a : FUNC funcinst.TYPE
