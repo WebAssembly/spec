@@ -23,13 +23,20 @@ def get_echidna_id(directory):
 def get_current_response(echidna_id):
     url = ECHIDNA_STATUS_URL + echidna_id
     print(f'Fetching {url}')
-    response = requests.get(url, allow_redirects=True)
-    if response.status_code != 200:
-        print(f'Got status code {response.status_code}, text:')
-        print(response.text)
-        raise Exception('Failed to fetch echidna result')
+    retry = 2
+    while retry:
+        response = requests.get(url, allow_redirects=True)
+        if response.status_code == 200:
+            return response.json()
 
-    return response.json()
+        print(f'Got status code {response.status_code}, text:')
+        retry -= 1
+        if retry:
+            print('Retrying in 5s')
+
+    print(response.text)
+    raise Exception('Failed to fetch echidna result')
+
 
 
 def get_echidna_result(echidna_id):
