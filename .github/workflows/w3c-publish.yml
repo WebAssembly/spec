@@ -31,7 +31,7 @@ on:
 
 env:
   YARN_ENABLE_IMMUTABLE_INSTALLS: false
-  W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'WD' }}
+  W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'CRD' }}
 
 jobs:
   publish-to-w3c-TR:
