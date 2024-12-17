@@ -30,11 +30,12 @@ def get_current_response(echidna_id):
             return response.json()
 
         print(f'Got status code {response.status_code}, text:')
+        print(response.text)
         retry -= 1
         if retry:
             print('Retrying in 5s')
 
-    print(response.text)
+
     raise Exception('Failed to fetch echidna result')
 
 
