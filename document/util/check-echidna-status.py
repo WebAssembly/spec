@@ -34,7 +34,7 @@ def get_current_response(echidna_id):
         retry -= 1
         if retry:
             print('Retrying in 5s')
-
+            time.sleep(5)
 
     raise Exception('Failed to fetch echidna result')
 
