@@ -23,16 +23,16 @@ def get_echidna_id(directory):
 def get_current_response(echidna_id):
     url = ECHIDNA_STATUS_URL + echidna_id
     print(f'Fetching {url}')
-    retry = 2
-    while retry:
+    tries = 3
+    while tries:
         response = requests.get(url, allow_redirects=True)
         if response.status_code == 200:
             return response.json()
 
         print(f'Got status code {response.status_code}, text:')
         print(response.text)
-        retry -= 1
-        if retry:
+        tries -= 1
+        if tries:
             print('Retrying in 5s')
             time.sleep(5)
 
@@ -50,7 +50,8 @@ def get_echidna_result(echidna_id):
     result = response['results']['status']
     print(f'Echidna issue {echidna_id} is {result}.')
     print(json.dumps(response, indent=2))
-    return result == 'success'
+    if result != 'success':
+        raise Exception(f'Echidna result: {result}')
 
 
 def main(argv):
@@ -58,7 +59,10 @@ def main(argv):
     echidna_id = get_echidna_id(directory)
     print(f'Got echidna id {echidna_id}.')
     time.sleep(5)
-    if not get_echidna_result(echidna_id):
+    try:
+        get_echidna_result(echidna_id)
+    except Exception as e:
+        print(f'Echidna failure: {e}')
         sys.exit(1)
 
 
