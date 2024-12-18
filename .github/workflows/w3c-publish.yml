@@ -64,6 +64,7 @@ jobs:
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
+          # Publish the draft on manual dispatches without dry-run set, or on pushes to the main branch.
           ECHIDNA_DRYRUN: |-
             ${{ !((github.event_name == 'workflow_dispatch' && !inputs.dry-run) ||
                   (github.event_name == 'push' && github.repository == 'WebAssembly/spec' && github.ref == 'refs/heads/main')) }}
