@@ -29,6 +29,12 @@ type env = {
 }
 
 let unified_prefix = "u"
+let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
+
+let rec is_unified_exp e = match e.it with
+  | IterE (e', _) -> is_unified_exp e'
+  | VarE id -> is_unified_id id.it
+  | _ -> false
 let imap : idxs ref = ref Map.empty
 
 let init_var m id t =
@@ -155,7 +161,7 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
   match e1.it, e2.it with
     (* Already unified *)
-    | VarE id, _ when is_unified_id id.it ->
+    | VarE _, _ when is_unified_exp e1 ->
       e1
     | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
       let t = overlap_typ env e1.note e2.note in

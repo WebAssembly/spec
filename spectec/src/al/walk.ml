@@ -70,14 +70,14 @@ let walk_instr (walker: unit_walker) (instr: instr) : unit =
   | EnterI (e1, e2, il) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2;
     List.iter (walker.walk_instr walker) il
-  | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> ()
+  | TrapI | FailI | NopI | ReturnI None | ExitI _ | YetI _ -> ()
   | AssertI e | ThrowI e | PushI e | PopI e | PopAllI e
   | ReturnI (Some e)| ExecuteI e | ExecuteSeqI e -> walker.walk_expr walker e
   | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2
   | PerformI (_, al) -> List.iter (walker.walk_arg walker) al
   | ReplaceI (e1, p, e2) ->
-    walker.walk_expr walker e1; walk_path walker p; walker.walk_expr walker e2
+    walker.walk_expr walker e1; walker.walk_path walker p; walker.walk_expr walker e2
 
 let walk_algo (walker: unit_walker) (algo: algorithm) : unit =
   match algo.it with
@@ -182,6 +182,7 @@ let walk_instr (walker: walker) (instr: instr) : instr list =
     | PopAllI e -> PopAllI (walk_expr e)
     | LetI (e1, e2) -> LetI (walk_expr e1, walk_expr e2)
     | TrapI -> TrapI
+    | FailI -> FailI
     | ThrowI e -> ThrowI (walk_expr e)
     | NopI -> NopI
     | ReturnI e_opt -> ReturnI (Option.map walk_expr e_opt)

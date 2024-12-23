@@ -556,46 +556,114 @@ let gen_validation_prose () =
   !Langs.validation_il |> prose_of_rels
 
 let get_state_arg_opt f =
-  let arg = ref (Al.Ast.TypA (Il.Ast.BoolT $ no_region)) in
   let id = f $ no_region in
   match Il.Env.find_opt_def (Il.Env.env_of_script !Langs.il) id with
   | Some (params, _, _) ->
-    let param_state = List.find_opt (
+    List.find_map (
       fun param ->
         match param.it with
         | Il.Ast.ExpP (id, ({ it = VarT ({ it = "state"; _ }, _); _ } as typ)) ->
-          arg := ExpA ((Al.Ast.VarE "z") $$ id.at % typ);
-          true
-        | _ -> false
-    ) params in
-    if Option.is_some param_state then (
-      let param_state = Option.get param_state in
-      Some {param_state with it = !arg}
-    ) else None
-  | None ->
+          Some (Al.Ast.ExpA ((Al.Ast.VarE "z") $$ id.at % typ) $ no_region)
+        | _ -> None
+    ) params
+  | None -> 
     None
 
+let get_store_arg_opt f =
+  let id = f $ no_region in
+  match Il.Env.find_opt_def (Il.Env.env_of_script !Langs.il) id with
+  | Some (params, _, _) ->
+    List.find_map (
+      fun param ->
+        match param.it with
+        | Il.Ast.ExpP (id, ({ it = VarT ({ it = "store"; _ }, _); _ } as typ)) ->
+          Some (Al.Ast.ExpA ((Al.Ast.VarE "s") $$ id.at % typ) $ no_region)
+        | _ -> None
+    ) params
+  | None -> 
+    None
+
+let insert_state_binding algo =
+  let open Al.Ast in
+  let z_binding = ref 0 in
+  let state_count = ref 0 in
+
+  let count_state e =
+    (match e.it with
+    | VarE "z" -> state_count := !state_count + 1
+    | _ -> ());
+  in
+
+  let check_z_binding i =
+    (match i.it with
+    | LetI (e, _) when e.it = VarE "z" -> z_binding := !z_binding + 1
+    | _ -> ());
+  in
+
+  let walk_expr walker expr = 
+    if (!z_binding = 0 && !state_count = 0) then (
+      count_state expr;
+      Al.Walk.base_walker.walk_expr walker expr
+    )
+    else expr
+  in
+  let walk_instr walker instr = 
+    if (!z_binding = 0 && !state_count = 0) then (
+      check_z_binding instr;
+      Al.Walk.base_walker.walk_instr walker instr
+    )
+    else [instr]
+  in
+  let walker = { Al.Walk.base_walker with walk_expr; walk_instr } in
+  let _ = walker.walk_algo walker algo in
+  if !state_count > 0 then (
+    match algo.it with
+    | RuleA (name, anchor, params, body) ->
+      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
+      { algo with it = RuleA (name, anchor, params, body) }
+    | _ -> algo
+  )
+  else algo
+
+
 let recover_state algo =
+
+  let get_state_and_store_args name =
+    let args = [] in
+    let args = 
+      match get_state_arg_opt name with
+      | Some arg -> arg :: args
+      | _ -> args
+    in
+    let args = 
+      match get_store_arg_opt name with
+      | Some arg -> arg :: args
+      | _ -> args
+    in
+    args
+  in
+
+  let algo =
+    match algo.it with
+    | Al.Ast.RuleA _ -> algo
+    | Al.Ast.FuncA (name, args, instrs) ->
+      let args = get_state_and_store_args name @ args in
+      {algo with it = Al.Ast.FuncA (name, args, instrs)}
+  in
 
   let recover_state_expr expr =
     match expr.it with
     | Al.Ast.CallE (f, args) ->
-      let arg_state = get_state_arg_opt f in
-      if Option.is_some arg_state then
-        let answer = {expr with it = Al.Ast.CallE (f, Option.get arg_state :: args)} in
-        answer
-      else expr
+      let args = get_state_and_store_args f @ args in
+      {expr with it = Al.Ast.CallE (f, args)}
     | _ -> expr
   in
 
   let recover_state_instr instr =
     match instr.it with
     | Al.Ast.PerformI (f, args) ->
-      let arg_state = get_state_arg_opt f in
-      if Option.is_some arg_state then
-        let answer = {instr with it = Al.Ast.PerformI (f, Option.get arg_state :: args)} in
-        [answer]
-      else [instr]
+      let args = get_state_and_store_args f @ args in
+      [{instr with it = Al.Ast.PerformI (f, args)}]
     | _ -> [instr]
   in
 
@@ -622,7 +690,7 @@ let gen_execution_prose () =
       let algo =
         algo
         |> recover_state
-        |> Il2al.Transpile.insert_state_binding
+        |> insert_state_binding
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter
       in

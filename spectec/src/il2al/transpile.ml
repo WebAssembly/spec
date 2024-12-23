@@ -719,41 +719,6 @@ let remove_state algo =
     | rule -> rule
   }
 
-let insert_state_binding algo =
-  let state_count = ref 0 in
-
-  let count_state e =
-    (match e.it with
-    | VarE "z" -> state_count := !state_count + 1
-    | _ -> ());
-    e
-  in
-
-  let walk_expr walker expr = 
-    let expr1 = count_state expr in
-    Al.Walk.base_walker.walk_expr walker expr1
-  in
-  let walker = { Walk.base_walker with walk_expr = walk_expr; } in
-  let algo' = walker.walk_algo walker algo in
-  if !state_count > 0 then (
-    match algo.it with
-    | RuleA _ ->
-      { algo' with it =
-        match algo'.it with
-        | FuncA (name, params, body) ->
-          let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
-          FuncA (name, params, body)
-        | RuleA (name, anchor, params, body) ->
-          let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
-          RuleA (name, anchor, params, body)
-      }
-    | FuncA (id, args, instrs) ->
-        let answer = {algo with it = FuncA (id, {at = no; it = ExpA (varE "z" ~note:stateT); note = ()} :: args, instrs)} in
-        answer
-  )
-  else algo'
-
-
 (* Insert "Let f be the current frame" if necessary. *)
 let insert_frame_binding instrs =
   let open Free in
@@ -901,16 +866,15 @@ let handle_unframed_algo instrs =
     let ret =
       match !frame_arg with
       | Some { it = ExpA f; _ } ->
-        let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
         let zeroE = natE Z.zero ~note:natT in
-        let frame = frameE (zeroE, f) ~at:f.at ~note:callframeT in
+        let frame = frameE (zeroE, f) ~at:f.at ~note:evalctxT in
         let frame' =
           match instr.it with
           (* HARDCODE: the frame-passing-style *)
           | LetI ( { it = TupE [f'; _]; _ }, _) ->
-            frameE (zeroE, f') ~at:f'.at ~note:callframeT
+            frameE (zeroE, f') ~at:f'.at ~note:evalctxT
           | _ ->
-            frameE (zeroE, varE "_f" ~note:f.note) ~note:callframeT
+            frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT
         in
         [
           pushI frame ~at:frame.at;
@@ -970,7 +934,15 @@ let rec enforce_return' il =
     | IfI (c, il1, il2) ->
       (match enforce_return il1, enforce_return il2 with
       | [], [] -> enforce_return' tl
-      | new_il, [] -> rev new_il @ (assertI c ~at:at :: tl)
+      | new_il, [] -> 
+        (* HARDCODE: handling patial function *)
+        (match c.it with
+        | IterE ({ it = CallE (id, _); _ }, _)
+          when List.mem id ["Externaddr_type"; "Val_type"] ->
+            rev new_il @ (ifI (neg c, [failI () ~at: at], [])) :: tl
+        | _ ->
+          rev new_il @ (assertI c ~at:at :: tl)
+        )
       | [], new_il -> rev new_il @ (assertI (neg c) ~at:at :: tl)
       | new_il1, new_il2 -> ifI (c, new_il1, new_il2) ~at:at :: tl
       )
