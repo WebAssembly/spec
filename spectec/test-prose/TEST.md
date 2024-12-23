@@ -19210,19 +19210,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`w`.
 
 
-:math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`
-.....................................................
-
-
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
-
-  a. Return :math:`\epsilon`.
-
-#. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-#. Return :math:`w`.
-
-
 :math:`{\bigoplus}\, {X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`
 ......................................................................
 
@@ -27752,12 +27739,6 @@ opt_ X X_u1*
 3. Let [w] be X_u1*.
 4. Return ?(w).
 
-list_ X X_u1?
-1. If X_u1? is not defined, then:
-  a. Return [].
-2. Let ?(w) be X_u1?.
-3. Return [w].
-
 concat_ X X_u1*
 1. If (X_u1* = []), then:
   a. Return [].
@@ -29149,10 +29130,10 @@ binop_ nt_u1 binop_u1 i_u1 i_u2
     1) Return [$imul_($sizenn(Inn), i_1, i_2)].
   g. If binop_u1 is of the case DIV, then:
     1) Let (DIV sx) be binop_u1.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, i_1, i_2)).
+    2) Return $idiv_($sizenn(Inn), sx, i_1, i_2).
   h. If binop_u1 is of the case REM, then:
     1) Let (REM sx) be binop_u1.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, i_1, i_2)).
+    2) Return $irem_($sizenn(Inn), sx, i_1, i_2).
   i. If (binop_u1 = AND), then:
     1) Return [$iand_($sizenn(Inn), i_1, i_2)].
   j. If (binop_u1 = OR), then:
@@ -29247,11 +29228,11 @@ cvtop__ nt_u1 nt_u3 cvtop_u1 i_u1
     2) If cvtop_u1 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u1.
       b) Let f_1 be i_u1.
-      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1)).
+      c) Return $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1).
     3) If cvtop_u1 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_u1.
       b) Let f_1 be i_u1.
-      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1)).
+      c) Return $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1).
 3. If the type of nt_u1 is Inn, then:
   a. Let Inn_1 be nt_u1.
   b. If the type of nt_u3 is Fnn, then:
@@ -29579,11 +29560,11 @@ lcvtop__ lt_u3 X M_1 lt_u1 X M_2 vcvtop_u1 c_1
   b. If vcvtop_u1 is of the case TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx) be vcvtop_u1.
     2) Let c? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
-    3) Return $list_(lane_((Inn_2 : Inn <: lanetype)), c?).
+    3) Return c?.
   c. If vcvtop_u1 is of the case RELAXED_TRUNC, then:
     1) Let (RELAXED_TRUNC sx) be vcvtop_u1.
     2) Let c? be $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
-    3) Return $list_(lane_((Inn_2 : Inn <: lanetype)), c?).
+    3) Return c?.
 5. Assert: Due to validation, the type of lt_u1 is Fnn.
 6. Let Fnn_2 be lt_u1.
 7. If (vcvtop_u1 = DEMOTE), then:

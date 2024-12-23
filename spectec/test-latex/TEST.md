@@ -2421,13 +2421,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-\epsilon & = & \epsilon \\
-w & = & w \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
 {\bigoplus}\, \epsilon & = & \epsilon \\
 {\bigoplus}\, ({w^\ast})~{({{w'}^\ast})^\ast} & = & {w^\ast} \oplus {\bigoplus}\, {({{w'}^\ast})^\ast} \\
 \end{array}

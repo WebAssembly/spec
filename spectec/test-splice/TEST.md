@@ -1446,7 +1446,6 @@ warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
 warning: definition `lcvtop__` was never spliced
-warning: definition `list_` was never spliced
 warning: definition `local` was never spliced
 warning: definition `lpacknum_` was never spliced
 warning: definition `lsize` was never spliced
@@ -2182,7 +2181,6 @@ warning: definition prose `ivtestop_` was never spliced
 warning: definition prose `ivunop_` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `lcvtop__` was never spliced
-warning: definition prose `list_` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lpacknum_` was never spliced
 warning: definition prose `lsize` was never spliced

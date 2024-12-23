@@ -324,8 +324,8 @@ def $unop_(Fnn, NEAREST, f) = $fnearest_($sizenn(Fnn), f)
 def $binop_(Inn, ADD, i_1, i_2) = $iadd_($sizenn(Inn), i_1, i_2)
 def $binop_(Inn, SUB, i_1, i_2) = $isub_($sizenn(Inn), i_1, i_2)
 def $binop_(Inn, MUL, i_1, i_2) = $imul_($sizenn(Inn), i_1, i_2)
-def $binop_(Inn, DIV sx, i_1, i_2) = $list_(num_(Inn), $idiv_($sizenn(Inn), sx, i_1, i_2))
-def $binop_(Inn, REM sx, i_1, i_2) = $list_(num_(Inn), $irem_($sizenn(Inn), sx, i_1, i_2))
+def $binop_(Inn, DIV sx, i_1, i_2) = $idiv_($sizenn(Inn), sx, i_1, i_2)
+def $binop_(Inn, REM sx, i_1, i_2) = $irem_($sizenn(Inn), sx, i_1, i_2)
 def $binop_(Inn, AND, i_1, i_2) = $iand_($sizenn(Inn), i_1, i_2)
 def $binop_(Inn, OR, i_1, i_2) = $ior_($sizenn(Inn), i_1, i_2)
 def $binop_(Inn, XOR, i_1, i_2) = $ixor_($sizenn(Inn), i_1, i_2)
@@ -363,9 +363,9 @@ def $cvtop__(Inn_1, Inn_2, EXTEND sx, i_1) =
 def $cvtop__(Inn_1, Inn_2, WRAP, i_1) =
   $wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), i_1)
 def $cvtop__(Fnn_1, Inn_2, TRUNC sx, f_1) =
-  $list_(num_(Inn_2), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1))
+  $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1)
 def $cvtop__(Fnn_1, Inn_2, TRUNC_SAT sx, f_1) =
-  $list_(num_(Inn_2), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1))
+  $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1)
 def $cvtop__(Inn_1, Fnn_2, CONVERT sx, i_1) =
   $convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, i_1)
 def $cvtop__(Fnn_1, Fnn_2, PROMOTE, f_1) =
@@ -655,9 +655,9 @@ def $lcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND sx, c_1) = c
     -- if c = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)
 def $lcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, c_1) = c
     -- if c = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1)
-def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, c_1) = $list_(lane_(Inn_2), c?)
+def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, c_1) = c?
     -- if c? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
-def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx, c_1) = $list_(lane_(Inn_2), c?)
+def $lcvtop__(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx, c_1) = c?
     -- if c? = $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1)
 def $lcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, c_1) = c*
     -- if c* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1)

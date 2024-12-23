@@ -267,7 +267,7 @@ and msg_traces n msg = function
 
 let rec error_trace = function
   | Trace (_, _, [trace]) -> error_trace trace
-  | Trace (at, msg, traces) -> error at (msg_traces 0 msg traces)
+  | Trace (at, msg, traces) -> error at (msg_traces 0 msg (Lib.List.nub (=) traces))
 
 let checkpoint = function
   | Ok x -> x
@@ -1537,30 +1537,32 @@ and elab_path' env p t : (Il.path' * typ) attempt =
 
 
 and cast_empty phrase env t at t' : Il.exp attempt =
-  Debug.(log_at "el.cast_empty" at
+  Debug.(log_at "el.elab_exp_cast_empty" at
     (fun _ -> fmt "%s  >>  (%s)" (el_typ t) (el_typ (expand env t $ t.at)))
     (function Ok r -> fmt "%s" (il_exp r) | _ -> "fail")
   ) @@ fun _ ->
-  match expand env t with
-  | IterT (_, Opt) -> Ok (Il.OptE None $$ at % t')
-  | IterT (_, List) -> Ok (Il.ListE [] $$ at % t')
-  | VarT _ when is_iter_notation_typ env t ->
-    (match expand_iter_notation env t with
-    | IterT (_, iter) as t1 ->
-      let mixop, ts', _ts = elab_typ_notation env (expand_id env t) (t1 $ t.at) in
-      assert (List.length ts' = 1);
-      let e1' = if iter = Opt then Il.OptE None else Il.ListE [] in
-      Ok (Il.CaseE (mixop, tup_exp_bind' [e1' $$ at % List.hd ts'] at) $$ at % t')
+  nest at t (
+    match expand env t with
+    | IterT (_, Opt) -> Ok (Il.OptE None $$ at % t')
+    | IterT (_, List) -> Ok (Il.ListE [] $$ at % t')
+    | VarT _ when is_iter_notation_typ env t ->
+      (match expand_iter_notation env t with
+      | IterT (_, iter) as t1 ->
+        let mixop, ts', _ts = elab_typ_notation env (expand_id env t) (t1 $ t.at) in
+        assert (List.length ts' = 1);
+        let e1' = if iter = Opt then Il.OptE None else Il.ListE [] in
+        Ok (Il.CaseE (mixop, tup_exp_bind' [e1' $$ at % List.hd ts'] at) $$ at % t')
+      | _ -> fail_typ env at phrase t
+      )
     | _ -> fail_typ env at phrase t
-    )
-  | _ -> fail_typ env at phrase t
+  )
 
 and cast_exp phrase env e' t1 t2 : Il.exp attempt =
-  let* e'' = cast_exp' phrase env e' t1 t2 in
+  let* e'' = nest e'.at t2 (cast_exp' phrase env e' t1 t2) in
   Ok (e'' $$ e'.at % elab_typ env (expand_nondef env t2))
 
 and cast_exp' phrase env e' t1 t2 : Il.exp' attempt =
-  Debug.(log_at "el.cast_exp" e'.at
+  Debug.(log_at "el.elab_exp_cast" e'.at
     (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s)" (el_typ t1) (el_typ t2)
       (el_typ (expand_def env t1 $ t1.at)) (el_typ (expand_def env t2 $ t2.at))
       (el_typ (expand_nondef env t2))
@@ -1677,6 +1679,33 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' attempt =
   | _, IterT (t21, Opt) ->
     let* e'' = cast_exp phrase env e' t1 t21 in
     Ok (Il.OptE (Some e''))
+(* TODO(3, rossberg): enable; violates invariant that all iterexps are initially empty
+  | IterT (t11, List), IterT (t21, List) ->
+    choice env [
+      (fun env ->
+        let id = x $ e'.at in
+        let t11' = elab_typ env t11 in
+        let* e'' = cast_exp phrase env (Il.VarE id $$ e'.at % t11') t11 t21 in
+        Ok (Il.IterE (e'', (List, [x, e'])))
+      );
+      (fun env ->
+        let* e'' = cast_exp phrase env e' t1 t21 in
+        Ok (Il.ListE [e''])
+      );
+    ]
+*)
+  | IterT (t11, Opt), IterT (t21, List) ->
+    choice env [
+      (fun env ->
+        let t11' = elab_typ env t11 in
+        let e'' = Il.LiftE e' $$ e'.at % (Il.IterT (t11', Il.List) $ e'.at) in
+        cast_exp' phrase env e'' (IterT (t11, List) $ e'.at) t2
+      );
+      (fun env ->
+        let* e'' = cast_exp phrase env e' t1 t21 in
+        Ok (Il.ListE [e''])
+      );
+    ]
   | _, IterT (t21, (List | List1)) ->
     let* e'' = cast_exp phrase env e' t1 t21 in
     Ok (Il.ListE [e''])
