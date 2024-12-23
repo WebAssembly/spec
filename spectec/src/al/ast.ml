@@ -127,6 +127,7 @@ and instr' =
   | PopAllI of expr                       (* `popall` expr *)
   | LetI of expr * expr                   (* `let` expr `=` expr *)
   | TrapI                                 (* `trap` *)
+  | FailI                                 (* `fail` *)
   | ThrowI of expr                        (* `throw` *)
   | NopI                                  (* `nop` *)
   | ReturnI of expr option                (* `return` expr? *)

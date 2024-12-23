@@ -1,5 +1,14 @@
 open Util.Source
 
+
+let find_relation name =
+  let open El.Ast in
+  List.find_opt (fun def ->
+  match def.it with
+  | RelD (id, _, _) when id.it = name -> true
+  | _ -> false
+  ) !Langs.el
+
 let extract_desc_hint = List.find_map (function
   | El.Ast.{ hintid = id; hintexp = { it = TextE desc; _ } }
     when id.it = "desc" -> Some desc

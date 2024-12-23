@@ -102,7 +102,7 @@ let rec free_instr instr =
   | IfI (e, il1, il2) -> free_expr e @ free_list free_instr il1 @ free_list free_instr il2
   | OtherwiseI il -> free_list free_instr il
   | EitherI (il1, il2) -> free_list free_instr il1 @ free_list free_instr il2
-  | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> IdSet.empty
+  | TrapI | FailI | NopI | ReturnI None | ExitI _ | YetI _ -> IdSet.empty
   | ThrowI e | PushI e | PopI e | PopAllI e | ReturnI (Some e)
   | ExecuteI e | ExecuteSeqI e ->
     free_expr e

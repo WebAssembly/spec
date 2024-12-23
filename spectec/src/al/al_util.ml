@@ -27,6 +27,7 @@ let popsI ?(at = no) e _ = PopI e |> mk_instr at (* TODO *)
 let popAllI ?(at = no) e = PopAllI e |> mk_instr at
 let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
 let trapI ?(at = no) () = TrapI |> mk_instr at
+let failI ?(at = no) () = FailI |> mk_instr at
 let throwI ?(at = no) e = ThrowI e |> mk_instr at
 let nopI ?(at = no) () = NopI |> mk_instr at
 let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
@@ -308,6 +309,7 @@ let topT = varT "TOP" []
 let valT = varT "val" []
 let frameT = varT "frame" []
 let stateT = varT "state" []
+let storeT = varT "store" []
 let instrT = varT "instr" []
 let admininstrT = varT "admininstr" []
 let evalctxT = varT "evalctx" []

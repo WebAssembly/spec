@@ -6,6 +6,9 @@ open Source
 
 let error at msg = Error.error at "prose translation" msg
 
+(* TODO: combine this with Env *)
+let hintdefs : hintdef list ref = ref []
+
 let name_of_rule rule =
   match rule.it with
   | RuleD (id, _, _, _, _) ->
@@ -99,3 +102,59 @@ let group_by_context (rs: rule_clause list): ('a option * rule_clause list) list
   let eq_context = Option.equal (fun c1 c2 -> Mixop.eq (case_of_case c1) (case_of_case c2)) in
   List.fold_left (fun acc r -> add eq_context (extract_context r) r acc) [] rs
 
+let find_hint id hintdefs =
+  List.find_map (fun hintdef ->
+    match hintdef.it with
+    | TypH (id', hints) when id.it = id'.it ->
+      List.find_opt (fun hint -> hint.hintid.it = "show") hints
+    | _ -> None
+  ) hintdefs
+
+let rec subst_hint hintexp args =
+  match hintexp.it with
+  | El.Ast.HoleE `Next ->
+    (match args with
+    | h :: args' -> args', Il.Print.string_of_arg (Il.Eval.reduce_arg !Al.Valid.il_env h)
+    | _ -> failwith "not sufficient args")
+  | El.Ast.FuseE (e1, e2) ->
+    let args', t = subst_hint e1 args in
+    let args'', t' = subst_hint e2 args' in
+    args'', t ^ t'
+  | El.Ast.IterE (e, Opt) ->
+    let args', t = subst_hint e args in
+    args', t ^ "_opt"
+  | _ ->
+    args, El.Print.string_of_exp hintexp |> String.map (fun c -> if c = ' ' then '_' else c)
+
+let rec typ_to_var_name ty =
+  match ty.it with
+  (* TODO: guess this for "var" in el? *)
+  | Il.Ast.VarT (id, args) ->
+    let hintdefs = !hintdefs in
+    (match find_hint id hintdefs with
+    | None -> id.it
+    | Some hint -> let _, t = subst_hint hint.hintexp args in t
+    )
+  | Il.Ast.BoolT -> "b"
+  | Il.Ast.NumT `NatT -> "n"
+  | Il.Ast.NumT `IntT -> "i"
+  | Il.Ast.NumT `RatT -> "q"
+  | Il.Ast.NumT `RealT -> "r"
+  | Il.Ast.TextT -> "s"
+  | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
+  | Il.Ast.IterT _ -> failwith (Il.Print.string_of_typ ty)
+
+let rec typ_to_var_exp' ty post_fix =
+  match ty.it with
+  | Il.Ast.IterT (ty', iter) ->
+    let id, e = typ_to_var_exp' ty' post_fix in
+    let iter_id = { id with it = id.it ^ Il.Print.string_of_iter iter} in
+    let iter_e = VarE iter_id $$ (no_region, ty) in
+    iter_id, IterE (e, (iter, [(id, iter_e)])) $$ (no_region, ty)
+  | _ ->
+    let id = typ_to_var_name ty ^ post_fix $ no_region in
+    id, VarE id $$ (no_region, ty)
+
+let typ_to_var_exp ?(post_fix="") ty =
+  let _, e = typ_to_var_exp' ty post_fix in
+  e

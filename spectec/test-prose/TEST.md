@@ -977,7 +977,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -989,7 +989,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Push the value :math:`{\mathit{val}}_1` to the stack.
 
@@ -1002,11 +1002,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_1^\ast})`.
 
@@ -1036,7 +1036,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\})` be the current :math:`\mathsf{label}` context.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`0`, then:
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 0`, then:
 
   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1054,7 +1054,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is greater than or equal to :math:`1`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} \geq 1`, then:
 
     1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} - 1`.
 
@@ -1069,11 +1069,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -1086,11 +1086,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
+#. If :math:`i < {|{l^\ast}|}`, then:
 
   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
 
@@ -1151,11 +1151,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -1168,15 +1168,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -1189,7 +1189,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1202,11 +1202,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1219,11 +1219,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`t_1` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -1259,7 +1259,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n` be :math:`1`.
 
-#. If :math:`{t^?}` is not :math:`\epsilon`, then:
+#. If :math:`{t^?} \neq \epsilon`, then:
 
   a. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -1277,7 +1277,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
 #. Execute the instruction :math:`(\mathsf{call}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])`.
 
@@ -1288,11 +1288,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}|}`, then:
+#. If :math:`i \geq {|z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
@@ -1302,11 +1302,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`a` be :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]`.
 
-#. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
+#. If :math:`a \geq {|z{.}\mathsf{funcs}|}`, then:
 
   a. Trap.
 
-#. If :math:`z{.}\mathsf{types}{}[x]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
+#. If :math:`z{.}\mathsf{types}{}[x] \neq z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
 
   a. Trap.
 
@@ -1319,7 +1319,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
 #. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
@@ -1327,7 +1327,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+#. Assert: Due to validation, for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -1366,7 +1366,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1374,7 +1374,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`t` be :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
     1) Trap.
 
@@ -1390,7 +1390,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -1450,21 +1450,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
 #. Pop the value :math:`(t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
 #. Let :math:`t` be :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Trap.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
 
@@ -1474,11 +1474,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathsf{i}}{n}` be :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
     1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -1493,7 +1493,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -1521,7 +1521,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................
 
 
-1. If :math:`i` is less than or equal to :math:`j`, then:
+1. If :math:`i \leq j`, then:
 
   a. Return :math:`i`.
 
@@ -1532,7 +1532,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`0`.
 
@@ -1545,11 +1545,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is :math:`1`.
+#. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} = 1`.
 
 #. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -1573,7 +1573,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -1586,11 +1586,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`23`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`52`.
 
@@ -1599,11 +1599,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`11`.
 
@@ -1647,19 +1647,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................
 
 
-1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 32}}`, then:
 
   a. Return :math:`32`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 64}}`, then:
 
   a. Return :math:`64`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 32}}`, then:
 
   a. Return :math:`32`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 64}}`, then:
 
   a. Return :math:`64`.
 
@@ -1668,7 +1668,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -1689,7 +1689,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -1710,7 +1710,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -1731,7 +1731,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -1759,13 +1759,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..................................
 
 
-1. If :math:`i` is less than :math:`{2^{N - 1}}`, then:
+1. If :math:`i < {2^{N - 1}}`, then:
 
   a. Return :math:`i`.
 
-#. Assert: Due to validation, :math:`{2^{N - 1}}` is less than or equal to :math:`i`.
+#. Assert: Due to validation, :math:`{2^{N - 1}} \leq i`.
 
-#. Assert: Due to validation, :math:`i` is less than :math:`{2^{N}}`.
+#. Assert: Due to validation, :math:`i < {2^{N}}`.
 
 #. Return :math:`i - {2^{N}}`.
 
@@ -1789,15 +1789,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{clz}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{clz}`, then:
 
     1) Return :math:`{{\mathrm{iclz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ctz}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ctz}`, then:
 
     1) Return :math:`{{\mathrm{ictz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{popcnt}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{popcnt}`, then:
 
     1) Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
@@ -1807,31 +1807,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
   a. Return :math:`{{\mathrm{fabs}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
   a. Return :math:`{{\mathrm{fneg}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sqrt}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sqrt}`, then:
 
   a. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ceil}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ceil}`, then:
 
   a. Return :math:`{{\mathrm{fceil}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{floor}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{floor}`, then:
 
   a. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{trunc}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{trunc}`, then:
 
   a. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
@@ -1848,15 +1848,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}_2` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
     1) Return :math:`{{\mathrm{iadd}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
     1) Return :math:`{{\mathrm{isub}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
     1) Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -1872,19 +1872,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{and}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{and}`, then:
 
     1) Return :math:`{{\mathrm{iand}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{or}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{or}`, then:
 
     1) Return :math:`{{\mathrm{ior}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{xor}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{xor}`, then:
 
     1) Return :math:`{{\mathrm{ixor}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{shl}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{shl}`, then:
 
     1) Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -1894,11 +1894,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rotl}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{rotl}`, then:
 
     1) Return :math:`{{\mathrm{irotl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rotr}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{rotr}`, then:
 
     1) Return :math:`{{\mathrm{irotr}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -1910,31 +1910,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
   a. Return :math:`{{\mathrm{fadd}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
   a. Return :math:`{{\mathrm{fsub}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
   a. Return :math:`{{\mathrm{fmul}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{div}`, then:
 
   a. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{min}`, then:
 
   a. Return :math:`{{\mathrm{fmin}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{max}`, then:
 
   a. Return :math:`{{\mathrm{fmax}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{copysign}`.
+#. Assert: Due to validation, :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -1958,11 +1958,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}_2` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
     1) Return :math:`{{\mathrm{ieq}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
     1) Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -1998,27 +1998,27 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
   a. Return :math:`{{\mathrm{feq}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
   a. Return :math:`{{\mathrm{fne}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{lt}`, then:
 
   a. Return :math:`{{\mathrm{flt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{gt}`, then:
 
   a. Return :math:`{{\mathrm{fgt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{le}`, then:
 
   a. Return :math:`{{\mathrm{fle}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -2033,13 +2033,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+  #. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 32}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}} = \mathsf{i{\scriptstyle 64}}`, then:
 
     1) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
 #. Let :math:`{\mathit{iN}}` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{wrap}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 64}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}} = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{wrap}`, then:
 
   a. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
 
@@ -2061,11 +2061,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 32}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}} = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{promote}`, then:
 
   a. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{fN}})`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is :math:`\mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 64}}` and :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}} = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{demote}`, then:
 
   a. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{fN}})`.
 
@@ -2083,7 +2083,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathsf{i}}{n}|}, {|{\mathsf{f}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{reinterpret}` and :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{reinterpret}` and :math:`{|{\mathsf{i}}{n}|} = {|{\mathsf{f}}{n}|}`, then:
 
       a) Return :math:`{{\mathrm{reinterpret}}}_{{\mathsf{i}}{n}, {\mathsf{f}}{n}}({\mathit{iN}})`.
 
@@ -2095,9 +2095,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathsf{i}}{n}` be :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{reinterpret}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{reinterpret}`.
 
-#. Assert: Due to validation, :math:`{|{\mathsf{i}}{n}|}` is :math:`{|{\mathsf{f}}{n}|}`.
+#. Assert: Due to validation, :math:`{|{\mathsf{i}}{n}|} = {|{\mathsf{f}}{n}|}`.
 
 #. Return :math:`{{\mathrm{reinterpret}}}_{{\mathsf{f}}{n}, {\mathsf{i}}{n}}({\mathit{fN}})`.
 
@@ -2124,19 +2124,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 32}}`, then:
 
   a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 64}}`, then:
 
   a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 32}}`, then:
 
   a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
 
-#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}`.
+#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 64}}`.
 
 #. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
@@ -2145,7 +2145,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2166,7 +2166,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2187,7 +2187,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2208,7 +2208,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2225,15 +2225,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{store}}`
-........................
+:math:`z{.}\mathsf{store}`
+..........................
 
 
 1. Return.
 
 
-:math:`{\mathrm{frame}}`
-........................
+:math:`z{.}\mathsf{frame}`
+..........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2241,8 +2241,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f`.
 
 
-:math:`{\mathrm{funcaddr}}`
-...........................
+:math:`z{.}\mathsf{module}{.}\mathsf{funcs}`
+............................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2250,36 +2250,36 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{funcinst}}`
-...........................
+:math:`z{.}\mathsf{funcs}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{globalinst}}`
-.............................
+:math:`z{.}\mathsf{globals}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`{\mathrm{tableinst}}`
-............................
+:math:`z{.}\mathsf{tables}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`{\mathrm{meminst}}`
-..........................
+:math:`z{.}\mathsf{mems}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`{\mathrm{moduleinst}}`
-.............................
+:math:`z{.}\mathsf{module}`
+...........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2287,8 +2287,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{type}}(x)`
-..........................
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2296,8 +2296,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{func}}(x)`
-..........................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2305,8 +2305,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`{\mathrm{global}}(x)`
-............................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2314,8 +2314,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`{\mathrm{table}}(x)`
-...........................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2323,8 +2323,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`{\mathrm{mem}}(x)`
-.........................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2332,8 +2332,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`{\mathrm{local}}(x)`
-...........................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2341,8 +2341,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`{\mathrm{with}}_{\mathit{local}}(x, v)`
-..............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2350,8 +2350,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{global}}(x, v)`
-...............................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2359,8 +2359,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{table}}(x, i, a)`
-.................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = a]`
+.............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2368,8 +2368,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`a`.
 
 
-:math:`{\mathrm{with}}_{\mathit{tableinst}}(x, {\mathit{ti}})`
-..............................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2377,8 +2377,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{mem}}(x, i, j, {b^\ast})`
-.........................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2386,8 +2386,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{meminst}}(x, {\mathit{mi}})`
-............................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -2403,7 +2403,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{i'}` be :math:`{|{a^\ast}|} + n`.
 
-#. If :math:`{i'}` is less than or equal to :math:`j`, then:
+#. If :math:`{i'} \leq j`, then:
 
   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~]),\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
 
@@ -2418,9 +2418,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-#. If :math:`{i'}` is less than or equal to :math:`j`, then:
+#. If :math:`{i'} \leq j`, then:
 
-  a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~]),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+  a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~]),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
   #. Return :math:`{\mathit{mi}'}`.
 
@@ -2429,7 +2429,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2450,7 +2450,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2471,7 +2471,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2492,7 +2492,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -2509,8 +2509,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
-....................................................................
+:math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`
+.......................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
@@ -2521,48 +2521,48 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{funcs}|}`.
 
-#. Append :math:`{\mathit{fi}}` to the :math:`s{.}\mathsf{funcs}`.
+#. Append :math:`{\mathit{fi}}` to :math:`s{.}\mathsf{funcs}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-....................................................................................................................
+:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.......................................................................................................................
 
 
-1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`.
+#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`.
 
-#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
+#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
 
 #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
-.....................................................................
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
 
 
 1. Let :math:`{\mathit{gi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{globals}|}`.
 
-#. Append :math:`{\mathit{gi}}` to the :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{gi}}` to :math:`s{.}\mathsf{globals}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}({{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...............................................................................................................................................
+:math:`{\mathrm{allocglobals}}(s, {{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+..................................................................................................................................................
 
 
-1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
-  a. Assert: Due to validation, :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`.
 
   #. Return :math:`\epsilon`.
 
@@ -2570,73 +2570,73 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Assert: Due to validation, :math:`{|{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
-  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(({}[~i~..~j~]))`
-.............................................
+:math:`{\mathrm{alloctable}}(s, ({}[~i~..~j~]))`
+................................................
 
 
 1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
-#. Append :math:`{\mathit{ti}}` to the :math:`s{.}\mathsf{tables}`.
+#. Append :math:`{\mathit{ti}}` to :math:`s{.}\mathsf{tables}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}({{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-............................................................................................
+:math:`{\mathrm{alloctables}}(s, {{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}({\mathit{tabletype}})`.
+#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}})`.
 
-#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}'}^\ast})`.
+#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(({}[~i~..~j~]))`
-...........................................
+:math:`{\mathrm{allocmem}}(s, ({}[~i~..~j~]))`
+..............................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
-#. Append :math:`{\mathit{mi}}` to the :math:`s{.}\mathsf{mems}`.
+#. Append :math:`{\mathit{mi}}` to :math:`s{.}\mathsf{mems}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}({{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..........................................................................................
+:math:`{\mathrm{allocmems}}(s, {{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.............................................................................................
 
 
-1. If :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}({\mathit{memtype}})`.
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}'}^\ast})`.
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
@@ -2670,27 +2670,27 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
-......................................................................................................
+:math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
+.........................................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^{n_{\mathit{mem}}}}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{\mathit{mem}}_3` in :math:`{{\mathit{mem}}_3^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^{n_{\mathit{mem}}}}`.
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^{n_{\mathit{table}}}}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}_2` in :math:`{{\mathit{table}}_2^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^{n_{\mathit{table}}}}`.
+#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^{n_{\mathit{global}}}}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}_1` in :math:`{{\mathit{global}}_1^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^{n_{\mathit{global}}}}`.
+#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
@@ -2702,84 +2702,84 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathit{func}})^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathit{global}}^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathit{global}})^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathit{table}}^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathit{table}})^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathit{mem}})^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast} = {{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast} = {{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast} = {{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast} = {{\mathit{ma}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..................................................................................................................................................................
+:math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.....................................................................................................................................................................
 
 
-1. If :math:`{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{a^\ast}~{{{a'}^\ast}^\ast}` be :math:`{{\mathit{fa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`i~{{i'}^\ast}` be :math:`{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
 #. Replace :math:`s{.}\mathsf{tables}{}[{\mathit{moduleinst}}{.}\mathsf{tables}{}[0]]{.}\mathsf{refs}{}[i : {|{a^\ast}|}]` with :math:`{a^\ast}`.
 
-#. Perform :math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {{i'}^\ast}, {{{a'}^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {{i'}^\ast}, {{{a'}^\ast}^\ast})`.
 
 #. Return.
 
 
-:math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-......................................................................................................................................................
+:math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.........................................................................................................................................................
 
 
-1. If :math:`{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return.
 
-#. Assert: Due to validation, :math:`{|{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`i~{{i'}^\ast}` be :math:`{i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
 #. Replace :math:`s{.}\mathsf{mems}{}[{\mathit{moduleinst}}{.}\mathsf{mems}{}[0]]{.}\mathsf{bytes}{}[i : {|{b^\ast}|}]` with :math:`{b^\ast}`.
 
-#. Perform :math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {{i'}^\ast}, {{{b'}^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {{i'}^\ast}, {{{b'}^\ast}^\ast})`.
 
 #. Return.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+:math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
 ..................................................................................
 
 
@@ -2787,59 +2787,59 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}})^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
 
 #. Let :math:`n_{\mathsf{f}}` be :math:`{|{{\mathit{func}}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{start}})^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
+#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
 
 #. Let :math:`{(\mathsf{start}~{x'})^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{\mathit{expr}}_{\mathsf{d}}~{b^\ast})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{expr}}_{\mathsf{e}}~{x^\ast})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
 #. Let :math:`z` be :math:`f_{\mathit{init}}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{d}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{g}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Perform :math:`{\mathrm{initelem}}({\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
 
-#. Perform :math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
+#. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
 #. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
@@ -2850,17 +2850,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}(z, {\mathit{fa}}, {{\mathit{val}}^{n}})`
+:math:`{\mathrm{invoke}}(s, {\mathit{fa}}, {{\mathit{val}}^{n}})`
 .................................................................
 
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -3985,78 +3985,78 @@ memsxa xv_u1*
 4. Let [externaddr] :: xv* be xv_u1*.
 5. Return $memsxa(xv*).
 
-store
+store z
 1. Return.
 
-frame
+frame z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.
 
-funcaddr
+funcaddr z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst z
 1. Return s.FUNCS.
 
-globalinst
+globalinst z
 1. Return s.GLOBALS.
 
-tableinst
+tableinst z
 1. Return s.TABLES.
 
-meminst
+meminst z
 1. Return s.MEMS.
 
-moduleinst
+moduleinst z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.
 
-type x
+type z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TYPES[x].
 
-func x
+func z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
+global z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
+table z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
+mem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
 
-local x
+local z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.LOCALS[x].
 
-with_local x v
+with_local z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace f.LOCALS[x] with v.
 
-with_global x v
+with_global z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table x i a
+with_table z x i a
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
 
-with_tableinst x ti
+with_tableinst z x ti
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem x i j b*
+with_mem z x i j b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst x mi
+with_meminst z x mi
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
@@ -4114,7 +4114,7 @@ mems xv_u1*
 4. Let [externaddr] :: externaddr'* be xv_u1*.
 5. Return $mems(externaddr'*).
 
-allocfunc moduleinst func
+allocfunc s moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
@@ -4122,21 +4122,21 @@ allocfunc moduleinst func
 5. Append fi to the s.FUNCS.
 6. Return a.
 
-allocfuncs moduleinst func_u1*
+allocfuncs s moduleinst func_u1*
 1. If (func_u1* = []), then:
   a. Return [].
 2. Let [func] :: func'* be func_u1*.
-3. Let fa be $allocfunc(moduleinst, func).
-4. Let fa'* be $allocfuncs(moduleinst, func'*).
+3. Let fa be $allocfunc(s, moduleinst, func).
+4. Let fa'* be $allocfuncs(s, moduleinst, func'*).
 5. Return [fa] :: fa'*.
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
 3. Append gi to the s.GLOBALS.
 4. Return a.
 
-allocglobals gt_u1* v_u1*
+allocglobals s gt_u1* v_u1*
 1. If (gt_u1* = []), then:
   a. Assert: Due to validation, (v_u1* = []).
   b. Return [].
@@ -4144,36 +4144,36 @@ allocglobals gt_u1* v_u1*
   a. Let [globaltype] :: globaltype'* be gt_u1*.
   b. Assert: Due to validation, (|v_u1*| >= 1).
   c. Let [val] :: val'* be v_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable ([ i .. j ])
+alloctable s ([ i .. j ])
 1. Let ti be { TYPE: ([ i .. j ]); REFS: ?()^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
 
-alloctables tt_u1*
+alloctables s tt_u1*
 1. If (tt_u1* = []), then:
   a. Return [].
 2. Let [tabletype] :: tabletype'* be tt_u1*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
+3. Let ta be $alloctable(s, tabletype).
+4. Let ta'* be $alloctables(s, tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem ([ i .. j ])
+allocmem s ([ i .. j ])
 1. Let mi be { TYPE: ([ i .. j ]); BYTES: 0^(i * (64 * $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
 
-allocmems mt_u1*
+allocmems s mt_u1*
 1. If (mt_u1* = []), then:
   a. Return [].
 2. Let [memtype] :: memtype'* be mt_u1*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
 instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
@@ -4190,15 +4190,15 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
 5. Let (MEM x) be externidx_u1.
 6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
-allocmodule module externaddr* val*
+allocmodule s module externaddr* val*
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem* data* start? export*) be module.
-3. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
-4. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
-5. Assert: Due to validation, table_2 is of the case TABLE^n_table.
-6. Let (TABLE tabletype)^n_table be table_2^n_table.
-7. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
-8. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+2. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem* data* start? export*) be module.
+3. Assert: Due to validation, mem_3 is of the case MEMORY*.
+4. Let (MEMORY memtype)^n_mem be mem_3*.
+5. Assert: Due to validation, table_2 is of the case TABLE*.
+6. Let (TABLE tabletype)^n_table be table_2*.
+7. Assert: Due to validation, global_1 is of the case GLOBAL*.
+8. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
 9. Assert: Due to validation, type_0 is of the case TYPE*.
 10. Let (TYPE ft)* be type_0*.
 11. Let fa_ex* be $funcs(externaddr*).
@@ -4211,17 +4211,17 @@ allocmodule module externaddr* val*
 18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
 19. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
 20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi*; }.
-21. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
-22. Assert: Due to validation, (funcaddr_0 = fa*).
-23. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
-24. Assert: Due to validation, (globaladdr_0 = ga*).
-25. Let tableaddr_0 be $alloctables(tabletype^n_table).
-26. Assert: Due to validation, (tableaddr_0 = ta*).
-27. Let memaddr_0 be $allocmems(memtype^n_mem).
-28. Assert: Due to validation, (memaddr_0 = ma*).
+21. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
+22. Assert: Due to validation, (funcaddr_0* = fa*).
+23. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
+24. Assert: Due to validation, (globaladdr_0* = ga*).
+25. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
+26. Assert: Due to validation, (tableaddr_0* = ta*).
+27. Let memaddr_0* be $allocmems(s, memtype^n_mem).
+28. Assert: Due to validation, (memaddr_0* = ma*).
 29. Return moduleinst.
 
-initelem moduleinst i_u1* fa_u1*
+initelem s moduleinst i_u1* fa_u1*
 1. If ((i_u1* = []) /\ (fa_u1* = [])), then:
   a. Return.
 2. Assert: Due to validation, (|fa_u1*| >= 1).
@@ -4229,10 +4229,10 @@ initelem moduleinst i_u1* fa_u1*
 4. Assert: Due to validation, (|i_u1*| >= 1).
 5. Let [i] :: i'* be i_u1*.
 6. Replace s.TABLES[moduleinst.TABLES[0]].REFS[i : |a*|] with ?(a)*.
-7. Perform $initelem(moduleinst, i'*, a'**).
+7. Perform $initelem(s, moduleinst, i'*, a'**).
 8. Return.
 
-initdata moduleinst i_u1* b_u1*
+initdata s moduleinst i_u1* b_u1*
 1. If ((i_u1* = []) /\ (b_u1* = [])), then:
   a. Return.
 2. Assert: Due to validation, (|b_u1*| >= 1).
@@ -4240,10 +4240,10 @@ initdata moduleinst i_u1* b_u1*
 4. Assert: Due to validation, (|i_u1*| >= 1).
 5. Let [i] :: i'* be i_u1*.
 6. Replace s.MEMS[moduleinst.MEMS[0]].BYTES[i : |b*|] with b*.
-7. Perform $initdata(moduleinst, i'*, b'**).
+7. Perform $initdata(s, moduleinst, i'*, b'**).
 8. Return.
 
-instantiate z module externaddr*
+instantiate s module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -4260,29 +4260,29 @@ instantiate z module externaddr*
 14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
 15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 16. Let z be f_init.
-17. Push the value (FRAME_ 0 { z }) to the stack.
+17. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 18. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-19. Pop the value (FRAME_ 0 { _f }) from the stack.
-20. Push the value (FRAME_ 0 { z }) to the stack.
+19. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+20. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 21. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-22. Pop the value (FRAME_ 0 { _f }) from the stack.
-23. Push the value (FRAME_ 0 { z }) to the stack.
+22. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+23. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 24. Let [val]* be $eval_expr(expr_G)*.
-25. Pop the value (FRAME_ 0 { _f }) from the stack.
-26. Let moduleinst be $allocmodule(module, externaddr*, val*).
+25. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
-28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
-29. Perform $initdata(moduleinst, i_D*, b**).
+28. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+29. Perform $initdata(s, moduleinst, i_D*, b**).
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence ((CALL x')?).
 32. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 33. Return f.MODULE.
 
-invoke z fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
-2. Push the value (FRAME_ 0 { f }) to the stack.
+2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 3. Let t_1^n -> t_2* be $funcinst(z)[fa].TYPE.
-4. Pop the value (FRAME_ 0 { _f }) from the stack.
+4. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
 6. Push the evaluation context (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
@@ -5432,7 +5432,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the funct
 
 
 
-The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
+The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^\ast}` if:
 
 
   * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
@@ -5522,7 +5522,7 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 
   * The function type :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^\ast}`.
 
 
 
@@ -5882,7 +5882,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5894,7 +5894,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Push the value :math:`{\mathit{val}}_1` to the stack.
 
@@ -5907,11 +5907,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
 
@@ -5941,7 +5941,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\})` be the current :math:`\mathsf{label}` context.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`0`, then:
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 0`, then:
 
   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5959,7 +5959,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is greater than or equal to :math:`1`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} \geq 1`, then:
 
     1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} - 1`.
 
@@ -5974,11 +5974,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -5991,11 +5991,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
+#. If :math:`i < {|{l^\ast}|}`, then:
 
   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
 
@@ -6056,11 +6056,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -6073,15 +6073,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -6094,7 +6094,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6107,11 +6107,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6124,11 +6124,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -6141,7 +6141,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -6158,7 +6158,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6171,11 +6171,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6188,15 +6188,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6209,7 +6209,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6222,11 +6222,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -6239,15 +6239,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -6260,13 +6260,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
 #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c)`.
 
-#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
+#. If :math:`{({\mathit{ci}}_1 \neq 0)^\ast}`, then:
 
   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -6279,11 +6279,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6296,11 +6296,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6315,7 +6315,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6330,11 +6330,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6342,9 +6342,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_2)`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+#. Assert: Due to validation, :math:`{({{\mathit{ci}}^\ast}{}[k] < {|{{c'}^\ast}|})^{k<M}}`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
+#. Assert: Due to validation, :math:`{(k < {|{{\mathit{ci}}^\ast}|})^{k<M}}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
 
@@ -6355,19 +6355,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
+#. Assert: Due to validation, :math:`{(k < {|{i^\ast}|})^{k<N}}`.
 
 #. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1)~{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_2)`.
 
-#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+#. Assert: Due to validation, :math:`{({i^\ast}{}[k] < {|{{c'}^\ast}|})^{k<N}}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
 
@@ -6382,7 +6382,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{n})`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
 
@@ -6393,7 +6393,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6401,7 +6401,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
+  #. If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
     1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1){}[i]`.
 
@@ -6415,7 +6415,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
+    #) If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
       a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1){}[i])}`.
 
@@ -6430,9 +6430,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6445,7 +6445,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6458,11 +6458,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6475,11 +6475,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6500,7 +6500,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................................................................................................................................................................................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6512,13 +6512,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`M`, then:
+  #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = M`, then:
 
     1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}(c_1)`.
 
     #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-    #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+    #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
       a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
@@ -6542,7 +6542,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-    #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+    #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
       a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
@@ -6568,7 +6568,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
         #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
 
-        #. If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+        #. If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
           a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
@@ -6626,7 +6626,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
 #. Execute the instruction :math:`(\mathsf{call}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])`.
 
@@ -6637,11 +6637,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
@@ -6651,11 +6651,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{ref{.}func\_addr}~a)` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]`.
 
-#. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
+#. If :math:`a \geq {|z{.}\mathsf{funcs}|}`, then:
 
   a. Trap.
 
-#. If :math:`z{.}\mathsf{types}{}[y]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
+#. If :math:`z{.}\mathsf{types}{}[y] \neq z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
 
   a. Trap.
 
@@ -6668,7 +6668,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
 #. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
@@ -6676,7 +6676,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+#. Assert: Due to validation, for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -6697,7 +6697,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
 #. Push the value :math:`(\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])` to the stack.
 
@@ -6726,11 +6726,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
@@ -6754,7 +6754,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6762,15 +6762,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
@@ -6797,33 +6797,33 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`j + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
 #. Else:
 
-  a. If :math:`j` is less than or equal to :math:`i`, then:
+  a. If :math:`j \leq i`, then:
 
     1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
@@ -6862,31 +6862,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`j + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. Else if :math:`i < {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
@@ -6909,7 +6909,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6917,7 +6917,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
     1) Trap.
 
@@ -6933,7 +6933,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -6956,11 +6956,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Trap.
 
@@ -6978,11 +6978,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})` be :math:`{\mathit{vloadop}}_0`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
-    #) Let :math:`{j^{N}}` be the result for which for all :math:`{(k)^{k<N}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+    #) Let :math:`{j^{N}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}}) = z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<N}}`.
 
     #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`M \cdot 2` is Jnn, then:
 
@@ -6996,7 +6996,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop}}_0`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -7016,7 +7016,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop}}_0`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -7033,15 +7033,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
@@ -7075,7 +7075,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -7083,15 +7083,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
@@ -7118,33 +7118,33 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`j + n > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
 #. Else:
 
-  a. If :math:`j` is less than or equal to :math:`i`, then:
+  a. If :math:`j \leq i`, then:
 
     1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
@@ -7183,31 +7183,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`j + n > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
+#. Else if :math:`i < {|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
 
@@ -7256,15 +7256,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
@@ -7277,11 +7277,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -7313,21 +7313,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
 #. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Trap.
 
-#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
@@ -7337,11 +7337,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
     1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -7356,15 +7356,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
@@ -7379,15 +7379,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
@@ -7397,7 +7397,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
-  #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`, then:
+  #. If :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`, then:
 
     1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c){}[j])`.
 
@@ -7410,7 +7410,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -7447,7 +7447,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................
 
 
-1. If :math:`i` is less than or equal to :math:`j`, then:
+1. If :math:`i \leq j`, then:
 
   a. Return :math:`i`.
 
@@ -7458,7 +7458,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`0`.
 
@@ -7471,11 +7471,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is :math:`1`.
+#. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} = 1`.
 
 #. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -7499,7 +7499,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7512,7 +7512,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7525,7 +7525,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7538,7 +7538,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7551,11 +7551,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`23`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`52`.
 
@@ -7564,11 +7564,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`11`.
 
@@ -7612,23 +7612,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................
 
 
-1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 32}}`, then:
 
   a. Return :math:`32`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 64}}`, then:
 
   a. Return :math:`64`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 32}}`, then:
 
   a. Return :math:`32`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 64}}`, then:
 
   a. Return :math:`64`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{v{\scriptstyle 128}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{v{\scriptstyle 128}}`, then:
 
   a. Return :math:`128`.
 
@@ -7644,11 +7644,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. If :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 8}}`, then:
+1. If :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 8}}`, then:
 
   a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 16}}`.
+#. Assert: Due to validation, :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 16}}`.
 
 #. Return :math:`16`.
 
@@ -7752,7 +7752,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................................
 
 
-1. If :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7787,7 +7787,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7808,7 +7808,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7829,7 +7829,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7850,7 +7850,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7890,7 +7890,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7917,7 +7917,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................................................
 
 
-1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -7937,13 +7937,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..................................
 
 
-1. If :math:`i` is less than :math:`{2^{N - 1}}`, then:
+1. If :math:`i < {2^{N - 1}}`, then:
 
   a. Return :math:`i`.
 
-#. Assert: Due to validation, :math:`{2^{N - 1}}` is less than or equal to :math:`i`.
+#. Assert: Due to validation, :math:`{2^{N - 1}} \leq i`.
 
-#. Assert: Due to validation, :math:`i` is less than :math:`{2^{N}}`.
+#. Assert: Due to validation, :math:`i < {2^{N}}`.
 
 #. Return :math:`i - {2^{N}}`.
 
@@ -7967,15 +7967,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{clz}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{clz}`, then:
 
     1) Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ctz}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ctz}`, then:
 
     1) Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{popcnt}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{popcnt}`, then:
 
     1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
@@ -7991,31 +7991,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
   a. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
   a. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sqrt}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sqrt}`, then:
 
   a. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ceil}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ceil}`, then:
 
   a. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{floor}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{floor}`, then:
 
   a. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{trunc}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{trunc}`, then:
 
   a. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{fN}})`.
 
@@ -8032,15 +8032,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
     1) Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
     1) Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
     1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -8056,19 +8056,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{and}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{and}`, then:
 
     1) Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{or}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{or}`, then:
 
     1) Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{xor}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{xor}`, then:
 
     1) Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{shl}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{shl}`, then:
 
     1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -8078,11 +8078,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rotl}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{rotl}`, then:
 
     1) Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rotr}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{rotr}`, then:
 
     1) Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -8094,31 +8094,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
   a. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
   a. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
   a. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{div}`, then:
 
   a. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{min}`, then:
 
   a. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{max}`, then:
 
   a. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{copysign}`.
+#. Assert: Due to validation, :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -8142,11 +8142,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Let :math:`{\mathit{iN}}_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
     1) Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
     1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
@@ -8182,27 +8182,27 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
   a. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
   a. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{lt}`, then:
 
   a. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{gt}`, then:
 
   a. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{le}`, then:
 
   a. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -8229,7 +8229,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Let :math:`{\mathit{iN}}_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{wrap}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{wrap}`, then:
 
       a) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
@@ -8283,11 +8283,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Let :math:`{\mathit{fN}}_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{promote}`, then:
 
       a) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{demote}`, then:
 
       a) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
@@ -8301,7 +8301,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Let :math:`{\mathit{iN}}_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{n}}_1|}` is :math:`{|{{\mathsf{f}}{n}}_2|}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{n}}_1|} = {|{{\mathsf{f}}{n}}_2|}`, then:
 
       a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{n}}_1, {{\mathsf{f}}{n}}_2}({\mathit{iN}}_1)`.
 
@@ -8315,9 +8315,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{reinterpret}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{reinterpret}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathsf{f}}{n}}_1|}` is :math:`{|{{\mathsf{i}}{n}}_2|}`.
+#. Assert: Due to validation, :math:`{|{{\mathsf{f}}{n}}_1|} = {|{{\mathsf{i}}{n}}_2|}`.
 
 #. Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{f}}{n}}_1, {{\mathsf{i}}{n}}_2}({\mathit{fN}}_1)`.
 
@@ -8383,11 +8383,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................................
 
 
-1. If :math:`{\mathit{hf}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{low}`, then:
+1. If :math:`{\mathit{hf}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{low}`, then:
 
   a. Return :math:`i`.
 
-#. Assert: Due to validation, :math:`{\mathit{hf}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{high}`.
+#. Assert: Due to validation, :math:`{\mathit{hf}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{high}`.
 
 #. Return :math:`j`.
 
@@ -8403,19 +8403,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................................................................................................................................................
 
 
-1. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{and}`, then:
+1. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{and}`, then:
 
   a. Return :math:`{{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{andnot}`, then:
+#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{andnot}`, then:
 
   a. Return :math:`{{\mathrm{iandnot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{or}`, then:
+#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{or}`, then:
 
   a. Return :math:`{{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{xor}`.
+#. Assert: Due to validation, :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{xor}`.
 
 #. Return :math:`{{\mathrm{ixor}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8435,7 +8435,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8443,7 +8443,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8451,7 +8451,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{popcnt}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{popcnt}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8463,7 +8463,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8473,7 +8473,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8483,7 +8483,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sqrt}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sqrt}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8493,7 +8493,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ceil}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ceil}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8503,7 +8503,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{floor}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{floor}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8513,7 +8513,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{trunc}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{trunc}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8523,7 +8523,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nearest}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8542,7 +8542,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8552,7 +8552,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8610,7 +8610,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8620,7 +8620,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is , then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8630,7 +8630,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is , then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8644,7 +8644,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8656,7 +8656,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8668,7 +8668,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8680,7 +8680,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{div}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8692,7 +8692,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{min}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8704,7 +8704,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{max}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8716,7 +8716,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{pmin}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{pmin}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8728,7 +8728,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{pmax}`.
+#. Assert: Due to validation, :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{pmax}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8749,7 +8749,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8761,7 +8761,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
     1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8833,7 +8833,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8847,7 +8847,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8861,7 +8861,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{lt}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8875,7 +8875,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{gt}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8889,7 +8889,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{le}`, then:
 
   a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8903,7 +8903,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ge}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8978,13 +8978,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`c_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}`, then:
+#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{demote}`, then:
 
   a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
   #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`.
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{promote}`.
 
 #. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
@@ -9020,7 +9020,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   #. Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is .
+#. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `.
 
 #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
 
@@ -9037,7 +9037,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................................................................................................
 
 
-1. If :math:`{\mathit{vshiftop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{shl}`, then:
+1. If :math:`{\mathit{vshiftop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{shl}`, then:
 
   a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
 
@@ -9052,31 +9052,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 32}}`, then:
 
   a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 64}}`, then:
 
   a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 32}}`, then:
 
   a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 64}}`, then:
 
   a. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{v{\scriptstyle 128}}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{v{\scriptstyle 128}}`, then:
 
   a. Return :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~0)`.
 
-#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{funcref}`, then:
+#. If :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{funcref}`, then:
 
   a. Return :math:`(\mathsf{ref{.}null}~\mathsf{funcref})`.
 
-#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{externref}`.
+#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{externref}`.
 
 #. Return :math:`(\mathsf{ref{.}null}~\mathsf{externref})`.
 
@@ -9085,7 +9085,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9106,7 +9106,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9127,7 +9127,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9148,7 +9148,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9165,15 +9165,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{store}}`
-........................
+:math:`z{.}\mathsf{store}`
+..........................
 
 
 1. Return.
 
 
-:math:`{\mathrm{frame}}`
-........................
+:math:`z{.}\mathsf{frame}`
+..........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9181,8 +9181,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f`.
 
 
-:math:`{\mathrm{funcaddr}}`
-...........................
+:math:`z{.}\mathsf{module}{.}\mathsf{funcs}`
+............................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9190,50 +9190,50 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{funcinst}}`
-...........................
+:math:`z{.}\mathsf{funcs}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{globalinst}}`
-.............................
+:math:`z{.}\mathsf{globals}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`{\mathrm{tableinst}}`
-............................
+:math:`z{.}\mathsf{tables}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`{\mathrm{meminst}}`
-..........................
+:math:`z{.}\mathsf{mems}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`{\mathrm{eleminst}}`
-...........................
+:math:`z{.}\mathsf{elems}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{elems}`.
 
 
-:math:`{\mathrm{datainst}}`
-...........................
+:math:`z{.}\mathsf{datas}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
 
 
-:math:`{\mathrm{moduleinst}}`
-.............................
+:math:`z{.}\mathsf{module}`
+...........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9241,8 +9241,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{type}}(x)`
-..........................
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9250,8 +9250,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{func}}(x)`
-..........................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9259,8 +9259,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`{\mathrm{global}}(x)`
-............................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9268,8 +9268,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`{\mathrm{table}}(x)`
-...........................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9277,8 +9277,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`{\mathrm{mem}}(x)`
-.........................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9286,8 +9286,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`{\mathrm{elem}}(x)`
-..........................
+:math:`z{.}\mathsf{elems}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9295,8 +9295,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
-:math:`{\mathrm{data}}(x)`
-..........................
+:math:`z{.}\mathsf{datas}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9304,8 +9304,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-:math:`{\mathrm{local}}(x)`
-...........................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9313,8 +9313,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`{\mathrm{with}}_{\mathit{local}}(x, v)`
-..............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9322,8 +9322,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{global}}(x, v)`
-...............................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9331,8 +9331,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{table}}(x, i, r)`
-.................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+.............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9340,8 +9340,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
 
 
-:math:`{\mathrm{with}}_{\mathit{tableinst}}(x, {\mathit{ti}})`
-..............................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9349,8 +9349,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{mem}}(x, i, j, {b^\ast})`
-.........................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9358,8 +9358,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{meminst}}(x, {\mathit{mi}})`
-............................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9367,8 +9367,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{elem}}(x, {r^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+..............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9376,8 +9376,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{data}}(x, {b^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+...............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -9393,7 +9393,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-#. If :math:`{i'}` is less than or equal to :math:`j`, then:
+#. If :math:`{i'} \leq j`, then:
 
   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
@@ -9408,9 +9408,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-#. If :math:`{i'}` is less than or equal to :math:`j`, then:
+#. If :math:`{i'} \leq j`, then:
 
-  a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~])~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+  a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~{i'}~..~j~])~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
   #. Return :math:`{\mathit{mi}'}`.
 
@@ -9419,17 +9419,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................................................................................
 
 
-1. If :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\epsilon`, then:
+1. If :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \epsilon`, then:
 
   a. Return :math:`\epsilon~\rightarrow~\epsilon`.
 
 #. If :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case , then:
 
-  a. Let :math:`{\mathit{valtype}}_0` be :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+  a. Let :math:`{{\mathit{valtype}}_0^?}` be :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{valtype}}_0` is defined, then:
+  #. If :math:`{{\mathit{valtype}}_0^?}` is defined, then:
 
-    1) Let :math:`t` be :math:`{\mathit{valtype}}_0`.
+    1) Let :math:`t` be :math:`{{\mathit{valtype}}_0^?}`.
 
     #) Return :math:`\epsilon~\rightarrow~t`.
 
@@ -9444,7 +9444,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9465,7 +9465,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9486,7 +9486,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9507,7 +9507,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -9524,8 +9524,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
-....................................................................
+:math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`
+.......................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
@@ -9536,48 +9536,48 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{funcs}|}`.
 
-#. Append :math:`{\mathit{fi}}` to the :math:`s{.}\mathsf{funcs}`.
+#. Append :math:`{\mathit{fi}}` to :math:`s{.}\mathsf{funcs}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-....................................................................................................................
+:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.......................................................................................................................
 
 
-1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`.
+#. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`.
 
-#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
+#. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}'}^\ast})`.
 
 #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
-.....................................................................
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
 
 
 1. Let :math:`{\mathit{gi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{globals}|}`.
 
-#. Append :math:`{\mathit{gi}}` to the :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{gi}}` to :math:`s{.}\mathsf{globals}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}({{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...............................................................................................................................................
+:math:`{\mathrm{allocglobals}}(s, {{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+..................................................................................................................................................
 
 
-1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
-  a. Assert: Due to validation, :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`.
 
   #. Return :math:`\epsilon`.
 
@@ -9585,139 +9585,139 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Assert: Due to validation, :math:`{|{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
-  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
 
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}((({}[~i~..~j~]), {\mathit{rt}}))`
-..............................................................
+:math:`{\mathrm{alloctable}}(s, (({}[~i~..~j~]), {\mathit{rt}}))`
+.................................................................
 
 
 1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
-#. Append :math:`{\mathit{ti}}` to the :math:`s{.}\mathsf{tables}`.
+#. Append :math:`{\mathit{ti}}` to :math:`s{.}\mathsf{tables}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}({{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-............................................................................................
+:math:`{\mathrm{alloctables}}(s, {{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}({\mathit{tabletype}})`.
+#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}})`.
 
-#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}'}^\ast})`.
+#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(({}[~i~..~j~])~\mathsf{page})`
-.........................................................
+:math:`{\mathrm{allocmem}}(s, ({}[~i~..~j~])~\mathsf{page})`
+............................................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~])~\mathsf{page},\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~])~\mathsf{page},\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
-#. Append :math:`{\mathit{mi}}` to the :math:`s{.}\mathsf{mems}`.
+#. Append :math:`{\mathit{mi}}` to :math:`s{.}\mathsf{mems}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}({{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..........................................................................................
+:math:`{\mathrm{allocmems}}(s, {{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+.............................................................................................
 
 
-1. If :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}({\mathit{memtype}})`.
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}'}^\ast})`.
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}'}^\ast})`.
 
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{allocelem}}({\mathit{rt}}, {{\mathit{ref}}^\ast})`
-..................................................................
+:math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`
+.....................................................................
 
 
 1. Let :math:`{\mathit{ei}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{rt}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{elems}|}`.
 
-#. Append :math:`{\mathit{ei}}` to the :math:`s{.}\mathsf{elems}`.
+#. Append :math:`{\mathit{ei}}` to :math:`s{.}\mathsf{elems}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}({{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-.............................................................................................................................................
+:math:`{\mathrm{allocelems}}(s, {{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+................................................................................................................................................
 
 
-1. If :math:`{{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}({\mathit{rt}}, {{\mathit{ref}}^\ast})`.
+#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`.
 
-#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{\mathrm{allocelems}}({{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{\mathrm{allocelems}}(s, {{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})`.
 
 #. Return :math:`{\mathit{ea}}~{{\mathit{ea}'}^\ast}`.
 
 
-:math:`{\mathrm{allocdata}}({{\mathit{byte}}^\ast})`
-....................................................
+:math:`{\mathrm{allocdata}}(s, {{\mathit{byte}}^\ast})`
+.......................................................
 
 
 1. Let :math:`{\mathit{di}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{datas}|}`.
 
-#. Append :math:`{\mathit{di}}` to the :math:`s{.}\mathsf{datas}`.
+#. Append :math:`{\mathit{di}}` to :math:`s{.}\mathsf{datas}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}({b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...............................................................................
+:math:`{\mathrm{allocdatas}}(s, {b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
+..................................................................................
 
 
-1. If :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}({{\mathit{byte}}^\ast})`.
+#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {{\mathit{byte}}^\ast})`.
 
-#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{\mathrm{allocdatas}}({{{\mathit{byte}'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{\mathrm{allocdatas}}(s, {{{\mathit{byte}'}^\ast}^\ast})`.
 
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
@@ -9751,35 +9751,35 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
-....................................................................................................................................
+:math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
+.......................................................................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^{n_{\mathit{global}}}}~{{\mathit{table}}_2^{n_{\mathit{table}}}}~{{\mathit{mem}}_3^{n_{\mathit{mem}}}}~{{\mathit{elem}}_4^{n_{\mathit{elem}}}}~{{\mathit{data}}_5^{n_{\mathit{data}}}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}_4^\ast}~{{\mathit{data}}_5^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}}_5)^{n_{\mathit{data}}}}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}_5` in :math:`{{\mathit{data}}_5^\ast}`, :math:`{\mathit{data}}_5` is of the case :math:`\mathsf{data}`.
 
-#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^{n_{\mathit{data}}}}`.
+#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}}_4)^{n_{\mathit{elem}}}}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}_4` in :math:`{{\mathit{elem}}_4^\ast}`, :math:`{\mathit{elem}}_4` is of the case :math:`\mathsf{elem}`.
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^{n_{\mathit{elem}}}}`.
+#. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}}_3)^{n_{\mathit{mem}}}}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{\mathit{mem}}_3` in :math:`{{\mathit{mem}}_3^\ast}`, :math:`{\mathit{mem}}_3` is of the case :math:`\mathsf{memory}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^{n_{\mathit{mem}}}}`.
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}}_2)^{n_{\mathit{table}}}}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}_2` in :math:`{{\mathit{table}}_2^\ast}`, :math:`{\mathit{table}}_2` is of the case :math:`\mathsf{table}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^{n_{\mathit{table}}}}`.
+#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}}_1)^{n_{\mathit{global}}}}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}_1` in :math:`{{\mathit{global}}_1^\ast}`, :math:`{\mathit{global}}_1` is of the case :math:`\mathsf{global}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^{n_{\mathit{global}}}}`.
+#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}}_0)^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, :math:`{\mathit{type}}_0` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
@@ -9791,45 +9791,45 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathit{func}})^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathit{global}}^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathit{global}})^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathit{table}}^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathit{table}})^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathit{mem}})^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{|s{.}\mathsf{elems}|} + i_{\mathit{elem}}^{i_{\mathit{elem}}<n_{\mathit{elem}}}}`.
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{({|s{.}\mathsf{elems}|} + i_{\mathit{elem}})^{i_{\mathit{elem}}<n_{\mathit{elem}}}}`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{|s{.}\mathsf{datas}|} + i_{\mathit{data}}^{i_{\mathit{data}}<n_{\mathit{data}}}}`.
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathit{data}})^{i_{\mathit{data}}<n_{\mathit{data}}}}`.
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast} = {{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}^{n_{\mathit{global}}}}, {{\mathit{val}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast} = {{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}^{n_{\mathit{table}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast} = {{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}^{n_{\mathit{mem}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast} = {{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{\mathit{elemaddr}}_0` be :math:`{\mathrm{allocelems}}({{\mathit{rt}}^{n_{\mathit{elem}}}}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{\mathrm{allocelems}}(s, {{\mathit{rt}}^{n_{\mathit{elem}}}}, {{{\mathit{ref}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemaddr}}_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{elemaddr}}_0^\ast} = {{\mathit{ea}}^\ast}`.
 
-#. Let :math:`{\mathit{dataaddr}}_0` be :math:`{\mathrm{allocdatas}}({({{\mathit{byte}}^\ast})^{n_{\mathit{data}}}})`.
+#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{\mathrm{allocdatas}}(s, {({{\mathit{byte}}^\ast})^{n_{\mathit{data}}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{dataaddr}}_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{dataaddr}}_0^\ast} = {{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -9838,11 +9838,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................................................................................................
 
 
-1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{passive}`, then:
+1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
 
   a. Return :math:`\epsilon`.
 
-#. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{declare}`, then:
+#. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{declare}`, then:
 
   a. Return :math:`(\mathsf{elem{.}drop}~i)`.
 
@@ -9859,22 +9859,22 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................................................................................
 
 
-1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{passive}`, then:
+1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{active}`.
 
-#. Let :math:`(\mathsf{active}~n_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Assert: Due to validation, :math:`n_0` is :math:`0`.
+#. Assert: Due to validation, :math:`{\mathit{memidx}}_0 = 0`.
 
 #. Let :math:`n` be :math:`{|{{\mathit{byte}}^\ast}|}`.
 
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+:math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
 ..................................................................................
 
 
@@ -9882,7 +9882,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{type}})^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
+#. Assert: Due to validation, for all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, :math:`{\mathit{type}}` is of the case :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
 
@@ -9892,15 +9892,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n_{\mathsf{f}}` be :math:`{|{{\mathit{func}}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{start}})^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
+#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
@@ -9908,25 +9908,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{concat}}({{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}})`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
 #. Let :math:`z` be :math:`f_{\mathit{init}}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{g}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -9943,17 +9943,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}(z, {\mathit{fa}}, {{\mathit{val}}^{n}})`
+:math:`{\mathrm{invoke}}(s, {\mathit{fa}}, {{\mathit{val}}^{n}})`
 .................................................................
 
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -10577,7 +10577,7 @@ Instrs_ok/frame
   - instr* is valid with the function type t_1* -> t_2*.
 
 Expr_ok
-- the expression instr* is valid with the value type sequence t* if:
+- the expression instr* is valid with the result type t* if:
   - instr* is valid with the function type [] -> t*.
 
 Instr_const
@@ -10625,7 +10625,7 @@ Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2* if:
   - the function type C.TYPES[x] exists.
   - C.TYPES[x] is t_1* -> t_2*.
-  - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
+  - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
@@ -10929,7 +10929,7 @@ Step_pure/cvtop nt_2 nt_1 cvtop
 5. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
 3. If ref is of the case REF.NULL, then:
   a. Push the value (I32.CONST 1) to the stack.
@@ -11465,7 +11465,7 @@ Step/global.set x
 
 Step/table.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -11477,7 +11477,7 @@ Step/table.grow x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type ref is on the top of the stack.
 5. Pop the value ref from the stack.
 6. Either:
   a. Let ti be $growtable($table(z, x), n, ref).
@@ -12381,100 +12381,100 @@ memsxa xv_u1*
 4. Let [externaddr] :: xv* be xv_u1*.
 5. Return $memsxa(xv*).
 
-store
+store z
 1. Return.
 
-frame
+frame z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.
 
-funcaddr
+funcaddr z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst z
 1. Return s.FUNCS.
 
-globalinst
+globalinst z
 1. Return s.GLOBALS.
 
-tableinst
+tableinst z
 1. Return s.TABLES.
 
-meminst
+meminst z
 1. Return s.MEMS.
 
-eleminst
+eleminst z
 1. Return s.ELEMS.
 
-datainst
+datainst z
 1. Return s.DATAS.
 
-moduleinst
+moduleinst z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.
 
-type x
+type z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TYPES[x].
 
-func x
+func z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
+global z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
+table z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
+mem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
 
-elem x
+elem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data x
+data z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local x
+local z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.LOCALS[x].
 
-with_local x v
+with_local z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace f.LOCALS[x] with v.
 
-with_global x v
+with_global z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table x i r
+with_table z x i r
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
-with_tableinst x ti
+with_tableinst z x ti
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem x i j b*
+with_mem z x i j b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst x mi
+with_meminst z x mi
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
-with_elem x r*
+with_elem z x r*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
-with_data x b*
+with_data z x b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
@@ -12496,9 +12496,9 @@ blocktype z bt_u1
 1. If (bt_u1 = (_RESULT ?())), then:
   a. Return [] -> [].
 2. If bt_u1 is of the case _RESULT, then:
-  a. Let (_RESULT valtype_0) be bt_u1.
-  b. If valtype_0 is defined, then:
-    1) Let ?(t) be valtype_0.
+  a. Let (_RESULT valtype_0?) be bt_u1.
+  b. If valtype_0? is defined, then:
+    1) Let ?(t) be valtype_0?.
     2) Return [] -> [t].
 3. Assert: Due to validation, bt_u1 is of the case _IDX.
 4. Let (_IDX x) be bt_u1.
@@ -12544,7 +12544,7 @@ mems xv_u1*
 4. Let [externaddr] :: externaddr'* be xv_u1*.
 5. Return $mems(externaddr'*).
 
-allocfunc moduleinst func
+allocfunc s moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
@@ -12552,21 +12552,21 @@ allocfunc moduleinst func
 5. Append fi to the s.FUNCS.
 6. Return a.
 
-allocfuncs moduleinst func_u1*
+allocfuncs s moduleinst func_u1*
 1. If (func_u1* = []), then:
   a. Return [].
 2. Let [func] :: func'* be func_u1*.
-3. Let fa be $allocfunc(moduleinst, func).
-4. Let fa'* be $allocfuncs(moduleinst, func'*).
+3. Let fa be $allocfunc(s, moduleinst, func).
+4. Let fa'* be $allocfuncs(s, moduleinst, func'*).
 5. Return [fa] :: fa'*.
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
 3. Append gi to the s.GLOBALS.
 4. Return a.
 
-allocglobals gt_u1* v_u1*
+allocglobals s gt_u1* v_u1*
 1. If (gt_u1* = []), then:
   a. Assert: Due to validation, (v_u1* = []).
   b. Return [].
@@ -12574,67 +12574,67 @@ allocglobals gt_u1* v_u1*
   a. Let [globaltype] :: globaltype'* be gt_u1*.
   b. Assert: Due to validation, (|v_u1*| >= 1).
   c. Let [val] :: val'* be v_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable (([ i .. j ]), rt)
+alloctable s (([ i .. j ]), rt)
 1. Let ti be { TYPE: (([ i .. j ]), rt); REFS: (REF.NULL rt)^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
 
-alloctables tt_u1*
+alloctables s tt_u1*
 1. If (tt_u1* = []), then:
   a. Return [].
 2. Let [tabletype] :: tabletype'* be tt_u1*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
+3. Let ta be $alloctable(s, tabletype).
+4. Let ta'* be $alloctables(s, tabletype'*).
 5. Return [ta] :: ta'*.
 
-allocmem ([ i .. j ]) PAGE
+allocmem s ([ i .. j ]) PAGE
 1. Let mi be { TYPE: ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
 
-allocmems mt_u1*
+allocmems s mt_u1*
 1. If (mt_u1* = []), then:
   a. Return [].
 2. Let [memtype] :: memtype'* be mt_u1*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
-allocelem rt ref*
+allocelem s rt ref*
 1. Let ei be { TYPE: rt; REFS: ref*; }.
 2. Let a be |s.ELEMS|.
 3. Append ei to the s.ELEMS.
 4. Return a.
 
-allocelems rt_u1* r_u1*
+allocelems s rt_u1* r_u1*
 1. If ((rt_u1* = []) /\ (r_u1* = [])), then:
   a. Return [].
 2. Assert: Due to validation, (|r_u1*| >= 1).
 3. Let [ref*] :: ref'** be r_u1*.
 4. Assert: Due to validation, (|rt_u1*| >= 1).
 5. Let [rt] :: rt'* be rt_u1*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
+6. Let ea be $allocelem(s, rt, ref*).
+7. Let ea'* be $allocelems(s, rt'*, ref'**).
 8. Return [ea] :: ea'*.
 
-allocdata byte*
+allocdata s byte*
 1. Let di be { BYTES: byte*; }.
 2. Let a be |s.DATAS|.
 3. Append di to the s.DATAS.
 4. Return a.
 
-allocdatas b_u1*
+allocdatas s b_u1*
 1. If (b_u1* = []), then:
   a. Return [].
 2. Let [byte*] :: byte'** be b_u1*.
-3. Let da be $allocdata(byte*).
-4. Let da'* be $allocdatas(byte'**).
+3. Let da be $allocdata(s, byte*).
+4. Let da'* be $allocdatas(s, byte'**).
 5. Return [da] :: da'*.
 
 instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
@@ -12651,19 +12651,19 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
 5. Let (MEM x) be externidx_u1.
 6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
-allocmodule module externaddr* val* ref**
+allocmodule s module externaddr* val* ref**
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type_0* import* func^n_func global_1^n_global table_2^n_table mem_3^n_mem elem_4^n_elem data_5^n_data start? export*) be module.
-3. Assert: Due to validation, data_5 is of the case DATA^n_data.
-4. Let (DATA byte* datamode)^n_data be data_5^n_data.
-5. Assert: Due to validation, elem_4 is of the case ELEM^n_elem.
-6. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4^n_elem.
-7. Assert: Due to validation, mem_3 is of the case MEMORY^n_mem.
-8. Let (MEMORY memtype)^n_mem be mem_3^n_mem.
-9. Assert: Due to validation, table_2 is of the case TABLE^n_table.
-10. Let (TABLE tabletype)^n_table be table_2^n_table.
-11. Assert: Due to validation, global_1 is of the case GLOBAL^n_global.
-12. Let (GLOBAL globaltype expr_1)^n_global be global_1^n_global.
+2. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem_4* data_5* start? export*) be module.
+3. Assert: Due to validation, data_5 is of the case DATA*.
+4. Let (DATA byte* datamode)^n_data be data_5*.
+5. Assert: Due to validation, elem_4 is of the case ELEM*.
+6. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4*.
+7. Assert: Due to validation, mem_3 is of the case MEMORY*.
+8. Let (MEMORY memtype)^n_mem be mem_3*.
+9. Assert: Due to validation, table_2 is of the case TABLE*.
+10. Let (TABLE tabletype)^n_table be table_2*.
+11. Assert: Due to validation, global_1 is of the case GLOBAL*.
+12. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
 13. Assert: Due to validation, type_0 is of the case TYPE*.
 14. Let (TYPE ft)* be type_0*.
 15. Let fa_ex* be $funcs(externaddr*).
@@ -12678,18 +12678,18 @@ allocmodule module externaddr* val* ref**
 24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
 25. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
 26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-27. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
-28. Assert: Due to validation, (funcaddr_0 = fa*).
-29. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
-30. Assert: Due to validation, (globaladdr_0 = ga*).
-31. Let tableaddr_0 be $alloctables(tabletype^n_table).
-32. Assert: Due to validation, (tableaddr_0 = ta*).
-33. Let memaddr_0 be $allocmems(memtype^n_mem).
-34. Assert: Due to validation, (memaddr_0 = ma*).
-35. Let elemaddr_0 be $allocelems(rt^n_elem, ref**).
-36. Assert: Due to validation, (elemaddr_0 = ea*).
-37. Let dataaddr_0 be $allocdatas(byte*^n_data).
-38. Assert: Due to validation, (dataaddr_0 = da*).
+27. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
+28. Assert: Due to validation, (funcaddr_0* = fa*).
+29. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
+30. Assert: Due to validation, (globaladdr_0* = ga*).
+31. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
+32. Assert: Due to validation, (tableaddr_0* = ta*).
+33. Let memaddr_0* be $allocmems(s, memtype^n_mem).
+34. Assert: Due to validation, (memaddr_0* = ma*).
+35. Let elemaddr_0* be $allocelems(s, rt^n_elem, ref**).
+36. Assert: Due to validation, (elemaddr_0* = ea*).
+37. Let dataaddr_0* be $allocdatas(s, byte*^n_data).
+38. Assert: Due to validation, (dataaddr_0* = da*).
 39. Return moduleinst.
 
 runelem (ELEM reftype expr* elemmode_u1) i
@@ -12706,12 +12706,12 @@ rundata (DATA byte* datamode_u1) i
 1. If (datamode_u1 = PASSIVE), then:
   a. Return [].
 2. Assert: Due to validation, datamode_u1 is of the case ACTIVE.
-3. Let (ACTIVE n_0 instr*) be datamode_u1.
-4. Assert: Due to validation, (n_0 = 0).
+3. Let (ACTIVE memidx_0 instr*) be datamode_u1.
+4. Assert: Due to validation, (memidx_0 = 0).
 5. Let n be |byte*|.
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-instantiate z module externaddr*
+instantiate s module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -12730,13 +12730,13 @@ instantiate z module externaddr*
 16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 18. Let z be f_init.
-19. Push the value (FRAME_ 0 { z }) to the stack.
+19. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 20. Let [val]* be $eval_expr(expr_G)*.
-21. Pop the value (FRAME_ 0 { _f }) from the stack.
-22. Push the value (FRAME_ 0 { z }) to the stack.
+21. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+22. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 23. Let [ref]** be $eval_expr(expr_E)**.
-24. Pop the value (FRAME_ 0 { _f }) from the stack.
-25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
+24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+25. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
 27. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 28. Execute the sequence (instr_E*).
@@ -12745,11 +12745,11 @@ instantiate z module externaddr*
 31. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 32. Return f.MODULE.
 
-invoke z fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Push the value (FRAME_ 0 { f }) to the stack.
+2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 3. Let t_1^n -> t_2* be $funcinst(z)[fa].TYPE.
-4. Pop the value (FRAME_ 0 { _f }) from the stack.
+4. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
 6. Push the evaluation context (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
@@ -12903,7 +12903,7 @@ The value type :math:`\mathsf{bot}` is valid.
 
 
 
-The value type sequence :math:`{t^\ast}` is valid if:
+The result type :math:`{t^\ast}` is valid if:
 
 
   * For all :math:`t` in :math:`{t^\ast}`:
@@ -12916,9 +12916,9 @@ The value type sequence :math:`{t^\ast}` is valid if:
 The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
 
 
-  * The value type sequence :math:`{t_1^\ast}` is valid.
+  * The result type :math:`{t_1^\ast}` is valid.
 
-  * The value type sequence :math:`{t_2^\ast}` is valid.
+  * The result type :math:`{t_2^\ast}` is valid.
 
   * :math:`{|{\mathit{x*}}|}` is equal to :math:`{|{\mathit{lct*}}|}`.
 
@@ -12983,9 +12983,9 @@ The field type :math:`({\mathsf{mut}^?}, {\mathit{storagetype}})` is valid if:
 The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid if:
 
 
-  * The value type sequence :math:`{t_1^\ast}` is valid.
+  * The result type :math:`{t_1^\ast}` is valid.
 
-  * The value type sequence :math:`{t_2^\ast}` is valid.
+  * The result type :math:`{t_2^\ast}` is valid.
 
 
 
@@ -15508,7 +15508,7 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
     * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-    * The value type sequence :math:`{t^\ast}` is valid.
+    * The result type :math:`{t^\ast}` is valid.
 
 
 
@@ -15557,12 +15557,12 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instr
 
   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-  * The value type sequence :math:`{t^\ast}` is valid.
+  * The result type :math:`{t^\ast}` is valid.
 
 
 
 
-The expression :math:`{{\mathit{instr}}^\ast}` is valid with the value type sequence :math:`{t^\ast}` if:
+The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^\ast}` if:
 
 
   * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
@@ -15779,7 +15779,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
     * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the value type sequence :math:`{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^\ast}`.
 
 
 
@@ -16336,7 +16336,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16348,7 +16348,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Push the value :math:`{\mathit{val}}_1` to the stack.
 
@@ -16361,11 +16361,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
 
@@ -16395,7 +16395,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\})` be the current :math:`\mathsf{label}` context.
 
-  #. If :math:`l` is :math:`0`, then:
+  #. If :math:`l = 0`, then:
 
     1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16413,7 +16413,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-    #) If :math:`l` is greater than :math:`0`, then:
+    #) If :math:`l > 0`, then:
 
       a) Pop the current :math:`\mathsf{label}` context from the stack.
 
@@ -16436,11 +16436,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
-#. If :math:`c` is not :math:`0`, then:
+#. If :math:`c \neq 0`, then:
 
   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -16453,11 +16453,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
+#. If :math:`i < {|{l^\ast}|}`, then:
 
   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
 
@@ -16601,11 +16601,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -16618,15 +16618,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -16639,7 +16639,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16652,11 +16652,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16669,11 +16669,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -16686,7 +16686,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16697,7 +16697,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -16714,7 +16714,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -16729,11 +16729,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}_2` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
@@ -16743,7 +16743,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
-  #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+  #. Else if :math:`{\mathit{ref}}_1 = {\mathit{ref}}_2`, then:
 
     1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -16751,7 +16751,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
-#. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+#. Else if :math:`{\mathit{ref}}_1 = {\mathit{ref}}_2`, then:
 
   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -16764,7 +16764,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -16783,7 +16783,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16800,7 +16800,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -16819,7 +16819,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -16838,11 +16838,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}|}` is greater than :math:`0`.
+#. Assert: Due to validation, :math:`{|{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}|} > 0`.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}`.
 
@@ -16853,15 +16853,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}|}` is greater than :math:`0`.
+#. Assert: Due to validation, :math:`{|{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}|} > 0`.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}`.
 
@@ -16872,19 +16872,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}|}` is greater than :math:`0`.
+#. Assert: Due to validation, :math:`{|{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}|} > 0`.
 
 #. Let :math:`c` be an element of :math:`{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}`.
 
@@ -16895,7 +16895,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16908,11 +16908,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -16925,15 +16925,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -16946,19 +16946,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vternop}}}{{}_{{\mathit{sh}}}(c_1, c_2, c_3)}|}` is less than or equal to :math:`0`, then:
+#. If :math:`{|{{\mathit{vternop}}}{{}_{{\mathit{sh}}}(c_1, c_2, c_3)}|} \leq 0`, then:
 
   a. Trap.
 
@@ -16971,7 +16971,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16984,11 +16984,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17001,11 +17001,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17018,7 +17018,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17031,11 +17031,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17048,11 +17048,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17069,7 +17069,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{N})`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
 
@@ -17080,7 +17080,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17088,7 +17088,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
+  #. If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
     1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1){}[i]`.
 
@@ -17102,7 +17102,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
+    #) If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
       a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1){}[i])}`.
 
@@ -17117,9 +17117,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{N})`.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17132,7 +17132,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17145,11 +17145,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17162,15 +17162,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17183,11 +17183,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17200,7 +17200,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17260,11 +17260,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
+
+  a. Fail.
+
+#. Let :math:`{\mathit{rt}}` be the type of :math:`{\mathit{ref}}`.
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
@@ -17283,11 +17287,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
+
+  a. Fail.
+
+#. Let :math:`{\mathit{rt}}` be the type of :math:`{\mathit{ref}}`.
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
@@ -17306,11 +17314,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
 #. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
 
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
 #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
@@ -17323,7 +17331,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17335,7 +17343,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+  #. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
     1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
@@ -17343,7 +17351,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
-    #) If for all :math:`{({\mathit{local}}_0)^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
+    #) If for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`, then:
 
       a) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -17370,11 +17378,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
 #. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
 
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
 #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
@@ -17411,7 +17419,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-    1) Assert: Due to validation, a value is on the top of the stack.
+    1) Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
     #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17427,7 +17435,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-      #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+      #) If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
         1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
@@ -17456,7 +17464,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17470,7 +17478,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-  #. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
+  #. If :math:`{{\mathit{val}}^\ast} \neq \epsilon`, then:
 
     1) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17502,7 +17510,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       a) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current :math:`\mathsf{handler}` context.
 
-      #) If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+      #) If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
         1. Pop the current :math:`\mathsf{handler}` context from the stack.
 
@@ -17510,7 +17518,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
         #. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-      #) Else if :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+      #) Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
 
         1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -17554,7 +17562,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
           a. Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
 
-          #. If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+          #. If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
 
             1) Pop the current :math:`\mathsf{handler}` context from the stack.
 
@@ -17578,7 +17586,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
           a. Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
 
-          #. If :math:`x` is greater than or equal to :math:`{|z{.}\mathsf{tags}|}`, then:
+          #. If :math:`x \geq {|z{.}\mathsf{tags}|}`, then:
 
             1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -17590,7 +17598,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-          #. Else if :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is not :math:`z{.}\mathsf{tags}{}[x]`, then:
+          #. Else if :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
 
             1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -17681,7 +17689,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
 #. Push the value :math:`(\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])` to the stack.
 
@@ -17692,11 +17700,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
+
+  a. Fail.
+
+#. Let :math:`{\mathit{rt}'}` be the type of :math:`{\mathit{ref}}`.
 
 #. If :math:`{\mathit{rt}'}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
 
@@ -17713,11 +17725,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
+
+  a. Fail.
+
+#. Let :math:`{\mathit{rt}'}` be the type of :math:`{\mathit{ref}}`.
 
 #. If :math:`{\mathit{rt}'}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
 
@@ -17734,15 +17750,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{zt}})^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
+#. Assert: Due to validation, for all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{\mathit{val*}}|}` is :math:`{|{\mathit{zt*}}|}`.
+#. Assert: Due to validation, :math:`{|{\mathit{val*}}|} = {|{\mathit{zt*}}|}`.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17755,7 +17771,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17767,15 +17783,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`i` is less than :math:`{|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{structs}|}`, then:
+  #. If :math:`i < {|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{structs}|}`, then:
 
     1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-    #) Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+    #) Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+    #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
-    #) If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+    #) If :math:`i < {|{{\mathit{zt}}^\ast}|}`, then:
 
       a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
@@ -17786,7 +17802,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17811,19 +17827,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. Assert: Due to validation, :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]|}` is :math:`n`.
+#. Assert: Due to validation, :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]|} = n`.
 
 #. Let :math:`{{\mathit{ref}}^\ast}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]`.
 
@@ -17838,11 +17854,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17852,15 +17868,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-#. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8 > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
 #. Assert: Due to validation, the length of :math:`({\mathit{fresh}}_1)` for which :math:`{\bigoplus}\, {\mathit{fresh}}_1` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]` is :math:`n`.
 
-#. Let :math:`{{\mathit{byte}}^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{byte}}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
+#. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the result for which :math:`{\bigoplus}\, {{{\mathit{byte}}^\ast}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
 
-#. Let :math:`{c^\ast}` be the result for which for all :math:`{({\mathit{byte}})^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{\mathit{byte}}`.
+#. Let :math:`{c^\ast}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast}) = {{\mathit{byte}}^\ast})^\ast}`.
 
 #. Push the values :math:`{{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)^{n}}` to the stack.
 
@@ -17873,11 +17889,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17889,11 +17905,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
     1) Trap.
 
-  #. If :math:`i` is less than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
+  #. If :math:`i < {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{arrays}|}`, then:
 
     1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
 
@@ -17910,7 +17926,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17922,7 +17938,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
+  #. If :math:`a < {|z{.}\mathsf{arrays}|}`, then:
 
     1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|})` to the stack.
 
@@ -17933,7 +17949,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17941,11 +17957,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -17957,15 +17973,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+  #. If :math:`a \geq {|z{.}\mathsf{arrays}|}`, then:
 
     1) Do nothing.
 
-  #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. Else if :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
     1) Trap.
 
-  #. If :math:`n` is :math:`0`, then:
+  #. If :math:`n = 0`, then:
 
     1) Do nothing.
 
@@ -17996,23 +18012,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` from the stack.
 
@@ -18030,25 +18046,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-    1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
+    1) If :math:`a_1 < {|z{.}\mathsf{arrays}|}` and :math:`i_1 + n > {|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
       a) Trap.
 
     #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+    #) If :math:`a_2 \geq {|z{.}\mathsf{arrays}|}`, then:
 
       a) Do nothing.
 
-    #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
+    #) Else if :math:`i_2 + n > {|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
 
       a) Trap.
 
-    #) If :math:`n` is :math:`0`, then:
+    #) If :math:`n = 0`, then:
 
       a) Do nothing.
 
-    #) Else if :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+    #) Else if :math:`i_1 \leq i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
 
       a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
@@ -18114,7 +18130,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
         #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-  #. Else if :math:`n` is not :math:`0`, then:
+  #. Else if :math:`n \neq 0`, then:
 
     1) Do nothing.
 
@@ -18125,19 +18141,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18149,19 +18165,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
     1) Trap.
 
-  #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+  #. If :math:`j + n > {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
     1) Trap.
 
-  #. If :math:`n` is :math:`0`, then:
+  #. If :math:`n = 0`, then:
 
     1) Do nothing.
 
-  #. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+  #. Else if :math:`j < {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
     1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
 
@@ -18190,19 +18206,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18214,7 +18230,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
     1) Trap.
 
@@ -18224,11 +18240,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-    #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8 > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
-    #) If :math:`n` is :math:`0`, then:
+    #) If :math:`n = 0`, then:
 
       a) Do nothing.
 
@@ -18254,7 +18270,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
 
-  #. Else if :math:`n` is :math:`0`, then:
+  #. Else if :math:`n = 0`, then:
 
     1) Do nothing.
 
@@ -18289,11 +18305,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
@@ -18319,7 +18335,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18327,15 +18343,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
@@ -18362,33 +18378,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}'}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}'}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_2` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_2` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_1` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
-#. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x_1]{.}\mathsf{refs}|}`, then:
+#. If :math:`i_1 + n > {|z{.}\mathsf{tables}{}[x_1]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x_2]{.}\mathsf{refs}|}`, then:
+#. If :math:`i_2 + n > {|z{.}\mathsf{tables}{}[x_2]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
 #. Else:
 
-  a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
+  a. If :math:`i_1 \leq i_2`, then:
 
     1) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
@@ -18427,31 +18443,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. If :math:`j + n > {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
-#. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+#. Else if :math:`j < {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` to the stack.
 
@@ -18474,7 +18490,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18482,7 +18498,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+  #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
     1) Trap.
 
@@ -18498,7 +18514,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -18521,11 +18537,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Trap.
 
@@ -18543,11 +18559,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
-    #) Let :math:`{j^{K}}` be the result for which for all :math:`{(k)^{k<K}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+    #) Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
 
     #) If the type of :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is Jnn, then:
 
@@ -18561,7 +18577,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -18581,7 +18597,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -18598,15 +18614,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
@@ -18644,7 +18660,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18652,15 +18668,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
@@ -18687,33 +18703,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}'}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}'}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_2` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_2` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}_1` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_1` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
-#. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i_1 + n > {|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_2]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i_2 + n > {|z{.}\mathsf{mems}{}[x_2]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
 #. Else:
 
-  a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
+  a. If :math:`i_1 \leq i_2`, then:
 
     1) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
@@ -18752,31 +18768,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + n > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+#. If :math:`j + n > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
-#. If :math:`n` is :math:`0`, then:
+#. If :math:`n = 0`, then:
 
   a. Do nothing.
 
-#. Else if :math:`j` is less than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+#. Else if :math:`j < {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
   a. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` to the stack.
 
@@ -18799,15 +18815,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{tags}|}`.
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
 
-#. Let :math:`{t^{n}}~\rightarrow~{\mathit{valtype}}_1` be :math:`{\mathit{functype}}_0`.
+#. Let :math:`{t^{n}}~\rightarrow~{\mathit{resulttype}}_1` be :math:`{\mathit{functype}}_0`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
+#. Assert: Due to validation, :math:`{\mathit{resulttype}}_1 = \epsilon`.
 
 #. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
 
@@ -18832,9 +18848,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^{n}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{{\mathit{fieldtype}}_0^{n}}`.
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{\mathit{structtype}}_0`.
 
 #. Let :math:`a` be :math:`{|z{.}\mathsf{structs}|}`.
 
@@ -18859,7 +18875,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18873,11 +18889,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
 
-  #. Let :math:`(\mathsf{struct}~{{\mathit{fieldtype}}_0^\ast})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+  #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-  #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{{\mathit{fieldtype}}_0^\ast}`.
+  #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
-  #. If :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+  #. If :math:`i < {|{{\mathit{zt}}^\ast}|}`, then:
 
     1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
 
@@ -18917,11 +18933,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
@@ -18933,7 +18949,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+  #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
     1) Trap.
 
@@ -18978,15 +18994,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+#. If :math:`i \geq {|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
 
   a. Trap.
 
@@ -18999,11 +19015,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -19035,21 +19051,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathit{nt}}` and :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Trap.
 
-#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathit{nt}}` and :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
@@ -19059,11 +19075,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
 
-  #. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathsf{i}}{N}` and :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+  #. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathsf{i}}{N}` and :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
     1) Let :math:`n` be :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+    #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       a) Trap.
 
@@ -19078,15 +19094,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
@@ -19101,15 +19117,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
   a. Trap.
 
@@ -19119,7 +19135,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
-  #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`, then:
+  #. If :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`, then:
 
     1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c){}[j])`.
 
@@ -19132,7 +19148,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19162,7 +19178,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................
 
 
-1. If :math:`i` is less than or equal to :math:`j`, then:
+1. If :math:`i \leq j`, then:
 
   a. Return :math:`i`.
 
@@ -19173,7 +19189,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................
 
 
-1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`0`.
 
@@ -19186,7 +19202,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`1`.
 
@@ -19199,11 +19215,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is :math:`1`.
+#. Assert: Due to validation, :math:`{|{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} = 1`.
 
 #. Let :math:`w` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -19214,7 +19230,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19227,7 +19243,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19240,7 +19256,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return true.
 
@@ -19253,13 +19269,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`w`.
 
 #. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. If :math:`w` is :math:`w_1`, then:
+#. If :math:`w = w_1`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19270,7 +19286,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19283,7 +19299,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19296,7 +19312,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19309,7 +19325,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19322,11 +19338,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`23`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`52`.
 
@@ -19335,11 +19351,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`11`.
 
@@ -19383,9 +19399,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................
 
 
-1. Assert: Due to validation, :math:`128` is less than :math:`b`.
+1. Assert: Due to validation, :math:`128 < b`.
 
-#. Assert: Due to validation, :math:`b` is less than :math:`192`.
+#. Assert: Due to validation, :math:`b < 192`.
 
 #. Return :math:`b - 128`.
 
@@ -19464,19 +19480,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................
 
 
-1. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 32}}`, then:
 
   a. Return :math:`32`.
 
-#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 64}}`, then:
 
   a. Return :math:`64`.
 
-#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 32}}`, then:
 
   a. Return :math:`32`.
 
-#. Assert: Due to validation, :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{f{\scriptstyle 64}}`.
+#. Assert: Due to validation, :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{f{\scriptstyle 64}}`.
 
 #. Return :math:`64`.
 
@@ -19492,11 +19508,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................
 
 
-1. If :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 8}}`, then:
+1. If :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 8}}`, then:
 
   a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 16}}`.
+#. Assert: Due to validation, :math:`{\mathit{pt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{i{\scriptstyle 16}}`.
 
 #. Return :math:`16`.
 
@@ -19695,7 +19711,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19716,7 +19732,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19737,7 +19753,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19758,7 +19774,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19779,7 +19795,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19800,11 +19816,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`\mathsf{i{\scriptstyle 64}}`.
 
@@ -19813,11 +19829,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`\mathsf{f{\scriptstyle 64}}`.
 
@@ -19826,19 +19842,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................
 
 
-1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`8`, then:
+1. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 8`, then:
 
   a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
 
-#. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`16`, then:
+#. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 16`, then:
 
   a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
 
-#. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`32`, then:
+#. If :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 32`, then:
 
   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
-#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`64`.
+#. Assert: Due to validation, :math:`N_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = 64`.
 
 #. Return :math:`\mathsf{i{\scriptstyle 64}}`.
 
@@ -19847,7 +19863,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. If :math:`{|{\mathit{at}}_1|}` is less than or equal to :math:`{|{\mathit{at}}_2|}`, then:
+1. If :math:`{|{\mathit{at}}_1|} \leq {|{\mathit{at}}_2|}`, then:
 
   a. Return :math:`{\mathit{at}}_1`.
 
@@ -19858,7 +19874,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................................................................................................................
 
 
-1. If :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{null}`, then:
+1. If :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{null}`, then:
 
   a. Return :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)`.
 
@@ -19871,7 +19887,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19892,7 +19908,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19913,7 +19929,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19934,7 +19950,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19955,7 +19971,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -19976,19 +19992,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................................................................................
 
 
-1. If :math:`{{\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`{\mathit{tv}}`.
 
-#. Assert: Due to validation, :math:`{|{y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. If :math:`{\mathit{tv}}` is :math:`{\mathit{tv}}_1`, then:
+#. If :math:`{\mathit{tv}} = {\mathit{tv}}_1`, then:
 
   a. Return :math:`{\mathit{tu}}_1`.
 
@@ -20083,7 +20099,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return :math:`{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{bot}`.
+#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{bot}`.
 
 #. Return :math:`\mathsf{bot}`.
 
@@ -20293,7 +20309,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................................................................................
 
 
-1. If :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -20398,7 +20414,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................................................
 
 
-1. If :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -20646,7 +20662,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
-#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{bot}`.
+#. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{bot}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -20859,13 +20875,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................................
 
 
-1. If :math:`{l_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{l_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Let :math:`n_0~{{\mathit{labelidx}'}^\ast}` be :math:`{l_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+#. Let :math:`{\mathit{labelidx}}_0~{{\mathit{labelidx}'}^\ast}` be :math:`{l_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. If :math:`n_0` is :math:`0`, then:
+#. If :math:`{\mathit{labelidx}}_0 = 0`, then:
 
   a. Return :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast})`.
 
@@ -20878,15 +20894,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................................................................
 
 
-1. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{nop}`, then:
+1. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nop}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{unreachable}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{unreachable}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{drop}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{drop}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -20974,7 +20990,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{return}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{return}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21164,15 +21180,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ref{.}is\_null}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}is\_null}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ref{.}as\_non\_null}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}as\_non\_null}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ref{.}eq}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}eq}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21194,7 +21210,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21266,7 +21282,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array{.}len}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{array{.}len}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21294,11 +21310,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{extern{.}convert\_any}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{extern{.}convert\_any}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{any{.}convert\_extern}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{any{.}convert\_extern}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21528,11 +21544,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return `$free_tableidx(tableidx) ++ $free_expr(expr)`.
 
-#. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{passive}`, then:
+#. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
 
   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{declare}`.
+#. Assert: Due to validation, :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{declare}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21554,7 +21570,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return `$free_memidx(memidx) ++ $free_expr(expr)`.
 
-#. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{passive}`.
+#. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
@@ -21612,15 +21628,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{localidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{{{\mathit{lt}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{localidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{{{\mathit{lt}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`C`.
 
-#. Assert: Due to validation, :math:`{|{{{\mathit{lt}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{{\mathit{lt}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{{\mathit{lt}}}_1~{{{\mathit{lt}}}^\ast}` be :math:`{{{\mathit{lt}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{localidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{localidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`x_1~{x^\ast}` be :math:`{{\mathit{localidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -21631,7 +21647,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................................................
 
 
-1. If :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -21681,13 +21697,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathit{typeidx}}` be :math:`y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. Return :math:`{\mathit{typeidx}}` is less than :math:`x`.
+  #. Return :math:`{\mathit{typeidx}} < x`.
 
 #. Assert: Due to validation, :math:`y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{rec}`.
 
 #. Let :math:`(\mathsf{rec}~j)` be :math:`y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Return :math:`j` is less than :math:`i`.
+#. Return :math:`j < i`.
 
 
 :math:`{{\mathrm{unroll}}}_{C}({\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -21737,13 +21753,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref}`.
 
-#. Let :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_0~{\mathit{ht}})` be :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. Let :math:`(\mathsf{ref}~{\mathit{NULL}}_{{\mathit{opt}}_0}~{\mathit{ht}})` be :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{{\mathsf{null}^?}}_0` is :math:`\mathsf{null}`, then:
+#. If :math:`{\mathit{NULL}}_{{\mathit{opt}}_0} = \mathsf{null}`, then:
 
   a. Return :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
-#. Assert: Due to validation, :math:`{{\mathsf{null}^?}}_0` is not defined.
+#. Assert: Due to validation, :math:`{\mathit{NULL}}_{{\mathit{opt}}_0}` is not defined.
 
 #. Return :math:`\epsilon`.
 
@@ -21799,13 +21815,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................
 
 
-1. If :math:`i` is less than :math:`{2^{N - 1}}`, then:
+1. If :math:`i < {2^{N - 1}}`, then:
 
   a. Return :math:`i`.
 
-#. Assert: Due to validation, :math:`{2^{N - 1}}` is less than or equal to :math:`i`.
+#. Assert: Due to validation, :math:`{2^{N - 1}} \leq i`.
 
-#. Assert: Due to validation, :math:`i` is less than :math:`{2^{N}}`.
+#. Assert: Due to validation, :math:`i < {2^{N}}`.
 
 #. Return :math:`i - {2^{N}}`.
 
@@ -21864,11 +21880,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................
 
 
-1. If :math:`i` is less than :math:`0`, then:
+1. If :math:`i < 0`, then:
 
   a. Return :math:`0`.
 
-#. If :math:`i` is greater than :math:`{2^{N}} - 1`, then:
+#. If :math:`i > {2^{N}} - 1`, then:
 
   a. Return :math:`{2^{N}} - 1`.
 
@@ -21879,11 +21895,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................
 
 
-1. If :math:`i` is less than :math:`{-{2^{N - 1}}}`, then:
+1. If :math:`i < {-{2^{N - 1}}}`, then:
 
   a. Return :math:`{-{2^{N - 1}}}`.
 
-#. If :math:`i` is greater than :math:`{2^{N - 1}} - 1`, then:
+#. If :math:`i > {2^{N - 1}} - 1`, then:
 
   a. Return :math:`{2^{N - 1}} - 1`.
 
@@ -21901,7 +21917,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................
 
 
-1. If :math:`{{\mathrm{signed}}}_{N}(i_1)` is greater than or equal to :math:`0`, then:
+1. If :math:`{{\mathrm{signed}}}_{N}(i_1) \geq 0`, then:
 
   a. Return :math:`i_1`.
 
@@ -21912,11 +21928,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
   a. Return :math:`i \mathbin{\mathrm{mod}} {2^{M}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{M}(i \mathbin{\mathrm{mod}} {2^{M}}))}`.
 
@@ -21946,11 +21962,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
   a. Return :math:`{{\mathrm{sat\_u}}}_{N}(i_1 + i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) + {{\mathrm{signed}}}_{N}(i_2)))}`.
 
@@ -21959,11 +21975,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
   a. Return :math:`{{\mathrm{sat\_u}}}_{N}(i_1 - i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) - {{\mathrm{signed}}}_{N}(i_2)))}`.
 
@@ -21972,80 +21988,80 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................
 
 
-1. Return `$bool((i_1 = 0))`.
+1. Return :math:`\mathbb{B}(i_1 = 0)`.
 
 
 :math:`{{\mathrm{inez}}}_{N}(i_1)`
 ..................................
 
 
-1. Return `$bool((i_1 =/= 0))`.
+1. Return :math:`\mathbb{B}(i_1 \neq 0)`.
 
 
 :math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`
 ......................................
 
 
-1. Return `$bool((i_1 = i_2))`.
+1. Return :math:`\mathbb{B}(i_1 = i_2)`.
 
 
 :math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`
 ......................................
 
 
-1. Return `$bool((i_1 =/= i_2))`.
+1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
 :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}}{(i_1, i_2)}`
 ....................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
-  a. Return `$bool((i_1 < i_2))`.
+  a. Return :math:`\mathbb{B}(i_1 < i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
-#. Return `$bool(($signed_(N, i_1) < $signed_(N, i_2)))`.
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2))`.
 
 
 :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}}{(i_1, i_2)}`
 ....................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
-  a. Return `$bool((i_1 > i_2))`.
+  a. Return :math:`\mathbb{B}(i_1 > i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
-#. Return `$bool(($signed_(N, i_1) > $signed_(N, i_2)))`.
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2))`.
 
 
 :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}}{(i_1, i_2)}`
 ....................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
-  a. Return `$bool((i_1 <= i_2))`.
+  a. Return :math:`\mathbb{B}(i_1 \leq i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
-#. Return `$bool(($signed_(N, i_1) <= $signed_(N, i_2)))`.
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2))`.
 
 
 :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}}{(i_1, i_2)}`
 ....................................................................................................
 
 
-1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{u}`, then:
+1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
-  a. Return `$bool((i_1 >= i_2))`.
+  a. Return :math:`\mathbb{B}(i_1 \geq i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
-#. Return `$bool(($signed_(N, i_1) >= $signed_(N, i_2)))`.
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2))`.
 
 
 :math:`{{\mathrm{pack}}}_{{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}(c)`
@@ -22118,15 +22134,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Let :math:`i` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{clz}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{clz}`, then:
 
     1) Return :math:`{{\mathrm{iclz}}}_{N}(i)`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ctz}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ctz}`, then:
 
     1) Return :math:`{{\mathrm{ictz}}}_{N}(i)`.
 
-  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{popcnt}`, then:
+  #. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{popcnt}`, then:
 
     1) Return :math:`{{\mathrm{ipopcnt}}}_{N}(i)`.
 
@@ -22142,31 +22158,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`f` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
   a. Return :math:`{{\mathrm{fabs}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
   a. Return :math:`{{\mathrm{fneg}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sqrt}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sqrt}`, then:
 
   a. Return :math:`{{\mathrm{fsqrt}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ceil}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ceil}`, then:
 
   a. Return :math:`{{\mathrm{fceil}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{floor}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{floor}`, then:
 
   a. Return :math:`{{\mathrm{ffloor}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{trunc}`, then:
+#. If :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{trunc}`, then:
 
   a. Return :math:`{{\mathrm{ftrunc}}}_{N}(f)`.
 
-#. Assert: Due to validation, :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{unop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}(f)`.
 
@@ -22183,15 +22199,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Let :math:`i_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
     1) Return :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
     1) Return :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
     1) Return :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`.
 
@@ -22207,19 +22223,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{and}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{and}`, then:
 
     1) Return :math:`{{\mathrm{iand}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{or}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{or}`, then:
 
     1) Return :math:`{{\mathrm{ior}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{xor}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{xor}`, then:
 
     1) Return :math:`{{\mathrm{ixor}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{shl}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{shl}`, then:
 
     1) Return :math:`{{\mathrm{ishl}}}_{N}(i_1, i_2)`.
 
@@ -22229,11 +22245,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rotl}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{rotl}`, then:
 
     1) Return :math:`{{\mathrm{irotl}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rotr}`, then:
+  #. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{rotr}`, then:
 
     1) Return :math:`{{\mathrm{irotr}}}_{N}(i_1, i_2)`.
 
@@ -22245,31 +22261,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`f_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
   a. Return :math:`{{\mathrm{fadd}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
   a. Return :math:`{{\mathrm{fsub}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
   a. Return :math:`{{\mathrm{fmul}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{div}`, then:
 
   a. Return :math:`{{\mathrm{fdiv}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{min}`, then:
 
   a. Return :math:`{{\mathrm{fmin}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+#. If :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{max}`, then:
 
   a. Return :math:`{{\mathrm{fmax}}}_{N}(f_1, f_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{copysign}`.
+#. Assert: Due to validation, :math:`{\mathit{binop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}(f_1, f_2)`.
 
@@ -22293,11 +22309,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Let :math:`i_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
     1) Return :math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`.
 
-  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+  #. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
     1) Return :math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`.
 
@@ -22333,27 +22349,27 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`f_2` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
   a. Return :math:`{{\mathrm{feq}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
   a. Return :math:`{{\mathrm{fne}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{lt}`, then:
 
   a. Return :math:`{{\mathrm{flt}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{gt}`, then:
 
   a. Return :math:`{{\mathrm{fgt}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+#. If :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{le}`, then:
 
   a. Return :math:`{{\mathrm{fle}}}_{N}(f_1, f_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{relop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{N}(f_1, f_2)`.
 
@@ -22380,7 +22396,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`i_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{wrap}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{wrap}`, then:
 
       a) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}(i_1)`.
 
@@ -22434,11 +22450,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`f_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{promote}`, then:
 
       a) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}(f_1)`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{demote}`, then:
 
       a) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}(f_1)`.
 
@@ -22452,7 +22468,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`i_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{N}}_1|}` is :math:`{|{{\mathsf{f}}{N}}_2|}`, then:
+    #) If :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{N}}_1|} = {|{{\mathsf{f}}{N}}_2|}`, then:
 
       a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{N}}_1, {{\mathsf{f}}{N}}_2}(i_1)`.
 
@@ -22466,9 +22482,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`f_1` be :math:`i_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{reinterpret}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{reinterpret}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathsf{f}}{N}}_1|}` is :math:`{|{{\mathsf{i}}{N}}_2|}`.
+#. Assert: Due to validation, :math:`{|{{\mathsf{f}}{N}}_1|} = {|{{\mathsf{i}}{N}}_2|}`.
 
 #. Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{f}}{N}}_1, {{\mathsf{i}}{N}}_2}(f_1)`.
 
@@ -22488,17 +22504,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If the type of :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Jnn and the type of :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Jnn, then:
 
-  a. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{low}`, then:
+  a. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{low}`, then:
 
     1) Return :math:`i`.
 
-  #. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{high}`, then:
+  #. If :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{high}`, then:
 
     1) Return :math:`j`.
 
 #. Assert: Due to validation, the type of :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Fnn.
 
-#. Assert: Due to validation, :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{low}`.
+#. Assert: Due to validation, :math:`{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{low}`.
 
 #. Return :math:`i`.
 
@@ -22507,7 +22523,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. If :math:`i` is less than :math:`{|{c^\ast}|}`, then:
+1. If :math:`i < {|{c^\ast}|}`, then:
 
   a. Return :math:`{c^\ast}{}[i]`.
 
@@ -22518,11 +22534,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`i` is less than :math:`{|{c^\ast}|}`, then:
+1. If :math:`i < {|{c^\ast}|}`, then:
 
   a. Return :math:`{c^\ast}{}[i]`.
 
-#. If :math:`{{\mathrm{signed}}}_{N}(i)` is less than :math:`0`, then:
+#. If :math:`{{\mathrm{signed}}}_{N}(i) < 0`, then:
 
   a. Return :math:`0`.
 
@@ -22768,19 +22784,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................................................
 
 
-1. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{and}`, then:
+1. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{and}`, then:
 
   a. Return :math:`{{\mathrm{iand}}}_{N}(v_1, v_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{andnot}`, then:
+#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{andnot}`, then:
 
   a. Return :math:`{{\mathrm{iandnot}}}_{N}(v_1, v_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{or}`, then:
+#. If :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{or}`, then:
 
   a. Return :math:`{{\mathrm{ior}}}_{N}(v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{xor}`.
+#. Assert: Due to validation, :math:`{\mathit{vvbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{xor}`.
 
 #. Return :math:`{{\mathrm{ixor}}}_{N}(v_1, v_2)`.
 
@@ -22800,31 +22816,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fabs}}, v)`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fneg}}, v)`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sqrt}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sqrt}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsqrt}}, v)`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ceil}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ceil}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fceil}}, v)`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{floor}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{floor}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ffloor}}, v)`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{trunc}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{trunc}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ftrunc}}, v)`.
 
-  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{nearest}`, then:
+  #. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nearest}`, then:
 
     1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fnearest}}, v)`.
 
@@ -22832,15 +22848,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{abs}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{abs}`, then:
 
   a. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iabs}}, v)`.
 
-#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{neg}`, then:
+#. If :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{neg}`, then:
 
   a. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ineg}}, v)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{popcnt}`.
+#. Assert: Due to validation, :math:`{\mathit{vunop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{popcnt}`.
 
 #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ipopcnt}}, v)`.
 
@@ -22853,15 +22869,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
     1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}, v_1, v_2)`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
     1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}, v_1, v_2)`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
     1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imul}}, v_1, v_2)`.
 
@@ -22889,15 +22905,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imax}}, {\mathit{sx}}, v_1, v_2)`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is , then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `, then:
 
     1) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iavgr}}, \mathsf{u}, v_1, v_2)`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is , then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `, then:
 
     1) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, v_1, v_2)`.
 
-  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is , then:
+  #. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `, then:
 
     1) Return :math:`{{\mathrm{ivbinopsxnd}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{q{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}}, \mathsf{s}, v_1, v_2)`.
 
@@ -22905,43 +22921,43 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{add}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{add}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fadd}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{sub}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{sub}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsub}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{mul}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{mul}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmul}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{div}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fdiv}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{min}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmin}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{max}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmax}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{pmin}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{pmin}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmin}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{pmax}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{pmax}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmax}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{relaxed\_min}`, then:
+#. If :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_min}`, then:
 
   a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{min}}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{relaxed\_max}`.
+#. Assert: Due to validation, :math:`{\mathit{vbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_max}`.
 
 #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{max}}}, v_1, v_2)`.
 
@@ -22954,7 +22970,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vternop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{relaxed\_laneselect}`, then:
+  #. If :math:`{\mathit{vternop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_laneselect}`, then:
 
     1) Return :math:`{{\mathrm{ivternopnd}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{laneselect}}}, v_1, v_2, v_3)`.
 
@@ -22962,11 +22978,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vternop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{relaxed\_madd}`, then:
+#. If :math:`{\mathit{vternop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_madd}`, then:
 
   a. Return :math:`{{\mathrm{fvternop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{madd}}}, v_1, v_2, v_3)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vternop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{relaxed\_nmadd}`.
+#. Assert: Due to validation, :math:`{\mathit{vternop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_nmadd}`.
 
 #. Return :math:`{{\mathrm{fvternop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{nmadd}}}, v_1, v_2, v_3)`.
 
@@ -22986,11 +23002,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
     1) Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ieq}}, v_1, v_2)`.
 
-  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+  #. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
     1) Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ine}}, v_1, v_2)`.
 
@@ -23022,27 +23038,27 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{eq}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{eq}`, then:
 
   a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{feq}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ne}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ne}`, then:
 
   a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fne}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{lt}`, then:
 
   a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{flt}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{gt}`, then:
 
   a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fgt}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+#. If :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{le}`, then:
 
   a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fle}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{vrelop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fge}}, v_1, v_2)`.
 
@@ -23107,13 +23123,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{demote}`, then:
+#. If :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{demote}`, then:
 
   a. Let :math:`{c^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}(c_1)`.
 
   #. Return :math:`{c^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{promote}`.
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{promote}`.
 
 #. Let :math:`{c^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}(c_1)`.
 
@@ -23126,7 +23142,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`M`, then:
+#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = M`, then:
 
   a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1)`.
 
@@ -23169,7 +23185,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................................................................
 
 
-1. If :math:`{\mathit{vshiftop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{shl}`, then:
+1. If :math:`{\mathit{vshiftop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{shl}`, then:
 
   a. Return :math:`{{\mathrm{ivshiftop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishl}}, v, i)`.
 
@@ -23191,11 +23207,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................................................................
 
 
-1. If :math:`{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{swizzle}`, then:
+1. If :math:`{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{swizzle}`, then:
 
   a. Return :math:`{{\mathrm{ivswizzlop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({\mathrm{iswizzle}}_{{\mathit{lane}}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{relaxed\_swizzle}`.
+#. Assert: Due to validation, :math:`{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_swizzle}`.
 
 #. Return :math:`{{\mathrm{ivswizzlop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{swizzle}}_{{\mathit{lane}}}}, v_1, v_2)`.
 
@@ -23307,11 +23323,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, i, M_2, v_1, v_2)`.
 
-#. If :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is , then:
+#. If :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `, then:
 
   a. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivdot}}, \mathsf{s}, \mathsf{s}, 0, M_1, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is .
+#. Assert: Due to validation, :math:`{\mathit{vextbinop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = `.
 
 #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivdot}}_{{\mathit{sat}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
 
@@ -23405,7 +23421,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`\mathsf{i{\scriptstyle 32}}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = \mathsf{i{\scriptstyle 32}}`.
 
 #. Return :math:`({\mathit{packtype}}{.}\mathsf{pack}~{{\mathrm{wrap}}}_{32, {|{\mathit{packtype}}|}}(i))`.
 
@@ -23430,7 +23446,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-#. Assert: Due to validation, :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{packtype}}`.
+#. Assert: Due to validation, :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = {\mathit{packtype}}`.
 
 #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
@@ -23439,7 +23455,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................................
 
 
-1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -23460,7 +23476,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................................
 
 
-1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -23481,7 +23497,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................................
 
 
-1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -23502,7 +23518,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -23523,7 +23539,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -23540,15 +23556,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{store}}`
-........................
+:math:`z{.}\mathsf{store}`
+..........................
 
 
 1. Return.
 
 
-:math:`{\mathrm{frame}}`
-........................
+:math:`z{.}\mathsf{frame}`
+..........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23556,8 +23572,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`f`.
 
 
-:math:`{\mathrm{tagaddr}}`
-..........................
+:math:`z{.}\mathsf{tags}`
+.........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23565,8 +23581,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
 
 
-:math:`{\mathrm{moduleinst}}`
-.............................
+:math:`z{.}\mathsf{module}`
+...........................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23574,78 +23590,78 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{funcinst}}`
-...........................
+:math:`z{.}\mathsf{funcs}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`{\mathrm{globalinst}}`
-.............................
+:math:`z{.}\mathsf{globals}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`{\mathrm{tableinst}}`
-............................
+:math:`z{.}\mathsf{tables}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`{\mathrm{meminst}}`
-..........................
+:math:`z{.}\mathsf{mems}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`{\mathrm{taginst}}`
-..........................
+:math:`z{.}\mathsf{tags}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{tags}`.
 
 
-:math:`{\mathrm{eleminst}}`
-...........................
+:math:`z{.}\mathsf{elems}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{elems}`.
 
 
-:math:`{\mathrm{datainst}}`
-...........................
+:math:`z{.}\mathsf{datas}`
+..........................
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
 
 
-:math:`{\mathrm{structinst}}`
-.............................
+:math:`z{.}\mathsf{structs}`
+............................
 
 
 1. Return :math:`s{.}\mathsf{structs}`.
 
 
-:math:`{\mathrm{arrayinst}}`
-............................
+:math:`z{.}\mathsf{arrays}`
+...........................
 
 
 1. Return :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`{\mathrm{exninst}}`
-..........................
+:math:`z{.}\mathsf{exns}`
+.........................
 
 
 1. Return :math:`s{.}\mathsf{exns}`.
 
 
-:math:`{\mathrm{type}}(x)`
-..........................
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23653,8 +23669,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{func}}(x)`
-..........................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23662,8 +23678,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`{\mathrm{global}}(x)`
-............................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23671,8 +23687,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`{\mathrm{table}}(x)`
-...........................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23680,8 +23696,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`{\mathrm{mem}}(x)`
-.........................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23689,8 +23705,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`{\mathrm{tag}}(x)`
-.........................
+:math:`z{.}\mathsf{tags}{}[x]`
+..............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23698,8 +23714,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
 
-:math:`{\mathrm{elem}}(x)`
-..........................
+:math:`z{.}\mathsf{elems}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23707,8 +23723,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
-:math:`{\mathrm{data}}(x)`
-..........................
+:math:`z{.}\mathsf{datas}{}[x]`
+...............................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23716,8 +23732,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-:math:`{\mathrm{local}}(x)`
-...........................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23725,8 +23741,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`{\mathrm{with}}_{\mathit{local}}(x, v)`
-..............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23734,8 +23750,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{global}}(x, v)`
-...............................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23743,8 +23759,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`{\mathrm{with}}_{\mathit{table}}(x, i, r)`
-.................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+.............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23752,8 +23768,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
 
 
-:math:`{\mathrm{with}}_{\mathit{tableinst}}(x, {\mathit{ti}})`
-..............................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23761,8 +23777,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{mem}}(x, i, j, {b^\ast})`
-.........................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23770,8 +23786,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{meminst}}(x, {\mathit{mi}})`
-............................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23779,8 +23795,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{elem}}(x, {r^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+..............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23788,8 +23804,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{data}}(x, {b^\ast})`
-....................................................
+:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+...............................................................
 
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
@@ -23797,39 +23813,39 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{struct}}(a, i, {\mathit{fv}})`
-..............................................................
+:math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+............................................................................
 
 
 1. Replace :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`{\mathrm{with}}_{\mathit{array}}(a, i, {\mathit{fv}})`
-.............................................................
+:math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+...........................................................................
 
 
 1. Replace :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`{\mathrm{add}}_{\mathit{structinst}}({{\mathit{si}}^\ast})`
-..................................................................
+:math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
+...........................................................................
 
 
-1. Append :math:`{{\mathit{si}}^\ast}` to the :math:`s{.}\mathsf{structs}`.
+1. Append :math:`{{\mathit{si}}^\ast}` to :math:`s{.}\mathsf{structs}`.
 
 
-:math:`{\mathrm{add}}_{\mathit{arrayinst}}({{\mathit{ai}}^\ast})`
-.................................................................
+:math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
+..........................................................................
 
 
-1. Append :math:`{{\mathit{ai}}^\ast}` to the :math:`s{.}\mathsf{arrays}`.
+1. Append :math:`{{\mathit{ai}}^\ast}` to :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`{\mathrm{add}}_{\mathit{exninst}}({{\mathit{exn}}^\ast})`
-................................................................
+:math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
+.........................................................................
 
 
-1. Append :math:`{{\mathit{exn}}^\ast}` to the :math:`s{.}\mathsf{exns}`.
+1. Append :math:`{{\mathit{exn}}^\ast}` to :math:`s{.}\mathsf{exns}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{tableinst}}, n, r)`
@@ -23838,7 +23854,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
 
-#. If :math:`{|{{r'}^\ast}|} + n` is less than or equal to :math:`j`, then:
+#. If :math:`{|{{r'}^\ast}|} + n \leq j`, then:
 
   a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
@@ -23853,11 +23869,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
 
-#. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n` is less than or equal to :math:`j`, then:
+#. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n \leq j`, then:
 
   a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
 
-  #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{0^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+  #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
   #. Return :math:`{\mathit{meminst}'}`.
 
@@ -23887,7 +23903,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................................................
 
 
-1. If :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -23906,28 +23922,28 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{deftype}'}^\ast}~{{\mathit{deftype}}^\ast}`.
 
 
-:math:`{\mathrm{allocfunc}}({\mathit{deftype}}, {\mathit{code}}, {\mathit{moduleinst}})`
-........................................................................................
+:math:`{\mathrm{allocfunc}}(s, {\mathit{deftype}}, {\mathit{code}}, {\mathit{moduleinst}})`
+...........................................................................................
 
 
 1. Let :math:`{\mathit{funcinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{deftype}},\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{code}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{funcs}|}`.
 
-#. Append :math:`{\mathit{funcinst}}` to the :math:`s{.}\mathsf{funcs}`.
+#. Append :math:`{\mathit{funcinst}}` to :math:`s{.}\mathsf{funcs}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}({{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...................................................................................................................................................................................................................................
+:math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+................................................................................................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
-  a. Assert: Due to validation, :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`.
 
-  #. Assert: Due to validation, :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  #. Assert: Due to validation, :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`.
 
   #. Return :math:`\epsilon`.
 
@@ -23935,41 +23951,41 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Assert: Due to validation, :math:`{|{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Assert: Due to validation, :math:`{|{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
   #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}({\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
+  #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
 
-  #. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{\mathrm{allocfuncs}}({{\mathit{dt}'}^\ast}, {{{\mathit{code}}'}^\ast}, {{\mathit{moduleinst}'}^\ast})`.
+  #. Let :math:`{{\mathit{fa}'}^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{dt}'}^\ast}, {{{\mathit{code}}'}^\ast}, {{\mathit{moduleinst}'}^\ast})}`.
 
   #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`
-.....................................................................
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
 
 
 1. Let :math:`{\mathit{globalinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{globals}|}`.
 
-#. Append :math:`{\mathit{globalinst}}` to the :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{globalinst}}` to :math:`s{.}\mathsf{globals}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}({{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...............................................................................................................................................
+:math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+............................................................................................................................................................
 
 
-1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
-  a. Assert: Due to validation, :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`.
 
   #. Return :math:`\epsilon`.
 
@@ -23977,181 +23993,181 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Assert: Due to validation, :math:`{|{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}({\mathit{globaltype}}, {\mathit{val}})`.
+  #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
-  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})`.
+  #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})}`.
 
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}), {\mathit{ref}})`
-.............................................................................................
+:math:`{\mathrm{alloctable}}(s, ({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}), {\mathit{ref}})`
+................................................................................................
 
 
 1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
-#. Append :math:`{\mathit{tableinst}}` to the :math:`s{.}\mathsf{tables}`.
+#. Append :math:`{\mathit{tableinst}}` to :math:`s{.}\mathsf{tables}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}({{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..............................................................................................................................................
+:math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+...........................................................................................................................................................
 
 
-1. If :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}` be :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}({\mathit{tabletype}}, {\mathit{ref}})`.
+#. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}}, {\mathit{ref}})`.
 
-#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}'}^\ast}, {{\mathit{ref}'}^\ast})`.
+#. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}'}^\ast}, {{\mathit{ref}'}^\ast})}`.
 
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}))`
-.........................................................................
+:math:`{\mathrm{allocmem}}(s, ({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}))`
+............................................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{0^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{mems}|}`.
 
-#. Append :math:`{\mathit{meminst}}` to the :math:`s{.}\mathsf{mems}`.
+#. Append :math:`{\mathit{meminst}}` to :math:`s{.}\mathsf{mems}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}({{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..........................................................................................
+:math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+.......................................................................................................
 
 
-1. If :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{mt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}({\mathit{memtype}})`.
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}'}^\ast})`.
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}'}^\ast})}`.
 
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctag}}({\mathit{tagtype}})`
-...............................................
+:math:`{\mathrm{alloctag}}(s, {\mathit{tagtype}})`
+..................................................
 
 
 1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tags}|}`.
 
-#. Append :math:`{\mathit{taginst}}` to the :math:`s{.}\mathsf{tags}`.
+#. Append :math:`{\mathit{taginst}}` to :math:`s{.}\mathsf{tags}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctags}}({{\mathit{jt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-..........................................................................................
+:math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{jt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+.......................................................................................................
 
 
-1. If :math:`{{\mathit{jt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{jt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
 #. Let :math:`{\mathit{jt}}~{{\mathit{jt}'}^\ast}` be :math:`{{\mathit{jt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ja}}` be :math:`{\mathrm{alloctag}}({\mathit{jt}})`.
+#. Let :math:`{\mathit{ja}}` be :math:`{\mathrm{alloctag}}(s, {\mathit{jt}})`.
 
-#. Let :math:`{{\mathit{ja}'}^\ast}` be :math:`{\mathrm{alloctags}}({{\mathit{jt}'}^\ast})`.
+#. Let :math:`{{\mathit{ja}'}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{jt}'}^\ast})}`.
 
 #. Return :math:`{\mathit{ja}}~{{\mathit{ja}'}^\ast}`.
 
 
-:math:`{\mathrm{allocelem}}({\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
-........................................................................
+:math:`{\mathrm{allocelem}}(s, {\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
+...........................................................................
 
 
 1. Let :math:`{\mathit{eleminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{elemtype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{elems}|}`.
 
-#. Append :math:`{\mathit{eleminst}}` to the :math:`s{.}\mathsf{elems}`.
+#. Append :math:`{\mathit{eleminst}}` to :math:`s{.}\mathsf{elems}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}({{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-...................................................................................................................................................
+:math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+................................................................................................................................................................
 
 
-1. If :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{elemtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}({\mathit{rt}}, {{\mathit{ref}}^\ast})`.
+#. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`.
 
-#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{\mathrm{allocelems}}({{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{ea}'}^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{\mathit{rt}'}^\ast}, {{{\mathit{ref}'}^\ast}^\ast})}`.
 
 #. Return :math:`{\mathit{ea}}~{{\mathit{ea}'}^\ast}`.
 
 
-:math:`{\mathrm{allocdata}}(\mathsf{ok}, {{\mathit{byte}}^\ast})`
-.................................................................
+:math:`{\mathrm{allocdata}}(s, \mathsf{ok}, {{\mathit{byte}}^\ast})`
+....................................................................
 
 
 1. Let :math:`{\mathit{datainst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{datas}|}`.
 
-#. Append :math:`{\mathit{datainst}}` to the :math:`s{.}\mathsf{datas}`.
+#. Append :math:`{\mathit{datainst}}` to :math:`s{.}\mathsf{datas}`.
 
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}({{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-.............................................................................................................................................
+:math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+..........................................................................................................................................................
 
 
-1. If :math:`{{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{b_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{ok}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}({\mathit{ok}}, {b^\ast})`.
+#. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {\mathit{ok}}, {b^\ast})`.
 
-#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{\mathrm{allocdatas}}({{\mathit{ok}'}^\ast}, {{{b'}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{ok}'}^\ast}, {{{b'}^\ast}^\ast})}`.
 
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
@@ -24198,8 +24214,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{allocexport}}({\mathit{moduleinst}}, {\mathit{export}})^\ast}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
-..................................................................................................................................................................................................
+:math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
+.....................................................................................................................................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -24216,47 +24232,47 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathsf{g}}^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathsf{g}})^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathsf{t}}^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathsf{t}})^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{|s{.}\mathsf{tags}|} + i_{\mathsf{a}}^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{({|s{.}\mathsf{tags}|} + i_{\mathsf{a}})^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathsf{m}}^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathsf{m}})^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{|s{.}\mathsf{elems}|} + i_{\mathsf{e}}^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{({|s{.}\mathsf{elems}|} + i_{\mathsf{e}})^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{|s{.}\mathsf{datas}|} + i_{\mathsf{d}}^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathsf{d}})^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{mem}})^\ast}`, :math:`{\mathit{mem}}` is of the case :math:`\mathsf{memory}`.
+#. Assert: Due to validation, for all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, :math:`{\mathit{mem}}` is of the case :math:`\mathsf{memory}`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{tag}})^\ast}`, :math:`{\mathit{tag}}` is of the case :math:`\mathsf{tag}`.
+#. Assert: Due to validation, for all :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`, :math:`{\mathit{tag}}` is of the case :math:`\mathsf{tag}`.
 
 #. Let :math:`{(\mathsf{tag}~y)^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}})^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{func}})^\ast}`, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
+#. Assert: Due to validation, for all :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
@@ -24264,33 +24280,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast} = {{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast} = {{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast} = {{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})`.
+#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast} = {{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{\mathit{tagaddr}}_0` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
+#. Let :math:`{{\mathit{tagaddr}}_0^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[y]^\ast})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{tagaddr}}_0` is :math:`{{\mathit{aa}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{tagaddr}}_0^\ast} = {{\mathit{aa}}^\ast}`.
 
-#. Let :math:`{\mathit{elemaddr}}_0` be :math:`{\mathrm{allocelems}}({{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemaddr}}_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{elemaddr}}_0^\ast} = {{\mathit{ea}}^\ast}`.
 
-#. Let :math:`{\mathit{dataaddr}}_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{\mathit{dataaddr}}_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`{{\mathit{dataaddr}}_0^\ast} = {{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -24299,11 +24315,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................................................................
 
 
-1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{passive}`, then:
+1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
 
   a. Return :math:`\epsilon`.
 
-#. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{declare}`, then:
+#. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{declare}`, then:
 
   a. Return :math:`(\mathsf{elem{.}drop}~x)`.
 
@@ -24318,7 +24334,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................................
 
 
-1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{passive}`, then:
+1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -24335,15 +24351,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`({\mathsf{frame}}_{}\,\{~z~\})` be the current :math:`\mathsf{frame}` context.
 
-#. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon` and :math:`{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+#. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{expr}}~{{\mathit{expr}'}^\ast}` be :math:`{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -24351,48 +24367,60 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{val}}` be :math:`{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}})`.
 
-#. Let :math:`a` be :math:`{\mathrm{allocglobal}}({\mathit{gt}}, {\mathit{val}})`.
+#. Let :math:`a` be :math:`{\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})`.
 
-#. Append :math:`a` to the :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
+#. Append :math:`a` to :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
 
 #. Let :math:`{{\mathit{val}'}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})}`.
 
 #. Return :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+:math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
 ..................................................................................
 
 
-1. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{Module}}_{\mathit{ok}}({\mathit{module}})`.
+1. If :math:`{\mathit{module}}` is not :ref:`valid <valid-val>`, then:
+
+  a. Fail.
+
+#. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be the type of :math:`{\mathit{module}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, :math:`{{\mathrm{Externaddr}}_{\mathit{type}}({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`.
+#. If :math:`{|{{\mathit{externaddr}}^\ast}|} \neq {|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`, then:
+
+  a. Fail.
+
+#. For all :math:`{\mathit{externaddr}}`, and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`:
+
+  a. If :math:`{\mathit{externaddr}}` is not :ref:`valid <valid-val>` with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
+
+    1) Fail.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{start}})^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
+#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is of the case :math:`\mathsf{start}`.
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
+#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{table}})^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
+#. Assert: Due to validation, for all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, :math:`{\mathit{table}}` is of the case :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{global}})^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
+#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is of the case :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{elem}})^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
+#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is of the case :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
@@ -24400,25 +24428,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`z` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array}`.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` to the stack.
 
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{t}})^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the value :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` to the stack.
+#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` to the stack.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the value :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -24435,8 +24463,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}({\mathit{funcaddr}}, {{\mathit{val}}^\ast})`
-.....................................................................
+:math:`{\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast})`
+........................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
@@ -24447,7 +24475,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{{\mathrm{Val}}_{\mathit{type}}({\mathit{val}}, t_1)^\ast}`.
+#. If :math:`{|{t_1^\ast}|} \neq {|{{\mathit{val}}^\ast}|}`, then:
+
+  a. Fail.
+
+#. For all :math:`t_1`, and :math:`{\mathit{val}}` in :math:`{(t_1, {\mathit{val}})^\ast}`:
+
+  a. If :math:`{\mathit{val}}` is not :ref:`valid <valid-val>` with type :math:`t_1`, then:
+
+    1) Fail.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
@@ -24470,13 +24506,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-:math:`{\mathrm{allocXs}}({\mathit{TODO}}, {\mathit{TODO}}, {X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-................................................................................................................................................................
+:math:`{{{\mathrm{allocX}}^\ast}}{({\mathit{TODO}}, {X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+.........................................................................................................................................................
 
 
-1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
-  a. Assert: Due to validation, :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`.
+  a. Assert: Due to validation, :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`.
 
   #. Return :math:`\epsilon`.
 
@@ -24484,13 +24520,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`X~{{X'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Assert: Due to validation, :math:`{|{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`1`.
+  #. Assert: Due to validation, :math:`{|{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|} \geq 1`.
 
   #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Let :math:`a` be :math:`{\mathrm{allocX}}({\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
+  #. Let :math:`a` be :math:`{\mathrm{allocX}}(s, {\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
 
-  #. Let :math:`{{a'}^\ast}` be :math:`{\mathrm{allocXs}}({\mathit{TODO}}, {\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})`.
+  #. Let :math:`{{a'}^\ast}` be :math:`{{{\mathrm{allocX}}^\ast}}{({\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})}`.
 
   #. Return :math:`a~{{a'}^\ast}`.
 
@@ -24590,14 +24626,14 @@ Valtype_ok/bot
 - the value type BOT is valid.
 
 Resulttype_ok
-- the value type sequence t* is valid if:
+- the result type t* is valid if:
   - For all t in t*:
     - the value type t is valid.
 
 Instrtype_ok
 - the instruction type t_1* ->_ x* t_2* is valid if:
-  - the value type sequence t_1* is valid.
-  - the value type sequence t_2* is valid.
+  - the result type t_1* is valid.
+  - the result type t_2* is valid.
   - |x*| is |lct*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
@@ -24630,8 +24666,8 @@ Fieldtype_ok
 
 Functype_ok
 - the function type t_1* -> t_2* is valid if:
-  - the value type sequence t_1* is valid.
-  - the value type sequence t_2* is valid.
+  - the result type t_1* is valid.
+  - the result type t_2* is valid.
 
 Comptype_ok
 - the composite type ct_u1 is valid if:
@@ -25929,7 +25965,7 @@ Instrs_ok
     - instr_u1* is instr*.
     - instrtype_u1 is t* :: t_1* ->_ x* t* :: t_2*.
     - instr* is valid with the instruction type t_1* ->_ x* t_2*.
-    - the value type sequence t* is valid.
+    - the result type t* is valid.
 
 Instrs_ok/empty
 - the instruction sequence [] is valid with the instruction type [] -> [].
@@ -25954,10 +25990,10 @@ Instrs_ok/sub
 Instrs_ok/frame
 - the instruction sequence instr* is valid with the instruction type t* :: t_1* ->_ x* t* :: t_2* if:
   - instr* is valid with the instruction type t_1* ->_ x* t_2*.
-  - the value type sequence t* is valid.
+  - the result type t* is valid.
 
 Expr_ok
-- the expression instr* is valid with the value type sequence t* if:
+- the expression instr* is valid with the result type t* if:
   - instr* is valid with the instruction type [] -> t*.
 
 Instr_const
@@ -26077,7 +26113,7 @@ Func_ok
   - |local*| is |lct*|.
   - For all lct in lct* and local in local*:
     - the local local is valid with the local type lct.
-  - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
+  - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
@@ -26529,7 +26565,7 @@ Step_pure/ref.i31
 3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
 
 Step_pure/ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
 3. If ref is of the case REF.NULL, then:
   a. Push the value (I32.CONST 1) to the stack.
@@ -26537,16 +26573,16 @@ Step_pure/ref.is_null
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/ref.as_non_null
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
 3. If ref is of the case REF.NULL, then:
   a. Trap.
 4. Push the value ref to the stack.
 
 Step_pure/ref.eq
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref_2 from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type ref is on the top of the stack.
 4. Pop the value ref_1 from the stack.
 5. If ref_1 is of the case REF.NULL, then:
   a. If ref_2 is of the case REF.NULL, then:
@@ -26561,7 +26597,7 @@ Step_pure/ref.eq
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/i31.get sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type instr is on the top of the stack.
 2. Pop the value instr_u1 from the stack.
 3. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -26578,7 +26614,7 @@ Step_pure/array.new x
 6. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_pure/extern.convert_any
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type instr is on the top of the stack.
 2. Pop the value instr_u1 from the stack.
 3. If instr_u1 is of the case REF.NULL, then:
   a. Push the value (REF.NULL EXTERN) to the stack.
@@ -26587,7 +26623,7 @@ Step_pure/extern.convert_any
   b. Push the value (REF.EXTERN addrref) to the stack.
 
 Step_pure/any.convert_extern
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type instr is on the top of the stack.
 2. Pop the value instr_u1 from the stack.
 3. If instr_u1 is of the case REF.NULL, then:
   a. Push the value (REF.NULL ANY) to the stack.
@@ -26795,7 +26831,7 @@ Step_read/loop bt instr*
 
 Step_read/br_on_cast l rt_1 rt_2
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
 5. Push the value ref to the stack.
@@ -26806,7 +26842,7 @@ Step_read/br_on_cast l rt_1 rt_2
 
 Step_read/br_on_cast_fail l rt_1 rt_2
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
 5. Push the value ref to the stack.
@@ -26825,7 +26861,7 @@ Step_read/call x
 
 Step_read/call_ref yy
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -26867,7 +26903,7 @@ Step_read/return_call_ref yy
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if the first non-value entry of the stack is a FRAME_, then:
-  a. Assert: Due to validation, a value is on the top of the stack.
+  a. Assert: Due to validation, a value of value type instr is on the top of the stack.
   b. Pop the value instr_u1 from the stack.
   c. If instr_u1 is of the case REF.NULL, then:
     1) Pop all values val* from the top of the stack.
@@ -26889,7 +26925,7 @@ Step_read/return_call_ref yy
 
 Step_read/throw_ref
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27003,7 +27039,7 @@ Step_read/ref.func x
 
 Step_read/ref.test rt
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt' be $Ref_type(ref).
 5. If rt' matches $inst_reftype(f.MODULE, rt), then:
@@ -27013,7 +27049,7 @@ Step_read/ref.test rt
 
 Step_read/ref.cast rt
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt' be $Ref_type(ref).
 5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
@@ -27023,8 +27059,8 @@ Step_read/ref.cast rt
 Step_read/struct.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-3. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be fieldtype_0*.
+3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+4. Let (mut, zt)* be structtype_0.
 5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 6. Let ?(val)* be $default_($unpack(zt))*.
 7. Assert: Due to validation, (|val*| = |zt*|).
@@ -27033,7 +27069,7 @@ Step_read/struct.new_default x
 
 Step_read/struct.get sx? x i
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27041,8 +27077,8 @@ Step_read/struct.get sx? x i
   a. Let (REF.STRUCT_ADDR a) be instr_u1.
   b. If ((i < |$structinst(z)[a].FIELDS|) /\ (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-    2) Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be fieldtype_0*.
+    2) Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt)* be structtype_0.
     4) If (i < |zt*|), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -27083,8 +27119,8 @@ Step_read/array.new_data x y
 9. If ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
 10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)])| = n).
-11. Let byte* be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
-12. Let c* be $zbytes__1^-1(zt, byte)*.
+11. Let byte** be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
+12. Let c* be $zbytes__1^-1(zt, byte*)*.
 13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
 14. Execute the instruction (ARRAY.NEW_FIXED x n).
 
@@ -27092,7 +27128,7 @@ Step_read/array.get sx? x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type instr is on the top of the stack.
 5. Pop the value instr_u1 from the stack.
 6. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27108,7 +27144,7 @@ Step_read/array.get sx? x
 
 Step_read/array.len
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type instr is on the top of the stack.
 3. Pop the value instr_u1 from the stack.
 4. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27125,7 +27161,7 @@ Step_read/array.fill x
 5. Pop the value val from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type instr is on the top of the stack.
 9. Pop the value instr_u1 from the stack.
 10. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27154,11 +27190,11 @@ Step_read/array.copy x_1 x_2
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type instr is on the top of the stack.
 7. Pop the value instr_u1 from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value is on the top of the stack.
+10. Assert: Due to validation, a value of value type instr is on the top of the stack.
 11. Pop the value instr_u2 from the stack.
 12. If (instr_u2 is of the case REF.NULL /\ the type of instr_u1 is ref), then:
   a. Trap.
@@ -27219,7 +27255,7 @@ Step_read/array.init_elem x y
 5. Pop the value (I32.CONST j) from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type instr is on the top of the stack.
 9. Pop the value instr_u1 from the stack.
 10. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27251,7 +27287,7 @@ Step_read/array.init_data x y
 5. Pop the value (I32.CONST j) from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
+8. Assert: Due to validation, a value of value type instr is on the top of the stack.
 9. Pop the value instr_u1 from the stack.
 10. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27545,8 +27581,8 @@ Step/throw x
 2. Assert: Due to validation, (x < |$tagaddr(z)|).
 3. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
 4. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
-5. Let t^n -> valtype_1 be functype_0.
-6. Assert: Due to validation, (valtype_1 = []).
+5. Let t^n -> resulttype_1 be functype_0.
+6. Assert: Due to validation, (resulttype_1 = []).
 7. Let a be |$exninst(z)|.
 8. Assert: Due to validation, there are at least n values on the top of the stack.
 9. Pop the values val^n from the stack.
@@ -27558,8 +27594,8 @@ Step/throw x
 Step/struct.new x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-3. Let (STRUCT fieldtype_0^n) be $expanddt($type(z, x)).
-4. Let (mut, zt)^n be fieldtype_0^n.
+3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+4. Let (mut, zt)^n be structtype_0.
 5. Let a be |$structinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
@@ -27571,15 +27607,15 @@ Step/struct.set x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type instr is on the top of the stack.
 5. Pop the value instr_u1 from the stack.
 6. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
 7. If instr_u1 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u1.
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-  c. Let (STRUCT fieldtype_0*) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be fieldtype_0*.
+  c. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+  d. Let (mut, zt)* be structtype_0.
   e. If (i < |zt*|), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
@@ -27601,7 +27637,7 @@ Step/array.set x
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
+6. Assert: Due to validation, a value of value type instr is on the top of the stack.
 7. Pop the value instr_u1 from the stack.
 8. If instr_u1 is of the case REF.NULL, then:
   a. Trap.
@@ -27628,7 +27664,7 @@ Step/global.set x
 
 Step/table.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Assert: Due to validation, a value of value type at is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
@@ -27640,7 +27676,7 @@ Step/table.grow x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type at is on the top of the stack.
 3. Pop the value (at.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
+4. Assert: Due to validation, a value of value type ref is on the top of the stack.
 5. Pop the value ref from the stack.
 6. Either:
   a. Let ti be $growtable($table(z, x), n, ref).
@@ -28493,8 +28529,8 @@ free_blocktype bt_u1
 shift_labelidxs l_u1*
 1. If (l_u1* = []), then:
   a. Return [].
-2. Let [n_0] :: labelidx'* be l_u1*.
-3. If (n_0 = 0), then:
+2. Let [labelidx_0] :: labelidx'* be l_u1*.
+3. If (labelidx_0 = 0), then:
   a. Return $shift_labelidxs(labelidx'*).
 4. Let [labelidx] :: labelidx'* be l_u1*.
 5. Return [(labelidx - 1)] :: $shift_labelidxs(labelidx'*).
@@ -28916,10 +28952,10 @@ default_ t_u1
   a. Let Vnn be t_u1.
   b. Return ?((Vnn.CONST 0)).
 4. Assert: Due to validation, t_u1 is of the case REF.
-5. Let (REF nul_0 ht) be t_u1.
-6. If (nul_0 = ?(NULL)), then:
+5. Let (REF NULL_opt_0 ht) be t_u1.
+6. If (NULL_opt_0 = ?(NULL)), then:
   a. Return ?((REF.NULL ht)).
-7. Assert: Due to validation, nul_0 is not defined.
+7. Assert: Due to validation, NULL_opt_0 is not defined.
 8. Return ?().
 
 funcidx_nonfuncs (global*, table*, mem*, elem*, data*)
@@ -29770,132 +29806,132 @@ tagsxa xa_u1*
 4. Let [externaddr] :: xa* be xa_u1*.
 5. Return $tagsxa(xa*).
 
-store
+store z
 1. Return.
 
-frame
+frame z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.
 
-tagaddr
+tagaddr z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TAGS.
 
-moduleinst
+moduleinst z
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.
 
-funcinst
+funcinst z
 1. Return s.FUNCS.
 
-globalinst
+globalinst z
 1. Return s.GLOBALS.
 
-tableinst
+tableinst z
 1. Return s.TABLES.
 
-meminst
+meminst z
 1. Return s.MEMS.
 
-taginst
+taginst z
 1. Return s.TAGS.
 
-eleminst
+eleminst z
 1. Return s.ELEMS.
 
-datainst
+datainst z
 1. Return s.DATAS.
 
-structinst
+structinst z
 1. Return s.STRUCTS.
 
-arrayinst
+arrayinst z
 1. Return s.ARRAYS.
 
-exninst
+exninst z
 1. Return s.EXNS.
 
-type x
+type z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.MODULE.TYPES[x].
 
-func x
+func z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
+global z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
+table z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
+mem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
 
-tag x
+tag z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.TAGS[f.MODULE.TAGS[x]].
 
-elem x
+elem z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data x
+data z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local x
+local z x
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Return f.LOCALS[x].
 
-with_local x v
+with_local z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace f.LOCALS[x] with ?(v).
 
-with_global x v
+with_global z x v
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table x i r
+with_table z x i r
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
-with_tableinst x ti
+with_tableinst z x ti
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem x i j b*
+with_mem z x i j b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst x mi
+with_meminst z x mi
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
-with_elem x r*
+with_elem z x r*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
-with_data x b*
+with_data z x b*
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
-with_struct a i fv
+with_struct z a i fv
 1. Replace s.STRUCTS[a].FIELDS[i] with fv.
 
-with_array a i fv
+with_array z a i fv
 1. Replace s.ARRAYS[a].FIELDS[i] with fv.
 
-add_structinst si*
+add_structinst z si*
 1. Append si* to the s.STRUCTS.
 
-add_arrayinst ai*
+add_arrayinst z ai*
 1. Append ai* to the s.ARRAYS.
 
-add_exninst exn*
+add_exninst z exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
@@ -29933,13 +29969,13 @@ alloctypes type_u1*
 7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
 8. Return deftype'* :: deftype*.
 
-allocfunc deftype funccode moduleinst
+allocfunc s deftype funccode moduleinst
 1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode; }.
 2. Let a be |s.FUNCS|.
 3. Append funcinst to the s.FUNCS.
 4. Return a.
 
-allocfuncs dt_u1* funccode_u1* moduleinst_u1*
+allocfuncs s dt_u1* funccode_u1* moduleinst_u1*
 1. If (dt_u1* = []), then:
   a. Assert: Due to validation, (funccode_u1* = []).
   b. Assert: Due to validation, (moduleinst_u1* = []).
@@ -29950,17 +29986,17 @@ allocfuncs dt_u1* funccode_u1* moduleinst_u1*
   c. Let [funccode] :: funccode'* be funccode_u1*.
   d. Assert: Due to validation, (|moduleinst_u1*| >= 1).
   e. Let [moduleinst] :: moduleinst'* be moduleinst_u1*.
-  f. Let fa be $allocfunc(dt, funccode, moduleinst).
-  g. Let fa'* be $allocfuncs(dt'*, funccode'*, moduleinst'*).
+  f. Let fa be $allocfunc(s, dt, funccode, moduleinst).
+  g. Let fa'* be $allocfuncs(s, dt'*, funccode'*, moduleinst'*).
   h. Return [fa] :: fa'*.
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let globalinst be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
 3. Append globalinst to the s.GLOBALS.
 4. Return a.
 
-allocglobals gt_u1* v_u1*
+allocglobals s gt_u1* v_u1*
 1. If (gt_u1* = []), then:
   a. Assert: Due to validation, (v_u1* = []).
   b. Return [].
@@ -29968,87 +30004,87 @@ allocglobals gt_u1* v_u1*
   a. Let [globaltype] :: globaltype'* be gt_u1*.
   b. Assert: Due to validation, (|v_u1*| >= 1).
   c. Let [val] :: val'* be v_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable (at, ([ i .. j ]), rt) ref
+alloctable s (at, ([ i .. j ]), rt) ref
 1. Let tableinst be { TYPE: (at, ([ i .. j ]), rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.
 
-alloctables tt_u1* r_u1*
+alloctables s tt_u1* r_u1*
 1. If ((tt_u1* = []) /\ (r_u1* = [])), then:
   a. Return [].
 2. Assert: Due to validation, (|r_u1*| >= 1).
 3. Let [ref] :: ref'* be r_u1*.
 4. Assert: Due to validation, (|tt_u1*| >= 1).
 5. Let [tabletype] :: tabletype'* be tt_u1*.
-6. Let ta be $alloctable(tabletype, ref).
-7. Let ta'* be $alloctables(tabletype'*, ref'*).
+6. Let ta be $alloctable(s, tabletype, ref).
+7. Let ta'* be $alloctables(s, tabletype'*, ref'*).
 8. Return [ta] :: ta'*.
 
-allocmem at ([ i .. j ]) PAGE
+allocmem s at ([ i .. j ]) PAGE
 1. Let meminst be { TYPE: at ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append meminst to the s.MEMS.
 4. Return a.
 
-allocmems mt_u1*
+allocmems s mt_u1*
 1. If (mt_u1* = []), then:
   a. Return [].
 2. Let [memtype] :: memtype'* be mt_u1*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
-alloctag tagtype
+alloctag s tagtype
 1. Let taginst be { TYPE: tagtype; }.
 2. Let a be |s.TAGS|.
 3. Append taginst to the s.TAGS.
 4. Return a.
 
-alloctags jt_u1*
+alloctags s jt_u1*
 1. If (jt_u1* = []), then:
   a. Return [].
 2. Let [jt] :: jt'* be jt_u1*.
-3. Let ja be $alloctag(jt).
-4. Let ja'* be $alloctags(jt'*).
+3. Let ja be $alloctag(s, jt).
+4. Let ja'* be $alloctags(s, jt'*).
 5. Return [ja] :: ja'*.
 
-allocelem elemtype ref*
+allocelem s elemtype ref*
 1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.
 2. Let a be |s.ELEMS|.
 3. Append eleminst to the s.ELEMS.
 4. Return a.
 
-allocelems elemtype_u1* r_u1*
+allocelems s elemtype_u1* r_u1*
 1. If ((elemtype_u1* = []) /\ (r_u1* = [])), then:
   a. Return [].
 2. Assert: Due to validation, (|r_u1*| >= 1).
 3. Let [ref*] :: ref'** be r_u1*.
 4. Assert: Due to validation, (|elemtype_u1*| >= 1).
 5. Let [rt] :: rt'* be elemtype_u1*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
+6. Let ea be $allocelem(s, rt, ref*).
+7. Let ea'* be $allocelems(s, rt'*, ref'**).
 8. Return [ea] :: ea'*.
 
-allocdata OK byte*
+allocdata s OK byte*
 1. Let datainst be { BYTES: byte*; }.
 2. Let a be |s.DATAS|.
 3. Append datainst to the s.DATAS.
 4. Return a.
 
-allocdatas ok_u1* b_u1*
+allocdatas s ok_u1* b_u1*
 1. If ((ok_u1* = []) /\ (b_u1* = [])), then:
   a. Return [].
 2. Assert: Due to validation, (|b_u1*| >= 1).
 3. Let [b*] :: b'** be b_u1*.
 4. Assert: Due to validation, (|ok_u1*| >= 1).
 5. Let [ok] :: ok'* be ok_u1*.
-6. Let da be $allocdata(ok, b*).
-7. Let da'* be $allocdatas(ok'*, b'**).
+6. Let da be $allocdata(s, ok, b*).
+7. Let da'* be $allocdatas(s, ok'*, b'**).
 8. Return [da] :: da'*.
 
 allocexport moduleinst (EXPORT name xx_u1)
@@ -30071,7 +30107,7 @@ allocexport moduleinst (EXPORT name xx_u1)
 allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
-allocmodule module externaddr* val_G* ref_T* ref_E**
+allocmodule s module externaddr* val_G* ref_T* ref_E**
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
 3. Let fa_I* be $funcsxa(externaddr*).
@@ -30103,20 +30139,20 @@ allocmodule module externaddr* val_G* ref_T* ref_E**
 29. Let (FUNC x local* expr_F)* be func*.
 30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
 31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-32. Let funcaddr_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-33. Assert: Due to validation, (funcaddr_0 = fa*).
-34. Let globaladdr_0 be $allocglobals($subst_all_globaltype(globaltype, dt*)*, val_G*).
-35. Assert: Due to validation, (globaladdr_0 = ga*).
-36. Let tableaddr_0 be $alloctables($subst_all_tabletype(tabletype, dt*)*, ref_T*).
-37. Assert: Due to validation, (tableaddr_0 = ta*).
-38. Let memaddr_0 be $allocmems($subst_all_memtype(memtype, dt*)*).
-39. Assert: Due to validation, (memaddr_0 = ma*).
-40. Let tagaddr_0 be $alloctags(dt*[y]*).
-41. Assert: Due to validation, (tagaddr_0 = aa*).
-42. Let elemaddr_0 be $allocelems($subst_all_reftype(elemtype, dt*)*, ref_E**).
-43. Assert: Due to validation, (elemaddr_0 = ea*).
-44. Let dataaddr_0 be $allocdatas(OK^|data*|, byte**).
-45. Assert: Due to validation, (dataaddr_0 = da*).
+32. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+33. Assert: Due to validation, (funcaddr_0* = fa*).
+34. Let globaladdr_0* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
+35. Assert: Due to validation, (globaladdr_0* = ga*).
+36. Let tableaddr_0* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
+37. Assert: Due to validation, (tableaddr_0* = ta*).
+38. Let memaddr_0* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
+39. Assert: Due to validation, (memaddr_0* = ma*).
+40. Let tagaddr_0* be $alloctags(s, dt*[y]*).
+41. Assert: Due to validation, (tagaddr_0* = aa*).
+42. Let elemaddr_0* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
+43. Assert: Due to validation, (elemaddr_0* = ea*).
+44. Let dataaddr_0* be $allocdatas(s, OK^|data*|, byte**).
+45. Assert: Due to validation, (dataaddr_0* = da*).
 46. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemmode_u1)
@@ -30145,16 +30181,17 @@ evalglobals z gt_u1* e_u1*
 6. Let [gt] :: gt'* be gt_u1*.
 7. Let f be z.
 8. Let [val] be $eval_expr(expr).
-9. Let a be $allocglobal(gt, val).
+9. Let a be $allocglobal(s, gt, val).
 10. Append a to the f.MODULE.GLOBALS.
 11. Let val'* be $evalglobals(z, gt'*, expr'*).
 12. Return [val] :: val'*.
 
-instantiate z module externaddr*
+instantiate s module externaddr*
 1. Let xt_I* -> xt_E* be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-4. Assert: Due to validation, $Externaddr_type(externaddr, xt_I)*.
+4. If not $Externaddr_type(externaddr, xt_I)*, then:
+  a. Fail.
 5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 7. Assert: Due to validation, start is of the case START?.
@@ -30169,16 +30206,16 @@ instantiate z module externaddr*
 16. Let (ELEM reftype expr_E* elemmode)* be elem*.
 17. Let instr_S? be (CALL x)?.
 18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-19. Push the value (FRAME_ 0 { z }) to the stack.
+19. Push the evaluation context (FRAME_ 0 { z }) to the stack.
 20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-21. Pop the value (FRAME_ 0 { z' }) from the stack.
-22. Push the value (FRAME_ 0 { z' }) to the stack.
+21. Pop the evaluation context (FRAME_ 0 { z' }) from the stack.
+22. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
 23. Let [ref_T]* be $eval_expr(expr_T)*.
-24. Pop the value (FRAME_ 0 { _f }) from the stack.
-25. Push the value (FRAME_ 0 { z' }) to the stack.
+24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+25. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
 26. Let [ref_E]** be $eval_expr(expr_E)**.
-27. Pop the value (FRAME_ 0 { _f }) from the stack.
-28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
+27. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence (instr_E*).
@@ -30187,12 +30224,13 @@ instantiate z module externaddr*
 34. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
 35. Return f.MODULE.
 
-invoke funcaddr val*
+invoke s funcaddr val*
 1. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 2. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 3. Let t_1* -> t_2* be functype_0.
 4. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-5. Assert: Due to validation, $Val_type(val, t_1)*.
+5. If not $Val_type(val, t_1)*, then:
+  a. Fail.
 6. Let k be |t_2*|.
 7. Push the evaluation context (FRAME_ k { f }) to the stack.
 8. Push the values val* to the stack.
@@ -30204,7 +30242,7 @@ invoke funcaddr val*
 14. Pop the values val^k from the stack.
 15. Return val^k.
 
-allocXs X Y X_u1* Y_u1*
+allocXs s X Y X_u1* Y_u1*
 1. If (X_u1* = []), then:
   a. Assert: Due to validation, (Y_u1* = []).
   b. Return [].
@@ -30212,8 +30250,8 @@ allocXs X Y X_u1* Y_u1*
   a. Let [X] :: X'* be X_u1*.
   b. Assert: Due to validation, (|Y_u1*| >= 1).
   c. Let [Y] :: Y'* be Y_u1*.
-  d. Let a be $allocX(X, Y, X, Y).
-  e. Let a'* be $allocXs(X, Y, X'*, Y'*).
+  d. Let a be $allocX(s, X, Y, X, Y).
+  e. Let a'* be $allocXs(s, X, Y, X'*, Y'*).
   f. Return [a] :: a'*.
 
 var X

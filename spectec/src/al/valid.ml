@@ -269,12 +269,6 @@ let check_val source typ =
   if not (sub_typ (get_base_typ typ) (varT "val")) then
     error_mismatch source typ (varT "val")
 
-let check_context source typ =
-  let context_typs = [ "callframe"; "label" ] in
-  match typ.it with
-  | VarT (id, []) when List.mem id.it context_typs -> ()
-  | _ -> error_mismatch source typ (varT "context")
-
 let check_evalctx source typ =
   match typ.it with
   | VarT (id, []) when id.it = "evalctx" -> ()
@@ -612,7 +606,7 @@ and valid_expr env (expr: expr) : unit =
     let elem1_typ = unwrap_iter_typ expr1.note in
     check_match source elem1_typ elem_typ
   | GetCurStateE ->
-    check_context source expr.note
+    check_evalctx source expr.note
   | GetCurContextE _ ->
     check_evalctx source expr.note
   | ChooseE expr1 ->
@@ -665,8 +659,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
   | PushI expr ->
     valid_expr env expr;
     if
-      not (sub_typ (get_base_typ expr.note) (varT "val")) &&
-      not (sub_typ (get_base_typ expr.note) (varT "callframe"))
+      not (sub_typ (get_base_typ expr.note) (varT "val"))
     then
       error_mismatch source (get_base_typ expr.note) (varT "val");
     env
@@ -674,8 +667,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
     let new_env = Env.add_bound_vars expr env in
     valid_expr new_env expr;
     if
-      not (sub_typ (get_base_typ expr.note) (varT "val")) &&
-      not (sub_typ (get_base_typ expr.note) (varT "callframe"))
+      not (sub_typ (get_base_typ expr.note) (varT "val"))
     then
       error_mismatch source (get_base_typ expr.note) (varT "val");
     new_env
@@ -685,7 +677,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
     valid_expr env expr2;
     check_match source expr1.note expr2.note;
     new_env
-  | TrapI | NopI | ReturnI None | ExitI _ -> env
+  | TrapI | FailI | NopI | ReturnI None | ExitI _ -> env
   | ThrowI expr ->
     if not (sub_typ (get_base_typ expr.note) (varT "val")) then
       error_mismatch source (get_base_typ expr.note) (varT "val");
