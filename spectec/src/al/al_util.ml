@@ -55,6 +55,7 @@ let updE ?(at = no) ~note (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at note
 let extE ?(at = no) ~note (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at note
 let strE ?(at = no) ~note r = StrE r |> mk_expr at note
 let compE ?(at = no) ~note (e1, e2) = CompE (e1, e2) |> mk_expr at note
+let liftE ?(at = no) ~note e = LiftE e |> mk_expr at note
 let catE ?(at = no) ~note (e1, e2) = CatE (e1, e2) |> mk_expr at note
 let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
 let lenE ?(at = no) ~note e = LenE e |> mk_expr at note
@@ -111,8 +112,8 @@ let iter_var ?(at = no) x iter t =
     ~at:at ~note:iter_note
 
 
-    let some x = caseV (x, [optV (Some (tupV []))])
-let none x = caseV (x, [optV None])
+let some x = optV (Some (caseV (x, [])))
+let none _x = optV None
 
 
 (* Failures *)

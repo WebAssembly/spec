@@ -122,6 +122,7 @@ var hi : taginst
 var ei : eleminst
 var di : datainst
 var xi : exportinst
+var exn : exninst
 
 var si : structinst
 var ai : arrayinst

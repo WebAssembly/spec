@@ -128,7 +128,7 @@ and exp e =
   | EpsE | HoleE _ | LatexE _ -> ()
   | CvtE (e1, nt) -> exp e1; numtyp nt
   | UnE (op, e1) -> unop op; exp e1
-  | LenE e1 | ArithE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
+  | LenE e1 | ArithE e1 | ParenE e1 | UnparenE e1 -> exp e1
   | DotE (e1, at) -> exp e1; atom at
   | SizeE x -> gramid x
   | BinE (e1, op, e2) -> exp e1; binop op; exp e2
@@ -136,7 +136,7 @@ and exp e =
   | IdxE (e1, e2) | CommaE (e1, e2) | CatE (e1, e2) | MemE (e1, e2)
   | FuseE (e1, e2) -> exp e1; exp e2
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
-  | SeqE es | TupE es -> list exp es
+  | SeqE es | ListE es | TupE es -> list exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> exp e1; path p; exp e2
   | StrE efs -> nl_list expfield efs
   | CallE (x, as_) -> defid x; args as_
@@ -277,6 +277,7 @@ and clone_exp e =
   | BinE (e1, op, e2) -> BinE (clone_exp e1, op, clone_exp e2)
   | CmpE (e1, op, e2) -> CmpE (clone_exp e1, op, clone_exp e2)
   | SeqE es -> SeqE (List.map clone_exp es)
+  | ListE es -> ListE (List.map clone_exp es)
   | IdxE (e1, e2) -> IdxE (clone_exp e1, clone_exp e2)
   | SliceE (e1, e2, e3) -> SliceE (clone_exp e1, clone_exp e2, clone_exp e3)
   | UpdE (e1, p, e2) -> UpdE (clone_exp e1, clone_path p, clone_exp e2)
@@ -287,7 +288,7 @@ and clone_exp e =
   | CatE (e1, e2) -> CatE (clone_exp e1, clone_exp e2)
   | MemE (e1, e2) -> MemE (clone_exp e1, clone_exp e2)
   | LenE e1 -> LenE (clone_exp e1)
-  | ParenE (e1, b) -> ParenE (clone_exp e1, b)
+  | ParenE e1 -> ParenE (clone_exp e1)
   | TupE es -> TupE (List.map clone_exp es)
   | InfixE (e1, atom, e2) -> InfixE (clone_exp e1, clone_atom atom, clone_exp e2)
   | BrackE (atom1, e1, atom2) -> BrackE (clone_atom atom1, clone_exp e1, clone_atom atom2)

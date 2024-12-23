@@ -131,6 +131,7 @@ and subst_exp s e =
   | CmpE (e1, op, e2) -> CmpE (subst_exp s e1, op, subst_exp s e2)
   | EpsE -> EpsE
   | SeqE es -> SeqE (subst_list subst_exp s es)
+  | ListE es -> ListE (subst_list subst_exp s es)
   | IdxE (e1, e2) -> IdxE (subst_exp s e1, subst_exp s e2)
   | SliceE (e1, e2, e3) -> SliceE (subst_exp s e1, subst_exp s e2, subst_exp s e3)
   | UpdE (e1, p, e2) -> UpdE (subst_exp s e1, subst_path s p, subst_exp s e2)
@@ -142,7 +143,7 @@ and subst_exp s e =
   | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
   | SizeE id -> SizeE (subst_gramid s id)
-  | ParenE (e1, b) -> ParenE (subst_exp s e1, b)
+  | ParenE e1 -> ParenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
   | InfixE (e1, atom, e2) -> InfixE (subst_exp s e1, atom, subst_exp s e2)
   | BrackE (l, e1, r) -> BrackE (l, subst_exp s e1, r)

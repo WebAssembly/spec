@@ -53,12 +53,9 @@ let as_error at phrase dir t expected =
       string_of_typ t ^ "`"
     )
 
-let match_iter iter1 iter2 =
-  iter2 = List || Eq.eq_iter iter1 iter2
-
 let as_iter_typ iter phrase env dir t at : typ =
   match expand_typ env t with
-  | IterT (t1, iter2) when match_iter iter iter2 -> t1
+  | IterT (t1, iter2) when iter = iter2 -> t1
   | _ -> as_error at phrase dir t ("(_)" ^ string_of_iter iter)
 
 let as_list_typ phrase env dir t at : typ =
@@ -307,6 +304,9 @@ and infer_exp (env : Env.t) e : typ =
       else
         error e.at "cannot infer type of list"
     )
+  | LiftE e1 ->
+    let t1 = as_iter_typ Opt "lifting" env Check (infer_exp env e1) e1.at in
+    IterT (t1, List) $ e.at
   | LenE _ -> NumT `NatT $ e.at
   | CatE (e1, e2) ->
     let t1 = infer_exp env e1 in
@@ -443,6 +443,9 @@ try
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp ~side env eI t1) es
+  | LiftE e1 ->
+    let t1 = as_iter_typ List "lifting" env Check t e.at in
+    valid_exp ~side env e1 (IterT (t1, Opt) $ e1.at)
   | CatE (e1, ({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e2))
   | CatE (({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e1), e2) when side = `Lhs ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in

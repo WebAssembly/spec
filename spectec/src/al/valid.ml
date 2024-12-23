@@ -598,6 +598,13 @@ and valid_expr env (expr: expr) : unit =
     l
     |> List.map note
     |> List.iter (check_match source elem_typ)
+  | LiftE expr1 ->
+    valid_expr env expr;
+    check_list source expr.note;
+    check_opt source expr1.note;
+    let elem_typ = unwrap_iter_typ expr.note in
+    let elem1_typ = unwrap_iter_typ expr1.note in
+    check_match source elem1_typ elem_typ
   | GetCurStateE ->
     check_evalctx source expr.note
   | GetCurContextE _ ->

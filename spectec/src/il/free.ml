@@ -125,7 +125,7 @@ and free_exp e =
   match e.it with
   | VarE id -> free_varid id
   | BoolE _ | NumE _ | TextE _ -> empty
-  | UnE (_, _, e1) | LenE e1 | ProjE (e1, _) | TheE e1 | DotE (e1, _) -> free_exp e1
+  | UnE (_, _, e1) | LiftE e1 | LenE e1 | ProjE (e1, _) | TheE e1 | DotE (e1, _) -> free_exp e1
   | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2)
   | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) -> free_exp e1 + free_exp e2
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]

@@ -38,6 +38,7 @@ let rec eq_expr e1 e2 =
     eq_expr e1 e2 && eq_iterexp ie1 ie2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
+  | LiftE e1, LiftE e2 -> eq_expr e1 e2
   | GetCurStateE, GetCurStateE -> true
   | GetCurContextE i1, GetCurContextE i2 -> Option.equal (=) i1 i2
   | ChooseE e1, ChooseE e2 -> eq_expr e1 e2

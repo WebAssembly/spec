@@ -145,7 +145,7 @@ and check_exp env ctx e =
   | UnE (_, e1)
   | DotE (e1, _)
   | LenE e1
-  | ParenE (e1, _)
+  | ParenE e1
   | BrackE (_, e1, _)
   | TypE (e1, _)
   | ArithE e1 -> check_exp env ctx e1
@@ -168,6 +168,7 @@ and check_exp env ctx e =
     check_path env ctx p;
     check_exp env ctx e2
   | SeqE es
+  | ListE es
   | TupE es -> List.iter (check_exp env ctx) es
   | StrE efs -> iter_nl_list (fun (_, eI) -> check_exp env ctx eI) efs
   | CallE (_, args) -> List.iter (check_arg env ctx) args
@@ -430,6 +431,9 @@ and annot_exp env e : Il.Ast.exp * occur =
     | ListE es ->
       let es', occurs = List.split (List.map (annot_exp env) es) in
       ListE es', List.fold_left union Env.empty occurs
+    | LiftE e1 ->
+      let e1', occur1 = annot_exp env e1 in
+      LiftE e1', occur1
     | MemE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in

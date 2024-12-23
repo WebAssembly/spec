@@ -97,8 +97,9 @@ and t_exp' env = function
   | UncaseE (e, mixop) -> UncaseE (t_exp env e, mixop)
   | OptE None -> OptE None
   | OptE (Some exp) -> OptE (Some (t_exp env exp))
-  | TheE exp -> TheE exp
+  | TheE exp -> TheE (t_exp env exp)
   | ListE es -> ListE (List.map (t_exp env) es)
+  | LiftE exp -> LiftE (t_exp env exp)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
   | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)

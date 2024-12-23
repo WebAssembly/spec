@@ -207,6 +207,7 @@ and reduce_exp env e : exp =
     ) $ e.at
   | EpsE -> SeqE [] $ e.at
   | SeqE es -> SeqE (List.map (reduce_exp env) es) $ e.at
+  | ListE es -> SeqE (List.map (reduce_exp env) es) $ e.at
   | IdxE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
@@ -295,7 +296,7 @@ and reduce_exp env e : exp =
     | SeqE es -> NumE (`DecOp, `Nat (Z.of_int (List.length es)))
     | _ -> LenE e1'
     ) $ e.at
-  | ParenE (e1, _) | ArithE e1 | TypE (e1, _) -> reduce_exp env e1
+  | ParenE e1 | ArithE e1 | TypE (e1, _) -> reduce_exp env e1
   | TupE es -> TupE (List.map (reduce_exp env) es) $ e.at
   | InfixE (e1, atom, e2) ->
     let e1' = reduce_exp env e1 in
@@ -469,8 +470,8 @@ and match_exp env s e1 e2 : subst option =
   ) @@ fun _ ->
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
 (*
-  | (ParenE (e11, _) | TypE (e11, _)), _ -> match_exp env s e11 e2
-  | _, (ParenE (e21, _) | TypE (e21, _)) -> match_exp env s e1 e21
+  | (ParenE e11 | TypE (e11, _)), _ -> match_exp env s e11 e2
+  | _, (ParenE e21 | TypE (e21, _)) -> match_exp env s e1 e21
   | _, VarE (id, []) when Subst.mem_varid s id ->
     match_exp env s e1 (Subst.subst_exp s e2)
   | VarE (id1, args1), VarE (id2, args2) when id1.it = id2.it ->

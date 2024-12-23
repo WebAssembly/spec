@@ -133,6 +133,7 @@ exp ::=
   "eps"                                empty sequence
   exp exp                              sequencing
   exp iter                             iteration
+  "[" exp* "]"                         list
   exp "[" arith "]"                    list indexing
   exp "[" arith ":" arith "]"          list slicing
   exp "[" path "=" exp "]"             list update

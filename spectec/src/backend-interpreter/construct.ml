@@ -94,18 +94,18 @@ let al_to_bool = unwrap_boolv
 (* Destruct type *)
 
 let al_to_null: value -> null = function
-  | CaseV ("NULL", [ OptV None ]) -> NoNull
-  | CaseV ("NULL", [ OptV _ ]) -> Null
+  | OptV None -> NoNull
+  | OptV _ -> Null
   | v -> error_value "null" v
 
 let al_to_final: value -> final = function
-  | CaseV ("FINAL", [ OptV None ]) -> NoFinal
-  | CaseV ("FINAL", [ OptV _ ]) -> Final
+  | OptV None -> NoFinal
+  | OptV _ -> Final
   | v -> error_value "final" v
 
 let al_to_mut: value -> mut = function
-  | CaseV ("MUT", [ OptV None ]) -> Cons
-  | CaseV ("MUT", [ OptV _ ]) -> Var
+  | OptV None -> Cons
+  | OptV _ -> Var
   | v -> error_value "mut" v
 
 let rec al_to_storage_type: value -> storage_type = function

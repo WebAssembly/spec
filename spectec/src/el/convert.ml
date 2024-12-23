@@ -13,6 +13,7 @@ let forall_nl_list f xs = List.for_all f (filter_nl xs)
 let exists_nl_list f xs = List.exists f (filter_nl xs)
 let find_nl_list f xs = List.find_opt f (filter_nl xs)
 let iter_nl_list f xs = List.iter f (filter_nl xs)
+let fold_nl_list f y xs = List.fold_left f y (filter_nl xs)
 let map_filter_nl_list f xs = List.map f (filter_nl xs)
 let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
 let filter_nl_list f xs = List.filter (function Nl -> true | Elem x -> f x) xs
@@ -67,7 +68,7 @@ let rec typ_of_exp e =
   (match e.it with
   | VarE (id, []) -> (typ_of_varid id).it
   | VarE (id, args) -> VarT (id, args)
-  | ParenE (e1, _) -> ParenT (typ_of_exp e1)
+  | ParenE e1 -> ParenT (typ_of_exp e1)
   | TupE es -> TupT (List.map typ_of_exp es)
   | IterE (e1, iter) -> IterT (typ_of_exp e1, iter)
   | StrE efs -> StrT (map_nl_list typfield_of_expfield efs)
@@ -86,7 +87,7 @@ let rec exp_of_typ t =
   (match t.it with
   | VarT (id, args) -> VarE (id, args)
   | BoolT | NumT _ | TextT -> VarE (varid_of_typ t, [])
-  | ParenT t1 -> ParenE (exp_of_typ t1, `Insig)
+  | ParenT t1 -> ParenE (exp_of_typ t1)
   | TupT ts -> TupE (List.map exp_of_typ ts)
   | IterT (t1, iter) -> IterE (exp_of_typ t1, iter)
   | StrT tfs -> StrE (map_nl_list expfield_of_typfield tfs)
@@ -127,7 +128,7 @@ let rec pat_of_typ' s t : exp option =
     )
   | ParenT t1 ->
     let* e1 = pat_of_typ' s t1 in
-    Some (ParenE (e1, `Insig) $ t.at)
+    Some (ParenE e1 $ t.at)
   | TupT ts ->
     let* es = pats_of_typs' s ts in
     Some (TupE es $ t.at)
@@ -156,7 +157,7 @@ let rec sym_of_exp e =
   | TextE s -> TextG s
   | EpsE -> EpsG
   | SeqE es -> SeqG (List.map (fun e -> Elem (sym_of_exp e)) es)
-  | ParenE (e1, _) -> ParenG (sym_of_exp e1)
+  | ParenE e1 -> ParenG (sym_of_exp e1)
   | TupE es -> TupG (List.map sym_of_exp es)
   | IterE (e1, iter) -> IterG (sym_of_exp e1, iter)
   | TypE (e1, t) -> AttrG (e1, sym_of_exp (exp_of_typ t))
@@ -173,7 +174,7 @@ let rec exp_of_sym g =
   | TextG t -> TextE t
   | EpsG -> EpsE
   | SeqG gs -> SeqE (map_filter_nl_list exp_of_sym gs)
-  | ParenG g1 -> ParenE (exp_of_sym g1, `Insig)
+  | ParenG g1 -> ParenE (exp_of_sym g1)
   | TupG gs -> TupE (List.map exp_of_sym gs)
   | IterG (g1, iter) -> IterE (exp_of_sym g1, iter)
   | ArithG e -> ArithE e

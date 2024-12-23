@@ -338,6 +338,13 @@ and reduce_exp env e : exp =
     | _ -> TheE e1' $> e
     )
   | ListE es -> ListE (List.map (reduce_exp env) es) $> e
+  | LiftE e1 ->
+    let e1' = reduce_exp env e1 in
+    (match e1'.it with
+    | OptE None -> ListE []
+    | OptE (Some e11') -> ListE [e11']
+    | _ -> LiftE e1'
+    ) $> e
   | CatE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
@@ -650,7 +657,8 @@ and match_exp' env s e1 e2 : subst option =
     let* s'' =
       List.fold_left (fun s_opt (xI, exI) ->
         let* s = s_opt in
-        match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $> exI))) $> e2) exI
+        let tI = match exI.note.it with IterT (tI, _) -> tI | _ -> assert false in
+        match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $$ exI.at % tI))) $> e2) exI
       ) (Some (List.fold_left Subst.remove_varid s (List.map fst xes))) xes
     in Some (Subst.union s'' s)  (* re-add possibly locally shadowed bindings *)
   | ListE _es1, IterE (e21, (List, xes)) ->
@@ -680,7 +688,8 @@ and match_exp' env s e1 e2 : subst option =
     let xs, exs = List.split xes in
     let* s''' =
       match_list (fun env s xI exI ->
-        let eI = ListE (List.map (fun sJ -> Subst.subst_exp sJ (VarE xI $> exI)) ss) $> e2 in
+        let tI = match exI.note.it with IterT (tI, _) -> tI | _ -> assert false in
+        let eI = ListE (List.map (fun sJ -> Subst.subst_exp sJ (VarE xI $$ exI.at % tI)) ss) $> e2 in
         match_exp' env s eI exI
       ) env s' xs exs
     in Some (Subst.union s''' s)  (* re-add possibly locally shadowed bindings *)

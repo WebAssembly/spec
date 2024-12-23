@@ -2421,13 +2421,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-\epsilon & = & \epsilon \\
-w & = & w \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
 {\bigoplus}\, \epsilon & = & \epsilon \\
 {\bigoplus}\, ({w^\ast})~{({{w'}^\ast})^\ast} & = & {w^\ast} \oplus {\bigoplus}\, {({{w'}^\ast})^\ast} \\
 \end{array}
@@ -8645,7 +8638,7 @@ $$
 {{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, \epsilon, {\mathit{zero}}, v_1) & = & v & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~({{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast} \oplus {0^{M_1}}) \\
+{\land}~ {{c^\ast}^\ast} = \Large\times~({{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast} \oplus {{}[0]^{M_1}}) \\
 {\land}~ v \in {{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({c^\ast})}^\ast} \\
 \end{array} \\
 \end{array}

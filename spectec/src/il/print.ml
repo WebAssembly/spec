@@ -143,6 +143,7 @@ and string_of_exp e =
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
+  | LiftE e1 -> "lift(" ^ string_of_exp e1 ^ ")"
   | CatE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
   | CaseE (op, e1) ->
     string_of_mixop op ^ "_" ^ string_of_typ_name e.note ^ string_of_exp_args e1

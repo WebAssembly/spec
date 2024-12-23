@@ -32,11 +32,6 @@ def $opt_(syntax X, X*) : X?  hint(show %2)
 def $opt_(syntax X, eps) = eps
 def $opt_(syntax X, w) = w
 
-;; TODO(3, rossberg): this function should not be needed
-def $list_(syntax X, X?) : X*  hint(show %2)
-def $list_(syntax X, eps) = eps
-def $list_(syntax X, w) = w
-
 def $concat_(syntax X, (X*)*) : X*  hint(show (++) %2)
 def $concat_(syntax X, eps) = eps
 def $concat_(syntax X, (w*) (w'*)*) = w* ++ $concat_(X, (w'*)*)

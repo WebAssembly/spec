@@ -212,6 +212,9 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       if (List.length elel > 0) then Some (El.Ast.SeqE elel)
       else Some (El.Ast.EpsE)
+    | Al.Ast.LiftE e ->
+      let* ele = al_to_el_expr e in
+      Some ele.it
     | Al.Ast.AccE (e, p) ->
       let* ele = al_to_el_expr e in
       (match p.it with
@@ -246,9 +249,9 @@ and al_to_el_expr expr =
       let ele =
         match ele.it with
         | El.Ast.BinE _ | El.Ast.CatE _ | El.Ast.CmpE _ | El.Ast.MemE _ ->
-          El.Ast.ParenE (ele, `Insig) $ ele.at
+          El.Ast.ParenE ele $ ele.at
         | El.Ast.IterE (_, eliter2) when eliter2 <> eliter ->
-          El.Ast.ParenE (ele, `Insig) $ ele.at
+          El.Ast.ParenE ele $ ele.at
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
@@ -262,7 +265,7 @@ and al_to_el_expr expr =
       (match elal, elel with
       | _, [] -> Some ele
       | None :: Some _ :: _, _ -> Some ele
-      | _ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      | _ -> Some (El.Ast.ParenE (ele $ no_region))
       )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
@@ -474,6 +477,8 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s is contained in %s" se1 se2
+  | Al.Ast.LiftE e ->
+    render_expr env e
   | Al.Ast.LenE e ->
     let se = render_expr env e in
     sprintf "the length of %s" se
@@ -996,7 +1001,7 @@ let render_atom_title env name params =
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
   let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
-  | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
+  | Some ({ it = El.Ast.ParenE exp; _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
 

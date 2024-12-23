@@ -140,6 +140,7 @@ and string_of_expr expr =
   | GetCurContextE None -> "current_context()"
   | GetCurContextE (Some a) -> sprintf "current_context(%s)" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
+  | LiftE e -> "lift(" ^ string_of_expr e ^ ")"
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
     match dir with
@@ -449,6 +450,7 @@ and structured_string_of_expr expr =
   | GetCurContextE None -> "GetCurContextE"
   | GetCurContextE (Some a) -> sprintf "GetCurContextE (%s)" (string_of_atom a)
   | ListE el -> "ListE ([" ^ structured_string_of_exprs el ^ "])"
+  | LiftE e -> "LiftE (" ^ structured_string_of_expr e ^ ")"
   | AccE (e, p) ->
     "AccE ("
     ^ structured_string_of_expr e

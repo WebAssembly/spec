@@ -225,7 +225,6 @@ rule Step_pure/return-handler:
 ;; Exceptions
 
 rule Step/throw:
-  ;; TODO(2, rossberg): Appropriate variable name for exception instance `exn`
   z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
   -- Expand: $tag(z, x).TYPE ~~ FUNC (t^n -> eps)
   -- if a = |$exninst(z)|

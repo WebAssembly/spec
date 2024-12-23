@@ -4,7 +4,6 @@
   (modules
     sub
     totalize
-    wild
     unthe
     sideconditions
   )

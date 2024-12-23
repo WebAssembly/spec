@@ -106,6 +106,7 @@ and string_of_expr expr =
   | GetCurContextE None -> "the current context"
   | GetCurContextE (Some a) -> sprintf "the current %s context" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
+  | LiftE e -> string_of_expr e
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
     match dir with

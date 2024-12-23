@@ -47,6 +47,7 @@ let rec transform_exp t e =
     | OptE eo -> OptE ((Option.map t_exp) eo)
     | TheE e1 -> TheE (t_exp e1)
     | ListE es -> ListE ((List.map t_exp) es)
+    | LiftE e1 -> LiftE (t_exp e1)
     | CatE (e1, e2) -> CatE (t_exp e1, t_exp e2)
     | MemE (e1, e2) -> MemE (t_exp e1, t_exp e2)
     | CaseE (mixop, e1) -> CaseE (mixop, t_exp e1)

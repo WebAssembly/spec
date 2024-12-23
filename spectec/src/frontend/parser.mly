@@ -59,32 +59,7 @@ let check_varid_bind id =
     error id.at "invalid identifer suffix in binding position"
 
 
-(* Parentheses Role etc *)
-
-type prec = Op | Seq | Post | Prim
-
-let rec prec_of_exp = function  (* as far as iteration is concerned *)
-  | VarE _ | BoolE _ | NumE _ | TextE _ | EpsE | StrE _
-  | ParenE _ | TupE _ | BrackE _ | CvtE _ | CallE _ | HoleE _ -> Prim
-  | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
-  | SeqE _ -> Seq
-  | UnE _ | BinE _ | CmpE _ | MemE _ | InfixE _ | LenE _ | SizeE _
-  | CommaE _ | CatE _ | TypE _ | FuseE _ | UnparenE _ | LatexE _ -> Op
-  | ArithE e -> prec_of_exp e.it
-
-(* Extra parentheses can be inserted to disambiguate the role of elements of
- * an iteration. For example, `( x* )` will be interpreted differently from `x*`
- * in a place where an expression of some type `t*` is expected. In particular,
- * we assume `x* : t*` in the latter case, but `x* : t` in the former
- * (which makes sense in the case where `t` itself is an iteration type).
- * To make this distinction ducing elaboration, we mark potential parentheses
- * as "significant" (true) when they are not syntactically enforced, and instead
- * are assumed to have been inserted to express iteration injection.
- *)
-let signify_pars prec = function
-  | ParenE (exp, `Insig) ->
-    ParenE (exp, if prec < prec_of_exp exp.it then `Sig else `Insig)
-  | exp' -> exp'
+(* Classifications *)
 
 let is_post_exp e =
   match e.it with
@@ -92,7 +67,7 @@ let is_post_exp e =
   | BoolE _ | NumE _
   | EpsE
   | ParenE _ | TupE _ | BrackE _
-  | IdxE _ | SliceE _ | ExtE _
+  | ListE _ | IdxE _ | SliceE _ | ExtE _
   | StrE _ | DotE _
   | IterE _ | CvtE _ | CallE _
   | HoleE _ -> true
@@ -109,8 +84,8 @@ let rec is_typcase t =
 let rec is_typcon t =
   match t.it with
   | AtomT _ | InfixT _ | BrackT _ | SeqT _ -> true
-  | VarT _ | BoolT | NumT _ | TextT | TupT _ -> false
-  | ParenT t1 | IterT (t1, _) -> is_typcon t1
+  | VarT _ | BoolT | NumT _ | TextT | TupT _ | ParenT _ -> false
+  | IterT (t1, _) -> is_typcon t1
   | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
 
 %}
@@ -172,13 +147,10 @@ let rec is_typcon t =
   | COMMA {}
   | COMMA_NL {}
 
-tup_list(X) :
-  | (* empty *) { [], `Sig }
-  | X { $1::[], `Insig }
-  | X comma tup_list(X) { $1::(fst $3), `Sig }
-
 comma_list(X) :
-  | tup_list(X) { fst $1 }
+  | (* empty *) { [] }
+  | X { $1::[] }
+  | X comma comma_list(X) { $1::$3 }
 
 comma_nl_list(X) :
   | (* empty *) { [] }
@@ -361,7 +333,7 @@ iter :
   | STAR { List }
   | UP arith_prim
     { match $2.it with
-      | ParenE ({it = CmpE ({it = VarE (id, []); _}, `LtOp, e); _}, `Insig) ->
+      | ParenE {it = CmpE ({it = VarE (id, []); _}, `LtOp, e); _} ->
         ListN (e, Some id)
       | _ -> ListN ($2, None)
     }
@@ -386,11 +358,11 @@ typ_prim_ :
 typ_post : typ_post_ { $1 $ $sloc }
 typ_post_ :
   | typ_prim_ { $1 }
-  | LPAREN tup_list(typ) RPAREN
+  | LPAREN comma_list(typ) RPAREN
     { match $2 with
-      | [], _ -> ParenT (SeqT [] $ $sloc)
-      | [t], `Insig -> ParenT t
-      | ts, _ -> TupT ts }
+      | [] -> ParenT (SeqT [] $ $sloc)
+      | [t] -> ParenT t
+      | ts -> TupT ts }
   | typ_post iter { IterT ($1, $2) }
 
 typ : typ_post { $1 }
@@ -449,11 +421,11 @@ nottyp_prim_ :
     { BrackT (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE nottyp RBRACE
     { BrackT (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
-  | LPAREN tup_list(typ) RPAREN
+  | LPAREN comma_list(typ) RPAREN
     { match $2 with
-      | [], _ -> ParenT (SeqT [] $ $sloc)
-      | [t], `Insig -> ParenT t
-      | ts, _ -> TupT ts }
+      | [] -> ParenT (SeqT [] $ $sloc)
+      | [t] -> ParenT t
+      | ts -> TupT ts }
 
 nottyp_post : nottyp_post_ { $1 $ $sloc }
 nottyp_post_ :
@@ -542,11 +514,11 @@ exp_prim_ :
   | exp_hole_ { $1 }
   | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
-  | LPAREN tup_list(exp_bin) RPAREN
+  | LPAREN comma_list(exp_bin) RPAREN
     { match $2 with
-      | [], signif -> ParenE (SeqE [] $ $sloc, signif)
-      | [e], `Insig -> ParenE (e, `Insig)
-      | es, _ -> TupE es }
+      | [] -> ParenE (SeqE [] $ $sloc)
+      | [e] -> ParenE e
+      | es -> TupE es }
   | TICK LPAREN exp RPAREN
     { BrackE (Atom.LParen $$ $loc($2), $3, Atom.RParen $$ $loc($4)) }
   | TICK LBRACK exp RBRACK
@@ -559,7 +531,7 @@ exp_prim_ :
 
 exp_post : exp_post_ { $1 $ $sloc }
 exp_post_ :
-  | exp_prim_ { signify_pars Post $1 }
+  | exp_prim_ { $1 }
   | exp_atom LBRACK arith RBRACK { IdxE ($1, $3) }
   | exp_atom LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
   | exp_atom LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
@@ -574,18 +546,24 @@ exp_atom_ :
   | atomid_lparen exp RPAREN
     { SeqE [
         AtomE (Atom.Atom $1 $$ $loc($1)) $ $loc($1);
-        ParenE ($2, `Insig) $ $loc($2)
+        ParenE $2 $ $loc($2)
       ] }
+
+exp_list : exp_list_ { $1 $ $sloc }
+exp_list_ :
+  | LBRACK exp_seq RBRACK { ListE (as_seq_exp $2) }
+  | exp_list iter { IterE ($1, $2) }
 
 exp_seq : exp_seq_ { $1 $ $sloc }
 exp_seq_ :
-  | exp_atom_ { signify_pars Seq $1 }
+  | exp_atom_ { $1 }
+  | exp_list_ { $1 }
   | exp_seq exp_atom { SeqE (as_seq_exp $1 @ [$2]) }
   | exp_seq FUSE exp_atom { FuseE ($1, $3) }
 
 exp_un : exp_un_ { $1 $ $sloc }
 exp_un_ :
-  | exp_seq_ { signify_pars Op $1 }
+  | exp_seq_ { $1 }
   | bar exp bar { LenE $2 }
   | BARBAR gramid BARBAR { SizeE $2 }
   | unop exp_un { UnE ($1, $2) }
@@ -621,7 +599,7 @@ arith_prim_ :
   | exp_var_ { $1 }
   | exp_call_ { $1 }
   | exp_hole_ { $1 }
-  | LPAREN arith RPAREN { ParenE ($2, `Insig) }
+  | LPAREN arith RPAREN { ParenE $2 }
   | LPAREN arith_bin STAR RPAREN
     { (* HACK: to allow "(s*)" as arithmetic expression. *)
       if not (is_post_exp $2) then
@@ -732,11 +710,11 @@ sym_prim_ :
   | TEXTLIT { TextG $1 }
   | TICK NATLIT { NumG (`AtomOp, $2) }
   | EPS { EpsG }
-  | LPAREN tup_list(sym) RPAREN
+  | LPAREN comma_list(sym) RPAREN
     { match $2 with
-      | [], _ -> ParenG (SeqG [] $ $sloc)
-      | [g], `Insig -> ParenG g
-      | gs, _ -> TupG gs }
+      | [] -> ParenG (SeqG [] $ $sloc)
+      | [g] -> ParenG g
+      | gs -> TupG gs }
   | DOLLAR LPAREN arith RPAREN { ArithG $3 }
   | DOLLAR numtyp DOLLAR LPAREN arith RPAREN { ArithG (CvtE ($5, $2) $ $sloc) }
 
@@ -802,9 +780,7 @@ param_ :
 
 
 def :
-  | def_ { $1 $ $sloc }
-  | NL_NL def
-    { $2 }
+  | def_ NL_NL* { $1 $ $loc($1) }
 def_ :
   | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* exit_scope
     { FamD ($2, List.map El.Convert.param_of_arg $4, $7) }
@@ -874,7 +850,7 @@ hint :
 (* Scripts *)
 
 script :
-  | def* EOF { $1 }
+  | NL_NL* def* EOF { $2 }
 
 typ_eof :
   | typ EOF { $1 }

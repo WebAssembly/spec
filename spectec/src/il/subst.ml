@@ -155,12 +155,18 @@ and subst_exp s e =
     let it', s' = subst_iterexp s iterexp in
     IterE (subst_exp s' e1, it')
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
-  | UncaseE (e1, op) -> UncaseE (subst_exp s e1, op)
+  | UncaseE (e1, op) ->
+    let e1' = subst_exp s e1 in
+    assert (match e1'.note.it with VarT _ -> true | _ -> false);
+    UncaseE (subst_exp s e1, op)
   | OptE eo -> OptE (subst_opt subst_exp s eo)
   | TheE e -> TheE (subst_exp s e)
   | ListE es -> ListE (subst_list subst_exp s es)
+  | LiftE e -> LiftE (subst_exp s e)
   | CatE (e1, e2) -> CatE (subst_exp s e1, subst_exp s e2)
-  | CaseE (op, e1) -> CaseE (op, subst_exp s e1)
+  | CaseE (op, e1) ->
+    assert (match e.note.it with VarT _ -> true | _ -> false);
+    CaseE (op, subst_exp s e1)
   | CvtE (e1, nt1, nt2) -> CvtE (subst_exp s e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
   ) $$ e.at % subst_typ s e.note

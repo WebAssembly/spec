@@ -5,8 +5,8 @@ open Print
 let el_id = Util.Source.it
 let el_atom = string_of_atom
 let el_iter = string_of_iter
-let el_typ = string_of_typ
-let el_typfield = string_of_typfield
+let el_typ = string_of_typ ~short:true
+let el_typfield = string_of_typfield ~short:true
 let el_exp = string_of_exp
 let el_expfield = string_of_expfield
 let el_sym = string_of_sym

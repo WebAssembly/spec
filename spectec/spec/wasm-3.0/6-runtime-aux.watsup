@@ -180,7 +180,6 @@ def $add_exninst(state, exninst*) : state        hint(show %[.EXNS =++ %])    hi
 
 def $add_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
 def $add_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f
-;; TODO: variable name for exninst? (ei and xi are both taken)
 def $add_exninst((s; f), exn*) = s[.EXNS =++ exn*]; f
 
 

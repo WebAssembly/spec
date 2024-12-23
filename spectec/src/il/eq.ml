@@ -72,6 +72,7 @@ and eq_exp e1 e2 =
     op1 = op2 && ot1 = ot2 && eq_exp e11 e21 && eq_exp e12 e22
   | CmpE (op1, ot1, e11, e12), CmpE (op2, ot2, e21, e22) ->
     op1 = op2 && ot1 = ot2 && eq_exp e11 e21 && eq_exp e12 e22
+  | LiftE e11, LiftE e21
   | LenE e11, LenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)

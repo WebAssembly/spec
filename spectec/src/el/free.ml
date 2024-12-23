@@ -132,13 +132,13 @@ and free_exp e =
   | VarE (id, as_) -> free_varid id + free_list free_arg as_
   | AtomE _ | BoolE _ | NumE _ | TextE _ | EpsE | HoleE _ | LatexE _ -> empty
   | CvtE (e1, _) | UnE (_, e1) | DotE (e1, _) | LenE e1
-  | ParenE (e1, _) | BrackE (_, e1, _) | ArithE e1 | UnparenE e1 -> free_exp e1
+  | ParenE e1 | BrackE (_, e1, _) | ArithE e1 | UnparenE e1 -> free_exp e1
   | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CatE (e1, e2) | MemE (e1, e2)
   | InfixE (e1, _, e2) | FuseE (e1, e2) -> free_exp e1 + free_exp e2
   | SliceE (e1, e2, e3) -> free_exp e1 + free_exp e2 + free_exp e3
-  | SeqE es | TupE es -> free_list free_exp es
+  | SeqE es | ListE es | TupE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     free_exp e1 + free_path p + free_exp e2
   | StrE efs -> free_nl_list free_expfield efs
@@ -161,12 +161,12 @@ and det_exp e =
   | VarE (id, []) -> bound_varid id
   | VarE _ -> assert false
   | CvtE (e1, _) | UnE (#Num.unop, e1)
-  | ParenE (e1, _) | BrackE (_, e1, _) | ArithE e1 -> det_exp e1
+  | ParenE e1 | BrackE (_, e1, _) | ArithE e1 -> det_exp e1
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)
   | BinE (e1, #Num.binop, e2)
   | InfixE (e1, _, e2) -> det_exp e1 + det_exp e2
-  | SeqE es | TupE es -> free_list det_exp es
+  | SeqE es | ListE es | TupE es -> free_list det_exp es
   | StrE efs -> free_nl_list det_expfield efs
   | IterE (e1, iter) -> det_exp e1 + det_iter iter
   (* As a special hack to work with bijective functions,
@@ -191,9 +191,9 @@ and det_iter iter =
 and idx_exp e =
   match e.it with
   | VarE _ -> empty
-  | ParenE (e1, _) | BrackE (_, e1, _) | ArithE e1 -> idx_exp e1
+  | ParenE e1 | BrackE (_, e1, _) | ArithE e1 -> idx_exp e1
   | InfixE (e1, _, e2) -> idx_exp e1 + idx_exp e2
-  | SeqE es | TupE es -> free_list idx_exp es
+  | SeqE es | ListE es | TupE es -> free_list idx_exp es
   | StrE efs -> free_nl_list idx_expfield efs
   | IterE (e1, iter) -> idx_exp e1 + idx_iter iter
   | CallE (_, as_) -> free_list idx_arg as_
@@ -214,7 +214,7 @@ and det_cond_exp e =
   | BinE (e1, #Bool.binop, e2) -> det_cond_exp e1 + det_cond_exp e2
   | CmpE (e1, `EqOp, e2) -> det_exp e1 + det_exp e2
   | MemE (e1, _) -> det_exp e1
-  | ParenE (e1, _) | ArithE e1 -> det_cond_exp e1
+  | ParenE e1 | ArithE e1 -> det_cond_exp e1
   | _ -> empty
 
 
