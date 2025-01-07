@@ -392,7 +392,7 @@ let rec structured_string_of_iter = function
 
 and structured_string_of_record_expr r =
   Record.fold
-    (fun a v acc -> acc ^ string_of_atom a ^ ": " ^ string_of_expr v ^ "; ")
+    (fun a v acc -> acc ^ string_of_atom a ^ ": " ^ structured_string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
