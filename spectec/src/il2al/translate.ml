@@ -263,8 +263,10 @@ and translate_exp exp =
     (* Singleton *)
     | [ []; [] ], [ e1 ] ->
       { (translate_exp e1) with note=note }
-    (* Tuple *)
-    | _ when List.for_all is_simple_separator op ->
+    (* State *)
+    | _ when List.for_all is_simple_separator op
+      && Il.Print.string_of_typ_name exp.note = "state"
+      ->
       tupE (List.map translate_exp exps) ~at ~note
     (* Normal Case *)
     | _ ->

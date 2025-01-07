@@ -34,7 +34,7 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
 
 
 
-The global type :math:`({\mathsf{mut}^?}, t)` is valid.
+The global type :math:`({\mathsf{mut}^?}~t)` is valid.
 
 
 
@@ -411,7 +411,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}~t)`.
 
 
 
@@ -421,7 +421,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -467,7 +467,7 @@ The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{loa
 
     * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M, {\mathit{sx}})`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
 
     * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
@@ -531,7 +531,7 @@ The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is val
 
 
 
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{(M, {\mathit{sx}})}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{M~{\mathit{sx}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
@@ -646,7 +646,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon, t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
 
 
 
@@ -661,7 +661,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
 
 
 
@@ -701,7 +701,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}, t)`.
+  * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`t`.
 
@@ -1388,7 +1388,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1400,7 +1400,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -2910,7 +2910,7 @@ Functype_ok
 - the function type t_1* -> t_2? is valid.
 
 Globaltype_ok
-- the global type (MUT?, t) is valid.
+- the global type (MUT? t) is valid.
 
 Tabletype_ok
 - the table type limits is valid if:
@@ -3106,12 +3106,12 @@ Instr_ok/local.tee
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (?(MUT), t).
+  - C.GLOBALS[x] is (?(MUT) t).
 
 Instr_ok/memory.size
 - the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
@@ -3134,7 +3134,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
     - t_u1 is Inn.
-    - loadop__u1? is ?((M, sx)).
+    - loadop__u1? is ?((M sx)).
     - t_u3 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -3167,7 +3167,7 @@ Instr_ok/load-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?((M, sx)) memarg) is valid with the function type [I32] -> [Inn] if:
+- the instruction (LOAD Inn ?((M sx)) memarg) is valid with the function type [I32] -> [Inn] if:
   - the memory type C.MEMS[0] exists.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -3225,7 +3225,7 @@ Instr_const
   - Or:
     - instr_u1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
-    - C.GLOBALS[x] is (?(), t).
+    - C.GLOBALS[x] is (?() t).
 
 Instr_const/const
 - the instruction (t.CONST c) is constant.
@@ -3233,7 +3233,7 @@ Instr_const/const
 Instr_const/global.get
 - the instruction (GLOBAL.GET x) is constant if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (?(), t).
+  - C.GLOBALS[x] is (?() t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -3253,7 +3253,7 @@ Func_ok
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
   - gt is valid.
-  - gt is (mut, t).
+  - gt is (mut t).
   - the expression expr is valid with the number type ?(t).
   - expr is constant.
 
@@ -3585,13 +3585,13 @@ Step_read/load t_u1 loadop__u1? ao
 5. If the type of t_u1 is Inn, then:
   a. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be t_u1.
   c. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
@@ -4326,12 +4326,12 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
 
 
-The global type :math:`({\mathsf{mut}^?}, t)` is valid.
+The global type :math:`({\mathsf{mut}^?}~t)` is valid.
 
 
 
 
-The table type :math:`({\mathit{limits}}, {\mathit{reftype}})` is valid if:
+The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is valid if:
 
 
   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
@@ -4463,7 +4463,7 @@ The global type :math:`{\mathit{gt}}` matches itself.
 
 
 
-The table type :math:`({\mathit{lim}}_1, {\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2, {\mathit{rt}})` if:
+The table type :math:`({\mathit{lim}}_1~{\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2~{\mathit{rt}})` if:
 
 
   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
@@ -4712,7 +4712,7 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, \mathsf{funcref})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~\mathsf{funcref})`.
 
   * The function type :math:`C{.}\mathsf{types}{}[y]` exists.
 
@@ -4943,7 +4943,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathit{mut}}~t)`.
 
 
 
@@ -4953,7 +4953,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -4963,7 +4963,7 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -4973,7 +4973,7 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -4983,7 +4983,7 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function typ
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -4993,7 +4993,7 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function typ
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5003,7 +5003,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function typ
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -5013,11 +5013,11 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the functi
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}_1, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}_1~{\mathit{rt}})`.
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_2]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{lim}}_2, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{lim}}_2~{\mathit{rt}})`.
 
 
 
@@ -5027,7 +5027,7 @@ The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the functi
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The element type :math:`C{.}\mathsf{elems}{}[x_2]` exists.
 
@@ -5131,7 +5131,7 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
     * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M, {\mathit{sx}})`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
 
     * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
@@ -5277,7 +5277,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memar
 
 
 
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{(M, {\mathit{sx}})}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{M~{\mathit{sx}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
 
   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
@@ -5462,7 +5462,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon, t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
 
 
 
@@ -5492,7 +5492,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
 
 
 
@@ -5532,7 +5532,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}, t)`.
+  * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
@@ -5566,7 +5566,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
     * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -5587,7 +5587,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -6931,7 +6931,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -6943,7 +6943,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -7150,7 +7150,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})})`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}})`.
 
     #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
@@ -7164,7 +7164,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
     #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})})`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}})`.
 
     #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
@@ -9389,13 +9389,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{ti}}`.
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
-  a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+  a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~{i'}~..~j~])~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
   #. Return :math:`{\mathit{ti}'}`.
 
@@ -9596,11 +9596,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(s, (({}[~i~..~j~]), {\mathit{rt}}))`
-.................................................................
+:math:`{\mathrm{alloctable}}(s, ({}[~i~..~j~])~{\mathit{rt}})`
+..............................................................
 
 
-1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~(({}[~i~..~j~])~{\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -10003,10 +10003,10 @@ Functype_ok
 - the function type t_1* -> t_2* is valid.
 
 Globaltype_ok
-- the global type (MUT?, t) is valid.
+- the global type (MUT? t) is valid.
 
 Tabletype_ok
-- the table type (limits, reftype) is valid if:
+- the table type (limits reftype) is valid if:
   - the limits limits is valid with ((2 ^ 32) - 1).
 
 Memtype_ok
@@ -10075,7 +10075,7 @@ Globaltype_sub
 - the global type gt matches itself.
 
 Tabletype_sub
-- the table type (lim_1, rt) matches the table type (lim_2, rt) if:
+- the table type (lim_1 rt) matches the table type (lim_2 rt) if:
   - the limits lim_1 matches the limits lim_2.
 
 Memtype_sub
@@ -10202,7 +10202,7 @@ Instr_ok/call
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x y) is valid with the function type t_1* :: [I32] -> t_2* if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, FUNCREF).
+  - C.TABLES[x] is (lim FUNCREF).
   - the function type C.TYPES[y] exists.
   - C.TYPES[y] is t_1* -> t_2*.
 
@@ -10329,49 +10329,49 @@ Instr_ok/local.tee
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the function type [] -> [t] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the function type [t] -> [] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (?(MUT), t).
+  - C.GLOBALS[x] is (?(MUT) t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the function type [I32] -> [rt] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the function type [I32, rt] -> [] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the function type [] -> [I32] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the function type [rt, I32] -> [I32] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the function type [I32, rt, I32] -> [] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - the table type C.TABLES[x_1] exists.
-  - C.TABLES[x_1] is (lim_1, rt).
+  - C.TABLES[x_1] is (lim_1 rt).
   - the table type C.TABLES[x_2] exists.
-  - C.TABLES[x_2] is (lim_2, rt).
+  - C.TABLES[x_2] is (lim_2 rt).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x_1 x_2) is valid with the function type [I32, I32, I32] -> [] if:
   - the table type C.TABLES[x_1] exists.
-  - C.TABLES[x_1] is (lim, rt).
+  - C.TABLES[x_1] is (lim rt).
   - the element type C.ELEMS[x_2] exists.
   - C.ELEMS[x_2] is rt.
 
@@ -10423,7 +10423,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
     - nt_u1 is Inn.
-    - loadop__u1? is ?((M, sx)).
+    - loadop__u1? is ?((M sx)).
     - t_u1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -10498,7 +10498,7 @@ Instr_ok/load-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?((M, sx)) memarg) is valid with the function type [I32] -> [Inn] if:
+- the instruction (LOAD Inn ?((M sx)) memarg) is valid with the function type [I32] -> [Inn] if:
   - the memory type C.MEMS[0] exists.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -10593,7 +10593,7 @@ Instr_const
   - Or:
     - in_u1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
-    - C.GLOBALS[x] is (?(), t).
+    - C.GLOBALS[x] is (?() t).
 
 Instr_const/const
 - the instruction (nt.CONST c) is constant.
@@ -10610,7 +10610,7 @@ Instr_const/ref.func
 Instr_const/global.get
 - the instruction (GLOBAL.GET x) is constant if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (?(), t).
+  - C.GLOBALS[x] is (?() t).
 
 Expr_const
 - the expression instr* is constant if:
@@ -10630,7 +10630,7 @@ Func_ok
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
   - gt is valid.
-  - gt is (mut, t).
+  - gt is (mut t).
   - the expression expr is valid with the value type t.
   - expr is constant.
 
@@ -10647,7 +10647,7 @@ Elemmode_ok
   - Either:
     - elemmode_u1 is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
-    - C.TABLES[x] is (lim, rt).
+    - C.TABLES[x] is (lim rt).
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
@@ -10658,7 +10658,7 @@ Elemmode_ok
 Elemmode_ok/active
 - (ACTIVE x expr) is valid with the reference type rt if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (lim, rt).
+  - C.TABLES[x] is (lim rt).
   - the expression expr is valid with the value type I32.
   - expr is constant.
 
@@ -11307,13 +11307,13 @@ Step_read/load nt_u1 loadop__u1? ao
 5. If the type of nt_u1 is Inn, then:
   a. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be nt_u1.
   c. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
@@ -11414,14 +11414,14 @@ Step_read/memory.copy
   a. If (j <= i), then:
     1) Push the value (I32.CONST j) to the stack.
     2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8 U)) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
     5) Push the value (I32.CONST (j + 1)) to the stack.
     6) Push the value (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
     2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8 U)) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
     5) Push the value (I32.CONST j) to the stack.
     6) Push the value (I32.CONST i) to the stack.
@@ -12479,10 +12479,10 @@ with_data z x b*
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 growtable ti n r
-1. Let { TYPE: (([ i .. j ]), rt); REFS: r'*; } be ti.
+1. Let { TYPE: (([ i .. j ]) rt); REFS: r'*; } be ti.
 2. Let i' be (|r'*| + n).
 3. If (i' <= j), then:
-  a. Let ti' be { TYPE: (([ i' .. j ]), rt); REFS: r'* :: r^n; }.
+  a. Let ti' be { TYPE: (([ i' .. j ]) rt); REFS: r'* :: r^n; }.
   b. Return ti'.
 
 growmemory mi n
@@ -12578,8 +12578,8 @@ allocglobals s gt_u1* v_u1*
   e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable s (([ i .. j ]), rt)
-1. Let ti be { TYPE: (([ i .. j ]), rt); REFS: (REF.NULL rt)^i; }.
+alloctable s (([ i .. j ]) rt)
+1. Let ti be { TYPE: (([ i .. j ]) rt); REFS: (REF.NULL rt)^i; }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
@@ -12972,7 +12972,7 @@ The storage type :math:`{\mathit{packtype}}` is valid if:
 
 
 
-The field type :math:`({\mathsf{mut}^?}, {\mathit{storagetype}})` is valid if:
+The field type :math:`({\mathsf{mut}^?}~{\mathit{storagetype}})` is valid if:
 
 
   * The storage type :math:`{\mathit{storagetype}}` is valid.
@@ -13488,7 +13488,7 @@ The storage type :math:`{\mathit{packtype}}_1` matches the storage type :math:`{
 
 
 
-The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, {\mathit{zt}}_1)` matches the field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}, {\mathit{zt}}_2)` if:
+The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{zt}}_1)` matches the field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{zt}}_2)` if:
 
 
   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
@@ -13510,7 +13510,7 @@ The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}
 
 
 
-The field type :math:`(\epsilon, {\mathit{zt}}_1)` matches the field type :math:`(\epsilon, {\mathit{zt}}_2)` if:
+The field type :math:`(\epsilon~{\mathit{zt}}_1)` matches the field type :math:`(\epsilon~{\mathit{zt}}_2)` if:
 
 
   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
@@ -13518,7 +13518,7 @@ The field type :math:`(\epsilon, {\mathit{zt}}_1)` matches the field type :math:
 
 
 
-The field type :math:`(\mathsf{mut}, {\mathit{zt}}_1)` matches the field type :math:`(\mathsf{mut}, {\mathit{zt}}_2)` if:
+The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` matches the field type :math:`(\mathsf{mut}~{\mathit{zt}}_2)` if:
 
 
   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
@@ -13772,7 +13772,7 @@ The limits :math:`({}[~n~..~m~])` is valid with :math:`k` if:
 
 
 
-The global type :math:`({\mathsf{mut}^?}, t)` is valid if:
+The global type :math:`({\mathsf{mut}^?}~t)` is valid if:
 
 
   * The value type :math:`t` is valid.
@@ -13780,7 +13780,7 @@ The global type :math:`({\mathsf{mut}^?}, t)` is valid if:
 
 
 
-The table type :math:`({\mathit{addrtype}}, {\mathit{limits}}, {\mathit{reftype}})` is valid if:
+The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is valid if:
 
 
   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
@@ -13902,7 +13902,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
   * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`:
 
-    * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}, t)`.
+    * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
 
 
 
@@ -13917,7 +13917,7 @@ The limits :math:`({}[~n_1~..~m_1~])` matches the limits :math:`({}[~n_2~..~m_2~
 
 
 
-The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, {\mathit{valtype}}_1)` matches the global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}, {\mathit{valtype}}_2)` if:
+The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{valtype}}_1)` matches the global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{valtype}}_2)` if:
 
 
   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
@@ -13939,7 +13939,7 @@ The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
 
 
-The global type :math:`(\epsilon, {\mathit{valtype}}_1)` matches the global type :math:`(\epsilon, {\mathit{valtype}}_2)` if:
+The global type :math:`(\epsilon~{\mathit{valtype}}_1)` matches the global type :math:`(\epsilon~{\mathit{valtype}}_2)` if:
 
 
   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
@@ -13947,7 +13947,7 @@ The global type :math:`(\epsilon, {\mathit{valtype}}_1)` matches the global type
 
 
 
-The global type :math:`(\mathsf{mut}, {\mathit{valtype}}_1)` matches the global type :math:`(\mathsf{mut}, {\mathit{valtype}}_2)` if:
+The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` matches the global type :math:`(\mathsf{mut}~{\mathit{valtype}}_2)` if:
 
 
   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
@@ -13957,7 +13957,7 @@ The global type :math:`(\mathsf{mut}, {\mathit{valtype}}_1)` matches the global 
 
 
 
-The table type :math:`({\mathit{addrtype}}, {\mathit{limits}}_1, {\mathit{reftype}}_1)` matches the table type :math:`({\mathit{addrtype}}, {\mathit{limits}}_2, {\mathit{reftype}}_2)` if:
+The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1)` matches the table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2)` if:
 
 
   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
@@ -14420,7 +14420,7 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruct
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
@@ -14478,7 +14478,7 @@ The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
@@ -14643,7 +14643,7 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction 
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
   * Let :math:`{t^\ast}` be the value type sequence :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
 
@@ -14655,7 +14655,7 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}, {\mathit{zt}})^\ast})`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
   * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
@@ -14673,7 +14673,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-  * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is equal to :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
+  * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is equal to :math:`({\mathsf{mut}^?}~{\mathit{zt}})`.
 
   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is equal to :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14691,7 +14691,7 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instructio
 
   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
-  * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is equal to :math:`(\mathsf{mut}, {\mathit{zt}})`.
+  * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is equal to :math:`(\mathsf{mut}~{\mathit{zt}})`.
 
   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14703,7 +14703,7 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction t
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14715,7 +14715,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
   * A :ref:`default value <default-val>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
@@ -14727,7 +14727,7 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14739,7 +14739,7 @@ The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instr
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{rt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
 
   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -14753,7 +14753,7 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instr
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
   * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
@@ -14769,7 +14769,7 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is equal to :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14783,7 +14783,7 @@ The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction t
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14800,7 +14800,7 @@ The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction 
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14812,11 +14812,11 @@ The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instru
 
   * The defined type :math:`C{.}\mathsf{types}{}[x_1]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}_1))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
 
   * The defined type :math:`C{.}\mathsf{types}{}[x_2]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}_2))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
 
   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
@@ -14828,7 +14828,7 @@ The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -14842,7 +14842,7 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the inst
 
   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}, {\mathit{zt}}))`.
+  * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
   * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
@@ -15002,7 +15002,7 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction t
 
   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}, t)`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
 
 
 
@@ -15012,7 +15012,7 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction t
 
   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}, t)`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}~t)`.
 
 
 
@@ -15022,7 +15022,7 @@ The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction t
 
   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}, t)`.
+  * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`({\mathit{init}}~t)`.
 
 
 
@@ -15032,7 +15032,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction 
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
 
 
@@ -15042,7 +15042,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction 
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -15052,7 +15052,7 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction t
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15062,7 +15062,7 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction t
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15072,7 +15072,7 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15082,7 +15082,7 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15092,7 +15092,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction 
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15102,11 +15102,11 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instru
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{at}}_1, {\mathit{lim}}_1, {\mathit{rt}}_1)`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is equal to :math:`({\mathit{at}}_1~{\mathit{lim}}_1~{\mathit{rt}}_1)`.
 
   * The table type :math:`C{.}\mathsf{tables}{}[x_2]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{at}}_2, {\mathit{lim}}_2, {\mathit{rt}}_2)`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{at}}_2~{\mathit{lim}}_2~{\mathit{rt}}_2)`.
 
   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
 
@@ -15120,7 +15120,7 @@ The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instructio
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}}_1)`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}_1)`.
 
   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -15232,7 +15232,7 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
     * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
-    * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M, {\mathit{sx}})`.
+    * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
 
     * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
@@ -15375,7 +15375,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{mem
 
 
 
-The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{(M, {\mathit{sx}})}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
+The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
 
 
   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15486,9 +15486,9 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
     * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}, t)`.
+      * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
-    * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+    * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
   * Or:
 
     * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
@@ -15533,9 +15533,9 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
   * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`:
 
-    * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}, t)`.
+    * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
-  * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}, t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
 
 
 
@@ -15616,7 +15616,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon, t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
   * Or:
 
     * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
@@ -15693,7 +15693,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
 
 
 
@@ -15732,7 +15732,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the
 
 
 
-The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, t)` if:
+The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~t)` if:
 
 
   * Either:
@@ -15750,7 +15750,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
 
 
-The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}, t)` if:
+The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}~t)` if:
 
 
   * A :ref:`default value <default-val>` for value type the value type :math:`t` is defined.
@@ -15758,7 +15758,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 
 
 
-The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}, t)` if:
+The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}~t)` if:
 
 
   * A :ref:`default value <default-val>` for value type the value type :math:`t` is not defined.
@@ -15779,7 +15779,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
     * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
 
-  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}, t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^\ast}`.
+  * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^\ast}`.
 
 
 
@@ -15789,7 +15789,7 @@ The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is va
 
   * The global type :math:`{\mathit{gt}}` is valid.
 
-  * The global type :math:`{\mathit{globaltype}}` is equal to :math:`({\mathsf{mut}^?}, t)`.
+  * The global type :math:`{\mathit{globaltype}}` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
@@ -15803,7 +15803,7 @@ The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid
 
   * The table type :math:`{\mathit{tt}}` is valid.
 
-  * The table type :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})`.
+  * The table type :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
@@ -15839,7 +15839,7 @@ The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
     * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}'})`.
+    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
 
     * The element type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
@@ -15862,7 +15862,7 @@ The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the e
 
   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}'})`.
+  * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
 
   * The element type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
@@ -16226,7 +16226,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-  * The function index sequence :math:`{x^\ast}` is equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}, {{\mathit{table}}^\ast}, {{\mathit{mem}}^\ast}, {{\mathit{elem}}^\ast}, {{\mathit{data}}^\ast}))`.
+  * The function index sequence :math:`{x^\ast}` is equal to :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
 
   * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is equal to :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
@@ -16264,7 +16264,7 @@ The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptst
 
     * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}, t)`.
+    * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
   * Or:
 
     * The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
@@ -16292,7 +16292,7 @@ The instruction sequence :math:`(\mathsf{global{.}get}~x)` is valid with the fun
 
   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}, t)`.
+  * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
 
 
@@ -17752,7 +17752,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
+#. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
 #. Assert: Due to validation, for all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
@@ -17789,7 +17789,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
+    #) Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
     #) If :math:`i < {|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -17810,7 +17810,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
 #. Assert: Due to validation, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
@@ -17866,7 +17866,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
 #. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8 > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
@@ -17915,7 +17915,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+    #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
     #) Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
@@ -18068,7 +18068,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+      #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
       #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
@@ -18102,7 +18102,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
         1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-        #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+        #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
         #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
@@ -18238,7 +18238,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-    #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+    #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
     #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8 > {|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
 
@@ -18322,7 +18322,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{type}`.
+#. Let :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{type}`.
 
 #. Let :math:`n` be :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`.
 
@@ -18512,7 +18512,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -18524,7 +18524,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-    #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
     #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -18735,7 +18735,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)`.
 
     #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -18749,7 +18749,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
     #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)`.
 
     #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -18850,7 +18850,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{\mathit{structtype}}_0`.
+#. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^{n}}` be :math:`{\mathit{structtype}}_0`.
 
 #. Let :math:`a` be :math:`{|z{.}\mathsf{structs}|}`.
 
@@ -18891,7 +18891,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-  #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
+  #. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
   #. If :math:`i < {|{{\mathit{zt}}^\ast}|}`, then:
 
@@ -18908,7 +18908,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
 #. Let :math:`a` be :math:`{|z{.}\mathsf{arrays}|}`.
 
@@ -18957,7 +18957,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-  #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+  #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
   #. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
 
@@ -20121,11 +20121,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{pt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 
-:math:`{({\mathsf{mut}^?}, {\mathit{zt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...............................................................................................
+:math:`{{\mathsf{mut}^?}~{\mathit{zt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+............................................................................................
 
 
-1. Return :math:`({\mathsf{mut}^?}, {{\mathit{zt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathsf{mut}^?}~{{\mathit{zt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -20186,18 +20186,18 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathit{at}}`.
 
 
-:math:`{({\mathsf{mut}^?}, t)}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...................................................................................
+:math:`{{\mathsf{mut}^?}~t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+................................................................................
 
 
-1. Return :math:`({\mathsf{mut}^?}, {t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathsf{mut}^?}~{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({\mathit{at}}, {\mathit{lim}}, {\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-............................................................................................................
+:math:`{{\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+........................................................................................................
 
 
-1. Return :math:`({\mathit{at}}, {\mathit{lim}}, {{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+1. Return :math:`({\mathit{at}}~{\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{\mathit{at}}~{\mathit{lim}}~\mathsf{page}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -20691,8 +20691,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{fieldtype}}(({\mathsf{mut}^?}, {\mathit{storagetype}}))`
-........................................................................................
+:math:`{\mathrm{free}}_{\mathit{fieldtype}}({\mathsf{mut}^?}~{\mathit{storagetype}})`
+.....................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{storagetype}}({\mathit{storagetype}})`.
@@ -20763,15 +20763,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{globaltype}}(({\mathsf{mut}^?}, {\mathit{valtype}}))`
-.....................................................................................
+:math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathsf{mut}^?}~{\mathit{valtype}})`
+..................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{tabletype}}(({\mathit{addrtype}}, {\mathit{limits}}, {\mathit{reftype}}))`
-..........................................................................................................
+:math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})`
+......................................................................................................
 
 
 1. Return `$free_addrtype(addrtype) ++ $free_reftype(reftype)`.
@@ -21764,8 +21764,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}, {{\mathit{table}}^\ast}, {{\mathit{mem}}^\ast}, {{\mathit{elem}}^\ast}, {{\mathit{data}}^\ast}))`
-......................................................................................................................................................
+:math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`
+................................................................................................................................................
 
 
 1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon)`.
@@ -23852,13 +23852,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
+1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
 
 #. If :math:`{|{{r'}^\ast}|} + n \leq j`, then:
 
   a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-  #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~{i'}~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+  #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~{i'}~..~j~])~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
   #. Return :math:`{\mathit{tableinst}'}`.
 
@@ -24004,11 +24004,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(s, ({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}), {\mathit{ref}})`
-................................................................................................
+:math:`{\mathrm{alloctable}}(s, {\mathit{at}}~({}[~i~..~j~])~{\mathit{rt}}, {\mathit{ref}})`
+............................................................................................
 
 
-1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}, ({}[~i~..~j~]), {\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
 
 #. Let :math:`a` be :math:`{|s{.}\mathsf{tables}|}`.
 
@@ -24661,7 +24661,7 @@ Storagetype_ok/pack
   - packtype is valid.
 
 Fieldtype_ok
-- the field type (MUT?, storagetype) is valid if:
+- the field type (MUT? storagetype) is valid if:
   - the storage type storagetype is valid.
 
 Functype_ok
@@ -24933,7 +24933,7 @@ Storagetype_sub/pack
   - packtype_1 matches packtype_2.
 
 Fieldtype_sub
-- the field type (mut_u1, zt_1) matches the field type (mut_u2, zt_2) if:
+- the field type (mut_u1 zt_1) matches the field type (mut_u2 zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
     - mut_u1 is ?().
@@ -24944,11 +24944,11 @@ Fieldtype_sub
     - zt_2 matches zt_1.
 
 Fieldtype_sub/const
-- the field type (?(), zt_1) matches the field type (?(), zt_2) if:
+- the field type (?() zt_1) matches the field type (?() zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
 
 Fieldtype_sub/var
-- the field type (?(MUT), zt_1) matches the field type (?(MUT), zt_2) if:
+- the field type (?(MUT) zt_1) matches the field type (?(MUT) zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - zt_2 matches zt_1.
 
@@ -25077,11 +25077,11 @@ Limits_ok
   - m is less than or equal to k.
 
 Globaltype_ok
-- the global type (MUT?, t) is valid if:
+- the global type (MUT? t) is valid if:
   - the value type t is valid.
 
 Tabletype_ok
-- the table type (addrtype, limits, reftype) is valid if:
+- the table type (addrtype limits reftype) is valid if:
   - the limits limits is valid with ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
@@ -25143,7 +25143,7 @@ Instrtype_sub
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
   - For all t in t* and x in x*:
-    - C.LOCALS[x] is (SET, t).
+    - C.LOCALS[x] is (SET t).
 
 Limits_sub
 - the limits ([ n_1 .. m_1 ]) matches the limits ([ n_2 .. m_2 ]) if:
@@ -25151,7 +25151,7 @@ Limits_sub
   - m_1 is less than or equal to m_2.
 
 Globaltype_sub
-- the global type (mut_u1, valtype_1) matches the global type (mut_u2, valtype_2) if:
+- the global type (mut_u1 valtype_1) matches the global type (mut_u2 valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
     - mut_u1 is ?().
@@ -25162,16 +25162,16 @@ Globaltype_sub
     - valtype_2 matches valtype_1.
 
 Globaltype_sub/const
-- the global type (?(), valtype_1) matches the global type (?(), valtype_2) if:
+- the global type (?() valtype_1) matches the global type (?() valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
 
 Globaltype_sub/var
-- the global type (?(MUT), valtype_1) matches the global type (?(MUT), valtype_2) if:
+- the global type (?(MUT) valtype_1) matches the global type (?(MUT) valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - valtype_2 matches valtype_1.
 
 Tabletype_sub
-- the table type (addrtype, limits_1, reftype_1) matches the table type (addrtype, limits_2, reftype_2) if:
+- the table type (addrtype limits_1 reftype_1) matches the table type (addrtype limits_2 reftype_2) if:
   - the limits limits_1 matches the limits limits_2.
   - the reference type reftype_1 matches the reference type reftype_2.
   - reftype_2 matches reftype_1.
@@ -25405,7 +25405,7 @@ Instr_ok/call_ref
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [at] -> t_2* if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
   - the defined type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
@@ -25434,7 +25434,7 @@ Instr_ok/return_call_ref
 Instr_ok/return_call_indirect
 - the instruction (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [at] -> t_4* if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
   - the defined type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
@@ -25521,13 +25521,13 @@ Instr_ok/i31.get
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type t* -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut, zt)*).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - Let t* be the value type sequence $unpack(zt)*.
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut, zt)*).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - For all zt in zt*:
     - A :ref:`default value <default-val>` for value type the value type $unpack(zt) is defined.
 
@@ -25536,7 +25536,7 @@ Instr_ok/struct.get
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*).
   - |yt*| is greater than i.
-  - the field type yt*[i] is (mut, zt).
+  - the field type yt*[i] is (mut zt).
   - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
   - Let t be the value type $unpack(zt).
 
@@ -25545,38 +25545,38 @@ Instr_ok/struct.set
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*).
   - |yt*| is greater than i.
-  - the field type yt*[i] is (?(MUT), zt).
+  - the field type yt*[i] is (?(MUT) zt).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [t, I32] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - A :ref:`default value <default-val>` for value type the value type $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, rt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut rt)).
   - the element type C.ELEMS[y] exists.
   - C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data type C.DATAS[y] exists.
   - C.DATAS[y] is OK.
@@ -25584,14 +25584,14 @@ Instr_ok/array.new_data
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut, zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t] -> [] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT), zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.len
@@ -25600,28 +25600,28 @@ Instr_ok/array.len
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t, I32] -> [] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT), zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF ?(NULL) (_IDX x_1)), I32, (REF ?(NULL) (_IDX x_2)), I32, I32] -> [] if:
   - the defined type C.TYPES[x_1] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is the composite type (ARRAY (?(MUT), zt_1)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is the composite type (ARRAY (?(MUT) zt_1)).
   - the defined type C.TYPES[x_2] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is the composite type (ARRAY (mut, zt_2)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is the composite type (ARRAY (mut zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
 - the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, I32, I32] -> [] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT), zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - the element type C.ELEMS[y] exists.
   - C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, I32, I32] -> [] if:
   - the defined type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT), zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data type C.DATAS[y] exists.
   - C.DATAS[y] is OK.
@@ -25710,66 +25710,66 @@ Instr_ok/vcvtop
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
   - the local type C.LOCALS[x] exists.
-  - C.LOCALS[x] is (SET, t).
+  - C.LOCALS[x] is (SET t).
 
 Instr_ok/local.set
 - the instruction (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
   - the local type C.LOCALS[x] exists.
-  - C.LOCALS[x] is (init, t).
+  - C.LOCALS[x] is (init t).
 
 Instr_ok/local.tee
 - the instruction (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
   - the local type C.LOCALS[x] exists.
-  - C.LOCALS[x] is (init, t).
+  - C.LOCALS[x] is (init t).
 
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (?(MUT), t).
+  - C.GLOBALS[x] is (?(MUT) t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the instruction type [at] -> [rt] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the instruction type [at, rt] -> [] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the instruction type [] -> [at] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the instruction type [rt, at] -> [at] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the instruction type [at, rt, at] -> [] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt).
+  - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, t] -> [] if:
   - the table type C.TABLES[x_1] exists.
-  - C.TABLES[x_1] is (at_1, lim_1, rt_1).
+  - C.TABLES[x_1] is (at_1 lim_1 rt_1).
   - the table type C.TABLES[x_2] exists.
-  - C.TABLES[x_2] is (at_2, lim_2, rt_2).
+  - C.TABLES[x_2] is (at_2 lim_2 rt_2).
   - the reference type rt_2 matches the reference type rt_1.
   - Let t be the address type $minat(at_1, at_2).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt_1).
+  - C.TABLES[x] is (at lim rt_1).
   - the element type C.ELEMS[y] exists.
   - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
@@ -25825,7 +25825,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
     - nt_u1 is Inn.
-    - loadop_u1? is ?((M, sx)).
+    - loadop_u1? is ?((M sx)).
     - t_u1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -25898,7 +25898,7 @@ Instr_ok/load-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?((M, sx)) x memarg) is valid with the instruction type [at] -> [Inn] if:
+- the instruction (LOAD Inn ?((M sx)) x memarg) is valid with the instruction type [at] -> [Inn] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -25953,8 +25953,8 @@ Instrs_ok
     - For all x_1 in x_1*:
       - the local type C.LOCALS[x_1] exists.
     - For all init in init* and t in t* and x_1 in x_1*:
-      - C.LOCALS[x_1] is (init, t).
-    - Under the context $with_locals(C, x_1*, (SET, t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
+      - C.LOCALS[x_1] is (init t).
+    - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr_u1* is instr*.
     - instrtype_u1 is it'.
@@ -25978,8 +25978,8 @@ Instrs_ok/seq
   - For all x_1 in x_1*:
     - the local type C.LOCALS[x_1] exists.
   - For all init in init* and t in t* and x_1 in x_1*:
-    - C.LOCALS[x_1] is (init, t).
-  - Under the context $with_locals(C, x_1*, (SET, t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
+    - C.LOCALS[x_1] is (init t).
+  - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
 
 Instrs_ok/sub
 - the instruction sequence instr* is valid with the instruction type it' if:
@@ -26025,7 +26025,7 @@ Instr_const
   - Or:
     - instr_u1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
-    - C.GLOBALS[x] is (?(), t).
+    - C.GLOBALS[x] is (?() t).
   - Or:
     - instr_u1 is (BINOP Inn binop).
     - Inn is contained in [I32, I64].
@@ -26070,7 +26070,7 @@ Instr_const/extern.convert_any
 Instr_const/global.get
 - the instruction (GLOBAL.GET x) is constant if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (?(), t).
+  - C.GLOBALS[x] is (?() t).
 
 Instr_const/binop
 - the instruction (BINOP Inn binop) is constant if:
@@ -26090,7 +26090,7 @@ Type_ok
   - Under the context C', the recursive type rectype is valid with (OK x).
 
 Local_ok
-- the local (LOCAL t) is valid with the local type (init_u1, t) if:
+- the local (LOCAL t) is valid with the local type (init_u1 t) if:
   - Either:
     - the initialization status init_u1 is SET.
     - A :ref:`default value <default-val>` for value type the value type t is defined.
@@ -26099,11 +26099,11 @@ Local_ok
     - A :ref:`default value <default-val>` for value type t is not defined.
 
 Local_ok/set
-- the local (LOCAL t) is valid with the local type (SET, t) if:
+- the local (LOCAL t) is valid with the local type (SET t) if:
   - A :ref:`default value <default-val>` for value type the value type t is defined.
 
 Local_ok/unset
-- the local (LOCAL t) is valid with the local type (UNSET, t) if:
+- the local (LOCAL t) is valid with the local type (UNSET t) if:
   - A :ref:`default value <default-val>` for value type the value type t is not defined.
 
 Func_ok
@@ -26113,19 +26113,19 @@ Func_ok
   - |local*| is |lct*|.
   - For all lct in lct* and local in local*:
     - the local local is valid with the local type lct.
-  - Under the context C with .LOCALS appended by (SET, t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
+  - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
   - the global type gt is valid.
-  - globaltype is (mut, t).
+  - globaltype is (mut t).
   - the expression expr is valid with the value type t.
   - expr is constant.
 
 Table_ok
 - the table (TABLE tabletype expr) is valid with the table type tabletype if:
   - the table type tt is valid.
-  - tabletype is (at, lim, rt).
+  - tabletype is (at lim rt).
   - the expression expr is valid with the value type rt.
   - expr is constant.
 
@@ -26143,7 +26143,7 @@ Elemmode_ok
   - Either:
     - elemmode_u1 is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
-    - C.TABLES[x] is (at, lim, rt').
+    - C.TABLES[x] is (at lim rt').
     - rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - expr is constant.
@@ -26155,7 +26155,7 @@ Elemmode_ok
 Elemmode_ok/active
 - the element mode (ACTIVE x expr) is valid with the element type rt if:
   - the table type C.TABLES[x] exists.
-  - C.TABLES[x] is (at, lim, rt').
+  - C.TABLES[x] is (at lim rt').
   - rt matches the reference type rt'.
   - the expression expr is valid with the value type I32.
   - expr is constant.
@@ -26341,7 +26341,7 @@ Module_ok
   - $disjoint_(name, nm*) is true.
   - the context C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
   - the context C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - the function index sequence x* is $funcidx_nonfuncs((global*, table*, mem*, elem*, data*)).
+  - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
   - the global type sequence gt_I* is $globalsxt(xt_I*).
   - the table type sequence tt_I* is $tablesxt(xt_I*).
@@ -26360,7 +26360,7 @@ NotationTypingInstrScheme
     - t_u1* is [].
     - t_u3* is [t].
     - the global type C.GLOBALS[x] exists.
-    - C.GLOBALS[x] is (mut, t).
+    - C.GLOBALS[x] is (mut t).
   - Or:
     - instr_u1 is (BLOCK blocktype instr*).
     - t_u1* is t_1*.
@@ -26375,7 +26375,7 @@ NotationTypingInstrScheme/i32.add
 NotationTypingInstrScheme/global.get
 - the instruction sequence [(GLOBAL.GET x)] is valid with the function type [] -> [t] if:
   - the global type C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (mut, t).
+  - C.GLOBALS[x] is (mut t).
 
 NotationTypingInstrScheme/block
 - the instruction sequence [(BLOCK blocktype instr*)] is valid with the function type t_1* -> t_2* if:
@@ -27060,7 +27060,7 @@ Step_read/struct.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be structtype_0.
+4. Let (mut zt)* be structtype_0.
 5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 6. Let ?(val)* be $default_($unpack(zt))*.
 7. Assert: Due to validation, (|val*| = |zt*|).
@@ -27078,7 +27078,7 @@ Step_read/struct.get sx? x i
   b. If ((i < |$structinst(z)[a].FIELDS|) /\ (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
     2) Let (STRUCT structtype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be structtype_0.
+    3) Let (mut zt)* be structtype_0.
     4) If (i < |zt*|), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -27088,7 +27088,7 @@ Step_read/array.new_default x
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-6. Let (mut, zt) be arraytype_0.
+6. Let (mut zt) be arraytype_0.
 7. Assert: Due to validation, $default_($unpack(zt)) is defined.
 8. Let ?(val) be $default_($unpack(zt)).
 9. Push the values val^n to the stack.
@@ -27115,7 +27115,7 @@ Step_read/array.new_data x y
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-8. Let (mut, zt) be arraytype_0.
+8. Let (mut zt) be arraytype_0.
 9. If ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
 10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)])| = n).
@@ -27139,7 +27139,7 @@ Step_read/array.get sx? x
   c. If ((i < |$arrayinst(z)[a].FIELDS|) /\ (a < |$arrayinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
     2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt) be arraytype_0.
+    3) Let (mut zt) be arraytype_0.
     4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.len
@@ -27214,7 +27214,7 @@ Step_read/array.copy x_1 x_2
       a) Do nothing.
     6) Else if ((i_1 <= i_2) /\ $expanddt($type(z, x_2)) is of the case ARRAY), then:
       a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut, zt_2) be arraytype_0.
+      b) Let (mut zt_2) be arraytype_0.
       c) Let sx? be $sx(zt_2).
       d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       e) Push the value (I32.CONST i_1) to the stack.
@@ -27230,7 +27230,7 @@ Step_read/array.copy x_1 x_2
       o) Execute the instruction (ARRAY.COPY x_1 x_2).
     7) Else if $expanddt($type(z, x_2)) is of the case ARRAY, then:
       a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut, zt_2) be arraytype_0.
+      b) Let (mut zt_2) be arraytype_0.
       c) Let sx? be $sx(zt_2).
       d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       e) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
@@ -27297,7 +27297,7 @@ Step_read/array.init_data x y
     1) Trap.
   c. If $expanddt($type(z, x)) is of the case ARRAY, then:
     1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    2) Let (mut, zt) be arraytype_0.
+    2) Let (mut zt) be arraytype_0.
     3) If ((j + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
     4) If (n = 0), then:
@@ -27337,7 +27337,7 @@ Step_read/table.get x
 
 Step_read/table.size x
 1. Let z be the current state.
-2. Let (at, lim, rt) be $table(z, x).TYPE.
+2. Let (at lim rt) be $table(z, x).TYPE.
 3. Let n be |$table(z, x).REFS|.
 4. Push the value (at.CONST n) to the stack.
 
@@ -27430,13 +27430,13 @@ Step_read/load nt_u1 loadop_u1? x ao
 5. If the type of nt_u1 is Inn, then:
   a. If loadop_u1? is defined, then:
     1) Let ?(loadop__0) be loadop_u1?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be nt_u1.
   c. If loadop_u1? is defined, then:
     1) Let ?(loadop__0) be loadop_u1?.
-    2) Let (n, sx) be loadop__0.
+    2) Let (n sx) be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
@@ -27539,14 +27539,14 @@ Step_read/memory.copy x_1 x_2
   a. If (i_1 <= i_2), then:
     1) Push the value (at_1.CONST i_1) to the stack.
     2) Push the value (at_2.CONST i_2) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8 U)) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (at_1.CONST (i_1 + 1)) to the stack.
     6) Push the value (at_2.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push the value (at_1.CONST ((i_1 + n) - 1)) to the stack.
     2) Push the value (at_2.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    3) Execute the instruction (LOAD I32 ?((8 U)) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (at_1.CONST i_1) to the stack.
     6) Push the value (at_2.CONST i_2) to the stack.
@@ -27595,7 +27595,7 @@ Step/struct.new x
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
-4. Let (mut, zt)^n be structtype_0.
+4. Let (mut zt)^n be structtype_0.
 5. Let a be |$structinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
@@ -27615,7 +27615,7 @@ Step/struct.set x i
   a. Let (REF.STRUCT_ADDR a) be instr_u1.
   b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
   c. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be structtype_0.
+  d. Let (mut zt)* be structtype_0.
   e. If (i < |zt*|), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
@@ -27623,7 +27623,7 @@ Step/array.new_fixed x n
 1. Let z be the current state.
 2. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 3. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-4. Let (mut, zt) be arraytype_0.
+4. Let (mut zt) be arraytype_0.
 5. Let a be |$arrayinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
@@ -27647,7 +27647,7 @@ Step/array.set x
     1) Trap.
   c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
   d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-  e. Let (mut, zt) be arraytype_0.
+  e. Let (mut zt) be arraytype_0.
   f. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
 Step/local.set x
@@ -28187,8 +28187,8 @@ subst_storagetype zt_u1 tv* tu*
 3. Let pt be zt_u1.
 4. Return $subst_packtype(pt, tv*, tu*).
 
-subst_fieldtype (mut, zt) tv* tu*
-1. Return (mut, $subst_storagetype(zt, tv*, tu*)).
+subst_fieldtype (mut zt) tv* tu*
+1. Return (mut $subst_storagetype(zt, tv*, tu*)).
 
 subst_comptype ct_u1 tv* tu*
 1. If ct_u1 is of the case STRUCT, then:
@@ -28216,11 +28216,11 @@ subst_functype t_1* -> t_2* tv* tu*
 subst_addrtype at tv* tu*
 1. Return at.
 
-subst_globaltype (mut, t) tv* tu*
-1. Return (mut, $subst_valtype(t, tv*, tu*)).
+subst_globaltype (mut t) tv* tu*
+1. Return (mut $subst_valtype(t, tv*, tu*)).
 
-subst_tabletype (at, lim, rt) tv* tu*
-1. Return (at, lim, $subst_reftype(rt, tv*, tu*)).
+subst_tabletype (at lim rt) tv* tu*
+1. Return (at lim $subst_reftype(rt, tv*, tu*)).
 
 subst_memtype at lim PAGE tv* tu*
 1. Return at lim PAGE.
@@ -28445,7 +28445,7 @@ free_storagetype zt_u1
 3. Let packtype be zt_u1.
 4. Return $free_packtype(packtype).
 
-free_fieldtype (mut, storagetype)
+free_fieldtype (mut storagetype)
 1. Return $free_storagetype(storagetype).
 
 free_structtype fieldtype*
@@ -28477,10 +28477,10 @@ free_rectype (REC subtype*)
 free_deftype (DEF rectype n)
 1. Return $free_rectype(rectype).
 
-free_globaltype (mut, valtype)
+free_globaltype (mut valtype)
 1. Return $free_valtype(valtype).
 
-free_tabletype (addrtype, limits, reftype)
+free_tabletype (addrtype limits reftype)
 1. Return $free_addrtype(addrtype) ++ $free_reftype(reftype).
 
 free_memtype addrtype limits PAGE
@@ -28958,7 +28958,7 @@ default_ t_u1
 7. Assert: Due to validation, NULL_opt_0 is not defined.
 8. Return ?().
 
-funcidx_nonfuncs (global*, table*, mem*, elem*, data*)
+funcidx_nonfuncs (global* table* mem* elem* data*)
 1. Return $funcidx_module((MODULE [] [] [] global* table* mem* [] elem* data* ?() [])).
 
 relaxed2 i X X_1 X_2
@@ -29935,10 +29935,10 @@ add_exninst z exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
-1. Let { TYPE: (at, ([ i .. j ]), rt); REFS: r'*; } be tableinst.
+1. Let { TYPE: (at ([ i .. j ]) rt); REFS: r'*; } be tableinst.
 2. If ((|r'*| + n) <= j), then:
   a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: (at, ([ i' .. j ]), rt); REFS: r'* :: r^n; }.
+  b. Let tableinst' be { TYPE: (at ([ i' .. j ]) rt); REFS: r'* :: r^n; }.
   c. Return tableinst'.
 
 growmem meminst n
@@ -30008,8 +30008,8 @@ allocglobals s gt_u1* v_u1*
   e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
 
-alloctable s (at, ([ i .. j ]), rt) ref
-1. Let tableinst be { TYPE: (at, ([ i .. j ]), rt); REFS: ref^i; }.
+alloctable s (at ([ i .. j ]) rt) ref
+1. Let tableinst be { TYPE: (at ([ i .. j ]) rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.
