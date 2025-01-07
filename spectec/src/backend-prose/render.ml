@@ -62,6 +62,16 @@ let render_order index depth =
   | 3 -> alp_idx ^ ")"
   | _ -> assert false
 
+let rec is_additive_bine expr = match expr.it with
+  | Al.Ast.BinE ((`AddOp | `SubOp), _, _) -> true
+  | Al.Ast.CvtE (e, _, _) -> is_additive_bine e
+  | _ -> false
+
+and is_bine expr = match expr.it with
+  | Al.Ast.BinE _ -> true
+  | Al.Ast.CvtE (e, _, _) -> is_bine e
+  | _ -> false
+
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
 let a2e a =
@@ -177,7 +187,20 @@ and al_to_el_expr expr =
       | #Num.binop as elop ->
         let* ele1 = al_to_el_expr e1 in
         let* ele2 = al_to_el_expr e2 in
-        Some (El.Ast.BinE (ele1, elop, ele2))
+        (* Add parentheses when needed *)
+        let pele1 = match op with
+          | `MulOp | `DivOp | `ModOp when is_additive_bine e1 ->
+            El.Ast.ParenE ele1 $ no_region
+          | `PowOp when is_bine e1 ->
+            El.Ast.ParenE ele1 $ no_region
+          | _ -> ele1 in
+        let pele2 = match op with
+          | `SubOp | `MulOp when is_additive_bine e2 ->
+            El.Ast.ParenE ele2 $ no_region
+          | `DivOp | `ModOp when is_bine e2->
+            El.Ast.ParenE ele2 $ no_region
+          | _ -> ele2 in
+        Some (El.Ast.BinE (pele1, elop, pele2))
       | #Num.cmpop | #Bool.cmpop as elop ->
         let* ele1 = al_to_el_expr e1 in
         let* ele2 = al_to_el_expr e2 in
@@ -194,9 +217,20 @@ and al_to_el_expr expr =
       | _ ->
         let elid = id $ no_region in
         let* elal = al_to_el_args al in
+        (* Unwrap parenthsized args *)
         let elal = List.map
           (fun elarg ->
-            (ref elarg) $ no_region)
+            let elarg = match elarg with
+            | El.Ast.ExpA exp ->
+              let exp = match exp.it with
+              | ParenE exp' -> exp'
+              | _ -> exp
+              in
+              El.Ast.ExpA exp
+            | _ -> elarg
+            in
+            (ref elarg) $ no_region
+          )
           elal
         in
         Some (El.Ast.CallE (elid, elal))
@@ -258,7 +292,8 @@ and al_to_el_expr expr =
     | Al.Ast.CaseE (op, el) ->
       (* Current rules for omitting parenthesis around a CaseE:
         1) Has no argument
-        2) Is infix notation *)
+        2) Is infix notation
+        3) Is argument of CallE -> add first, omit later at CallE *)
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in

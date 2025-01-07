@@ -1501,7 +1501,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
 
-  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
 
@@ -2416,7 +2416,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
 
-#. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
+#. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
@@ -2581,8 +2581,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
 
 
-:math:`{\mathrm{alloctable}}(s, ({}[~i~..~j~]))`
-................................................
+:math:`{\mathrm{alloctable}}(s, {}[~i~..~j~])`
+..............................................
 
 
 1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
@@ -2611,8 +2611,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(s, ({}[~i~..~j~]))`
-..............................................
+:math:`{\mathrm{allocmem}}(s, {}[~i~..~j~])`
+............................................
 
 
 1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~]),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
@@ -2641,8 +2641,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, (\mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}))`
-.....................................................................................................................................................................................................................
+:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
+...................................................................................................................................................................................................................
 
 
 1. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{func}`, then:
@@ -7418,7 +7418,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
 
-  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+  #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
 
@@ -7906,8 +7906,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{\mathrm{dataidx}}({{\mathit{in}}^\ast})`.
 
 
-:math:`{\mathrm{dataidx}}((\mathsf{func}~x~{{\mathit{loc}}^\ast}~e))`
-.....................................................................
+:math:`{\mathrm{dataidx}}(\mathsf{func}~x~{{\mathit{loc}}^\ast}~e)`
+...................................................................
 
 
 1. Return :math:`{\mathrm{dataidx}}(e)`.
@@ -8991,8 +8991,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 
-:math:`{{\mathrm{vextunop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}((\mathsf{extadd\_pairwise}~{\mathit{sx}}), c_1)`
-..............................................................................................................................................................
+:math:`{{\mathrm{vextunop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(\mathsf{extadd\_pairwise}~{\mathit{sx}}, c_1)`
+............................................................................................................................................................
 
 
 1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
@@ -9406,7 +9406,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[~i~..~j~])~\mathsf{page},\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{mi}}`.
 
-#. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
+#. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
@@ -9722,8 +9722,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
 
-:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, (\mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}))`
-.....................................................................................................................................................................................................................
+:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
+...................................................................................................................................................................................................................
 
 
 1. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{func}`, then:
@@ -9834,8 +9834,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{\mathrm{runelem}}((\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}), i)`
-....................................................................................................................................................
+:math:`{\mathrm{runelem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, i)`
+..................................................................................................................................................
 
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
@@ -9855,8 +9855,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~i)~(\mathsf{elem{.}drop}~i)`.
 
 
-:math:`{\mathrm{rundata}}((\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}), i)`
-.................................................................................................................................
+:math:`{\mathrm{rundata}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}, i)`
+...............................................................................................................................
 
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
@@ -19156,7 +19156,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
 
-  #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+  #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
 
@@ -19870,8 +19870,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{at}}_2`.
 
 
-:math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{ht}}_2)`
-.......................................................................................................................................................................
+:math:`\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{ht}}_2`
+...................................................................................................................................................................
 
 
 1. If :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{null}`, then:
@@ -20070,8 +20070,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{ht}}`.
 
 
-:math:`{(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-............................................................................................................
+:math:`{\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+..........................................................................................................
 
 
 1. Return :math:`(\mathsf{ref}~{\mathsf{null}^?}~{{\mathit{ht}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
@@ -20151,22 +20151,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`(\mathsf{func}~{{\mathit{ft}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{tu}'}^\ast}~{\mathit{ct}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...................................................................................................................................
+:math:`{\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{tu}'}^\ast}~{\mathit{ct}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+.................................................................................................................................
 
 
 1. Return :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{{\mathit{tu}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast}~{{\mathit{ct}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{(\mathsf{rec}~{{\mathit{st}}^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-.................................................................................................
+:math:`{\mathsf{rec}~{{\mathit{st}}^\ast}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+...............................................................................................
 
 
 1. Return :math:`(\mathsf{rec}~{{{\mathit{st}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
 
 
-:math:`{({\mathit{qt}} {.} i)}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...................................................................................
+:math:`{{\mathit{qt}} {.} i}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+.................................................................................
 
 
 1. Return :math:`({{\mathit{qt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} {.} i)`.
@@ -20200,8 +20200,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`({\mathit{at}}, {\mathit{lim}}, {{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{({\mathit{at}}~{\mathit{lim}}~\mathsf{page})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-..........................................................................................................
+:math:`{{\mathit{at}}~{\mathit{lim}}~\mathsf{page}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+........................................................................................................
 
 
 1. Return :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
@@ -20351,8 +20351,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{((\mathsf{rec}~{{\mathit{subtype}}^{n}}) {.} i)^{i<n}}`.
 
 
-:math:`{\mathrm{unroll}}(({\mathit{rectype}} {.} i))`
-.....................................................
+:math:`{\mathrm{unroll}}({\mathit{rectype}} {.} i)`
+...................................................
 
 
 1. Assert: Due to validation, :math:`{\mathrm{unroll}}({\mathit{rectype}})` is of the case :math:`\mathsf{rec}`.
@@ -20616,8 +20616,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{reftype}}((\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}}))`
-................................................................................................
+:math:`{\mathrm{free}}_{\mathit{reftype}}(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}})`
+..............................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`.
@@ -20742,22 +20742,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{free}}_{\mathit{functype}}({\mathit{functype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{subtype}}((\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}}))`
-...........................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{subtype}}(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}})`
+.........................................................................................................................
 
 
 1. Return `$free_list($free_typeuse(typeuse)*{typeuse <- typeuse*}) ++ $free_comptype(comptype)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{rectype}}((\mathsf{rec}~{{\mathit{subtype}}^\ast}))`
-....................................................................................
+:math:`{\mathrm{free}}_{\mathit{rectype}}(\mathsf{rec}~{{\mathit{subtype}}^\ast})`
+..................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{subtype}}({\mathit{subtype}})^\ast})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{deftype}}(({\mathit{rectype}} {.} n))`
-......................................................................
+:math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{rectype}} {.} n)`
+....................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}})`.
@@ -20777,8 +20777,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return `$free_addrtype(addrtype) ++ $free_reftype(reftype)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{memtype}}(({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page}))`
-.................................................................................................
+:math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})`
+...............................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}})`.
@@ -21485,50 +21485,50 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}})^\ast})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{type}}((\mathsf{type}~{\mathit{rectype}}))`
-...........................................................................
+:math:`{\mathrm{free}}_{\mathit{type}}(\mathsf{type}~{\mathit{rectype}})`
+.........................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{local}}((\mathsf{local}~t))`
-............................................................
+:math:`{\mathrm{free}}_{\mathit{local}}(\mathsf{local}~t)`
+..........................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{valtype}}(t)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{func}}((\mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}))`
-...................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{func}}(\mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}})`
+.................................................................................................................
 
 
 1. Return `$free_typeidx(typeidx) ++ $free_list($free_local(local)*{local <- local*}) ++ update($free_block(expr).LOCALS, [])`.
 
 
-:math:`{\mathrm{free}}_{\mathit{global}}((\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}))`
-..................................................................................................
+:math:`{\mathrm{free}}_{\mathit{global}}(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})`
+................................................................................................
 
 
 1. Return `$free_globaltype(globaltype) ++ $free_expr(expr)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{table}}((\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}))`
-...............................................................................................
+:math:`{\mathrm{free}}_{\mathit{table}}(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})`
+.............................................................................................
 
 
 1. Return `$free_tabletype(tabletype) ++ $free_expr(expr)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{mem}}((\mathsf{memory}~{\mathit{memtype}}))`
-............................................................................
+:math:`{\mathrm{free}}_{\mathit{mem}}(\mathsf{memory}~{\mathit{memtype}})`
+..........................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{tag}}((\mathsf{tag}~{\mathit{typeidx}}))`
-.........................................................................
+:math:`{\mathrm{free}}_{\mathit{tag}}(\mathsf{tag}~{\mathit{typeidx}})`
+.......................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
@@ -21553,8 +21553,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{elem}}((\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}}))`
-......................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{elem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})`
+....................................................................................................................
 
 
 1. Return `$free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr <- expr*}) ++ $free_elemmode(elemmode)`.
@@ -21575,36 +21575,36 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{data}}((\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}))`
-...................................................................................................
+:math:`{\mathrm{free}}_{\mathit{data}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})`
+.................................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{start}}((\mathsf{start}~{\mathit{funcidx}}))`
-.............................................................................
+:math:`{\mathrm{free}}_{\mathit{start}}(\mathsf{start}~{\mathit{funcidx}})`
+...........................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{export}}((\mathsf{export}~{\mathit{name}}~{\mathit{externidx}}))`
-.................................................................................................
+:math:`{\mathrm{free}}_{\mathit{export}}(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
+...............................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{import}}((\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{externtype}}))`
-......................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{import}}(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{externtype}})`
+....................................................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{module}}((\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}))`
-............................................................................................................................................................................................................................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{module}}(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})`
+..........................................................................................................................................................................................................................................................................................................................
 
 
 1. Return `$free_list($free_type(type)*{type <- type*}) ++ $free_list($free_import(import)*{import <- import*}) ++ $free_list($free_func(func)*{func <- func*}) ++ $free_list($free_global(global)*{global <- global*}) ++ $free_list($free_table(table)*{table <- table*}) ++ $free_list($free_mem(mem)*{mem <- mem*}) ++ $free_list($free_tag(tag)*{tag <- tag*}) ++ $free_list($free_elem(elem)*{elem <- elem*}) ++ $free_list($free_data(data)*{data <- data*}) ++ $free_opt($free_start(start)?{start <- start?}) ++ $free_list($free_export(export)*{export <- export*})`.
@@ -21768,7 +21768,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................................................................................................
 
 
-1. Return :math:`{\mathrm{funcidx}}((\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon))`.
+1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon)`.
 
 
 :math:`{{\mathrm{relaxed}}(i)}{{}[ X_1, X_2 ]}`
@@ -21930,32 +21930,32 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{u}`, then:
 
-  a. Return :math:`i \mathbin{\mathrm{mod}} {2^{M}}`.
+  a. Return :math:`i \mathbin{\mathrm{mod}} ({2^{M}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{s}`.
 
-#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{M}(i \mathbin{\mathrm{mod}} {2^{M}}))}`.
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{M}(i \mathbin{\mathrm{mod}} ({2^{M}})))}`.
 
 
 :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`
 .......................................
 
 
-1. Return :math:`i_1 + i_2 \mathbin{\mathrm{mod}} {2^{N}}`.
+1. Return :math:`(i_1 + i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`
 .......................................
 
 
-1. Return :math:`{2^{N}} + i_1 - i_2 \mathbin{\mathrm{mod}} {2^{N}}`.
+1. Return :math:`({2^{N}} + i_1 - i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`
 .......................................
 
 
-1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} {2^{N}}`.
+1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}}{(i_1, i_2)}`
@@ -23262,8 +23262,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({c^\ast})}`.
 
 
-:math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}})}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1)}`
-.............................................................................................................................................................
+:math:`{{\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1)}`
+...........................................................................................................................................................
 
 
 1. Return :math:`{{\mathrm{ivextunop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivadd}}_{{\mathit{pairwise}}}, {\mathit{sx}}, v_1)`.
@@ -23344,7 +23344,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c'}` be :math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1, c_2)}`.
 
-#. Let :math:`{c''}` be :math:`{({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{s}})}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c'})}`.
+#. Let :math:`{c''}` be :math:`{{\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c'})}`.
 
 #. Let :math:`c` be an element of :math:`{\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c''}, c_3)}`.
 
@@ -23869,9 +23869,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
 
-#. If :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n \leq j`, then:
+#. If :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n \leq j`, then:
 
-  a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / 64 \, {\mathrm{Ki}} + n`.
+  a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~{i'}~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
@@ -24040,8 +24040,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
-:math:`{\mathrm{allocmem}}(s, ({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}))`
-............................................................................
+:math:`{\mathrm{allocmem}}(s, {\mathit{at}}~({}[~i~..~j~])~\mathsf{page})`
+..........................................................................
 
 
 1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~({}[~i~..~j~])~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
@@ -24172,8 +24172,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
 
-:math:`{\mathrm{allocexport}}({\mathit{moduleinst}}, (\mathsf{export}~{\mathit{name}}~{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}))`
-..............................................................................................................................................
+:math:`{\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
+............................................................................................................................................
 
 
 1. If :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{func}`, then:
@@ -24311,8 +24311,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{{\mathrm{runelem}}}_{x}((\mathsf{elem}~{\mathit{rt}}~{e^{n}}~{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}))`
-...................................................................................................................................
+:math:`{{\mathrm{runelem}}}_{x}(\mathsf{elem}~{\mathit{rt}}~{e^{n}}~{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
+.................................................................................................................................
 
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
@@ -24330,8 +24330,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~y~x)~(\mathsf{elem{.}drop}~x)`.
 
 
-:math:`{{\mathrm{rundata}}}_{x}((\mathsf{data}~{b^{n}}~{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}))`
-.....................................................................................................................
+:math:`{{\mathrm{rundata}}}_{x}(\mathsf{data}~{b^{n}}~{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
+...................................................................................................................
 
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
