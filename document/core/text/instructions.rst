@@ -729,12 +729,12 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-shape>` descri
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\[-2ex] &&|&
-     \text{v128.const}~~\text{i8x16}~~(n{:}\Ti8)^{16} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i8}(n)^{16}) \\ &&|&
-     \text{v128.const}~~\text{i16x8}~~(n{:}\Ti16)^{8} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i16}(n)^8) \\ &&|&
-     \text{v128.const}~~\text{i32x4}~~(n{:}\Ti32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i32}(n)^4) \\ &&|&
-     \text{v128.const}~~\text{i64x2}~~(n{:}\Ti64)^{2} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{i64}(n)^2) \\ &&|&
-     \text{v128.const}~~\text{f32x4}~~(z{:}\Tf32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{f32}(z)^4) \\ &&|&
-     \text{v128.const}~~\text{f64x2}~~(z{:}\Tf64)^{2} &\Rightarrow& \V128.\VCONST~\bytes_{i128}^{-1}(\bytes_{f64}(z)^2)
+     \text{v128.const}~~\text{i8x16}~~(n{:}\Ti8)^{16} &\Rightarrow& \V128.\VCONST~\bytes_{\I128}^{-1}(\bytes_{i8}(n)^{16}) \\ &&|&
+     \text{v128.const}~~\text{i16x8}~~(n{:}\Ti16)^{8} &\Rightarrow& \V128.\VCONST~\bytes_{\I128}^{-1}(\bytes_{i16}(n)^8) \\ &&|&
+     \text{v128.const}~~\text{i32x4}~~(n{:}\Ti32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{\I128}^{-1}(\bytes_{i32}(n)^4) \\ &&|&
+     \text{v128.const}~~\text{i64x2}~~(n{:}\Ti64)^{2} &\Rightarrow& \V128.\VCONST~\bytes_{\I128}^{-1}(\bytes_{i64}(n)^2) \\ &&|&
+     \text{v128.const}~~\text{f32x4}~~(z{:}\Tf32)^{4} &\Rightarrow& \V128.\VCONST~\bytes_{\I128}^{-1}(\bytes_{f32}(z)^4) \\ &&|&
+     \text{v128.const}~~\text{f64x2}~~(z{:}\Tf64)^{2} &\Rightarrow& \V128.\VCONST~\bytes_{\I128}^{-1}(\bytes_{f64}(z)^2)
    \end{array}
 
 .. math::

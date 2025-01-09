@@ -75,7 +75,7 @@ def $canon_(N) = $(2^($signif(N)-1))
 ;; Vectors
 
 syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNX") =
-  iN(N)
+  uN(N)
 
 syntax v128 = vN(128)
 

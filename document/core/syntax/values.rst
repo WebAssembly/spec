@@ -54,7 +54,7 @@ In the abstract syntax, they are represented as unsigned values.
 However, some operations :ref:`convert <aux-signed>` them to signed based on a two's complement interpretation.
 
 .. note::
-   The main integer types occurring in this specification are ${:u32}, ${:u64}, ${:s32}, ${:s64}, ${:i8}, ${:i16}, ${:i32}, ${:i64}.
+   The main integer types occurring in this specification are ${:u8}, ${:u32}, ${:u64}, and ${:u128}.
    However, other sizes occur as auxiliary constructions, e.g., in the definition of :ref:`floating-point <syntax-float>` numbers.
 
 ${syntax-ignore: u8 u16 u31 u32 u64 u128 s33}
@@ -86,7 +86,7 @@ Floating-Point
 Every value has a *sign* and a *magnitude*.
 Magnitudes can either be expressed as *normal* numbers of the form ${:m_0`. m_1 m_2`... $(m_M *2^e)}, where ${:e} is the exponent and ${:m} is the *significand* whose most significant bit ${:m_0} is ${:1}`,
 or as a *subnormal* number where the exponent is fixed to the smallest possible value and ${:m_0} is ${:0}; among the subnormals are positive and negative zero values.
-Since the significands are binary values, normals are represented in the form ${:$((1 + m*2^(-M)) * 2^e)}, where ${:M} is the bit width of ${:m}; similarly for subnormals.
+Since the significands are binary values, normals are represented in the form ${:$((1 + m*2^(-M)) * 2^e)} in the abstract syntax, where ${:M} is the bit width of ${:m}; similarly for subnormals.
 
 Possible magnitudes also include the special values ${:infinity}` (infinity) and ${:NAN} (*NaN*, not a number).
 NaN values have a *payload* that describes the mantissa bits in the underlying :ref:`binary representation <aux-fbits>`.
@@ -136,7 +136,7 @@ Vectors
 ~~~~~~~
 
 *Numeric vectors* are 128-bit values that are processed by vector instructions (also known as *SIMD* instructions, single instruction multiple data).
-They are represented in the abstract syntax using ${:i128}. The interpretation of lane types (:ref:`integer <syntax-int>` or :ref:`floating-point <syntax-float>` numbers) and lane sizes are determined by the specific instruction operating on them.
+They are represented in the abstract syntax using ${:u128}. The interpretation of lane types (:ref:`integer <syntax-int>` or :ref:`floating-point <syntax-float>` numbers) and lane sizes are determined by the specific instruction operating on them.
 
 
 .. index:: ! name, byte, Unicode, UTF-8, character, binary format
