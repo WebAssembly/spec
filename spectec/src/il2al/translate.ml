@@ -1203,7 +1203,8 @@ and translate_rgroup (rule: rule_def) =
 
 
 (* Entry *)
-let translate il =
+let translate il interp =
+  Transpile.for_interp := interp;
   let rules, helpers = Preprocess.preprocess il in
   let al =
     List.map translate_rgroup rules @ List.map translate_helper helpers

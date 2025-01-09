@@ -790,13 +790,7 @@ and render_stmts env depth stmts =
 (* Instructions *)
 
 (* Prefix for stack push/pop operations *)
-let render_stack_prefix expr =
-  match expr.it with
-  | Al.Ast.GetCurContextE _
-  | Al.Ast.VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
-  | Al.Ast.IterE _ -> "the values "
-  | _ -> "the value "
+let render_stack_prefix = Prose_util.string_of_stack_prefix
 
 let rec render_instr env algoname index depth instr =
   match instr.it with

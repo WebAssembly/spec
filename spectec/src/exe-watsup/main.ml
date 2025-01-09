@@ -201,7 +201,10 @@ let () =
       if not (!print_al || !print_al_o <> "") && (!target = Check || !target = Latex) then []
       else (
         log "Translating to AL...";
-        (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
+        let interp = match !target with
+        | Interpreter _ -> true
+        | _ -> false in
+        Il2al.Translate.translate il interp @ Il2al.Manual.manual_algos
       )
     in
 

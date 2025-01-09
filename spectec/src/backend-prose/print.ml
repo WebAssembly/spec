@@ -234,13 +234,7 @@ let make_index depth =
   | _ -> assert false
 
 (* Prefix for stack push/pop operations *)
-let string_of_stack_prefix expr =
-  match expr.it with
-  | GetCurContextE _
-  | VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
-  | IterE _ -> "the values "
-  | _ -> "the value "
+let string_of_stack_prefix = Prose_util.string_of_stack_prefix
 
 let rec string_of_instr' depth instr =
 

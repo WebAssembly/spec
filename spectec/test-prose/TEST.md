@@ -1337,7 +1337,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Push the evaluation context :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
+#. Push the frame :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
 
 #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -2225,174 +2225,144 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`z{.}\mathsf{store}`
-..........................
+:math:`(s, f){.}\mathsf{store}`
+...............................
 
 
 1. Return.
 
 
-:math:`z{.}\mathsf{frame}`
-..........................
+:math:`(s, f){.}\mathsf{frame}`
+...............................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f`.
+1. Return :math:`f`.
 
 
-:math:`z{.}\mathsf{module}{.}\mathsf{funcs}`
-............................................
+:math:`(s, f){.}\mathsf{module}{.}\mathsf{funcs}`
+.................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
 
 
-:math:`z{.}\mathsf{funcs}`
-..........................
+:math:`(s, f){.}\mathsf{funcs}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`z{.}\mathsf{globals}`
-............................
+:math:`(s, f){.}\mathsf{globals}`
+.................................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`z{.}\mathsf{tables}`
-...........................
+:math:`(s, f){.}\mathsf{tables}`
+................................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`z{.}\mathsf{mems}`
-.........................
+:math:`(s, f){.}\mathsf{mems}`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`z{.}\mathsf{module}`
-...........................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}`.
-
-
-:math:`z{.}\mathsf{types}{}[x]`
-...............................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
-
-
-:math:`z{.}\mathsf{funcs}{}[x]`
-...............................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
-
-
-:math:`z{.}\mathsf{globals}{}[x]`
-.................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
-
-
-:math:`z{.}\mathsf{tables}{}[x]`
+:math:`(s, f){.}\mathsf{module}`
 ................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
+1. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`z{.}\mathsf{mems}{}[x]`
-..............................
+:math:`(s, f){.}\mathsf{types}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`z{.}\mathsf{locals}{}[x]`
-................................
+:math:`(s, f){.}\mathsf{funcs}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{locals}{}[x]`.
+1. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
-........................................
+:math:`(s, f){.}\mathsf{globals}{}[x]`
+......................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
+1. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
-..........................................................
+:math:`(s, f){.}\mathsf{tables}{}[x]`
+.....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
+1. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = a]`
-.............................................................
+:math:`(s, f){.}\mathsf{mems}{}[x]`
+...................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`a`.
+1. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
-....................................................
+:math:`(s, f){.}\mathsf{locals}{}[x]`
+.....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
+1. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
-.......................................................................
+:math:`(s, f){}[{.}\mathsf{locals}{}[x] = v]`
+.............................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
+1. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
-..................................................
+:math:`(s, f){}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+...............................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
-#. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
+
+:math:`(s, f){}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = a]`
+..................................................................
+
+
+1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`a`.
+
+
+:math:`(s, f){}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+.........................................................
+
+
+1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
+
+
+:math:`(s, f){}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+............................................................................
+
+
+1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
+
+
+:math:`(s, f){}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+.......................................................
+
+
+1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{ti}}, n)`
@@ -2813,25 +2783,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
-#. Let :math:`z` be :math:`f_{\mathit{init}}`.
+#. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{d}})^\ast}`.
+#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{d}})^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}`.
+#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{e}})^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{g}})^\ast}`.
+#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{g}})^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
@@ -2841,11 +2811,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Execute the sequence :math:`{(\mathsf{call}~{x'})^?}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -2856,15 +2826,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~(s, f)~\})` to the stack.
 
-#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
+#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -2872,7 +2842,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -3561,7 +3531,7 @@ Step_read/call_addr a
 8. Assert: Due to validation, there are at least k values on the top of the stack.
 9. Pop the values val^k from the stack.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
-11. Push the evaluation context (FRAME_ n { f }) to the stack.
+11. Push the frame (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/local.get x
@@ -3985,80 +3955,65 @@ memsxa xv_u1*
 4. Let [externaddr] :: xv* be xv_u1*.
 5. Return $memsxa(xv*).
 
-store z
+store (s, f)
 1. Return.
 
-frame z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.
+frame (s, f)
+1. Return f.
 
-funcaddr z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.FUNCS.
+funcaddr (s, f)
+1. Return f.MODULE.FUNCS.
 
-funcinst z
+funcinst (s, f)
 1. Return s.FUNCS.
 
-globalinst z
+globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst z
+tableinst (s, f)
 1. Return s.TABLES.
 
-meminst z
+meminst (s, f)
 1. Return s.MEMS.
 
-moduleinst z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.
+moduleinst (s, f)
+1. Return f.MODULE.
 
-type z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.TYPES[x].
+type (s, f) x
+1. Return f.MODULE.TYPES[x].
 
-func z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+global (s, f) x
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+mem (s, f) x
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-local z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.LOCALS[x].
+local (s, f) x
+1. Return f.LOCALS[x].
 
-with_local z x v
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace f.LOCALS[x] with v.
+with_local (s, f) x v
+1. Replace f.LOCALS[x] with v.
 
-with_global z x v
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+with_global (s, f) x v
+1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table z x i a
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
+with_table (s, f) x i a
+1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
 
-with_tableinst z x ti
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_tableinst (s, f) x ti
+1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem z x i j b*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_mem (s, f) x i j b*
+1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst z x mi
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_meminst (s, f) x mi
+1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
 growtable ti n
 1. Let { TYPE: ([ i .. j ]); REFS: ?(a)*; } be ti.
@@ -4259,36 +4214,36 @@ instantiate s module externaddr*
 13. Let (GLOBAL globaltype expr_G)* be global*.
 14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
 15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
-16. Let z be f_init.
-17. Push the evaluation context (FRAME_ 0 { z }) to the stack.
-18. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-19. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-20. Push the evaluation context (FRAME_ 0 { z }) to the stack.
-21. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-22. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-23. Push the evaluation context (FRAME_ 0 { z }) to the stack.
-24. Let [val]* be $eval_expr(expr_G)*.
-25. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+16. Let z be (s, f_init).
+17. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+18. Let [(I32.CONST i_D)]* be $eval_expr(z, expr_D)*.
+19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+20. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+21. Let [(I32.CONST i_E)]* be $eval_expr(z, expr_E)*.
+22. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+23. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+24. Let [val]* be $eval_expr(z, expr_G)*.
+25. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(s, moduleinst, i_D*, b**).
-30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
+30. Push the frame (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence ((CALL x')?).
-32. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
+32. Pop the frame (FRAME_ 0 { f }) from the stack.
 33. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
-2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
-3. Let t_1^n -> t_2* be $funcinst(z)[fa].TYPE.
-4. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+2. Push the frame (FRAME_ 0 { (s, f) }) to the stack.
+3. Let t_1^n -> t_2* be $funcinst((s, f))[fa].TYPE.
+4. Pop the frame (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
-6. Push the evaluation context (FRAME_ k { f }) to the stack.
+6. Push the frame (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
 9. Pop all values val* from the top of the stack.
-10. Pop the evaluation context (FRAME_ k { f }) from the stack.
+10. Pop the frame (FRAME_ k { f }) from the stack.
 11. Push the values val* to the stack.
 12. Pop the values val^k from the stack.
 13. Return val^k.
@@ -6686,7 +6641,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Push the evaluation context :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
+#. Push the frame :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
 
 #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -9165,224 +9120,186 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`z{.}\mathsf{store}`
-..........................
+:math:`(s, f){.}\mathsf{store}`
+...............................
 
 
 1. Return.
 
 
-:math:`z{.}\mathsf{frame}`
-..........................
+:math:`(s, f){.}\mathsf{frame}`
+...............................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f`.
+1. Return :math:`f`.
 
 
-:math:`z{.}\mathsf{module}{.}\mathsf{funcs}`
-............................................
+:math:`(s, f){.}\mathsf{module}{.}\mathsf{funcs}`
+.................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{funcs}`.
 
 
-:math:`z{.}\mathsf{funcs}`
-..........................
+:math:`(s, f){.}\mathsf{funcs}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`z{.}\mathsf{globals}`
-............................
+:math:`(s, f){.}\mathsf{globals}`
+.................................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`z{.}\mathsf{tables}`
-...........................
+:math:`(s, f){.}\mathsf{tables}`
+................................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`z{.}\mathsf{mems}`
-.........................
+:math:`(s, f){.}\mathsf{mems}`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`z{.}\mathsf{elems}`
-..........................
+:math:`(s, f){.}\mathsf{elems}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{elems}`.
 
 
-:math:`z{.}\mathsf{datas}`
-..........................
+:math:`(s, f){.}\mathsf{datas}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
 
 
-:math:`z{.}\mathsf{module}`
-...........................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}`.
-
-
-:math:`z{.}\mathsf{types}{}[x]`
-...............................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
-
-
-:math:`z{.}\mathsf{funcs}{}[x]`
-...............................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
-
-
-:math:`z{.}\mathsf{globals}{}[x]`
-.................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
-
-
-:math:`z{.}\mathsf{tables}{}[x]`
+:math:`(s, f){.}\mathsf{module}`
 ................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
+1. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`z{.}\mathsf{mems}{}[x]`
-..............................
+:math:`(s, f){.}\mathsf{types}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`z{.}\mathsf{elems}{}[x]`
-...............................
+:math:`(s, f){.}\mathsf{funcs}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
+1. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`z{.}\mathsf{datas}{}[x]`
-...............................
+:math:`(s, f){.}\mathsf{globals}{}[x]`
+......................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
+1. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`z{.}\mathsf{locals}{}[x]`
-................................
+:math:`(s, f){.}\mathsf{tables}{}[x]`
+.....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{locals}{}[x]`.
+1. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
-........................................
+:math:`(s, f){.}\mathsf{mems}{}[x]`
+...................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
+1. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
-..........................................................
+:math:`(s, f){.}\mathsf{elems}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
+1. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
-.............................................................
+:math:`(s, f){.}\mathsf{datas}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
+1. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
-....................................................
+:math:`(s, f){.}\mathsf{locals}{}[x]`
+.....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
+1. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
-.......................................................................
+:math:`(s, f){}[{.}\mathsf{locals}{}[x] = v]`
+.............................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
+1. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
-..................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
-
-
-:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
-..............................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
-
-
-:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+:math:`(s, f){}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
 ...............................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
-#. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
+
+:math:`(s, f){}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+..................................................................
+
+
+1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
+
+
+:math:`(s, f){}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+.........................................................
+
+
+1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
+
+
+:math:`(s, f){}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+............................................................................
+
+
+1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
+
+
+:math:`(s, f){}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+.......................................................
+
+
+1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
+
+
+:math:`(s, f){}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+...................................................................
+
+
+1. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
+
+
+:math:`(s, f){}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+....................................................................
+
+
+1. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{ti}}, n, r)`
@@ -9912,25 +9829,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
-#. Let :math:`z` be :math:`f_{\mathit{init}}`.
+#. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{g}})^\ast}`.
+#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{g}})^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
+#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 
@@ -9938,7 +9855,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the sequence :math:`{(\mathsf{call}~x)^?}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -9949,15 +9866,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~(s, f)~\})` to the stack.
 
-#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
+#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -9965,7 +9882,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -11189,7 +11106,7 @@ Step_read/call_addr a
 8. Assert: Due to validation, there are at least k values on the top of the stack.
 9. Pop the values val^k from the stack.
 10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
-11. Push the evaluation context (FRAME_ n { f }) to the stack.
+11. Push the frame (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.func x
@@ -12381,102 +12298,83 @@ memsxa xv_u1*
 4. Let [externaddr] :: xv* be xv_u1*.
 5. Return $memsxa(xv*).
 
-store z
+store (s, f)
 1. Return.
 
-frame z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.
+frame (s, f)
+1. Return f.
 
-funcaddr z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.FUNCS.
+funcaddr (s, f)
+1. Return f.MODULE.FUNCS.
 
-funcinst z
+funcinst (s, f)
 1. Return s.FUNCS.
 
-globalinst z
+globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst z
+tableinst (s, f)
 1. Return s.TABLES.
 
-meminst z
+meminst (s, f)
 1. Return s.MEMS.
 
-eleminst z
+eleminst (s, f)
 1. Return s.ELEMS.
 
-datainst z
+datainst (s, f)
 1. Return s.DATAS.
 
-moduleinst z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.
+moduleinst (s, f)
+1. Return f.MODULE.
 
-type z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.TYPES[x].
+type (s, f) x
+1. Return f.MODULE.TYPES[x].
 
-func z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+global (s, f) x
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+mem (s, f) x
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-elem z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.ELEMS[f.MODULE.ELEMS[x]].
+elem (s, f) x
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.DATAS[f.MODULE.DATAS[x]].
+data (s, f) x
+1. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.LOCALS[x].
+local (s, f) x
+1. Return f.LOCALS[x].
 
-with_local z x v
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace f.LOCALS[x] with v.
+with_local (s, f) x v
+1. Replace f.LOCALS[x] with v.
 
-with_global z x v
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+with_global (s, f) x v
+1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table z x i r
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+with_table (s, f) x i r
+1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
-with_tableinst z x ti
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_tableinst (s, f) x ti
+1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem z x i j b*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_mem (s, f) x i j b*
+1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst z x mi
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_meminst (s, f) x mi
+1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
-with_elem z x r*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+with_elem (s, f) x r*
+1. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
-with_data z x b*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+with_data (s, f) x b*
+1. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 growtable ti n r
 1. Let { TYPE: (([ i .. j ]) rt); REFS: r'*; } be ti.
@@ -12729,33 +12627,33 @@ instantiate s module externaddr*
 15. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
 16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
-18. Let z be f_init.
-19. Push the evaluation context (FRAME_ 0 { z }) to the stack.
-20. Let [val]* be $eval_expr(expr_G)*.
-21. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-22. Push the evaluation context (FRAME_ 0 { z }) to the stack.
-23. Let [ref]** be $eval_expr(expr_E)**.
-24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+18. Let z be (s, f_init).
+19. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+20. Let [val]* be $eval_expr(z, expr_G)*.
+21. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+22. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+23. Let [ref]** be $eval_expr(z, expr_E)**.
+24. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 25. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
-27. Push the evaluation context (FRAME_ 0 { f }) to the stack.
+27. Push the frame (FRAME_ 0 { f }) to the stack.
 28. Execute the sequence (instr_E*).
 29. Execute the sequence (instr_D*).
 30. Execute the sequence ((CALL x)?).
-31. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
+31. Pop the frame (FRAME_ 0 { f }) from the stack.
 32. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Push the evaluation context (FRAME_ 0 { f }) to the stack.
-3. Let t_1^n -> t_2* be $funcinst(z)[fa].TYPE.
-4. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+2. Push the frame (FRAME_ 0 { (s, f) }) to the stack.
+3. Let t_1^n -> t_2* be $funcinst((s, f))[fa].TYPE.
+4. Pop the frame (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
-6. Push the evaluation context (FRAME_ k { f }) to the stack.
+6. Push the frame (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
 9. Pop all values val* from the top of the stack.
-10. Pop the evaluation context (FRAME_ k { f }) from the stack.
+10. Pop the frame (FRAME_ k { f }) from the stack.
 11. Push the values val* to the stack.
 12. Pop the values val^k from the stack.
 13. Return val^k.
@@ -17367,7 +17265,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-      #) Push the evaluation context :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
+      #) Push the frame :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
 
       #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{m}}{\{}~\epsilon~\})`.
 
@@ -17536,7 +17434,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
           #. Pop the current :math:`\mathsf{handler}` context from the stack.
 
-          #. Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+          #. Push the handler :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
           #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17576,7 +17474,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-            #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+            #) Push the handler :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
             #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17592,7 +17490,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-            #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+            #) Push the handler :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
             #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17604,7 +17502,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-            #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+            #) Push the handler :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
             #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17636,7 +17534,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #) Pop the current :math:`\mathsf{handler}` context from the stack.
 
-            #) Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+            #) Push the handler :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
 
             #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17669,7 +17567,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
 
-#. Push the evaluation context :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})` to the stack.
+#. Push the handler :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})` to the stack.
 
 #. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
 
@@ -23556,293 +23454,253 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`z{.}\mathsf{store}`
-..........................
+:math:`(s, f){.}\mathsf{store}`
+...............................
 
 
 1. Return.
 
 
-:math:`z{.}\mathsf{frame}`
-..........................
+:math:`(s, f){.}\mathsf{frame}`
+...............................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f`.
+1. Return :math:`f`.
 
 
-:math:`z{.}\mathsf{tags}`
-.........................
+:math:`(s, f){.}\mathsf{tags}`
+..............................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
 
 
-:math:`z{.}\mathsf{module}`
-...........................
+:math:`(s, f){.}\mathsf{module}`
+................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{module}`.
+1. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`z{.}\mathsf{funcs}`
-..........................
+:math:`(s, f){.}\mathsf{funcs}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{funcs}`.
 
 
-:math:`z{.}\mathsf{globals}`
-............................
+:math:`(s, f){.}\mathsf{globals}`
+.................................
 
 
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`z{.}\mathsf{tables}`
-...........................
+:math:`(s, f){.}\mathsf{tables}`
+................................
 
 
 1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`z{.}\mathsf{mems}`
-.........................
+:math:`(s, f){.}\mathsf{mems}`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`z{.}\mathsf{tags}`
-.........................
+:math:`(s, f){.}\mathsf{tags}`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{tags}`.
 
 
-:math:`z{.}\mathsf{elems}`
-..........................
+:math:`(s, f){.}\mathsf{elems}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{elems}`.
 
 
-:math:`z{.}\mathsf{datas}`
-..........................
+:math:`(s, f){.}\mathsf{datas}`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
 
 
-:math:`z{.}\mathsf{structs}`
-............................
+:math:`(s, f){.}\mathsf{structs}`
+.................................
 
 
 1. Return :math:`s{.}\mathsf{structs}`.
 
 
-:math:`z{.}\mathsf{arrays}`
-...........................
+:math:`(s, f){.}\mathsf{arrays}`
+................................
 
 
 1. Return :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`z{.}\mathsf{exns}`
-.........................
+:math:`(s, f){.}\mathsf{exns}`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{exns}`.
 
 
-:math:`z{.}\mathsf{types}{}[x]`
-...............................
+:math:`(s, f){.}\mathsf{types}{}[x]`
+....................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
-#. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
+:math:`(s, f){.}\mathsf{funcs}{}[x]`
+....................................
 
-:math:`z{.}\mathsf{funcs}{}[x]`
-...............................
 
+1. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
+:math:`(s, f){.}\mathsf{globals}{}[x]`
+......................................
 
 
-:math:`z{.}\mathsf{globals}{}[x]`
-.................................
+1. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+:math:`(s, f){.}\mathsf{tables}{}[x]`
+.....................................
 
-#. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
+1. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
-:math:`z{.}\mathsf{tables}{}[x]`
-................................
 
+:math:`(s, f){.}\mathsf{mems}{}[x]`
+...................................
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
+1. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`z{.}\mathsf{mems}{}[x]`
-..............................
+:math:`(s, f){.}\mathsf{tags}{}[x]`
+...................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
-#. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
+:math:`(s, f){.}\mathsf{elems}{}[x]`
+....................................
 
-:math:`z{.}\mathsf{tags}{}[x]`
-..............................
 
+1. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
+:math:`(s, f){.}\mathsf{datas}{}[x]`
+....................................
 
 
-:math:`z{.}\mathsf{elems}{}[x]`
-...............................
+1. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+:math:`(s, f){.}\mathsf{locals}{}[x]`
+.....................................
 
-#. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
+1. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
-:math:`z{.}\mathsf{datas}{}[x]`
-...............................
 
+:math:`(s, f){}[{.}\mathsf{locals}{}[x] = v]`
+.............................................
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
 
-#. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
+1. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`z{.}\mathsf{locals}{}[x]`
-................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Return :math:`f{.}\mathsf{locals}{}[x]`.
-
-
-:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
-........................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
-
-
-:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
-..........................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
-
-
-:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
-.............................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
-
-
-:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
-....................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
-
-
-:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
-.......................................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
-
-
-:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
-..................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
-
-
-:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
-..............................................................
-
-
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
-
-
-:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+:math:`(s, f){}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
 ...............................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
-
-#. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
+1. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+:math:`(s, f){}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+..................................................................
+
+
+1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
+
+
+:math:`(s, f){}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+.........................................................
+
+
+1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
+
+
+:math:`(s, f){}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
 ............................................................................
+
+
+1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
+
+
+:math:`(s, f){}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+.......................................................
+
+
+1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
+
+
+:math:`(s, f){}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+...................................................................
+
+
+1. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
+
+
+:math:`(s, f){}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+....................................................................
+
+
+1. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
+
+
+:math:`(s, f){}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+.................................................................................
 
 
 1. Replace :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
-...........................................................................
+:math:`(s, f){}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+................................................................................
 
 
 1. Replace :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
-...........................................................................
+:math:`(s, f){}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
+................................................................................
 
 
 1. Append :math:`{{\mathit{si}}^\ast}` to :math:`s{.}\mathsf{structs}`.
 
 
-:math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
-..........................................................................
+:math:`(s, f){}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
+...............................................................................
 
 
 1. Append :math:`{{\mathit{ai}}^\ast}` to :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
-.........................................................................
+:math:`(s, f){}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
+..............................................................................
 
 
 1. Append :math:`{{\mathit{exn}}^\ast}` to :math:`s{.}\mathsf{exns}`.
@@ -24349,9 +24207,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................................................................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~z~\})` be the current :math:`\mathsf{frame}` context.
-
-#. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon` and :math:`{e_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
   a. Return :math:`\epsilon`.
 
@@ -24363,15 +24219,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Let :math:`f` be :math:`z`.
+#. Let :math:`(s, f)` be :math:`z`.
 
-#. Let :math:`{\mathit{val}}` be :math:`{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}})`.
+#. Let :math:`{\mathit{val}}` be :math:`{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}})`.
 
 #. Let :math:`a` be :math:`{\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})`.
 
 #. Append :math:`a` to :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
 
-#. Let :math:`{{\mathit{val}'}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})}`.
+#. Let :math:`{{\mathit{val}'}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{((s, f), {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})}`.
 
 #. Return :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}`.
 
@@ -24426,31 +24282,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` be :math:`{(\mathsf{call}~x)^?}`.
 
-#. Let :math:`z` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array}`.
+#. Let :math:`z` be :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~z~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` to the stack.
 
-#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{t}})^\ast}`.
+#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{t}})^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~{z'}~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` to the stack.
 
-#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}({\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
+#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 
@@ -24458,7 +24314,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{s}}^?}`.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -24487,7 +24343,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the evaluation context :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
+#. Push the frame :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -24497,7 +24353,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Pop the evaluation context :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
+#. Pop the frame :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -24506,8 +24362,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-:math:`{{{\mathrm{allocX}}^\ast}}{({\mathit{TODO}}, {X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
-.........................................................................................................................................................
+:math:`{{{\mathrm{allocX}}^\ast}}{(s, {X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+...........................................................................................................................................
 
 
 1. If :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
@@ -24524,9 +24380,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
   #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-  #. Let :math:`a` be :math:`{\mathrm{allocX}}(s, {\mathit{TODO}}, {\mathit{TODO}}, X, Y)`.
+  #. Let :math:`a` be :math:`{\mathrm{allocX}}({\mathit{TODO}}, {\mathit{TODO}}, s, X, Y)`.
 
-  #. Let :math:`{{a'}^\ast}` be :math:`{{{\mathrm{allocX}}^\ast}}{({\mathit{TODO}}, {{X'}^\ast}, {{Y'}^\ast})}`.
+  #. Let :math:`{{a'}^\ast}` be :math:`{{{\mathrm{allocX}}^\ast}}{(s, {{X'}^\ast}, {{Y'}^\ast})}`.
 
   #. Return :math:`a~{{a'}^\ast}`.
 
@@ -26879,7 +26735,7 @@ Step_read/call_ref yy
       e) Assert: Due to validation, there are at least n values on the top of the stack.
       f) Pop the values val^n from the stack.
       g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
-      h) Push the evaluation context (FRAME_ m { f }) to the stack.
+      h) Push the frame (FRAME_ m { f }) to the stack.
       i) Enter instr* with label (LABEL_ m { [] }).
 
 Step_read/return_call x
@@ -26960,7 +26816,7 @@ Step_read/throw_ref
       c) Else if catch_0 is not of the case CATCH_ALL_REF, then:
         1. Let [catch] :: catch'* be catch_u1*.
         2. Pop the current HANDLER_ context from the stack.
-        3. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
+        3. Push the handler (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
         5. Execute the instruction THROW_REF.
       d) Else:
@@ -26980,7 +26836,7 @@ Step_read/throw_ref
         3. Else:
           a. Let [catch] :: catch'* be catch_u1*.
           b. Pop the current HANDLER_ context from the stack.
-          c. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
+          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
       d) Else if catch_0 is of the case CATCH_REF, then:
@@ -26988,13 +26844,13 @@ Step_read/throw_ref
         2. If (x >= |$tagaddr(z)|), then:
           a. Let [catch] :: catch'* be catch_u1*.
           b. Pop the current HANDLER_ context from the stack.
-          c. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
+          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         3. Else if ($exninst(z)[a].TAG =/= $tagaddr(z)[x]), then:
           a. Let [catch] :: catch'* be catch_u1*.
           b. Pop the current HANDLER_ context from the stack.
-          c. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
+          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         4. Else:
@@ -27009,7 +26865,7 @@ Step_read/throw_ref
       f) Else if catch_0 is not of the case CATCH_ALL_REF, then:
         1. Let [catch] :: catch'* be catch_u1*.
         2. Pop the current HANDLER_ context from the stack.
-        3. Push the evaluation context (HANDLER_ n { catch'* }) to the stack.
+        3. Push the handler (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
         5. Execute the instruction THROW_REF.
       g) Else:
@@ -27025,7 +26881,7 @@ Step_read/try_table bt catch* instr*
 2. Let t_1^m -> t_2^n be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
-5. Push the evaluation context (HANDLER_ n { catch* }) to the stack.
+5. Push the handler (HANDLER_ n { catch* }) to the stack.
 6. Enter val^m :: instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.null (_IDX x)
@@ -29806,132 +29662,112 @@ tagsxa xa_u1*
 4. Let [externaddr] :: xa* be xa_u1*.
 5. Return $tagsxa(xa*).
 
-store z
+store (s, f)
 1. Return.
 
-frame z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.
+frame (s, f)
+1. Return f.
 
-tagaddr z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.TAGS.
+tagaddr (s, f)
+1. Return f.MODULE.TAGS.
 
-moduleinst z
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.
+moduleinst (s, f)
+1. Return f.MODULE.
 
-funcinst z
+funcinst (s, f)
 1. Return s.FUNCS.
 
-globalinst z
+globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst z
+tableinst (s, f)
 1. Return s.TABLES.
 
-meminst z
+meminst (s, f)
 1. Return s.MEMS.
 
-taginst z
+taginst (s, f)
 1. Return s.TAGS.
 
-eleminst z
+eleminst (s, f)
 1. Return s.ELEMS.
 
-datainst z
+datainst (s, f)
 1. Return s.DATAS.
 
-structinst z
+structinst (s, f)
 1. Return s.STRUCTS.
 
-arrayinst z
+arrayinst (s, f)
 1. Return s.ARRAYS.
 
-exninst z
+exninst (s, f)
 1. Return s.EXNS.
 
-type z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.MODULE.TYPES[x].
+type (s, f) x
+1. Return f.MODULE.TYPES[x].
 
-func z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+global (s, f) x
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+mem (s, f) x
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-tag z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.TAGS[f.MODULE.TAGS[x]].
+tag (s, f) x
+1. Return s.TAGS[f.MODULE.TAGS[x]].
 
-elem z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.ELEMS[f.MODULE.ELEMS[x]].
+elem (s, f) x
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return s.DATAS[f.MODULE.DATAS[x]].
+data (s, f) x
+1. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local z x
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Return f.LOCALS[x].
+local (s, f) x
+1. Return f.LOCALS[x].
 
-with_local z x v
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace f.LOCALS[x] with ?(v).
+with_local (s, f) x v
+1. Replace f.LOCALS[x] with ?(v).
 
-with_global z x v
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+with_global (s, f) x v
+1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
-with_table z x i r
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+with_table (s, f) x i r
+1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
-with_tableinst z x ti
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_tableinst (s, f) x ti
+1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
-with_mem z x i j b*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_mem (s, f) x i j b*
+1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_meminst z x mi
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_meminst (s, f) x mi
+1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
-with_elem z x r*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+with_elem (s, f) x r*
+1. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
-with_data z x b*
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
-2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+with_data (s, f) x b*
+1. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
-with_struct z a i fv
+with_struct (s, f) a i fv
 1. Replace s.STRUCTS[a].FIELDS[i] with fv.
 
-with_array z a i fv
+with_array (s, f) a i fv
 1. Replace s.ARRAYS[a].FIELDS[i] with fv.
 
-add_structinst z si*
+add_structinst (s, f) si*
 1. Append si* to the s.STRUCTS.
 
-add_arrayinst z ai*
+add_arrayinst (s, f) ai*
 1. Append ai* to the s.ARRAYS.
 
-add_exninst z exn*
+add_exninst (s, f) exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
@@ -30172,19 +30008,18 @@ rundata_ x (DATA b^n datamode_u1)
 4. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 evalglobals z gt_u1* e_u1*
-1. Let (FRAME_ _ { z }) be the current FRAME_ context.
-2. If ((gt_u1* = []) /\ (e_u1* = [])), then:
+1. If ((gt_u1* = []) /\ (e_u1* = [])), then:
   a. Return [].
-3. Assert: Due to validation, (|e_u1*| >= 1).
-4. Let [expr] :: expr'* be e_u1*.
-5. Assert: Due to validation, (|gt_u1*| >= 1).
-6. Let [gt] :: gt'* be gt_u1*.
-7. Let f be z.
-8. Let [val] be $eval_expr(expr).
-9. Let a be $allocglobal(s, gt, val).
-10. Append a to the f.MODULE.GLOBALS.
-11. Let val'* be $evalglobals(z, gt'*, expr'*).
-12. Return [val] :: val'*.
+2. Assert: Due to validation, (|e_u1*| >= 1).
+3. Let [expr] :: expr'* be e_u1*.
+4. Assert: Due to validation, (|gt_u1*| >= 1).
+5. Let [gt] :: gt'* be gt_u1*.
+6. Let (s, f) be z.
+7. Let [val] be $eval_expr(z, expr).
+8. Let a be $allocglobal(s, gt, val).
+9. Append a to the f.MODULE.GLOBALS.
+10. Let val'* be $evalglobals((s, f), gt'*, expr'*).
+11. Return [val] :: val'*.
 
 instantiate s module externaddr*
 1. Let xt_I* -> xt_E* be $Module_ok(module).
@@ -30205,23 +30040,23 @@ instantiate s module externaddr*
 15. Assert: Due to validation, elem is of the case ELEM*.
 16. Let (ELEM reftype expr_E* elemmode)* be elem*.
 17. Let instr_S? be (CALL x)?.
-18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-19. Push the evaluation context (FRAME_ 0 { z }) to the stack.
+18. Let z be (s, { LOCALS: []; MODULE: moduleinst_0; }).
+19. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-21. Pop the evaluation context (FRAME_ 0 { z' }) from the stack.
-22. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
-23. Let [ref_T]* be $eval_expr(expr_T)*.
-24. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
-25. Push the evaluation context (FRAME_ 0 { z' }) to the stack.
-26. Let [ref_E]** be $eval_expr(expr_E)**.
-27. Pop the evaluation context (FRAME_ 0 { _f }) from the stack.
+21. Pop the frame (FRAME_ 0 { f' }) from the stack.
+22. Push the frame (FRAME_ 0 { f' }) to the stack.
+23. Let [ref_T]* be $eval_expr(z, expr_T)*.
+24. Pop the frame (FRAME_ 0 { f' }) from the stack.
+25. Push the frame (FRAME_ 0 { f' }) to the stack.
+26. Let [ref_E]** be $eval_expr(z, expr_E)**.
+27. Pop the frame (FRAME_ 0 { f' }) from the stack.
 28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
-30. Push the evaluation context (FRAME_ 0 { f }) to the stack.
+30. Push the frame (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence (instr_E*).
 32. Execute the sequence (instr_D*).
 33. Execute the sequence (instr_S?).
-34. Pop the evaluation context (FRAME_ 0 { f }) from the stack.
+34. Pop the frame (FRAME_ 0 { f }) from the stack.
 35. Return f.MODULE.
 
 invoke s funcaddr val*
@@ -30232,17 +30067,17 @@ invoke s funcaddr val*
 5. If not $Val_type(val, t_1)*, then:
   a. Fail.
 6. Let k be |t_2*|.
-7. Push the evaluation context (FRAME_ k { f }) to the stack.
+7. Push the frame (FRAME_ k { f }) to the stack.
 8. Push the values val* to the stack.
 9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
 10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
 11. Pop all values val* from the top of the stack.
-12. Pop the evaluation context (FRAME_ k { f }) from the stack.
+12. Pop the frame (FRAME_ k { f }) from the stack.
 13. Push the values val* to the stack.
 14. Pop the values val^k from the stack.
 15. Return val^k.
 
-allocXs s X Y X_u1* Y_u1*
+allocXs X Y s X_u1* Y_u1*
 1. If (X_u1* = []), then:
   a. Assert: Due to validation, (Y_u1* = []).
   b. Return [].
@@ -30250,8 +30085,8 @@ allocXs s X Y X_u1* Y_u1*
   a. Let [X] :: X'* be X_u1*.
   b. Assert: Due to validation, (|Y_u1*| >= 1).
   c. Let [Y] :: Y'* be Y_u1*.
-  d. Let a be $allocX(s, X, Y, X, Y).
-  e. Let a'* be $allocXs(s, X, Y, X'*, Y'*).
+  d. Let a be $allocX(X, Y, s, X, Y).
+  e. Let a'* be $allocXs(X, Y, s, X'*, Y'*).
   f. Return [a] :: a'*.
 
 var X
