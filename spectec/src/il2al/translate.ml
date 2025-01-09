@@ -879,7 +879,7 @@ let translate_rulepr id exp =
     (* Note: State is automatically converted into frame by remove_state *)
     (* Note: Push/pop is automatically inserted by handle_frame *)
     let lhs = tupE [z'; vs] ~at:(over_region [z'.at; vs.at]) ~note:vs.note in
-    let rhs = callE ("eval_expr", [ expA z; expA is ]) ~note:vs.note in
+    let rhs = callE ("Eval_expr", [ expA z; expA is ]) ~note:vs.note in
     [ letI (lhs, rhs) ~at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]

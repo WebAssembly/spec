@@ -479,14 +479,25 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.CallE (_, al) ->
-    let args = List.map (render_arg env) al in
-    (match args with
-    | [arg1; arg2] ->
-      arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
-    | [arg] -> "the type of " ^ arg
-    | _ -> error expr.at "Invalid arity for relation call";
-    )
+  | Al.Ast.CallE (id, al) ->
+    (* HARDCODE: relation call *)
+    if id = "Eval_expr" then
+      let args = List.map (render_arg env) al in
+      (match args with
+      | [z; expr] ->
+        "the result of :ref:`evaluating <exec-expr>` " ^ expr ^ " with state " ^ z
+      | [arg] -> "the type of " ^ arg
+      | _ -> error expr.at "Invalid arity for relation call";
+      )
+    else if String.ends_with ~suffix:"_type" id || String.ends_with ~suffix:"_ok" id then
+      let args = List.map (render_arg env) al in
+      (match args with
+      | [arg1; arg2] ->
+        arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
+      | [arg] -> "the type of " ^ arg
+      | _ -> error expr.at "Invalid arity for relation call";
+      )
+    else error expr.at ("Not supported relation call: " ^ id);
   | Al.Ast.InvCallE (id, nl, al) ->
     let e =
       if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N" ~note:Al.Al_util.no_note

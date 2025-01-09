@@ -2787,19 +2787,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{d}})^\ast}`.
+#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{d}}` in :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{d}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{e}})^\ast}`.
+#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{g}})^\ast}`.
+#. Let :math:`{{\mathit{val}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{g}}` in :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{g}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
@@ -4216,13 +4216,13 @@ instantiate s module externaddr*
 15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 16. Let z be (s, f_init).
 17. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-18. Let [(I32.CONST i_D)]* be $eval_expr(z, expr_D)*.
+18. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
 19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 20. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-21. Let [(I32.CONST i_E)]* be $eval_expr(z, expr_E)*.
+21. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
 22. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 23. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-24. Let [val]* be $eval_expr(z, expr_G)*.
+24. Let [val]* be $Eval_expr(z, expr_G)*.
 25. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
@@ -9833,13 +9833,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{g}})^\ast}`.
+#. Let :math:`{{\mathit{val}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{g}}` in :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{g}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
+#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e*}}` in :math:`{{\mathit{expr}}_{\mathsf{e*}}^\ast}`, for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
@@ -12629,10 +12629,10 @@ instantiate s module externaddr*
 17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 18. Let z be (s, f_init).
 19. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-20. Let [val]* be $eval_expr(z, expr_G)*.
+20. Let [val]* be $Eval_expr(z, expr_G)*.
 21. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 22. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-23. Let [ref]** be $eval_expr(z, expr_E)**.
+23. Let [ref]** be $Eval_expr(z, expr_E)**.
 24. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 25. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
@@ -24221,7 +24221,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(s, f)` be :math:`z`.
 
-#. Let :math:`{\mathit{val}}` be :math:`{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}})`.
+#. Let :math:`{\mathit{val}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}` with state :math:`z`.
 
 #. Let :math:`a` be :math:`{\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})`.
 
@@ -24292,13 +24292,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` to the stack.
 
-#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{t}})^\ast}`.
+#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
 
 #. Push the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` to the stack.
 
-#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{\mathrm{eval}}_{\mathit{expr}}(z, {\mathit{expr}}_{\mathsf{e}})^\ast}^\ast}`.
+#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e*}}` in :math:`{{\mathit{expr}}_{\mathsf{e*}}^\ast}`, for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
 
 #. Pop the frame :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
 
@@ -30015,7 +30015,7 @@ evalglobals z gt_u1* e_u1*
 4. Assert: Due to validation, (|gt_u1*| >= 1).
 5. Let [gt] :: gt'* be gt_u1*.
 6. Let (s, f) be z.
-7. Let [val] be $eval_expr(z, expr).
+7. Let [val] be $Eval_expr(z, expr).
 8. Let a be $allocglobal(s, gt, val).
 9. Append a to the f.MODULE.GLOBALS.
 10. Let val'* be $evalglobals((s, f), gt'*, expr'*).
@@ -30045,10 +30045,10 @@ instantiate s module externaddr*
 20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
 21. Pop the frame (FRAME_ 0 { f' }) from the stack.
 22. Push the frame (FRAME_ 0 { f' }) to the stack.
-23. Let [ref_T]* be $eval_expr(z, expr_T)*.
+23. Let [ref_T]* be $Eval_expr(z, expr_T)*.
 24. Pop the frame (FRAME_ 0 { f' }) from the stack.
 25. Push the frame (FRAME_ 0 { f' }) to the stack.
-26. Let [ref_E]** be $eval_expr(z, expr_E)**.
+26. Let [ref_E]** be $Eval_expr(z, expr_E)**.
 27. Pop the frame (FRAME_ 0 { f' }) from the stack.
 28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
