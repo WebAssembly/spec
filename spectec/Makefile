@@ -92,3 +92,6 @@ distclean: clean
 	rm -f ./$(NAME)
 	rm -rf $(CLONEDIR)
 	for dir in $(TESTDIRS); do (cd $$dir && make distclean); done
+
+specclean:
+	(cd ../document/core && make clean)

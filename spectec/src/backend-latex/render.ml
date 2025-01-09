@@ -427,6 +427,7 @@ let rec string_of_row sep br = function
 
 let rec string_of_table vsep vbr hsep hbr = function
   | [] -> ""
+  | (Row cols)::[] -> string_of_row hsep hbr cols
   | (Row cols)::Sep::rows -> string_of_row hsep hbr cols ^ vbr ^ string_of_table vsep vbr hsep hbr rows
   | (Row cols)::rows -> string_of_row hsep hbr cols ^ vsep ^ string_of_table vsep vbr hsep hbr rows
   | Sep::rows -> vbr ^ string_of_table vsep vbr hsep hbr rows
