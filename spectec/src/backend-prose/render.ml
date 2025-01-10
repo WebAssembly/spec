@@ -28,7 +28,7 @@ let env config inputs outputs render_latex : env =
 
 (* Helpers *)
 
-let indent = "  "
+let indent = "   "
 
 let rec repeat str num =
   if num = 0 then ""
@@ -215,25 +215,25 @@ and al_to_el_expr expr =
       | Some _ ->
         None
       | _ ->
-        let elid = id $ no_region in
-        let* elal = al_to_el_args al in
-        (* Unwrap parenthsized args *)
-        let elal = List.map
-          (fun elarg ->
-            let elarg = match elarg with
-            | El.Ast.ExpA exp ->
-              let exp = match exp.it with
-              | ParenE exp' -> exp'
-              | _ -> exp
+          let elid = id $ no_region in
+          let* elal = al_to_el_args al in
+          (* Unwrap parenthsized args *)
+          let elal = List.map
+            (fun elarg ->
+              let elarg = match elarg with
+              | El.Ast.ExpA exp ->
+                let exp = match exp.it with
+                | ParenE exp' -> exp'
+                | _ -> exp
+                in
+                El.Ast.ExpA exp
+              | _ -> elarg
               in
-              El.Ast.ExpA exp
-            | _ -> elarg
-            in
-            (ref elarg) $ no_region
-          )
-          elal
-        in
-        Some (El.Ast.CallE (elid, elal))
+              (ref elarg) $ no_region
+            )
+            elal
+          in
+          Some (El.Ast.CallE (elid, elal))
       )
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
@@ -481,16 +481,16 @@ and render_expr' env expr =
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.CallE (id, al) ->
     (* HARDCODE: relation call *)
+    let args = List.map (render_arg env) al in
     if id = "Eval_expr" then
-      let args = List.map (render_arg env) al in
       (match args with
       | [z; expr] ->
         "the result of :ref:`evaluating <exec-expr>` " ^ expr ^ " with state " ^ z
-      | [arg] -> "the type of " ^ arg
-      | _ -> error expr.at "Invalid arity for relation call";
+      | [instrs] ->
+        "the result of :ref:`evaluating <exec-expr>` " ^ instrs
+      | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
       )
     else if String.ends_with ~suffix:"_type" id || String.ends_with ~suffix:"_ok" id then
-      let args = List.map (render_arg env) al in
       (match args with
       | [arg1; arg2] ->
         arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
@@ -670,7 +670,7 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
-let typs = ref Map.empty
+ let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
@@ -970,8 +970,8 @@ let rec render_instr env algoname index depth instr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
-  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (id, [{ it = ExpA arge; _ }]); _ } as e))
-    when Option.is_some (Prose_util.find_relation id) ->
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (("Module_ok" | "Ref_type"), [{ it = ExpA arge; _ }]); _ } as e)) ->
+    (* HARDCODE: special function calls for LetI *)
     let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
     let to_instr instr' = instr' $$ (no_region, 0) in
     let is_valid = Al.Ast.IsValidE arge |> to_expr in
@@ -983,6 +983,14 @@ let rec render_instr env algoname index depth instr =
       valid_check_string
       (render_order index depth) (render_expr env n)
       (render_expr env e)
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE ("concat_", al); _ })) ->
+    let args = List.map (render_arg env) al in
+    let ce = (match args with
+    | [_; expr] ->
+      "the concatenation of " ^ expr
+    | _ -> error instr.at "Invalid arity for relation call";
+    ) in
+    sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) ce
   | Al.Ast.LetI (n, e) ->
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
       (render_expr env e)
