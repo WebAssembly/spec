@@ -2601,15 +2601,15 @@ Control Instructions
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
-* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\CTAGS[x] = [t^\ast] \to []
+     \expanddt(C.\CTAGS[x]) = [t^\ast] \to []
    }{
      C \vdashinstr \THROW~x : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }

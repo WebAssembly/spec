@@ -483,11 +483,11 @@ Global Types
 Tag Types
 ~~~~~~~~~
 
-*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a function type.
+*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a defined type |deftype|, which expands to a function type |functype|.
 
 .. math::
    \begin{array}{llll}
-   \production{tag type} &\tagtype &::=& \functype \\
+   \production{tag type} &\tagtype &::=& \deftype \\
    \end{array}
 
 Currently tags are only used for categorizing exceptions.
