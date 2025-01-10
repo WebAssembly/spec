@@ -552,7 +552,7 @@ Tag Types
 ~~~~~~~~~
 
 :math:`\deftype`
-...........................
+................
 
 
 * The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
