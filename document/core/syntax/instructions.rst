@@ -38,7 +38,7 @@ The ${:UNREACHABLE} instruction causes an unconditional :ref:`trap <trap>`.
 The ${:DROP} instruction simply throws away a single operand.
 
 The ${:SELECT} instruction selects one of its first two operands based on whether its third operand is zero or not.
-It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If missing, the operands must be of :ref:`numeric type <syntax-numtype>`.
+It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If the type immediate is absent, the operands must be of :ref:`numeric type <syntax-numtype>`.
 
 .. note::
    In future versions of WebAssembly, the type annotation on ${:SELECT} may allow for more than a single value being selected at the same time.
@@ -119,22 +119,22 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
 
 $${syntax: {lanetype dim shape ishape bshape} half__ zero__ laneidx instr/vec}
 
-$${syntax:
-  vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_ vextunop__ vextbinop__ vextternop__ vcvtop__
-}
-
 Vector instructions have a naming convention involving a *shape* prefix that
 determines how their operands will be interpreted,
 written ${:t#X#N}, and consisting of a *lane type* ${:t}, a possibly *packed* :ref:`numeric type <syntax-numtype>`, and the number of *lanes* ${:N} of that type.
 Operations are performed point-wise on the values of each lane.
+
+Instructions prefixed with ${:V128} do not involve a specific interpretation, and treat the ${:V128} as either an ${:i128} value or a vector of ${:128} individual bits.
 
 .. note::
    For example, the shape ${shape: I32 X `4} interprets the operand
    as four ${:i32} values, packed into an ${:i128}.
    The bit width of the lane type ${:t} times ${:N} always is ${:128}.
 
-Instructions prefixed with ${:V128} do not involve a specific interpretation, and treat the ${:V128} as either an ${:i128} value or a vector of ${:128} individual bits.
+$${syntax:
+  vvunop vvbinop vvternop vvtestop
+  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_ vextunop__ vextbinop__ vextternop__ vcvtop__
+}
 
 Vector instructions can be grouped into several subcategories:
 
@@ -351,11 +351,6 @@ The ${:MEMORY.COPY} instruction copies data from a source memory region to a pos
 The ${:MEMORY.INIT} instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 
 The ${:DATA.DROP} instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
-
-.. note::
-   In the current version of WebAssembly,
-   all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` ${:0}.
-   This restriction may be lifted in future versions.
 
 
 .. index:: ! control instruction, ! structured control, ! exception, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, list, trap, function, table, tag, function type, value type, tag type, try block, type index

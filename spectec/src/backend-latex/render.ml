@@ -1128,7 +1128,7 @@ and render_nottyp env t : table =
     [Row [Col (
       "\\{ " ^
       render_table env "@{}" ["l"; "l"] 0 0
-        (concat_table "" (render_nl_list env (`H, " ") render_typfield tfs) [Row [Col " \\}"]])
+        (concat_table "" (render_nl_list env (`H, ", ") render_typfield tfs) [Row [Col " \\}"]])
     )]]
   | CaseT (dots1, ts, tcs, dots2) ->
     let render env = function

@@ -694,7 +694,7 @@ let al_to_memop (f: value -> 'p) : value list -> idx * (num_type, 'p) memop = fu
   | v -> error_values "memop" v
 
 let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = function
-  | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
+  | CaseV ("_", [ p; ext ]) -> al_to_pack_size p, al_to_extension ext
   | v -> error_value "pack size, extension" v
 
 let al_to_loadop: value list -> idx * loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
@@ -1876,7 +1876,8 @@ let al_of_memop f idx memop =
   in
   [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx idx @ [ StrV str ]
 
-let al_of_pack_size_extension (p, s) = tupV [ al_of_pack_size p; al_of_extension s ]
+let al_of_pack_size_extension (p, s) =
+  CaseV ("_", [ al_of_pack_size p; al_of_extension s ])
 
 let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 

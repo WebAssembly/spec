@@ -777,7 +777,7 @@ and handle_special_lhs lhs rhs free_ids =
     (match tag_opt with
     | Some ({ it = Atom.Atom _; _} as tag) ->
       [ ifI (
-        inject_isCaseOf tag  rhs,
+        inject_isCaseOf tag rhs,
         letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
         []
