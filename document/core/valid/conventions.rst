@@ -33,6 +33,7 @@ The skeleton of a sound and complete algorithm for type-checking instruction seq
 .. _syntax-valtype-ext:
 .. _syntax-heaptype-ext:
 .. _syntax-subtype-ext:
+.. _syntax-typeuse-ext:
 .. _type-ext:
 .. _type-closed:
 

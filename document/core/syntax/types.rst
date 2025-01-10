@@ -117,7 +117,7 @@ The type ${:ANY} denotes the common supertype of all aggregate types, as well as
 Dually, the type ${:NONE} denotes the common subtype of all forms of aggregate types.
 This type has no values.
 
-The type ${:EQT} is a subtype of ${:ANY} that includes all types for which references can be compared, i.e., aggregate values and ${:I31}.
+The type ${:EQ} is a subtype of ${:ANY} that includes all types for which references can be compared, i.e., aggregate values and ${:I31}.
 
 The types ${:STRUCT} and ${:ARRAY} denote the common supertypes of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
 
@@ -125,10 +125,12 @@ The type ${:I31} denotes *unboxed scalars*, that is, integers injected into refe
 Their observable value range is limited to 31 bits.
 
 .. note::
-   An ${:I31} value is not actually allocated in the store,
+   Values of type ${:I31} are not actually allocated in the store,
    but represented in a way that allows them to be mixed with actual references into the store without ambiguity.
    Engines need to perform some form of *pointer tagging* to achieve this,
    which is why one bit is reserved.
+   Since this type is to be reliably unboxed on all hardware platforms supported by WebAssembly,
+   it cannot be wider than 32 bits minus the tag bit.
 
    Although the types ${:NONE}, ${:NOFUNC}, ${:NOEXN}, and ${:NOEXTERN} are not inhabited by any values,
    they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
@@ -156,7 +158,7 @@ In addition, a reference type of the form ${:REF NULL ht} is *nullable*, meaning
 Other references are *non-null*.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
-Values of reference type can be stored in :ref:`tables <syntax-table>`.
+Values of reference type can be stored in :ref:`tables <syntax-table>` but not in :ref:`memories <syntax-mem>`.
 
 Conventions
 ...........
@@ -255,7 +257,7 @@ Aggregate Types
 
 *Aggregate types* describe compound objects consisting of multiple values.
 These are either *structures* or *arrays*,
-which both consist of a list of possibly mutable and possibly packed *fields*.
+which both consist of a list of possibly mutable, possibly packed *fields*.
 Structures are heterogeneous, but require static indexing, while arrays need to be homogeneous, but allow dynamic indexing.
 
 $${syntax: {structtype arraytype fieldtype storagetype packtype}}
@@ -304,9 +306,11 @@ Recursive Types
 *Recursive types* denote a group of mutually recursive :ref:`composite types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
 Each type can also be declared *final*, preventing further subtyping.
 
-$${syntax: {rectype subtype}}
+$${syntax: {rectype subtype typeuse/syn}}
 
 In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
+
+The syntax of *type uses* representing these type indices is later :ref:`extended <syntax-typeuse-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. _index:: ! address type, number type, bit width
@@ -443,7 +447,7 @@ Tag Types
    \production{tag type} &\tagtype &::=& \functype \\
    \end{array}
 
-Currently tags are only used for categorizing exceptions.
+Tags are used for categorizing exceptions.
 The parameters of |functype| define the list of values associated with the exception thrown with this tag.
 Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-tagtype>` tag type for an exception has an empty result type.
 
