@@ -1419,7 +1419,7 @@ and render_conditions env prems : row list =
   in
   prefix_row br (
     match prems''' with
-    | [] -> [Row [Col pre]]
+    | [] -> [Row [Col ("\\quad " ^ pre)]]
     | [Elem prem] -> [Row [Col ("\\quad " ^ pre ^ "~ " ^ render_prem env prem)]]
     | _ ->
       [Row [Col
