@@ -1180,6 +1180,7 @@ warning: definition `ANYREF` was never spliced
 warning: definition `ARRAYREF` was never spliced
 warning: definition `E` was never spliced
 warning: definition `EQREF` was never spliced
+warning: definition `EXNREF` was never spliced
 warning: definition `EXTERNREF` was never spliced
 warning: definition `FN` was never spliced
 warning: definition `FUNCREF` was never spliced
@@ -1189,6 +1190,7 @@ warning: definition `JN` was never spliced
 warning: definition `Ki` was never spliced
 warning: definition `M` was never spliced
 warning: definition `ND` was never spliced
+warning: definition `NULLEXNREF` was never spliced
 warning: definition `NULLEXTERNREF` was never spliced
 warning: definition `NULLFUNCREF` was never spliced
 warning: definition `NULLREF` was never spliced
@@ -1980,6 +1982,7 @@ warning: definition prose `ANYREF` was never spliced
 warning: definition prose `ARRAYREF` was never spliced
 warning: definition prose `E` was never spliced
 warning: definition prose `EQREF` was never spliced
+warning: definition prose `EXNREF` was never spliced
 warning: definition prose `EXTERNREF` was never spliced
 warning: definition prose `FN` was never spliced
 warning: definition prose `FUNCREF` was never spliced
@@ -1988,6 +1991,7 @@ warning: definition prose `IN` was never spliced
 warning: definition prose `JN` was never spliced
 warning: definition prose `Ki` was never spliced
 warning: definition prose `M` was never spliced
+warning: definition prose `NULLEXNREF` was never spliced
 warning: definition prose `NULLEXTERNREF` was never spliced
 warning: definition prose `NULLFUNCREF` was never spliced
 warning: definition prose `NULLREF` was never spliced

@@ -19448,6 +19448,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
 
+:math:`\mathsf{exnref}`
+.......................
+
+
+1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{extern})`.
+
+
 :math:`\mathsf{externref}`
 ..........................
 
@@ -19467,6 +19474,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{nofunc})`.
+
+
+:math:`\mathsf{nullexnref}`
+...........................
+
+
+1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{noexn})`.
 
 
 :math:`\mathsf{nullexternref}`
@@ -27875,6 +27889,9 @@ ARRAYREF
 FUNCREF
 1. Return (REF ?(NULL) FUNC).
 
+EXNREF
+1. Return (REF ?(NULL) EXTERN).
+
 EXTERNREF
 1. Return (REF ?(NULL) EXTERN).
 
@@ -27883,6 +27900,9 @@ NULLREF
 
 NULLFUNCREF
 1. Return (REF ?(NULL) NOFUNC).
+
+NULLEXNREF
+1. Return (REF ?(NULL) NOEXN).
 
 NULLEXTERNREF
 1. Return (REF ?(NULL) NOEXTERN).
