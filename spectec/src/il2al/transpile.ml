@@ -637,7 +637,7 @@ let hide_state_expr expr =
       | TupE [ s; e ] when is_store s && not (is_frame e) -> e.it
       | TupE [ z; e ] when is_state z -> e.it
       | VarE _ when is_store expr -> VarE "s"
-      | VarE "z'" when is_state expr -> VarE "z"
+      | VarE id when is_state expr && String.starts_with ~prefix:"z" id -> VarE "z"
       | e -> e
     in
     { expr with it = expr' }
@@ -911,7 +911,8 @@ let handle_unframed_algo instrs =
 
   let postprocess_frame f = if !for_interp then f else match f.it with
     | VarE "z" -> { f with it = CallE ("frame", [ExpA f $ f.at]) }
-    | VarE "z'" -> { f with it = VarE "f'" }
+    | VarE id when String.starts_with ~prefix:"z" id ->
+      { f with it = VarE "f" }
     | _ -> f
   in
 

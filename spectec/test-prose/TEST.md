@@ -24288,19 +24288,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
+#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` to the stack.
+#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
+#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` to the stack.
+#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e*}}` in :math:`{{\mathit{expr}}_{\mathsf{e*}}^\ast}`, for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~{f'}~\})` from the stack.
+#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
@@ -30043,13 +30043,13 @@ instantiate s module externaddr*
 18. Let z be (s, { LOCALS: []; MODULE: moduleinst_0; }).
 19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
 20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-21. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f' }) from the stack.
-22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f' }) to the stack.
+21. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
 23. Let [ref_T]* be $Eval_expr(z, expr_T)*.
-24. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f' }) from the stack.
-25. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f' }) to the stack.
+24. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+25. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
 26. Let [ref_E]** be $Eval_expr(z, expr_E)**.
-27. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f' }) from the stack.
+27. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
 28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
