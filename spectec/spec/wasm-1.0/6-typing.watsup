@@ -270,7 +270,7 @@ rule Instr_ok/memory.grow:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD t (n sx)? memarg : I32 -> t
+  C |- LOAD t (n _ sx)? memarg : I32 -> t
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= $size(t)/8)
   -- if $(2^(memarg.ALIGN) <= n/8 < $size(t)/8)?
@@ -283,7 +283,7 @@ rule Instr_ok/load-val:
   -- if $(2^(memarg.ALIGN) <= $size(t)/8)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M sx) memarg : I32 -> Inn
+  C |- LOAD Inn (M _ sx) memarg : I32 -> Inn
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8)
 

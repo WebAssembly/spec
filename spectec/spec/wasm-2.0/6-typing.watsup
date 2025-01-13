@@ -448,7 +448,7 @@ rule Instr_ok/data.drop:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD nt (n sx)? memarg : I32 -> nt
+  C |- LOAD nt (n _ sx)? memarg : I32 -> nt
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
@@ -461,7 +461,7 @@ rule Instr_ok/load-val:
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M sx) memarg : I32 -> Inn
+  C |- LOAD Inn (M _ sx) memarg : I32 -> Inn
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8)
 
@@ -485,7 +485,7 @@ rule Instr_ok/store-pack:
   -- if $(2^(memarg.ALIGN) <= M/8)
 
 rule Instr_ok/vload:
-  C |- VLOAD V128 (SHAPE M X N sx) memarg : I32 -> V128
+  C |- VLOAD V128 (SHAPE M X N _ sx) memarg : I32 -> V128
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8 * N)
 

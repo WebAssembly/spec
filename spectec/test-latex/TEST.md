@@ -3027,14 +3027,14 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {{\mathit{half}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{low} ~|~ \mathsf{high} & \quad \mbox{if}~ 2 \cdot N_1 = N_1 \\
-& {{\mathit{half}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{low} & \quad \mbox{if}~ 2 \cdot N_1 = N_1 = \mathsf{{\scriptstyle 64}} \\
+& {{\mathit{half}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{low} ~|~ \mathsf{high} & \quad \mbox{if}~ 2 \cdot N_1 = N_2 \\
+& {{\mathit{half}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{low} & \quad \mbox{if}~ 2 \cdot N_1 = N_2 = 64 \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {{\mathit{zero}}}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{zero} & \quad \mbox{if}~ 2 \cdot N_2 = N_1 = \mathsf{{\scriptstyle 64}} \\
+& {{\mathit{zero}}}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}} & ::= & \mathsf{zero} & \quad \mbox{if}~ 2 \cdot N_2 = N_1 = 64 \\
 & {\mathit{vvunop}} & ::= & \mathsf{not} \\
 & {\mathit{vvbinop}} & ::= & \mathsf{and} ~|~ \mathsf{andnot} ~|~ \mathsf{or} ~|~ \mathsf{xor} \\
 & {\mathit{vvternop}} & ::= & \mathsf{bitselect} \\
@@ -3062,7 +3062,8 @@ $$
 & & | & {\mathsf{relaxed\_q{\scriptstyle 15}mulr}}{\mathsf{\_}}{\mathsf{s}} & \quad \mbox{if}~ N = \mathsf{{\scriptstyle 16}} \\
 & & | & {\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N \leq \mathsf{{\scriptstyle 32}} \\
 & & | & {\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N \leq \mathsf{{\scriptstyle 32}} \\
-& {{\mathit{vbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{mul} ~|~ \mathsf{div} ~|~ \mathsf{min} ~|~ \mathsf{max} ~|~ \mathsf{pmin} ~|~ \mathsf{pmax} ~|~ \mathsf{relaxed\_min} ~|~ \mathsf{relaxed\_max} \\
+& {{\mathit{vbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{mul} ~|~ \mathsf{div} ~|~ \mathsf{min} ~|~ \mathsf{max} ~|~ \mathsf{pmin} ~|~ \mathsf{pmax} \\
+& & | & \mathsf{relaxed\_min} ~|~ \mathsf{relaxed\_max} \\
 \end{array}
 $$
 
@@ -3138,14 +3139,14 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(memory argument)} & {\mathit{memarg}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{align}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}   \mathsf{offset}~{\mathit{u{\kern-0.1em\scriptstyle 32}}} \} \\
+\mathsf{align}~{\mathit{u{\kern-0.1em\scriptstyle 32}}} ,  \mathsf{offset}~{\mathit{u{\kern-0.1em\scriptstyle 32}}} \} \\
 \end{array} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {{\mathit{loadop}}}_{{\mathsf{i}}{N}} & ::= & {\mathit{sz}}~{\mathit{sx}} & \quad \mbox{if}~ {\mathit{sz}} < N \\
+& {{\mathit{loadop}}}_{{\mathsf{i}}{N}} & ::= & {{\mathit{sz}}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ {\mathit{sz}} < N \\
 \end{array}
 $$
 
@@ -7052,7 +7053,7 @@ C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8
 }{
-C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathsf{i}}{N}
+C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathsf{i}}{N}
 } \, {[\textsc{\scriptsize T{-}load{-}pack}]}
 \qquad
 \end{array}
@@ -8815,28 +8816,28 @@ $$
 \mbox{(host function)} & {\mathit{hostfunc}} & ::= & \ldots \\
 & {\mathit{code}} & ::= & {\mathit{func}} ~|~ {\mathit{hostfunc}} \\
 \mbox{(function instance)} & {\mathit{funcinst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{deftype}}   \mathsf{module}~{\mathit{moduleinst}}   \mathsf{code}~{\mathit{code}} \} \\
+\mathsf{type}~{\mathit{deftype}} ,  \mathsf{module}~{\mathit{moduleinst}} ,  \mathsf{code}~{\mathit{code}} \} \\
 \end{array} \\
 \mbox{(global instance)} & {\mathit{globalinst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{globaltype}}   \mathsf{value}~{\mathit{val}} \} \\
+\mathsf{type}~{\mathit{globaltype}} ,  \mathsf{value}~{\mathit{val}} \} \\
 \end{array} \\
 \mbox{(table instance)} & {\mathit{tableinst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{tabletype}}   \mathsf{refs}~{{\mathit{ref}}^\ast} \} \\
+\mathsf{type}~{\mathit{tabletype}} ,  \mathsf{refs}~{{\mathit{ref}}^\ast} \} \\
 \end{array} \\
 \mbox{(memory instance)} & {\mathit{meminst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{memtype}}   \mathsf{bytes}~{{\mathit{byte}}^\ast} \} \\
+\mathsf{type}~{\mathit{memtype}} ,  \mathsf{bytes}~{{\mathit{byte}}^\ast} \} \\
 \end{array} \\
 \mbox{(tag instance)} & {\mathit{taginst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{tagtype}} \} \\
 \end{array} \\
 \mbox{(element instance)} & {\mathit{eleminst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{elemtype}}   \mathsf{refs}~{{\mathit{ref}}^\ast} \} \\
+\mathsf{type}~{\mathit{elemtype}} ,  \mathsf{refs}~{{\mathit{ref}}^\ast} \} \\
 \end{array} \\
 \mbox{(data instance)} & {\mathit{datainst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{bytes}~{{\mathit{byte}}^\ast} \} \\
 \end{array} \\
 \mbox{(export instance)} & {\mathit{exportinst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{name}~{\mathit{name}}   \mathsf{addr}~{\mathit{externaddr}} \} \\
+\mathsf{name}~{\mathit{name}} ,  \mathsf{addr}~{\mathit{externaddr}} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -8848,13 +8849,13 @@ $$
 \mbox{(packed value)} & {\mathit{packval}} & ::= & {\mathit{packtype}}{.}\mathsf{pack}~{i}{N} \\
 \mbox{(field value)} & {\mathit{fieldval}} & ::= & {\mathit{val}} ~|~ {\mathit{packval}} \\
 \mbox{(structure instance)} & {\mathit{structinst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{deftype}}   \mathsf{fields}~{{\mathit{fieldval}}^\ast} \} \\
+\mathsf{type}~{\mathit{deftype}} ,  \mathsf{fields}~{{\mathit{fieldval}}^\ast} \} \\
 \end{array} \\
 \mbox{(array instance)} & {\mathit{arrayinst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{deftype}}   \mathsf{fields}~{{\mathit{fieldval}}^\ast} \} \\
+\mathsf{type}~{\mathit{deftype}} ,  \mathsf{fields}~{{\mathit{fieldval}}^\ast} \} \\
 \end{array} \\
 \mbox{(exception instance)} & {\mathit{exninst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{tag}~{\mathit{tagaddr}}   \mathsf{fields}~{{\mathit{val}}^\ast} \} \\
+\mathsf{tag}~{\mathit{tagaddr}} ,  \mathsf{fields}~{{\mathit{val}}^\ast} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -8894,7 +8895,7 @@ $$
 \mathsf{exns}~{{\mathit{exninst}}^\ast} \} \\
 \end{array} \\
 \mbox{(frame)} & {\mathit{frame}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{locals}~{({{\mathit{val}}^?})^\ast}   \mathsf{module}~{\mathit{moduleinst}} \} \\
+\mathsf{locals}~{({{\mathit{val}}^?})^\ast} ,  \mathsf{module}~{\mathit{moduleinst}} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -10573,11 +10574,11 @@ $$
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathit{nt}}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]
 } \\
-{[\textsc{\scriptsize E{-}load{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{n~{\mathit{sx}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} &  \\
+{[\textsc{\scriptsize E{-}load{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{{n}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
-{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{n~{\mathit{sx}}}~x~{\mathit{ao}}) & \hookrightarrow & ({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)}) &  \\
+{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({{\mathsf{i}}{N}{.}\mathsf{load}}{{n}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & ({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)}) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]
 } \\
@@ -10745,14 +10746,14 @@ $$
 {[\textsc{\scriptsize E{-}memory.copy{-}le}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
   ({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise, if}~ i_1 \leq i_2 \\
 \end{array}
 } \\
 {[\textsc{\scriptsize E{-}memory.copy{-}gt}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
-\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1 + n - 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
+\begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1 + n - 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1) \\
   ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise} \\
 \end{array}
 } \\
@@ -11491,16 +11492,16 @@ $$
 & & | & \mathtt{0x29}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{load}~x~{\mathit{ao}} \\
 & & | & \mathtt{0x2A}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{load}~x~{\mathit{ao}} \\
 & & | & \mathtt{0x2B}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}}{.}\mathsf{load}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x2C}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 8}}~\mathsf{s}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x2D}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 8}}~\mathsf{u}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x2E}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 16}}~\mathsf{s}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x2F}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 16}}~\mathsf{u}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x30}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 8}}~\mathsf{s}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x31}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 8}}~\mathsf{u}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x32}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 16}}~\mathsf{s}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x33}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 16}}~\mathsf{u}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x34}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 32}}~\mathsf{s}}~x~{\mathit{ao}} \\
-& & | & \mathtt{0x35}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 32}}~\mathsf{u}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x2C}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x2D}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x2E}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x2F}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x30}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x31}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x32}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x33}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x34}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mathtt{0x35}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
 & & | & \mathtt{0x36}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~x~{\mathit{ao}} \\
 & & | & \mathtt{0x37}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{store}~x~{\mathit{ao}} \\
 & & | & \mathtt{0x38}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{store}~x~{\mathit{ao}} \\
@@ -12213,7 +12214,7 @@ $$
 & {\mathit{sym}} & ::= & A_1 ~|~ A_2 \\
 & & ::= & () \\
 & r & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-{\mathsf{field}}_{1}~A_1   {\mathsf{field}}_{2}~A_2   \ldots~ \} \\
+{\mathsf{field}}_{1}~A_1 ,  {\mathsf{field}}_{2}~A_2 ,  \ldots~ \} \\
 \end{array} \\
 & {\mathit{pth}} & ::= & {({}[ i ]~\mid~{.}\mathsf{field})^{+}} \\
 \end{array}
