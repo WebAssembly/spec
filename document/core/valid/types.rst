@@ -551,10 +551,13 @@ Memory Types
 Tag Types
 ~~~~~~~~~
 
-:math:`[t_1^n] \to [t_2^m]`
-...........................
+:math:`\deftype`
+................
 
-* The :ref:`function type <syntax-functype>` :math:`[t_1^n] \to [t_2^m]` must be :ref:`valid <valid-functype>`.
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^n] \toF [t_2^m]`.
 
 * The type sequence :math:`t_2^m` must be empty.
 
@@ -562,8 +565,11 @@ Tag Types
 
 .. math::
    \frac{
+     C \vdashdeftype \deftype \ok
+     \qquad
+     \expanddt(\deftype) = \TFUNC~[t^\ast] \to []
    }{
-     \vdashtagtype [t^\ast] \to [] \ok
+     C \vdashtagtype \deftype \ok
    }
 
 

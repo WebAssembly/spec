@@ -580,14 +580,22 @@ A :ref:`global type <syntax-globaltype>` :math:`(\mut_1~t_1)` matches :math:`(\m
 Tag Types
 ~~~~~~~~~
 
-A :ref:`tag type <syntax-tagtype>` :math:`\tagtype_1` matches :math:`\tagtype_2` if and only if they are the same.
+A :ref:`tag type <syntax-tagtype>` :math:`\deftype_1` matches :math:`\deftype_2` if and only if the :ref:`defined type <syntax-deftype>` :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2`, and vice versa.
 
 .. math::
    \frac{
+     C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
+     \qquad
+     C \vdashdeftypematch \deftype_2 \matchesdeftype \deftype_1
    }{
-     C \vdashtagtypematch \tagtype \matchestagtype \tagtype
+     C \vdashtagtypematch \deftype_1 \matchestagtype \deftype_2
    }
 
+.. note::
+   Although the conclusion of this rule looks identical to its premise,
+   they in fact describe different relations:
+   the premise invokes subtyping on defined types,
+   while the conclusion defines it on tag types that happen to be expressed as defined types.
 
 .. index:: external type, function type, table type, memory type, global type
 .. _match-externtype:
