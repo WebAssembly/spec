@@ -496,8 +496,6 @@ and render_expr' env expr =
     let args = List.map (render_arg env) al in
     if id = "Eval_expr" then
       (match args with
-      | [z; expr] ->
-        "the result of :ref:`evaluating <exec-expr>` " ^ expr ^ " with state " ^ z
       | [instrs] ->
         "the result of :ref:`evaluating <exec-expr>` " ^ instrs
       | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
@@ -1004,8 +1002,31 @@ let rec render_instr env algoname index depth instr =
     ) in
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) ce
   | Al.Ast.LetI (n, e) ->
-    sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
-      (render_expr env e)
+    let rec find_eval_expr e = match e.it with
+      | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
+        Some (z, arg)
+      | Al.Ast.IterE (expr, ie) ->
+        let* z, arg = find_eval_expr expr in
+        let* arg = match arg.it with
+        | Al.Ast.ExpA e' ->
+          Some { arg with it = Al.Ast.ExpA { e' with it = Al.Ast.IterE (e', ie) } }
+        | _-> None
+        in
+        Some (z, arg)
+      | _ -> None
+    in
+    (match find_eval_expr e with
+    | Some (z, al) ->
+      let sz = render_arg env z in
+      let sal = render_arg env al in
+      let eval =
+        "the result of :ref:`evaluating <exec-expr>` " ^ sal ^ " with state " ^ sz
+      in
+      sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) eval
+    | _ ->
+      sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
+        (render_expr env e)
+    )
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
   | Al.Ast.FailI -> sprintf "%s Fail." (render_order index depth)
   | Al.Ast.ThrowI e ->

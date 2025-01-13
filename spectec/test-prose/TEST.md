@@ -2787,19 +2787,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{d}}` in :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{d}}` with state :math:`z`.
+#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
+#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{g}}` in :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{g}}` with state :math:`z`.
+#. Let :math:`{{\mathit{val}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
@@ -9833,13 +9833,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{g}}` in :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{g}}` with state :math:`z`.
+#. Let :math:`{{\mathit{val}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
-#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e*}}` in :math:`{{\mathit{expr}}_{\mathsf{e*}}^\ast}`, for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
+#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
 
@@ -24292,13 +24292,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
-#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
+#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
-#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be for all :math:`{\mathit{expr}}_{\mathsf{e*}}` in :math:`{{\mathit{expr}}_{\mathsf{e*}}^\ast}`, for all :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
+#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
