@@ -219,6 +219,11 @@
 .. |VNX| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}}
 .. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}\scriptstyle\kern-0.1emN}
 
+.. |ntI| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}}
+.. |ntF| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}}
+.. |ntV| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{v}}
+.. |ntN| mathdef:: \xref{syntax/types}{syntax-numtype}{\scriptstyle\kern-0.1emN}
+
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |EQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{eqref}}
 .. |I31REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{i{\scriptstyle31}ref}}

@@ -345,12 +345,12 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 var ao : memarg
 
 syntax loadop_(numtype)
-syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
+syntax loadop_(Inn) = sz _ sx hint(show %0#_#%2) -- if sz < $sizenn(Inn)
 
 syntax vloadop =
-  | SHAPE nat X nat sx  hint(show %#X#%#_#%)
-  | SPLAT nat           hint(show %#_#SPLAT)
-  | ZERO nat            hint(show %#_#ZERO)
+  | SHAPE nat X nat _ sx  hint(show %1#X#%3#_#%5)
+  | SPLAT nat             hint(show %#_#SPLAT)
+  | ZERO nat              hint(show %#_#ZERO)
 
 
 ;;
