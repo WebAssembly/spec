@@ -293,13 +293,25 @@ and al_to_el_expr expr =
       (* Current rules for omitting parenthesis around a CaseE:
         1) Has no argument
         2) Is infix notation
-        3) Is argument of CallE -> add first, omit later at CallE *)
+        3) Is bracketed
+        4) Is argument of CallE -> add first, omit later at CallE *)
+      let is_bracked mixop =
+        let s = Mixop.to_string mixop in
+        let first = String.get s 1 in
+        let last = String.get s (String.length s - 2) in
+        match first, last with
+        | '(', ')'
+        | '[', ']'
+        | '{', '}' -> true
+        | _ -> false
+      in
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
       (match elal, elel with
       | _, [] -> Some ele
       | None :: Some _ :: _, _ -> Some ele
+      | _ when is_bracked op -> Some ele
       | _ -> Some (El.Ast.ParenE (ele $ no_region))
       )
     | Al.Ast.OptE (Some e) ->
