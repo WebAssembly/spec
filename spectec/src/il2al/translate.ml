@@ -263,8 +263,10 @@ and translate_exp exp =
     (* Singleton *)
     | [ []; [] ], [ e1 ] ->
       { (translate_exp e1) with note=note }
-    (* Tuple *)
-    | _ when List.for_all is_simple_separator op ->
+    (* State *)
+    | _ when List.for_all is_simple_separator op
+      && Il.Print.string_of_typ_name exp.note = "state"
+      ->
       tupE (List.map translate_exp exps) ~at ~note
     (* Normal Case *)
     | _ ->
@@ -877,7 +879,7 @@ let translate_rulepr id exp =
     (* Note: State is automatically converted into frame by remove_state *)
     (* Note: Push/pop is automatically inserted by handle_frame *)
     let lhs = tupE [z'; vs] ~at:(over_region [z'.at; vs.at]) ~note:vs.note in
-    let rhs = callE ("eval_expr", [ expA z; expA is ]) ~note:vs.note in
+    let rhs = callE ("Eval_expr", [ expA z; expA is ]) ~note:vs.note in
     [ letI (lhs, rhs) ~at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
@@ -1201,7 +1203,8 @@ and translate_rgroup (rule: rule_def) =
 
 
 (* Entry *)
-let translate il =
+let translate il interp =
+  Transpile.for_interp := interp;
   let rules, helpers = Preprocess.preprocess il in
   let al =
     List.map translate_rgroup rules @ List.map translate_helper helpers

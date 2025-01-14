@@ -1984,6 +1984,7 @@ warning: definition prose `E` was never spliced
 warning: definition prose `EQREF` was never spliced
 warning: definition prose `EXNREF` was never spliced
 warning: definition prose `EXTERNREF` was never spliced
+warning: definition prose `Eval_expr` was never spliced
 warning: definition prose `FN` was never spliced
 warning: definition prose `FUNCREF` was never spliced
 warning: definition prose `I31REF` was never spliced
@@ -2045,7 +2046,6 @@ warning: definition prose `dim` was never spliced
 warning: definition prose `disjoint_` was never spliced
 warning: definition prose `elem` was never spliced
 warning: definition prose `eleminst` was never spliced
-warning: definition prose `eval_expr` was never spliced
 warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
 warning: definition prose `expanddt` was never spliced

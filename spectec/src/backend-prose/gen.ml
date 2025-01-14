@@ -555,34 +555,6 @@ let postprocess_prose defs =
 let gen_validation_prose () =
   !Langs.validation_il |> prose_of_rels
 
-let get_state_arg_opt f =
-  let id = f $ no_region in
-  match Il.Env.find_opt_def (Il.Env.env_of_script !Langs.il) id with
-  | Some (params, _, _) ->
-    List.find_map (
-      fun param ->
-        match param.it with
-        | Il.Ast.ExpP (id, ({ it = VarT ({ it = "state"; _ }, _); _ } as typ)) ->
-          Some (Al.Ast.ExpA ((Al.Ast.VarE "z") $$ id.at % typ) $ no_region)
-        | _ -> None
-    ) params
-  | None -> 
-    None
-
-let get_store_arg_opt f =
-  let id = f $ no_region in
-  match Il.Env.find_opt_def (Il.Env.env_of_script !Langs.il) id with
-  | Some (params, _, _) ->
-    List.find_map (
-      fun param ->
-        match param.it with
-        | Il.Ast.ExpP (id, ({ it = VarT ({ it = "store"; _ }, _); _ } as typ)) ->
-          Some (Al.Ast.ExpA ((Al.Ast.VarE "s") $$ id.at % typ) $ no_region)
-        | _ -> None
-    ) params
-  | None -> 
-    None
-
 let insert_state_binding algo =
   let open Al.Ast in
   let z_binding = ref 0 in
@@ -625,71 +597,12 @@ let insert_state_binding algo =
   )
   else algo
 
-
-let recover_state algo =
-
-  let get_state_and_store_args name =
-    let args = [] in
-    let args = 
-      match get_state_arg_opt name with
-      | Some arg -> arg :: args
-      | _ -> args
-    in
-    let args = 
-      match get_store_arg_opt name with
-      | Some arg -> arg :: args
-      | _ -> args
-    in
-    args
-  in
-
-  let algo =
-    match algo.it with
-    | Al.Ast.RuleA _ -> algo
-    | Al.Ast.FuncA (name, args, instrs) ->
-      let args = get_state_and_store_args name @ args in
-      {algo with it = Al.Ast.FuncA (name, args, instrs)}
-  in
-
-  let recover_state_expr expr =
-    match expr.it with
-    | Al.Ast.CallE (f, args) ->
-      let args = get_state_and_store_args f @ args in
-      {expr with it = Al.Ast.CallE (f, args)}
-    | _ -> expr
-  in
-
-  let recover_state_instr instr =
-    match instr.it with
-    | Al.Ast.PerformI (f, args) ->
-      let args = get_state_and_store_args f @ args in
-      [{instr with it = Al.Ast.PerformI (f, args)}]
-    | _ -> [instr]
-  in
-
-  let walk_expr walker expr =
-    let expr1 = recover_state_expr expr in
-    Al.Walk.base_walker.walk_expr walker expr1
-  in
-  let walk_instr walker instr =
-    let instr1 = recover_state_instr instr in
-    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
-  in
-  let walker = { Al.Walk.base_walker with
-    walk_expr = walk_expr;
-    walk_instr = walk_instr;
-  }
-  in
-  let algo' = walker.walk_algo walker algo in
-  algo'
-
 (** Entry for generating execution prose **)
 let gen_execution_prose () =
   List.map
     (fun algo ->
       let algo =
         algo
-        |> recover_state
         |> insert_state_binding
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter

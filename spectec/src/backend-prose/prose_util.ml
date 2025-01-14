@@ -63,3 +63,17 @@ let apply_prose_hint hint args =
   let holes, template = split_prose_hint hint in
   let args = List.map (fun hole -> List.nth args (hole_to_int hole - 1)) holes in
   alternate template args |> String.concat ""
+
+let string_of_stack_prefix expr =
+  let open Al.Ast in
+  match expr.it with
+  | GetCurContextE _
+  | VarE ("F" | "L") -> ""
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.frameT -> "the :ref:`frame <syntax-frame>` "
+  | CaseE (mixop, _) when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT ->
+    let evalctx_name = Xl.Mixop.name (List.nth mixop 0)
+    |> fun s -> String.sub s 0 (String.length s - 1)
+    |> String.lowercase_ascii in
+    Printf.sprintf "the :ref:`%s <syntax-%s>` " evalctx_name evalctx_name
+  | IterE _ -> "the values "
+  | _ -> "the value "

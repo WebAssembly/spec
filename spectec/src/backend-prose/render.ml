@@ -28,7 +28,7 @@ let env config inputs outputs render_latex : env =
 
 (* Helpers *)
 
-let indent = "  "
+let indent = "   "
 
 let rec repeat str num =
   if num = 0 then ""
@@ -61,6 +61,16 @@ let render_order index depth =
   | 2 -> num_idx ^ ")"
   | 3 -> alp_idx ^ ")"
   | _ -> assert false
+
+let rec is_additive_bine expr = match expr.it with
+  | Al.Ast.BinE ((`AddOp | `SubOp), _, _) -> true
+  | Al.Ast.CvtE (e, _, _) -> is_additive_bine e
+  | _ -> false
+
+and is_bine expr = match expr.it with
+  | Al.Ast.BinE _ -> true
+  | Al.Ast.CvtE (e, _, _) -> is_bine e
+  | _ -> false
 
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
@@ -177,7 +187,20 @@ and al_to_el_expr expr =
       | #Num.binop as elop ->
         let* ele1 = al_to_el_expr e1 in
         let* ele2 = al_to_el_expr e2 in
-        Some (El.Ast.BinE (ele1, elop, ele2))
+        (* Add parentheses when needed *)
+        let pele1 = match op with
+          | `MulOp | `DivOp | `ModOp when is_additive_bine e1 ->
+            El.Ast.ParenE ele1 $ no_region
+          | `PowOp when is_bine e1 ->
+            El.Ast.ParenE ele1 $ no_region
+          | _ -> ele1 in
+        let pele2 = match op with
+          | `SubOp | `MulOp when is_additive_bine e2 ->
+            El.Ast.ParenE ele2 $ no_region
+          | `DivOp | `ModOp when is_bine e2->
+            El.Ast.ParenE ele2 $ no_region
+          | _ -> ele2 in
+        Some (El.Ast.BinE (pele1, elop, pele2))
       | #Num.cmpop | #Bool.cmpop as elop ->
         let* ele1 = al_to_el_expr e1 in
         let* ele2 = al_to_el_expr e2 in
@@ -192,14 +215,25 @@ and al_to_el_expr expr =
       | Some _ ->
         None
       | _ ->
-        let elid = id $ no_region in
-        let* elal = al_to_el_args al in
-        let elal = List.map
-          (fun elarg ->
-            (ref elarg) $ no_region)
-          elal
-        in
-        Some (El.Ast.CallE (elid, elal))
+          let elid = id $ no_region in
+          let* elal = al_to_el_args al in
+          (* Unwrap parenthsized args *)
+          let elal = List.map
+            (fun elarg ->
+              let elarg = match elarg with
+              | El.Ast.ExpA exp ->
+                let exp = match exp.it with
+                | ParenE exp' -> exp'
+                | _ -> exp
+                in
+                El.Ast.ExpA exp
+              | _ -> elarg
+              in
+              (ref elarg) $ no_region
+            )
+            elal
+          in
+          Some (El.Ast.CallE (elid, elal))
       )
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
@@ -258,13 +292,26 @@ and al_to_el_expr expr =
     | Al.Ast.CaseE (op, el) ->
       (* Current rules for omitting parenthesis around a CaseE:
         1) Has no argument
-        2) Is infix notation *)
+        2) Is infix notation
+        3) Is bracketed
+        4) Is argument of CallE -> add first, omit later at CallE *)
+      let is_bracked mixop =
+        let s = Mixop.to_string mixop in
+        let first = String.get s 1 in
+        let last = String.get s (String.length s - 2) in
+        match first, last with
+        | '(', ')'
+        | '[', ']'
+        | '{', '}' -> true
+        | _ -> false
+      in
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
       (match elal, elel with
       | _, [] -> Some ele
       | None :: Some _ :: _, _ -> Some ele
+      | _ when is_bracked op -> Some ele
       | _ -> Some (El.Ast.ParenE (ele $ no_region))
       )
     | Al.Ast.OptE (Some e) ->
@@ -444,14 +491,23 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.CallE (_, al) ->
+  | Al.Ast.CallE (id, al) ->
+    (* HARDCODE: relation call *)
     let args = List.map (render_arg env) al in
-    (match args with
-    | [arg1; arg2] ->
-      arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
-    | [arg] -> "the type of " ^ arg
-    | _ -> error expr.at "Invalid arity for relation call";
-    )
+    if id = "Eval_expr" then
+      (match args with
+      | [instrs] ->
+        "the result of :ref:`evaluating <exec-expr>` " ^ instrs
+      | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
+      )
+    else if String.ends_with ~suffix:"_type" id || String.ends_with ~suffix:"_ok" id then
+      (match args with
+      | [arg1; arg2] ->
+        arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
+      | [arg] -> "the type of " ^ arg
+      | _ -> error expr.at "Invalid arity for relation call";
+      )
+    else error expr.at ("Not supported relation call: " ^ id);
   | Al.Ast.InvCallE (id, nl, al) ->
     let e =
       if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N" ~note:Al.Al_util.no_note
@@ -624,7 +680,7 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
-let typs = ref Map.empty
+ let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
@@ -755,13 +811,7 @@ and render_stmts env depth stmts =
 (* Instructions *)
 
 (* Prefix for stack push/pop operations *)
-let render_stack_prefix expr =
-  match expr.it with
-  | Al.Ast.GetCurContextE _
-  | Al.Ast.VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
-  | Al.Ast.IterE _ -> "the values "
-  | _ -> "the value "
+let render_stack_prefix = Prose_util.string_of_stack_prefix
 
 let rec render_instr env algoname index depth instr =
   match instr.it with
@@ -930,8 +980,8 @@ let rec render_instr env algoname index depth instr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
-  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (id, [{ it = ExpA arge; _ }]); _ } as e))
-    when Option.is_some (Prose_util.find_relation id) ->
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (("Module_ok" | "Ref_type"), [{ it = ExpA arge; _ }]); _ } as e)) ->
+    (* HARDCODE: special function calls for LetI *)
     let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
     let to_instr instr' = instr' $$ (no_region, 0) in
     let is_valid = Al.Ast.IsValidE arge |> to_expr in
@@ -943,9 +993,40 @@ let rec render_instr env algoname index depth instr =
       valid_check_string
       (render_order index depth) (render_expr env n)
       (render_expr env e)
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE ("concat_", al); _ })) ->
+    let args = List.map (render_arg env) al in
+    let ce = (match args with
+    | [_; expr] ->
+      "the concatenation of " ^ expr
+    | _ -> error instr.at "Invalid arity for relation call";
+    ) in
+    sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) ce
   | Al.Ast.LetI (n, e) ->
-    sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
-      (render_expr env e)
+    let rec find_eval_expr e = match e.it with
+      | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
+        Some (z, arg)
+      | Al.Ast.IterE (expr, ie) ->
+        let* z, arg = find_eval_expr expr in
+        let* arg = match arg.it with
+        | Al.Ast.ExpA e' ->
+          Some { arg with it = Al.Ast.ExpA { e' with it = Al.Ast.IterE (e', ie) } }
+        | _-> None
+        in
+        Some (z, arg)
+      | _ -> None
+    in
+    (match find_eval_expr e with
+    | Some (z, al) ->
+      let sz = render_arg env z in
+      let sal = render_arg env al in
+      let eval =
+        "the result of :ref:`evaluating <exec-expr>` " ^ sal ^ " with state " ^ sz
+      in
+      sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) eval
+    | _ ->
+      sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
+        (render_expr env e)
+    )
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
   | Al.Ast.FailI -> sprintf "%s Fail." (render_order index depth)
   | Al.Ast.ThrowI e ->

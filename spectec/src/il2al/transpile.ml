@@ -7,6 +7,7 @@ open Util.Source
 open Util.Record
 open Xl
 
+let for_interp = ref false
 
 (* Helpers *)
 
@@ -603,9 +604,12 @@ let is_state_arg arg = match arg.it with
   | DefA _ -> false
 
 let hide_state_args args =
-  args
-  |> Lib.List.filter_not is_state_arg
-  |> Lib.List.filter_not is_store_arg
+  if !for_interp then
+    args
+    |> Lib.List.filter_not is_state_arg
+    |> Lib.List.filter_not is_store_arg
+  else
+    args
 
 let is_state_param param = match param.it with
   | Il.Ast.ExpP (_, ({ it = VarT ({ it = "state"; _ }, _); _ })) -> true
@@ -616,14 +620,27 @@ let hide_state_params params =
   |> Lib.List.filter_not is_state_param
 
 let hide_state_expr expr =
-  let expr' =
-    match expr.it with
-    | CallE (f, args) -> CallE (f, hide_state_args args)
-    | TupE [ s; e ] when is_store s -> e.it
-    | TupE [ z; e ] when is_state z -> e.it
-    | e -> e
-  in
-  { expr with it = expr' }
+  if !for_interp then
+    let expr' =
+      match expr.it with
+      | CallE (f, args) -> CallE (f, hide_state_args args)
+      | TupE [ s; e ] when is_store s -> e.it
+      | TupE [ z; e ] when is_state z -> e.it
+      | e -> e
+    in
+    { expr with it = expr' }
+  else
+    let expr' =
+      match expr.it with
+      | CallE (f, args) -> CallE (f, hide_state_args args)
+      | TupE [ _s; f ] when is_frame expr -> f.it
+      | TupE [ s; e ] when is_store s && not (is_frame e) -> e.it
+      | TupE [ z; e ] when is_state z -> e.it
+      | VarE _ when is_store expr -> VarE "s"
+      | VarE id when is_state expr && String.starts_with ~prefix:"z" id -> VarE "z"
+      | e -> e
+    in
+    { expr with it = expr' }
 
 let hide_state instr =
   let at = instr.at in
@@ -683,41 +700,65 @@ let hide_state instr =
   | _ -> [ instr ]
 
 let remove_state algo =
-  let il_env = Al.Valid.il_env in
-  let defs = Al.Valid.IlEnv.Map.map (function
-    | (params, typ, clauses) -> (hide_state_params params, typ, clauses)
-  ) !il_env.defs in
-  il_env := { !il_env with defs };
+  if !for_interp then (
+    let il_env = Al.Valid.il_env in
+    let defs = Al.Valid.IlEnv.Map.map (function
+      | (params, typ, clauses) -> (hide_state_params params, typ, clauses)
+    ) !il_env.defs in
+    il_env := { !il_env with defs };
 
-  let walk_expr walker expr = 
-    let expr1 = hide_state_expr expr in
-    Al.Walk.base_walker.walk_expr walker expr1
-  in
-  let walk_instr walker instr = 
-    let instr1 = hide_state instr in
-    List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
-  in
-  let walker = { Walk.base_walker with
-    walk_expr = walk_expr;
-    walk_instr = walk_instr;
-  }
-  in
-  let algo' = walker.walk_algo walker algo in
-  { algo' with it =
-    match algo'.it with
-    | FuncA (name, args, body) ->
-      let args' =
-        args
-        |> Lib.List.filter_not is_state_arg
-        |> Lib.List.filter_not is_store_arg
-        |> Lib.List.filter_not is_frame_arg
-      in
-      let body' = body
-        |> remove_dead_assignment
-      in
-      FuncA (name, args', body')
-    | rule -> rule
-  }
+    let walk_expr walker expr = 
+      let expr1 = hide_state_expr expr in
+      Al.Walk.base_walker.walk_expr walker expr1
+    in
+    let walk_instr walker instr = 
+      let instr1 = hide_state instr in
+      List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+    in
+    let walker = { Walk.base_walker with
+      walk_expr = walk_expr;
+      walk_instr = walk_instr;
+    }
+    in
+    let algo' = walker.walk_algo walker algo in
+    { algo' with it =
+      match algo'.it with
+      | FuncA (name, args, body) ->
+        let args' =
+          args
+          |> Lib.List.filter_not is_state_arg
+          |> Lib.List.filter_not is_store_arg
+          |> Lib.List.filter_not is_frame_arg
+        in
+        let body' = body
+          |> remove_dead_assignment
+        in
+        FuncA (name, args', body')
+      | rule -> rule
+    }
+  ) else (
+    let walk_expr walker expr = 
+      let expr1 = hide_state_expr expr in
+      Al.Walk.base_walker.walk_expr walker expr1
+    in
+    let walk_instr walker instr = 
+      let instr1 = hide_state instr in
+      List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
+    in
+    let walker = { Walk.base_walker with
+      walk_expr = walk_expr;
+      walk_instr = walk_instr;
+    }
+    in
+    { algo with it =
+      match algo.it with
+      | FuncA (name, args, body) ->
+        FuncA (name, args, body
+        |> List.concat_map (walker.walk_instr walker)
+        |> remove_dead_assignment)
+      | rule -> rule
+    }
+  )
 
 (* Insert "Let f be the current frame" if necessary. *)
 let insert_frame_binding instrs =
@@ -845,43 +886,59 @@ let handle_framed_algo a instrs =
   }
   in
   let instr_tl = List.concat_map (walker.walk_instr walker) instrs in
-  if !frame_appeared then instr_hd :: instr_tl else instr_tl
+  if !for_interp && !frame_appeared then instr_hd :: instr_tl else instr_tl
 
 (* Case 2 *)
 let handle_unframed_algo instrs =
   (* Helpers *)
   let frame_arg = ref None in
   let extract_frame_arg expr =
-    match expr.it with
-    | CallE (_, args) ->
-      List.iter (fun a ->
-        if (is_frame_arg a || is_state_arg a) then frame_arg := Some a
-      ) args;
-      expr
-    | _ ->
-      expr
+  match expr.it with
+  | CallE (_, args) ->
+    List.iter (fun a ->
+      if (is_frame_arg a || is_state_arg a) then frame_arg := Some a
+    ) args;
+    expr
+  | _ ->
+    expr
+  in
+
+  let rec returned_frame e = match e.it with
+    | TupE [f'; _] -> Some f'
+    | IterE (e, _) -> returned_frame e
+    | _ -> None
+  in
+
+  let postprocess_frame f = if !for_interp then f else match f.it with
+    | VarE "z" -> { f with it = CallE ("frame", [ExpA f $ f.at]) }
+    | VarE id when String.starts_with ~prefix:"z" id ->
+      { f with it = VarE "f" }
+    | _ -> f
   in
 
   let post_instr instr =
     let ret =
-      match !frame_arg with
-      | Some { it = ExpA f; _ } ->
-        let zeroE = natE Z.zero ~note:natT in
-        let frame = frameE (zeroE, f) ~at:f.at ~note:evalctxT in
-        let frame' =
-          match instr.it with
-          (* HARDCODE: the frame-passing-style *)
-          | LetI ( { it = TupE [f'; _]; _ }, _) ->
-            frameE (zeroE, f') ~at:f'.at ~note:evalctxT
-          | _ ->
-            frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT
-        in
-        [
-          pushI frame ~at:frame.at;
-          instr;
-          popI frame' ~at:frame'.at;
-        ]
-      | _ -> [ instr ]
+    match !frame_arg with
+    | Some { it = ExpA f; _ } ->
+      let zeroE = natE Z.zero ~note:natT in
+      let frame = frameE (zeroE, postprocess_frame f) ~at:f.at ~note:evalctxT in
+      let _f = frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT in
+      let frame' =
+        match instr.it with
+        (* HARDCODE: the frame-passing-style *)
+        | LetI (e, _) -> (match returned_frame e with
+          | Some f' ->
+              frameE (zeroE, postprocess_frame f') ~at:f'.at ~note:evalctxT
+          | None -> _f
+        )
+        | _ -> _f
+      in
+      [
+        pushI frame ~at:frame.at;
+        instr;
+        popI frame' ~at:frame'.at;
+      ]
+    | _ -> [ instr ]
     in
     frame_arg := None;
     ret
