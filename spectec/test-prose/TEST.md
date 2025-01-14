@@ -467,7 +467,7 @@ The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{loa
 
       * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
@@ -1388,9 +1388,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+    #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
 
-      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1402,9 +1402,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+    #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
 
-      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -5092,7 +5092,7 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
       * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+    * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
@@ -5140,7 +5140,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+    * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
@@ -6892,9 +6892,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+    #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
 
-      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -6906,9 +6906,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+    #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
 
-      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -6941,7 +6941,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{shape}`, then:
 
-      1) Let :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop}}_0`.
+    1) Let :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop}}_0`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -7115,7 +7115,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}})`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}})`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
@@ -7129,7 +7129,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}})`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}})`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
@@ -15142,7 +15142,7 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
       * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+    * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
@@ -18422,9 +18422,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+    #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
 
-      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -18436,9 +18436,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+    #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
 
-      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+    #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -18649,7 +18649,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -18663,7 +18663,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)`.
+    #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
