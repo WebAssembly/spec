@@ -4,7 +4,7 @@ Types
 Simple :ref:`types <syntax-type>`, such as :ref:`number types <syntax-numtype>` are universally valid.
 However, restrictions apply to most other types, such as :ref:`reference types <syntax-reftype>`, :ref:`function types <syntax-functype>`, as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
 
-Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
+Moreover, :ref:`block types <syntax-blocktype>` are converted to :ref:`instruction types <syntax-instrtype>` for ease of processing.
 
 
 .. index:: number type
@@ -14,11 +14,8 @@ Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`fun
 
 Number Types
 ~~~~~~~~~~~~
-$${rule-prose: Numtype_ok}
-.. todo::
- below is the official specification
 
-:ref:`Number types <syntax-numtype>` are always valid.
+$${rule-prose: Numtype_ok}
 
 $${rule: Numtype_ok}
 
@@ -30,11 +27,8 @@ $${rule: Numtype_ok}
 
 Vector Types
 ~~~~~~~~~~~~
-$${rule-prose: Vectype_ok}
-.. todo::
- below is the official specification
 
-:ref:`Vector types <syntax-vectype>` are always valid.
+$${rule-prose: Vectype_ok}
 
 $${rule: Vectype_ok}
 
@@ -46,30 +40,13 @@ $${rule: Vectype_ok}
 
 Heap Types
 ~~~~~~~~~~
-Concrete :ref:`heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is,
-while abstract ones are vacuously valid.
 
-
-:math:`\absheaptype`
-....................
 $${rule-prose: Heaptype_ok/abs}
-.. todo::
- below is the official specification
-
-* The heap type is valid.
 
 $${rule: Heaptype_ok/abs}
 
 
-:math:`\typeidx`
-................
 $${rule-prose: Heaptype_ok/typeidx}
-.. todo::
- below is the official specification
-
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
-
-* Then the heap type is valid.
 
 $${rule: Heaptype_ok/typeidx}
 
@@ -81,18 +58,8 @@ $${rule: Heaptype_ok/typeidx}
 
 Reference Types
 ~~~~~~~~~~~~~~~
+
 $${rule-prose: Reftype_ok}
-.. todo::
- below is the official specification
-
-:ref:`Reference types <syntax-reftype>` are valid when the referenced :ref:`heap type <syntax-heaptype>` is.
-
-:math:`\REF~\NULL^?~\heaptype`
-..............................
-
-* The heap type :math:`\heaptype` must be :ref:`valid <valid-heaptype>`.
-
-* Then the reference type is valid.
 
 $${rule: Reftype_ok}
 
@@ -104,11 +71,8 @@ $${rule: Reftype_ok}
 
 Value Types
 ~~~~~~~~~~~
-$${rule-prose: Valtype_ok}
-.. todo::
- below is the official specification
 
-Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number types <valid-numtype>`, valid :ref:`vector types <valid-vectype>`, or valid :ref:`reference types <valid-reftype>`.
+$${rule-prose: Valtype_ok}
 
 
 .. index:: block type, instruction type
@@ -121,30 +85,12 @@ Block Types
 
 :ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to :ref:`instruction types <syntax-instrtype>` by the following rules.
 
-:math:`\typeidx`
-................
 $${rule-prose: Blocktype_ok/typeidx}
-.. todo::
- below is the official specification
-
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
-
-* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[\typeidx]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
-
-* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 $${rule: Blocktype_ok/typeidx}
 
 
-:math:`[\valtype^?]`
-....................
 $${rule-prose: Blocktype_ok/valtype}
-.. todo::
- below is the official specification
-
-* The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
-
-* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[] \to [\valtype^?]`.
 
 $${rule: Blocktype_ok/valtype}
 
@@ -157,15 +103,7 @@ $${rule: Blocktype_ok/valtype}
 Result Types
 ~~~~~~~~~~~~
 
-:math:`[t^\ast]`
-................
 $${rule-prose: Resulttype_ok}
-.. todo::
- below is the official specification
-
-* Each :ref:`value type <syntax-valtype>` :math:`t_i` in the type sequence :math:`t^\ast` must be :ref:`valid <valid-valtype>`.
-
-* Then the result type is valid.
 
 $${rule: Resulttype_ok}
 
@@ -177,16 +115,17 @@ $${rule: Resulttype_ok}
 
 Instruction Types
 ~~~~~~~~~~~~~~~~~
+
 $${rule-prose: Instrtype_ok}
-.. todo::
- below is the official specification
 
-:math:`[t_1^\ast] \rightarrow_{x^\ast} [t_2^\ast]`
-..................................................
+.. todo:: below is the official specification
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+:math:`t_1^\ast \rightarrow_{x^\ast} t_2^\ast`
+..............................................
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+* The :ref:`result type <syntax-resulttype>` :math:`t_1^\ast` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`t_2^\ast` must be :ref:`valid <valid-resulttype>`.
 
 * Each :ref:`local index <syntax-localidx>` :math:`x_i` in :math:`x^\ast` must be defined in the context.
 
@@ -203,17 +142,7 @@ $${rule: Instrtype_ok}
 Function Types
 ~~~~~~~~~~~~~~
 
-:math:`[t_1^\ast] \toF [t_2^\ast]`
-..................................
 $${rule-prose: Functype_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
-
-* Then the function type is valid.
 
 $${rule: Functype_ok}
 
@@ -236,41 +165,17 @@ $${rule: Functype_ok}
 Composite Types
 ~~~~~~~~~~~~~~~
 
-:math:`\TFUNC~\functype`
-........................
 $${rule-prose: Comptype_ok/func}
-.. todo::
- below is the official specification
-
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
-
-* Then the composite type is valid.
 
 $${rule: Comptype_ok/func}
 
-:math:`\TSTRUCT~\fieldtype^\ast`
-................................
+
 $${rule-prose: Comptype_ok/struct}
-.. todo::
- below is the official specification
-
-* For each :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
-
-  * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` must be :ref:`valid <valid-fieldtype>`.
-
-* Then the composite type is valid.
 
 $${rule: Comptype_ok/struct}
 
-:math:`\TARRAY~\fieldtype`
-..........................
+
 $${rule-prose: Comptype_ok/array}
-.. todo::
- below is the official specification
-
-* The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
-
-* Then the composite type is valid.
 
 $${rule: Comptype_ok/array}
 
@@ -290,26 +195,12 @@ $${rule: Comptype_ok/array}
 Field Types
 ~~~~~~~~~~~
 
-:math:`\mut~\storagetype`
-.........................
 $${rule-prose: Fieldtype_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`storage type <syntax-storagetype>` :math:`\storagetype` must be :ref:`valid <valid-storagetype>`.
-
-* Then the field type is valid.
 
 $${rule: Fieldtype_ok}
 
 
-:math:`\packtype`
-.................
 $${rule-prose: Packtype_ok}
-.. todo::
- below is the official specification
-
-* The packed type is valid.
 
 $${rule: Packtype_ok}
 
@@ -323,7 +214,7 @@ $${rule: Packtype_ok}
 Recursive Types
 ~~~~~~~~~~~~~~~
 
-:ref:`Recursive types <syntax-rectype>` are validated for a specific :ref:`type index <syntax-typeidx>` that denotes the index of the type defined by the recursive group.
+:ref:`Recursive types <syntax-rectype>` are validated with respect to the first :ref:`type index <syntax-typeidx>` defined by the recursive group.
 
 :math:`\TREC~\subtype^\ast`
 ...........................
@@ -386,19 +277,7 @@ $${rule: Subtype_ok}
 Defined Types
 ~~~~~~~~~~~~~
 
-:math:`\rectype.i`
-..................
 $${rule-prose: Deftype_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` for some :ref:`type index <syntax-typeidx>` :math:`x`.
-
-* Let :math:`\TREC~\subtype^\ast` be the :ref:`defined type <syntax-rectype>` :math:`\rectype`.
-
-* The number :math:`i` must be smaller than the length of the sequence :math:`\subtype^\ast` of :ref:`sub types <syntax-subtype>`.
-
-* Then the defined type is valid.
 
 $${rule: Deftype_ok}
 
@@ -413,21 +292,7 @@ Limits
 
 :ref:`Limits <syntax-limits>` must have meaningful bounds that are within a given range.
 
-:math:`\{ \LMIN~n, \LMAX~m^? \}`
-................................
 $${rule-prose: Limits_ok}
-.. todo::
- below is the official specification
-
-* The value of :math:`n` must not be larger than :math:`k`.
-
-* If the maximum :math:`m^?` is not empty, then:
-
-  * Its value must not be larger than :math:`k`.
-
-  * Its value must not be smaller than :math:`n`.
-
-* Then the limit is valid within range :math:`k`.
 
 $${rule: Limits_ok}
 
@@ -440,17 +305,7 @@ $${rule: Limits_ok}
 Table Types
 ~~~~~~~~~~~
 
-:math:`\addrtype~\limits~\reftype`
-..................................
 $${rule-prose: Tabletype_ok}
-.. todo::
- below is the official specification
-
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|}-1`.
-
-* The reference type :math:`\reftype` must be :ref:`valid <valid-reftype>`.
-
-* Then the table type is valid.
 
 $${rule: Tabletype_ok}
 
@@ -463,15 +318,7 @@ $${rule: Tabletype_ok}
 Memory Types
 ~~~~~~~~~~~~
 
-:math:`\addrtype~\limits`
-.........................
 $${rule-prose: Memtype_ok}
-.. todo::
- below is the official specification
-
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|-16}`.
-
-* Then the memory type is valid.
 
 $${rule: Memtype_ok}
 
@@ -484,19 +331,14 @@ $${rule: Memtype_ok}
 Tag Types
 ~~~~~~~~~
 
-:math:`[t_1^n] \to [t_2^m]`
-...........................
 $${rule-prose: Tagtype_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`function type <syntax-functype>` :math:`[t_1^n] \to [t_2^m]` must be :ref:`valid <valid-functype>`.
-
-* The type sequence :math:`t_2^m` must be empty.
-
-* Then the tag type is valid.
 
 $${rule: Tagtype_ok}
+
+.. note::
+   Tag types do not occur in source programs,
+   so this rule is not needed for validation.
+   It is, however, used in the definition of the :ref:`embedding interface <embed>`.
 
 
 .. index:: global type, value type, mutability
@@ -507,15 +349,7 @@ $${rule: Tagtype_ok}
 Global Types
 ~~~~~~~~~~~~
 
-:math:`\mut~\valtype`
-.....................
 $${rule-prose: Globaltype_ok}
-.. todo::
- below is the official specification
-
-* The value type :math:`\valtype` must be :ref:`valid <valid-valtype>`.
-
-* Then the global type is valid.
 
 $${rule: Globaltype_ok}
 
@@ -528,90 +362,26 @@ $${rule: Globaltype_ok}
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\XTFUNC~\deftype`
-........................
 $${rule-prose: Externtype_ok/func}
-.. todo::
- below is the official specification
-
-* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
-
-* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
-
-* Then the external type is valid.
 
 $${rule: Externtype_ok/func}
 
 
-:math:`\XTTABLE~\tabletype`
-...........................
 $${rule-prose: Externtype_ok/table}
-.. todo::
- below is the official specification
-
-* The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
-
-* Then the external type is valid.
 
 $${rule: Externtype_ok/table}
 
 
-:math:`\XTMEM~\memtype`
-.......................
 $${rule-prose: Externtype_ok/mem}
-.. todo::
- below is the official specification
-
-* The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
-
-* Then the external type is valid.
 
 $${rule: Externtype_ok/mem}
 
 
-:math:`\XTTAG~\tagtype`
-.......................
 $${rule-prose: Externtype_ok/tag}
-.. todo::
- below is the official specification
-
-* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
-
-* Then the external type is valid.
 
 $${rule: Externtype_ok/tag}
 
 
-:math:`\XTGLOBAL~\globaltype`
-.............................
 $${rule-prose: Externtype_ok/global}
-.. todo::
- below is the official specification
-
-* The :ref:`global type <syntax-globaltype>` :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
-
-* Then the external type is valid.
 
 $${rule: Externtype_ok/global}
-
-Defaultable Types
-~~~~~~~~~~~~~~~~~
-
-A type is *defaultable* if it has a :ref:`default value <default-val>` for initialization.
-
-Value Types
-...........
-
-$${rule-prose: Defaultable}
-.. todo::
- below is the official specification
-
-* A defaultable :ref:`value type <syntax-valtype>` :math:`t` must be:
-
-  - either a :ref:`number type <syntax-numtype>`,
-
-  - or a :ref:`vector type <syntax-vectype>`,
-
-  - or a :ref:`nullable reference type <syntax-numtype>`.
-
-$${rule: Defaultable}

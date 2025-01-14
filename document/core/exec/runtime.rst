@@ -46,7 +46,7 @@ $${syntax: val num vec ref addrref}
 .. note::
    Future versions of WebAssembly may add additional forms of values.
 
-.. _default-val:
+.. _aux-default:
 
 :ref:`Value types <syntax-valtype>` can have an associated *default value*;
 it is the respective value ${:0} for :ref:`number types <syntax-numtype>`, ${:0} for :ref:`vector types <syntax-vectype>`, and null for nullable :ref:`reference types <syntax-reftype>`.

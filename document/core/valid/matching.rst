@@ -13,13 +13,8 @@ On most types, a notion of *subtyping* is defined that is applicable in :ref:`va
 
 Number Types
 ~~~~~~~~~~~~
+
 $${rule-prose: Numtype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`number type <syntax-numtype>` ${:numtype_1} matches a :ref:`number type <syntax-numtype>` ${:numtype_2} if and only if:
-
-* Both :math:`\numtype_1` and :math:`\numtype_2` are the same.
 
 $${rule: Numtype_sub}
 
@@ -29,13 +24,8 @@ $${rule: Numtype_sub}
 
 Vector Types
 ~~~~~~~~~~~~
+
 $${rule-prose: Vectype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`vector type <syntax-vectype>` ${:vectype_1} matches a :ref:`vector type <syntax-vectype>` ${:vectype_2} if and only if:
-
-* Both :math:`\vectype_1` and :math:`\vectype_2` are the same.
 
 $${rule: Vectype_sub}
 
@@ -45,7 +35,9 @@ $${rule: Vectype_sub}
 
 Heap Types
 ~~~~~~~~~~
+
 $${rule-prose: Heaptype_sub}
+
 .. todo::
  below is the official specification
 
@@ -96,6 +88,7 @@ $${rule-ignore: Heaptype_sub/def}
 
 Reference Types
 ~~~~~~~~~~~~~~~
+
 $${rule-prose: Reftype_sub}
 .. todo::
  below is the official specification
@@ -114,17 +107,8 @@ $${rule: {Reftype_sub/*}}
 
 Value Types
 ~~~~~~~~~~~
+
 $${rule-prose: Valtype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`value type <syntax-valtype>` ${:valtype_1} matches a :ref:`value type <syntax-valtype>` ${:valtype_2} if and only if:
-
-* Either both :math:`\valtype_1` and :math:`\valtype_2` are :ref:`number types <syntax-numtype>` and :math:`\valtype_1` :ref:`matches <match-numtype>` :math:`\valtype_2`.
-
-* Or both :math:`\valtype_1` and :math:`\valtype_2` are :ref:`reference types <syntax-reftype>` and :math:`\valtype_1` :ref:`matches <match-reftype>` :math:`\valtype_2`.
-
-* Or :math:`\valtype_1` is :math:`\BOT`.
 
 $${rule: Valtype_sub/bot}
 $${rule-ignore: Valtype_sub/num Valtype_sub/vec Valtype_sub/ref}
@@ -135,14 +119,10 @@ $${rule-ignore: Valtype_sub/num Valtype_sub/vec Valtype_sub/ref}
 
 Result Types
 ~~~~~~~~~~~~
-$${rule-prose: Resulttype_sub}
-.. todo::
- below is the official specification
 
 Subtyping is lifted to :ref:`result types <syntax-resulttype>` in a pointwise manner.
-That is, a :ref:`result type <syntax-resulttype>` ${:t_1*} matches a :ref:`result type <syntax-resulttype>` ${:t_2*} if and only if:
 
-* Every :ref:`value type <syntax-valtype>` :math:`t_1` in :math:`[t_1^\ast]` :ref:`matches <match-valtype>` the corresponding :ref:`value type <syntax-valtype>` :math:`t_2` in :math:`[t_2^\ast]`.
+$${rule-prose: Resulttype_sub}
 
 $${rule: Resulttype_sub}
 
@@ -152,29 +132,20 @@ $${rule: Resulttype_sub}
 
 Instruction Types
 ~~~~~~~~~~~~~~~~~
-$${rule-prose: Instrtype_sub}
-.. todo::
- below is the official specification
 
 Subtyping is further lifted to :ref:`instruction types <syntax-instrtype>`.
-An :ref:`instruction type <syntax-instrtype>` ${instrtype: t_11* ->_(x_1*) t_12*} matches a type ${instrtype: t_21* ->_(x_2*) t_22*} if and only if:
 
-* There is a common sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast` such that :math:`t_{21}^\ast` equals :math:`t^\ast~{t'_{21}}^\ast` and :math:`t_{22}^\ast` equals :math:`t^\ast~{t'_{22}}^\ast`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`[{t'_{21}}^\ast]` :ref:`matches <match-resulttype>` :math:`[t_{11}^\ast]`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_{12}^\ast]` :ref:`matches <match-resulttype>` :math:`[{t'_{22}}^\ast]`.
-
-* For every :ref:`local index <syntax-localidx>` :math:`x` that is in :math:`x_2^\ast` but not in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]` is :math:`\SET~t_x` for some :ref:`value type <syntax-valtype>` :math:`t_x`.
+$${rule-prose: Instrtype_sub}
 
 $${rule: Instrtype_sub}
 
 .. note::
    Instruction types are contravariant in their input and covariant in their output.
-   Subtyping also incorporates a sort of "frame" condition, which allows adding arbitrary invariant stack elements on both sides in the super type.
-
-   Finally, the supertype may ignore variables from the init set ${:x_1*}.
+   Moreover, the supertype may ignore variables from the init set ${:x_1*}.
    It may also *add* variables to the init set, provided these are already set in the context, i.e., are vacuously initialized.
+
+.. scratch
+   Subtyping also incorporates a sort of "frame" condition, which allows adding arbitrary invariant stack elements on both sides in the super type.
 
 
 .. index:: function type, result type
@@ -182,15 +153,8 @@ $${rule: Instrtype_sub}
 
 Function Types
 ~~~~~~~~~~~~~~
+
 $${rule-prose: Functype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`function type <syntax-functype>` ${functype: t_11* -> t_12*} matches a type ${functype: t_21* -> t_22*} if and only if:
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_{21}^\ast]` :ref:`matches <match-resulttype>` :math:`[t_{11}^\ast]`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`[t_{12}^\ast]` :ref:`matches <match-resulttype>` :math:`[t_{22}^\ast]`.
 
 $${rule: Functype_sub}
 
@@ -202,27 +166,8 @@ $${rule: Functype_sub}
 
 Composite Types
 ~~~~~~~~~~~~~~~
+
 $${rule-prose: Comptype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`composite type <syntax-comptype>` ${:comptype_1} matches a type ${:comptype_2} if and only if:
-
-* Either the composite type :math:`\comptype_1` is :math:`\TFUNC~\functype_1` and :math:`\comptype_2` is :math:`\TFUNC~\functype_2` and:
-
-  * The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
-
-* Or the composite type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2` and:
-
-  * The arity :math:`n_1` is greater than or equal to :math:`n_2`.
-
-  * For every :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_{2i}` in :math:`\fieldtype_2^{n_2}` and corresponding :math:`\fieldtype_{1i}` in :math:`\fieldtype_1^{n_1}`
-
-    * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_{1i}` :ref:`matches <match-fieldtype>` :math:`\fieldtype_{2i}`.
-
-* Or the composite type :math:`\comptype_1` is :math:`\TARRAY~\fieldtype_1` and :math:`\comptype_2` is :math:`\TARRAY~\fieldtype_2` and:
-
-  * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_1` :ref:`matches <match-fieldtype>` :math:`\fieldtype_2`.
 
 $${rule: {Comptype_sub/*}}
 
@@ -234,38 +179,16 @@ $${rule: {Comptype_sub/*}}
 
 Field Types
 ~~~~~~~~~~~
+
 $${rule-prose: Fieldtype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`field type <syntax-fieldtype>` ${fieldtype: (mut1 storagetype_1)} matches a type ${fieldtype: (mut2 storagetype_2)} if and only if:
-
-* :ref:`Storage type <syntax-storagetype>` :math:`\storagetype_1` :ref:`matches <match-storagetype>` :math:`\storagetype_2`.
-
-* Either both :math:`\mut_1` and :math:`\mut_2` are :math:`\MCONST`.
-
-* Or both :math:`\mut_1` and :math:`\mut_2` are :math:`\MVAR` and :math:`\storagetype_2` :ref:`matches <match-storagetype>` :math:`\storagetype_1` as well.
 
 $${rule: {Fieldtype_sub/*}}
 
+
 $${rule-prose: Storagetype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type :math:`\storagetype_2` if and only if:
-
-* Either :math:`\storagetype_1` is a :ref:`value type <syntax-valtype>` :math:`\valtype_1` and :math:`\storagetype_2` is a :ref:`value type <syntax-valtype>` :math:`\valtype_2` and :math:`\valtype_1` :ref:`matches <match-valtype>` :math:`\valtype_2`.
-
-* Or :math:`\storagetype_1` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_1` and :math:`\storagetype_2` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_2` and :math:`\packtype_1` :ref:`matches <match-packtype>` :math:`\packtype_2`.
 
 
 $${rule-prose: Packtype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`packed type <syntax-packtype>` ${:packtype_1} matches a type ${:packtype_2} if and only if:
-
-* The :ref:`packed type <syntax-packtype>` :math:`\packtype_1` is the same as :math:`\packtype_2`.
 
 $${rule: Packtype_sub}
 
@@ -276,19 +199,8 @@ $${rule: Packtype_sub}
 
 Defined Types
 ~~~~~~~~~~~~~
+
 $${rule-prose: Deftype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`defined type <syntax-deftype>` ${:deftype_1} matches a type ${:deftype_2} if and only if:
-
-* Either :math:`\deftype_1` and :math:`\deftype_2` are equal when :ref:`closed <type-closure>` under context :math:`C`.
-
-* Or:
-
-  * Let the :ref:`sub type <syntax-subtype>` :math:`\TSUB~\TFINAL^?~\heaptype^\ast~\comptype` be the result of :ref:`unrolling <aux-unroll-deftype>` :math:`\deftype_1`.
-
-  * Then there must exist a :ref:`heap type <syntax-heaptype>` :math:`\heaptype_i` in :math:`\heaptype^\ast` that :ref:`matches <match-heaptype>` :math:`\deftype_2`.
 
 $${rule: Deftype_sub/refl Deftype_sub/super}
 
@@ -303,23 +215,8 @@ $${rule: Deftype_sub/refl Deftype_sub/super}
 
 Limits
 ~~~~~~
+
 $${rule-prose: Limits_sub}
-.. todo::
- below is the official specification
-
-:ref:`Limits <syntax-limits>` ${limits: `[n_1 .. m_1]} match limits ${limits: `[n_2 .. m_2]} if and only if:
-
-* :math:`n_1` is larger than or equal to :math:`n_2`.
-
-* Either:
-
-  * :math:`m_2^?` is empty.
-
-* Or:
-
-  * Both :math:`m_1^?` and :math:`m_2^?` are non-empty.
-
-  * :math:`m_1` is smaller than or equal to :math:`m_2`.
 
 $${rule: Limits_sub}
 
@@ -329,17 +226,8 @@ $${rule: Limits_sub}
 
 Table Types
 ~~~~~~~~~~~
+
 $${rule-prose: Tabletype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`table type <syntax-tabletype>` ${tabletype: (addrtype_1 limits_1 reftype_1)} matches ${tabletype: (addrtype_2 limits_1 reftype_1)} if and only if:
-
-* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
-
-* The :ref:`reference type <syntax-reftype>` :math:`\reftype_1` :ref:`matches <match-reftype>` :math:`\reftype_2`, and vice versa.
 
 $${rule: Tabletype_sub}
 
@@ -349,15 +237,8 @@ $${rule: Tabletype_sub}
 
 Memory Types
 ~~~~~~~~~~~~
+
 $${rule-prose: Memtype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`memory type <syntax-memtype>` ${memtype: (addrtype_1 limits_1 PAGE)} matches ${memtype: (addrtype_2 limits_2 PAGE)} if and only if:
-
-* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
 $${rule: Memtype_sub}
 
@@ -367,15 +248,8 @@ $${rule: Memtype_sub}
 
 Global Types
 ~~~~~~~~~~~~
+
 $${rule-prose: Globaltype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`global type <syntax-globaltype>` ${globaltype: (mut1 valtype_1)} matches ${globaltype: (mut2 valtype_2)} if and only if:
-
-* Either both :math:`\mut_1` and :math:`\mut_2` are |MVAR| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2` and vice versa.
-
-* Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
 
 $${rule: {Globaltype_sub/*}}
 
@@ -385,13 +259,8 @@ $${rule: {Globaltype_sub/*}}
 
 Tag Types
 ~~~~~~~~~
+
 $${rule-prose: Tagtype_sub}
-.. todo::
- below is the official specification
-
-A :ref:`tag type <syntax-tagtype>` ${tagtype: deftype_1} matches ${tagtype: deftype_2} if and only if:
-
-* :ref:`Defined type <syntax-deftype>` :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2` and vice versa.
 
 $${rule: {Tagtype_sub}}
 
@@ -402,66 +271,26 @@ $${rule: {Tagtype_sub}}
 External Types
 ~~~~~~~~~~~~~~
 
-Functions
-.........
 $${rule-prose: Externtype_sub/func}
-.. todo::
- below is the official specification
-
-An :ref:`external type <syntax-externtype>` ${externtype: FUNC deftype_1} matches ${externtype: FUNC deftype_2} if and only if:
-
-* The :ref:`defined type <syntax-deftype>` :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2`.
 
 $${rule: Externtype_sub/func}
 
 
-Tables
-......
 $${rule-prose: Externtype_sub/table}
-.. todo::
- below is the official specification
-
-An :ref:`external type <syntax-externtype>` ${externtype: TABLE tabletype_1} matches ${externtype: TABLE tabletype_2} if and only if:
-
-* Table type :math:`\tabletype_1` :ref:`matches <match-tabletype>` :math:`\tabletype_2`.
 
 $${rule: Externtype_sub/table}
 
 
-Memories
-........
 $${rule-prose: Externtype_sub/mem}
-.. todo::
- below is the official specification
-
-An :ref:`external type <syntax-externtype>` ${externtype: MEM memtype_1} matches ${externtype: MEM memtype_2} if and only if:
-
-* Memory type :math:`\memtype_1` :ref:`matches <match-memtype>` :math:`\memtype_2`.
 
 $${rule: Externtype_sub/mem}
 
 
-Globals
-.......
 $${rule-prose: Externtype_sub/global}
-.. todo::
- below is the official specification
-
-An :ref:`external type <syntax-externtype>` ${externtype: GLOBAL globaltype_1} matches ${externtype: GLOBAL globaltype_2} if and only if:
-
-* Global type :math:`\globaltype_1` :ref:`matches <match-globaltype>` :math:`\globaltype_2`.
 
 $${rule: Externtype_sub/global}
 
 
-Tags
-....
 $${rule-prose: Externtype_sub/tag}
-.. todo::
- below is the official specification
-
-An :ref:`external type <syntax-externtype>` ${externtype: TAG tagtype_1} matches ${externtype: TAG tagtype_2} if and only if:
-
-* Tag type :math:`\tagtype_1` :ref:`matches <match-tagtype>` :math:`\tagtype_2`.
 
 $${rule: Externtype_sub/tag}

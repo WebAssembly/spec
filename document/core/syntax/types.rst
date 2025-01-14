@@ -412,7 +412,7 @@ $${syntax: globaltype}
 Element Types
 ~~~~~~~~~~~~~
 
-*Element types* classify :ref:`element segments <syntax-elem>` by a :ref:`reference type <syntax-reftype>` of its elements.
+*Element types* classify :ref:`element segments <syntax-elem>` by the :ref:`reference type <syntax-reftype>` of its elements.
 
 $${syntax: elemtype}
 
@@ -431,30 +431,6 @@ Since the contents of a data segment requires no further classification, they me
 $${syntax: datatype}
 
 
-.. index:: ! tag, tag type, function type, exception tag
-   pair: abstract syntax; tag
-   pair: tag; exception tag
-   single: tag; type; exception
-.. _syntax-tagtype:
-
-Tag Types
-~~~~~~~~~
-
-*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a function type.
-
-.. math::
-   \begin{array}{llll}
-   \production{tag type} &\tagtype &::=& \functype \\
-   \end{array}
-
-Tags are used for categorizing exceptions.
-The parameters of |functype| define the list of values associated with the exception thrown with this tag.
-Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-tagtype>` tag type for an exception has an empty result type.
-
-.. note::
-   Future versions of WebAssembly may have additional uses for tags, and may allow non-empty result types in the function types of tags.
-
-
 .. index:: ! external type, defined type, function type, table type, memory type, global type, tag type, import, external address
    pair: abstract syntax; external type
    pair: external; type
@@ -466,6 +442,13 @@ External Types
 *External types* classify :ref:`imports <syntax-import>` and :ref:`external addresses <syntax-externaddr>` with their respective types.
 
 $${syntax: externtype}
+
+For functions and tags, the type index has to refer to the definition of a :ref:`function type <syntax-functype>`.
+In the case of a tag, the parameters of the function type define the list of values associated with the exception thrown with this tag.
+The result type is empty for exception tags.
+
+.. note::
+   Future versions of WebAssembly may have additional uses for tags, and may allow non-empty result types in the function types of tags.
 
 
 Conventions

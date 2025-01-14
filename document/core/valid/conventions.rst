@@ -63,17 +63,16 @@ A type use may also be a *recursive type index*.
 Such an index refers to the ${:i}-th component of a surrounding :ref:`recursive type <syntax-rectype>`.
 It occurs as the result of :ref:`rolling up <aux-roll-rectype>` the definition of a :ref:`recursive type <syntax-rectype>`.
 
-Both extensions affect the occurrence of type uses in concrete :ref:`heap types <syntax-heaptype>`, in :ref:`sub types <syntax-subtype>` and in :ref:`instructions <syntax-instr>`.
+Both extensions affect occurrences of type uses in concrete :ref:`heap types <syntax-heaptype>`, in :ref:`sub types <syntax-subtype>` and in :ref:`instructions <syntax-instr>`.
+
+A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>` or a recursive type index without a surrounding :ref:`recursive type <syntax-reftype>`,
+i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>` and all free recursive type indices have been :ref:`unrolled <aux-unroll-rectype>`.
 
 .. note::
    It is an invariant of the semantics that sub types occur only in one of two forms:
    either as "syntactic" types as in a source module, where all supertypes are type indices,
    or as "semantic" types, where all supertypes are resolved to either defined types or recursive type indices.
 
-A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>` or a recursive type index without a surrounding :ref:`recursive type <syntax-reftype>`,
-i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>` and all free recursive type indices have been :ref:`unrolled <aux-unroll-rectype>`.
-
-.. note::
    Recursive type indices are internal to a recursive type.
    They are distinguished from regular type indices and represented such that two closed types are syntactically equal if and only if they have the same recursive structure.
 
@@ -107,7 +106,8 @@ $${syntax: deftype}
 Defined types do not occur in the :ref:`binary <binary>` or :ref:`text <text>` format,
 but are formed by :ref:`rolling up <aux-roll-deftype>` the :ref:`recursive types <syntax-reftype>` defined in a module.
 
-It is hence an invariant of the semantics that all :ref:`recursive types <syntax-rectype>` occurring in defined types are :ref:`rolled up <aux-roll-rectype>`.
+.. note::
+   It is an invariant of the semantics that all :ref:`recursive types <syntax-rectype>` occurring in defined types are :ref:`rolled up <aux-roll-rectype>`.
 
 
 .. index:: ! substitution
@@ -117,7 +117,7 @@ It is hence an invariant of the semantics that all :ref:`recursive types <syntax
 Conventions
 ...........
 
-* ${:$subst_valtype(t, x*, dt*)} denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` ${:x*} with :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|x*| = |dt*|}.
+* ${:$subst_valtype(t, x*, dt*)} denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` ${:x*} with corresponding :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|x*| = |dt*|}.
 
 * ${:$subst_valtype(t, (REC i)*, dt*)} denotes the parallel substitution of :ref:`recursive type indices <syntax-rectypeidx>` ${:(REC i)*} with :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|(REC i)*| = |dt*|}.
 
@@ -159,6 +159,23 @@ $${rule: Expand}
 
 $${relation-ignore: Expand}
 $${definition-ignore: expanddt}
+
+
+.. index:: ! tag, tag type, function type, exception tag
+   pair: abstract syntax; tag
+   pair: tag; exception tag
+   single: tag; type; exception
+.. _syntax-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a :ref:`defined type <syntax-deftype>` that denotes a :ref:`function type <syntax-functype>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{tag type} &\tagtype &::=& \deftype \\
+   \end{array}
 
 
 .. index:: ! instruction type, value type, result type, instruction, local, local index
@@ -296,7 +313,7 @@ $${relation-ignore: NotationTypingScheme}
 Such a rule is read as a big implication: if all premises hold, then the conclusion holds.
 Some rules have no premises; they are *axioms* whose conclusion holds unconditionally.
 The conclusion always is a judgment ${:C `|- A `: T},
-and there is one respective rule for each relevant construct ${:A} of the abstract syntax.
+and there usually is one respective rule for each relevant construct ${:A} of the abstract syntax.
 
 .. note::
    For example, the typing rule for the ${instr: BINOP I32 ADD} instruction can be given as an axiom:

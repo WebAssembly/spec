@@ -121,7 +121,7 @@ $${syntax: {lanetype dim shape ishape bshape} half__ zero__ laneidx instr/vec}
 
 Vector instructions have a naming convention involving a *shape* prefix that
 determines how their operands will be interpreted,
-written ${:t#X#N}, and consisting of a *lane type* ${:t}, a possibly *packed* :ref:`numeric type <syntax-numtype>`, and the number of *lanes* ${:N} of that type.
+written ${:t#X#N}, and consisting of a *lane type* ${:t}, a possibly *packed* :ref:`numeric type <syntax-numtype>`, and its *dimension* ${:N}, which denotes the number of lanes of that type.
 Operations are performed point-wise on the values of each lane.
 
 Instructions prefixed with ${:V128} do not involve a specific interpretation, and treat the ${:V128} as either an ${:i128} value or a vector of ${:128} individual bits.

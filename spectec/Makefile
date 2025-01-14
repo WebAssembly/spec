@@ -78,6 +78,9 @@ spec:
 spec-pdf:
 	(cd ../document/core && make pdf)
 
+spec-clean:
+	(cd ../document/core && make clean)
+
 
 # Cleanup
 

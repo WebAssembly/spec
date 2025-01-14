@@ -92,8 +92,14 @@ Moreover, the following conventions are employed:
   (similarly for ${:x*}, ${:x+}, ${:x?}).
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
 
+* ${:e^(i<n)} denotes the same sequence as ${:e^n},
+  but implicitly also defines ${:i^n} to be the sequence of values ${:0} to ${:($(n-1))}.
+
 .. note::
-   For example, if ${:x*} is the sequence ${:1 2 3}, then ${:($($f(x) + 1))*} denotes the sequence ${:($($f(1) + 1)) ($($f(2) + 1)) ($($f(3) + 1))}.
+   For example, if ${:x^n} is the sequence ${:a b c}, then ${:($($f(x) + 1))^n} denotes the sequence ${:($($f(a) + 1)) ($($f(b) + 1)) ($($f(c) + 1))}.
+
+   The form ${:e^(i<n)} additionally gives access to an index variable inside the iteration.
+   For example, ${:($($f(x) + i))^(i<n)} denotes the sequence ${:($($f(a) + 0)) ($($f(b) + 1)) ($($f(c) + 2))}.
 
 Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_ i} to "values" ${:A_i}, respectively:
 

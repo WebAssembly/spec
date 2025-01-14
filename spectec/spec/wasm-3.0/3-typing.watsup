@@ -274,6 +274,7 @@ rule Tagtype_ok:
   -- Expand: deftype ~~ FUNC functype
 
 
+;; TODO(0, rossberg): this needs to be defined on typeuse
 rule Externtype_ok/func:
   C |- FUNC deftype : OK
   -- Deftype_ok: C |- deftype : OK
@@ -291,6 +292,7 @@ rule Externtype_ok/mem:
   C |- MEM memtype : OK
   -- Memtype_ok: C |- memtype : OK
 
+;; TODO(0, rossberg): this needs to be defined on typeuse
 rule Externtype_ok/tag:
   C |- TAG tagtype : OK
   -- Tagtype_ok: C |- tagtype : OK
@@ -557,10 +559,10 @@ relation Instrs_ok: context |- instr* : instrtype   hint(name "T-instr*") hint(m
 relation Expr_ok: context |- expr : resulttype      hint(name "T-expr")   hint(macro "%expr")
 
 relation Defaultable: |- valtype DEFAULTABLE  hint(show $default_(%2) =/= eps)
-  hint(prose "A :ref:`default value <default-val>` for value type %1 is defined")  ;; TODO(3, ?): avoid hardcoding reST
+  hint(prose "A :ref:`default value <aux-default>` for value type %1 is defined")  ;; TODO(3, ?): avoid hardcoding reST
 
 relation Nondefaultable: |- valtype NONDEFAULTABLE  hint(show $default_(%2) = eps)
-  hint(prose "A :ref:`default value <default-val>` for value type %1 is not defined")  ;; TODO(3, ?): avoid hardcoding reST
+  hint(prose "A :ref:`default value <aux-default>` for value type %1 is not defined")  ;; TODO(3, ?): avoid hardcoding reST
 
 
 ;; Parametric instructions
@@ -1289,7 +1291,7 @@ rule Global_ok:
 
 rule Table_ok:
   C |- TABLE tabletype expr : tabletype
-  -- Tabletype_ok: C |- tt : OK
+  -- Tabletype_ok: C |- tabletype : OK
   -- if tabletype = at lim rt
   -- Expr_ok_const: C |- expr : rt CONST
 

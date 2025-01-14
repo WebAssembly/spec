@@ -68,6 +68,9 @@ def $fzero(N) = POS (SUBNORM 0)
 def $fone(N) : fN(N)  hint(show $(+1))
 def $fone(N) = POS (NORM 1 0)
 
+def $fnat(N, nat) : fN(N)  hint(show $(+%))
+def $fnat(N, n) = POS (NORM n 0)
+
 def $canon_(N) : nat
 def $canon_(N) = $(2^($signif(N)-1))
 

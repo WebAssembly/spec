@@ -288,7 +288,7 @@
 .. |XTTABLE| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{table}}
 .. |XTMEM| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{mem}}
 .. |XTGLOBAL| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{global}}
-.. |XTTAG| mathdef:: \xref{syntax/types}{syntax-tagtype}{\K{tag}}
+.. |XTTAG| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{tag}}
 
 
 .. Types, non-terminals
@@ -1603,7 +1603,7 @@
 
 .. Values, meta-functions
 
-.. |default| mathdef:: \xref{exec/runtime}{default-val}{\F{default}}
+.. |default| mathdef:: \xref{exec/runtime}{aux-default}{\F{default}}
 
 .. |packnum| mathdef:: \xref{exec/numerics}{aux-packnum}{\F{pack}}
 .. |unpacknum| mathdef:: \xref{exec/numerics}{aux-unpacknum}{\F{unpack}}

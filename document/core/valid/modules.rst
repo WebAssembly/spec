@@ -2,7 +2,7 @@ Modules
 -------
 
 :ref:`Modules <syntax-module>` are valid when all the components they contain are valid.
-Furthermore, most definitions are themselves classified with a suitable type.
+To verify this, most definitions are themselves classified with a suitable type.
 
 
 .. index:: type, type index, defined type, recursive type
@@ -16,41 +16,12 @@ Types
 
 The sequence of :ref:`types <syntax-type>` defined in a module is validated incrementally, yielding a sequence of :ref:`defined types <syntax-deftype>` representing them individually.
 
-:math:`\type`
-.............
-
 $${rule-prose: Type_ok}
 
 $${rule: Type_ok}
 
 
-:math:`\type^\ast`
-..................
 $${rule-prose: Types_ok}
-.. todo::
- below is the official specification
-
-* If the sequence is empty, then:
-
-  * The :ref:`context <context>` :math:`C` must be empty.
-
-  * Then the type sequence is valid.
-
-* Otherwise:
-
-  * Let the :ref:`recursive type <syntax-rectype>` :math:`\rectype` be the last element in the sequence.
-
-  * The sequence without :math:`\rectype` must be valid for some context :math:`C'`.
-
-  * Let the :ref:`type index <syntax-typeidx>` :math:`x` be the length of :math:`C'.\CTYPES`, i.e., the first type index free in :math:`C'`.
-
-  * Let the sequence of :ref:`defined types <syntax-deftype>` :math:`\deftype^\ast` be the result :math:`\rolldt_{x}^\ast(\rectype)` of :ref:`rolling up <aux-roll-deftype>` into its sequence of :ref:`defined types <syntax-deftype>`.
-
-  * The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` under the context :math:`C` for :ref:`type index <syntax-typeidx>` :math:`x`.
-
-  * The current :ref:`context <context>` :math:`C` be the same as :math:`C'`, but with :math:`\deftype^\ast` appended to |CTYPES|.
-
-  * Then the type sequence is valid.
 
 $${rule: {Types_ok/*}}
 
@@ -66,8 +37,6 @@ Functions
 Functions ${:func} are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form ${comptype: FUNC (t_1* -> t_2*)}.
 
 
-:math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
-.....................................................
 $${rule-prose: Func_ok}
 .. todo::
  below is the official specification
@@ -109,21 +78,7 @@ Locals
 
 Locals ${:local} are classified with :ref:`local types <syntax-localtype>`.
 
-:math:`\{ \LTYPE~\valtype \}`
-.............................
 $${rule-prose: Local_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`value type <syntax-valtype>` :math:`\valtype` must be :ref:`valid <valid-valtype>`.
-
-* If :math:`\valtype` is defaultable, then:
-
-  * The local is valid with :ref:`local type <syntax-localtype>` :math:`\SET~\valtype`.
-
-* Else:
-
-  * The local is valid with :ref:`local type <syntax-localtype>` :math:`\UNSET~\valtype`.
 
 $${rule: {Local_ok/*}}
 
@@ -141,21 +96,7 @@ Tables
 
 Tables ${:table} are classified by :ref:`table types <syntax-tabletype>`.
 
-:math:`\{ \TTYPE~\tabletype, \TINIT~\expr \}`
-.............................................
 $${rule-prose: Table_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
-
-* Let :math:`t` be the element :ref:`reference type <syntax-reftype>` of :math:`\tabletype`.
-
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
-
-* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
-
-* Then the table definition is valid with type :math:`\tabletype`.
 
 $${rule: Table_ok}
 
@@ -170,15 +111,7 @@ Memories
 
 Memories ${:mem} are classified by :ref:`memory types <syntax-memtype>`.
 
-:math:`\{ \MTYPE~\memtype \}`
-.............................
 $${rule-prose: Mem_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
-
-* Then the memory definition is valid with type :math:`\memtype`.
 
 $${rule: Mem_ok}
 
@@ -194,43 +127,13 @@ Globals
 
 Globals ${:global} are classified by :ref:`global types <syntax-globaltype>`.
 
-Sequences of globals are handled incrementally, such that each definition has access to previous definitions.
-
-
-:math:`\{ \GTYPE~\mut~t, \GINIT~\expr \}`
-.........................................
 $${rule-prose: Global_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>`.
-
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[t]`.
-
-* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
-
-* Then the global definition is valid with type :math:`\mut~t`.
 
 $${rule: Global_ok}
 
+Sequences of globals are handled incrementally, such that each definition has access to previous definitions.
 
-:math:`\global^\ast`
-....................
 $${rule-prose: Globals_ok}
-.. todo::
- below is the official specification
-
-* If the sequence is empty, then it is valid with the empty sequence of :ref:`global types <syntax-globaltype>`.
-
-* Else:
-
-  * The first global definition must be :ref:`valid <valid-global>` with some type :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1`.
-
-  * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1` apppended to the |CGLOBALS| list.
-
-  * Under context :math:`C'`, the remainder of the sequence must be valid with some sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
-
-  * Then the sequence is valid with the sequence of :ref:`global types <syntax-globaltype>` consisting of :math:`\X{gt}_1` prepended to :math:`\X{gt}^\ast`.
 
 $${rule: {Globals_ok/*}}
 
@@ -243,20 +146,10 @@ $${rule: {Globals_ok/*}}
 Tags
 ~~~~
 
-Tags :math:`\tag` are classified by their :ref:`tag type <syntax-tagtype>`,
-each containing an index to a :ref:`function type <syntax-functype>` with empty result.
+Tags :math:`\tag` are classified by their :ref:`tag types <syntax-tagtype>`,
+which are :ref:`defined types <syntax-deftype>` expanding to :ref:`function types <syntax-functype>`.
 
-:math:`\{ \TAGTYPE~x \}`
-........................
 $${rule-prose: Tag_ok}
-.. todo::
- below is the official specification
-
-* The type :math:`C.\CTYPES[x]` must be defined in the context.
-
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
-
-* Then the tag definition is valid with :ref:`tag type <syntax-tagtype>` :math:`[t_1^\ast]\to[t_2^\ast]`.
 
 $${rule: Tag_ok}
 
@@ -271,27 +164,9 @@ $${rule: Tag_ok}
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-Element segments ${:elem} are classified by the :ref:`reference type <syntax-reftype>` of their elements.
+Element segments ${:elem} are classified by their :ref:`element type <syntax-elemtype>`.
 
-:math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
-.......................................................
 $${rule-prose: Elem_ok}
-.. todo::
- below is the official specification
-
-* The :ref:`reference type <syntax-reftype>` :math:`t` must be :ref:`valid <valid-reftype>`.
-
-* For each :math:`e_i` in :math:`e^\ast`:
-
-  * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
-
-  * The expression :math:`e_i` must be :ref:`constant <valid-constant>`.
-
-* The element mode :math:`\elemmode` must be valid with some :ref:`reference type <syntax-reftype>` :math:`t'`.
-
-* The reference type :math:`t` must :ref:`match <match-reftype>` the reference type :math:`t'`.
-
-* Then the element segment is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 $${rule: Elem_ok}
 
@@ -299,38 +174,8 @@ $${rule: Elem_ok}
 .. _valid-elemmode:
 
 $${rule-prose:Elemmode_ok}
-.. todo::
- below is the official specification
 
-:math:`\EPASSIVE`
-.................
-
-* The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
-
-$${rule: Elemmode_ok/passive}
-
-
-:math:`\EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \}`
-................................................
-
-* The table :math:`C.\CTABLES[x]` must be defined in the context.
-
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
-
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
-
-* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
-
-* Then the element mode is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
-
-$${rule: Elemmode_ok/active}
-
-:math:`\EDECLARE`
-.................
-
-* The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
-
-$${rule: Elemmode_ok/declare}
+$${rule: {Elemmode_ok/*}}
 
 
 .. index:: data, memory, memory index, expression, constant, byte
@@ -343,17 +188,9 @@ $${rule: Elemmode_ok/declare}
 Data Segments
 ~~~~~~~~~~~~~
 
-Data segments ${:data} are not classified by any type but merely checked for well-formedness.
+Data segments ${:data} are classified by the singleton :ref:`data type <syntax-datatype>`, which merely expresses well-formedness.
 
-:math:`\{ \DINIT~b^\ast, \DMODE~\datamode \}`
-.............................................
 $${rule-prose: Data_ok}
-.. todo::
- below is the official specification
-
-* The data mode :math:`\datamode` must be valid.
-
-* Then the data segment is valid.
 
 $${rule: Data_ok}
 
@@ -361,29 +198,8 @@ $${rule: Data_ok}
 .. _valid-datamode:
 
 $${rule-prose: Datamode_ok}
-.. todo::
- below is the official specification
 
-:math:`\DPASSIVE`
-.................
-
-* The data mode is valid.
-
-$${rule: Datamode_ok/passive}
-
-
-:math:`\DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \}`
-..............................................
-
-* The memory :math:`C.\CMEMS[x]` must be defined in the context.
-
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
-
-* The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
-
-* Then the data mode is valid.
-
-$${rule: Datamode_ok/active}
+$${rule: {Datamode_ok/*}}
 
 
 .. index:: start function, function index
@@ -394,19 +210,7 @@ $${rule: Datamode_ok/active}
 Start Function
 ~~~~~~~~~~~~~~
 
-Start function declarations ${:start} are not classified by any type.
-
-:math:`\{ \SFUNC~x \}`
-......................
 $${rule-prose: Start_ok}
-.. todo::
- below is the official specification
-
-* The function :math:`C.\CFUNCS[x]` must be defined in the context.
-
-* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[] \toF []`.
-
-* Then the start function is valid.
 
 $${rule: Start_ok}
 
@@ -423,70 +227,39 @@ Exports
 
 Exports ${:export} are classified by their :ref:`external type <syntax-externtype>`.
 
-
-:math:`\{ \XNAME~\name, \XDESC~\exportdesc \}`
-..............................................
 $${rule-prose: Export_ok}
-.. todo::
- below is the official specification
-
-* The export description :math:`\exportdesc` must be valid with :ref:`external type <syntax-externtype>` :math:`\externtype`.
-
-* Then the export is valid with :ref:`external type <syntax-externtype>` :math:`\externtype`.
 
 $${rule: Export_ok}
 
 
 :math:`\XDFUNC~x`
 .................
+
 $${rule-prose: Externidx_ok/func}
-.. todo::
- below is the official specification
-
-* The function :math:`C.\CFUNCS[x]` must be defined in the context.
-
-* Let :math:`\X{dt}` be the :ref:`defined type <syntax-deftype>` :math:`C.\CFUNCS[x]`.
-
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\X{dt}`.
 
 $${rule: Externidx_ok/func}
 
 
 :math:`\XDTABLE~x`
 ..................
+
 $${rule-prose: Externidx_ok/table}
-.. todo::
- below is the official specification
-
-* The table :math:`C.\CTABLES[x]` must be defined in the context.
-
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTTABLE~C.\CTABLES[x]`.
 
 $${rule: Externidx_ok/table}
 
 
 :math:`\XDMEM~x`
 ................
+
 $${rule-prose: Externidx_ok/mem}
-.. todo::
- below is the official specification
-
-* The memory :math:`C.\CMEMS[x]` must be defined in the context.
-
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTMEM~C.\CMEMS[x]`.
 
 $${rule: Externidx_ok/mem}
 
 
 :math:`\XDGLOBAL~x`
 ...................
+
 $${rule-prose: Externidx_ok/global}
-.. todo::
- below is the official specification
-
-* The global :math:`C.\CGLOBALS[x]` must be defined in the context.
-
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~C.\CGLOBALS[x]`.
 
 $${rule: Externidx_ok/global}
 
@@ -495,9 +268,7 @@ $${rule: Externidx_ok/global}
 :math:`\XDTAG~x`
 ................
 
-* The tag :math:`C.\CTAGS[x]` must be defined in the context.
-
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTTAG~C.\CTAGS[x]`.
+$${rule-prose: Externidx_ok/tag}
 
 $${rule: Externidx_ok/tag}
 
@@ -513,16 +284,7 @@ Imports
 
 Imports ${:import} are classified by :ref:`external types <syntax-externtype>`.
 
-
-:math:`\{ \IMODULE~\name_1, \INAME~\name_2, \IDESC~\importdesc \}`
-..................................................................
 $${rule-prose: Import_ok}
-.. todo::
- below is the official specification
-
-* The import description :math:`\importdesc` must be valid with type :math:`\externtype`.
-
-* Then the import is valid with type :math:`\externtype`.
 
 $${rule: Import_ok}
 
@@ -542,8 +304,6 @@ A module is entirely *closed*,
 that is, its components can only refer to definitions that appear in the module itself.
 Consequently, no initial :ref:`context <context>` is required.
 Instead, the :ref:`context <context>` ${:C} for validation of the module's content is constructed from the definitions in the module.
-
-The :ref:`external types <syntax-externtype>` classifying a module may contain free :ref:`type indices <syntax-typeidx>` that refer to types defined within the module.
 
 $${rule-prose: Module_ok}
 .. todo::
