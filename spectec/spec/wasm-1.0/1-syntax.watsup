@@ -184,7 +184,7 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 var ao : memarg
 
 syntax loadop_(valtype)
-syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $size(Inn)
+syntax loadop_(Inn) = sz _ sx hint(show %0#_#%2) -- if sz < $size(Inn)
 
 
 ;; Instructions

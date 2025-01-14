@@ -158,6 +158,7 @@
 .. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em31}}
 .. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em32}}
 .. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em64}}
+.. |u128| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em128}}
 
 .. |sNX| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\kern-0.1em}
 .. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\scriptstyle\kern-0.1emN}
@@ -209,6 +210,7 @@
 .. |I64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i\scriptstyle64}}
 .. |F32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle64}}
+.. |I128| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{i\scriptstyle128}}
 .. |V128| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v\scriptstyle128}}
 .. |INX| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}}
 .. |IN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}\scriptstyle\kern-0.1emN}
@@ -216,6 +218,11 @@
 .. |FN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}\scriptstyle\kern-0.1emN}
 .. |VNX| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}}
 .. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}\scriptstyle\kern-0.1emN}
+
+.. |ntI| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}}
+.. |ntF| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}}
+.. |ntV| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{v}}
+.. |ntN| mathdef:: \xref{syntax/types}{syntax-numtype}{\scriptstyle\kern-0.1emN}
 
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |EQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{eqref}}

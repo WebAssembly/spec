@@ -1074,7 +1074,7 @@ rule Instr_ok/data.drop:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD nt (N sx)? x memarg : at -> nt
+  C |- LOAD nt (N _ sx)? x memarg : at -> nt
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
@@ -1087,7 +1087,7 @@ rule Instr_ok/load-val:
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M sx) x memarg : at -> Inn
+  C |- LOAD Inn (M _ sx) x memarg : at -> Inn
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= M/8)
 
@@ -1116,7 +1116,7 @@ rule Instr_ok/vload-val:
   -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vload-pack:
-  C |- VLOAD V128 (SHAPE M X N sx) x memarg : at -> V128
+  C |- VLOAD V128 (SHAPE M X N _ sx) x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= M/8 * N)
 

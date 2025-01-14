@@ -39,7 +39,7 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 * Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, ${syntax: symsplit/1}, and starting continuations with ellipses, ${syntax: symsplit/2}.
 
-* Some productions are augmented with side conditions, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
+* Some productions are augmented with side conditions, ":math:`\iff \X{condition}`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
 * If the same meta variable or non-terminal symbol appears multiple times in a production, then all those occurrences must have the same instantiation.
   (This is a shorthand for a side condition requiring multiple different variables to be equal.)
@@ -79,19 +79,21 @@ When dealing with syntactic constructs the following notation is also used:
 * ${:s_1++s_2} denotes the sequence ${:s_1} concatenated with ${:s_2};
   this is equivalent to ${:s_1 s_2}, but used for clarity.
 
-* ${:(++) s*} denotes the flat sequence formed by concatenating all sequences ${:s_i} in ${:s*}.
+* ${:(++) s*} denotes the flattened sequence, formed by concatenating all sequences ${:s_i} in ${:s*}.
 
-* ${:A <- s} denotes that ${:A} is contained in the sequence ${:s}, that is, ${:s} is of the form ${:s_1 A s_2} for some sequences ${:s_1}, ${:s_2}.
+* ${:A <- s} denotes that ${:A} is a member of the sequence ${:s}, that is, ${:s} is of the form ${:s_1 A s_2} for some sequences ${:s_1}, ${:s_2}.
 
 Moreover, the following conventions are employed:
 
 * The notation ${:x^n}, where ${:x} is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of ${:x} (similarly for ${:x*}, ${:x+}, ${:x?}).
 
 * When given a sequence ${:x^n},
-  then the occurrences of ${:x} in an iterated sequence ${:(!%...x...!%)^n} are assumed to be in point-wise correspondence with ${:x^n}
+  then the occurrences of ${:x} in an iterated sequence ${:(!%...x...!%)^n} are assumed to denote the individual elements of ${:x^n}, respectively
   (similarly for ${:x*}, ${:x+}, ${:x?}).
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
 
+.. note::
+   For example, if ${:x*} is the sequence ${:1 2 3}, then ${:($($f(x) + 1))*} denotes the sequence ${:($($f(1) + 1)) ($($f(2) + 1)) ($($f(3) + 1))}.
 
 Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_ i} to "values" ${:A_i}, respectively:
 

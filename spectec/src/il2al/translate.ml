@@ -485,7 +485,7 @@ let get_lhs_var_expr e =
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
   let exp = Il2al_util.typ_to_var_exp e.note ~post_fix:("_" ^ string_of_int lhs_id) in
-  { (translate_exp exp) with note = e.note}
+  { (translate_exp exp) with at = e.at; note = e.note}
 
 
 (* Helper functions *)
@@ -779,7 +779,7 @@ and handle_special_lhs lhs rhs free_ids =
     (match tag_opt with
     | Some ({ it = Atom.Atom _; _} as tag) ->
       [ ifI (
-        inject_isCaseOf tag  rhs,
+        inject_isCaseOf tag rhs,
         letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
         []

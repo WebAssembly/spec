@@ -254,7 +254,7 @@ Vector loads and stores are followed by the encoding of their ${:memarg} immedia
 
 $${grammar: Blaneidx Binstr/vec-memory}
 
-The ${:CONST} instruction for vectors is followed by 16 immediate bytes, which are converted into an ${:i128} in |littleendian| byte order:
+The ${:CONST} instruction for vectors is followed by 16 immediate bytes, which are converted into an ${:u128} in |littleendian| byte order:
 
 $${grammar: Binstr/vec-const}
 

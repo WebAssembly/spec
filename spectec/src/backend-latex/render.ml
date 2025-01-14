@@ -427,6 +427,7 @@ let rec string_of_row sep br = function
 
 let rec string_of_table vsep vbr hsep hbr = function
   | [] -> ""
+  | (Row cols)::[] -> string_of_row hsep hbr cols
   | (Row cols)::Sep::rows -> string_of_row hsep hbr cols ^ vbr ^ string_of_table vsep vbr hsep hbr rows
   | (Row cols)::rows -> string_of_row hsep hbr cols ^ vsep ^ string_of_table vsep vbr hsep hbr rows
   | Sep::rows -> vbr ^ string_of_table vsep vbr hsep hbr rows
@@ -1127,7 +1128,7 @@ and render_nottyp env t : table =
     [Row [Col (
       "\\{ " ^
       render_table env "@{}" ["l"; "l"] 0 0
-        (concat_table "" (render_nl_list env (`H, " ") render_typfield tfs) [Row [Col " \\}"]])
+        (concat_table "" (render_nl_list env (`H, ", ") render_typfield tfs) [Row [Col " \\}"]])
     )]]
   | CaseT (dots1, ts, tcs, dots2) ->
     let render env = function
@@ -1418,7 +1419,7 @@ and render_conditions env prems : row list =
   in
   prefix_row br (
     match prems''' with
-    | [] -> [Row [Col pre]]
+    | [] -> [Row [Col ("\\quad " ^ pre)]]
     | [Elem prem] -> [Row [Col ("\\quad " ^ pre ^ "~ " ^ render_prem env prem)]]
     | _ ->
       [Row [Col

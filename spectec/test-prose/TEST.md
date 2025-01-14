@@ -467,7 +467,7 @@ The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{loa
 
       * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
@@ -531,7 +531,7 @@ The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is val
 
 
 
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{M~{\mathit{sx}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
@@ -1388,7 +1388,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+
+      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1400,7 +1402,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+
+      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -3104,7 +3108,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
     - t_u1 is Inn.
-    - loadop__u1? is ?((M sx)).
+    - loadop__u1? is ?(M _ sx).
     - t_u3 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -3137,7 +3141,7 @@ Instr_ok/load-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?((M sx)) memarg) is valid with the function type [I32] -> [Inn] if:
+- the instruction (LOAD Inn ?(M _ sx) memarg) is valid with the function type [I32] -> [Inn] if:
   - the memory type C.MEMS[0] exists.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -3555,15 +3559,17 @@ Step_read/load t_u1 loadop__u1? ao
 5. If the type of t_u1 is Inn, then:
   a. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n sx) be loadop__0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+    2) Assert: Due to validation, loadop__0 is of the case _.
+    3) Let n _ sx be loadop__0.
+    4) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be t_u1.
   c. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n sx) be loadop__0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    2) Assert: Due to validation, loadop__0 is of the case _.
+    3) Let n _ sx be loadop__0.
+    4) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    5) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
@@ -5086,7 +5092,7 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
       * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
@@ -5134,7 +5140,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
@@ -5232,7 +5238,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memar
 
 
 
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{M~{\mathit{sx}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
@@ -5268,7 +5274,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
@@ -6886,7 +6892,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+
+      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -6898,7 +6906,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+
+      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -6931,7 +6941,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{shape}`, then:
 
-      1) Let :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})` be :math:`{\mathit{vloadop}}_0`.
+      1) Let :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop}}_0`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -7105,7 +7115,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}})`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}})`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
@@ -7119,7 +7129,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}})`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}})`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
@@ -10340,7 +10350,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
     - nt_u1 is Inn.
-    - loadop__u1? is ?((M sx)).
+    - loadop__u1? is ?(M _ sx).
     - t_u1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -10364,7 +10374,7 @@ Instr_ok/vload
   - the memory type C.MEMS[0] exists.
   - C.MEMS[0] is mt.
   - Either:
-    - vloadop_u1 is (SHAPE M X N sx).
+    - vloadop_u1 is (SHAPE M X N _ sx).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
     - vloadop_u1 is (SPLAT n).
@@ -10415,7 +10425,7 @@ Instr_ok/load-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?((M sx)) memarg) is valid with the function type [I32] -> [Inn] if:
+- the instruction (LOAD Inn ?(M _ sx) memarg) is valid with the function type [I32] -> [Inn] if:
   - the memory type C.MEMS[0] exists.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -10433,7 +10443,7 @@ Instr_ok/store-pack
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 ?((SHAPE M X N sx)) memarg) is valid with the function type [I32] -> [V128] if:
+- the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) memarg) is valid with the function type [I32] -> [V128] if:
   - the memory type C.MEMS[0] exists.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
@@ -11224,15 +11234,17 @@ Step_read/load nt_u1 loadop__u1? ao
 5. If the type of nt_u1 is Inn, then:
   a. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n sx) be loadop__0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+    2) Assert: Due to validation, loadop__0 is of the case _.
+    3) Let n _ sx be loadop__0.
+    4) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be nt_u1.
   c. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Let (n sx) be loadop__0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    2) Assert: Due to validation, loadop__0 is of the case _.
+    3) Let n _ sx be loadop__0.
+    4) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    5) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop_u1? ao
 1. Let z be the current state.
@@ -11246,7 +11258,7 @@ Step_read/vload V128 vloadop_u1? ao
 6. Else:
   a. Let ?(vloadop_0) be vloadop_u1?.
   b. If vloadop_0 is of the case SHAPE, then:
-    1) Let (SHAPE M X N sx) be vloadop_0.
+    1) Let (SHAPE M X N _ sx) be vloadop_0.
     2) If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<N).
@@ -11331,14 +11343,14 @@ Step_read/memory.copy
   a. If (j <= i), then:
     1) Push the value (I32.CONST j) to the stack.
     2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8 U)) $memarg0()).
+    3) Execute the instruction (LOAD I32 ?(8 _ U) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
     5) Push the value (I32.CONST (j + 1)) to the stack.
     6) Push the value (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
     2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8 U)) $memarg0()).
+    3) Execute the instruction (LOAD I32 ?(8 _ U) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
     5) Push the value (I32.CONST j) to the stack.
     6) Push the value (I32.CONST i) to the stack.
@@ -15130,7 +15142,7 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
       * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`(M~{\mathit{sx}})`.
+      * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
@@ -15273,7 +15285,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{mem
 
 
 
-The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{M~{\mathit{sx}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
+The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -18410,7 +18422,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+
+      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -18422,7 +18436,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Let :math:`(n~{\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{\_}`.
+
+      #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
@@ -18633,7 +18649,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -18647,7 +18663,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{8~\mathsf{u}}~x_2)`.
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{8}{\mathsf{\_}}{\mathsf{u}}}~x_2)`.
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
@@ -19346,6 +19362,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
 
+:math:`\mathsf{exnref}`
+.......................
+
+
+1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{extern})`.
+
+
 :math:`\mathsf{externref}`
 ..........................
 
@@ -19365,6 +19388,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{nofunc})`.
+
+
+:math:`\mathsf{nullexnref}`
+...........................
+
+
+1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{noexn})`.
 
 
 :math:`\mathsf{nullexternref}`
@@ -25681,7 +25711,7 @@ Instr_ok/load
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
     - nt_u1 is Inn.
-    - loadop_u1? is ?((M sx)).
+    - loadop_u1? is ?(M _ sx).
     - t_u1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
@@ -25708,7 +25738,7 @@ Instr_ok/vload
     - vloadop_u1? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
   - Or:
-    - vloadop_u1? is ?((SHAPE M X N sx)).
+    - vloadop_u1? is ?((SHAPE M X N _ sx)).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
     - vloadop_u1? is ?((SPLAT N)).
@@ -25754,7 +25784,7 @@ Instr_ok/load-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?((M sx)) x memarg) is valid with the instruction type [at] -> [Inn] if:
+- the instruction (LOAD Inn ?(M _ sx) x memarg) is valid with the instruction type [at] -> [Inn] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -25778,7 +25808,7 @@ Instr_ok/vload-val
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vload-pack
-- the instruction (VLOAD V128 ?((SHAPE M X N sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
+- the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
@@ -27286,15 +27316,17 @@ Step_read/load nt_u1 loadop_u1? x ao
 5. If the type of nt_u1 is Inn, then:
   a. If loadop_u1? is defined, then:
     1) Let ?(loadop__0) be loadop_u1?.
-    2) Let (n sx) be loadop__0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
+    2) Assert: Due to validation, loadop__0 is of the case _.
+    3) Let n _ sx be loadop__0.
+    4) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be nt_u1.
   c. If loadop_u1? is defined, then:
     1) Let ?(loadop__0) be loadop_u1?.
-    2) Let (n sx) be loadop__0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    2) Assert: Due to validation, loadop__0 is of the case _.
+    3) Let n _ sx be loadop__0.
+    4) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    5) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop_u1? x ao
 1. Let z be the current state.
@@ -27308,7 +27340,7 @@ Step_read/vload V128 vloadop_u1? x ao
 6. Else:
   a. Let ?(vloadop__0) be vloadop_u1?.
   b. If vloadop__0 is of the case SHAPE, then:
-    1) Let (SHAPE M X K sx) be vloadop__0.
+    1) Let (SHAPE M X K _ sx) be vloadop__0.
     2) If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
@@ -27395,14 +27427,14 @@ Step_read/memory.copy x_1 x_2
   a. If (i_1 <= i_2), then:
     1) Push the value (at_1.CONST i_1) to the stack.
     2) Push the value (at_2.CONST i_2) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8 U)) x_2 $memarg0()).
+    3) Execute the instruction (LOAD I32 ?(8 _ U) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (at_1.CONST (i_1 + 1)) to the stack.
     6) Push the value (at_2.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push the value (at_1.CONST ((i_1 + n) - 1)) to the stack.
     2) Push the value (at_2.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8 U)) x_2 $memarg0()).
+    3) Execute the instruction (LOAD I32 ?(8 _ U) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (at_1.CONST i_1) to the stack.
     6) Push the value (at_2.CONST i_2) to the stack.
@@ -27731,6 +27763,9 @@ ARRAYREF
 FUNCREF
 1. Return (REF ?(NULL) FUNC).
 
+EXNREF
+1. Return (REF ?(NULL) EXTERN).
+
 EXTERNREF
 1. Return (REF ?(NULL) EXTERN).
 
@@ -27739,6 +27774,9 @@ NULLREF
 
 NULLFUNCREF
 1. Return (REF ?(NULL) NOFUNC).
+
+NULLEXNREF
+1. Return (REF ?(NULL) NOEXN).
 
 NULLEXTERNREF
 1. Return (REF ?(NULL) NOEXTERN).

@@ -75,7 +75,7 @@ def $canon_(N) = $(2^($signif(N)-1))
 ;; Vectors
 
 syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNX") =
-  iN(N)
+  uN(N)
 
 syntax v128 = vN(128)
 
@@ -185,9 +185,9 @@ syntax valtype/syn hint(desc "value type") =
 syntax valtype/sem =
   | ... | BOT
 
-syntax Inn hint(show I#N) hint(macro none) = I32 | I64
-syntax Fnn hint(show F#N) hint(macro none) = F32 | F64
-syntax Vnn hint(show V#N) hint(macro none) = V128
+syntax Inn hint(show I#N) hint(macro "nt%") = I32 | I64
+syntax Fnn hint(show F#N) hint(macro "nt%") = F32 | F64
+syntax Vnn hint(show V#N) hint(macro "nt%") = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
 
 
@@ -197,9 +197,11 @@ def $I31REF    : reftype hint(show I31REF)
 def $STRUCTREF : reftype hint(show STRUCTREF)
 def $ARRAYREF  : reftype hint(show ARRAYREF)
 def $FUNCREF   : reftype hint(show FUNCREF)
+def $EXNREF    : reftype hint(show EXNREF)
 def $EXTERNREF : reftype hint(show EXTERNREF)
 def $NULLREF   : reftype hint(show NULLREF)
 def $NULLFUNCREF : reftype hint(show NULLFUNCREF)
+def $NULLEXNREF  : reftype hint(show NULLEXNREF)
 def $NULLEXTERNREF : reftype hint(show NULLEXTERNREF)
 
 def $ANYREF    = (REF NULL ANY)
@@ -208,9 +210,11 @@ def $I31REF    = (REF NULL I31)
 def $STRUCTREF = (REF NULL STRUCT)
 def $ARRAYREF  = (REF NULL ARRAY)
 def $FUNCREF   = (REF NULL FUNC)
+def $EXNREF    = (REF NULL EXTERN)
 def $EXTERNREF = (REF NULL EXTERN)
 def $NULLREF   = (REF NULL NONE)
 def $NULLFUNCREF = (REF NULL NOFUNC)
+def $NULLEXNREF  = (REF NULL NOEXN)
 def $NULLEXTERNREF = (REF NULL NOEXTERN)
 
 
@@ -220,9 +224,9 @@ syntax packtype hint(desc "packed type") = I8 | I16
 syntax lanetype hint(desc "lane type") = numtype | packtype
 syntax storagetype hint(desc "storage type") = valtype | packtype
 
-syntax Pnn hint(show I#N) hint(macro none) = I8 | I16
-syntax Jnn hint(show I#N) hint(macro none) = Inn | Pnn
-syntax Lnn hint(show I#N) hint(macro none) = Inn | Fnn | Pnn
+syntax Pnn hint(show I#N) hint(macro "nt%") = I8 | I16
+syntax Jnn hint(show I#N) hint(macro "nt%") = Inn | Pnn
+syntax Lnn hint(show I#N) hint(macro "nt%") = Inn | Fnn | Pnn
 
 
 ;; Result types
@@ -435,6 +439,7 @@ syntax relop_(Inn) =
 syntax relop_(Fnn) =
   | EQ | NE | LT | GT | LE | GE
 
+;; TODO(3, rossberg): change order of parameters?
 syntax cvtop__(numtype_1, numtype_2)
 syntax cvtop__(Inn_1, Inn_2) =
   | EXTEND sx hint(show %0#_#%1)  -- if $sizenn1(Inn_1) < $sizenn2(Inn_2)
@@ -475,11 +480,11 @@ syntax bshape hint(desc "byte shape") = shape    -- if $lanetype(shape) = I8
 ;; Vector operators
 
 syntax half__(shape_1, shape_2)
-syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
-syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
+syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2)
+syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn2(Fnn_2) = 64
 
 syntax zero__(shape_1, shape_2)
-syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
+syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = 64
 
 syntax vvunop hint(macro "%" "V%") = NOT
 syntax vvbinop hint(macro "%" "V%") = AND | ANDNOT | OR | XOR
@@ -503,7 +508,8 @@ syntax vbinop_(Jnn X M) =
   | RELAXED_Q15MULR S hint(show RELAXED_Q15MULR#_#%) -- if $lsizenn(Jnn) = `16
   | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
-syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX | RELAXED_MIN | RELAXED_MAX
+syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+  | RELAXED_MIN | RELAXED_MAX
 
 syntax vternop_(shape) hint(macro "%" "V%")
 syntax vternop_(Jnn X M) = RELAXED_LANESELECT
@@ -571,15 +577,15 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 var ao : memarg
 
 syntax loadop_(numtype)
-syntax loadop_(Inn) = sz sx hint(show %0#_#%1) -- if sz < $sizenn(Inn)
+syntax loadop_(Inn) = sz _ sx hint(show %0#_#%2) -- if sz < $sizenn(Inn)
 
 syntax storeop_(numtype)
-syntax storeop_(Inn) = sz                      -- if sz < $sizenn(Inn)
+syntax storeop_(Inn) = sz                        -- if sz < $sizenn(Inn)
 
 syntax vloadop_(vectype) hint(macro "%" "L%") =
-  | SHAPE sz X M sx  hint(show %1#X#%3#_#%4) hint(macro "%shape") -- if $(sz * M = $vsize(vectype)/2)
-  | SPLAT sz         hint(show %#_#SPLAT)
-  | ZERO sz          hint(show %#_#ZERO) -- if sz >= `32
+  | SHAPE sz X M _ sx  hint(show %1#X#%3#_#%5) hint(macro "%shape") -- if $(sz * M = $vsize(vectype)/2)
+  | SPLAT sz           hint(show %#_#SPLAT)
+  | ZERO sz            hint(show %#_#ZERO) -- if sz >= `32
 
 
 ;; Block types
@@ -677,6 +683,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
   | VCVTOP shape_1 shape_2 vcvtop__(shape_2, shape_1) half__(shape_2, shape_1)? zero__(shape_2, shape_1)?
+    ;; TODO(1, rossberg): fix overlong line
     hint(show ##%1.%3#_# ##%2)
     hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO(2, rossberg): this is wrong when half is absent
     hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO(2, rossberg): this is wrong when half is present
