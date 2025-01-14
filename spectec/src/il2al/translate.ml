@@ -483,7 +483,7 @@ let get_lhs_var_expr e =
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
   let exp = Il2al_util.typ_to_var_exp e.note ~post_fix:("_" ^ string_of_int lhs_id) in
-  { (translate_exp exp) with note = e.note}
+  { (translate_exp exp) with at = e.at; note = e.note}
 
 
 (* Helper functions *)
