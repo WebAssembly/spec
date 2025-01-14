@@ -3,6 +3,9 @@
 
 # Extended Const Expressions Proposal for WebAssembly
 
+This proposal has reached phase 5 and has been merged upstream.  No futher work
+is happening in this repository.
+
 This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
 It is meant for discussion, prototype specification and implementation of a proposal to add tail call support to WebAssembly.
 
