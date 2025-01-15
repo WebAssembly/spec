@@ -3,6 +3,9 @@
 
 # Memory64 Proposal for WebAssembly
 
+This proposal has reached phase 4 and has been merged upstream.  No futher work
+is happening in this repository.
+
 This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
 It is meant for discussion, prototype specification and implementation of a proposal to
 add support for 64-bit memory indexes to WebAssembly.
