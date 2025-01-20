@@ -82,13 +82,13 @@ Moreover, ${:z} is omitted from reduction rules that do not touch them.
 
 There is no separate representation of the :ref:`stack <stack>`.
 Instead, it is conveniently represented as part of the configuration's instruction sequence.
-In particular, :ref:`values <syntax-val>` are defined to coincide with ${:CONST} instructions,
-and a sequence of ${:CONST} instructions can be interpreted as an operand "stack" that grows to the right.
+In particular, :ref:`values <syntax-val>` are defined to coincide with ${:CONST} and ${:REF} instructions,
+and a sequence of such instructions can be interpreted as an operand "stack" that grows to the right.
 
 .. note::
    For example, the :ref:`reduction rule <exec-binop>` for the ${instr: BINOP I32 ADD} instruction can be given as follows:
 
-   $${Step_pure: (CONST I32 n_1) (CONST I32 n_2) $($(BINOP I32 ADD)) ~> (CONST I32 $((n_1 + n_2) \ 2^32))}
+   $${Step_pure: (CONST I32 n_1) (CONST I32 n_2) (BINOP I32 ADD) ~> (CONST I32 $((n_1 + n_2) \ 2^32))}
 
    Per this rule, two ${:CONST} instructions and the ${:ADD} instruction itself are removed from the instruction stream and replaced with one new ${:CONST} instruction.
    This can be interpreted as popping two values off the stack and pushing the result.
@@ -109,7 +109,7 @@ or if an :ref:`exception <exception>` or :ref:`trap <trap>` occurred.
 .. note::
    For example, the following instruction sequence,
 
-   $${instr*: (CONST F64 q_1) (CONST F64 q_2) $($(UNOP F64 NEG)) (CONST F64 q_3) $($(BINOP F64 ADD)) $($(BINOP F64 MUL))}
+   $${instr*: (CONST F64 q_1) (CONST F64 q_2) (UNOP F64 NEG) (CONST F64 q_3) (BINOP F64 ADD) (BINOP F64 MUL)}
 
    terminates after three steps:
 

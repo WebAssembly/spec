@@ -9,7 +9,8 @@ Execution has to check and compare :ref:`types <syntax-type>` in a few places, s
 It is an invariant of the semantics that all types occurring during execution are :ref:`closed <type-closed>`.
 
 .. note::
-   Runtime type checks generally involve types from multiple modules or types not defined by a module at all, such that module-local :ref:`type indices <syntax-typeidx>` are not meaningful.
+   Runtime type checks generally involve types from multiple modules or types not defined by a module at all,
+   such that any module-local :ref:`type indices <syntax-typeidx>` occurring inside them would not geenrally be meaningful.
 
 
 
@@ -26,4 +27,4 @@ $${definition: inst_valtype}
 $${definition-ignore: inst_reftype}
 
 .. note::
-   This is the runtime equivalent to :ref:`type closure <type-closure>`.
+   This is the runtime equivalent to :ref:`type closure <type-closure>`, which is applied at validation time.

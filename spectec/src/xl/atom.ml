@@ -76,6 +76,7 @@ let sub atom1 atom2 =
 
 let to_string atom =
   match atom.it with
+  | Atom "_" -> "_"
   | Atom id -> id
   | Infinity -> "infinity"
   | Bot -> "_|_"

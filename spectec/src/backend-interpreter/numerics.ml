@@ -208,6 +208,22 @@ let inot : numerics =
       | vs -> error_values "inot" vs
       );
   }
+let irev : numerics =
+  {
+    name = "irev";
+    f =
+      (function
+      | [ NumV (`Nat z); NumV (`Nat m) ] ->
+        let rec loop z m n =
+          if z = Z.zero then
+            n
+          else
+            let n' = Z.(logor (shift_left n 1) (logand m one)) in
+            loop Z.(sub z one) (Z.shift_right m 1) n'
+        in loop z m Z.zero |> al_of_z_nat
+      | vs -> error_values "irev" vs
+      );
+  }
 let iand : numerics =
   {
     name = "iand";
@@ -1127,9 +1143,10 @@ let inverse_of_ibits : numerics =
     name = "inverse_of_ibits";
     f =
       (function
-      | [ NumV _; ListV vs ] ->
-        let na = Array.map (function | NumV (`Nat e) -> e | v -> error_typ_value "inverse_of_ibits" "bit" v) !vs in
-        natV (Array.fold_right (fun e acc -> Z.logor e (Z.shift_left acc 1)) na Z.zero)
+      | [ NumV (`Nat n); ListV vs ] as vs' ->
+        if Z.of_int (Array.length !vs) <> n then error_values "inverse_of_ibits" vs';
+        let na = Array.map (function | NumV (`Nat e) when e = Z.zero || e = Z.one -> e | v -> error_typ_value "inverse_of_ibits" "bit" v) !vs in
+        natV (Array.fold_left (fun acc e -> Z.logor e (Z.shift_left acc 1)) Z.zero na)
       | vs -> error_values "inverse_of_ibits" vs
       );
   }
@@ -1303,6 +1320,7 @@ let numerics_list : numerics list = [
   idiv;
   irem;
   inot;
+  irev;
   iand;
   iandnot;
   ior;

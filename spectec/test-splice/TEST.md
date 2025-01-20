@@ -1277,6 +1277,7 @@ warning: definition `flt_` was never spliced
 warning: definition `fmax_` was never spliced
 warning: definition `fmin_` was never spliced
 warning: definition `fmul_` was never spliced
+warning: definition `fnat` was never spliced
 warning: definition `fne_` was never spliced
 warning: definition `fnearest_` was never spliced
 warning: definition `fneg_` was never spliced
@@ -1418,6 +1419,7 @@ warning: definition `irelaxed_laneselect_` was never spliced
 warning: definition `irelaxed_q15mulr_` was never spliced
 warning: definition `irelaxed_swizzle_lane_` was never spliced
 warning: definition `irem_` was never spliced
+warning: definition `irev_` was never spliced
 warning: definition `irotl_` was never spliced
 warning: definition `irotr_` was never spliced
 warning: definition `ishl_` was never spliced
@@ -2050,6 +2052,7 @@ warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
 warning: definition prose `expanddt` was never spliced
 warning: definition prose `expon` was never spliced
+warning: definition prose `fnat` was never spliced
 warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
 warning: definition prose `free_absheaptype` was never spliced

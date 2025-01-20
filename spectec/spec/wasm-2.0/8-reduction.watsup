@@ -291,9 +291,9 @@ rule Step_pure/vshiftop:
 
 
 rule Step_pure/vbitmask:
-  (VCONST V128 c) (VBITMASK (Jnn X N)) ~> (CONST I32 ci)
+  (VCONST V128 c) (VBITMASK (Jnn X N)) ~> (CONST I32 $irev_(32, ci))
   -- if ci_1* = $lanes_(Jnn X N, c)
-  -- if $ibits_(32, ci) = $ilt_($lsize(Jnn), S, ci_1, 0)*
+  -- if $ibits_(32, ci) = $ilt_($lsize(Jnn), S, ci_1, 0)* (0)^(32-N)
 
 
 rule Step_pure/vswizzle:

@@ -120,6 +120,7 @@ def $irelaxed_q15mulr_(N, sx, iN(N), iN(N)) : iN(N)* hint(show $relaxed__iq15mul
 def $iavgr_(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr_(%)^(%)#((%,%)))
 
 def $inot_(N, iN(N)) : iN(N)
+def $irev_(N, iN(N)) : iN(N)
 def $iand_(N, iN(N), iN(N)) : iN(N)
 def $iandnot_(N, iN(N), iN(N)) : iN(N)
 def $ior_(N, iN(N), iN(N)) : iN(N)
@@ -515,9 +516,9 @@ def $ivshiftopsx_(Jnn X M, def $f_, sx, v_1, i) = $invlanes_(Jnn X M, c*)
   -- if c* = $f_($lsizenn(Jnn), sx, c_1, i)*
 
 
-def $ivbitmaskop_(Jnn X M, v_1) = c
+def $ivbitmaskop_(Jnn X M, v_1) = $irev_(32, c)
   -- if c_1* = $lanes_(Jnn X M, v_1)
-  -- if $ibits_(32, c) = $ilt_($lsize(Jnn), S, c_1, 0)*
+  -- if $ibits_(32, c) = $ilt_($lsizenn(Jnn), S, c_1, 0)* ++ (0)^(32-M)
 
 
 def $ivswizzlop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)

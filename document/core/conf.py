@@ -305,6 +305,8 @@ latex_elements = {
 
    # Fancy chapters [Bjarne, Sonny, Lenny, Glenn, Conny, Rejne]
    'fncychap': '\\usepackage[Sonny]{fncychap}',
+
+   'sphinxsetup': 'noteborder=0pt, iconpackage=none, div.note_title-background-TeXcolor={RGB}{255,255,255}, div.note_border-radius=0pt',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples

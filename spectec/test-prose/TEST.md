@@ -6282,9 +6282,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c)`.
 
-#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
+#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}~{0^{32 - N}}`.
 
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{irev}}}_{32}({\mathit{ci}}))` to the stack.
 
 
 :math:`{{\mathsf{i}}{n}}{\mathsf{x}}{M}{.}\mathsf{swizzle}`
@@ -10941,8 +10941,8 @@ Step_pure/vbitmask Jnn X N
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_(Jnn X N, c).
-4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
+4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)* :: 0^(32 - N)).
+5. Push the value (I32.CONST $irev_(32, ci)) to the stack.
 
 Step_pure/vswizzle Pnn X M
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -14569,7 +14569,7 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 
    * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
-      * A :ref:`default value <default-val>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+      * A :ref:`default value <aux-default>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -14627,7 +14627,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 
    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * A :ref:`default value <default-val>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+   * A :ref:`default value <aux-default>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -15649,13 +15649,13 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{set}`.
 
-      * A :ref:`default value <default-val>` for value type the value type :math:`t` is defined.
+      * A :ref:`default value <aux-default>` for value type the value type :math:`t` is defined.
 
    * Or:
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{unset}`.
 
-      * A :ref:`default value <default-val>` for value type the value type :math:`t` is not defined.
+      * A :ref:`default value <aux-default>` for value type the value type :math:`t` is not defined.
 
 
 
@@ -15663,7 +15663,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}~t)` if:
 
 
-   * A :ref:`default value <default-val>` for value type the value type :math:`t` is defined.
+   * A :ref:`default value <aux-default>` for value type the value type :math:`t` is defined.
 
 
 
@@ -15671,7 +15671,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}~t)` if:
 
 
-   * A :ref:`default value <default-val>` for value type the value type :math:`t` is not defined.
+   * A :ref:`default value <aux-default>` for value type the value type :math:`t` is not defined.
 
 
 
@@ -15711,7 +15711,7 @@ The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is va
 The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid with the table type :math:`{\mathit{tabletype}}` if:
 
 
-   * The table type :math:`{\mathit{tt}}` is valid.
+   * The table type :math:`{\mathit{tabletype}}` is valid.
 
    * The table type :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
@@ -15793,7 +15793,7 @@ The element mode :math:`\mathsf{declare}` is valid with the element type :math:`
 
 
 
-The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
+The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
 
 
    * The element type :math:`{\mathit{elemtype}}` is valid.
@@ -15850,7 +15850,7 @@ The data mode :math:`\mathsf{passive}` is valid with the data type :math:`\maths
 
 
 
-The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
+The data segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
 
 
    * The data mode :math:`{\mathit{datamode}}` is valid with the data type :math:`\mathsf{ok}`.
@@ -16110,13 +16110,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
-      * The table segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
+      * The element segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
 
    * :math:`{|{\mathit{ok*}}|}` is equal to :math:`{|{\mathit{data*}}|}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
-      * The memory segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
+      * The data segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
 
    * If :math:`{\mathit{start}}` is defined, then:
 
@@ -16937,8 +16937,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}} {.} {\mathit{swizzlop}}`
-.............................................
+:math:`{\mathit{sh}} {.} {\mathit{vswizzlop}}`
+..............................................
 
 
 1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -16949,7 +16949,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{\mathit{swizzlop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
+#. Let :math:`c` be :math:`{{\mathit{vswizzlop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -19300,6 +19300,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`({+((1 + 1 \cdot {2^{{-M}}}) \cdot {2^{0}})})`.
+
+
+:math:`{+N}`
+............
+
+
+1. Return :math:`({+((1 + n \cdot {2^{{-M}}}) \cdot {2^{0}})})`.
 
 
 :math:`{{\mathrm{canon}}}_{N}`
@@ -22670,9 +22677,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`c` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c)` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{N}|}}^{\mathsf{s}}}}{(c_1, 0)}^\ast}`.
+#. Let :math:`c` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c)` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{N}^{\mathsf{s}}}}{(c_1, 0)}^\ast}~{0^{32 - M}}`.
 
-#. Return :math:`c`.
+#. Return :math:`{{\mathrm{irev}}}_{32}(c)`.
 
 
 :math:`{{\mathrm{ivswizzlop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1, v_2)`
@@ -23131,15 +23138,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{ivbitmaskop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v)`.
 
 
-:math:`{{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{{}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}(v_1, v_2)}`
-.................................................................................................................................
+:math:`{{\mathit{vswizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{{}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}(v_1, v_2)}`
+..................................................................................................................................
 
 
-1. If :math:`{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{swizzle}`, then:
+1. If :math:`{\mathit{vswizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{swizzle}`, then:
 
    a. Return :math:`{{\mathrm{ivswizzlop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({\mathrm{iswizzle}}_{{\mathit{lane}}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{swizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_swizzle}`.
+#. Assert: Due to validation, :math:`{\mathit{vswizzlop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{relaxed\_swizzle}`.
 
 #. Return :math:`{{\mathrm{ivswizzlop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{swizzle}}_{{\mathit{lane}}}}, v_1, v_2)`.
 
@@ -25415,7 +25422,7 @@ Instr_ok/struct.new_default
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - For all zt in zt*:
-    - A :ref:`default value <default-val>` for value type the value type $unpack(zt) is defined.
+    - A :ref:`default value <aux-default>` for value type the value type $unpack(zt) is defined.
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF ?(NULL) (_IDX x))] -> [t] if:
@@ -25444,7 +25451,7 @@ Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
-  - A :ref:`default value <default-val>` for value type the value type $unpack(zt) is defined.
+  - A :ref:`default value <aux-default>` for value type the value type $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
@@ -25979,18 +25986,18 @@ Local_ok
 - the local (LOCAL t) is valid with the local type (init_u1 t) if:
   - Either:
     - the initialization status init_u1 is SET.
-    - A :ref:`default value <default-val>` for value type the value type t is defined.
+    - A :ref:`default value <aux-default>` for value type the value type t is defined.
   - Or:
     - init_u1 is UNSET.
-    - A :ref:`default value <default-val>` for value type t is not defined.
+    - A :ref:`default value <aux-default>` for value type t is not defined.
 
 Local_ok/set
 - the local (LOCAL t) is valid with the local type (SET t) if:
-  - A :ref:`default value <default-val>` for value type the value type t is defined.
+  - A :ref:`default value <aux-default>` for value type the value type t is defined.
 
 Local_ok/unset
 - the local (LOCAL t) is valid with the local type (UNSET t) if:
-  - A :ref:`default value <default-val>` for value type the value type t is not defined.
+  - A :ref:`default value <aux-default>` for value type the value type t is not defined.
 
 Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
@@ -26010,7 +26017,7 @@ Global_ok
 
 Table_ok
 - the table (TABLE tabletype expr) is valid with the table type tabletype if:
-  - the table type tt is valid.
+  - tabletype is valid.
   - tabletype is (at lim rt).
   - the expression expr is valid with the value type rt.
   - expr is constant.
@@ -26053,7 +26060,7 @@ Elemmode_ok/declare
 - the element mode DECLARE is valid with rt.
 
 Elem_ok
-- the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if:
+- the element segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if:
   - elemtype is valid.
   - For all expr in expr*:
     - the expression expr is valid with elemtype.
@@ -26082,7 +26089,7 @@ Datamode_ok/passive
 - the data mode PASSIVE is valid with OK.
 
 Data_ok
-- the memory segment (DATA b* datamode) is valid with the data type OK if:
+- the data segment (DATA b* datamode) is valid with the data type OK if:
   - the data mode datamode is valid with OK.
 
 Start_ok
@@ -26214,10 +26221,10 @@ Module_ok
     - the function func is valid with the defined type dt.
   - |rt*| is |elem*|.
   - For all elem in elem* and rt in rt*:
-    - the table segment elem is valid with the element type rt.
+    - the element segment elem is valid with the element type rt.
   - |ok*| is |data*|.
   - For all data in data* and ok in ok*:
-    - the memory segment data is valid with the data type ok.
+    - the data segment data is valid with the data type ok.
   - If start is defined, then:
     - the start function start is valid.
   - |nm*| is |export*|.
@@ -26608,12 +26615,12 @@ Step_pure/vbitmask sh
 3. Let c be $vbitmaskop_(sh, c_1).
 4. Push the value (I32.CONST c) to the stack.
 
-Step_pure/vswizzlop sh swizzlop
+Step_pure/vswizzlop sh vswizzlop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vswizzlop_(sh, swizzlop, c_1, c_2).
+5. Let c be $vswizzlop_(sh, vswizzlop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshuffle sh i*
@@ -27736,6 +27743,9 @@ fzero N
 
 fone N
 1. Return (POS (NORM 1 0)).
+
+fnat N n
+1. Return (POS (NORM n 0)).
 
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
@@ -29312,8 +29322,8 @@ ivshiftopsx_ Jnn X M $f_ sx v_1 i
 
 ivbitmaskop_ Jnn X M v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, c_1, 0)*).
-3. Return c.
+2. Let c be $ibits__1^-1(32, $ilt_($lsizenn(Jnn), S, c_1, 0)* :: 0^(32 - M)).
+3. Return $irev_(32, c).
 
 ivswizzlop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -29536,10 +29546,10 @@ vshiftop_ Jnn X M vshiftop_u1 v i
 vbitmaskop_ Jnn X M v
 1. Return $ivbitmaskop_(Jnn X M, v).
 
-vswizzlop_ I8 X M swizzlop_u1 v_1 v_2
-1. If (swizzlop_u1 = SWIZZLE), then:
+vswizzlop_ I8 X M vswizzlop_u1 v_1 v_2
+1. If (vswizzlop_u1 = SWIZZLE), then:
   a. Return $ivswizzlop_(I8 X M, $iswizzle_lane_, v_1, v_2).
-2. Assert: Due to validation, (swizzlop_u1 = RELAXED_SWIZZLE).
+2. Assert: Due to validation, (vswizzlop_u1 = RELAXED_SWIZZLE).
 3. Return $ivswizzlop_(I8 X M, $irelaxed_swizzle_lane_, v_1, v_2).
 
 vshufflop_ I8 X M i* v_1 v_2

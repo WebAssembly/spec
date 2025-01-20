@@ -12,78 +12,72 @@ Value Typing
 
 For the purpose of checking argument :ref:`values <syntax-val>` against the parameter types of exported :ref:`functions <syntax-func>`,
 values are classified by :ref:`value types <syntax-valtype>`.
-The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced addresses live.
+The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced :ref:`addresses <syntax-addr>` live.
+
+${rule-ignore: Val_type/*}
+
 
 .. _valid-num:
 
-:ref:`Numeric Values <syntax-val>` :math:`t.\CONST~c`
-.....................................................
+Numeric Values
+..............
+
+.. todo:: use generated prose
 
 * The value is valid with :ref:`number type <syntax-numtype>` :math:`t`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashval t.\CONST~c : t
-   }
+$${rule: Num_type}
+
 
 .. _valid-vec:
 
-:ref:`Vector Values <syntax-val>` :math:`t.\CONST~c`
-....................................................
+Vector Values
+.............
+
+.. todo:: use generated prose
 
 * The value is valid with :ref:`vector type <syntax-vectype>` :math:`t`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashval t.\CONST~c : t
-   }
+$${rule: Vec_type}
 
 
 .. _valid-ref:
 
-:ref:`Null References <syntax-ref>` :math:`\REFNULL~t`
-......................................................
+Null References
+...............
+
+.. todo:: use generated prose
 
 * The :ref:`heap type <syntax-heaptype>` must be :ref:`valid <valid-heaptype>` under the empty :ref:`context <context>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL~t')`, where the :ref:`heap type <syntax-heaptype>` :math:`t'` is the least type that :ref:`matches <match-heaptype>` :math:`t`.
 
-.. math::
-   \frac{
-     \vdashheaptype t : \OKheaptype
-     \qquad
-     t' \in \{\NONE, \NOFUNC, \NOEXTERN\}
-     \qquad
-     \vdashheaptypematch t' \subheaptypematch t
-   }{
-     S \vdashval \REFNULL~t : (\REF~\NULL~t')
-   }
+$${rule: Ref_type/null}
 
 .. note::
-   A null reference is typed with the least type in its respective hierarchy.
-   That ensures that it is compatible with any nullable type in that hierarchy.
+   A null reference can be typed with any smaller type.
+   In particular, that allows it to be typed with the least type in its respective hierarchy.
+   That ensures that the value is compatible with any nullable type in that hierarchy.
 
 
 .. _valid-ref.i31num:
 
-:ref:`Scalar References <syntax-ref>` :math:`\REFI31NUM~i`
-..........................................................
+Scalar References
+.................
+
+.. todo:: use generated prose
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\I31)`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashval \REFI31NUM~i : \REF~\I31
-   }
+$${rule: Ref_type/i31}
 
 
 .. _valid-ref.struct:
 
-:ref:`Structure References <syntax-ref>` :math:`\REFSTRUCTADDR~a`
-.................................................................
+Structure References
+....................
+
+.. todo:: use generated prose
 
 * The :ref:`structure address <syntax-structaddr>` :math:`a` must exist in the store.
 
@@ -95,20 +89,15 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\deftype)`.
 
-.. math::
-   \frac{
-     \deftype = S.\SSTRUCTS[a].\SITYPE
-     \qquad
-     \expanddt(\deftype) = \TSTRUCT~\structtype
-   }{
-     S \vdashval \REFSTRUCTADDR~a : \REF~\deftype
-   }
+$${rule: Ref_type/struct}
 
 
 .. _valid-ref.array:
 
-:ref:`Array References <syntax-ref>` :math:`\REFARRAYADDR~a`
-............................................................
+Array References
+................
+
+.. todo:: use generated prose
 
 * The :ref:`array address <syntax-arrayaddr>` :math:`a` must exist in the store.
 
@@ -120,35 +109,27 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\arraytype)`.
 
-.. math::
-   \frac{
-     \deftype = S.\SARRAYS[a].\AITYPE
-     \qquad
-     \expanddt(\deftype) = \TARRAY~\arraytype
-   }{
-     S \vdashval \REFARRAYADDR~a : \REF~\deftype
-   }
+$${rule: Ref_type/array}
 
 
 .. _valid-ref.exn:
 
-:ref:`Exception References <syntax-ref>` :math:`\REFEXNADDR~a`
-..............................................................
+Exception References
+....................
+
+.. todo:: use generated prose
 
 * The store entry :math:`S.\SEXNS[a]` must exist.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXNREF`.
 
-.. math::
-   \frac{
-     S.\SEXNS[a] = \exninst
-   }{
-     S \vdashval \REFEXNADDR : \EXNREF
-   }
+$${rule: Ref_type/exn}
 
 
-:ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
-..............................................................
+Function References
+...................
+
+.. todo:: use generated prose
 
 * The :ref:`function address <syntax-funcaddr>` :math:`a` must exist in the store.
 
@@ -160,33 +141,26 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\functype)`.
 
-.. math::
-   \frac{
-     \deftype = S.\SFUNCS[a].\FITYPE
-     \qquad
-     \expanddt(\deftype) = \TFUNC~\functype
-   }{
-     S \vdashval \REFFUNCADDR~a : \REF~\deftype
-   }
+$${rule: Ref_type/func}
 
 
-:ref:`Host References <syntax-ref.host>` :math:`\REFHOSTADDR~a`
-...............................................................
+Host References
+...............
+
+.. todo:: use generated prose
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\ANY)`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashval \REFHOSTADDR~a : \REF~\ANY
-   }
+$${rule: Ref_type/host}
 
 .. note::
-   A host reference is considered internalized by this rule.
+   A bare host reference is considered to be internalized.
 
 
-:ref:`External References <syntax-ref.extern>` :math:`\REFEXTERN~\reff`
-.......................................................................
+External References
+...................
+
+.. todo:: use generated prose
 
 * The reference value :math:`\reff` must be valid with some :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL^?~t)`.
 
@@ -194,17 +168,13 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL^?~\EXTERN)`.
 
-.. math::
-   \frac{
-     S \vdashval \reff : \REF~\NULL^?~t
-     \qquad
-     \vdashheaptypematch t \subheaptypematch \ANY
-   }{
-     S \vdashval \REFEXTERN~\reff : \REF~\NULL^?~\EXTERN
-   }
+$${rule: Ref_type/extern}
+
 
 Subsumption
 ...........
+
+.. todo:: use generated prose
 
 * The value must be valid with some value type :math:`t`.
 
@@ -212,16 +182,7 @@ Subsumption
 
 * Then the value is valid with type :math:`t'`.
 
-.. math::
-   \frac{
-     S \vdashval \val : t
-     \qquad
-     \vdashvaltype t' : \OKvaltype
-     \qquad
-     \vdashvaltypematch t \subvaltypematch t'
-   }{
-     S \vdashval \val : t'
-   }
+$${rule: Ref_type/sub}
 
 
 .. index:: external address, external type, validation, import, store
@@ -238,8 +199,10 @@ The following auxiliary typing rules specify this typing relation relative to a 
 .. index:: function type, function address
 .. _valid-externaddr-func:
 
-:math:`\XAFUNC~a`
-.................
+Functions
+.........
+
+.. todo:: use generated prose
 
 * The store entry :math:`S.\SFUNCS[a]` must exist.
 
@@ -251,8 +214,10 @@ $${rule: Externaddr_type/func}
 .. index:: table type, table address
 .. _valid-externaddr-table:
 
-:math:`\XATABLE~a`
-..................
+Tables
+......
+
+.. todo:: use generated prose
 
 * The store entry :math:`S.\STABLES[a]` must exist.
 
@@ -264,8 +229,10 @@ $${rule: Externaddr_type/table}
 .. index:: memory type, memory address
 .. _valid-externaddr-mem:
 
-:math:`\XAMEM~a`
-................
+Memories
+........
+
+.. todo:: use generated prose
 
 * The store entry :math:`S.\SMEMS[a]` must exist.
 
@@ -277,8 +244,10 @@ $${rule: Externaddr_type/mem}
 .. index:: global type, global address, value type, mutability
 .. _valid-externaddr-global:
 
-:math:`\XAGLOBAL~a`
-...................
+Globals
+.......
+
+.. todo:: use generated prose
 
 * The store entry :math:`S.\SGLOBALS[a]` must exist.
 
@@ -290,8 +259,10 @@ $${rule: Externaddr_type/global}
 .. index:: tag type, tag address, exception tag, function type
 .. _valid-externaddr-tag:
 
-:math:`\XATAG~a`
-................
+Tags
+....
+
+.. todo:: use generated prose
 
 * The store entry :math:`S.\STAGS[a]` must exist.
 
@@ -304,6 +275,8 @@ $${rule: Externaddr_type/tag}
 
 Subsumption
 ...........
+
+.. todo:: use generated prose
 
 * The external address must be valid with some external type :math:`\X{et}`.
 

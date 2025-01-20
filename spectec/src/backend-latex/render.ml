@@ -219,7 +219,7 @@ let env_hintdef env hd =
     let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
     env_hints "desc" env.desc_typ id hints;
     env_hints "macro" env.macro_typ id1 hints;
-    env_hints "macro" env.macro_var id1 hints;
+    env_hints "macro" env.macro_var (El.Convert.strip_var_sub id1) hints;
     env_hints "show" env.show_typ id1 hints;
     env_hints "show" env.show_var id1 hints
   | GramH (id1, id2, hints) ->
@@ -311,7 +311,7 @@ let env_def env d : (id * typ list) list =
   | FamD (id, _ps, hints) ->
     env.vars := Set.add id.it !(env.vars);
     env_macro env.macro_typ id;
-    env_macro env.macro_var id;
+    env_macro env.macro_var (El.Convert.strip_var_sub id);
     env_hintdef env (TypH (id, "" $ id.at, hints) $ d.at);
     env_hintdef env (VarH (id, hints) $ d.at);
     []

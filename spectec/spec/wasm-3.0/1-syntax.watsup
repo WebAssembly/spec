@@ -807,8 +807,8 @@ syntax global hint(desc "global") = GLOBAL globaltype expr
 syntax table hint(desc "table") = TABLE tabletype expr
 syntax mem hint(desc "memory") = MEMORY memtype
 syntax tag hint(desc "tag") = TAG typeidx
-syntax elem hint(desc "table segment") = ELEM reftype expr* elemmode
-syntax data hint(desc "memory segment") = DATA byte* datamode
+syntax elem hint(desc "element segment") = ELEM reftype expr* elemmode
+syntax data hint(desc "data segment") = DATA byte* datamode
 syntax start hint(desc "start function") = START funcidx
 
 syntax export hint(desc "export") = EXPORT name externidx

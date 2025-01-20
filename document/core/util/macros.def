@@ -319,7 +319,7 @@
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |addrtype| mathdef:: \xref{syntax/types}{syntax-addrtype}{\X{addrtype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
-.. |tagtype| mathdef:: \xref{syntax/types}{syntax-tagtype}{\X{tagtype}}
+.. |tagtype| mathdef:: \xref{valid/conventions}{syntax-tagtype}{\X{tagtype}}
 .. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
 .. |datatype| mathdef:: \xref{syntax/types}{syntax-datatype}{\X{datatype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
@@ -779,6 +779,7 @@
 .. |vextunop| mathdef:: \xref{syntax/instructions}{syntax-vextunop}{\X{vextunop}}
 .. |vextbinop| mathdef:: \xref{syntax/instructions}{syntax-vextbinop}{\X{vextbinop}}
 .. |vextternop| mathdef:: \xref{syntax/instructions}{syntax-vextternop}{\X{vextternop}}
+.. |vbitmaskop| mathdef:: \xref{syntax/instructions}{syntax-vswizzlop}{\X{vbitmaskop}}
 .. |vswizzlop| mathdef:: \xref{syntax/instructions}{syntax-vswizzlop}{\X{vswizzlop}}
 .. |vshiftop| mathdef:: \xref{syntax/instructions}{syntax-vshiftop}{\X{vshiftop}}
 
@@ -1577,7 +1578,7 @@
 
 .. Administrative Instructions, terminals
 
-.. |REFI31NUM| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i31}}
+.. |REFI31NUM| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i\scriptstyle31}}
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
 .. |REFSTRUCTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}struct}}
 .. |REFARRAYADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}array}}
@@ -1633,6 +1634,7 @@
 .. |iremu| mathdef:: \xref{exec/numerics}{op-irem}{\F{irem\_u}}
 .. |irems| mathdef:: \xref{exec/numerics}{op-irem}{\F{irem\_s}}
 .. |inot| mathdef:: \xref{exec/numerics}{op-inot}{\F{inot}}
+.. |irev| mathdef:: \xref{exec/numerics}{op-irev}{\F{irev}}
 .. |iand| mathdef:: \xref{exec/numerics}{op-iand}{\F{iand}}
 .. |iandnot| mathdef:: \xref{exec/numerics}{op-iandnot}{\F{iandnot}}
 .. |ior| mathdef:: \xref{exec/numerics}{op-ior}{\F{ior}}
@@ -1727,6 +1729,15 @@
 .. |narrowu| mathdef:: \xref{exec/numerics}{op-narrow}{\F{narrow}^{\K{u}}}
 .. |narrows| mathdef:: \xref{exec/numerics}{op-narrow}{\F{narrow}^{\K{s}}}
 
+.. |ivbitmask| mathdef:: \xref{exec/numerics}{op-ivbitmask}{\F{ivbitmask}}
+.. |ivswizzlelane| mathdef:: \xref{exec/numerics}{op-ivswizzle_lane}{\F{ivswizzle\_lane}}
+.. |ivswizzle| mathdef:: \xref{exec/numerics}{op-ivswizzle}{\F{ivswizzle}}
+.. |ivshuffle| mathdef:: \xref{exec/numerics}{op-ivshuffle}{\F{ivshuffle}}
+.. |ivaddpairwise| mathdef:: \xref{exec/numerics}{op-ivadd_pairwise}{\F{ivadd\_pairwise}}
+.. |ivmul| mathdef:: \xref{exec/numerics}{op-ivmul}{\F{ivmul}}
+.. |ivdot| mathdef:: \xref{exec/numerics}{op-ivdot}{\F{ivdot}}
+.. |ivdotsat| mathdef:: \xref{exec/numerics}{op-ivdot_sat}{\F{ivdotsat}}
+
 .. |frelaxedmadd| mathdef:: \xref{exec/numerics}{op-frelaxed_madd}{\F{frelaxed\_madd}}
 .. |frelaxednmadd| mathdef:: \xref{exec/numerics}{op-frelaxed_nmadd}{\F{frelaxed\_nmadd}}
 .. |ivrelaxedswizzlelane| mathdef:: \xref{exec/numerics}{op-ivrelaxed_swizzle_lane}{\F{ivrelaxed\_swizzle\_lane}}
@@ -1737,8 +1748,6 @@
 .. |frelaxedmax| mathdef:: \xref{exec/numerics}{op-frelaxed_max}{\F{frelaxed\_max}}
 .. |irelaxedq15mulrs| mathdef:: \xref{exec/numerics}{op-irelaxed_q15mulr_s}{\F{irelaxed\_q15mulr\_s}}
 .. |irelaxeddot| mathdef:: \xref{exec/numerics}{op-irelaxed_dot}{\F{irelaxed\_dot}}
-.. |irelaxeddotadd| mathdef:: \xref{exec/numerics}{op-irelaxed_dot_add}{\F{irelaxed\_dot\_add}}
-.. |irelaxeddotmul| mathdef:: \xref{exec/numerics}{op-irelaxed_dot_mul}{\F{irelaxed\_dot\_mul}}
 
 
 .. Numerics, meta functions

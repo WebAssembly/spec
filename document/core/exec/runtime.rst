@@ -69,7 +69,7 @@ Results
 ~~~~~~~
 
 A *result* is the outcome of a computation.
-It is either a sequence of :ref:`values <syntax-val>`, an :ref:`exception <exec-throw_ref>`, or a :ref:`trap <syntax-trap>`.
+It is either a sequence of :ref:`values <syntax-val>`, a thrown :ref:`exception <exec-throw_ref>`, or a :ref:`trap <syntax-trap>`.
 
 $${syntax: result}
 
@@ -95,7 +95,7 @@ and
 :ref:`structures <syntax-structinst>`,
 :ref:`arrays <syntax-arrayinst>` or
 :ref:`exceptions <syntax-exninst>`
-that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+that have been :ref:`allocated <alloc>` during the life time of the abstract machine.
 
 It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
@@ -103,7 +103,7 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
 
 $${syntax: store}
 
-.. [#gc]
+.. note::
    In practice, implementations may apply techniques like garbage collection or reference counting to remove objects from the store that are no longer referenced.
    However, such techniques are not semantically observable,
    and hence outside the scope of this specification.
@@ -163,7 +163,7 @@ Addresses
 :ref:`data instances <syntax-datainst>`
 and
 :ref:`structure <syntax-structinst>`,
-:ref:`array instances <syntax-arrayinst>` or
+:ref:`array <syntax-arrayinst>` or
 :ref:`exception instances <syntax-exninst>`
 in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
@@ -202,7 +202,7 @@ even where this identity is not observable from within WebAssembly code itself
 Conventions
 ...........
 
-* The notation ${:$addr(A)} denotes the set of addresses from address space ${:addr} occurring free in ${:A}. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements.
+* The notation ${:$addr(A)} denotes the set of addresses from address space ${:addr} occurring free in ${:A}. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements, without assuming any particular order.
 
 
 .. index:: ! external address, function address, table address, memory address, global address, tag address, store, function, table, memory, global, tag, instruction type
@@ -216,10 +216,10 @@ External Addresses
 An *external address* is the runtime :ref:`address <syntax-addr>` of an entity that can be imported or exported.
 It is an :ref:`address <syntax-addr>` denoting either a
 :ref:`function instance <syntax-funcinst>`,
-:ref:`global instances <syntax-globalinst>`,
+:ref:`global instance <syntax-globalinst>`,
 :ref:`table instance <syntax-tableinst>`,
 :ref:`memory instance <syntax-meminst>`, or
-:ref:`tag instances <syntax-taginst>`
+:ref:`tag instance <syntax-taginst>`
 in the shared :ref:`store <syntax-store>`.
 
 $${syntax: externaddr}
@@ -246,9 +246,14 @@ Each component references runtime instances corresponding to respective declarat
 :ref:`memory instances <syntax-meminst>`,
 :ref:`global instances <syntax-globalinst>`, and
 :ref:`tag instances <syntax-taginst>`
-are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
+are denoted by their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
 
 It is an invariant of the semantics that all :ref:`export instances <syntax-exportinst>` in a given module instance have different :ref:`names <syntax-name>`.
+
+.. note::
+   All record fields except ${:EXPORTS} are to be considered *private* components of a module instance.
+   They are not accessible to other modules,
+   only to function instances originating from the same module.
 
 
 .. index:: ! function instance, module instance, function, closure, module, ! host function, invocation
@@ -274,7 +279,7 @@ but within certain :ref:`constraints <exec-invoke-host>` that ensure the integri
 
 .. note::
    Function instances are immutable, and their identity is not observable by WebAssembly code.
-   However, the :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>`.
+   However, an :ref:`embedder <embedder>` might provide implicit or explicit means for distinguishing their :ref:`addresses <syntax-funcaddr>`.
 
 
 .. index:: ! table instance, table, function address, table type, embedder, element segment
@@ -293,7 +298,7 @@ $${syntax: tableinst}
 Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an active :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
 
 It is an invariant of the semantics that all table elements have a type :ref:`matching <match-reftype>` the element type of ${:tabletype}.
-It also is an invariant that the length of the element sequence never exceeds the maximum size of ${:tabletype}, if present.
+It also is an invariant that the length of the element sequence never exceeds the maximum size of ${:tabletype}.
 
 
 .. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
@@ -310,9 +315,9 @@ It records its :ref:`type <syntax-memtype>` and holds a sequence of :ref:`bytes 
 
 $${syntax: meminst}
 
-The length of the sequence always is a multiple of the WebAssembly *page size*, which is defined to be the constant ${:65536} -- abbreviated ${:64*$Ki}.
+The length of the sequence always is a multiple of the WebAssembly *page size*, which is defined to be the constant ${:65536} -- abbreviated ${:64 $Ki}.
 
-The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of an active :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
+A memory's bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of an active :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
 
 It is an invariant of the semantics that the length of the byte sequence, divided by page size, never exceeds the maximum size of ${:memtype}.
 
@@ -358,9 +363,11 @@ Element Instances
 ~~~~~~~~~~~~~~~~~
 
 An *element instance* is the runtime representation of an :ref:`element segment <syntax-elem>`.
-It holds a list of references and their common :ref:`type <syntax-reftype>`.
+It holds a list of references and its :ref:`type <syntax-reftype>`.
 
 $${syntax: eleminst}
+
+It is an invariant of the semantics that all elements of a segment have a type :ref:`matching <match-reftype>` ${:elemtype}.
 
 
 .. index:: ! data instance, data segment, embedder, byte
@@ -394,10 +401,16 @@ $${syntax: exportinst}
 Conventions
 ...........
 
-The following auxiliary notation is defined for sequences of external addresses.
-It filters out entries of a specific kind in an order-preserving fashion:
+The following auxiliary functions are assumed on sequences of external addresses.
+They extract addresses of a specific kind in an order-preserving fashion:
 
-$${definition: funcsxa tablesxa memsxa globalsxa tagsxa}
+* ${:$funcsxa(xa*)} extracts all :ref:`function addresses <syntax-funcaddr>` from ${:xa*},
+* ${:$tablesxa(xa*)} extracts all :ref:`table addresses <syntax-funcaddr>` from ${:xa*},
+* ${:$memsxa(xa*)} extracts all :ref:`memory addresses <syntax-funcaddr>` from ${:xa*},
+* ${:$globalsxa(xa*)} extracts all :ref:`global addresses <syntax-funcaddr>` from ${:xa*},
+* ${:$tagsxa(xa*)} extracts all :ref:`tag addresses <syntax-funcaddr>` from ${:xa*}.
+
+$${definition-ignore: funcsxa tablesxa memsxa globalsxa tagsxa}
 
 
 .. index:: ! structure instance, ! array instance, structure type, array type, defined type, ! field value, ! packed value

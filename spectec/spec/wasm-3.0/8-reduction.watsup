@@ -716,8 +716,8 @@ rule Step_pure/vbitmask:
 
 
 rule Step_pure/vswizzlop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP sh swizzlop)  ~>  (VCONST V128 c)
-  -- if c = $vswizzlop_(sh, swizzlop, c_1, c_2)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP sh vswizzlop)  ~>  (VCONST V128 c)
+  -- if c = $vswizzlop_(sh, vswizzlop, c_1, c_2)
 
 
 rule Step_pure/vshuffle:
@@ -741,6 +741,7 @@ rule Step_pure/vextract_lane-pack:
 
 rule Step_pure/vreplace_lane:
   (VCONST V128 c_1) (CONST $lunpack(Lnn) c_2) (VREPLACE_LANE (Lnn X M) i)  ~>  (VCONST V128 c)
+  ---- ----
   -- if c = $invlanes_(Lnn X M, $lanes_(Lnn X M, c_1)[[i] = $lpacknum_(Lnn, c_2)])
 
 

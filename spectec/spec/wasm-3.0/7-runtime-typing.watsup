@@ -15,31 +15,32 @@ rule Vec_type:
 
 
 rule Ref_type/null:
-  s |- REF.NULL ht : (REF NULL ht)
+  s |- REF.NULL ht : (REF NULL ht')
+  -- Heaptype_sub: {} |- ht' <: ht
 
 rule Ref_type/i31:
-  s |- REF.I31_NUM i : (REF eps I31)
+  s |- REF.I31_NUM i : (REF I31)
 
 rule Ref_type/struct:
-  s |- REF.STRUCT_ADDR a : (REF eps dt)
+  s |- REF.STRUCT_ADDR a : (REF dt)
   -- if s.STRUCTS[a].TYPE = dt
 
 rule Ref_type/array:
-  s |- REF.ARRAY_ADDR a : (REF eps dt)
+  s |- REF.ARRAY_ADDR a : (REF dt)
   -- if s.ARRAYS[a].TYPE = dt
 
 rule Ref_type/func:
-  s |- REF.FUNC_ADDR a : (REF eps dt)
+  s |- REF.FUNC_ADDR a : (REF dt)
   -- if s.FUNCS[a].TYPE = dt
 
 rule Ref_type/exn:
-  s |- REF.EXN_ADDR a : (REF eps EXN)
+  s |- REF.EXN_ADDR a : (REF EXN)
 
 rule Ref_type/host:
-  s |- REF.HOST_ADDR a : (REF eps ANY)
+  s |- REF.HOST_ADDR a : (REF ANY)
 
 rule Ref_type/extern:
-  s |- REF.EXTERN addrref : (REF eps EXTERN)
+  s |- REF.EXTERN addrref : (REF EXTERN)
 
 rule Ref_type/sub:
   s |- ref : rt
