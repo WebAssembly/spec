@@ -264,6 +264,12 @@ $${rule-prose: Tagtype_sub}
 
 $${rule: {Tagtype_sub}}
 
+.. note::
+   Although the conclusion of this rule looks identical to its premise,
+   they in fact describe different relations:
+   the premise invokes subtyping on defined types,
+   while the conclusion defines it on tag types that happen to be expressed as defined types.
+
 
 .. index:: external type, function type, table type, memory type, global type
 .. _match-externtype:

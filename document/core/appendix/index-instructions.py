@@ -334,7 +334,7 @@ INSTRUCTIONS = [
     Instruction(3.0, r'\STRUCTGETS~x~y', r'\hex{FB}~\hex{03}', r'[(\REF~\NULL~x)] \to [\I32]', r'valid-struct.get', r'exec-struct.get'),
     Instruction(3.0, r'\STRUCTGETU~x~y', r'\hex{FB}~\hex{04}', r'[(\REF~\NULL~x)] \to [\I32]', r'valid-struct.get', r'exec-struct.get'),
     Instruction(3.0, r'\STRUCTSET~x~y', r'\hex{FB}~\hex{05}', r'[(\REF~\NULL~x)~t] \to []', r'valid-struct.set', r'exec-struct.set'),
-    Instruction(3.0, r'\ARRAYNEW~x', r'\hex{FB}~\hex{06}', r'[t] \to [(\REF~x)]', r'valid-array.new', r'exec-array.new'),
+    Instruction(3.0, r'\ARRAYNEW~x', r'\hex{FB}~\hex{06}', r'[t~\I32] \to [(\REF~x)]', r'valid-array.new', r'exec-array.new'),
     Instruction(3.0, r'\ARRAYNEWDEFAULT~x', r'\hex{FB}~\hex{07}', r'[\I32] \to [(\REF~x)]', r'valid-array.new', r'exec-array.new'),
     Instruction(3.0, r'\ARRAYNEWFIXED~x~n', r'\hex{FB}~\hex{08}', r'[t^n] \to [(\REF~x)]', r'valid-array.new_fixed', r'exec-array.new_fixed'),
     Instruction(3.0, r'\ARRAYNEWDATA~x~y', r'\hex{FB}~\hex{09}', r'[\I32~\I32] \to [(\REF~x)]', r'valid-array.new_data', r'exec-array.new_data'),
