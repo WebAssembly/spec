@@ -88,16 +88,16 @@ have to support 32-bit memory addresses in their ABI.
 * [Memory page limits][valid limits] and [Table entry limits][valid limits] are
   classified by their respective address types
   - ```
-    ⊦ it : k    n <= k    (m <= k)?    (n < m)?
+    ⊦ at : k    n <= k    (m <= k)?    (n < m)?
     -------------------------------------------
-    ⊦ { min n, max m? } : it
+    ⊦ { min n, max m? } : at
     ```
 
 * Memory and Table types are validated accordingly:
   - ```
-    ⊦ limits : it
+    ⊦ limits : at
     --------------
-    ⊦ it limits ok
+    ⊦ at limits ok
     ```
 
 * All [memory instructions][valid meminst] are changed to use the address type,
@@ -195,11 +195,11 @@ have to support 32-bit memory addresses in their ABI.
       ----------------------------------
       C ⊦ tables.fill x : [at t at] → []
       ```
-  - table.copy x y
+  - table.copy d s
     - ```
-        C.tables[d] = aN limits t   C.tables[s] = aM limits t    K = min {aN, AM}
+        C.tables[d] = aD limits t   C.tables[s] = aS limits t    aN = min {aD, aS}
       -----------------------------------------------------------------------------
-      C ⊦ table.copy d s : [aN aM aK] → []
+      C ⊦ table.copy d s : [aD aS aN] → []
       ```
   - table.init x y
     - ```

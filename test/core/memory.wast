@@ -5,6 +5,7 @@
 (module (memory 0 0))
 (module (memory 0 1))
 (module (memory 1 256))
+(module definition (memory 65536))
 (module (memory 0 65536))
 
 (module (memory (data)) (func (export "memsize") (result i32) (memory.size)))
