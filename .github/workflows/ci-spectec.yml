@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup OCaml
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: 4.14.x
       - name: Setup Dune
@@ -27,6 +27,6 @@ jobs:
       - name: Setup Latex
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==5.1.0
+        run: pip install six && pip install sphinx==8.0.0
       - name: Build and test
         run: cd spectec && opam exec make ci
