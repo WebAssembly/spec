@@ -54,7 +54,7 @@ jobs:
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
         if: ${{ matrix.spec == 'core' }}
-        run: pip install six && pip install sphinx==5.1.0
+        run: pip install six && pip install sphinx==8.0.0
       - name: Publish ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
         if: env.W3C_ECHIDNA_TOKEN_CORE
         run: cd document && make -e -C ${{ matrix.spec }} WD-echidna-CI
