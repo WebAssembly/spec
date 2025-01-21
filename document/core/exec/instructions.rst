@@ -196,9 +196,8 @@ $${rule: {Step_pure/ref.eq-*}}
 
 $${rule-prose: Step_read/ref.test}
 
-.. todo::
-   Below is the actual prose. 
-   (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
+.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
+   Below is the actual prose.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -229,9 +228,8 @@ $${rule: {Step_read/ref.test-*}}
 
 $${rule-prose: Step_read/ref.cast}
 
-.. todo::
+.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
    Below is the actual prose. 
-   (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -269,10 +267,8 @@ $${rule: {Step_pure/ref.i31}}
 
 $${rule-prose: Step_pure/i31.get}
 
-.. todo::
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (4) Guarantees from validation can help simplify the prose.
    Below is the actual prose.
-   (3) Introduce if-let instruction instead of "is of the case".
-   (4) Guarantees from validation can help simplify the prose.
 
 1. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
 
@@ -297,10 +293,8 @@ $${rule: {Step_pure/i31.get-*}}
 
 $${rule-prose: Step/struct.new}
 
-.. todo::
+.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3') Introduce let binding instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -339,10 +333,8 @@ $${rule: {Step/struct.new}}
 
 $${rule-prose: Step_read/struct.new_default}
 
-.. todo::
+.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3') Introduce let binding instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -374,10 +366,8 @@ $${rule: {Step_read/struct.new_default}}
 
 $${rule-prose: Step_read/struct.get}
 
-.. todo::
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3) Introduce if-let instruction instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -418,10 +408,8 @@ $${rule: {Step_read/struct.get-*}}
 
 $${rule-prose: Step/struct.set}
 
-.. todo::
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3) Introduce if-let instruction instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -471,10 +459,8 @@ $${rule: {Step_pure/array.new}}
 
 $${rule-prose: Step_read/array.new_default}
 
-.. todo::
+.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3') Introduce let binding instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -505,10 +491,8 @@ $${rule: {Step_read/array.new_default}}
 
 $${rule-prose: Step/array.new_fixed}
 
-.. todo::
+.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3') Introduce let binding instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -545,9 +529,8 @@ $${rule: {Step/array.new_fixed}}
 
 $${rule-prose: Step_read/array.new_data}
 
-.. todo::
+.. todo:: (7) Render $inverse_ with display hint.
    Below is the actual prose.
-   (7) Render $inverse_ with display hint.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -610,10 +593,8 @@ $${rule: {Step_read/array.new_elem-*}}
 
 $${rule-prose: Step_read/array.get}
 
-.. todo::
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3) Introduce if-let instruction instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -660,10 +641,8 @@ $${rule: {Step_read/array.get-*}}
 
 $${rule-prose: Step/array.set}
 
-.. todo::
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
    Below is the actual prose.
-   (3) Introduce if-let instruction instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -728,11 +707,8 @@ $${rule: {Step_read/array.fill-*}}
 
 .. _exec-array.copy:
 
-.. todo::
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application. + Too deeply nested
    Below is the actual prose.
-   (3) Introduce if-let instruction instead of "is of the case".
-   (5) Use "the expansion of" instead of $expand function application.
-   + Too deeply nested
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -864,9 +840,8 @@ $${definition: sx}
 
 $${rule-prose: Step_read/array.init_data}
 
-.. todo::
+.. todo:: (7) Render $inverse_ with display hint.
    Below is the actual prose.
-   (7) Render $inverse_ with display hint.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1322,9 +1297,8 @@ Memory Instructions
 
 $${rule-prose: Step_read/load}
 
-.. todo::
+.. todo:: (7) Render $inverse_of_nbytes with display hint.
    Below is the actual prose.
-   (7) Render $inverse_of_nbytes with display hint.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1816,9 +1790,8 @@ $${rule: {Step_pure/br_on_non_null-*}}
 
 $${rule-prose: Step_read/br_on_cast}
 
-.. todo::
+.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
    Below is the acutal prose.
-   (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1847,9 +1820,8 @@ $${rule: {Step_read/br_on_cast-*}}
 
 $${rule-prose: Step_read/br_on_cast_fail}
 
-.. todo::
+.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
    Below is the actual prose.
-   (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1934,8 +1906,7 @@ $${rule: {Step_read/return_call}}
 :math:`\RETURNCALLREF~x`
 ........................
 
-.. todo::
-   (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list. (mainly caused by spurious conditions that should be assertions)
+.. todo:: (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list. (mainly caused by spurious conditions that should be assertions)
 
 1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
 

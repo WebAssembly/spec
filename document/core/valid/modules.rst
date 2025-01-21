@@ -36,10 +36,9 @@ Functions
 
 Functions ${:func} are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form ${comptype: FUNC (t_1* -> t_2*)}.
 
-
 $${rule-prose: Func_ok}
-.. todo::
- below is the official specification
+
+.. todo:: below is the official specification
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
 
@@ -306,8 +305,8 @@ Consequently, no initial :ref:`context <context>` is required.
 Instead, the :ref:`context <context>` ${:C} for validation of the module's content is constructed from the definitions in the module.
 
 $${rule-prose: Module_ok}
-.. todo::
- below is the official specification
+
+.. todo:: below is the official specification
 
 
 * Let :math:`\module` be the module to validate.
