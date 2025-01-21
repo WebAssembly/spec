@@ -2287,13 +2287,13 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
 where :math:`h`, :math:`k`, :math:`n`, and :math:`\X{condition}` are instantiated as follows, depending on the operator:
 
 .. math::
-   \begin{array}{@{}l|llllll}
-                      & h   & k   & n   & \X{condition} \\
+   \begin{array}{@{}ll|llllll}
+   \half^?  & \zero^?  & h   & k   & n   & \X{condition} \\
    \hline
-   \vcvtop            & 0   & M_1 & 0   & (M_1 = M_2) \\
-   \vcvtop{\K\_}\LOW  & 0   & M_2 & 0   & (M_1 = 2\cdot M_2) \\
-   \vcvtop{\K\_}\HIGH & M_2 & M_2 & 0   & (M_1 = 2\cdot M_2) \\
-   \vcvtop{\K\_}\ZERO & 0   & M_1 & M_1 & (2\cdot M_1 = M_2) \\
+   \epsilon & \epsilon & 0   & M_1 & 0   & (M_1 = M_2) \\
+   \LOW     & \epsilon & 0   & M_2 & 0   & (M_1 = 2\cdot M_2) \\
+   \HIGH    & \epsilon & M_2 & M_2 & 0   & (M_1 = 2\cdot M_2) \\
+   \epsilon & \ZERO    & 0   & M_1 & M_1 & (2\cdot M_1 = M_2) \\
    \end{array}
 
 while :math:`\Large\times \{x^\ast\}^N` transforms a sequence of :math:`N` sets of non-deterministic values into a set of non-deterministic sequences of :math:`N` values by computing the set product:
