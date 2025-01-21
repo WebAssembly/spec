@@ -465,7 +465,7 @@ It holds the :ref:`address <syntax-tagaddr>` of the respective :ref:`tag <syntax
 $${syntax: exninst}
 
 
-.. index:: ! stack, ! frame, ! label, ! handler, instruction, store, activation, function, call, ! call frame, local, exception, module instance
+.. index:: ! stack, ! control frame, ! call frame, ! frame, ! label, ! handler, instruction, store, activation, function, call, ! call frame, local, exception, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
    pair: abstract syntax; handler
@@ -482,17 +482,24 @@ Stack
 ~~~~~
 
 Besides the :ref:`store <store>`, most :ref:`instructions <syntax-instr>` interact with an implicit *stack*.
-The stack contains the following kinds of entries:
+The stack contains the two kinds of entries:
 
 * *Values*: the *operands* of instructions.
 
+* *Control Frames*: currently active control flow structures.
+
+The latter can in turn be one of the following:
+
 * *Labels*: active :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
 
-* *Frames*: the *call frames* of active :ref:`function <syntax-func>` calls.
+* *(Call) Frames*: the *activation records* of active :ref:`function <syntax-func>` calls.
 
 * *Handlers*: active exception handlers.
 
-These entries can occur on the stack in any order during the execution of a program.
+.. note::
+   Where clear from context, *call frame* is abbreviated to just *frame*.
+
+All these entries can occur on the stack in any order during the execution of a program.
 Stack entries are described by abstract syntax as follows.
 
 .. note::
