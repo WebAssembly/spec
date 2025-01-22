@@ -163,11 +163,11 @@ and check_type ty v expr =
     boolV (ty = "val")
   (* numtype *)
   | CaseV (nt, []) when List.mem nt inn_types ->
-    boolV (ty = "Inn" || ty = "Jnn" || ty = "numtype" || ty = "valtype")
+    boolV (ty = "Inn" || ty = "Jnn" || ty = "numtype" || ty = "valtype" || ty = "consttype")
   | CaseV (nt, []) when List.mem nt fnn_types ->
-    boolV (ty = "Fnn" || ty = "numtype" || ty = "valtype")
+    boolV (ty = "Fnn" || ty = "numtype" || ty = "valtype" || ty = "consttype")
   | CaseV (vt, []) when List.mem vt vnn_types ->
-    boolV (ty = "Vnn" || ty = "vectype" || ty = "valtype")
+    boolV (ty = "Vnn" || ty = "vectype" || ty = "valtype" || ty = "consttype")
   (* valtype *)
   | CaseV ("REF", _) ->
     boolV (ty = "reftype" || ty = "valtype" || ty = "val")
@@ -190,7 +190,7 @@ and check_type ty v expr =
   | CaseV (pt, []) when List.mem pt pnn_types ->
     boolV (ty = "Pnn" || ty = "Jnn" || ty = "packtype" || ty = "storagetype")
   | v -> fail_expr expr
-    (sprintf "%s doesn't have type %s" (structured_string_of_value v) ty)
+    (sprintf "cannot decide if %s has type %s" (structured_string_of_value v) ty)
 
 and eval_expr env expr =
   let rec to_bool source = function

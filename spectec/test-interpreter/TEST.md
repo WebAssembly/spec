@@ -897,7 +897,7 @@ watsup 0.4 generator
 - 39/39 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array.wast =====
-- 53/53 (100.00%)
+- 61/61 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_copy.wast =====
 - 36/36 (100.00%)
@@ -910,6 +910,12 @@ watsup 0.4 generator
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_elem.wast =====
 - 24/24 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/gc/array_new_data.wast =====
+- 19/19 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/gc/array_new_elem.wast =====
+- 26/26 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/binary-gc.wast =====
 - 0/0 (100.00%)
@@ -939,7 +945,7 @@ watsup 0.4 generator
 - 35/35 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/type-subtyping.wast =====
-- 135/135 (100.00%)
+- 143/143 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/global.wast =====
 - 125/125 (100.00%)
@@ -1018,10 +1024,10 @@ watsup 0.4 generator
 - 8/8 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory.wast =====
-- 97/97 (100.00%)
+- 98/98 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory64.wast =====
-- 75/75 (100.00%)
+- 78/78 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/memory_copy.wast =====
 - 0/0 (100.00%)
@@ -1422,7 +1428,7 @@ watsup 0.4 generator
 - 4/4 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table.wast =====
-- 78/78 (100.00%)
+- 84/84 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/table_copy.wast =====
 - 1845/1845 (100.00%)
@@ -1502,7 +1508,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [52904/52904] (100.00%)
+Total [52975/52975] (100.00%)
 
 == Complete.
 ```
