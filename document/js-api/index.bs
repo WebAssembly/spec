@@ -1803,7 +1803,8 @@ In practice, an implementation may run out of resources for valid modules below 
 
 <ul>
 <li>The maximum size of a table is 10,000,000.</li>
-<li>The maximum number of pages of a memory is 65,536.</li>
+<li>The maximum size of a 32-bit memory is 65,536 pages (4 GiB).</li>
+<li>The maximum size of a 64-bit memory is 262,144 pages (16 GiB).</li>
 </ul>
 
 <h2 id="security-considerations">Security and Privacy Considerations</h2>

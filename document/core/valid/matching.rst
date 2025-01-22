@@ -38,8 +38,7 @@ Heap Types
 
 $${rule-prose: Heaptype_sub}
 
-.. todo::
- below is the official specification
+.. todo:: below is the official specification
 
 A :ref:`heap type <syntax-heaptype>` ${:heaptype_1} matches a :ref:`heap type <syntax-heaptype>` ${:heaptype_2} if and only if:
 
@@ -90,8 +89,8 @@ Reference Types
 ~~~~~~~~~~~~~~~
 
 $${rule-prose: Reftype_sub}
-.. todo::
- below is the official specification
+
+.. todo:: below is the official specification
 
 A :ref:`reference type <syntax-reftype>` ${reftype: REF nul1 heaptype_1} matches a :ref:`reference type <syntax-reftype>` ${reftype: REF nul2 heaptype_2} if and only if:
 
@@ -263,6 +262,12 @@ Tag Types
 $${rule-prose: Tagtype_sub}
 
 $${rule: {Tagtype_sub}}
+
+.. note::
+   Although the conclusion of this rule looks identical to its premise,
+   they in fact describe different relations:
+   the premise invokes subtyping on defined types,
+   while the conclusion defines it on tag types that happen to be expressed as defined types.
 
 
 .. index:: external type, function type, table type, memory type, global type

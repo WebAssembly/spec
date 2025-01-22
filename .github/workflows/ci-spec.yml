@@ -35,7 +35,7 @@ jobs:
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.1.3
       - name: Build SpecTec
         run: cd spectec && opam exec make
       - name: Build main spec
@@ -83,13 +83,13 @@ jobs:
     needs: [build-core-spec]
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.1.3
       - name: Build main spec
         run: cd document/metadata/code && make main
       - name: Upload artifact
@@ -102,13 +102,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.1.3
       - name: Build main spec
         run: cd document/legacy/exceptions/core && make main
       - name: Upload artifact
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed

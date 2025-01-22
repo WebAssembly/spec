@@ -404,6 +404,26 @@ Global Types
 $${syntax: globaltype}
 
 
+.. index:: ! tag type, function type, defined type, exception
+   pair: abstract syntax; tag type
+   pair: tag; type
+.. _syntax-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a defined type |deftype|, which expands to a function type |functype|.
+
+$${syntax: tagtype}
+
+Tags are used for categorizing exceptions.
+The parameters of |functype| define the list of values associated with the exception thrown with this tag.
+Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-tagtype>` tag type for an exception has an empty result type.
+
+.. note::
+   Future versions of WebAssembly may have additional uses for tags, and may allow non-empty result types in the function types of tags.
+
+
 .. index:: ! element type, reference type, table, element
    pair: abstract syntax; element type
    pair: element; type

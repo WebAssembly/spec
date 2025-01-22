@@ -218,9 +218,10 @@ Recursive Types
 
 :math:`\TREC~\subtype^\ast`
 ...........................
+
 $${rule-prose: Rectype_ok}
-.. todo::
- below is the official specification
+
+.. todo:: below is the official specification
 
 * Either the sequence :math:`\subtype^\ast` is empty.
 
@@ -237,9 +238,10 @@ $${rule: {Rectype_ok/empty Rectype_ok/cons}}
 
 :math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
 ........................................
+
 $${rule-prose: Subtype_ok}
-.. todo::
- below is the official specification
+
+.. todo:: below is the official specification
 
 * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
 

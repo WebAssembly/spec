@@ -826,6 +826,70 @@
 
 (assert_invalid
   (module
+    (type $a (sub (array (ref none))))
+    (type $b (sub $a (array (ref any))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (array (mut (ref any)))))
+    (type $b (sub $a (array (mut (ref none)))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (array (mut (ref any)))))
+    (type $b (sub $a (array (ref any))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (array (ref any))))
+    (type $b (sub $a (array (mut (ref any)))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (struct (field (ref none)))))
+    (type $b (sub $a (struct (field (ref any)))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (struct (field (mut (ref any))))))
+    (type $b (sub $a (struct (field (mut (ref none))))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (struct (field (mut (ref any))))))
+    (type $b (sub $a (struct (field (ref any)))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
+    (type $a (sub (struct (field (ref any)))))
+    (type $b (sub $a (struct (field (mut (ref any))))))
+  )
+  "sub type 1 does not match super type"
+)
+
+(assert_invalid
+  (module
     (type $f0 (sub (func)))
     (type $f1 (sub $f0 (func (param i32))))
   )

@@ -308,7 +308,7 @@ Allowed basic numeric computations in constant expressions. [#proposal-extconst]
   - |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
 
 .. note::
-   The :ref:`garbage collection <extension-gc>` added further constant instructions.
+   The :ref:`garbage collection <extension-gc>` extension added further constant instructions.
 
 
 .. index:: instruction, function, call
@@ -461,6 +461,8 @@ Added more precise types for references. [#proposal-typedref]_
   - |REFFUNC| with more precise result type
 
 * Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instrs>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-defaultable type
+
+* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-nullable <syntax-nullable>` :ref:`reference type <syntax-reftype>`.
 
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
@@ -622,7 +624,7 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
 
 
 .. [#proposal-extconst]
-   https://github.com/WebAssembly/spec/blob/main/proposals/extended-const/
+   https://github.com/WebAssembly/spec/tree/main/proposals/extended-const/
 
 .. [#proposal-tailcall]
    https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
@@ -631,10 +633,10 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/
 
 .. [#proposal-multimem]
-   https://github.com/WebAssembly/spec/blob/main/proposals/multi-memory/
+   https://github.com/WebAssembly/spec/tree/main/proposals/multi-memory/
 
 .. [#proposal-addr64]
-   https://github.com/WebAssembly/spec/blob/main/proposals/memory64/
+   https://github.com/WebAssembly/spec/tree/main/proposals/memory64/
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
@@ -646,4 +648,4 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/relaxed-simd/
 
 .. [#proposal-annot]
-   https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
+   https://github.com/WebAssembly/spec/tree/main/proposals/annotations/
