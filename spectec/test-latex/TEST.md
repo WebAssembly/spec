@@ -4720,7 +4720,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathsf{ok}}{({\mathit{typeidx}})} & ::= & {\mathsf{ok}}{{\mathit{typeidx}}} \\
+& {\mathsf{ok}}{({\mathit{typeidx}})} & ::= & {\mathsf{ok}}{({\mathit{typeidx}})} \\
 & {\mathsf{ok}}{({\mathit{typeidx}}, n)} & ::= & {\mathsf{ok}}{({\mathit{typeidx}}, \mathbb{N})} \\
 \end{array}
 $$
@@ -4846,7 +4846,7 @@ C \vdash {\mathit{comptype}} : \mathsf{ok}
 (C \vdash {\mathit{comptype}} \leq {\mathit{comptype}'})^\ast
 \end{array}
 }{
-C \vdash \mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(x_0)}
+C \vdash \mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{((x_0))}
 } \, {[\textsc{\scriptsize K{-}sub}]}
 \qquad
 \end{array}
@@ -4895,7 +4895,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-C \vdash \mathsf{rec}~\epsilon : {\mathsf{ok}}{(x)}
+C \vdash \mathsf{rec}~\epsilon : {\mathsf{ok}}{((x))}
 } \, {[\textsc{\scriptsize K{-}rect{-}empty}]}
 \qquad
 \end{array}
@@ -4904,11 +4904,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{(x)}
+C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{((x))}
  \qquad
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x + 1)}
+C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{((x + 1))}
 }{
-C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{(x)}
+C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{((x))}
 } \, {[\textsc{\scriptsize K{-}rect{-}cons}]}
 \qquad
 \end{array}
@@ -4919,7 +4919,7 @@ $$
 \frac{
 C, \mathsf{recs}~{{\mathit{subtype}}^\ast} \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, 0)}
 }{
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x)}
+C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{((x))}
 } \, {[\textsc{\scriptsize K{-}rect{-}rec2}]}
 \qquad
 \end{array}
@@ -4953,7 +4953,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x)}
+C \vdash {\mathit{rectype}} : {\mathsf{ok}}{((x))}
  \qquad
 {\mathit{rectype}} = \mathsf{rec}~{{\mathit{subtype}}^{n}}
  \qquad
@@ -7470,7 +7470,7 @@ x = {|C{.}\mathsf{types}|}
 {{\mathit{dt}}^\ast} = {{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}
  \qquad
 C \oplus \{ \begin{array}[t]{@{}l@{}}
-\mathsf{types}~{{\mathit{dt}}^\ast} \}\end{array} \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x)}
+\mathsf{types}~{{\mathit{dt}}^\ast} \}\end{array} \vdash {\mathit{rectype}} : {\mathsf{ok}}{((x))}
 }{
 C \vdash \mathsf{type}~{\mathit{rectype}} : {{\mathit{dt}}^\ast}
 } \, {[\textsc{\scriptsize T{-}type}]}

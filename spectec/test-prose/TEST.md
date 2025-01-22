@@ -13521,7 +13521,7 @@ The composite type :math:`(\mathsf{func}~{\mathit{ft}}_1)` matches the composite
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is valid with :math:`({\mathsf{ok}}{x_0})` if:
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is valid with :math:`({\mathsf{ok}}{(x_0)})` if:
 
 
    * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
@@ -13610,7 +13610,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is valid with :math:`({\mathsf{ok}}{x})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Either:
@@ -13621,9 +13621,9 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\sc
 
       * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{x})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x + 1})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1)})`.
    * Or:
 
       * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{subtype}}^\ast}`.
@@ -13635,22 +13635,22 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\sc
 
 
 
-The recursive type :math:`(\mathsf{rec}~\epsilon)` is valid with :math:`({\mathsf{ok}}{x})`.
+The recursive type :math:`(\mathsf{rec}~\epsilon)` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x})` if:
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x)})` if:
 
 
-   * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{x})`.
+   * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x + 1})`.
-
-
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1)})`.
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{x})` if:
+
+
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the sub type sequence :math:`{{\mathit{subtype}}^\ast}` prepended to the field :math:`\mathsf{recs}`.
@@ -13663,7 +13663,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid wit
 The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{x})`.
+   * The recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
    * The recursive type :math:`{\mathit{rectype}}` is equal to :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
@@ -15637,7 +15637,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{x})`.
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
 
 
