@@ -14569,7 +14569,7 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 
    * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
-      * A :ref:`default value <aux-default>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+      * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -14627,7 +14627,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 
    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * A :ref:`default value <aux-default>` for value type the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+   * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -15649,13 +15649,13 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{set}`.
 
-      * A :ref:`default value <aux-default>` for value type the value type :math:`t` is defined.
+      * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
 
    * Or:
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{unset}`.
 
-      * A :ref:`default value <aux-default>` for value type the value type :math:`t` is not defined.
+      * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
 
 
 
@@ -15663,7 +15663,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}~t)` if:
 
 
-   * A :ref:`default value <aux-default>` for value type the value type :math:`t` is defined.
+   * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
 
 
 
@@ -15671,7 +15671,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}~t)` if:
 
 
-   * A :ref:`default value <aux-default>` for value type the value type :math:`t` is not defined.
+   * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
 
 
 
@@ -25422,7 +25422,7 @@ Instr_ok/struct.new_default
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - For all zt in zt*:
-    - A :ref:`default value <aux-default>` for value type the value type $unpack(zt) is defined.
+    - A :ref:`default value <aux-default>` for the value type $unpack(zt) is defined.
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF ?(NULL) (_IDX x))] -> [t] if:
@@ -25451,7 +25451,7 @@ Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
-  - A :ref:`default value <aux-default>` for value type the value type $unpack(zt) is defined.
+  - A :ref:`default value <aux-default>` for the value type $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
@@ -25986,18 +25986,18 @@ Local_ok
 - the local (LOCAL t) is valid with the local type (init_u1 t) if:
   - Either:
     - the initialization status init_u1 is SET.
-    - A :ref:`default value <aux-default>` for value type the value type t is defined.
+    - A :ref:`default value <aux-default>` for the value type t is defined.
   - Or:
     - init_u1 is UNSET.
-    - A :ref:`default value <aux-default>` for value type t is not defined.
+    - A :ref:`default value <aux-default>` for t is not defined.
 
 Local_ok/set
 - the local (LOCAL t) is valid with the local type (SET t) if:
-  - A :ref:`default value <aux-default>` for value type the value type t is defined.
+  - A :ref:`default value <aux-default>` for the value type t is defined.
 
 Local_ok/unset
 - the local (LOCAL t) is valid with the local type (UNSET t) if:
-  - A :ref:`default value <aux-default>` for value type the value type t is not defined.
+  - A :ref:`default value <aux-default>` for the value type t is not defined.
 
 Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:

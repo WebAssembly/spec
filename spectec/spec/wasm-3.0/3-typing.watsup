@@ -559,10 +559,10 @@ relation Instrs_ok: context |- instr* : instrtype   hint(name "T-instr*") hint(m
 relation Expr_ok: context |- expr : resulttype      hint(name "T-expr")   hint(macro "%expr")
 
 relation Defaultable: |- valtype DEFAULTABLE  hint(show $default_(%2) =/= eps)
-  hint(prose "A :ref:`default value <aux-default>` for value type %1 is defined")  ;; TODO(3, ?): avoid hardcoding reST
+  hint(prose "A :ref:`default value <aux-default>` for %1 is defined")  ;; TODO(3, ?): avoid hardcoding reST
 
 relation Nondefaultable: |- valtype NONDEFAULTABLE  hint(show $default_(%2) = eps)
-  hint(prose "A :ref:`default value <aux-default>` for value type %1 is not defined")  ;; TODO(3, ?): avoid hardcoding reST
+  hint(prose "A :ref:`default value <aux-default>` for %1 is not defined")  ;; TODO(3, ?): avoid hardcoding reST
 
 
 ;; Parametric instructions

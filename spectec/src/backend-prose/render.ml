@@ -680,7 +680,7 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
- let typs = ref Map.empty
+let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
