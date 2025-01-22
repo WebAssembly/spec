@@ -429,8 +429,6 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
@@ -439,8 +437,6 @@ The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :
 The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
@@ -448,8 +444,6 @@ The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :
 
 The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -478,8 +472,6 @@ The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{loa
 
 The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -522,8 +514,6 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\ma
 The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
@@ -533,8 +523,6 @@ The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is val
 
 The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -546,8 +534,6 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 The instruction :math:`({t{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
@@ -557,8 +543,6 @@ The instruction :math:`({t{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is va
 
 The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{n}~\rightarrow~\epsilon` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -729,15 +713,13 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[0]` exists.
-
-   * The table type :math:`C{.}\mathsf{tables}{}[0]` is equal to :math:`{\mathit{lim}}`.
+   * The limits :math:`C{.}\mathsf{tables}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
    * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is const.
 
-   * :math:`{|{\mathit{x*}}|}` is equal to :math:`{|{\mathit{ft*}}|}`.
+   * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{x^\ast}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -753,9 +735,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{lim}}`.
+   * The limits :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
    * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -877,37 +857,37 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is val
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
 
 
-   * :math:`{|{\mathit{type*}}|}` is equal to :math:`{|{\mathit{ft'*}}|}`.
+   * :math:`{|{{\mathit{ft}'}^\ast}|}` is equal to :math:`{|{{\mathit{type}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
 
-   * :math:`{|{\mathit{ixt*}}|}` is equal to :math:`{|{\mathit{import*}}|}`.
+   * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{ixt}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
-   * :math:`{|{\mathit{gt*}}|}` is equal to :math:`{|{\mathit{global*}}|}`.
+   * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
 
-   * :math:`{|{\mathit{func*}}|}` is equal to :math:`{|{\mathit{ft*}}|}`.
+   * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
 
-   * :math:`{|{\mathit{tt*}}|}` is equal to :math:`{|{\mathit{table*}}|}`.
+   * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * The table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{\mathit{mt*}}|}` is equal to :math:`{|{\mathit{mem*}}|}`.
+   * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
@@ -925,7 +905,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The start function :math:`{\mathit{start}}` is valid.
 
-   * :math:`{|{\mathit{xt*}}|}` is equal to :math:`{|{\mathit{export*}}|}`.
+   * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}^\ast}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
@@ -3089,18 +3069,15 @@ Instr_ok/global.set
 
 Instr_ok/memory.size
 - the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
 - the instruction MEMORY.GROW is valid with the function type [I32] -> [I32] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
 
 Instr_ok/load
 - the instruction (LOAD t_u1 loadop__u1? memarg) is valid with the function type [I32] -> [t_u3] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - Either:
     - the number type t_u1 is t.
     - loadop__u1? is ?().
@@ -3114,8 +3091,7 @@ Instr_ok/load
 
 Instr_ok/store
 - the instruction (STORE t_u1 sz_u1? memarg) is valid with the function type [I32, t_u2] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - Either:
     - the number type t_u1 is t.
     - the pack size sz_u1? is ?().
@@ -3136,26 +3112,22 @@ Instr_ok/cvtop-convert
 
 Instr_ok/load-val
 - the instruction (LOAD t ?() memarg) is valid with the function type [I32] -> [t] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
 
 Instr_ok/load-pack
 - the instruction (LOAD Inn ?(M _ sx) memarg) is valid with the function type [I32] -> [Inn] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store-val
 - the instruction (STORE t ?() memarg) is valid with the function type [I32, t] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
 
 Instr_ok/store-pack
 - the instruction (STORE Inn ?(M) memarg) is valid with the function type [I32, Inn] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instrs_ok
@@ -3241,11 +3213,10 @@ Mem_ok
 
 Elem_ok
 - the table segment (ELEM expr x*) is valid if:
-  - the table type C.TABLES[0] exists.
-  - C.TABLES[0] is lim.
+  - the limits C.TABLES[0] is lim.
   - the expression expr is valid with the number type ?(I32).
   - expr is constant.
-  - |x*| is |ft*|.
+  - |ft*| is |x*|.
   - For all x in x*:
     - the function type C.FUNCS[x] exists.
   - For all ft in ft* and x in x*:
@@ -3253,8 +3224,7 @@ Elem_ok
 
 Data_ok
 - the memory segment (DATA expr b*) is valid if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is lim.
+  - the limits C.MEMS[0] is lim.
   - the expression expr is valid with the number type ?(I32).
   - expr is constant.
 
@@ -3316,22 +3286,22 @@ Export_ok
 
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid if:
-  - |type*| is |ft'*|.
+  - |ft'*| is |type*|.
   - For all ft' in ft'* and type in type*:
     - the type type is valid with the function type ft'.
-  - |ixt*| is |import*|.
+  - |import*| is |ixt*|.
   - For all import in import* and ixt in ixt*:
     - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
-  - |gt*| is |global*|.
+  - |global*| is |gt*|.
   - For all global in global* and gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
-  - |func*| is |ft*|.
+  - |ft*| is |func*|.
   - For all ft in ft* and func in func*:
     - the function func is valid with the function type ft.
-  - |tt*| is |table*|.
+  - |table*| is |tt*|.
   - For all table in table* and tt in tt*:
     - the table table is valid with the table type tt.
-  - |mt*| is |mem*|.
+  - |mem*| is |mt*|.
   - For all mem in mem* and mt in mt*:
     - the memory mem is valid with the memory type mt.
   - For all elem in elem*:
@@ -3340,7 +3310,7 @@ Module_ok
     - the memory segment data is valid.
   - If start is defined, then:
     - the start function start is valid.
-  - |xt*| is |export*|.
+  - |export*| is |xt*|.
   - For all export in export* and xt in xt*:
     - the export export is valid with the external type xt.
   - |tt*| is less than or equal to 1.
@@ -4395,7 +4365,7 @@ The value type :math:`\mathsf{bot}` matches the value type :math:`t`.
 The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
 
 
-   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is equal to :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
+   * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
 
@@ -5010,8 +4980,6 @@ The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type
 The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
@@ -5019,8 +4987,6 @@ The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :
 
 The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5030,8 +4996,6 @@ The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :
 The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
@@ -5040,8 +5004,6 @@ The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :
 The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
 
@@ -5049,8 +5011,6 @@ The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :
 
 The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5073,8 +5033,6 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type
 
 The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5104,8 +5062,6 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
@@ -5134,8 +5090,6 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
@@ -5161,8 +5115,6 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
@@ -5175,8 +5127,6 @@ The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\ma
 The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
@@ -5186,8 +5136,6 @@ The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{me
 
 The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5229,8 +5177,6 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\ma
 The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
@@ -5240,8 +5186,6 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memar
 
 The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5253,8 +5197,6 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
@@ -5264,8 +5206,6 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~{\mathit{mema
 
 The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{n}~\rightarrow~\epsilon` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5277,8 +5217,6 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
@@ -5289,8 +5227,6 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\maths
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{splat}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
@@ -5300,8 +5236,6 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{zero}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5588,8 +5522,6 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
-      * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
-
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
       * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
@@ -5605,8 +5537,6 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
 :math:`(\mathsf{active}~0~{\mathit{expr}})` is valid if:
 
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5743,37 +5673,37 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is val
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
 
 
-   * :math:`{|{\mathit{type*}}|}` is equal to :math:`{|{\mathit{ft'*}}|}`.
+   * :math:`{|{{\mathit{ft}'}^\ast}|}` is equal to :math:`{|{{\mathit{type}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
 
-   * :math:`{|{\mathit{ixt*}}|}` is equal to :math:`{|{\mathit{import*}}|}`.
+   * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{ixt}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
-   * :math:`{|{\mathit{gt*}}|}` is equal to :math:`{|{\mathit{global*}}|}`.
+   * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
 
-   * :math:`{|{\mathit{tt*}}|}` is equal to :math:`{|{\mathit{table*}}|}`.
+   * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{\mathit{mt*}}|}` is equal to :math:`{|{\mathit{mem*}}|}`.
+   * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
-   * :math:`{|{\mathit{rt*}}|}` is equal to :math:`{|{\mathit{elem*}}|}`.
+   * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
@@ -5783,7 +5713,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
 
-   * :math:`{|{\mathit{func*}}|}` is equal to :math:`{|{\mathit{ft*}}|}`.
+   * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
@@ -5793,7 +5723,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The start function :math:`{\mathit{start}}` is valid.
 
-   * :math:`{|{\mathit{xt*}}|}` is equal to :math:`{|{\mathit{export*}}|}`.
+   * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}^\ast}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
@@ -9986,7 +9916,7 @@ Valtype_sub/bot
 
 Resulttype_sub
 - the value type sequence t_1* matches the value type sequence t_2* if:
-  - |t_2*| is |t_1*|.
+  - |t_1*| is |t_2*|.
   - For all t_1 in t_1* and t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
@@ -10309,28 +10239,23 @@ Instr_ok/elem.drop
 
 Instr_ok/memory.size
 - the instruction MEMORY.SIZE is valid with the function type [] -> [I32] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
 
 Instr_ok/memory.grow
 - the instruction MEMORY.GROW is valid with the function type [I32] -> [I32] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
 
 Instr_ok/memory.fill
 - the instruction MEMORY.FILL is valid with the function type [I32, I32, I32] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
 
 Instr_ok/memory.copy
 - the instruction MEMORY.COPY is valid with the function type [I32, I32, I32] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
 
 Instr_ok/memory.init
 - the instruction (MEMORY.INIT x) is valid with the function type [I32, I32, I32] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - the data type C.DATAS[x] exists.
   - C.DATAS[x] is OK.
 
@@ -10341,8 +10266,7 @@ Instr_ok/data.drop
 
 Instr_ok/load
 - the instruction (LOAD nt_u1 loadop__u1? memarg) is valid with the function type [I32] -> [t_u1] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - Either:
     - the number type nt_u1 is nt.
     - loadop__u1? is ?().
@@ -10356,8 +10280,7 @@ Instr_ok/load
 
 Instr_ok/store
 - the instruction (STORE nt_u1 sz_u1? memarg) is valid with the function type [I32, t_u1] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - Either:
     - the number type nt_u1 is nt.
     - the pack size sz_u1? is ?().
@@ -10371,8 +10294,7 @@ Instr_ok/store
 
 Instr_ok/vload
 - the instruction (VLOAD V128 ?(vloadop_u1) memarg) is valid with the function type [I32] -> [V128] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - Either:
     - vloadop_u1 is (SHAPE M X N _ sx).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
@@ -10385,21 +10307,18 @@ Instr_ok/vload
 
 Instr_ok/vload_lane
 - the instruction (VLOAD_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [V128] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
 Instr_ok/vstore
 - the instruction (VSTORE V128 memarg) is valid with the function type [I32, V128] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
 
 Instr_ok/vstore_lane
 - the instruction (VSTORE_LANE V128 n memarg laneidx) is valid with the function type [I32, V128] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
@@ -10420,44 +10339,37 @@ Instr_ok/cvtop-convert
 
 Instr_ok/load-val
 - the instruction (LOAD nt ?() memarg) is valid with the function type [I32] -> [nt] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/load-pack
 - the instruction (LOAD Inn ?(M _ sx) memarg) is valid with the function type [I32] -> [Inn] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store-val
 - the instruction (STORE nt ?() memarg) is valid with the function type [I32, nt] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/store-pack
 - the instruction (STORE Inn ?(M) memarg) is valid with the function type [I32, Inn] -> [] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
 - the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) memarg) is valid with the function type [I32] -> [V128] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
 
 Instr_ok/vload-splat
 - the instruction (VLOAD V128 ?((SPLAT n)) memarg) is valid with the function type [I32] -> [V128] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload-zero
 - the instruction (VLOAD V128 ?((ZERO n)) memarg) is valid with the function type [I32] -> [V128] if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instrs_ok
@@ -10606,8 +10518,7 @@ Datamode_ok
 - datamode_u1 is valid if:
   - Either:
     - datamode_u1 is (ACTIVE 0 expr).
-    - the memory type C.MEMS[0] exists.
-    - C.MEMS[0] is mt.
+    - the memory type C.MEMS[0] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
@@ -10615,8 +10526,7 @@ Datamode_ok
 
 Datamode_ok/active
 - (ACTIVE 0 expr) is valid if:
-  - the memory type C.MEMS[0] exists.
-  - C.MEMS[0] is mt.
+  - the memory type C.MEMS[0] is mt.
   - the expression expr is valid with the value type I32.
   - expr is constant.
 
@@ -10685,32 +10595,32 @@ Export_ok
 
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid if:
-  - |type*| is |ft'*|.
+  - |ft'*| is |type*|.
   - For all ft' in ft'* and type in type*:
     - the type type is valid with the function type ft'.
-  - |ixt*| is |import*|.
+  - |import*| is |ixt*|.
   - For all import in import* and ixt in ixt*:
     - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
-  - |gt*| is |global*|.
+  - |global*| is |gt*|.
   - For all global in global* and gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
-  - |tt*| is |table*|.
+  - |table*| is |tt*|.
   - For all table in table* and tt in tt*:
     - Under the context C', the table table is valid with the table type tt.
-  - |mt*| is |mem*|.
+  - |mem*| is |mt*|.
   - For all mem in mem* and mt in mt*:
     - Under the context C', the memory mem is valid with the memory type mt.
-  - |rt*| is |elem*|.
+  - |elem*| is |rt*|.
   - For all elem in elem* and rt in rt*:
     - Under the context C', the table segment elem is valid with the reference type rt.
   - For all data in data*:
     - Under the context C', the memory segment data is valid.
-  - |func*| is |ft*|.
+  - |ft*| is |func*|.
   - For all ft in ft* and func in func*:
     - the function func is valid with the function type ft.
   - If start is defined, then:
     - the start function start is valid.
-  - |xt*| is |export*|.
+  - |export*| is |xt*|.
   - For all export in export* and xt in xt*:
     - the export export is valid with the external type xt.
   - |mt*| is less than or equal to 1.
@@ -12830,7 +12740,7 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
    * The result type :math:`{t_2^\ast}` is valid.
 
-   * :math:`{|{\mathit{x*}}|}` is equal to :math:`{|{\mathit{lct*}}|}`.
+   * :math:`{|{{{\mathit{lt}}}^\ast}|}` is equal to :math:`{|{x^\ast}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -13441,7 +13351,7 @@ The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` matches the field type :ma
 The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
 
 
-   * :math:`{|t_{\mathit{{\scriptstyle 2}*}}|}` is equal to :math:`{|t_{\mathit{{\scriptstyle 1}*}}|}`.
+   * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
 
@@ -13469,7 +13379,7 @@ The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
       * The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
-      * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is equal to :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
+      * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
       * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
@@ -13496,7 +13406,7 @@ The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` matches the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
 
 
-   * :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 2}*}}|}` is equal to :math:`{|{\mathit{yt}}_{\mathit{{\scriptstyle 1}*}}|}`.
+   * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
    * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
@@ -13530,9 +13440,9 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
       * The index :math:`x` is less than :math:`x_0`.
 
-   * :math:`{|{\mathit{x*}}|}` is equal to :math:`{|{\mathit{comptype'*}}|}`.
+   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is equal to :math:`{|{x^\ast}|}`.
 
-   * :math:`{|{\mathit{x'**}}|}` is equal to :math:`{|{\mathit{comptype'*}}|}`.
+   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is equal to :math:`{|{{{x'}^\ast}^\ast}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -13560,9 +13470,9 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
       * :math:`{\mathit{typeuse}} \prec x, i` is equal to true.
 
-   * :math:`{|{\mathit{typeuse*}}|}` is equal to :math:`{|{\mathit{comptype'*}}|}`.
+   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is equal to :math:`{|{{\mathit{typeuse}}^\ast}|}`.
 
-   * :math:`{|{\mathit{typeuse'**}}|}` is equal to :math:`{|{\mathit{comptype'*}}|}`.
+   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is equal to :math:`{|{{{\mathit{typeuse}'}^\ast}^\ast}|}`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
 
@@ -13804,7 +13714,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
    * The local index sequence :math:`{x^\ast}` is equal to :math:`{x_2^\ast} \setminus {x_1^\ast}`.
 
-   * :math:`{|{\mathit{x*}}|}` is equal to :math:`{|{\mathit{t*}}|}`.
+   * :math:`{|{t^\ast}|}` is equal to :math:`{|{x^\ast}|}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -14485,8 +14395,6 @@ The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction ty
    * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
    * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
-
-   * The index :math:`C{.}\mathsf{refs}{}[0]` exists.
 
    * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
@@ -15386,9 +15294,9 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
       * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-      * :math:`{|{\mathit{t*}}|}` is equal to :math:`{|{\mathit{init*}}|}`.
+      * :math:`{|{{\mathit{init}}^\ast}|}` is equal to :math:`{|{t^\ast}|}`.
 
-      * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is equal to :math:`{|{\mathit{init*}}|}`.
+      * :math:`{|{{\mathit{init}}^\ast}|}` is equal to :math:`{|{x_1^\ast}|}`.
 
       * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
@@ -15433,9 +15341,9 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
    * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-   * :math:`{|{\mathit{t*}}|}` is equal to :math:`{|{\mathit{init*}}|}`.
+   * :math:`{|{{\mathit{init}}^\ast}|}` is equal to :math:`{|{t^\ast}|}`.
 
-   * :math:`{|x_{\mathit{{\scriptstyle 1}*}}|}` is equal to :math:`{|{\mathit{init*}}|}`.
+   * :math:`{|{{\mathit{init}}^\ast}|}` is equal to :math:`{|{x_1^\ast}|}`.
 
    * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
@@ -15683,7 +15591,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`{|{\mathit{local*}}|}` is equal to :math:`{|{\mathit{lct*}}|}`.
+   * :math:`{|{{{\mathit{lt}}}^\ast}|}` is equal to :math:`{|{{\mathit{local}}^\ast}|}`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`:
 
@@ -16074,7 +15982,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
-   * :math:`{|{\mathit{xt}}_{\mathsf{i*}}|}` is equal to :math:`{|{\mathit{import*}}|}`.
+   * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
@@ -16082,37 +15990,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
-   * :math:`{|{\mathit{tt*}}|}` is equal to :math:`{|{\mathit{table*}}|}`.
+   * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{\mathit{mt*}}|}` is equal to :math:`{|{\mathit{mem*}}|}`.
+   * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
 
-   * :math:`{|{\mathit{tag*}}|}` is equal to :math:`{|{\mathit{jt*}}|}`.
+   * :math:`{|{{\mathit{jt}}^\ast}|}` is equal to :math:`{|{{\mathit{tag}}^\ast}|}`.
 
    * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
 
       * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the tag type :math:`{\mathit{jt}}`.
 
-   * :math:`{|{\mathit{func*}}|}` is equal to :math:`{|{\mathit{dt*}}|}`.
+   * :math:`{|{{\mathit{dt}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
 
-   * :math:`{|{\mathit{rt*}}|}` is equal to :math:`{|{\mathit{elem*}}|}`.
+   * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
       * The element segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
 
-   * :math:`{|{\mathit{ok*}}|}` is equal to :math:`{|{\mathit{data*}}|}`.
+   * :math:`{|{{\mathit{data}}^\ast}|}` is equal to :math:`{|{{\mathit{ok}}^\ast}|}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
@@ -16122,9 +16030,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The start function :math:`{\mathit{start}}` is valid.
 
-   * :math:`{|{\mathit{nm*}}|}` is equal to :math:`{|{\mathit{export*}}|}`.
+   * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{nm}}^\ast}|}`.
 
-   * :math:`{|{\mathit{xt}}_{\mathsf{e*}}|}` is equal to :math:`{|{\mathit{export*}}|}`.
+   * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}_{\mathsf{e}}^\ast}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`:
 
@@ -24527,7 +24435,7 @@ Instrtype_ok
 - the instruction type t_1* ->_ x* t_2* is valid if:
   - the result type t_1* is valid.
   - the result type t_2* is valid.
-  - |x*| is |lct*|.
+  - |lct*| is |x*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
   - For all lct in lct* and x in x*:
@@ -24847,7 +24755,7 @@ Fieldtype_sub/var
 
 Resulttype_sub
 - the value type sequence t_1* matches the value type sequence t_2* if:
-  - |t_2*| is |t_1*|.
+  - |t_1*| is |t_2*|.
   - For all t_1 in t_1* and t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
@@ -24861,7 +24769,7 @@ Comptype_sub
   - Either:
     - ct_u1 is (STRUCT yt_1* :: [yt'_1]).
     - ct_u2 is (STRUCT yt_2*).
-    - |yt_2*| is |yt_1*|.
+    - |yt_1*| is |yt_2*|.
     - For all yt_1 in yt_1* and yt_2 in yt_2*:
       - the field type yt_1 matches the field type yt_2.
   - Or:
@@ -24875,7 +24783,7 @@ Comptype_sub
 
 Comptype_sub/struct
 - the composite type (STRUCT yt_1* :: [yt'_1]) matches the composite type (STRUCT yt_2*) if:
-  - |yt_2*| is |yt_1*|.
+  - |yt_1*| is |yt_2*|.
   - For all yt_1 in yt_1* and yt_2 in yt_2*:
     - the field type yt_1 matches the field type yt_2.
 
@@ -24892,8 +24800,8 @@ Subtype_ok
   - |x*| is less than or equal to 1.
   - For all x in x*:
     - the index x is less than x_0.
-  - |x*| is |comptype'*|.
-  - |x'**| is |comptype'*|.
+  - |comptype'*| is |x*|.
+  - |comptype'*| is |x'**|.
   - For all x in x*:
     - the defined type C.TYPES[x] exists.
   - For all comptype' in comptype'* and x in x* and x'* in x'**:
@@ -24907,8 +24815,8 @@ Subtype_ok2
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*:
     - $before(typeuse, x, i) is true.
-  - |typeuse*| is |comptype'*|.
-  - |typeuse'**| is |comptype'*|.
+  - |comptype'*| is |typeuse*|.
+  - |comptype'*| is |typeuse'**|.
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**:
     - the sub type $unrollht(C, typeuse) is (SUB ?() typeuse'* comptype').
   - the composite type comptype is valid.
@@ -25032,7 +24940,7 @@ Instrtype_sub
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
   - the local index sequence x* is $setminus_(localidx, x_2*, x_1*).
-  - |x*| is |t*|.
+  - |t*| is |x*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
   - For all t in t* and x in x*:
@@ -25379,7 +25287,6 @@ Instr_ok/ref.func
 - the instruction (REF.FUNC x) is valid with the instruction type [] -> [(REF ?() dt)] if:
   - the defined type C.FUNCS[x] exists.
   - C.FUNCS[x] is dt.
-  - the index C.REFS[0] exists.
   - x is contained in C.REFS.
 
 Instr_ok/ref.i31
@@ -25841,8 +25748,8 @@ Instrs_ok
     - instr_u1* is [instr_1] :: instr_2*.
     - instrtype_u1 is t_1* ->_ x_1* :: x_2* t_3*.
     - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
-    - |t*| is |init*|.
-    - |x_1*| is |init*|.
+    - |init*| is |t*|.
+    - |init*| is |x_1*|.
     - For all x_1 in x_1*:
       - the local type C.LOCALS[x_1] exists.
     - For all init in init* and t in t* and x_1 in x_1*:
@@ -25866,8 +25773,8 @@ Instrs_ok/empty
 Instrs_ok/seq
 - the instruction sequence [instr_1] :: instr_2* is valid with the instruction type t_1* ->_ x_1* :: x_2* t_3* if:
   - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
-  - |t*| is |init*|.
-  - |x_1*| is |init*|.
+  - |init*| is |t*|.
+  - |init*| is |x_1*|.
   - For all x_1 in x_1*:
     - the local type C.LOCALS[x_1] exists.
   - For all init in init* and t in t* and x_1 in x_1*:
@@ -26003,7 +25910,7 @@ Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
-  - |local*| is |lct*|.
+  - |lct*| is |local*|.
   - For all lct in lct* and local in local*:
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
@@ -26203,32 +26110,32 @@ Types_ok/cons
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type t if:
   - Under the context { TYPES: []; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the type definition sequence type* is valid with the defined type sequence dt'*.
-  - |xt_I*| is |import*|.
+  - |import*| is |xt_I*|.
   - For all import in import* and xt_I in xt_I*:
     - Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
-  - |tt*| is |table*|.
+  - |table*| is |tt*|.
   - For all table in table* and tt in tt*:
     - Under the context C', the table table is valid with the table type tt.
-  - |mt*| is |mem*|.
+  - |mem*| is |mt*|.
   - For all mem in mem* and mt in mt*:
     - Under the context C', the memory mem is valid with the memory type mt.
-  - |tag*| is |jt*|.
+  - |jt*| is |tag*|.
   - For all jt in jt* and tag in tag*:
     - Under the context C', the tag tag is valid with the tag type jt.
-  - |func*| is |dt*|.
+  - |dt*| is |func*|.
   - For all dt in dt* and func in func*:
     - the function func is valid with the defined type dt.
-  - |rt*| is |elem*|.
+  - |elem*| is |rt*|.
   - For all elem in elem* and rt in rt*:
     - the element segment elem is valid with the element type rt.
-  - |ok*| is |data*|.
+  - |data*| is |ok*|.
   - For all data in data* and ok in ok*:
     - the data segment data is valid with the data type ok.
   - If start is defined, then:
     - the start function start is valid.
-  - |nm*| is |export*|.
-  - |xt_E*| is |export*|.
+  - |export*| is |nm*|.
+  - |export*| is |xt_E*|.
   - For all export in export* and nm in nm* and xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(name, nm*) is true.

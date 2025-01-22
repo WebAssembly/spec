@@ -92,6 +92,17 @@ let remove_empty_arrow_sub e =
     {e with it}
   | _ -> e
 
+let is_iter_var e =
+  match e.it, e.note.it with
+  | Ast.VarE id, Ast.IterT (_, List) -> String.ends_with ~suffix:"*" id.it
+  | Ast.VarE id, Ast.IterT (_, List1) -> String.ends_with ~suffix:"+" id.it
+  | _ -> false
+
+let is_zero e =
+  match e.it with
+  | Ast.NumE n -> Num.is_zero n
+  | _ -> false
+
 (** End of helpers **)
 
 
@@ -176,19 +187,41 @@ let transpile_expr =
 
 let exp_to_expr e = translate_exp e |> transpile_expr
 let exp_to_argexpr es = translate_argexp es |> List.map transpile_expr
+let rec recover_iter n ty region =
+  match ty.it with
+  | Ast.IterT (ty', List1) when String.ends_with ~suffix:"+" n ->
+    let e' = recover_iter (String.sub n 0 (String.length n - 1)) ty' region in
+    Ast.IterE (e', (Ast.List, [])) $$ region % ty
+  | Ast.IterT (ty', List) when String.ends_with ~suffix:"*" n ->
+    let e' = recover_iter (String.sub n 0 (String.length n - 1)) ty' region in
+    Ast.IterE (e', (Ast.List, [])) $$ region % ty
+  | _ -> Ast.VarE (n $ region) $$ region % ty
+
+let itervar_to_expr e =
+  match e.it with
+  | Ast.VarE id -> recover_iter id.it e.note e.at
+  | _ -> assert false
 
 let rec if_expr_to_instrs e =
   match e.it with
+  (* Side conditions injected in sidecondtions.ml *)
+  | Ast.CmpE (`EqOp, `BoolT, ({it = LenE e1; _} as e1'), ({it = LenE e2; _ } as e2')) when is_iter_var e1 && is_iter_var e2 ->
+    let expr1 = { e1' with it = Ast.LenE (itervar_to_expr e1) } |> exp_to_expr in
+    let expr2 = { e2' with it = Ast.LenE (itervar_to_expr e2) } |> exp_to_expr in
+    [ CmpS (expr1, `EqOp, expr2) ]
   | Ast.CmpE (`GtOp, _, {it = LenE ({it = DotE _; _} as arr); _}, index)
   | Ast.CmpE (`LtOp, _, index, {it = LenE ({it = DotE _; _} as arr); _}) ->
-    let note =
-      match arr.note.it with
-      | IterT (t, _) -> t
-      | _ -> arr.note
-      in
-    let e' = accE (exp_to_expr arr, Al.Ast.IdxP (exp_to_expr index) $ index.at) ~at:e.at ~note:note in
-    [ IsDefinedS e' ]
-  | Ast.CmpE (op, _, e1, e2) ->
+    if is_zero index then []
+    else
+      let note =
+        match arr.note.it with
+        | IterT (t, _) -> t
+        | _ -> arr.note
+        in
+      let e' = accE (exp_to_expr arr, Al.Ast.IdxP (exp_to_expr index) $ index.at) ~at:e.at ~note:note in
+      [ IsDefinedS e' ]
+  (* Others *)
+    | Ast.CmpE (op, _, e1, e2) ->
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
     [ match e2.it with LenE _ -> CmpS (e2, swap op, e1) | _ -> CmpS (e1, op, e2) ]
@@ -572,14 +605,14 @@ let insert_state_binding algo =
     | _ -> ());
   in
 
-  let walk_expr walker expr = 
+  let walk_expr walker expr =
     if (!z_binding = 0 && !state_count = 0) then (
       count_state expr;
       Al.Walk.base_walker.walk_expr walker expr
     )
     else expr
   in
-  let walk_instr walker instr = 
+  let walk_instr walker instr =
     if (!z_binding = 0 && !state_count = 0) then (
       check_z_binding instr;
       Al.Walk.base_walker.walk_instr walker instr
