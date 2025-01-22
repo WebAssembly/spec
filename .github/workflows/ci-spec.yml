@@ -35,7 +35,7 @@ jobs:
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.1.3
       - name: Build SpecTec
         run: cd spectec && opam exec make
       - name: Build main spec
@@ -89,7 +89,7 @@ jobs:
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.1.3
       - name: Build main spec
         run: cd document/metadata/code && make main
       - name: Upload artifact
@@ -108,7 +108,7 @@ jobs:
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.1.3
       - name: Build main spec
         run: cd document/legacy/exceptions/core && make main
       - name: Upload artifact
