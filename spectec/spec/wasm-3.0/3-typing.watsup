@@ -131,8 +131,8 @@ rule Instrtype_ok:
 
 ;; Type definitions
 
-syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))    hint(macro "%subtype")
-syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %)) hint(macro "%subtypeext")
+syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#((%)))    hint(macro "%subtype")
+syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#((%, %))) hint(macro "%subtypeext")
 
 relation Packtype_ok: context |- packtype : OK          hint(name "K-pack")    hint(macro "%packtype")
 relation Fieldtype_ok: context |- fieldtype : OK        hint(name "K-field")   hint(macro "%fieldtype")
