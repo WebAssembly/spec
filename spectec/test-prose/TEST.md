@@ -12596,7 +12596,6 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Nondefaultable: `|-%NONDEFAULTABLE`valtype
 
 
 
@@ -15384,6 +15383,14 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
    * The expression :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
+
+
+
+
+The value type :math:`t` is not defaultable if:
+
+
+   * The value :math:`{{\mathrm{default}}}_{t}` is absent.
 
 
 
@@ -24360,7 +24367,6 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Nondefaultable: `|-%NONDEFAULTABLE`valtype
 Numtype_ok
 - the number type numtype is valid.
 
@@ -25100,7 +25106,7 @@ Catch_ok/catch_all_ref
 
 Defaultable
 - the value type t is defaultable if:
-  - the value $default_(t) is different from ?().
+  - the value $default_(t) is not ?().
 
 Instr_ok/nop
 - the instruction NOP is valid with the instruction type [] -> [].
@@ -25795,6 +25801,10 @@ Instrs_ok/frame
 Expr_ok
 - the expression instr* is valid with the result type t* if:
   - instr* is valid with the instruction type [] -> t*.
+
+Nondefaultable
+- the value type t is not defaultable if:
+  - the value $default_(t) is ?().
 
 Instr_const
 - the instruction instr_u1 is constant if:
