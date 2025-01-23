@@ -3039,7 +3039,7 @@ relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
 ;; 3-typing.watsup
 rec {
 
-;; 3-typing.watsup:143.1-143.102
+;; 3-typing.watsup:143.1-143.124
 relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
   ;; 3-typing.watsup:211.1-212.23
   rule empty{C : context, x : idx}:
@@ -4142,13 +4142,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; 3-typing.watsup
 rec {
 
-;; 3-typing.watsup:1381.1-1381.100
+;; 3-typing.watsup:1382.1-1382.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 3-typing.watsup:1425.1-1426.17
+  ;; 3-typing.watsup:1426.1-1427.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 3-typing.watsup:1428.1-1431.54
+  ;; 3-typing.watsup:1429.1-1432.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -4158,13 +4158,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 3-typing.watsup
 rec {
 
-;; 3-typing.watsup:1380.1-1380.98
+;; 3-typing.watsup:1381.1-1381.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 3-typing.watsup:1417.1-1418.17
+  ;; 3-typing.watsup:1418.1-1419.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 3-typing.watsup:1420.1-1423.49
+  ;; 3-typing.watsup:1421.1-1424.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})

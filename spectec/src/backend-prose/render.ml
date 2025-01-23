@@ -712,6 +712,10 @@ let render_context env e1 e2 =
       (render_paths env ps)
   | _ -> assert false
 
+let render_pp_hint = function
+  | Some text -> " " ^ text ^ " "
+  | None -> " with "
+
 let rec render_single_stmt ?(with_type=true) env stmt  =
   let render_hd_expr = if with_type then render_expr_with_type else render_expr in
   match stmt with
@@ -729,11 +733,12 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
       sprintf "%s %s %s" (render_hd_expr env e1) cmpop rhs
-    | IsValidS (c_opt, e, es) ->
+    | IsValidS (c_opt, e, es, pphint) ->
+      let prep = render_pp_hint pphint in
       sprintf "%s%s is valid%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_hd_expr env e)
-        (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
+        (if es = [] then "" else prep ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
       sprintf "%s matches itself"
         (render_hd_expr env e1)

@@ -13519,7 +13519,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Either:
@@ -13532,7 +13532,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\sc
 
       * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x + 1)})`.
    * Or:
 
       * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{subtype}}^\ast}`.
@@ -13544,22 +13544,22 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\sc
 
 
 
-The recursive type :math:`(\mathsf{rec}~\epsilon)` is valid with :math:`({\mathsf{ok}}{(x)})`.
+The recursive type :math:`(\mathsf{rec}~\epsilon)` is valid for :math:`({\mathsf{ok}}{(x)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1)})`.
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x + 1)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the sub type sequence :math:`{{\mathit{subtype}}^\ast}` prepended to the field :math:`\mathsf{recs}`.
@@ -13572,7 +13572,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid wit
 The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{(x)})`.
+   * The recursive type :math:`{\mathit{rectype}}` is valid for :math:`({\mathsf{ok}}{(x)})`.
 
    * The recursive type :math:`{\mathit{rectype}}` is equal to :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
@@ -13581,7 +13581,7 @@ The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
 
-The limits :math:`{}[~n~..~m~]` is valid with :math:`k` if:
+The limits :math:`{}[~n~..~m~]` is valid within :math:`k` if:
 
 
    * :math:`n` is less than or equal to :math:`m`.
@@ -13602,7 +13602,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is valid if:
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
+   * The limits :math:`{\mathit{limits}}` is valid within :math:`{2^{32}} - 1`.
 
    * The reference type :math:`{\mathit{reftype}}` is valid.
 
@@ -13612,7 +13612,7 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is valid if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is valid within :math:`{2^{16}}`.
 
 
 
@@ -13889,7 +13889,7 @@ The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` matches the extern
 
 
 
-The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the instruction type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid as the instruction type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -13919,7 +13919,7 @@ The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is 
 
 
 
-The block type :math:`{{\mathit{valtype}}^?}` is valid with the instruction type :math:`\epsilon~\rightarrow~{{\mathit{valtype}}^?}` if:
+The block type :math:`{{\mathit{valtype}}^?}` is valid as the instruction type :math:`\epsilon~\rightarrow~{{\mathit{valtype}}^?}` if:
 
 
    * If :math:`{\mathit{valtype}}` is defined, then:
@@ -13929,7 +13929,7 @@ The block type :math:`{{\mathit{valtype}}^?}` is valid with the instruction type
 
 
 
-The block type :math:`{\mathit{typeidx}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The block type :math:`{\mathit{typeidx}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
@@ -14077,7 +14077,7 @@ The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}
 The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
@@ -14089,7 +14089,7 @@ The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` i
 The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_1^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
@@ -14101,7 +14101,7 @@ The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is
 The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
@@ -14337,7 +14337,7 @@ The instruction :math:`\mathsf{throw\_ref}` is valid with the instruction type :
 The instruction :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
@@ -15552,7 +15552,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is valid with :math:`({\mathsf{ok}}{(x)})`.
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is valid for :math:`({\mathsf{ok}}{(x)})`.
 
 
 
@@ -16031,7 +16031,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
-      * The data segment :math:`{\mathit{data}}` is valid with the data type :math:`{\mathit{ok}}`.
+      * The data segment :math:`{\mathit{data}}` is valid.
 
    * If :math:`{\mathit{start}}` is defined, then:
 
@@ -16098,7 +16098,7 @@ The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptst
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
-      * The block type :math:`{\mathit{blocktype}}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The block type :math:`{\mathit{blocktype}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
@@ -16125,7 +16125,7 @@ The instruction sequence :math:`(\mathsf{global{.}get}~x)` is valid with the fun
 The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{blocktype}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{blocktype}}` is valid as the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
@@ -24847,39 +24847,39 @@ Rectype_ok2/cons
   - the recursive type (REC subtype*) is valid with (OK (x + 1) (i + 1)).
 
 Rectype_ok
-- the recursive type (REC st_u1*) is valid with (OK x) if:
+- the recursive type (REC st_u1*) is valid for (OK x) if:
   - Either:
     - the sub type sequence st_u1* is [].
   - Or:
     - st_u1* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x).
-    - the recursive type (REC subtype*) is valid with (OK (x + 1)).
+    - the recursive type (REC subtype*) is valid for (OK (x + 1)).
   - Or:
     - st_u1* is subtype*.
     - the context C' is the context C with .RECS prepended by subtype*.
     - Under the context C', (REC subtype*) is valid with (OK x 0).
 
 Rectype_ok/empty
-- the recursive type (REC []) is valid with (OK x).
+- the recursive type (REC []) is valid for (OK x).
 
 Rectype_ok/cons
-- the recursive type (REC [subtype_1] :: subtype*) is valid with (OK x) if:
+- the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x) if:
   - the sub type subtype_1 is valid with (OK x).
-  - the recursive type (REC subtype*) is valid with (OK (x + 1)).
+  - the recursive type (REC subtype*) is valid for (OK (x + 1)).
 
 Rectype_ok/rec2
-- the recursive type (REC subtype*) is valid with (OK x) if:
+- the recursive type (REC subtype*) is valid for (OK x) if:
   - the context C' is the context C with .RECS prepended by subtype*.
   - Under the context C', (REC subtype*) is valid with (OK x 0).
 
 Deftype_ok
 - the defined type (DEF rectype i) is valid if:
-  - the recursive type rectype is valid with (OK x).
+  - the recursive type rectype is valid for (OK x).
   - rectype is (REC subtype^n).
   - i is less than n.
 
 Limits_ok
-- the limits ([ n .. m ]) is valid with k if:
+- the limits ([ n .. m ]) is valid within k if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
@@ -24889,12 +24889,12 @@ Globaltype_ok
 
 Tabletype_ok
 - the table type (addrtype limits reftype) is valid if:
-  - the limits limits is valid with ((2 ^ 32) - 1).
+  - the limits limits is valid within ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
 Memtype_ok
 - the memory type addrtype limits PAGE is valid if:
-  - the limits limits is valid with (2 ^ 16).
+  - the limits limits is valid within (2 ^ 16).
 
 Tagtype_ok
 - the tag type deftype is valid if:
@@ -25036,7 +25036,7 @@ Externtype_sub/tag
   - the tag type tagtype_1 matches the tag type tagtype_2.
 
 Blocktype_ok
-- the block type bt_u1 is valid with the instruction type t_u1* -> t_u2* if:
+- the block type bt_u1 is valid as the instruction type t_u1* -> t_u2* if:
   - Either:
     - bt_u1 is (_RESULT valtype?).
     - the value type sequence t_u1* is [].
@@ -25051,12 +25051,12 @@ Blocktype_ok
     - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Blocktype_ok/valtype
-- the block type (_RESULT valtype?) is valid with the instruction type [] -> valtype? if:
+- the block type (_RESULT valtype?) is valid as the instruction type [] -> valtype? if:
   - If valtype is defined, then:
     - the value type valtype is valid.
 
 Blocktype_ok/typeidx
-- the block type (_IDX typeidx) is valid with the instruction type t_1* -> t_2* if:
+- the block type (_IDX typeidx) is valid as the instruction type t_1* -> t_2* if:
   - the defined type C.TYPES[typeidx] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
@@ -25131,19 +25131,19 @@ Instr_ok/select
 
 Instr_ok/block
 - the instruction (BLOCK bt instr*) is valid with the instruction type t_1* -> t_2* if:
-  - the block type bt is valid with t_1* -> t_2*.
+  - the block type bt is valid as t_1* -> t_2*.
   - the context C' is the context C with .LABELS prepended by [t_2*].
   - Under the context C', the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
 
 Instr_ok/loop
 - the instruction (LOOP bt instr*) is valid with the instruction type t_1* -> t_2* if:
-  - the block type bt is valid with t_1* -> t_2*.
+  - the block type bt is valid as t_1* -> t_2*.
   - the context C' is the context C with .LABELS prepended by [t_1*].
   - Under the context C', the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
 
 Instr_ok/if
 - the instruction (IF bt instr_1* ELSE instr_2*) is valid with the instruction type t_1* :: [I32] -> t_2* if:
-  - the block type bt is valid with the instruction type t_1* -> t_2*.
+  - the block type bt is valid as the instruction type t_1* -> t_2*.
   - the context C' is the context C with .LABELS prepended by [t_2*].
   - Under the context C', the instruction sequence instr_1* is valid with the instruction type t_1* ->_ x_1* t_2*.
   - Under the context C', the instruction sequence instr_2* is valid with the instruction type t_1* ->_ x_2* t_2*.
@@ -25261,7 +25261,7 @@ Instr_ok/throw_ref
 
 Instr_ok/try_table
 - the instruction (TRY_TABLE bt catch* instr*) is valid with the instruction type t_1* -> t_2* if:
-  - the block type bt is valid with t_1* -> t_2*.
+  - the block type bt is valid as t_1* -> t_2*.
   - the context C' is the context C with .LABELS prepended by [t_2*].
   - Under the context C', the instruction sequence instr* is valid with the instruction type t_1* ->_ x* t_2*.
   - For all catch in catch*:
@@ -25897,7 +25897,7 @@ Type_ok
   - |C.TYPES| is x.
   - dt* is $rolldt(x, rectype).
   - the context C' is the context C with .TYPES appended by dt*.
-  - Under the context C', the recursive type rectype is valid with (OK x).
+  - Under the context C', the recursive type rectype is valid for (OK x).
 
 Local_ok
 - the local (LOCAL t) is valid with the local type (init_u1 t) if:
@@ -26141,7 +26141,7 @@ Module_ok
     - the element segment elem is valid with the element type rt.
   - |data*| is |ok*|.
   - For all data in data* and ok in ok*:
-    - the data segment data is valid with the data type ok.
+    - the data segment data is valid.
   - If start is defined, then:
     - the start function start is valid.
   - |export*| is |nm*|.
@@ -26149,7 +26149,7 @@ Module_ok
   - For all export in export* and nm in nm* and xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(name, nm*) is true.
-  - the context C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
+  - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
   - the context C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
@@ -26175,7 +26175,7 @@ NotationTypingInstrScheme
     - instr_u1 is (BLOCK blocktype instr*).
     - t_u1* is t_1*.
     - t_u3* is t_2*.
-    - the block type blocktype is valid with the instruction type t_1* -> t_2*.
+    - the block type blocktype is valid as the instruction type t_1* -> t_2*.
     - the context C' is the context C with .LABELS prepended by [t_2*].
     - Under the context C', the instruction sequence instr* is valid with t_1* -> t_2*.
 
@@ -26189,7 +26189,7 @@ NotationTypingInstrScheme/global.get
 
 NotationTypingInstrScheme/block
 - the instruction sequence [(BLOCK blocktype instr*)] is valid with the function type t_1* -> t_2* if:
-  - the block type blocktype is valid with t_1* -> t_2*.
+  - the block type blocktype is valid as t_1* -> t_2*.
   - the context C' is the context C with .LABELS prepended by [t_2*].
   - Under the context C', the instruction sequence instr* is valid with t_1* -> t_2*.
 

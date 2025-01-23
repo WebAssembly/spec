@@ -34,8 +34,8 @@ let flatten_rec def =
 
 let is_context_rel def =
   match def.it with
-  | Ast.RelD (id, _, { it = TupT ((_, t) :: _); _}, _) ->
-    Il.Print.string_of_typ t = "context" || id.it = "Expand"
+  | Ast.RelD (_, _, { it = TupT ((_, t) :: _); _}, _) ->
+    Il.Print.string_of_typ t = "context"
   | _ -> false
 
 let is_empty_context_rel def =
@@ -43,7 +43,8 @@ let is_empty_context_rel def =
   | Ast.RelD (_, [ { it = Atom.Turnstile; _} ] :: _, _, _) -> true
   | _ -> false
 
-let _is_aux_rel def =
+(* Other relations we want to be included as validation *)
+let is_aux_rel def =
   match def.it with
   | Ast.RelD (id, _, { it = TupT ((_, _) :: _); _}, _) -> id.it = "Expand"
   | _ -> false
@@ -51,7 +52,7 @@ let _is_aux_rel def =
 let extract_validation_il il =
   il
   |> List.concat_map flatten_rec
-  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
+  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel || is_aux_rel rel)
 
 let extract_rel_ids il =
   List.map (fun def ->
@@ -60,12 +61,15 @@ let extract_rel_ids il =
     | _ -> assert false
   ) il
 
-let extract_rel_hints valid_il il =
+let extract_prose_hints valid_il il =
   let rel_ids = extract_rel_ids valid_il in
   List.fold_left (fun m def ->
     match def.it with
     | Ast.HintD {it = RelH (id', hints); _} when List.mem id'.it rel_ids ->
-      HintMap.add id'.it hints m
+      let hints' = List.filter (fun Ast.{hintid; _} ->
+        String.starts_with ~prefix:"prose" hintid.it) hints
+      in
+      HintMap.add id'.it hints' m
     | _ -> m
   ) HintMap.empty il
 
@@ -76,14 +80,17 @@ let rel_has_id id rel =
   | Ast.RelD (id', _, _, _) -> id.it = id'.it
   | _ -> false
 
-let extract_prose_hint Ast.{hintid; hintexp} =
-  match hintid.it, hintexp.it with
-  | "prose", TextE hint -> Some hint
+let extract_prose_hint target Ast.{hintid; hintexp} =
+  match hintexp.it with
+  | TextE hint when hintid.it = target -> Some hint
+  | _ when hintid.it = target ->
+    El.Print.string_of_exp hintexp |> print_endline;
+    None
   | _ -> None
 
-let extract_rel_hint id =
-  match HintMap.find_opt id.it !Langs.rel_hints with
-  | Some hints -> List.find_map extract_prose_hint hints
+let extract_rel_hint relid hintid =
+  match HintMap.find_opt relid.it !Langs.prose_hints with
+  | Some hints -> List.find_map (extract_prose_hint hintid) hints
   | None -> None
 
 let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
@@ -140,12 +147,12 @@ let is_zero e =
 
 type rel_kind =
   | ValidRel
-  | ValidInstrRel
-  | ValidWithRel
+  | ValidInstrRel of string option
+  | ValidWithRel of string option
   | MatchRel
   | ConstRel
-  | ValidConstRel
-  | ValidWith2Rel
+  | ValidConstRel of string option
+  | ValidWith2Rel of string option
   | DefaultableRel of cmpop
   | OtherRel
 
@@ -165,22 +172,26 @@ let get_rel_kind def =
     | Il.Ast.TupT [_; (_, t); _] -> Il.Print.string_of_typ t = "instr"
     | _ -> false
   in
+  let extract_pphint relid = extract_rel_hint relid "prosepp" in
 
   match def.it with
-  | Ast.RelD (_, mixop, typ, _) ->
+  | Ast.RelD (id, mixop, typ, _) ->
       let match_mixop pattern = Mixop.(eq mixop pattern || eq mixop (List.tl pattern)) in
       if match_mixop valid_pattern then
         ValidRel
       else if match_mixop valid_with_pattern then
-        ( if has_instr_as_second typ then ValidInstrRel else ValidWithRel )
+        let prep_hint = extract_pphint id in
+        ( if has_instr_as_second typ then ValidInstrRel prep_hint else ValidWithRel prep_hint)
       else if match_mixop match_pattern then
         MatchRel
       else if match_mixop const_pattern then
         ConstRel
       else if match_mixop valid_const_pattern then
-        ValidConstRel
+        let prep_hint = extract_pphint id in
+        ValidConstRel prep_hint
       else if match_mixop valid_with2_pattern then
-        ValidWith2Rel
+        let prep_hint = extract_pphint id in
+        ValidWith2Rel prep_hint
       else if match_mixop defaultable_pattern then
         DefaultableRel `EqOp
       else if match_mixop nondefaultable_pattern then
@@ -285,7 +296,7 @@ let extract_context frees c =
 
 let inject_ctx' c stmt =
   match stmt with
-  | IsValidS (None, e, es) -> IsValidS (Some c, e, es)
+  | IsValidS (None, e, es, pphint) -> IsValidS (Some c, e, es, pphint)
   | IsConstS (None, e) -> IsConstS (Some c, e)
   | _ -> stmt
 
@@ -308,29 +319,29 @@ let rec prem_to_instrs prem =
     in
     let frees = (Free.free_prem prem).varid in
     let args = exp_to_argexpr e in
-    ( match extract_rel_hint id with
+    ( match extract_rel_hint id "prose" with
     | Some hint ->
       (* Relation with prose hint *)
       [ RelS (hint, args) ]
     | None ->
       ( match get_rel_kind rel, args with
       (* contextless *)
-      | ValidRel,      [e]         -> [ IsValidS (None, e, []) ]
-      | ValidInstrRel, [e; t]      -> [ IsValidS (None, e, [t]) ]
-      | ValidWithRel,  [e; e']     -> [ IsValidS (None, e, [e']) ]
+      | ValidRel,      [e]         -> [ IsValidS (None, e, [], None) ]
+      | ValidInstrRel pphint, [e; t]      -> [ IsValidS (None, e, [t], pphint) ]
+      | ValidWithRel pphint,  [e; e']     -> [ IsValidS (None, e, [e'], pphint) ]
       | MatchRel,      [t1; t2]    -> [ MatchesS (t1, t2) ]
       | ConstRel,      [e]         -> [ IsConstS (None, e) ]
-      | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
-      | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
+      | ValidConstRel pphint, [e; e']     -> [ IsValidS (None, e, [e'], pphint); IsConstS (None, e) ]
+      | ValidWith2Rel pphint, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2], pphint) ]
       | DefaultableRel cmpop, [e]        -> [ IsDefaultableS (e, cmpop) ]
       (* context *)
-      | ValidRel,      [c; e]         -> [ IsValidS (None, e, []) ] |> inject_ctx frees c
-      | ValidInstrRel, [c; e; t]      -> [ IsValidS (None, e, [t]) ] |> inject_ctx frees c
-      | ValidWithRel,  [c; e; e']     -> [ IsValidS (None, e, [e']) ] |> inject_ctx frees c
+      | ValidRel,      [c; e]         -> [ IsValidS (None, e, [], None) ] |> inject_ctx frees c
+      | ValidInstrRel pphint, [c; e; t]      -> [ IsValidS (None, e, [t], pphint) ] |> inject_ctx frees c
+      | ValidWithRel pphint,  [c; e; e']     -> [ IsValidS (None, e, [e'], pphint) ] |> inject_ctx frees c
       | MatchRel,      [_; t1; t2]    -> [ MatchesS (t1, t2) ]
       | ConstRel,      [c; e]         -> [ IsConstS (None, e) ] |> inject_ctx frees c
-      | ValidConstRel, [c; e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ] |> inject_ctx frees c
-      | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ] |> inject_ctx frees c
+      | ValidConstRel pphint, [c; e; e']     -> [ IsValidS (None, e, [e'], pphint); IsConstS (None, e) ] |> inject_ctx frees c
+      | ValidWith2Rel pphint, [c; e; e1; e2] -> [ IsValidS (None, e, [e1; e2], pphint) ] |> inject_ctx frees c
       (* others *)
       | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]
       | _,              _             -> assert false )
@@ -465,7 +476,7 @@ let proses_of_rel mk_concl def =
 (** 1. C |- expr : OK *)
 let proses_of_valid_rel = proses_of_rel (fun rule ->
   let e = extract_single_rule rule in
-  IsValidS (None, exp_to_expr e, []))
+  IsValidS (None, exp_to_expr e, [], None))
 
 (** 2. C |- instr : type **)
 (* Validation prose for instructions are not grouped according to relation name
@@ -491,12 +502,12 @@ let rec group_vrules = function
       let same_rules = List.map snd same_rules in
       let group = (rule_name, rel_id, rule :: same_rules) in
       group :: group_vrules diff_rules
-let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
+let vrule_group_to_prose pphint ((rule_name, rel_id, vrules): vrule_group) =
   prose_of_rules
     (rel_id.it ^ "/" ^ rule_name)
-    (fun rule -> let winstr, t = extract_pair_rule rule in IsValidS (None, exp_to_expr winstr, [exp_to_expr t]))
+    (fun rule -> let winstr, t = extract_pair_rule rule in IsValidS (None, exp_to_expr winstr, [exp_to_expr t], pphint))
     vrules
-let proses_of_valid_instr_rel rel =
+let proses_of_valid_instr_rel pphint rel =
   let groups = rel
     |> extract_vrules
     |> group_vrules
@@ -508,22 +519,22 @@ let proses_of_valid_instr_rel rel =
         let frees = (Il2al.Free.free_rules rules).varid in
         name, id, Il2al.Unify.(unify_rules (init_env frees) rules
       ))
-    |> List.map vrule_group_to_prose
+    |> List.map (vrule_group_to_prose pphint)
   in
 
   let ungrouped_proses =
     groups
     |> List.filter (fun (_, _, rules) -> List.length rules > 1)
     |> List.concat_map (fun (_, id, rules) -> List.map (fun r -> (full_name_of_rule r, id, [r])) rules)
-    |> List.map vrule_group_to_prose
+    |> List.map (vrule_group_to_prose pphint)
   in
 
   grouped_proses @ ungrouped_proses
 
 (** 3. C |- expr : expr **)
-let proses_of_valid_with_rel = proses_of_rel (fun rule ->
+let proses_of_valid_with_rel pphint = proses_of_rel (fun rule ->
   let e1, e2 = extract_pair_rule rule in
-  IsValidS (None, exp_to_expr e1, [exp_to_expr e2]))
+  IsValidS (None, exp_to_expr e1, [exp_to_expr e2], pphint))
 
 (** 4. C |- type <: type **)
 let proses_of_match_rel = proses_of_rel (fun rule ->
@@ -536,12 +547,12 @@ let proses_of_const_rel = proses_of_rel (fun rule ->
   IsConstS (None, exp_to_expr e))
 
 (** 6. C |- expr : expr CONST **)
-let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
+let proses_of_valid_const_rel _phint _def = [] (* Do not generate prose *)
 
 (** 7. C |- expr : expr expr **)
-let proses_of_valid_with2_rel = proses_of_rel (fun rule ->
+let proses_of_valid_with2_rel pphint = proses_of_rel (fun rule ->
   let e1, e2, e3 = extract_triplet_rule rule in
-  IsValidS (None, exp_to_expr e1, [exp_to_expr e2; exp_to_expr e3]))
+  IsValidS (None, exp_to_expr e1, [exp_to_expr e2; exp_to_expr e3], pphint))
 
 (** 8. |- expr DEFAULTABLE(NONDEFAULTABLE) **)
 let proses_of_defaultable_rel cmpop = proses_of_rel (fun rule ->
@@ -557,12 +568,12 @@ let proses_of_other_rel rel = ( match rel.it with
 
 let prose_of_rel rel = match get_rel_kind rel with
   | ValidRel      -> proses_of_valid_rel rel
-  | ValidInstrRel -> proses_of_valid_instr_rel rel
-  | ValidWithRel  -> proses_of_valid_with_rel rel
+  | ValidInstrRel pphint -> proses_of_valid_instr_rel pphint rel
+  | ValidWithRel pphint -> proses_of_valid_with_rel pphint rel
   | MatchRel      -> proses_of_match_rel rel
   | ConstRel      -> proses_of_const_rel rel
-  | ValidConstRel -> proses_of_valid_const_rel rel
-  | ValidWith2Rel -> proses_of_valid_with2_rel rel
+  | ValidConstRel pphint -> proses_of_valid_const_rel pphint rel
+  | ValidWith2Rel pphint -> proses_of_valid_with2_rel pphint rel
   | DefaultableRel cmpop -> proses_of_defaultable_rel cmpop rel
   | OtherRel      -> proses_of_other_rel rel
 
@@ -670,7 +681,7 @@ let gen_execution_prose () =
 let gen_prose el il al =
   Langs.el := el;
   Langs.validation_il := extract_validation_il il;
-  Langs.rel_hints := extract_rel_hints !Langs.validation_il il;
+  Langs.prose_hints := extract_prose_hints !Langs.validation_il il;
   Langs.il := il;
   Langs.al := al;
 
