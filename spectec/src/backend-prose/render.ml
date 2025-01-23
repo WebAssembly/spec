@@ -747,7 +747,7 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         (render_hd_expr env e1)
         (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
-      sprintf "%s%s is const"
+      sprintf "%s%s is constant"
         (render_opt "under the context " (render_expr_with_type env) ", " c_opt)
         (render_expr env e)
     | IsDefinedS e ->

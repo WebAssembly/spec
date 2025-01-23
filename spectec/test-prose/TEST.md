@@ -617,7 +617,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is const if:
+:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
 
 
    * Either:
@@ -635,12 +635,12 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-:math:`(t{.}\mathsf{const}~c)` is const.
+:math:`(t{.}\mathsf{const}~c)` is constant.
 
 
 
 
-:math:`(\mathsf{global{.}get}~x)` is const if:
+:math:`(\mathsf{global{.}get}~x)` is constant if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -650,12 +650,12 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-:math:`{{\mathit{instr}}^\ast}` is const if:
+:math:`{{\mathit{instr}}^\ast}` is constant if:
 
 
    * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`:
 
-      * :math:`{\mathit{instr}}` is const.
+      * :math:`{\mathit{instr}}` is constant.
 
 
 
@@ -689,7 +689,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 
    * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`t`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -717,7 +717,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
    * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
    * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{x^\ast}|}`.
 
@@ -739,7 +739,7 @@ The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
    * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -5335,7 +5335,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-:math:`{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is const if:
+:math:`{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
 
 
    * Either:
@@ -5362,27 +5362,27 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-:math:`({\mathit{nt}}{.}\mathsf{const}~c)` is const.
+:math:`({\mathit{nt}}{.}\mathsf{const}~c)` is constant.
 
 
 
 
-:math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})` is const.
+:math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})` is constant.
 
 
 
 
-:math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is const.
+:math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is constant.
 
 
 
 
-:math:`(\mathsf{ref{.}func}~x)` is const.
+:math:`(\mathsf{ref{.}func}~x)` is constant.
 
 
 
 
-:math:`(\mathsf{global{.}get}~x)` is const if:
+:math:`(\mathsf{global{.}get}~x)` is constant if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -5392,12 +5392,12 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-:math:`{{\mathit{instr}}^\ast}` is const if:
+:math:`{{\mathit{instr}}^\ast}` is constant if:
 
 
    * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`:
 
-      * :math:`{\mathit{instr}}` is const.
+      * :math:`{\mathit{instr}}` is constant.
 
 
 
@@ -5431,7 +5431,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -5465,7 +5465,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
       * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+      * :math:`{\mathit{expr}}` is constant.
 
    * Or:
 
@@ -5486,7 +5486,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -5508,7 +5508,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * The expression :math:`{\mathit{expr}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+      * :math:`{\mathit{expr}}` is constant.
 
    * :math:`{\mathit{elemmode}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
@@ -5526,7 +5526,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+      * :math:`{\mathit{expr}}` is constant.
 
    * Or:
 
@@ -5542,7 +5542,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -15395,7 +15395,7 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is const if:
+:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
 
 
    * Either:
@@ -15453,67 +15453,67 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is const.
+:math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is constant.
 
 
 
 
-:math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})` is const.
+:math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})` is constant.
 
 
 
 
-:math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is const.
+:math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is constant.
 
 
 
 
-:math:`\mathsf{ref{.}i{\scriptstyle 31}}` is const.
+:math:`\mathsf{ref{.}i{\scriptstyle 31}}` is constant.
 
 
 
 
-:math:`(\mathsf{ref{.}func}~x)` is const.
+:math:`(\mathsf{ref{.}func}~x)` is constant.
 
 
 
 
-:math:`(\mathsf{struct{.}new}~x)` is const.
+:math:`(\mathsf{struct{.}new}~x)` is constant.
 
 
 
 
-:math:`(\mathsf{struct{.}new\_default}~x)` is const.
+:math:`(\mathsf{struct{.}new\_default}~x)` is constant.
 
 
 
 
-:math:`(\mathsf{array{.}new}~x)` is const.
+:math:`(\mathsf{array{.}new}~x)` is constant.
 
 
 
 
-:math:`(\mathsf{array{.}new\_default}~x)` is const.
+:math:`(\mathsf{array{.}new\_default}~x)` is constant.
 
 
 
 
-:math:`(\mathsf{array{.}new\_fixed}~x~n)` is const.
+:math:`(\mathsf{array{.}new\_fixed}~x~n)` is constant.
 
 
 
 
-:math:`\mathsf{any{.}convert\_extern}` is const.
+:math:`\mathsf{any{.}convert\_extern}` is constant.
 
 
 
 
-:math:`\mathsf{extern{.}convert\_any}` is const.
+:math:`\mathsf{extern{.}convert\_any}` is constant.
 
 
 
 
-:math:`(\mathsf{global{.}get}~x)` is const if:
+:math:`(\mathsf{global{.}get}~x)` is constant if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -15523,7 +15523,7 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`({\mathsf{i}}{N} {.} {\mathit{binop}})` is const if:
+:math:`({\mathsf{i}}{N} {.} {\mathit{binop}})` is constant if:
 
 
    * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
@@ -15533,12 +15533,12 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`{{\mathit{instr}}^\ast}` is const if:
+:math:`{{\mathit{instr}}^\ast}` is constant if:
 
 
    * For all :math:`{\mathit{instr}}` in :math:`{{\mathit{instr}}^\ast}`:
 
-      * :math:`{\mathit{instr}}` is const.
+      * :math:`{\mathit{instr}}` is constant.
 
 
 
@@ -15618,7 +15618,7 @@ The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is va
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -15632,7 +15632,7 @@ The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -15670,7 +15670,7 @@ The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
       * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+      * :math:`{\mathit{expr}}` is constant.
 
    * Or:
 
@@ -15693,7 +15693,7 @@ The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the e
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
@@ -15717,7 +15717,7 @@ The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\
 
       * The expression :math:`{\mathit{expr}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+      * :math:`{\mathit{expr}}` is constant.
 
    * The element mode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
 
@@ -15737,7 +15737,7 @@ The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-      * :math:`{\mathit{expr}}` is const.
+      * :math:`{\mathit{expr}}` is constant.
 
    * Or:
 
@@ -15755,7 +15755,7 @@ The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the data
 
    * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
-   * :math:`{\mathit{expr}}` is const.
+   * :math:`{\mathit{expr}}` is constant.
 
 
 
