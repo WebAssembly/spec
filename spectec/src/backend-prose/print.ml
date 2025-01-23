@@ -367,7 +367,7 @@ let string_of_expr_with_type e =
 
 let string_of_cmpop = function
   | `EqOp -> "is"
-  | `NeOp -> "is different from"
+  | `NeOp -> "is not"
   | `LtOp -> "is less than"
   | `GtOp -> "is greater than"
   | `LeOp -> "is less than or equal to"
@@ -412,9 +412,10 @@ let rec raw_string_of_single_stmt stmt =
   | IsDefinedS e ->
     sprintf "%s exists"
       (string_of_expr_with_type e)
-  | IsDefaultableS e ->
-    sprintf "%s is defaultable"
+  | IsDefaultableS (e, cmpop) ->
+    sprintf "%s %s defaultable"
       (string_of_expr_with_type e)
+      (string_of_cmpop cmpop)
   | ContextS (e1, e2) ->
     sprintf "%s is the context %s"
       (string_of_expr_with_type e1)

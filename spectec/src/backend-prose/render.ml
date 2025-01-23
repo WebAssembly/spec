@@ -168,7 +168,7 @@ and al_to_el_expr expr =
   let exp' =
     match expr.it with
     | Al.Ast.NumE i ->
-      let natop = 
+      let natop =
         (match expr.note.it with
         | Il.Ast.VarT (id, []) when id.it = "byte" -> `HexOp
         | _ -> `DecOp
@@ -424,7 +424,7 @@ let render_el_exp env exp =
   let sexp = Str.global_replace newline "" sexp in
   render_math sexp
 
-let render_arg env arg = 
+let render_arg env arg =
   let el_arg = match al_to_el_arg arg with
   | None ->
     El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at))
@@ -616,25 +616,25 @@ and render_expr' env expr =
     (* HARDCODE: cross-reference for number type and vector type *)
     let value =
       (match desc_hint with
-      | "" -> 
+      | "" ->
         let se = render_expr env e in
         let vtref =
           ":ref:`value type <syntax-valtype>`"
         in
         sprintf "a value of %s %s" vtref se
-      | "number type" -> 
+      | "number type" ->
         let se = render_expr env e in
         let vtref =
           ":ref:`number type <syntax-numtype>`"
         in
         sprintf "a value of %s %s" vtref se
-      | "vector type" -> 
+      | "vector type" ->
         let se = render_expr env e in
         let vtref =
           ":ref:`vector type <syntax-vectype>`"
         in
         sprintf "a value of %s %s" vtref se
-      | _ -> 
+      | _ ->
         let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
         let article =
           if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
@@ -748,9 +748,10 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
     | IsDefinedS e ->
       sprintf "%s exists"
         (render_hd_expr env e)
-    | IsDefaultableS e ->
-      sprintf "%s is defaultable"
+    | IsDefaultableS (e, cmpop) ->
+      sprintf "%s %s defaultable"
         (render_hd_expr env e)
+        (render_prose_cmpop_eps cmpop)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
       let args = List.map (render_expr_with_type env) es in

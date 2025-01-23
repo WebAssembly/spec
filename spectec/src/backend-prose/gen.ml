@@ -20,6 +20,7 @@ let print_yet_prem prem fname =
 
 (* Helpers *)
 
+module HintMap = Langs.Map
 module Map = Map.Make(String)
 module Set = Set.Make(String)
 
@@ -42,10 +43,31 @@ let is_empty_context_rel def =
   | Ast.RelD (_, [ { it = Atom.Turnstile; _} ] :: _, _, _) -> true
   | _ -> false
 
+let _is_aux_rel def =
+  match def.it with
+  | Ast.RelD (id, _, { it = TupT ((_, _) :: _); _}, _) -> id.it = "Expand"
+  | _ -> false
+
 let extract_validation_il il =
   il
   |> List.concat_map flatten_rec
   |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
+
+let extract_rel_ids il =
+  List.map (fun def ->
+    match def.it with
+    | Ast.RelD (id, _, _, _) -> id.it
+    | _ -> assert false
+  ) il
+
+let extract_rel_hints valid_il il =
+  let rel_ids = extract_rel_ids valid_il in
+  List.fold_left (fun m def ->
+    match def.it with
+    | Ast.HintD {it = RelH (id', hints); _} when List.mem id'.it rel_ids ->
+      HintMap.add id'.it hints m
+    | _ -> m
+  ) HintMap.empty il
 
 let atomize atom' = atom' $$ no_region % (Atom.info "")
 
@@ -60,12 +82,9 @@ let extract_prose_hint Ast.{hintid; hintexp} =
   | _ -> None
 
 let extract_rel_hint id =
-  List.find_map (fun def ->
-    match def.it with
-    | Ast.HintD {it = RelH (id', hints); _} when id.it = id'.it ->
-      List.find_map extract_prose_hint hints
-    | _ -> None
-  ) !Langs.il
+  match HintMap.find_opt id.it !Langs.rel_hints with
+  | Some hints -> List.find_map extract_prose_hint hints
+  | None -> None
 
 let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
 
@@ -127,7 +146,7 @@ type rel_kind =
   | ConstRel
   | ValidConstRel
   | ValidWith2Rel
-  | DefaultableRel
+  | DefaultableRel of cmpop
   | OtherRel
 
 let get_rel_kind def =
@@ -139,6 +158,7 @@ let get_rel_kind def =
   let valid_const_pattern = [[]; [atomize Turnstile]; [atomize Colon]; [atomize (Atom "CONST")]] in
   let valid_with2_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []; []] in
   let defaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "DEFAULTABLE")]] in
+  let nondefaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "NONDEFAULTABLE")]] in
 
   let has_instr_as_second typ =
     match typ.it with
@@ -162,7 +182,9 @@ let get_rel_kind def =
       else if match_mixop valid_with2_pattern then
         ValidWith2Rel
       else if match_mixop defaultable_pattern then
-        DefaultableRel
+        DefaultableRel `EqOp
+      else if match_mixop nondefaultable_pattern then
+        DefaultableRel `NeOp
       else
         OtherRel
   | _ -> OtherRel
@@ -300,7 +322,7 @@ let rec prem_to_instrs prem =
       | ConstRel,      [e]         -> [ IsConstS (None, e) ]
       | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
       | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
-      | DefaultableRel, [e]        -> [ IsDefaultableS (e) ]
+      | DefaultableRel cmpop, [e]        -> [ IsDefaultableS (e, cmpop) ]
       (* context *)
       | ValidRel,      [c; e]         -> [ IsValidS (None, e, []) ] |> inject_ctx frees c
       | ValidInstrRel, [c; e; t]      -> [ IsValidS (None, e, [t]) ] |> inject_ctx frees c
@@ -334,6 +356,8 @@ let extract_single_rule rule =
     match exp.it with
     (* c? |- e : OK *)
     (* c? |- e CONST *)
+    (* |- e DEFAULTABLE *)
+    (* |- e NONDEFAULTABLE *)
     | Ast.TupE [ e ]
     | Ast.TupE [ _; e ] -> e
     | _ -> exp
@@ -519,10 +543,10 @@ let proses_of_valid_with2_rel = proses_of_rel (fun rule ->
   let e1, e2, e3 = extract_triplet_rule rule in
   IsValidS (None, exp_to_expr e1, [exp_to_expr e2; exp_to_expr e3]))
 
-(** 8. |- expr DEFAULTABLE **)
-let proses_of_defaultable_rel = proses_of_rel (fun rule ->
+(** 8. |- expr DEFAULTABLE(NONDEFAULTABLE) **)
+let proses_of_defaultable_rel cmpop = proses_of_rel (fun rule ->
   let e = extract_single_rule rule in
-  IsDefaultableS (exp_to_expr e))
+  IsDefaultableS (exp_to_expr e, cmpop))
 
 (** 9. Others **)
 let proses_of_other_rel rel = ( match rel.it with
@@ -539,7 +563,7 @@ let prose_of_rel rel = match get_rel_kind rel with
   | ConstRel      -> proses_of_const_rel rel
   | ValidConstRel -> proses_of_valid_const_rel rel
   | ValidWith2Rel -> proses_of_valid_with2_rel rel
-  | DefaultableRel    -> proses_of_defaultable_rel rel
+  | DefaultableRel cmpop -> proses_of_defaultable_rel cmpop rel
   | OtherRel      -> proses_of_other_rel rel
 
 let prose_of_rels = List.concat_map prose_of_rel
@@ -646,6 +670,7 @@ let gen_execution_prose () =
 let gen_prose el il al =
   Langs.el := el;
   Langs.validation_il := extract_validation_il il;
+  Langs.rel_hints := extract_rel_hints !Langs.validation_il il;
   Langs.il := il;
   Langs.al := al;
 
