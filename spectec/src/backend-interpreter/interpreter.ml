@@ -758,7 +758,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   AlContext.al (name, params, body, env)
 
 and call_func (name: string) (args: value list) : value option =
-  (* Module & Runtime *)
+  (* Function *)
   if bound_func name then
     [create_context name args]
     |> run
@@ -766,9 +766,15 @@ and call_func (name: string) (args: value list) : value option =
   (* Numerics *)
   else if Numerics.mem name then
     Some (Numerics.call_numerics name args)
-  (* Manual *)
-  else if Manual.mem name then
-    Some (Manual.call_func name args)
+  (* Relation *)
+  else if Relation.mem name then (
+    if bound_rule name then
+      [create_context name args]
+      |> run
+      |> AlContext.get_return_value
+    else
+      Some (Relation.call_func name args)
+  )
   else
     raise (Exception.UnknownFunc ("There is no function named: " ^ name))
 

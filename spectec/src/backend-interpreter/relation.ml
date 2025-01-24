@@ -148,7 +148,20 @@ let manual_map =
   |> FuncMap.add "Val_type" val_type
   |> FuncMap.add "Externaddr_type" externaddr_type
 
-let mem name = FuncMap.mem name manual_map
+let mem name =
+
+  let interpreter_manual_names =
+    manual_map
+    |> FuncMap.bindings
+    |> List.map fst
+  in
+
+  let il2al_manual_names =
+    Il2al.Manual.manual_algos
+    |> List.map name_of_algo
+  in
+
+  List.mem name (interpreter_manual_names @ il2al_manual_names)
 
 let call_func name args =
   let func = FuncMap.find name manual_map in

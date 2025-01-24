@@ -1,13 +1,13 @@
 (library
   (name backend_interpreter)
-  (libraries reference_interpreter util il al)
+  (libraries reference_interpreter util il2al il al)
   (modules
     interpreter
     numerics
     construct
     runner
     exception
-    manual
+    relation
     ds
     builtin
     debugger

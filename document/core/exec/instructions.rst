@@ -2262,6 +2262,8 @@ Expressions
 
 An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
+$${rule-prose: Eval_expr}
+
 .. todo:: This is the manual prose:
 
 1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.

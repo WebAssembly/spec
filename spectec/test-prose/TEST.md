@@ -2835,8 +2835,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{instr}}^\ast}`
-...........................................................................
+:math:`\mathsf{eval\_expr}~{{\mathit{instr}}^\ast}`
+...................................................
 
 
 1. Execute the instruction :math:`{{\mathit{instr}}^\ast}`.
@@ -9831,8 +9831,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{instr}}^\ast}`
-...........................................................................
+:math:`\mathsf{eval\_expr}~{{\mathit{instr}}^\ast}`
+...................................................
 
 
 1. Execute the instruction :math:`{{\mathit{instr}}^\ast}`.
@@ -24670,8 +24670,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`0`.
 
 
-the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{instr}}^\ast}`
-...........................................................................
+:math:`\mathsf{eval\_expr}~{{\mathit{instr}}^\ast}`
+...................................................
 
 
 1. Execute the instruction :math:`{{\mathit{instr}}^\ast}`.
