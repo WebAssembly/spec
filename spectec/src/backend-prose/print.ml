@@ -68,7 +68,7 @@ and string_of_expr expr =
   | BoolE b -> string_of_bool b
   | CvtE (e, _, _) -> string_of_expr e  (* TODO: show? *)
   | UnE (`NotOp, { it = IsCaseOfE (e, a); _ }) ->
-    sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
+    sprintf "%s is not %s" (string_of_expr e) (string_of_atom a)
   | UnE (`NotOp, { it = IsDefinedE e; _ }) ->
     sprintf "%s is not defined" (string_of_expr e)
   | UnE (`NotOp, { it = IsValidE e; _ }) ->
@@ -139,7 +139,7 @@ and string_of_expr expr =
   | OptE None -> "?()"
   | ContextKindE a -> sprintf "the first non-value entry of the stack is a %s" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
+  | IsCaseOfE (e, a) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)

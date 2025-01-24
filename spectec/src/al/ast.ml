@@ -87,7 +87,7 @@ and expr' =
   | GetCurContextE of atom option                 (* "the current context of certain (Some) or any (None) type" *)
   | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
-  | IsCaseOfE of expr * atom                      (* expr is of the case atom *)
+  | IsCaseOfE of expr * atom                      (* expr is atom *)
   | IsValidE of expr                              (* expr is valid *)
   | ContextKindE of atom                          (* "the fisrt non-value entry of the stack is a" atom *)
   | IsDefinedE of expr                            (* expr is defined *)

@@ -448,7 +448,7 @@ and render_expr' env expr =
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
     let se = render_expr env e in
     let sa = render_atom env a in
-    sprintf "%s is not of the case %s" se sa
+    sprintf "%s is not %s" se sa
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not defined" se
@@ -596,7 +596,7 @@ and render_expr' env expr =
   | Al.Ast.IsCaseOfE (e, a) ->
     let se = render_expr env e in
     let sa = render_atom env a in
-    sprintf "%s is of the case %s" se sa
+    sprintf "%s is %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
     let st = Option.value (render_type_desc t) ~default:(Il.Print.string_of_typ t) in
