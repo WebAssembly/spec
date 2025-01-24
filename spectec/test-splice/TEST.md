@@ -1621,6 +1621,7 @@ warning: rule prose `Elemmode_ok` was never spliced
 warning: rule prose `Elemmode_ok/active` was never spliced
 warning: rule prose `Elemmode_ok/declare` was never spliced
 warning: rule prose `Elemmode_ok/passive` was never spliced
+warning: rule prose `Eval_expr` was never spliced
 warning: rule prose `Export_ok` was never spliced
 warning: rule prose `Expr_const` was never spliced
 warning: rule prose `Expr_ok` was never spliced
@@ -2009,7 +2010,6 @@ warning: definition prose `E` was never spliced
 warning: definition prose `EQREF` was never spliced
 warning: definition prose `EXNREF` was never spliced
 warning: definition prose `EXTERNREF` was never spliced
-warning: definition prose `Eval_expr` was never spliced
 warning: definition prose `FN` was never spliced
 warning: definition prose `FUNCREF` was never spliced
 warning: definition prose `I31REF` was never spliced
