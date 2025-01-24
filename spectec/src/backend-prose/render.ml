@@ -684,15 +684,11 @@ let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
-  match (Map.find_opt s !typs) with
-  | Some t -> if t <> "" then "the " ^ t ^ " " ^ s else s
-  | None ->
-    let t = Prose_util.extract_desc e.note in
-    typs := Map.add s t !typs;
-    if t = "" then
-      render_expr env e
-    else
-      "the " ^ t ^ " " ^ s
+  let t = Prose_util.extract_desc e.note in
+  if t = "" then
+    render_expr env e
+  else
+    "the " ^ t ^ " " ^ s
 
 
 (* Validation Statements *)
