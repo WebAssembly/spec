@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version ac5ea272d, updated Fri Dec 6 15:45:15 2024 -0800" name="generator">
+  <meta content="Bikeshed version c67c745b1, updated Fri Jan 17 14:27:28 2025 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="1463895767111b39657ea73c35587d4c6054deec" name="revision">
+  <meta content="38b5bddffb98d51d28e8fd6e61340fa27daf5add" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -743,7 +743,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-12-18">18 December 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2025-01-24">24 January 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -765,7 +765,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
     </div>
    </details>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2024 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2025 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
@@ -1076,11 +1076,11 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
            <li data-md>
             <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue">ToWebAssemblyValue</a>(<var>v</var>, <var>valtype</var>).</p>
            <li data-md>
-            <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store">associated store</a>.</p>
+            <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store">associated store</a>.</p>
            <li data-md>
             <p>Let (<var>store</var>, <var>globaladdr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-alloc" id="ref-for-embed-global-alloc">global_alloc</a>(<var>store</var>, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut">const</a> <var>valtype</var>, <var>value</var>).</p>
            <li data-md>
-            <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①">associated store</a> to <var>store</var>.</p>
+            <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①">associated store</a> to <var>store</var>.</p>
           </ol>
          <li data-md>
           <p>Otherwise, if <var>v</var> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#implements" id="ref-for-implements">implements</a> <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global①">Global</a></code>,</p>
@@ -1216,7 +1216,7 @@ The verification of WebAssembly type requirements is deferred to the
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="instantiate-the-core-of-a-webassembly-module">instantiate the core of a WebAssembly module</dfn> from a module <var>module</var> and imports <var>imports</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②">associated store</a>.</p>
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-instantiate" id="ref-for-embed-module-instantiate">module_instantiate</a>(<var>store</var>, <var>module</var>, <var>imports</var>).</p>
      <li data-md>
@@ -1232,7 +1232,7 @@ The verification of WebAssembly type requirements is deferred to the
      <li data-md>
       <p>Let (<var>store</var>, <var>instance</var>) be <var>result</var>.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store③">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store③">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p>Return <var>instance</var>.</p>
     </ol>
@@ -1540,7 +1540,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-memory-object">initialize a memory object</dfn> <var>memory</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr④">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache">Memory object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent④">surrounding agent</a>’s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache">Memory object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>memaddr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exist</a>.</p>
      <li data-md>
@@ -1557,7 +1557,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-object">create a memory object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr⑤">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑤">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache①">Memory object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑤">surrounding agent</a>’s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache①">Memory object cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>memaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a>,</p>
       <ol>
@@ -1584,11 +1584,11 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>If <var>memtype</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/valid/types.html#valid-memtype" id="ref-for-valid-memtype">valid</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store④">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑥">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store④">associated store</a>.</p>
      <li data-md>
       <p>Let (<var>store</var>, <var>memaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-alloc" id="ref-for-embed-mem-alloc">mem_alloc</a>(<var>store</var>, <var>memtype</var>). If allocation fails, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑤">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑦">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑤">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-a-memory-object" id="ref-for-initialize-a-memory-object①">Initialize</a> <strong>this</strong> from <var>memaddr</var>.</p>
     </ol>
@@ -1597,7 +1597,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="refresh-the-memory-buffer">refresh the Memory buffer</dfn> of <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑧">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache②">Memory object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑧">surrounding agent</a>’s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache②">Memory object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>memaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a>.</p>
      <li data-md>
@@ -1630,7 +1630,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="grow-the-memory-buffer">grow the memory buffer</dfn> associated with a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr⑥">memory address</a> <var>memaddr</var> by <var>delta</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑥">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑨">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑥">associated store</a>.</p>
      <li data-md>
       <p>Let <var>ret</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size" id="ref-for-embed-mem-size">mem_size</a>(<var>store</var>, <var>memaddr</var>).</p>
      <li data-md>
@@ -1638,7 +1638,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑨">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑦">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⓪">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑦">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#refresh-the-memory-buffer" id="ref-for-refresh-the-memory-buffer">Refresh the memory buffer</a> of <var>memaddr</var>.</p>
      <li data-md>
@@ -1700,7 +1700,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Let <var>memaddr</var> be <strong>this</strong>.[[Memory]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑧">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①①">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑧">associated store</a>.</p>
      <li data-md>
       <p>Let <var>memtype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-type" id="ref-for-embed-mem-type">mem_type</a>(<var>store</var>, <var>memaddr</var>).</p>
      <li data-md>
@@ -1733,7 +1733,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
       <p>If <var>buffer</var>.[[ArrayBufferDetachKey]] is "WebAssembly.Memory",</p>
       <ol>
        <li data-md>
-        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①②">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache③">Memory object cache</a>.</p>
+        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①②">surrounding agent</a>’s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache③">Memory object cache</a>.</p>
        <li data-md>
         <p class="assertion">Assert: <var>buffer</var> is the [[BufferObject]] of exactly one value in <var>map</var>.</p>
        <li data-md>
@@ -1796,7 +1796,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-table-object">initialize a table object</dfn> <var>table</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr" id="ref-for-syntax-tableaddr②">table address</a> <var>tableaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>'s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache">Table object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>’s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache">Table object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>tableaddr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exist</a>.</p>
      <li data-md>
@@ -1809,7 +1809,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-table-object">create a table object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr" id="ref-for-syntax-tableaddr③">table address</a> <var>tableaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache①">Table object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①④">surrounding agent</a>’s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache①">Table object cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>tableaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a>,</p>
       <ol>
@@ -1857,11 +1857,11 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
         <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑧">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
       </ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑨">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑤">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑨">associated store</a>.</p>
      <li data-md>
       <p>Let (<var>store</var>, <var>tableaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-alloc" id="ref-for-embed-table-alloc">table_alloc</a>(<var>store</var>, <var>type</var>, <var>ref</var>). If allocation fails, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⓪">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑥">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⓪">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-a-table-object" id="ref-for-initialize-a-table-object①">Initialize</a> <strong>this</strong> from <var>tableaddr</var>.</p>
     </ol>
@@ -1872,7 +1872,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>tableaddr</var> be <strong>this</strong>.[[Table]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①①">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑦">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①①">associated store</a>.</p>
      <li data-md>
       <p>Let <var>initialSize</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-size" id="ref-for-embed-table-size">table_size</a>(<var>store</var>, <var>tableaddr</var>).</p>
      <li data-md>
@@ -1895,7 +1895,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">RangeError</a></code> exception.</p>
       <p class="note" role="note"><span class="marker">Note:</span> The above exception can happen due to either insufficient memory or an invalid size parameter.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑧">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①②">associated store</a> to <var>result</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑧">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①②">associated store</a> to <var>result</var>.</p>
      <li data-md>
       <p>Return <var>initialSize</var>.</p>
     </ol>
@@ -1906,7 +1906,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>tableaddr</var> be <strong>this</strong>.[[Table]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①③">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑨">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①③">associated store</a>.</p>
      <li data-md>
       <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-size" id="ref-for-embed-table-size①">table_size</a>(<var>store</var>, <var>tableaddr</var>).</p>
     </ol>
@@ -1917,7 +1917,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>tableaddr</var> be <strong>this</strong>.[[Table]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①④">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⓪">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①④">associated store</a>.</p>
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-read" id="ref-for-embed-table-read">table_read</a>(<var>store</var>, <var>tableaddr</var>, <var>index</var>).</p>
      <li data-md>
@@ -1946,13 +1946,13 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
         <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⓪">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue③">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
       </ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑤">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②①">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑤">associated store</a>.</p>
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-write" id="ref-for-embed-table-write">table_write</a>(<var>store</var>, <var>tableaddr</var>, <var>index</var>, <var>ref</var>).</p>
      <li data-md>
       <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①②">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑥">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②②">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑥">associated store</a> to <var>store</var>.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="5.5" id="globals"><span class="secno">5.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
@@ -1988,7 +1988,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-global-object">initialize a global object</dfn> <var>global</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr②">global address</a> <var>globaladdr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②③">surrounding agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache">Global object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②③">surrounding agent</a>’s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache">Global object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>globaladdr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exist</a>.</p>
      <li data-md>
@@ -2001,7 +2001,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-global-object">create a global object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr③">global address</a> <var>globaladdr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache①">Global object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②④">surrounding agent</a>’s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache①">Global object cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>globaladdr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>,</p>
       <ol>
@@ -2148,12 +2148,12 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
    <h3 class="heading settled" data-level="5.6" id="exported-function-exotic-objects"><span class="secno">5.6. </span><span class="content">Exported Functions</span><a class="self-link" href="#exported-function-exotic-objects"></a></h3>
    <p>A WebAssembly function is made available in JavaScript as an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="exported-function">Exported Function</dfn>.
 Exported Functions are <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-built-in-function-objects" id="ref-for-sec-built-in-function-objects">Built-in Function Objects</a> which are not constructors, and which have a [[FunctionAddress]] internal slot.
-This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr①">function address</a> relative to the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②②">associated store</a>.</p>
+This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr①">function address</a> relative to the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑤">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②②">associated store</a>.</p>
    <div class="algorithm" data-algorithm="name of the WebAssembly function">
      The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="name-of-the-webassembly-function">name of the WebAssembly function</dfn> <var>funcaddr</var> is found by performing the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②③">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑥">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②③">associated store</a>.</p>
      <li data-md>
       <p>Let <var>funcinst</var> be <var>store</var>.funcs[<var>funcaddr</var>].</p>
      <li data-md>
@@ -2182,7 +2182,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      To create <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="a-new-exported-function">a new Exported Function</dfn> from a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr②">function address</a> <var>funcaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑦">surrounding agent</a>'s associated <a data-link-type="dfn" href="#exported-function-cache" id="ref-for-exported-function-cache">Exported Function cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑦">surrounding agent</a>’s associated <a data-link-type="dfn" href="#exported-function-cache" id="ref-for-exported-function-cache">Exported Function cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>funcaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>,</p>
       <ol>
@@ -2194,7 +2194,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>realm</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>.</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑧">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②④">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑧">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②④">associated store</a>.</p>
      <li data-md>
       <p>Let <var>functype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-type" id="ref-for-embed-func-type">func_type</a>(<var>store</var>, <var>funcaddr</var>).</p>
      <li data-md>
@@ -2217,7 +2217,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="call-an-exported-function">call an Exported Function</dfn> with <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr③">function address</a> <var>funcaddr</var> and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of JavaScript arguments <var>argValues</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑤">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑨">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑤">associated store</a>.</p>
      <li data-md>
       <p>Let <var>functype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-type" id="ref-for-embed-func-type①">func_type</a>(<var>store</var>, <var>funcaddr</var>).</p>
      <li data-md>
@@ -2244,7 +2244,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let (<var>store</var>, <var>ret</var>) be the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-invoke" id="ref-for-embed-func-invoke">func_invoke</a>(<var>store</var>, <var>funcaddr</var>, <var>args</var>).</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑥">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③⓪">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑥">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p>If <var>ret</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①④">error</a>, throw an exception. This exception should be a WebAssembly <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror①">RuntimeError</a></code> exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.</p>
      <li data-md>
@@ -2350,11 +2350,11 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Otherwise, return <var>result</var>.[[Value]].</p>
       </ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑦">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③①">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑦">associated store</a>.</p>
      <li data-md>
       <p>Let (<var>store</var>, <var>funcaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-alloc" id="ref-for-embed-func-alloc">func_alloc</a>(<var>store</var>, <var>functype</var>, <var>hostfunc</var>).</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑧">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③②">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑧">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p>Return <var>funcaddr</var>.</p>
     </ol>
@@ -2407,7 +2407,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     <p>For <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="retrieving-an-extern-value">retrieving an extern value</dfn> from an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr" id="ref-for-syntax-externaddr①">extern address</a> <var>externaddr</var>, perform the following steps:</p>
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③③">surrounding agent</a>'s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache">extern value cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③③">surrounding agent</a>’s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache">extern value cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>externaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>.</p>
      <li data-md>
@@ -2509,7 +2509,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
           <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②③">ref.null</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑨">externref</a>.</p>
         </ol>
        <li data-md>
-        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache①">extern value cache</a>.</p>
+        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③④">surrounding agent</a>’s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache①">extern value cache</a>.</p>
        <li data-md>
         <p>If a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr" id="ref-for-syntax-externaddr②">extern address</a> <var>externaddr</var> exists such that <var>map</var>[<var>externaddr</var>] is the same as <var>v</var>,</p>
         <ol>
