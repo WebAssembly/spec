@@ -22,7 +22,9 @@ ${rule-ignore: Val_type/*}
 Numeric Values
 ..............
 
-.. todo:: use generated prose
+${rule-prose: Num_type}
+
+.. todo:: below is the official specification
 
 * The value is valid with :ref:`number type <syntax-numtype>` :math:`t`.
 
@@ -34,7 +36,9 @@ $${rule: Num_type}
 Vector Values
 .............
 
-.. todo:: use generated prose
+$${rule-prose: Vec_type}
+
+.. todo:: below is the official specification
 
 * The value is valid with :ref:`vector type <syntax-vectype>` :math:`t`.
 
@@ -46,7 +50,9 @@ $${rule: Vec_type}
 Null References
 ...............
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/null}
+
+.. todo:: below is the official specification
 
 * The :ref:`heap type <syntax-heaptype>` must be :ref:`valid <valid-heaptype>` under the empty :ref:`context <context>`.
 
@@ -65,7 +71,9 @@ $${rule: Ref_type/null}
 Scalar References
 .................
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/i31}
+
+.. todo:: below is the official specification
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\I31)`.
 
@@ -77,7 +85,9 @@ $${rule: Ref_type/i31}
 Structure References
 ....................
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/struct}
+
+.. todo:: below is the official specification
 
 * The :ref:`structure address <syntax-structaddr>` :math:`a` must exist in the store.
 
@@ -97,7 +107,9 @@ $${rule: Ref_type/struct}
 Array References
 ................
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/array}
+
+.. todo:: below is the official specification
 
 * The :ref:`array address <syntax-arrayaddr>` :math:`a` must exist in the store.
 
@@ -117,7 +129,9 @@ $${rule: Ref_type/array}
 Exception References
 ....................
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/exn}
+
+.. todo:: below is the official specification
 
 * The store entry :math:`S.\SEXNS[a]` must exist.
 
@@ -129,7 +143,9 @@ $${rule: Ref_type/exn}
 Function References
 ...................
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/func}
+
+.. todo:: below is the official specification
 
 * The :ref:`function address <syntax-funcaddr>` :math:`a` must exist in the store.
 
@@ -147,7 +163,9 @@ $${rule: Ref_type/func}
 Host References
 ...............
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/host}
+
+.. todo:: below is the official specification
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\ANY)`.
 
@@ -160,7 +178,9 @@ $${rule: Ref_type/host}
 External References
 ...................
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/extern}
+
+.. todo:: below is the official specification
 
 * The reference value :math:`\reff` must be valid with some :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL^?~t)`.
 
@@ -174,7 +194,9 @@ $${rule: Ref_type/extern}
 Subsumption
 ...........
 
-.. todo:: use generated prose
+$${rule-prose: Ref_type/sub}
+
+.. todo:: below is the official specification
 
 * The value must be valid with some value type :math:`t`.
 
@@ -202,7 +224,9 @@ The following auxiliary typing rules specify this typing relation relative to a 
 Functions
 .........
 
-.. todo:: use generated prose
+$${rule-prose: Externaddr_type/func}
+
+.. todo:: below is the official specification
 
 * The store entry :math:`S.\SFUNCS[a]` must exist.
 
@@ -217,7 +241,9 @@ $${rule: Externaddr_type/func}
 Tables
 ......
 
-.. todo:: use generated prose
+$${rule-prose: Externaddr_type/table}
+
+.. todo:: below is the official specification
 
 * The store entry :math:`S.\STABLES[a]` must exist.
 
@@ -232,7 +258,9 @@ $${rule: Externaddr_type/table}
 Memories
 ........
 
-.. todo:: use generated prose
+$${rule-prose: Externaddr_type/mem}
+
+.. todo:: below is the official specification
 
 * The store entry :math:`S.\SMEMS[a]` must exist.
 
@@ -247,7 +275,9 @@ $${rule: Externaddr_type/mem}
 Globals
 .......
 
-.. todo:: use generated prose
+$${rule-prose: Externaddr_type/global}
+
+.. todo:: below is the official specification
 
 * The store entry :math:`S.\SGLOBALS[a]` must exist.
 
@@ -262,7 +292,9 @@ $${rule: Externaddr_type/global}
 Tags
 ....
 
-.. todo:: use generated prose
+$${rule-prose: Externaddr_type/tag}
+
+.. todo:: below is the official specification
 
 * The store entry :math:`S.\STAGS[a]` must exist.
 
@@ -276,7 +308,9 @@ $${rule: Externaddr_type/tag}
 Subsumption
 ...........
 
-.. todo:: use generated prose
+$${rule-prose: Externaddr_type/sub}
+
+.. todo:: below is the official specification
 
 * The external address must be valid with some external type :math:`\X{et}`.
 

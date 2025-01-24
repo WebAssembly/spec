@@ -32,27 +32,22 @@ let flatten_rec def =
   | Ast.RecD defs -> defs
   | _ -> [ def ]
 
-let is_context_rel def =
+let is_validation_helper_relation def =
   match def.it with
-  | Ast.RelD (_, _, { it = TupT ((_, t) :: _); _}, _) ->
-    Il.Print.string_of_typ t = "context"
+  | Ast.RelD (id, _, _, _) -> id.it = "Expand"
   | _ -> false
-
-let is_empty_context_rel def =
+(* NOTE: Assume validation relation is `|-` *)
+let is_validation_relation def =
   match def.it with
-  | Ast.RelD (_, [ { it = Atom.Turnstile; _} ] :: _, _, _) -> true
-  | _ -> false
-
-(* Other relations we want to be included as validation *)
-let is_aux_rel def =
-  match def.it with
-  | Ast.RelD (id, _, { it = TupT ((_, _) :: _); _}, _) -> id.it = "Expand"
+  | Ast.RelD (_, mixop, _, _) ->
+    List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) mixop
   | _ -> false
 
 let extract_validation_il il =
   il
   |> List.concat_map flatten_rec
-  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel || is_aux_rel rel)
+  |> List.filter
+    (fun rel -> is_validation_relation rel || is_validation_helper_relation rel)
 
 let extract_rel_ids il =
   List.map (fun def ->

@@ -16068,6 +16068,330 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 
+The number value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` is valid with the number type :math:`{\mathit{nt}}`.
+
+
+
+
+The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is valid with the vector type :math:`{\mathit{vt}}`.
+
+
+
+
+The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+
+
+   * Either:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
+
+      * The heap type :math:`{\mathit{ht}'}` matches the heap type :math:`{\mathit{ht}}`.
+
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}struct}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+
+      * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
+
+      * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}array}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+
+      * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
+
+      * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}host}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+   * Or:
+
+      * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{ref}}`.
+
+      * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
+
+      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}'}`.
+
+      * The reference type :math:`{\mathit{rt}'}` matches the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with the reference type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})` if:
+
+
+   * The heap type :math:`{\mathit{ht}'}` matches the heap type :math:`{\mathit{ht}}`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}struct}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+
+
+   * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
+
+   * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}array}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+
+
+   * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
+
+   * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}func}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}exn}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}host}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+
+
+
+
+The reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}` if:
+
+
+   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}'}`.
+
+   * The reference type :math:`{\mathit{rt}'}` matches the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+
+
+   * Either:
+
+      * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{num}}`.
+
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+
+      * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the number type :math:`{\mathit{nt}}`.
+
+   * Or:
+
+      * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vec}}`.
+
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vt}}`.
+
+      * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the vector type :math:`{\mathit{vt}}`.
+   * Or:
+
+      * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{ref}}`.
+
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
+
+      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The value :math:`{\mathit{num}}` is valid with the value type :math:`{\mathit{nt}}` if:
+
+
+   * Under the context :math:`s`, the value :math:`{\mathit{num}}` is valid with the value type :math:`{\mathit{nt}}`.
+
+
+
+
+The value :math:`{\mathit{vec}}` is valid with the value type :math:`{\mathit{vt}}` if:
+
+
+   * Under the context :math:`s`, the value :math:`{\mathit{vec}}` is valid with the value type :math:`{\mathit{vt}}`.
+
+
+
+
+The value :math:`{\mathit{ref}}` is valid with the value type :math:`{\mathit{rt}}` if:
+
+
+   * Under the context :math:`s`, the value :math:`{\mathit{ref}}` is valid with the value type :math:`{\mathit{rt}}`.
+
+
+
+
+The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+
+
+   * Either:
+
+      * The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~a)`.
+
+      * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is equal to :math:`{\mathit{funcinst}}`.
+
+   * Or:
+
+      * The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~a)`.
+
+      * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
+
+      * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
+
+      * The global instance :math:`s{.}\mathsf{globals}{}[a]` is equal to :math:`{\mathit{globalinst}}`.
+   * Or:
+
+      * The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~a)`.
+
+      * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
+
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
+
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` is equal to :math:`{\mathit{tableinst}}`.
+   * Or:
+
+      * The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~a)`.
+
+      * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
+
+      * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
+
+      * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is equal to :math:`{\mathit{meminst}}`.
+   * Or:
+
+      * The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~a)`.
+
+      * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
+
+      * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
+
+      * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is equal to :math:`{\mathit{taginst}}`.
+   * Or:
+
+      * The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{externaddr}}`.
+
+      * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{xt}}`.
+
+      * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is valid with the external type :math:`{\mathit{xt}'}`.
+
+      * The external type :math:`{\mathit{xt}'}` matches the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The external address :math:`(\mathsf{func}~a)` is valid with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is equal to :math:`{\mathit{funcinst}}`.
+
+
+
+
+The external address :math:`(\mathsf{global}~a)` is valid with the external type :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})` if:
+
+
+   * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
+
+   * The global instance :math:`s{.}\mathsf{globals}{}[a]` is equal to :math:`{\mathit{globalinst}}`.
+
+
+
+
+The external address :math:`(\mathsf{table}~a)` is valid with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
+
+
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
+
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` is equal to :math:`{\mathit{tableinst}}`.
+
+
+
+
+The external address :math:`(\mathsf{mem}~a)` is valid with the external type :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})` if:
+
+
+   * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
+
+   * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is equal to :math:`{\mathit{meminst}}`.
+
+
+
+
+The external address :math:`(\mathsf{tag}~a)` is valid with the external type :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})` if:
+
+
+   * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
+
+   * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is equal to :math:`{\mathit{taginst}}`.
+
+
+
+
+The external address :math:`{\mathit{externaddr}}` is valid with the external type :math:`{\mathit{xt}}` if:
+
+
+   * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is valid with the external type :math:`{\mathit{xt}'}`.
+
+   * The external type :math:`{\mathit{xt}'}` matches the external type :math:`{\mathit{xt}}`.
+
+
+
+
 The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
 
 
@@ -26158,6 +26482,177 @@ Module_ok
   - the memory type sequence mt_I* is $memsxt(xt_I*).
   - the tag type sequence jt_I* is $tagsxt(xt_I*).
   - Let t be the module type $clos_moduletype(C, xt_I* -> xt_E*).
+
+Num_type
+- the number value (nt.CONST c) is valid with the number type nt.
+
+Vec_type
+- the vector value (vt.CONST c) is valid with the vector type vt.
+
+Ref_type
+- the reference value r_u1 is valid with the reference type rt_u1 if:
+  - Either:
+    - r_u1 is (REF.NULL ht).
+    - rt_u1 is (REF ?(NULL) ht').
+    - the heap type ht' matches the heap type ht.
+  - Or:
+    - r_u1 is (REF.I31_NUM i).
+    - rt_u1 is (REF ?() I31).
+  - Or:
+    - r_u1 is (REF.STRUCT_ADDR a).
+    - rt_u1 is (REF ?() dt).
+    - the structure instance s.STRUCTS[a] exists.
+    - the defined type s.STRUCTS[a].TYPE is dt.
+  - Or:
+    - r_u1 is (REF.ARRAY_ADDR a).
+    - rt_u1 is (REF ?() dt).
+    - the array instance s.ARRAYS[a] exists.
+    - the defined type s.ARRAYS[a].TYPE is dt.
+  - Or:
+    - r_u1 is (REF.FUNC_ADDR a).
+    - rt_u1 is (REF ?() dt).
+    - the function instance s.FUNCS[a] exists.
+    - the defined type s.FUNCS[a].TYPE is dt.
+  - Or:
+    - r_u1 is (REF.EXN_ADDR a).
+    - rt_u1 is (REF ?() EXN).
+  - Or:
+    - r_u1 is (REF.HOST_ADDR a).
+    - rt_u1 is (REF ?() ANY).
+  - Or:
+    - r_u1 is (REF.EXTERN addrref).
+    - rt_u1 is (REF ?() EXTERN).
+  - Or:
+    - r_u1 is ref.
+    - rt_u1 is rt.
+    - Under the context s, the reference value ref is valid with the reference type rt'.
+    - rt' matches the reference type rt.
+
+Ref_type/null
+- the reference value (REF.NULL ht) is valid with the reference type (REF ?(NULL) ht') if:
+  - the heap type ht' matches the heap type ht.
+
+Ref_type/i31
+- the reference value (REF.I31_NUM i) is valid with the reference type (REF ?() I31).
+
+Ref_type/struct
+- the reference value (REF.STRUCT_ADDR a) is valid with the reference type (REF ?() dt) if:
+  - the structure instance s.STRUCTS[a] exists.
+  - the defined type s.STRUCTS[a].TYPE is dt.
+
+Ref_type/array
+- the reference value (REF.ARRAY_ADDR a) is valid with the reference type (REF ?() dt) if:
+  - the array instance s.ARRAYS[a] exists.
+  - the defined type s.ARRAYS[a].TYPE is dt.
+
+Ref_type/func
+- the reference value (REF.FUNC_ADDR a) is valid with the reference type (REF ?() dt) if:
+  - the function instance s.FUNCS[a] exists.
+  - the defined type s.FUNCS[a].TYPE is dt.
+
+Ref_type/exn
+- the reference value (REF.EXN_ADDR a) is valid with the reference type (REF ?() EXN).
+
+Ref_type/host
+- the reference value (REF.HOST_ADDR a) is valid with the reference type (REF ?() ANY).
+
+Ref_type/extern
+- the reference value (REF.EXTERN addrref) is valid with the reference type (REF ?() EXTERN).
+
+Ref_type/sub
+- the reference value ref is valid with the reference type rt if:
+  - Under the context s, ref is valid with the reference type rt'.
+  - rt' matches rt.
+
+Val_type
+- the value v_u1 is valid with the value type t_u1 if:
+  - Either:
+    - v_u1 is num.
+    - t_u1 is nt.
+    - Under the context s, the number value num is valid with the number type nt.
+  - Or:
+    - v_u1 is vec.
+    - t_u1 is vt.
+    - Under the context s, the vector value vec is valid with the vector type vt.
+  - Or:
+    - v_u1 is ref.
+    - t_u1 is rt.
+    - Under the context s, the reference value ref is valid with the reference type rt.
+
+Val_type/num
+- the value num is valid with the value type nt if:
+  - Under the context s, num is valid with nt.
+
+Val_type/vec
+- the value vec is valid with the value type vt if:
+  - Under the context s, vec is valid with vt.
+
+Val_type/ref
+- the value ref is valid with the value type rt if:
+  - Under the context s, ref is valid with rt.
+
+Externaddr_type
+- the external address xa_u1 is valid with the external type xt_u1 if:
+  - Either:
+    - xa_u1 is (FUNC a).
+    - xt_u1 is (FUNC funcinst.TYPE).
+    - the function instance s.FUNCS[a] exists.
+    - s.FUNCS[a] is funcinst.
+  - Or:
+    - xa_u1 is (GLOBAL a).
+    - xt_u1 is (GLOBAL globalinst.TYPE).
+    - the global instance s.GLOBALS[a] exists.
+    - s.GLOBALS[a] is globalinst.
+  - Or:
+    - xa_u1 is (TABLE a).
+    - xt_u1 is (TABLE tableinst.TYPE).
+    - the table instance s.TABLES[a] exists.
+    - s.TABLES[a] is tableinst.
+  - Or:
+    - xa_u1 is (MEM a).
+    - xt_u1 is (MEM meminst.TYPE).
+    - the memory instance s.MEMS[a] exists.
+    - s.MEMS[a] is meminst.
+  - Or:
+    - xa_u1 is (TAG a).
+    - xt_u1 is (TAG taginst.TYPE).
+    - the tag instance s.TAGS[a] exists.
+    - s.TAGS[a] is taginst.
+  - Or:
+    - xa_u1 is externaddr.
+    - xt_u1 is xt.
+    - Under the context s, the external address externaddr is valid with the external type xt'.
+    - xt' matches the external type xt.
+
+Externaddr_type/func
+- the external address (FUNC a) is valid with the external type (FUNC funcinst.TYPE) if:
+  - the function instance s.FUNCS[a] exists.
+  - s.FUNCS[a] is funcinst.
+
+Externaddr_type/global
+- the external address (GLOBAL a) is valid with the external type (GLOBAL globalinst.TYPE) if:
+  - the global instance s.GLOBALS[a] exists.
+  - s.GLOBALS[a] is globalinst.
+
+Externaddr_type/table
+- the external address (TABLE a) is valid with the external type (TABLE tableinst.TYPE) if:
+  - the table instance s.TABLES[a] exists.
+  - s.TABLES[a] is tableinst.
+
+Externaddr_type/mem
+- the external address (MEM a) is valid with the external type (MEM meminst.TYPE) if:
+  - the memory instance s.MEMS[a] exists.
+  - s.MEMS[a] is meminst.
+
+Externaddr_type/tag
+- the external address (TAG a) is valid with the external type (TAG taginst.TYPE) if:
+  - the tag instance s.TAGS[a] exists.
+  - s.TAGS[a] is taginst.
+
+Externaddr_type/sub
+- the external address externaddr is valid with the external type xt if:
+  - Under the context s, externaddr is valid with the external type xt'.
+  - xt' matches xt.
 
 NotationTypingInstrScheme
 - the instruction sequence [instr_u1] is valid with the function type t_u1* -> t_u3* if:
