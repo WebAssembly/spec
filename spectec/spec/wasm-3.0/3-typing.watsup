@@ -131,8 +131,8 @@ rule Instrtype_ok:
 
 ;; Type definitions
 
-syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))    hint(macro "%subtype")
-syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %)) hint(macro "%subtypeext")
+syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#((%)))    hint(macro "%subtype")
+syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#((%, %))) hint(macro "%subtypeext")
 
 relation Packtype_ok: context |- packtype : OK          hint(name "K-pack")    hint(macro "%packtype")
 relation Fieldtype_ok: context |- fieldtype : OK        hint(name "K-field")   hint(macro "%fieldtype")
@@ -140,7 +140,7 @@ relation Storagetype_ok: context |- storagetype : OK    hint(name "K-storage") h
 relation Comptype_ok: context |- comptype : OK          hint(name "K-comp")    hint(macro "%comptype")
 relation Functype_ok: context |- functype : OK          hint(name "K-func")    hint(macro "%functype")
 relation Subtype_ok: context |- subtype : oktypeidx     hint(name "K-sub")     hint(macro "%subtype")
-relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")
+relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")   hint(prosepp "for")
 relation Subtype_ok2: context |- subtype : oktypeidxnat hint(name "K-sub2")    hint(macro "%subtypeext")
 relation Rectype_ok2: context |- rectype : oktypeidxnat hint(name "K-rec2")    hint(macro "%rectypeext")
 relation Deftype_ok: context |- deftype : OK            hint(name "K-def")     hint(macro "%deftype")
@@ -238,7 +238,7 @@ rule Deftype_ok:
 
 ;; External types
 
-relation Limits_ok: context |- limits : nat         hint(name "K-limits") hint(macro "%limits")
+relation Limits_ok: context |- limits : nat         hint(name "K-limits") hint(macro "%limits") hint(prosepp "within")
 relation Globaltype_ok: context |- globaltype : OK  hint(name "K-global") hint(macro "%globaltype")
 relation Tabletype_ok: context |- tabletype : OK    hint(name "K-table")  hint(macro "%tabletype")
 relation Memtype_ok: context |- memtype : OK        hint(name "K-mem")    hint(macro "%memtype")
@@ -559,10 +559,10 @@ relation Instrs_ok: context |- instr* : instrtype   hint(name "T-instr*") hint(m
 relation Expr_ok: context |- expr : resulttype      hint(name "T-expr")   hint(macro "%expr")
 
 relation Defaultable: |- valtype DEFAULTABLE  hint(show $default_(%2) =/= eps)
-  hint(prose "A :ref:`default value <aux-default>` for value type %1 is defined")  ;; TODO(3, ?): avoid hardcoding reST
+  hint(prose "A :ref:`default value <aux-default>` for %1 is defined")  ;; TODO(3, ?): avoid hardcoding reST
 
 relation Nondefaultable: |- valtype NONDEFAULTABLE  hint(show $default_(%2) = eps)
-  hint(prose "A :ref:`default value <aux-default>` for value type %1 is not defined")  ;; TODO(3, ?): avoid hardcoding reST
+  hint(prose "A :ref:`default value <aux-default>` for %1 is not defined")  ;; TODO(3, ?): avoid hardcoding reST
 
 
 ;; Parametric instructions
@@ -592,7 +592,7 @@ rule Instr_ok/select-impl:
 
 ;; Block instructions
 
-relation Blocktype_ok: context |- blocktype : instrtype hint(name "K-block") hint(macro "%blocktype")
+relation Blocktype_ok: context |- blocktype : instrtype hint(name "K-block") hint(macro "%blocktype") hint(prosepp "as")
 
 rule Blocktype_ok/valtype:
   C |- _RESULT valtype? : eps -> valtype?
@@ -1259,6 +1259,7 @@ relation Mem_ok: context |- mem : memtype            hint(name "T-mem")      hin
 relation Tag_ok: context |- tag : tagtype            hint(name "T-tag")      hint(macro "%tag")
 relation Elem_ok: context |- elem : elemtype         hint(name "T-elem")     hint(macro "%elem")
 relation Data_ok: context |- data : datatype         hint(name "T-data")     hint(macro "%data")
+  hint(prose "%2 is valid")
 relation Elemmode_ok: context |- elemmode : elemtype hint(name "T-elemmode") hint(macro "%elemmode")
 relation Datamode_ok: context |- datamode : datatype hint(name "T-datamode") hint(macro "%datamode")
 relation Start_ok: context |- start : OK             hint(name "T-start")    hint(macro "%start")

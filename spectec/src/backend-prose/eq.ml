@@ -4,6 +4,12 @@ let eq_list eq l1 l2 =
   List.length l1 = List.length l2
   && List.for_all2 eq l1 l2
 
+let eq_pphint h1 h2 =
+  match h1, h2 with
+  | None, None -> true
+  | Some h1, Some h2 -> h1 = h2
+  | _, _ -> false
+
 let eq_cmpop = (=)
 
 let eq_expr = Al.Eq.eq_expr
@@ -17,10 +23,11 @@ let rec eq_stmt i1 i2 =
       eq_expr e11 e21
       && eq_cmpop cmp1 cmp2
       && eq_expr e12 e22
-  | IsValidS (opt1, e11, l1), IsValidS (opt2, e21, l2) ->
+  | IsValidS (opt1, e11, l1, pphint1), IsValidS (opt2, e21, l2, pphint2) ->
       Option.equal eq_expr opt1 opt2
       && eq_expr e11 e21
       && eq_list eq_expr l1 l2
+      && eq_pphint pphint1 pphint2
   | MatchesS (e11, e12), MatchesS (e21, e22) ->
       eq_expr e11 e21
       && eq_expr e12 e22
@@ -29,8 +36,9 @@ let rec eq_stmt i1 i2 =
       && eq_expr e11 e21
   | IsDefinedS e1, IsDefinedS e2 ->
       eq_expr e1 e2
-  | IsDefaultableS e1, IsDefaultableS e2 ->
+  | IsDefaultableS (e1, cmp1), IsDefaultableS (e2, cmp2) ->
       eq_expr e1 e2
+      && eq_cmpop cmp1 cmp2
   | IfS (e11, il1), IfS (e21, il2) ->
       eq_expr e11 e21
       && List.for_all2 eq_stmt il1 il2

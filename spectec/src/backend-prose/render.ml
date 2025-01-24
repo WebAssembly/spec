@@ -168,7 +168,7 @@ and al_to_el_expr expr =
   let exp' =
     match expr.it with
     | Al.Ast.NumE i ->
-      let natop = 
+      let natop =
         (match expr.note.it with
         | Il.Ast.VarT (id, []) when id.it = "byte" -> `HexOp
         | _ -> `DecOp
@@ -424,7 +424,7 @@ let render_el_exp env exp =
   let sexp = Str.global_replace newline "" sexp in
   render_math sexp
 
-let render_arg env arg = 
+let render_arg env arg =
   let el_arg = match al_to_el_arg arg with
   | None ->
     El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at))
@@ -616,25 +616,25 @@ and render_expr' env expr =
     (* HARDCODE: cross-reference for number type and vector type *)
     let value =
       (match desc_hint with
-      | "" -> 
+      | "" ->
         let se = render_expr env e in
         let vtref =
           ":ref:`value type <syntax-valtype>`"
         in
         sprintf "a value of %s %s" vtref se
-      | "number type" -> 
+      | "number type" ->
         let se = render_expr env e in
         let vtref =
           ":ref:`number type <syntax-numtype>`"
         in
         sprintf "a value of %s %s" vtref se
-      | "vector type" -> 
+      | "vector type" ->
         let se = render_expr env e in
         let vtref =
           ":ref:`vector type <syntax-vectype>`"
         in
         sprintf "a value of %s %s" vtref se
-      | _ -> 
+      | _ ->
         let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
         let article =
           if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
@@ -680,7 +680,7 @@ and render_paths env paths =
   let spaths = List.map (render_path env) paths in
   String.concat " of " spaths
 
- let typs = ref Map.empty
+let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
@@ -712,6 +712,10 @@ let render_context env e1 e2 =
       (render_paths env ps)
   | _ -> assert false
 
+let render_pp_hint = function
+  | Some text -> " " ^ text ^ " "
+  | None -> " with "
+
 let rec render_single_stmt ?(with_type=true) env stmt  =
   let render_hd_expr = if with_type then render_expr_with_type else render_expr in
   match stmt with
@@ -729,11 +733,12 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
       sprintf "%s %s %s" (render_hd_expr env e1) cmpop rhs
-    | IsValidS (c_opt, e, es) ->
+    | IsValidS (c_opt, e, es, pphint) ->
+      let prep = render_pp_hint pphint in
       sprintf "%s%s is valid%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_hd_expr env e)
-        (if es = [] then "" else " with " ^ render_list (render_expr_with_type env) " and " es)
+        (if es = [] then "" else prep ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
       sprintf "%s matches itself"
         (render_hd_expr env e1)
@@ -742,15 +747,16 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         (render_hd_expr env e1)
         (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
-      sprintf "%s%s is const"
+      sprintf "%s%s is constant"
         (render_opt "under the context " (render_expr_with_type env) ", " c_opt)
         (render_expr env e)
     | IsDefinedS e ->
       sprintf "%s exists"
         (render_hd_expr env e)
-    | IsDefaultableS e ->
-      sprintf "%s is defaultable"
+    | IsDefaultableS (e, cmpop) ->
+      sprintf "%s %s defaultable"
         (render_hd_expr env e)
+        (render_prose_cmpop_eps cmpop)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
       let args = List.map (render_expr_with_type env) es in

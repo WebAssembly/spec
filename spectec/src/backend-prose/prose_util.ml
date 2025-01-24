@@ -36,33 +36,37 @@ let rec alternate xs ys =
   | [] -> ys
   | x :: xs -> x :: alternate ys xs
 
-(* TODO: improve this *)
+(* TODO: improve prose hint implementation *)
+(* Currently hint is hardcoded as text *)
 let split_prose_hint input =
-  let rec split_aux tokens substrings i =
+  let rec split_aux tokens i =
     let len = String.length input in
-    if i >= len then (List.rev tokens, List.rev substrings)
+    if i >= len then List.rev tokens
     else if input.[i] = '%' then
       let j = ref (i + 1) in
       while !j < len && Util.Lib.Char.is_digit_ascii input.[!j] do
         incr j
       done;
       let token = String.sub input i (!j - i) in
-      split_aux (token :: tokens) substrings !j
+      split_aux (token :: tokens) !j
     else
       let j = ref i in
       while !j < len && input.[!j] <> '%' do incr j done;
       let substring = String.sub input i (!j - i) in
-      split_aux tokens (substring :: substrings) !j
+      split_aux (substring :: tokens) !j
   in
-  split_aux [] [] 0
+  split_aux [] 0
 
 let hole_to_int hole =
   int_of_string (String.sub hole 1 (String.length hole - 1))
 
 let apply_prose_hint hint args =
-  let holes, template = split_prose_hint hint in
-  let args = List.map (fun hole -> List.nth args (hole_to_int hole - 1)) holes in
-  alternate template args |> String.concat ""
+  let template = split_prose_hint hint in
+  List.map (fun token ->
+    if String.starts_with ~prefix:"%" token then List.nth args (hole_to_int token - 1)
+    else token
+   ) template;
+  |> String.concat ""
 
 let string_of_stack_prefix expr =
   let open Al.Ast in

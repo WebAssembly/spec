@@ -10,11 +10,11 @@ type stmt =
 | LetS of expr * expr
 | CondS of expr
 | CmpS of expr * cmpop * expr
-| IsValidS of expr option * expr * expr list
+| IsValidS of expr option * expr * expr list * string option
 | MatchesS of expr * expr
 | IsConstS of expr option * expr
 | IsDefinedS of expr
-| IsDefaultableS of expr
+| IsDefaultableS of expr * cmpop
 | IfS of expr * stmt list
 | ForallS of (expr * expr) list * stmt list
 | EitherS of stmt list list

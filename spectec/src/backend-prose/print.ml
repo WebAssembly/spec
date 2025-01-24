@@ -367,7 +367,7 @@ let string_of_expr_with_type e =
 
 let string_of_cmpop = function
   | `EqOp -> "is"
-  | `NeOp -> "is different from"
+  | `NeOp -> "is not"
   | `LtOp -> "is less than"
   | `GtOp -> "is greater than"
   | `LeOp -> "is less than or equal to"
@@ -378,6 +378,10 @@ let string_of_prose_binop = function
 | `OrOp -> "or"
 | `ImplOp -> "implies"
 | `EquivOp -> "if and only if"
+
+let string_of_pphint = function
+| Some text -> " " ^ text ^ " "
+| None -> " with "
 
 let rec raw_string_of_single_stmt stmt =
   match stmt with
@@ -393,11 +397,12 @@ let rec raw_string_of_single_stmt stmt =
       (string_of_expr_with_type e1)
       (string_of_cmpop cmpop)
       (string_of_expr e2)
-  | IsValidS (c_opt, e, es) ->
+  | IsValidS (c_opt, e, es, pphint) ->
+    let prep = string_of_pphint pphint in
     sprintf "%s%s is valid%s"
       (string_of_opt "Under the context " string_of_expr ", " c_opt)
       (string_of_expr_with_type e)
-      (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
+      (string_of_nullable_list string_of_expr_with_type prep " and " "" es)
   | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
     sprintf "%s matches itself"
       (string_of_expr_with_type e1)
@@ -412,9 +417,10 @@ let rec raw_string_of_single_stmt stmt =
   | IsDefinedS e ->
     sprintf "%s exists"
       (string_of_expr_with_type e)
-  | IsDefaultableS e ->
-    sprintf "%s is defaultable"
+  | IsDefaultableS (e, cmpop) ->
+    sprintf "%s %s defaultable"
       (string_of_expr_with_type e)
+      (string_of_cmpop cmpop)
   | ContextS (e1, e2) ->
     sprintf "%s is the context %s"
       (string_of_expr_with_type e1)
