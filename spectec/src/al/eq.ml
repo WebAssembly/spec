@@ -65,7 +65,7 @@ and eq_expr_record r1 r2 =
   let l2 = Record.to_list r2 in
   List.length l1 = List.length l2 &&
     List.for_all2
-      (fun (a1, e1) (a2, e2) -> Atom.eq a1 a2 && eq_expr !e1 !e2) l1 l2
+      (fun (a1, e1) (a2, e2) -> Atom.eq a1 a2 && eq_expr e1 e2) l1 l2
 
 and eq_exprs el1 el2 = eq_list eq_expr el1 el2
 
