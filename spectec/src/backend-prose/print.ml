@@ -57,10 +57,18 @@ let rec string_of_iter = function
 (* Expressions *)
 
 and string_of_record_expr r =
-  Util.Record.fold
-    (fun a v acc -> acc ^ string_of_atom a ^ ": " ^ string_of_expr v ^ "; ")
-    r "{ "
-  ^ "}"
+  let open Util in
+
+  let record_fields =
+    r
+    |> Record.to_list
+    (* Don't list empty field *)
+    |> List.filter (fun (_, v) -> v.it <> ListE [])
+    |> List.map (fun (a, v) -> string_of_atom a ^ ": " ^ string_of_expr v)
+    |> String.concat "; "
+  in
+
+  if record_fields = "" then "{}" else "{ " ^ record_fields ^ " }"
 
 and string_of_expr expr =
   match expr.it with

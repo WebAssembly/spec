@@ -867,7 +867,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
@@ -915,9 +915,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * The context :math:`C` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * The context :math:`C` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`.
 
    * The function type sequence :math:`{{\mathit{ift}}^\ast}` is equal to :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
@@ -2763,9 +2763,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
-#. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
+#. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
 #. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
 
@@ -2789,7 +2789,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
 
@@ -2808,7 +2808,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
+1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~(s, f)~\})` to the stack.
 
@@ -3291,7 +3291,7 @@ Module_ok
     - the type type is valid with the function type ft'.
   - |import*| is |ixt*|.
   - For all import in import* and ixt in ixt*:
-    - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
+    - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
   - |global*| is |gt*|.
   - For all global in global* and gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
@@ -3315,8 +3315,8 @@ Module_ok
     - the export export is valid with the external type xt.
   - |tt*| is less than or equal to 1.
   - |mt*| is less than or equal to 1.
-  - the context C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; LOCALS: []; LABELS: []; RETURN: ?(); }.
-  - the context C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; TABLES: []; MEMS: []; LOCALS: []; LABELS: []; RETURN: ?(); }.
+  - the context C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; RETURN: ?() }.
+  - the context C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; RETURN: ?() }.
   - the function type sequence ift* is $funcsxt(ixt*).
   - the global type sequence igt* is $globalsxt(ixt*).
   - the table type sequence itt* is $tablesxt(ixt*).
@@ -3497,14 +3497,14 @@ Step_read/call_indirect x
 Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func; } be $funcinst(z)[a].
+3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func } be $funcinst(z)[a].
 4. Assert: Due to validation, func is FUNC.
 5. Let (FUNC x local_0* instr*) be func.
 6. Assert: Due to validation, local_0 is LOCAL*.
 7. Let (LOCAL t)* be local_0*.
 8. Assert: Due to validation, there are at least k values on the top of the stack.
 9. Pop the values val^k from the stack.
-10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
+10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
 11. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
 
@@ -3701,7 +3701,7 @@ memsxt xt_u1*
 5. Return $memsxt(xt*).
 
 memarg0
-1. Return { ALIGN: 0; OFFSET: 0; }.
+1. Return { ALIGN: 0; OFFSET: 0 }.
 
 signed_ N i
 1. If (i < (2 ^ (N - 1))), then:
@@ -3992,17 +3992,17 @@ with_meminst (s, f) x mi
 1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
 growtable ti n
-1. Let { TYPE: ([ i .. j ]); REFS: ?(a)*; } be ti.
+1. Let { TYPE: ([ i .. j ]); REFS: ?(a)* } be ti.
 2. Let i' be (|a*| + n).
 3. If (i' <= j), then:
-  a. Let ti' be { TYPE: ([ i' .. j ]); REFS: ?(a)* :: ?()^n; }.
+  a. Let ti' be { TYPE: ([ i' .. j ]); REFS: ?(a)* :: ?()^n }.
   b. Return ti'.
 
 growmemory mi n
-1. Let { TYPE: ([ i .. j ]); BYTES: b*; } be mi.
+1. Let { TYPE: ([ i .. j ]); BYTES: b* } be mi.
 2. Let i' be ((|b*| / (64 * $Ki())) + n).
 3. If (i' <= j), then:
-  a. Let mi' be { TYPE: ([ i' .. j ]); BYTES: b* :: 0^(n * (64 * $Ki())); }.
+  a. Let mi' be { TYPE: ([ i' .. j ]); BYTES: b* :: 0^(n * (64 * $Ki())) }.
   b. Return mi'.
 
 funcs xv_u1*
@@ -4048,7 +4048,7 @@ mems xv_u1*
 allocfunc s moduleinst func
 1. Assert: Due to validation, func is FUNC.
 2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
+3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func }.
 4. Let a be |s.FUNCS|.
 5. Append fi to the s.FUNCS.
 6. Return a.
@@ -4062,7 +4062,7 @@ allocfuncs s moduleinst func_u1*
 5. Return [fa] :: fa'*.
 
 allocglobal s globaltype val
-1. Let gi be { TYPE: globaltype; VALUE: val; }.
+1. Let gi be { TYPE: globaltype; VALUE: val }.
 2. Let a be |s.GLOBALS|.
 3. Append gi to the s.GLOBALS.
 4. Return a.
@@ -4080,7 +4080,7 @@ allocglobals s gt_u1* v_u1*
   f. Return [ga] :: ga'*.
 
 alloctable s ([ i .. j ])
-1. Let ti be { TYPE: ([ i .. j ]); REFS: ?()^i; }.
+1. Let ti be { TYPE: ([ i .. j ]); REFS: ?()^i }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
@@ -4094,7 +4094,7 @@ alloctables s tt_u1*
 5. Return [ta] :: ta'*.
 
 allocmem s ([ i .. j ])
-1. Let mi be { TYPE: ([ i .. j ]); BYTES: 0^(i * (64 * $Ki())); }.
+1. Let mi be { TYPE: ([ i .. j ]); BYTES: 0^(i * (64 * $Ki())) }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -4110,16 +4110,16 @@ allocmems s mt_u1*
 instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
 1. If externidx_u1 is FUNC, then:
   a. Let (FUNC x) be externidx_u1.
-  b. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
+  b. Return { NAME: name; ADDR: (FUNC fa*[x]) }.
 2. If externidx_u1 is GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u1.
-  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
+  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]) }.
 3. If externidx_u1 is TABLE, then:
   a. Let (TABLE x) be externidx_u1.
-  b. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
+  b. Return { NAME: name; ADDR: (TABLE ta*[x]) }.
 4. Assert: Due to validation, externidx_u1 is MEM.
 5. Let (MEM x) be externidx_u1.
-6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
+6. Return { NAME: name; ADDR: (MEM ma*[x]) }.
 
 allocmodule s module externaddr* val*
 1. Assert: Due to validation, module is MODULE.
@@ -4141,7 +4141,7 @@ allocmodule s module externaddr* val*
 17. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
 18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
 19. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
-20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi*; }.
+20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi* }.
 21. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
 22. Assert: Due to validation, (funcaddr_0* = fa*).
 23. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
@@ -4188,8 +4188,8 @@ instantiate s module externaddr*
 11. Let (ELEM expr_E x*)* be elem*.
 12. Assert: Due to validation, global is GLOBAL*.
 13. Let (GLOBAL globaltype expr_G)* be global*.
-14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
-15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
+14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+15. Let f_init be { MODULE: moduleinst_init }.
 16. Let z be (s, f_init).
 17. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
 18. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
@@ -4201,7 +4201,7 @@ instantiate s module externaddr*
 24. Let [val]* be $Eval_expr(z, expr_G)*.
 25. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
 26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
-27. Let f be { LOCALS: []; MODULE: moduleinst; }.
+27. Let f be { MODULE: moduleinst }.
 28. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(s, moduleinst, i_D*, b**).
 30. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
@@ -4210,7 +4210,7 @@ instantiate s module externaddr*
 33. Return f.MODULE.
 
 invoke s fa val^n
-1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
+1. Let f be { MODULE: {} }.
 2. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { (s, f) }) to the stack.
 3. Let t_1^n -> t_2* be $funcinst((s, f))[fa].TYPE.
 4. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { _f }) from the stack.
@@ -5683,7 +5683,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
@@ -5731,9 +5731,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
-   * The context :math:`C` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * The context :math:`C` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{return}~\epsilon \}\end{array}`.
 
-   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon \}\end{array}`.
+   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`.
 
    * The function type sequence :math:`{{\mathit{ift}}^\ast}` is equal to :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
@@ -9765,9 +9765,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the concatenation of :math:`{{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
-#. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
+#. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
 #. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
 
@@ -9785,7 +9785,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
@@ -9804,7 +9804,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
+1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~(s, f)~\})` to the stack.
 
@@ -10600,7 +10600,7 @@ Module_ok
     - the type type is valid with the function type ft'.
   - |import*| is |ixt*|.
   - For all import in import* and ixt in ixt*:
-    - Under the context { TYPES: ft'*; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }, the import import is valid with the external type ixt.
+    - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
   - |global*| is |gt*|.
   - For all global in global* and gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
@@ -10624,8 +10624,8 @@ Module_ok
   - For all export in export* and xt in xt*:
     - the export export is valid with the external type xt.
   - |mt*| is less than or equal to 1.
-  - the context C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; ELEMS: rt*; DATAS: OK^n; LOCALS: []; LABELS: []; RETURN: ?(); }.
-  - the context C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); }.
+  - the context C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; ELEMS: rt*; DATAS: OK^n; RETURN: ?() }.
+  - the context C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; RETURN: ?() }.
   - the function type sequence ift* is $funcsxt(ixt*).
   - the global type sequence igt* is $globalsxt(ixt*).
   - the table type sequence itt* is $tablesxt(ixt*).
@@ -11018,14 +11018,14 @@ Step_read/call_indirect x y
 Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func; } be $funcinst(z)[a].
+3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func } be $funcinst(z)[a].
 4. Assert: Due to validation, func is FUNC.
 5. Let (FUNC x local_0* instr*) be func.
 6. Assert: Due to validation, local_0 is LOCAL*.
 7. Let (LOCAL t)* be local_0*.
 8. Assert: Due to validation, there are at least k values on the top of the stack.
 9. Pop the values val^k from the stack.
-10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
+10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
 11. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
 12. Enter instr* with label (LABEL_ n { [] }).
 
@@ -11616,7 +11616,7 @@ dataidx_funcs func_u1*
 3. Return $dataidx_func(func) :: $dataidx_funcs(func'*).
 
 memarg0
-1. Return { ALIGN: 0; OFFSET: 0; }.
+1. Return { ALIGN: 0; OFFSET: 0 }.
 
 signed_ N i
 1. If (i < (2 ^ (N - 1))), then:
@@ -12299,17 +12299,17 @@ with_data (s, f) x b*
 1. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 growtable ti n r
-1. Let { TYPE: (([ i .. j ]) rt); REFS: r'*; } be ti.
+1. Let { TYPE: (([ i .. j ]) rt); REFS: r'* } be ti.
 2. Let i' be (|r'*| + n).
 3. If (i' <= j), then:
-  a. Let ti' be { TYPE: (([ i' .. j ]) rt); REFS: r'* :: r^n; }.
+  a. Let ti' be { TYPE: (([ i' .. j ]) rt); REFS: r'* :: r^n }.
   b. Return ti'.
 
 growmemory mi n
-1. Let { TYPE: ([ i .. j ]) PAGE; BYTES: b*; } be mi.
+1. Let { TYPE: ([ i .. j ]) PAGE; BYTES: b* } be mi.
 2. Let i' be ((|b*| / (64 * $Ki())) + n).
 3. If (i' <= j), then:
-  a. Let mi' be { TYPE: ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())); }.
+  a. Let mi' be { TYPE: ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
   b. Return mi'.
 
 blocktype z bt_u1
@@ -12367,7 +12367,7 @@ mems xv_u1*
 allocfunc s moduleinst func
 1. Assert: Due to validation, func is FUNC.
 2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
+3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func }.
 4. Let a be |s.FUNCS|.
 5. Append fi to the s.FUNCS.
 6. Return a.
@@ -12381,7 +12381,7 @@ allocfuncs s moduleinst func_u1*
 5. Return [fa] :: fa'*.
 
 allocglobal s globaltype val
-1. Let gi be { TYPE: globaltype; VALUE: val; }.
+1. Let gi be { TYPE: globaltype; VALUE: val }.
 2. Let a be |s.GLOBALS|.
 3. Append gi to the s.GLOBALS.
 4. Return a.
@@ -12399,7 +12399,7 @@ allocglobals s gt_u1* v_u1*
   f. Return [ga] :: ga'*.
 
 alloctable s (([ i .. j ]) rt)
-1. Let ti be { TYPE: (([ i .. j ]) rt); REFS: (REF.NULL rt)^i; }.
+1. Let ti be { TYPE: (([ i .. j ]) rt); REFS: (REF.NULL rt)^i }.
 2. Let a be |s.TABLES|.
 3. Append ti to the s.TABLES.
 4. Return a.
@@ -12413,7 +12413,7 @@ alloctables s tt_u1*
 5. Return [ta] :: ta'*.
 
 allocmem s ([ i .. j ]) PAGE
-1. Let mi be { TYPE: ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())); }.
+1. Let mi be { TYPE: ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())) }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -12427,7 +12427,7 @@ allocmems s mt_u1*
 5. Return [ma] :: ma'*.
 
 allocelem s rt ref*
-1. Let ei be { TYPE: rt; REFS: ref*; }.
+1. Let ei be { TYPE: rt; REFS: ref* }.
 2. Let a be |s.ELEMS|.
 3. Append ei to the s.ELEMS.
 4. Return a.
@@ -12444,7 +12444,7 @@ allocelems s rt_u1* r_u1*
 8. Return [ea] :: ea'*.
 
 allocdata s byte*
-1. Let di be { BYTES: byte*; }.
+1. Let di be { BYTES: byte* }.
 2. Let a be |s.DATAS|.
 3. Append di to the s.DATAS.
 4. Return a.
@@ -12460,16 +12460,16 @@ allocdatas s b_u1*
 instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
 1. If externidx_u1 is FUNC, then:
   a. Let (FUNC x) be externidx_u1.
-  b. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
+  b. Return { NAME: name; ADDR: (FUNC fa*[x]) }.
 2. If externidx_u1 is GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u1.
-  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
+  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]) }.
 3. If externidx_u1 is TABLE, then:
   a. Let (TABLE x) be externidx_u1.
-  b. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
+  b. Return { NAME: name; ADDR: (TABLE ta*[x]) }.
 4. Assert: Due to validation, externidx_u1 is MEM.
 5. Let (MEM x) be externidx_u1.
-6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
+6. Return { NAME: name; ADDR: (MEM ma*[x]) }.
 
 allocmodule s module externaddr* val* ref**
 1. Assert: Due to validation, module is MODULE.
@@ -12497,7 +12497,7 @@ allocmodule s module externaddr* val* ref**
 23. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
 24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
 25. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
-26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
 27. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
 28. Assert: Due to validation, (funcaddr_0* = fa*).
 29. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
@@ -12547,8 +12547,8 @@ instantiate s module externaddr*
 13. Let (ELEM reftype expr_E* elemmode)* be elem*.
 14. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
 15. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
-16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
+16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+17. Let f_init be { MODULE: moduleinst_init }.
 18. Let z be (s, f_init).
 19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
 20. Let [val]* be $Eval_expr(z, expr_G)*.
@@ -12557,7 +12557,7 @@ instantiate s module externaddr*
 23. Let [ref]** be $Eval_expr(z, expr_E)**.
 24. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
 25. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
-26. Let f be { LOCALS: []; MODULE: moduleinst; }.
+26. Let f be { MODULE: moduleinst }.
 27. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
 28. Execute the sequence (instr_E*).
 29. Execute the sequence (instr_D*).
@@ -12566,7 +12566,7 @@ instantiate s module externaddr*
 32. Return f.MODULE.
 
 invoke s fa val^n
-1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
+1. Let f be { MODULE: {} }.
 2. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { (s, f) }) to the stack.
 3. Let t_1^n -> t_2* be $funcinst((s, f))[fa].TYPE.
 4. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { _f }) from the stack.
@@ -15987,13 +15987,13 @@ The type definition sequence :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}` is
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with the module type :math:`t` if:
 
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
+   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
    * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
@@ -16049,7 +16049,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The context :math:`C` is equal to :math:`{C'}{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]`.
 
-   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * The context :math:`{C'}` is equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
    * The function index sequence :math:`{x^\ast}` is equal to :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
 
@@ -20577,7 +20577,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. Let :math:`{\mathit{free}}` be :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
@@ -20590,7 +20590,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast} = \epsilon`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. Let :math:`{\mathit{free}}~{{\mathit{free}'}^\ast}` be :math:`{{\mathit{free}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
@@ -20601,63 +20601,63 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{\mathit{typeidx}},\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{\mathit{typeidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~{\mathit{funcidx}},\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{funcs}~{\mathit{funcidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`
 ..................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~{\mathit{globalidx}},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{globals}~{\mathit{globalidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~{\mathit{tableidx}},\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tables}~{\mathit{tableidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`
 ............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~{\mathit{memidx}},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{mems}~{\mathit{memidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~{\mathit{elemidx}},\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{elems}~{\mathit{elemidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~{\mathit{dataidx}},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{datas}~{\mathit{dataidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~{\mathit{localidx}},\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{\mathit{localidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~{\mathit{labelidx}} \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{labels}~{\mathit{labelidx}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -20693,21 +20693,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{lanetype}}({\mathit{lt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -20731,7 +20731,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{consttype}}({\mathit{consttype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -20755,7 +20755,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{typevar}}({\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -20770,7 +20770,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{tv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{rec}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -20838,7 +20838,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{bot}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{resulttype}}({{\mathit{valtype}}^\ast})`
@@ -20976,7 +20976,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -21070,15 +21070,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{nop}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{unreachable}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{drop}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{select}`, then:
 
@@ -21166,7 +21166,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{return}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{return\_call}`, then:
 
@@ -21356,15 +21356,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}is\_null}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}as\_non\_null}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}eq}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{ref{.}test}`, then:
 
@@ -21386,15 +21386,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{i{\scriptstyle 31}{.}get}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct{.}new}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{struct{.}new\_default}`, then:
 
@@ -21458,7 +21458,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{array{.}len}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{array{.}fill}`, then:
 
@@ -21486,11 +21486,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{extern{.}convert\_any}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{any{.}convert\_extern}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\mathsf{local{.}get}`, then:
 
@@ -21720,11 +21720,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{declare}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})`
@@ -21746,7 +21746,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}} = \mathsf{passive}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{data}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})`
@@ -24410,7 +24410,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}, {{\mathit{export}}^\ast})}`.
+#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
@@ -24540,7 +24540,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
 #. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is :math:`\mathsf{data}`.
 
@@ -24558,7 +24558,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` be :math:`{(\mathsf{call}~x)^?}`.
 
-#. Let :math:`z` be :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
+#. Let :math:`z` be :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
 
@@ -24580,7 +24580,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
@@ -24605,7 +24605,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` be :math:`{\mathit{functype}}_0`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. If :math:`{|{t_1^\ast}|} \neq {|{{\mathit{val}}^\ast}|}`, then:
 
@@ -26443,10 +26443,10 @@ Types_ok/cons
 
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type t if:
-  - Under the context { TYPES: []; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the type definition sequence type* is valid with the defined type sequence dt'*.
+  - Under the context { RETURN: ?() }, the type definition sequence type* is valid with the defined type sequence dt'*.
   - |import*| is |xt_I*|.
   - For all import in import* and xt_I in xt_I*:
-    - Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
+    - Under the context { TYPES: dt'*; RETURN: ?() }, the import import is valid with the external type xt_I.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
   - |table*| is |tt*|.
   - For all table in table* and tt in tt*:
@@ -26474,7 +26474,7 @@ Module_ok
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(name, nm*) is true.
   - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
-  - the context C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
+  - the context C' is { TYPES: dt'*; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; RETURN: ?(); REFS: x* }.
   - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
   - the global type sequence gt_I* is $globalsxt(xt_I*).
@@ -27183,7 +27183,7 @@ Step_read/call_ref yy
       d) Let t_1^n -> t_2^m be functype_0.
       e) Assert: Due to validation, there are at least n values on the top of the stack.
       f) Pop the values val^n from the stack.
-      g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
+      g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
       h) Push the :ref:`frame <syntax-frame>` (FRAME_ m { f }) to the stack.
       i) Enter instr* with label (LABEL_ m { [] }).
 
@@ -27893,7 +27893,7 @@ Step/throw x
 7. Let a be |$exninst(z)|.
 8. Assert: Due to validation, there are at least n values on the top of the stack.
 9. Pop the values val^n from the stack.
-10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
+10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n }.
 11. Perform $add_exninst(z, [exn]).
 12. Push the value (REF.EXN_ADDR a) to the stack.
 13. Execute the instruction THROW_REF.
@@ -27906,7 +27906,7 @@ Step/struct.new x
 5. Let a be |$structinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
-8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
+8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n }.
 9. Push the value (REF.STRUCT_ADDR a) to the stack.
 10. Perform $add_structinst(z, [si]).
 
@@ -27934,7 +27934,7 @@ Step/array.new_fixed x n
 5. Let a be |$arrayinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
-8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
+8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n }.
 9. Push the value (REF.ARRAY_ADDR a) to the stack.
 10. Perform $add_arrayinst(z, [ai]).
 
@@ -28617,7 +28617,7 @@ expanddt deftype
 3. Return comptype.
 
 memarg0
-1. Return { ALIGN: 0; OFFSET: 0; }.
+1. Return { ALIGN: 0; OFFSET: 0 }.
 
 const consttype_u1 c
 1. If the type of consttype_u1 is numtype, then:
@@ -28629,42 +28629,42 @@ const consttype_u1 c
 
 free_opt free_u1?
 1. If free_u1? is not defined, then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 2. Let ?(free) be free_u1?.
 3. Return free.
 
 free_list free_u1*
 1. If (free_u1* = []), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 2. Let [free] :: free'* be free_u1*.
 3. Return free ++ $free_list(free'*).
 
 free_typeidx typeidx
-1. Return { TYPES: [typeidx]; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return { TYPES: [typeidx] }.
 
 free_funcidx funcidx
-1. Return { TYPES: []; FUNCS: [funcidx]; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return { FUNCS: [funcidx] }.
 
 free_globalidx globalidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: [globalidx]; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return { GLOBALS: [globalidx] }.
 
 free_tableidx tableidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: [tableidx]; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return { TABLES: [tableidx] }.
 
 free_memidx memidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: [memidx]; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return { MEMS: [memidx] }.
 
 free_elemidx elemidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: [elemidx]; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return { ELEMS: [elemidx] }.
 
 free_dataidx dataidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: [dataidx]; LOCALS: []; LABELS: []; }.
+1. Return { DATAS: [dataidx] }.
 
 free_localidx localidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: [localidx]; LABELS: []; }.
+1. Return { LOCALS: [localidx] }.
 
 free_labelidx labelidx
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: [labelidx]; }.
+1. Return { LABELS: [labelidx] }.
 
 free_externidx xx_u1
 1. If xx_u1 is FUNC, then:
@@ -28681,13 +28681,13 @@ free_externidx xx_u1
 6. Return $free_memidx(memidx).
 
 free_addrtype addrtype
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return {}.
 
 free_numtype numtype
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return {}.
 
 free_packtype packtype
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return {}.
 
 free_lanetype lt_u1
 1. If the type of lt_u1 is numtype, then:
@@ -28698,7 +28698,7 @@ free_lanetype lt_u1
 4. Return $free_packtype(packtype).
 
 free_vectype vectype
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return {}.
 
 free_consttype consttype_u1
 1. If the type of consttype_u1 is numtype, then:
@@ -28709,14 +28709,14 @@ free_consttype consttype_u1
 4. Return $free_vectype(vectype).
 
 free_absheaptype absheaptype
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return {}.
 
 free_typevar tv_u1
 1. If tv_u1 is _IDX, then:
   a. Let (_IDX typeidx) be tv_u1.
   b. Return $free_typeidx(typeidx).
 2. Assert: Due to validation, tv_u1 is REC.
-3. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+3. Return {}.
 
 free_heaptype ht_u1
 1. If the type of ht_u1 is absheaptype, then:
@@ -28748,7 +28748,7 @@ free_valtype t_u1
   a. Let reftype be t_u1.
   b. Return $free_reftype(reftype).
 4. Assert: Due to validation, (t_u1 = BOT).
-5. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+5. Return {}.
 
 free_resulttype valtype*
 1. Return $free_list($free_valtype(valtype)*).
@@ -28809,7 +28809,7 @@ free_elemtype reftype
 1. Return $free_reftype(reftype).
 
 free_datatype OK
-1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Return {}.
 
 free_externtype xt_u1
 1. If xt_u1 is FUNC, then:
@@ -28853,11 +28853,11 @@ shift_labelidxs l_u1*
 
 free_instr instr_u1
 1. If (instr_u1 = NOP), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 2. If (instr_u1 = UNREACHABLE), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 3. If (instr_u1 = DROP), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 4. If instr_u1 is SELECT, then:
   a. Let (SELECT valtype*?) be instr_u1.
   b. Return $free_opt($free_list($free_valtype(valtype)*)?).
@@ -28901,7 +28901,7 @@ free_instr instr_u1
   a. Let (CALL_INDIRECT tableidx typeuse) be instr_u1.
   b. Return $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
 18. If (instr_u1 = RETURN), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 19. If instr_u1 is RETURN_CALL, then:
   a. Let (RETURN_CALL funcidx) be instr_u1.
   b. Return $free_funcidx(funcidx).
@@ -28996,11 +28996,11 @@ free_instr instr_u1
   a. Let (REF.NULL heaptype) be instr_u1.
   b. Return $free_heaptype(heaptype).
 50. If (instr_u1 = REF.IS_NULL), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 51. If (instr_u1 = REF.AS_NON_NULL), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 52. If (instr_u1 = REF.EQ), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 53. If instr_u1 is REF.TEST, then:
   a. Let (REF.TEST reftype) be instr_u1.
   b. Return $free_reftype(reftype).
@@ -29011,11 +29011,11 @@ free_instr instr_u1
   a. Let (REF.FUNC funcidx) be instr_u1.
   b. Return $free_funcidx(funcidx).
 56. If (instr_u1 = REF.I31), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 57. If instr_u1 is I31.GET, then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 58. If instr_u1 is STRUCT.NEW, then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 59. If instr_u1 is STRUCT.NEW_DEFAULT, then:
   a. Let (STRUCT.NEW_DEFAULT typeidx) be instr_u1.
   b. Return $free_typeidx(typeidx).
@@ -29047,7 +29047,7 @@ free_instr instr_u1
   a. Let (ARRAY.SET typeidx) be instr_u1.
   b. Return $free_typeidx(typeidx).
 69. If (instr_u1 = ARRAY.LEN), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 70. If instr_u1 is ARRAY.FILL, then:
   a. Let (ARRAY.FILL typeidx) be instr_u1.
   b. Return $free_typeidx(typeidx).
@@ -29061,9 +29061,9 @@ free_instr instr_u1
   a. Let (ARRAY.INIT_ELEM typeidx elemidx) be instr_u1.
   b. Return $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
 74. If (instr_u1 = EXTERN.CONVERT_ANY), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 75. If (instr_u1 = ANY.CONVERT_EXTERN), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 76. If instr_u1 is LOCAL.GET, then:
   a. Let (LOCAL.GET localidx) be instr_u1.
   b. Return $free_localidx(localidx).
@@ -29173,9 +29173,9 @@ free_elemmode elemmode_u1
   a. Let (ACTIVE tableidx expr) be elemmode_u1.
   b. Return $free_tableidx(tableidx) ++ $free_expr(expr).
 2. If (elemmode_u1 = PASSIVE), then:
-  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return {}.
 3. Assert: Due to validation, (elemmode_u1 = DECLARE).
-4. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+4. Return {}.
 
 free_elem (ELEM reftype expr* elemmode)
 1. Return $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++ $free_elemmode(elemmode).
@@ -29185,7 +29185,7 @@ free_datamode datamode_u1
   a. Let (ACTIVE memidx expr) be datamode_u1.
   b. Return $free_memidx(memidx) ++ $free_expr(expr).
 2. Assert: Due to validation, (datamode_u1 = PASSIVE).
-3. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+3. Return {}.
 
 free_data (DATA byte* datamode)
 1. Return $free_datamode(datamode).
@@ -30231,17 +30231,17 @@ add_exninst (s, f) exn*
 1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
-1. Let { TYPE: (at ([ i .. j ]) rt); REFS: r'*; } be tableinst.
+1. Let { TYPE: (at ([ i .. j ]) rt); REFS: r'* } be tableinst.
 2. If ((|r'*| + n) <= j), then:
   a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: (at ([ i' .. j ]) rt); REFS: r'* :: r^n; }.
+  b. Let tableinst' be { TYPE: (at ([ i' .. j ]) rt); REFS: r'* :: r^n }.
   c. Return tableinst'.
 
 growmem meminst n
-1. Let { TYPE: at ([ i .. j ]) PAGE; BYTES: b*; } be meminst.
+1. Let { TYPE: at ([ i .. j ]) PAGE; BYTES: b* } be meminst.
 2. If (((|b*| / (64 * $Ki())) + n) <= j), then:
   a. Let i' be ((|b*| / (64 * $Ki())) + n).
-  b. Let meminst' be { TYPE: at ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())); }.
+  b. Let meminst' be { TYPE: at ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
   c. Return meminst'.
 
 blocktype_ z bt_u1
@@ -30266,7 +30266,7 @@ alloctypes type_u1*
 8. Return deftype'* :: deftype*.
 
 allocfunc s deftype funccode moduleinst
-1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode; }.
+1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode }.
 2. Let a be |s.FUNCS|.
 3. Append funcinst to the s.FUNCS.
 4. Return a.
@@ -30287,7 +30287,7 @@ allocfuncs s dt_u1* funccode_u1* moduleinst_u1*
   h. Return [fa] :: fa'*.
 
 allocglobal s globaltype val
-1. Let globalinst be { TYPE: globaltype; VALUE: val; }.
+1. Let globalinst be { TYPE: globaltype; VALUE: val }.
 2. Let a be |s.GLOBALS|.
 3. Append globalinst to the s.GLOBALS.
 4. Return a.
@@ -30305,7 +30305,7 @@ allocglobals s gt_u1* v_u1*
   f. Return [ga] :: ga'*.
 
 alloctable s (at ([ i .. j ]) rt) ref
-1. Let tableinst be { TYPE: (at ([ i .. j ]) rt); REFS: ref^i; }.
+1. Let tableinst be { TYPE: (at ([ i .. j ]) rt); REFS: ref^i }.
 2. Let a be |s.TABLES|.
 3. Append tableinst to the s.TABLES.
 4. Return a.
@@ -30322,7 +30322,7 @@ alloctables s tt_u1* r_u1*
 8. Return [ta] :: ta'*.
 
 allocmem s at ([ i .. j ]) PAGE
-1. Let meminst be { TYPE: at ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())); }.
+1. Let meminst be { TYPE: at ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())) }.
 2. Let a be |s.MEMS|.
 3. Append meminst to the s.MEMS.
 4. Return a.
@@ -30336,7 +30336,7 @@ allocmems s mt_u1*
 5. Return [ma] :: ma'*.
 
 alloctag s tagtype
-1. Let taginst be { TYPE: tagtype; }.
+1. Let taginst be { TYPE: tagtype }.
 2. Let a be |s.TAGS|.
 3. Append taginst to the s.TAGS.
 4. Return a.
@@ -30350,7 +30350,7 @@ alloctags s jt_u1*
 5. Return [ja] :: ja'*.
 
 allocelem s elemtype ref*
-1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.
+1. Let eleminst be { TYPE: elemtype; REFS: ref* }.
 2. Let a be |s.ELEMS|.
 3. Append eleminst to the s.ELEMS.
 4. Return a.
@@ -30367,7 +30367,7 @@ allocelems s elemtype_u1* r_u1*
 8. Return [ea] :: ea'*.
 
 allocdata s OK byte*
-1. Let datainst be { BYTES: byte*; }.
+1. Let datainst be { BYTES: byte* }.
 2. Let a be |s.DATAS|.
 3. Append datainst to the s.DATAS.
 4. Return a.
@@ -30386,19 +30386,19 @@ allocdatas s ok_u1* b_u1*
 allocexport moduleinst (EXPORT name xx_u1)
 1. If xx_u1 is FUNC, then:
   a. Let (FUNC x) be xx_u1.
-  b. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]); }.
+  b. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]) }.
 2. If xx_u1 is GLOBAL, then:
   a. Let (GLOBAL x) be xx_u1.
-  b. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]); }.
+  b. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]) }.
 3. If xx_u1 is TABLE, then:
   a. Let (TABLE x) be xx_u1.
-  b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]); }.
+  b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]) }.
 4. If xx_u1 is MEM, then:
   a. Let (MEM x) be xx_u1.
-  b. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]); }.
+  b. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]) }.
 5. Assert: Due to validation, xx_u1 is TAG.
 6. Let (TAG x) be xx_u1.
-7. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]); }.
+7. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]) }.
 
 allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
@@ -30433,8 +30433,8 @@ allocmodule s module externaddr* val_G* ref_T* ref_E**
 27. Let (ELEM elemtype expr_E* elemmode)* be elem*.
 28. Assert: Due to validation, func is FUNC*.
 29. Let (FUNC x local* expr_F)* be func*.
-30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
-31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+30. Let xi* be $allocexports({ FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa* }, export*).
+31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
 32. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
 33. Assert: Due to validation, (funcaddr_0* = fa*).
 34. Let globaladdr_0* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
@@ -30491,7 +30491,7 @@ instantiate s module externaddr*
 6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 7. Assert: Due to validation, start is START?.
 8. Let (START x)? be start?.
-9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*); TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*) }.
 10. Assert: Due to validation, data is DATA*.
 11. Assert: Due to validation, table is TABLE*.
 12. Let (TABLE tabletype expr_T)* be table*.
@@ -30500,7 +30500,7 @@ instantiate s module externaddr*
 15. Assert: Due to validation, elem is ELEM*.
 16. Let (ELEM reftype expr_E* elemmode)* be elem*.
 17. Let instr_S? be (CALL x)?.
-18. Let z be (s, { LOCALS: []; MODULE: moduleinst_0; }).
+18. Let z be (s, { MODULE: moduleinst_0 }).
 19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
 20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
 21. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
@@ -30511,7 +30511,7 @@ instantiate s module externaddr*
 26. Let [ref_E]** be $Eval_expr(z, expr_E)**.
 27. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
 28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-29. Let f be { LOCALS: []; MODULE: moduleinst; }.
+29. Let f be { MODULE: moduleinst }.
 30. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
 31. Execute the sequence (instr_E*).
 32. Execute the sequence (instr_D*).
@@ -30523,7 +30523,7 @@ invoke s funcaddr val*
 1. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is FUNC.
 2. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 3. Let t_1* -> t_2* be functype_0.
-4. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
+4. Let f be { MODULE: {} }.
 5. If not $Val_type(val, t_1)*, then:
   a. Fail.
 6. Let k be |t_2*|.

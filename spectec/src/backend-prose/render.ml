@@ -351,9 +351,12 @@ and al_to_el_record record =
   Util.Record.fold
     (fun a e expfield ->
       let* expfield = expfield in
-      let* ele = al_to_el_expr e in
-      let elelem = El.Ast.Elem (a, ele) in
-      Some (expfield @ [ elelem ]))
+      (* Don't list empty field *)
+      if e.it = Al.Ast.ListE [] then Some (expfield)
+      else
+        let* ele = al_to_el_expr e in
+        let elelem = El.Ast.Elem (a, ele) in
+        Some (expfield @ [ elelem ]))
     record (Some [])
 
 
