@@ -158,3 +158,71 @@ let rec typ_to_var_exp' ty post_fix =
 let typ_to_var_exp ?(post_fix="") ty =
   let _, e = typ_to_var_exp' ty post_fix in
   e
+
+let get_var_set_in_algo (algo: Al.Ast.algorithm) : Al.Free.IdSet.t =
+  let open Al.Al_util in
+  let open Al.Ast in
+  let open Al.Free in
+
+  (* NOTE: Eta-expansion *)
+  let get_vars_in_list : 'a. ('a -> IdSet.t) -> 'a list -> IdSet.t =
+    fun f -> List.fold_left (fun acc x -> IdSet.union (f x) acc) IdSet.empty in
+
+  let get_vars_in_expr (expr: expr) : IdSet.t = free_expr expr in
+
+  let get_vars_in_arg (arg: arg) : IdSet.t =
+    match arg.it with
+    | ExpA expr -> get_vars_in_expr expr
+    | _ -> IdSet.empty
+  in
+
+  let rec get_vars_in_instr (instr: instr) : IdSet.t =
+    match instr.it with
+    | IfI (_, il1, il2) | EitherI (il1, il2) ->
+      get_vars_in_list get_vars_in_instr (il1 @ il2)
+    | EnterI (_, _, il) ->
+      get_vars_in_list get_vars_in_instr il
+    | LetI (binding_expr, _) | PopI binding_expr | PopAllI binding_expr ->
+      get_vars_in_expr binding_expr
+    | _ -> IdSet.empty
+  in
+
+  IdSet.union
+    (get_vars_in_list get_vars_in_arg (params_of_algo algo))
+    (get_vars_in_list get_vars_in_instr (body_of_algo algo))
+
+(* NOTE: It omits the iter postfix *)
+let introduce_fresh_variable
+    ?(prefix: string option)
+    (idset: Al.Free.IdSet.t)
+    (typ: Al.Ast.typ)
+  : string =
+
+  let open Al.Free in
+
+  let prefix, postfix =
+    let rec get_fixs typ' =
+      match typ'.it with
+      | IterT (inner_typ, iter) ->
+        let prefix', postfix' = get_fixs inner_typ in
+        prefix', postfix' ^ Il.Print.string_of_iter iter
+      | _ ->
+        Option.value prefix ~default:(typ_to_var_name typ'), "" in
+    get_fixs typ in
+
+  (* NOTE: Optimize idset *)
+  let idset = IdSet.filter (fun id -> String.starts_with ~prefix id) idset in
+
+  if not (IdSet.mem (prefix^postfix) idset) then prefix
+  else
+    let get_nth_var (n: int) =
+      Printf.sprintf "%s_%s%s" prefix (string_of_int n) postfix in
+
+    let n =
+      let rec find_n (n: int) : int =
+        if IdSet.mem (get_nth_var n) idset then find_n (n+1) else n
+      in
+      find_n 0
+    in
+
+    Printf.sprintf "%s_%s" prefix (string_of_int n)
