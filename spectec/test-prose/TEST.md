@@ -2792,11 +2792,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
 
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+#. Pop all values :math:`{{\mathit{val}}_0^\ast}` from the top of the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+#. Push the values :math:`{{\mathit{val}}_0^\ast}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -4170,9 +4170,9 @@ invoke s fa val^n
 6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val* from the top of the stack.
+9. Pop all values val_0* from the top of the stack.
 10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-11. Push the values val* to the stack.
+11. Push the values val_0* to the stack.
 12. Pop the values val^k from the stack.
 13. Return val^k.
 
@@ -9738,11 +9738,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
 
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+#. Pop all values :math:`{{\mathit{val}}_0^\ast}` from the top of the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+#. Push the values :math:`{{\mathit{val}}_0^\ast}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -12475,9 +12475,9 @@ invoke s fa val^n
 6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val* from the top of the stack.
+9. Pop all values val_0* from the top of the stack.
 10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-11. Push the values val* to the stack.
+11. Push the values val_0* to the stack.
 12. Pop the values val^k from the stack.
 13. Return val^k.
 
@@ -24480,11 +24480,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the instruction :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
 
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+#. Pop all values :math:`{{\mathit{val}}_0^\ast}` from the top of the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+#. Push the values :math:`{{\mathit{val}}_0^\ast}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -30360,9 +30360,9 @@ invoke s funcaddr val*
 8. Push the values val* to the stack.
 9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
 10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-11. Pop all values val* from the top of the stack.
+11. Pop all values val_0* from the top of the stack.
 12. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-13. Push the values val* to the stack.
+13. Push the values val_0* to the stack.
 14. Pop the values val^k from the stack.
 15. Return val^k.
 

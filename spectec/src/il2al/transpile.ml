@@ -2,6 +2,7 @@ open Al
 open Ast
 open Walk
 open Al_util
+open Il2al_util
 open Util
 open Util.Source
 open Util.Record
@@ -1099,7 +1100,9 @@ let remove_enter algo =
             popI e_frame ~at:instr.at
           ]
         | _ ->
-          let e_tmp = iter_var "val" List valT in
+          let var_name =
+            introduce_fresh_variable (get_var_set_in_algo algo) (iterT valT List) in
+          let e_tmp = iter_var var_name List valT in
           pushI e_frame ~at:instr.at :: il @
           (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
             popAllI e_tmp ~at:instr.at;
