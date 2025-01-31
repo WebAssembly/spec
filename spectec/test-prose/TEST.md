@@ -1303,11 +1303,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
-#. Assert: Due to validation, :math:`{\mathit{func}}` is :math:`\mathsf{func}`.
-
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -1368,8 +1364,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is :math:`\mathsf{\_}`.
-
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
@@ -1381,8 +1375,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is :math:`\mathsf{\_}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -2467,9 +2459,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{func}}` is :math:`\mathsf{func}`.
-
-#. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be :math:`{\mathit{func}}`.
+1. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be :math:`{\mathit{func}}`.
 
 #. Let :math:`{\mathit{fi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
 
@@ -2628,23 +2618,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................................................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{module}}` is :math:`\mathsf{module}`.
-
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{mem}}_3` in :math:`{{\mathit{mem}}_3^\ast}`, :math:`{\mathit{mem}}_3` is :math:`\mathsf{memory}`.
+1. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{table}}_2` in :math:`{{\mathit{table}}_2^\ast}`, :math:`{\mathit{table}}_2` is :math:`\mathsf{table}`.
-
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{global}}_1` in :math:`{{\mathit{global}}_1^\ast}`, :math:`{\mathit{global}}_1` is :math:`\mathsf{global}`.
-
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, :math:`{\mathit{type}}_0` is :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
@@ -2737,29 +2717,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..................................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{module}}` is :math:`\mathsf{module}`.
-
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, :math:`{\mathit{type}}` is :math:`\mathsf{type}`.
+1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
 
 #. Let :math:`n_{\mathsf{f}}` be :math:`{|{{\mathit{func}}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is :math:`\mathsf{start}`.
-
 #. Let :math:`{(\mathsf{start}~{x'})^?}` be :math:`{{\mathit{start}}^?}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{\mathit{expr}}_{\mathsf{d}}~{b^\ast})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is :math:`\mathsf{elem}`.
-
 #. Let :math:`{(\mathsf{elem}~{\mathit{expr}}_{\mathsf{e}}~{x^\ast})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is :math:`\mathsf{global}`.
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
@@ -3498,15 +3466,13 @@ Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
 3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func } be $funcinst(z)[a].
-4. Assert: Due to validation, func is FUNC.
-5. Let (FUNC x local_0* instr*) be func.
-6. Assert: Due to validation, local_0 is LOCAL*.
-7. Let (LOCAL t)* be local_0*.
-8. Assert: Due to validation, there are at least k values on the top of the stack.
-9. Pop the values val^k from the stack.
-10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
-11. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
-12. Enter instr* with label (LABEL_ n { [] }).
+4. Let (FUNC x local_0* instr*) be func.
+5. Let (LOCAL t)* be local_0*.
+6. Assert: Due to validation, there are at least k values on the top of the stack.
+7. Pop the values val^k from the stack.
+8. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
+9. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
+10. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/local.get x
 1. Let z be the current state.
@@ -3529,17 +3495,15 @@ Step_read/load t_u1 loadop__u1? ao
 5. If the type of t_u1 is Inn, then:
   a. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Assert: Due to validation, loadop__0 is _.
-    3) Let n _ sx be loadop__0.
-    4) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+    2) Let n _ sx be loadop__0.
+    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be t_u1.
   c. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Assert: Due to validation, loadop__0 is _.
-    3) Let n _ sx be loadop__0.
-    4) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    5) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    2) Let n _ sx be loadop__0.
+    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
@@ -4046,12 +4010,11 @@ mems xv_u1*
 5. Return $mems(externaddr'*).
 
 allocfunc s moduleinst func
-1. Assert: Due to validation, func is FUNC.
-2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+1. Let (FUNC x local* expr) be func.
+2. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func }.
+3. Let a be |s.FUNCS|.
+4. Append fi to the s.FUNCS.
+5. Return a.
 
 allocfuncs s moduleinst func_u1*
 1. If (func_u1* = []), then:
@@ -4122,35 +4085,30 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
 6. Return { NAME: name; ADDR: (MEM ma*[x]) }.
 
 allocmodule s module externaddr* val*
-1. Assert: Due to validation, module is MODULE.
-2. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem* data* start? export*) be module.
-3. Assert: Due to validation, mem_3 is MEMORY*.
-4. Let (MEMORY memtype)^n_mem be mem_3*.
-5. Assert: Due to validation, table_2 is TABLE*.
-6. Let (TABLE tabletype)^n_table be table_2*.
-7. Assert: Due to validation, global_1 is GLOBAL*.
-8. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
-9. Assert: Due to validation, type_0 is TYPE*.
-10. Let (TYPE ft)* be type_0*.
-11. Let fa_ex* be $funcs(externaddr*).
-12. Let ga_ex* be $globals(externaddr*).
-13. Let ma_ex* be $mems(externaddr*).
-14. Let ta_ex* be $tables(externaddr*).
-15. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-16. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-17. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-19. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
-20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi* }.
-21. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
-22. Assert: Due to validation, (funcaddr_0* = fa*).
-23. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
-24. Assert: Due to validation, (globaladdr_0* = ga*).
-25. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
-26. Assert: Due to validation, (tableaddr_0* = ta*).
-27. Let memaddr_0* be $allocmems(s, memtype^n_mem).
-28. Assert: Due to validation, (memaddr_0* = ma*).
-29. Return moduleinst.
+1. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem* data* start? export*) be module.
+2. Let (MEMORY memtype)^n_mem be mem_3*.
+3. Let (TABLE tabletype)^n_table be table_2*.
+4. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
+5. Let (TYPE ft)* be type_0*.
+6. Let fa_ex* be $funcs(externaddr*).
+7. Let ga_ex* be $globals(externaddr*).
+8. Let ma_ex* be $mems(externaddr*).
+9. Let ta_ex* be $tables(externaddr*).
+10. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+11. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+12. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+13. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+14. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
+15. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi* }.
+16. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
+17. Assert: Due to validation, (funcaddr_0* = fa*).
+18. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
+19. Assert: Due to validation, (globaladdr_0* = ga*).
+20. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
+21. Assert: Due to validation, (tableaddr_0* = ta*).
+22. Let memaddr_0* be $allocmems(s, memtype^n_mem).
+23. Assert: Due to validation, (memaddr_0* = ma*).
+24. Return moduleinst.
 
 initelem s moduleinst i_u1* fa_u1*
 1. If ((i_u1* = []) /\ (fa_u1* = [])), then:
@@ -4175,39 +4133,33 @@ initdata s moduleinst i_u1* b_u1*
 8. Return.
 
 instantiate s module externaddr*
-1. Assert: Due to validation, module is MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Assert: Due to validation, type is TYPE*.
-4. Let (TYPE functype)* be type*.
-5. Let n_F be |func*|.
-6. Assert: Due to validation, start is START?.
-7. Let (START x')? be start?.
-8. Assert: Due to validation, data is DATA*.
-9. Let (DATA expr_D b*)* be data*.
-10. Assert: Due to validation, elem is ELEM*.
-11. Let (ELEM expr_E x*)* be elem*.
-12. Assert: Due to validation, global is GLOBAL*.
-13. Let (GLOBAL globaltype expr_G)* be global*.
-14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-15. Let f_init be { MODULE: moduleinst_init }.
-16. Let z be (s, f_init).
+1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+2. Let (TYPE functype)* be type*.
+3. Let n_F be |func*|.
+4. Let (START x')? be start?.
+5. Let (DATA expr_D b*)* be data*.
+6. Let (ELEM expr_E x*)* be elem*.
+7. Let (GLOBAL globaltype expr_G)* be global*.
+8. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+9. Let f_init be { MODULE: moduleinst_init }.
+10. Let z be (s, f_init).
+11. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+12. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
+13. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
+14. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+15. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
+16. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
 17. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
-18. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
+18. Let [val]* be $Eval_expr(z, expr_G)*.
 19. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-20. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
-21. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
-22. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-23. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
-24. Let [val]* be $Eval_expr(z, expr_G)*.
-25. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
-27. Let f be { MODULE: moduleinst }.
-28. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
-29. Perform $initdata(s, moduleinst, i_D*, b**).
-30. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-31. Execute the sequence ((CALL x')?).
-32. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-33. Return f.MODULE.
+20. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
+21. Let f be { MODULE: moduleinst }.
+22. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+23. Perform $initdata(s, moduleinst, i_D*, b**).
+24. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+25. Execute the sequence ((CALL x')?).
+26. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+27. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -6563,11 +6515,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
-#. Assert: Due to validation, :math:`{\mathit{func}}` is :math:`\mathsf{func}`.
-
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is :math:`\mathsf{local}`.
 
 #. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
@@ -6822,8 +6770,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is :math:`\mathsf{\_}`.
-
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
@@ -6835,8 +6781,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is :math:`\mathsf{\_}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -9385,9 +9329,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{func}}` is :math:`\mathsf{func}`.
-
-#. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be :math:`{\mathit{func}}`.
+1. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be :math:`{\mathit{func}}`.
 
 #. Let :math:`{\mathit{fi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
 
@@ -9612,31 +9554,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................................................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{module}}` is :math:`\mathsf{module}`.
-
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}_4^\ast}~{{\mathit{data}}_5^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{data}}_5` in :math:`{{\mathit{data}}_5^\ast}`, :math:`{\mathit{data}}_5` is :math:`\mathsf{data}`.
+1. Let :math:`(\mathsf{module}~{{\mathit{type}}_0^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n_{\mathit{func}}}}~{{\mathit{global}}_1^\ast}~{{\mathit{table}}_2^\ast}~{{\mathit{mem}}_3^\ast}~{{\mathit{elem}}_4^\ast}~{{\mathit{data}}_5^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^{n_{\mathit{data}}}}` be :math:`{{\mathit{data}}_5^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{elem}}_4` in :math:`{{\mathit{elem}}_4^\ast}`, :math:`{\mathit{elem}}_4` is :math:`\mathsf{elem}`.
-
 #. Let :math:`{(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}_2^\ast}~{\mathit{elemmode}})^{n_{\mathit{elem}}}}` be :math:`{{\mathit{elem}}_4^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{mem}}_3` in :math:`{{\mathit{mem}}_3^\ast}`, :math:`{\mathit{mem}}_3` is :math:`\mathsf{memory}`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^{n_{\mathit{mem}}}}` be :math:`{{\mathit{mem}}_3^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{table}}_2` in :math:`{{\mathit{table}}_2^\ast}`, :math:`{\mathit{table}}_2` is :math:`\mathsf{table}`.
-
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}})^{n_{\mathit{table}}}}` be :math:`{{\mathit{table}}_2^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{global}}_1` in :math:`{{\mathit{global}}_1^\ast}`, :math:`{\mathit{global}}_1` is :math:`\mathsf{global}`.
-
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, :math:`{\mathit{type}}_0` is :math:`\mathsf{type}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
 
@@ -9735,11 +9663,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..................................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{module}}` is :math:`\mathsf{module}`.
-
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, :math:`{\mathit{type}}` is :math:`\mathsf{type}`.
+1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
 
@@ -9749,15 +9673,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n_{\mathsf{f}}` be :math:`{|{{\mathit{func}}^\ast}|}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is :math:`\mathsf{start}`.
-
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is :math:`\mathsf{global}`.
-
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
@@ -11019,15 +10937,13 @@ Step_read/call_addr a
 1. Let z be the current state.
 2. Assert: Due to validation, (a < |$funcinst(z)|).
 3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func } be $funcinst(z)[a].
-4. Assert: Due to validation, func is FUNC.
-5. Let (FUNC x local_0* instr*) be func.
-6. Assert: Due to validation, local_0 is LOCAL*.
-7. Let (LOCAL t)* be local_0*.
-8. Assert: Due to validation, there are at least k values on the top of the stack.
-9. Pop the values val^k from the stack.
-10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
-11. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
-12. Enter instr* with label (LABEL_ n { [] }).
+4. Let (FUNC x local_0* instr*) be func.
+5. Let (LOCAL t)* be local_0*.
+6. Assert: Due to validation, there are at least k values on the top of the stack.
+7. Pop the values val^k from the stack.
+8. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
+9. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
+10. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.func x
 1. Let z be the current state.
@@ -11144,17 +11060,15 @@ Step_read/load nt_u1 loadop__u1? ao
 5. If the type of nt_u1 is Inn, then:
   a. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Assert: Due to validation, loadop__0 is _.
-    3) Let n _ sx be loadop__0.
-    4) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+    2) Let n _ sx be loadop__0.
+    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let Inn be nt_u1.
   c. If loadop__u1? is defined, then:
     1) Let ?(loadop__0) be loadop__u1?.
-    2) Assert: Due to validation, loadop__0 is _.
-    3) Let n _ sx be loadop__0.
-    4) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    5) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    2) Let n _ sx be loadop__0.
+    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop_u1? ao
 1. Let z be the current state.
@@ -12365,12 +12279,11 @@ mems xv_u1*
 5. Return $mems(externaddr'*).
 
 allocfunc s moduleinst func
-1. Assert: Due to validation, func is FUNC.
-2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+1. Let (FUNC x local* expr) be func.
+2. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func }.
+3. Let a be |s.FUNCS|.
+4. Append fi to the s.FUNCS.
+5. Return a.
 
 allocfuncs s moduleinst func_u1*
 1. If (func_u1* = []), then:
@@ -12472,45 +12385,38 @@ instexport fa* ga* ta* ma* (EXPORT name externidx_u1)
 6. Return { NAME: name; ADDR: (MEM ma*[x]) }.
 
 allocmodule s module externaddr* val* ref**
-1. Assert: Due to validation, module is MODULE.
-2. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem_4* data_5* start? export*) be module.
-3. Assert: Due to validation, data_5 is DATA*.
-4. Let (DATA byte* datamode)^n_data be data_5*.
-5. Assert: Due to validation, elem_4 is ELEM*.
-6. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4*.
-7. Assert: Due to validation, mem_3 is MEMORY*.
-8. Let (MEMORY memtype)^n_mem be mem_3*.
-9. Assert: Due to validation, table_2 is TABLE*.
-10. Let (TABLE tabletype)^n_table be table_2*.
-11. Assert: Due to validation, global_1 is GLOBAL*.
-12. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
-13. Assert: Due to validation, type_0 is TYPE*.
-14. Let (TYPE ft)* be type_0*.
-15. Let fa_ex* be $funcs(externaddr*).
-16. Let ga_ex* be $globals(externaddr*).
-17. Let ma_ex* be $mems(externaddr*).
-18. Let ta_ex* be $tables(externaddr*).
-19. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-20. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-21. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-22. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-23. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
-24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
-25. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
-26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
-27. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
-28. Assert: Due to validation, (funcaddr_0* = fa*).
-29. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
-30. Assert: Due to validation, (globaladdr_0* = ga*).
-31. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
-32. Assert: Due to validation, (tableaddr_0* = ta*).
-33. Let memaddr_0* be $allocmems(s, memtype^n_mem).
-34. Assert: Due to validation, (memaddr_0* = ma*).
-35. Let elemaddr_0* be $allocelems(s, rt^n_elem, ref**).
-36. Assert: Due to validation, (elemaddr_0* = ea*).
-37. Let dataaddr_0* be $allocdatas(s, byte*^n_data).
-38. Assert: Due to validation, (dataaddr_0* = da*).
-39. Return moduleinst.
+1. Let (MODULE type_0* import* func^n_func global_1* table_2* mem_3* elem_4* data_5* start? export*) be module.
+2. Let (DATA byte* datamode)^n_data be data_5*.
+3. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4*.
+4. Let (MEMORY memtype)^n_mem be mem_3*.
+5. Let (TABLE tabletype)^n_table be table_2*.
+6. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
+7. Let (TYPE ft)* be type_0*.
+8. Let fa_ex* be $funcs(externaddr*).
+9. Let ga_ex* be $globals(externaddr*).
+10. Let ma_ex* be $mems(externaddr*).
+11. Let ta_ex* be $tables(externaddr*).
+12. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+13. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+14. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+15. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+16. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
+17. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
+18. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
+19. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
+20. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
+21. Assert: Due to validation, (funcaddr_0* = fa*).
+22. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
+23. Assert: Due to validation, (globaladdr_0* = ga*).
+24. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
+25. Assert: Due to validation, (tableaddr_0* = ta*).
+26. Let memaddr_0* be $allocmems(s, memtype^n_mem).
+27. Assert: Due to validation, (memaddr_0* = ma*).
+28. Let elemaddr_0* be $allocelems(s, rt^n_elem, ref**).
+29. Assert: Due to validation, (elemaddr_0* = ea*).
+30. Let dataaddr_0* be $allocdatas(s, byte*^n_data).
+31. Assert: Due to validation, (dataaddr_0* = da*).
+32. Return moduleinst.
 
 runelem (ELEM reftype expr* elemmode_u1) i
 1. If (elemmode_u1 = PASSIVE), then:
@@ -12532,38 +12438,33 @@ rundata (DATA byte* datamode_u1) i
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
 instantiate s module externaddr*
-1. Assert: Due to validation, module is MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Assert: Due to validation, type is TYPE*.
-4. Let (TYPE functype)* be type*.
-5. Let n_D be |data*|.
-6. Let n_E be |elem*|.
-7. Let n_F be |func*|.
-8. Assert: Due to validation, start is START?.
-9. Let (START x)? be start?.
-10. Assert: Due to validation, global is GLOBAL*.
-11. Let (GLOBAL globaltype expr_G)* be global*.
-12. Assert: Due to validation, elem is ELEM*.
-13. Let (ELEM reftype expr_E* elemmode)* be elem*.
-14. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
-15. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
-16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-17. Let f_init be { MODULE: moduleinst_init }.
-18. Let z be (s, f_init).
-19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
-20. Let [val]* be $Eval_expr(z, expr_G)*.
-21. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
-23. Let [ref]** be $Eval_expr(z, expr_E)**.
-24. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-25. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
-26. Let f be { MODULE: moduleinst }.
-27. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-28. Execute the sequence (instr_E*).
-29. Execute the sequence (instr_D*).
-30. Execute the sequence ((CALL x)?).
-31. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-32. Return f.MODULE.
+1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+2. Let (TYPE functype)* be type*.
+3. Let n_D be |data*|.
+4. Let n_E be |elem*|.
+5. Let n_F be |func*|.
+6. Let (START x)? be start?.
+7. Let (GLOBAL globaltype expr_G)* be global*.
+8. Let (ELEM reftype expr_E* elemmode)* be elem*.
+9. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
+10. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
+11. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+12. Let f_init be { MODULE: moduleinst_init }.
+13. Let z be (s, f_init).
+14. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+15. Let [val]* be $Eval_expr(z, expr_G)*.
+16. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
+17. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+18. Let [ref]** be $Eval_expr(z, expr_E)**.
+19. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
+20. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
+21. Let f be { MODULE: moduleinst }.
+22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+23. Execute the sequence (instr_E*).
+24. Execute the sequence (instr_D*).
+25. Execute the sequence ((CALL x)?).
+26. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+27. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -17500,25 +17401,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
-      #) If for all :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, :math:`{\mathit{local}}_0` is :math:`\mathsf{local}`, then:
+      #) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
-         a) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+      #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is :math:`\mathsf{func}`.
 
-         #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is :math:`\mathsf{func}`.
+      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
 
-         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
+      #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
-         #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
+      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+      #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-         #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
+      #) Push the :ref:`frame <syntax-frame>` :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
 
-         #) Push the :ref:`frame <syntax-frame>` :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
-
-         #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{m}}{\{}~\epsilon~\})`.
+      #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{m}}{\{}~\epsilon~\})`.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -18661,8 +18560,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
 
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is :math:`\mathsf{\_}`.
-
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
@@ -18674,8 +18571,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. If :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
 
       1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) Assert: Due to validation, :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is :math:`\mathsf{\_}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -18797,8 +18692,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{type}` is :math:`\mathsf{page}`.
 
 #. Let :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})` be :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{type}`.
 
@@ -20496,9 +20389,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{rectype}}` is :math:`\mathsf{rec}`.
-
-#. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be :math:`{\mathit{rectype}}`.
+1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be :math:`{\mathit{rectype}}`.
 
 #. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {x + i^{i<n}} := {(\mathsf{rec}~i)^{i<n}} ]}^{n}})`.
 
@@ -20507,9 +20398,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{rectype}}` is :math:`\mathsf{rec}`.
-
-#. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be :math:`{\mathit{rectype}}`.
+1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be :math:`{\mathit{rectype}}`.
 
 #. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {(\mathsf{rec}~i)^{i<n}} := {({\mathit{rectype}} {.} i)^{i<n}} ]}^{n}})`.
 
@@ -20518,9 +20407,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................
 
 
-1. Assert: Due to validation, :math:`{{\mathrm{roll}}}_{x}({\mathit{rectype}})` is :math:`\mathsf{rec}`.
-
-#. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be :math:`{{\mathrm{roll}}}_{x}({\mathit{rectype}})`.
+1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be :math:`{{\mathrm{roll}}}_{x}({\mathit{rectype}})`.
 
 #. Return :math:`{((\mathsf{rec}~{{\mathit{subtype}}^{n}}) {.} i)^{i<n}}`.
 
@@ -20529,9 +20416,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................
 
 
-1. Assert: Due to validation, :math:`{\mathrm{unroll}}({\mathit{rectype}})` is :math:`\mathsf{rec}`.
-
-#. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` be :math:`{\mathrm{unroll}}({\mathit{rectype}})`.
+1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` be :math:`{\mathrm{unroll}}({\mathit{rectype}})`.
 
 #. Return :math:`{{\mathit{subtype}}^\ast}{}[i]`.
 
@@ -20540,9 +20425,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, :math:`{\mathrm{unroll}}({\mathit{deftype}})` is :math:`\mathsf{sub}`.
-
-#. Let :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}})` be :math:`{\mathrm{unroll}}({\mathit{deftype}})`.
+1. Let :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}})` be :math:`{\mathrm{unroll}}({\mathit{deftype}})`.
 
 #. Return :math:`{\mathit{comptype}}`.
 
@@ -24043,8 +23926,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{type}'}^\ast}~{\mathit{type}}` be :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{type}}` is :math:`\mathsf{type}`.
-
 #. Let :math:`(\mathsf{type}~{\mathit{rectype}})` be :math:`{\mathit{type}}`.
 
 #. Let :math:`{{\mathit{deftype}'}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}'}^\ast})}`.
@@ -24352,9 +24233,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathit{module}}` is :math:`\mathsf{module}`.
-
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
@@ -24380,33 +24259,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathsf{d}})^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, :math:`{\mathit{mem}}` is :math:`\mathsf{memory}`.
-
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`, :math:`{\mathit{tag}}` is :math:`\mathsf{tag}`.
-
 #. Let :math:`{(\mathsf{tag}~y)^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is :math:`\mathsf{data}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is :math:`\mathsf{global}`.
-
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, :math:`{\mathit{table}}` is :math:`\mathsf{table}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is :math:`\mathsf{elem}`.
-
 #. Let :math:`{(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, :math:`{\mathit{func}}` is :math:`\mathsf{func}`.
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
@@ -24518,8 +24383,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be the type of :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{module}}` is :math:`\mathsf{module}`.
-
 #. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. If :math:`{|{{\mathit{externaddr}}^\ast}|} \neq {|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`, then:
@@ -24536,23 +24399,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the concatenation of :math:`{{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{start}}` in :math:`{{\mathit{start}}^?}`, :math:`{\mathit{start}}` is :math:`\mathsf{start}`.
-
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
 #. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, :math:`{\mathit{data}}` is :math:`\mathsf{data}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, :math:`{\mathit{table}}` is :math:`\mathsf{table}`.
-
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
-#. Assert: Due to validation, for all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, :math:`{\mathit{global}}` is :math:`\mathsf{global}`.
-
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
-
-#. Assert: Due to validation, for all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, :math:`{\mathit{elem}}` is :math:`\mathsf{elem}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
@@ -27176,16 +27029,15 @@ Step_read/call_ref yy
     1) Let fi be $funcinst(z)[a].
     2) Assert: Due to validation, fi.CODE is FUNC.
     3) Let (FUNC x local_0* instr*) be fi.CODE.
-    4) If local_0 is LOCAL*, then:
-      a) Let (LOCAL t)* be local_0*.
-      b) Assert: Due to validation, $expanddt(fi.TYPE) is FUNC.
-      c) Let (FUNC functype_0) be $expanddt(fi.TYPE).
-      d) Let t_1^n -> t_2^m be functype_0.
-      e) Assert: Due to validation, there are at least n values on the top of the stack.
-      f) Pop the values val^n from the stack.
-      g) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
-      h) Push the :ref:`frame <syntax-frame>` (FRAME_ m { f }) to the stack.
-      i) Enter instr* with label (LABEL_ m { [] }).
+    4) Let (LOCAL t)* be local_0*.
+    5) Assert: Due to validation, $expanddt(fi.TYPE) is FUNC.
+    6) Let (FUNC functype_0) be $expanddt(fi.TYPE).
+    7) Let t_1^n -> t_2^m be functype_0.
+    8) Assert: Due to validation, there are at least n values on the top of the stack.
+    9) Pop the values val^n from the stack.
+    10) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
+    11) Push the :ref:`frame <syntax-frame>` (FRAME_ m { f }) to the stack.
+    12) Enter instr* with label (LABEL_ m { [] }).
 
 Step_read/return_call x
 1. Let z be the current state.
@@ -27735,17 +27587,15 @@ Step_read/load nt_u1 loadop_u1? x ao
 5. If the type of nt_u1 is Inn, then:
   a. If loadop_u1? is defined, then:
     1) Let ?(loadop__0) be loadop_u1?.
-    2) Assert: Due to validation, loadop__0 is _.
-    3) Let n _ sx be loadop__0.
-    4) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
+    2) Let n _ sx be loadop__0.
+    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be nt_u1.
   c. If loadop_u1? is defined, then:
     1) Let ?(loadop__0) be loadop_u1?.
-    2) Assert: Due to validation, loadop__0 is _.
-    3) Let n _ sx be loadop__0.
-    4) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    5) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    2) Let n _ sx be loadop__0.
+    3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop_u1? x ao
 1. Let z be the current state.
@@ -27802,10 +27652,9 @@ Step_read/vload_lane V128 N x ao j
 
 Step_read/memory.size x
 1. Let z be the current state.
-2. Assert: Due to validation, $mem(z, x).TYPE is PAGE.
-3. Let at lim PAGE be $mem(z, x).TYPE.
-4. Let (n * (64 * $Ki())) be |$mem(z, x).BYTES|.
-5. Push the value (at.CONST n) to the stack.
+2. Let at lim PAGE be $mem(z, x).TYPE.
+3. Let (n * (64 * $Ki())) be |$mem(z, x).BYTES|.
+4. Push the value (at.CONST n) to the stack.
 
 Step_read/memory.fill x
 1. Let z be the current state.
@@ -28592,29 +28441,24 @@ subst_all_deftypes dt_u1* tu*
 3. Return [$subst_all_deftype(dt_1, tu*)] :: $subst_all_deftypes(dt*, tu*).
 
 rollrt x rectype
-1. Assert: Due to validation, rectype is REC.
-2. Let (REC subtype^n) be rectype.
-3. Return (REC $subst_subtype(subtype, (_IDX (x + i))^(i<n), (REC i)^(i<n))^n).
+1. Let (REC subtype^n) be rectype.
+2. Return (REC $subst_subtype(subtype, (_IDX (x + i))^(i<n), (REC i)^(i<n))^n).
 
 unrollrt rectype
-1. Assert: Due to validation, rectype is REC.
-2. Let (REC subtype^n) be rectype.
-3. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
+1. Let (REC subtype^n) be rectype.
+2. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
 
 rolldt x rectype
-1. Assert: Due to validation, $rollrt(x, rectype) is REC.
-2. Let (REC subtype^n) be $rollrt(x, rectype).
-3. Return (DEF (REC subtype^n) i)^(i<n).
+1. Let (REC subtype^n) be $rollrt(x, rectype).
+2. Return (DEF (REC subtype^n) i)^(i<n).
 
 unrolldt (DEF rectype i)
-1. Assert: Due to validation, $unrollrt(rectype) is REC.
-2. Let (REC subtype*) be $unrollrt(rectype).
-3. Return subtype*[i].
+1. Let (REC subtype*) be $unrollrt(rectype).
+2. Return subtype*[i].
 
 expanddt deftype
-1. Assert: Due to validation, $unrolldt(deftype) is SUB.
-2. Let (SUB fin typeuse* comptype) be $unrolldt(deftype).
-3. Return comptype.
+1. Let (SUB fin typeuse* comptype) be $unrolldt(deftype).
+2. Return comptype.
 
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0 }.
@@ -30258,12 +30102,11 @@ alloctypes type_u1*
 1. If (type_u1* = []), then:
   a. Return [].
 2. Let type'* :: [type] be type_u1*.
-3. Assert: Due to validation, type is TYPE.
-4. Let (TYPE rectype) be type.
-5. Let deftype'* be $alloctypes(type'*).
-6. Let x be |deftype'*|.
-7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
-8. Return deftype'* :: deftype*.
+3. Let (TYPE rectype) be type.
+4. Let deftype'* be $alloctypes(type'*).
+5. Let x be |deftype'*|.
+6. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
+7. Return deftype'* :: deftype*.
 
 allocfunc s deftype funccode moduleinst
 1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode }.
@@ -30404,52 +30247,44 @@ allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
 allocmodule s module externaddr* val_G* ref_T* ref_E**
-1. Assert: Due to validation, module is MODULE.
-2. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-3. Let fa_I* be $funcsxa(externaddr*).
-4. Let ga_I* be $globalsxa(externaddr*).
-5. Let aa_I* be $tagsxa(externaddr*).
-6. Let ma_I* be $memsxa(externaddr*).
-7. Let ta_I* be $tablesxa(externaddr*).
-8. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
-9. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
-10. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
-11. Let aa* be (|s.TAGS| + i_A)^(i_A<|tag*|).
-12. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
-13. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
-14. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-15. Assert: Due to validation, mem is MEMORY*.
-16. Let (MEMORY memtype)* be mem*.
-17. Let dt* be $alloctypes(type*).
-18. Assert: Due to validation, tag is TAG*.
-19. Let (TAG y)* be tag*.
-20. Assert: Due to validation, data is DATA*.
-21. Let (DATA byte* datamode)* be data*.
-22. Assert: Due to validation, global is GLOBAL*.
-23. Let (GLOBAL globaltype expr_G)* be global*.
-24. Assert: Due to validation, table is TABLE*.
-25. Let (TABLE tabletype expr_T)* be table*.
-26. Assert: Due to validation, elem is ELEM*.
-27. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-28. Assert: Due to validation, func is FUNC*.
-29. Let (FUNC x local* expr_F)* be func*.
-30. Let xi* be $allocexports({ FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa* }, export*).
-31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
-32. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-33. Assert: Due to validation, (funcaddr_0* = fa*).
-34. Let globaladdr_0* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
-35. Assert: Due to validation, (globaladdr_0* = ga*).
-36. Let tableaddr_0* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
-37. Assert: Due to validation, (tableaddr_0* = ta*).
-38. Let memaddr_0* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
-39. Assert: Due to validation, (memaddr_0* = ma*).
-40. Let tagaddr_0* be $alloctags(s, dt*[y]*).
-41. Assert: Due to validation, (tagaddr_0* = aa*).
-42. Let elemaddr_0* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
-43. Assert: Due to validation, (elemaddr_0* = ea*).
-44. Let dataaddr_0* be $allocdatas(s, OK^|data*|, byte**).
-45. Assert: Due to validation, (dataaddr_0* = da*).
-46. Return moduleinst.
+1. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+2. Let fa_I* be $funcsxa(externaddr*).
+3. Let ga_I* be $globalsxa(externaddr*).
+4. Let aa_I* be $tagsxa(externaddr*).
+5. Let ma_I* be $memsxa(externaddr*).
+6. Let ta_I* be $tablesxa(externaddr*).
+7. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
+8. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
+9. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
+10. Let aa* be (|s.TAGS| + i_A)^(i_A<|tag*|).
+11. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
+12. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
+13. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
+14. Let (MEMORY memtype)* be mem*.
+15. Let dt* be $alloctypes(type*).
+16. Let (TAG y)* be tag*.
+17. Let (DATA byte* datamode)* be data*.
+18. Let (GLOBAL globaltype expr_G)* be global*.
+19. Let (TABLE tabletype expr_T)* be table*.
+20. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+21. Let (FUNC x local* expr_F)* be func*.
+22. Let xi* be $allocexports({ FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa* }, export*).
+23. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
+24. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+25. Assert: Due to validation, (funcaddr_0* = fa*).
+26. Let globaladdr_0* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
+27. Assert: Due to validation, (globaladdr_0* = ga*).
+28. Let tableaddr_0* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
+29. Assert: Due to validation, (tableaddr_0* = ta*).
+30. Let memaddr_0* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
+31. Assert: Due to validation, (memaddr_0* = ma*).
+32. Let tagaddr_0* be $alloctags(s, dt*[y]*).
+33. Assert: Due to validation, (tagaddr_0* = aa*).
+34. Let elemaddr_0* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
+35. Assert: Due to validation, (elemaddr_0* = ea*).
+36. Let dataaddr_0* be $allocdatas(s, OK^|data*|, byte**).
+37. Assert: Due to validation, (dataaddr_0* = da*).
+38. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemmode_u1)
 1. If (elemmode_u1 = PASSIVE), then:
@@ -30483,41 +30318,35 @@ evalglobals z gt_u1* e_u1*
 
 instantiate s module externaddr*
 1. Let xt_I* -> xt_E* be $Module_ok(module).
-2. Assert: Due to validation, module is MODULE.
-3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-4. If not $Externaddr_type(externaddr, xt_I)*, then:
+2. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+3. If not $Externaddr_type(externaddr, xt_I)*, then:
   a. Fail.
-5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
-6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-7. Assert: Due to validation, start is START?.
-8. Let (START x)? be start?.
-9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*) }.
-10. Assert: Due to validation, data is DATA*.
-11. Assert: Due to validation, table is TABLE*.
-12. Let (TABLE tabletype expr_T)* be table*.
-13. Assert: Due to validation, global is GLOBAL*.
-14. Let (GLOBAL globaltype expr_G)* be global*.
-15. Assert: Due to validation, elem is ELEM*.
-16. Let (ELEM reftype expr_E* elemmode)* be elem*.
-17. Let instr_S? be (CALL x)?.
-18. Let z be (s, { MODULE: moduleinst_0 }).
-19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
-20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
+4. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
+5. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
+6. Let (START x)? be start?.
+7. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*) }.
+8. Let (TABLE tabletype expr_T)* be table*.
+9. Let (GLOBAL globaltype expr_G)* be global*.
+10. Let (ELEM reftype expr_E* elemmode)* be elem*.
+11. Let instr_S? be (CALL x)?.
+12. Let z be (s, { MODULE: moduleinst_0 }).
+13. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+14. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
+15. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+16. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+17. Let [ref_T]* be $Eval_expr(z, expr_T)*.
+18. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+20. Let [ref_E]** be $Eval_expr(z, expr_E)**.
 21. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-23. Let [ref_T]* be $Eval_expr(z, expr_T)*.
-24. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-25. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-26. Let [ref_E]** be $Eval_expr(z, expr_E)**.
-27. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-28. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-29. Let f be { MODULE: moduleinst }.
-30. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-31. Execute the sequence (instr_E*).
-32. Execute the sequence (instr_D*).
-33. Execute the sequence (instr_S?).
-34. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-35. Return f.MODULE.
+22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
+23. Let f be { MODULE: moduleinst }.
+24. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+25. Execute the sequence (instr_E*).
+26. Execute the sequence (instr_D*).
+27. Execute the sequence (instr_S?).
+28. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+29. Return f.MODULE.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is FUNC.

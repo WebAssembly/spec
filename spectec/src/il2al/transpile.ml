@@ -492,6 +492,36 @@ let infer_case_assert instrs =
   in
   rewrite_il instrs
 
+(* Remove case check for a single case type *)
+let remove_trivial_IsCaseOfE instr =
+  let get_typ_cases typ =
+    match typ.it with
+    | Il.Ast.VarT (id, _) ->
+      (* TODO: Find specific inst using args of VarT *)
+      (match Il.Env.find_typ !Al.Valid.il_env id with
+      | _, [ { it = InstD (_, _, { it = VariantT tcs; _ }); _ } ] -> Some tcs
+      | _ -> None
+      )
+    | _ -> None
+  in
+
+  let rec is_trivial_case_check e =
+    match e.it with
+    | IterE (e', _) -> is_trivial_case_check e'
+    | IsCaseOfE (expr, atom) ->
+      (match get_typ_cases expr.note with
+      | Some [ mixop, _, _ ] ->
+        List.exists (List.mem atom) mixop
+      | _  -> false
+      )
+    | _ -> false
+  in
+
+  match instr.it with
+  | IfI (e, il1, []) when is_trivial_case_check e -> il1
+  | AssertI e when is_trivial_case_check e -> []
+  | _ -> [ instr ]
+
 let reduce_comp expr =
   let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
   match expr.it with
@@ -527,7 +557,7 @@ let rec enhance_readability instrs =
     let expr1 = pre_expr expr in
     Al.Walk.base_walker.walk_expr walker expr1
   in
-  let post_instr = unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches) in
+  let post_instr = unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches) @@ remove_trivial_IsCaseOfE in
   let walk_instr walker instr = 
     let instr1 = Al.Walk.base_walker.walk_instr walker instr in
     List.concat_map post_instr instr1
