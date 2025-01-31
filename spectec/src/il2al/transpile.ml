@@ -493,7 +493,7 @@ let infer_case_assert instrs =
   rewrite_il instrs
 
 (* Remove case check for a single case type *)
-let remove_trivial_IsCaseOfE instr =
+let remove_trivial_case_check instr =
   let get_typ_cases typ =
     match typ.it with
     | Il.Ast.VarT (id, _) ->
@@ -557,7 +557,10 @@ let rec enhance_readability instrs =
     let expr1 = pre_expr expr in
     Al.Walk.base_walker.walk_expr walker expr1
   in
-  let post_instr = unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches) @@ remove_trivial_IsCaseOfE in
+  let post_instr =
+    unify_if_head @@ unify_if_tail @@ (lift swap_if) @@
+    early_return @@ (lift merge_three_branches) @@ remove_trivial_case_check
+  in
   let walk_instr walker instr = 
     let instr1 = Al.Walk.base_walker.walk_instr walker instr in
     List.concat_map post_instr instr1
