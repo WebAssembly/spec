@@ -2,6 +2,7 @@ open Util.Source
 open Al
 open Ast
 open Al_util
+open Il2al_util
 
 type config = expr * expr * instr list
 
@@ -35,7 +36,7 @@ let eval_expr =
 
 let manual_algos = [eval_expr]
 
-let return_instrs_of_instantiate config =
+let return_instrs_of_instantiate _idset config =
   let store, frame, rhs = config in
   let vals, instrs = rhs in
   let ty = listT admininstrT in
@@ -52,11 +53,15 @@ let return_instrs_of_instantiate config =
       accE (frame, DotP (atom_of_name "MODULE" "") $ no_region) ~note:ty'
     ] ~note:ty''))
   ]
-let return_instrs_of_invoke config =
+let return_instrs_of_invoke idset config =
   let _, frame, rhs = config in
   let vals, instrs = rhs in
-  let arity = varE "k" ~note:natT in
-  let e_vals = iter_var "val" (ListN (arity, None)) valT in
+  let arity_name = introduce_fresh_variable ~prefix:"k" idset natT in
+  let arity = varE arity_name ~note:natT in
+  let var_name =
+    iterT valT (ListN (Il.Ast.VarE (arity_name $ no_region) $$ no_region % natT, None))
+    |> introduce_fresh_variable idset in
+  let e_vals = iter_var var_name (ListN (arity, None)) valT in
   let ty = listT admininstrT in
   let valtype = varT "valtype" [] in
   let len_expr = lenE (iter_var "t_2" List valtype) ~note:natT in

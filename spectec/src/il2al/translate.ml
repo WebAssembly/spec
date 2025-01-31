@@ -954,7 +954,7 @@ let translate_prems =
   List.fold_right (fun prem il -> translate_prem prem |> insert_instrs il)
 
 (* s; f; e -> `expr * expr * instr list * expr list` *)
-let get_config_return_instrs name exp at =
+let get_config_return_instrs name idset exp at =
   assert(is_config exp);
   let state, rhs = split_config exp in
   let store, f = split_state state in
@@ -970,8 +970,8 @@ let get_config_return_instrs name exp at =
   in
   (* HARDCODE: hardcoding required for config returning helper functions *)
   match name with
-  | "instantiate" -> Manual.return_instrs_of_instantiate config
-  | "invoke" -> Manual.return_instrs_of_invoke config
+  | "instantiate" -> Manual.return_instrs_of_instantiate idset config
+  | "invoke" -> Manual.return_instrs_of_invoke idset config
   | _ ->
     error at
       (sprintf "Helper function that returns config requires hardcoding: %s" name)
@@ -980,7 +980,7 @@ let translate_helper_body name clause =
   let Il.DefD (_, _, exp, prems) = clause.it in
   let return_instrs =
     if is_config exp then
-      get_config_return_instrs name exp clause.at
+      get_config_return_instrs name (Il.Free.free_clause clause).varid exp clause.at
     else
       [ returnI (Some (translate_exp exp)) ~at:exp.at ]
   in
