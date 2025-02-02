@@ -104,10 +104,10 @@ let al_invcalle_to_al_bine e id nl al =
   in
   elhs, erhs
 
-let render_type_desc t =
+let render_type_desc f t =
   match Prose_util.extract_desc t with
-  | "" -> None
-  | desc -> Some desc
+  | "" -> f t
+  | desc -> desc
 
 (* Translation from Al exp to El exp *)
 
@@ -150,9 +150,9 @@ and al_to_el_arg arg =
   | Al.Ast.ExpA e ->
     let* ele = al_to_el_expr e in
     Some (El.Ast.ExpA ele)
-  | Al.Ast.TypA _typ ->
-    (* TODO: Require Il.Ast.typ to El.Ast.typ translation *)
-    Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at)))
+  | Al.Ast.TypA typ ->
+    let* elt = il_to_el_typ typ in
+    Some (El.Ast.(TypA elt))
   | Al.Ast.DefA id ->
     Some (El.Ast.DefA (id $ no_region))
 
@@ -359,6 +359,44 @@ and al_to_el_record record =
         Some (expfield @ [ elelem ]))
     record (Some [])
 
+and il_to_el_iter iter =
+  match iter with
+  | Il.Ast.Opt -> Some El.Ast.Opt
+  | Il.Ast.List -> Some El.Ast.List
+  | Il.Ast.List1 -> Some El.Ast.List1
+  | Il.Ast.ListN (e, id) ->
+    let* ele =
+      Il2al.Translate.translate_exp e
+      |> al_to_el_expr
+    in
+    Some (El.Ast.ListN (ele, id))
+
+and il_to_el_typ t =
+  match t.it with
+  | Il.Ast.VarT (id, args) ->
+    let* elal =
+      Il2al.Translate.translate_args args
+      |> al_to_el_args
+    in
+    let elal = List.map (fun a -> (ref a) $ no_region) elal in
+    Some (El.Ast.VarT (id, elal) $ no_region)
+  | Il.Ast.BoolT -> Some (El.Ast.BoolT $ no_region)
+  | Il.Ast.NumT numtyp -> Some (El.Ast.NumT numtyp $ no_region)
+  | Il.Ast.TextT -> Some (El.Ast.TextT $ no_region)
+  | Il.Ast.TupT ts ->
+    let* elts =
+      List.fold_left
+      (fun typs (_, t) ->
+        let* typs = typs in
+        let* typ = il_to_el_typ t in
+        Some (typs @ [ typ ]))
+      (Some []) ts
+    in
+    Some (El.Ast.TupT elts $ no_region)
+  | IterT (t', iter) ->
+    let* eli = il_to_el_iter iter in
+    let* elt = il_to_el_typ t' in
+    Some (El.Ast.IterT (elt, eli) $ no_region)
 
 (* Operators *)
 
@@ -440,6 +478,11 @@ let render_arg env arg =
 let rec render_expr env expr = match al_to_el_expr expr with
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
+
+and render_typ env typ =
+  match il_to_el_typ typ with
+  | Some elt -> Backend_latex.Render.render_typ env.render_latex elt |> render_math
+  | None -> Il.Print.string_of_typ typ
 
 (* Categories 2 and 3 are rendered by the prose backend,
    yet EL subexpressions are still rendered by the Latex backend *)
@@ -602,8 +645,8 @@ and render_expr' env expr =
     sprintf "%s is %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    let st = Option.value (render_type_desc t) ~default:(Il.Print.string_of_typ t) in
-    sprintf "the type of %s is %s" se st
+    let st = render_type_desc (render_typ env) t in
+    sprintf "%s is %s" se st
   | Al.Ast.IsValidE e ->
     let typ_name = Il.Print.string_of_typ_name e.note in
     let vref =

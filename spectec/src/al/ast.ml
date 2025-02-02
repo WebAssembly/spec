@@ -92,7 +92,7 @@ and expr' =
   | ContextKindE of atom                          (* "the fisrt non-value entry of the stack is a" atom *)
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
-  | HasTypeE of expr * typ                        (* the type of expr is ty *)
+  | HasTypeE of expr * typ                        (* expr is ty *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
