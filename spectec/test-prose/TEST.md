@@ -17314,9 +17314,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
-
-   a. Fail.
+#. Assert: Due to validation, :math:`{\mathit{ref}}` is :ref:`valid <valid-val>`.
 
 #. Let :math:`{\mathit{rt}}` be the type of :math:`{\mathit{ref}}`.
 
@@ -17341,9 +17339,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
-
-   a. Fail.
+#. Assert: Due to validation, :math:`{\mathit{ref}}` is :ref:`valid <valid-val>`.
 
 #. Let :math:`{\mathit{rt}}` be the type of :math:`{\mathit{ref}}`.
 
@@ -17752,9 +17748,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
-
-   a. Fail.
+#. Assert: Due to validation, :math:`{\mathit{ref}}` is :ref:`valid <valid-val>`.
 
 #. Let :math:`{\mathit{rt}'}` be the type of :math:`{\mathit{ref}}`.
 
@@ -17777,9 +17771,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is not :ref:`valid <valid-val>`, then:
-
-   a. Fail.
+#. Assert: Due to validation, :math:`{\mathit{ref}}` is :ref:`valid <valid-val>`.
 
 #. Let :math:`{\mathit{rt}'}` be the type of :math:`{\mathit{ref}}`.
 

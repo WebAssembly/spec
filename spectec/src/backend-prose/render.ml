@@ -1028,7 +1028,7 @@ let rec render_instr env algoname index depth instr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
-  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (("Module_ok" | "Ref_type"), [{ it = ExpA arge; _ }]); _ } as e)) ->
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (("Module_ok"), [{ it = ExpA arge; _ }]); _ } as e)) ->
     (* HARDCODE: special function calls for LetI *)
     let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
     let to_instr instr' = instr' $$ (no_region, 0) in
@@ -1037,6 +1037,17 @@ let rec render_instr env algoname index depth instr =
     let faili = [Al.Ast.FailI |> to_instr] in
     let check_instr = Al.Ast.IfI (not_valid, faili, []) |> to_instr in
     let valid_check_string = render_instr env algoname index depth check_instr in
+    sprintf "%s\n\n%s Let %s be %s."
+      valid_check_string
+      (render_order index depth) (render_expr env n)
+      (render_expr env e)
+  | Al.Ast.LetI (n, ({ it = Al.Ast.CallE (("Ref_type"), [{ it = ExpA arge; _ }]); _ } as e)) ->
+    (* HARDCODE: special function calls for LetI *)
+    let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
+    let to_instr instr' = instr' $$ (no_region, 0) in
+    let is_valid = Al.Ast.IsValidE arge |> to_expr in
+    let assert_instr = Al.Ast.AssertI (is_valid) |> to_instr in
+    let valid_check_string = render_instr env algoname index depth assert_instr in
     sprintf "%s\n\n%s Let %s be %s."
       valid_check_string
       (render_order index depth) (render_expr env n)
