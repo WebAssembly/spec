@@ -124,6 +124,10 @@ let is_zero e =
   | Ast.NumE n -> Num.is_zero n
   | _ -> false
 
+let is_hidden_rule r =
+  match r.it with
+  | Ast.RuleD (id, _, _, _, _) -> String.starts_with ~prefix:"_" id.it
+
 (** End of helpers **)
 
 
@@ -458,6 +462,7 @@ let prose_of_rules name mk_concl rules =
 let proses_of_rel mk_concl def =
   match def.it with
   | Ast.RelD (rel_id, _, _, rules) ->
+    let rules = List.filter (fun r -> not (is_hidden_rule r)) rules in
     let frees = (Il2al.Free.free_rules rules).varid in
     let unified_rules = Il2al.Unify.(unify_rules (init_env frees) rules) in
     let merged_prose = prose_of_rules rel_id.it mk_concl unified_rules in
