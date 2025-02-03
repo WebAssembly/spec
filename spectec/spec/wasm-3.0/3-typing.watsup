@@ -216,7 +216,7 @@ rule Rectype_ok/cons:
   -- Subtype_ok: C |- subtype_1 : OK(x)
   -- Rectype_ok: C |- REC subtype* : OK($(x+1))
 
-rule Rectype_ok/rec2:
+rule Rectype_ok/_rec2:
   C |- REC subtype* : OK(x)
   -- Rectype_ok2: C, RECS subtype* |- REC subtype* : OK x 0
 
