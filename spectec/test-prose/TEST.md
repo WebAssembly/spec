@@ -19,7 +19,7 @@ watsup 0.4 generator
 
 
 
-The limits :math:`{}[~n~..~m~]` is valid with :math:`k` if:
+The limits :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` with :math:`k` if:
 
 
    * :math:`n` is less than or equal to :math:`m`.
@@ -29,93 +29,93 @@ The limits :math:`{}[~n~..~m~]` is valid with :math:`k` if:
 
 
 
-The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is valid.
+The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is :ref:`valid <valid-val>`.
 
 
 
 
-The global type :math:`({\mathsf{mut}^?}~t)` is valid.
+The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>`.
 
 
 
 
-The table type :math:`{\mathit{limits}}` is valid if:
+The table type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
-
-
-
-
-The memory type :math:`{\mathit{limits}}` is valid if:
-
-
-   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{32}} - 1`.
 
 
 
 
-The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The memory type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
+
+
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{16}}`.
+
+
+
+
+The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * The function type :math:`{\mathit{functype}}` is valid.
+      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.
+      * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.
+      * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.
+      * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{functype}})` is valid if:
+The external type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The function type :math:`{\mathit{functype}}` is valid.
-
-
-
-
-The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is valid if:
-
-
-   * The global type :math:`{\mathit{globaltype}}` is valid.
+   * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is valid if:
+The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The table type :math:`{\mathit{tabletype}}` is valid.
-
-
-
-
-The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is valid if:
-
-
-   * The memory type :math:`{\mathit{memtype}}` is valid.
+   * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The limits :math:`{}[~n_{11}~..~n_{12}~]` matches the limits :math:`{}[~n_{21}~..~n_{22}~]` if:
+The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The limits :math:`{}[~n_{11}~..~n_{12}~]` :ref:`matches <match>` the limits :math:`{}[~n_{21}~..~n_{22}~]` if:
 
 
    * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
@@ -125,33 +125,33 @@ The limits :math:`{}[~n_{11}~..~n_{12}~]` matches the limits :math:`{}[~n_{21}~.
 
 
 
-The function type :math:`{\mathit{ft}}` matches itself.
+The function type :math:`{\mathit{ft}}` :ref:`matches <match>` itself.
 
 
 
 
-The global type :math:`{\mathit{gt}}` matches itself.
+The global type :math:`{\mathit{gt}}` :ref:`matches <match>` itself.
 
 
 
 
-The table type :math:`{\mathit{lim}}_1` matches the table type :math:`{\mathit{lim}}_2` if:
+The table type :math:`{\mathit{lim}}_1` :ref:`matches <match>` the table type :math:`{\mathit{lim}}_2` if:
 
 
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
-
-
-
-
-The memory type :math:`{\mathit{lim}}_1` matches the memory type :math:`{\mathit{lim}}_2` if:
-
-
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
+   * The limits :math:`{\mathit{lim}}_1` :ref:`matches <match>` the limits :math:`{\mathit{lim}}_2`.
 
 
 
 
-The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The memory type :math:`{\mathit{lim}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{lim}}_2` if:
+
+
+   * The limits :math:`{\mathit{lim}}_1` :ref:`matches <match>` the limits :math:`{\mathit{lim}}_2`.
+
+
+
+
+The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
@@ -160,7 +160,7 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+      * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
@@ -168,128 +168,128 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+      * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
-      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
+      * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
-      * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
+      * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{ft}}_1)` matches the external type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
+The external type :math:`(\mathsf{func}~{\mathit{ft}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
 
 
-   * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
-
-
-
-
-The external type :math:`(\mathsf{global}~{\mathit{gt}}_1)` matches the external type :math:`(\mathsf{global}~{\mathit{gt}}_2)` if:
-
-
-   * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+   * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tt}}_1)` matches the external type :math:`(\mathsf{table}~{\mathit{tt}}_2)` if:
+The external type :math:`(\mathsf{global}~{\mathit{gt}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{global}~{\mathit{gt}}_2)` if:
 
 
-   * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
-
-
-
-
-The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` matches the external type :math:`(\mathsf{mem}~{\mathit{mt}}_2)` if:
-
-
-   * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
+   * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
 
 
 
 
-The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+The external type :math:`(\mathsf{table}~{\mathit{tt}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{table}~{\mathit{tt}}_2)` if:
+
+
+   * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
 
 
 
 
-The instruction :math:`\mathsf{unreachable}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{mem}~{\mathit{mt}}_2)` if:
+
+
+   * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
 
 
 
-The instruction :math:`\mathsf{drop}` is valid with the function type :math:`t~\rightarrow~\epsilon`.
+The instruction :math:`\mathsf{nop}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
 
-The instruction :math:`\mathsf{select}` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
+The instruction :math:`\mathsf{unreachable}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
-
-
-   * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t^?}` prepended to the field :math:`\mathsf{labels}`.
-
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\epsilon`.
 
 
 
 
-The instruction :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
-
-
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+The instruction :math:`\mathsf{select}` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+The instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t^?}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
-
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 
 
-The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+
+
+
+
+The instruction :math:`(\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+
+
+   * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t^?}` prepended to the field :math:`\mathsf{labels}`.
+
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+
+
+
+
+The instruction :math:`(\mathsf{br}~l)` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
+   * The number type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
 
 
 
 
-The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
+The instruction :math:`(\mathsf{br\_if}~l)` is :ref:`valid <valid-val>` with the function type :math:`{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^?}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
+   * The number type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
 
 
 
 
-The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~{t^?}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
@@ -307,7 +307,7 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the fun
 
 
 
-The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
+The instruction :math:`(\mathsf{call}~x)` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -317,7 +317,7 @@ The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:
 
 
 
-The instruction :math:`(\mathsf{call\_indirect}~x)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
+The instruction :math:`(\mathsf{call\_indirect}~x)` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^?}` if:
 
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -327,7 +327,7 @@ The instruction :math:`(\mathsf{call\_indirect}~x)` is valid with the function t
 
 
 
-The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`\mathsf{return}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~{t^?}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{t^?}`.
@@ -335,32 +335,32 @@ The instruction :math:`\mathsf{return}` is valid with the function type :math:`{
 
 
 
-The instruction :math:`(t{.}\mathsf{const}~c_t)` is valid with the function type :math:`\epsilon~\rightarrow~t`.
+The instruction :math:`(t{.}\mathsf{const}~c_t)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(t {.} {\mathit{unop}}_t)` is valid with the function type :math:`t~\rightarrow~t`.
+The instruction :math:`(t {.} {\mathit{unop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(t {.} {\mathit{binop}}_t)` is valid with the function type :math:`t~t~\rightarrow~t`.
+The instruction :math:`(t {.} {\mathit{binop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(t {.} {\mathit{testop}}_t)` is valid with the function type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(t {.} {\mathit{testop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`(t {.} {\mathit{relop}}_t)` is valid with the function type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(t {.} {\mathit{relop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
@@ -376,37 +376,37 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0
 
 
 
-The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
+The instruction :math:`(\mathsf{local{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
-
-
-
-
-The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
-
-
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
-
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
 
-The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
+The instruction :math:`(\mathsf{local{.}set}~x)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
-
-
+   * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
-The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
+
+
+The instruction :math:`(\mathsf{local{.}tee}~x)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~t` if:
+
+
+   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
+
+   * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+
+
+
+
+The instruction :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -416,7 +416,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function typ
 
 
 
-The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{global{.}set}~x)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -426,7 +426,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 
 
 
-The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`\mathsf{memory{.}size}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -434,7 +434,7 @@ The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :
 
 
 
-The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`\mathsf{memory{.}grow}` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -442,63 +442,63 @@ The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :
 
 
 
-The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
+The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`t`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
+The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`t`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * :math:`{|{\mathit{nt}}_1|}` is equal to :math:`{|{\mathit{nt}}_2|}`.
@@ -506,32 +506,12 @@ The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
 
-The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
-
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
-
-
-
-
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
-
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
-
-
-
-
-The instruction :math:`({t{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
+The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -541,7 +521,7 @@ The instruction :math:`({t{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is va
 
 
 
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{n}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -551,7 +531,27 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is valid with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The instruction :math:`({t{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
+
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+
+
+
+
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{n}~\rightarrow~\epsilon` if:
+
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+
+
+
+
+The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -570,9 +570,9 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
       * The number type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
@@ -581,38 +581,38 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
       * The number type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction sequence :math:`\epsilon` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+The instruction sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
 
-The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_3^\ast}` if:
+The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_3^\ast}` if:
 
 
-   * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
-
-
-
-
-The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
-
-
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
 
 
 
 
-The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^?}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^?}`.
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^?}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}`.
 
 
 
@@ -660,62 +660,62 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
+The type :math:`(\mathsf{type}~{\mathit{ft}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}` if:
 
 
-   * The function type :math:`{\mathit{ft}}` is valid.
+   * The function type :math:`{\mathit{ft}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
+The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` if:
 
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^?}`.
+   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^?}`.
 
 
 
 
-The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
+The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is valid.
+   * The global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
 
    * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`number type <syntax-numtype>` :math:`t`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the number type :math:`t`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
+The table :math:`(\mathsf{table}~{\mathit{tt}})` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}` if:
 
 
-   * The table type :math:`{\mathit{tt}}` is valid.
-
-
-
-
-The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
-
-
-   * The memory type :math:`{\mathit{mt}}` is valid.
+   * The table type :math:`{\mathit{tt}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
+The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}` if:
+
+
+   * The memory type :math:`{\mathit{mt}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is :ref:`valid <valid-val>` if:
 
 
    * The limits :math:`C{.}\mathsf{tables}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -732,19 +732,19 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
 
 
-The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
+The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is :ref:`valid <valid-val>` if:
 
 
    * The limits :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The start function :math:`(\mathsf{start}~x)` is valid if:
+The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -754,15 +754,15 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
 
-The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
+The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external type :math:`{\mathit{xt}}` is valid.
+   * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
@@ -806,7 +806,7 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
 
 
-The external index :math:`(\mathsf{func}~x)` is valid with the external type :math:`(\mathsf{func}~{\mathit{ft}})` if:
+The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{ft}})` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -816,7 +816,7 @@ The external index :math:`(\mathsf{func}~x)` is valid with the external type :ma
 
 
 
-The external index :math:`(\mathsf{global}~x)` is valid with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
+The external index :math:`(\mathsf{global}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -826,7 +826,7 @@ The external index :math:`(\mathsf{global}~x)` is valid with the external type :
 
 
 
-The external index :math:`(\mathsf{table}~x)` is valid with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
+The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -836,7 +836,7 @@ The external index :math:`(\mathsf{table}~x)` is valid with the external type :m
 
 
 
-The external index :math:`(\mathsf{mem}~x)` is valid with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
+The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -846,70 +846,70 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 
 
 
-The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
+The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+   * The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
 
 
 
-The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
    * :math:`{|{{\mathit{ft}'}^\ast}|}` is equal to :math:`{|{{\mathit{type}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
-      * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+      * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{ixt}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
 
    * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
-      * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
+      * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
 
    * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
-      * The table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+      * The table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
-      * The memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+      * The memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`:
 
-      * The table segment :math:`{\mathit{elem}}` is valid.
+      * The table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`:
 
-      * The memory segment :math:`{\mathit{data}}` is valid.
+      * The memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
 
    * If :math:`{\mathit{start}}` is defined, then:
 
-      * The start function :math:`{\mathit{start}}` is valid.
+      * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
 
    * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}^\ast}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
-      * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
+      * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
    * :math:`{|{{\mathit{tt}}^\ast}|}` is less than or equal to :math:`1`.
 
@@ -957,7 +957,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -982,7 +982,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1049,7 +1049,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1066,7 +1066,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1131,7 +1131,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1148,11 +1148,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{valtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-valtype_0>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1169,7 +1169,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1182,11 +1182,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{valtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-valtype_0>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1199,7 +1199,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t_1` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-t_1>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1268,7 +1268,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1342,7 +1342,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1426,11 +1426,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-t_u2>` is on the top of the stack.
 
 #. Pop the value :math:`(t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1469,7 +1469,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -4194,7 +4194,7 @@ watsup 0.4 generator
 
 
 
-The limits :math:`{}[~n~..~m~]` is valid with :math:`k` if:
+The limits :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` with :math:`k` if:
 
 
    * :math:`n` is less than or equal to :math:`m`.
@@ -4204,129 +4204,129 @@ The limits :math:`{}[~n~..~m~]` is valid with :math:`k` if:
 
 
 
-The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The global type :math:`({\mathsf{mut}^?}~t)` is valid.
+The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>`.
 
 
 
 
-The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is valid if:
+The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{32}} - 1`.
-
-
-
-
-The memory type :math:`{\mathit{limits}}~\mathsf{page}` is valid if:
-
-
-   * The limits :math:`{\mathit{limits}}` is valid with :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{32}} - 1`.
 
 
 
 
-The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The memory type :math:`{\mathit{limits}}~\mathsf{page}` is :ref:`valid <valid-val>` if:
+
+
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{16}}`.
+
+
+
+
+The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * The function type :math:`{\mathit{functype}}` is valid.
+      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.
+      * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.
+      * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.
+      * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{functype}})` is valid if:
+The external type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The function type :math:`{\mathit{functype}}` is valid.
-
-
-
-
-The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is valid if:
-
-
-   * The global type :math:`{\mathit{globaltype}}` is valid.
+   * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is valid if:
+The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The table type :math:`{\mathit{tabletype}}` is valid.
-
-
-
-
-The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is valid if:
-
-
-   * The memory type :math:`{\mathit{memtype}}` is valid.
+   * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the :ref:`value type <syntax-valtype>` :math:`t` if:
+The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the value type :math:`t` if:
 
 
    * Either:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
 
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`t` matches itself.
+The value type :math:`t` :ref:`matches <match>` itself.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`\mathsf{bot}` matches the :ref:`value type <syntax-valtype>` :math:`t`.
+The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:`t`.
 
 
 
 
-The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
+The value type sequence :math:`{t_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_2^\ast}` if:
 
 
    * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_1` matches the :ref:`value type <syntax-valtype>` :math:`t_2`.
+      * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
 
 
 
 
-The limits :math:`{}[~n_{11}~..~n_{12}~]` matches the limits :math:`{}[~n_{21}~..~n_{22}~]` if:
+The limits :math:`{}[~n_{11}~..~n_{12}~]` :ref:`matches <match>` the limits :math:`{}[~n_{21}~..~n_{22}~]` if:
 
 
    * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
@@ -4336,33 +4336,33 @@ The limits :math:`{}[~n_{11}~..~n_{12}~]` matches the limits :math:`{}[~n_{21}~.
 
 
 
-The function type :math:`{\mathit{ft}}` matches itself.
+The function type :math:`{\mathit{ft}}` :ref:`matches <match>` itself.
 
 
 
 
-The global type :math:`{\mathit{gt}}` matches itself.
+The global type :math:`{\mathit{gt}}` :ref:`matches <match>` itself.
 
 
 
 
-The table type :math:`({\mathit{lim}}_1~{\mathit{rt}})` matches the table type :math:`({\mathit{lim}}_2~{\mathit{rt}})` if:
+The table type :math:`({\mathit{lim}}_1~{\mathit{rt}})` :ref:`matches <match>` the table type :math:`({\mathit{lim}}_2~{\mathit{rt}})` if:
 
 
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
-
-
-
-
-The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` matches the memory type :math:`{\mathit{lim}}_2~\mathsf{page}` if:
-
-
-   * The limits :math:`{\mathit{lim}}_1` matches the limits :math:`{\mathit{lim}}_2`.
+   * The limits :math:`{\mathit{lim}}_1` :ref:`matches <match>` the limits :math:`{\mathit{lim}}_2`.
 
 
 
 
-The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` :ref:`matches <match>` the memory type :math:`{\mathit{lim}}_2~\mathsf{page}` if:
+
+
+   * The limits :math:`{\mathit{lim}}_1` :ref:`matches <match>` the limits :math:`{\mathit{lim}}_2`.
+
+
+
+
+The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
@@ -4371,7 +4371,7 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+      * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
@@ -4379,58 +4379,58 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
-      * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+      * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
-      * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
+      * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
-      * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
+      * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{ft}}_1)` matches the external type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
+The external type :math:`(\mathsf{func}~{\mathit{ft}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
 
 
-   * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
-
-
-
-
-The external type :math:`(\mathsf{global}~{\mathit{gt}}_1)` matches the external type :math:`(\mathsf{global}~{\mathit{gt}}_2)` if:
-
-
-   * The global type :math:`{\mathit{gt}}_1` matches the global type :math:`{\mathit{gt}}_2`.
+   * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tt}}_1)` matches the external type :math:`(\mathsf{table}~{\mathit{tt}}_2)` if:
+The external type :math:`(\mathsf{global}~{\mathit{gt}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{global}~{\mathit{gt}}_2)` if:
 
 
-   * The table type :math:`{\mathit{tt}}_1` matches the table type :math:`{\mathit{tt}}_2`.
-
-
-
-
-The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` matches the external type :math:`(\mathsf{mem}~{\mathit{mt}}_2)` if:
-
-
-   * The memory type :math:`{\mathit{mt}}_1` matches the memory type :math:`{\mathit{mt}}_2`.
+   * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
 
 
 
 
-The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The external type :math:`(\mathsf{table}~{\mathit{tt}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{table}~{\mathit{tt}}_2)` if:
+
+
+   * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
+
+
+
+
+The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{mem}~{\mathit{mt}}_2)` if:
+
+
+   * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
+
+
+
+
+The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -4456,12 +4456,12 @@ The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is 
 
 
 
-The block type :math:`{{\mathit{valtype}}^?}` is valid with the function type :math:`\epsilon~\rightarrow~{{\mathit{valtype}}^?}`.
+The block type :math:`{{\mathit{valtype}}^?}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{{\mathit{valtype}}^?}`.
 
 
 
 
-The block type :math:`{\mathit{typeidx}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
@@ -4471,22 +4471,22 @@ The block type :math:`{\mathit{typeidx}}` is valid with the function type :math:
 
 
 
-The instruction :math:`\mathsf{nop}` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+The instruction :math:`\mathsf{nop}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
 
-The instruction :math:`\mathsf{unreachable}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+The instruction :math:`\mathsf{unreachable}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction :math:`\mathsf{drop}` is valid with the function type :math:`t~\rightarrow~\epsilon`.
+The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\epsilon`.
 
 
 
 
-The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * Either:
@@ -4497,62 +4497,52 @@ The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
+      * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
-
-
+      * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
-The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_1^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-
-
-
-The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
-
-
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
-
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+The instruction :math:`(\mathsf{br}~l)` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
@@ -4562,7 +4552,17 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :mat
 
 
 
-The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{br\_if}~l)` is :ref:`valid <valid-val>` with the function type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+
+
+   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+
+   * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+
+
+
+
+The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`:
@@ -4571,16 +4571,16 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the fun
 
    * For all :math:`l` in :math:`{l^\ast}`:
 
-      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
 
 
-The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{call}~x)` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -4590,7 +4590,7 @@ The instruction :math:`(\mathsf{call}~x)` is valid with the function type :math:
 
 
 
-The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{call\_indirect}~x~y)` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -4604,7 +4604,7 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the function
 
 
 
-The instruction :math:`\mathsf{return}` is valid with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`\mathsf{return}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{t^\ast}`.
@@ -4612,32 +4612,32 @@ The instruction :math:`\mathsf{return}` is valid with the function type :math:`{
 
 
 
-The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
@@ -4653,12 +4653,12 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0
 
 
 
-The instruction :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with the function type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
+The instruction :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{\mathit{rt}}`.
 
 
 
 
-The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
+The instruction :math:`(\mathsf{ref{.}func}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\mathsf{funcref}` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -4668,72 +4668,72 @@ The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the function type 
 
 
 
-The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the function type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`\mathsf{ref{.}is\_null}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{rt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}{.}\mathsf{swizzle})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * For all :math:`i` in :math:`{i^\ast}`:
@@ -4743,85 +4743,85 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid wit
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the function type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
-
-
-
-
-The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~t` if:
-
-
-   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
-
-   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~t` if:
 
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+
+   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`(\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is valid with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
-
-
-   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
-
-   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{local{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
-
-
-
-
-The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
-
-
-   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
-
-   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
 
-The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
+The instruction :math:`(\mathsf{local{.}set}~x)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\epsilon` if:
+
+
+   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
+
+   * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+
+
+
+
+The instruction :math:`(\mathsf{local{.}tee}~x)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~t` if:
+
+
+   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
+
+   * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+
+
+
+
+The instruction :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -4831,7 +4831,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the function typ
 
 
 
-The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{global{.}set}~x)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -4841,7 +4841,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the function typ
 
 
 
-The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
+The instruction :math:`(\mathsf{table{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{rt}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -4851,7 +4851,7 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the function type
 
 
 
-The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}set}~x)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -4861,7 +4861,7 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the function type
 
 
 
-The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`(\mathsf{table{.}size}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -4871,7 +4871,7 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the function typ
 
 
 
-The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`(\mathsf{table{.}grow}~x)` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -4881,7 +4881,7 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the function typ
 
 
 
-The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}fill}~x)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{rt}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -4891,7 +4891,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the function typ
 
 
 
-The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
@@ -4905,7 +4905,7 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the functi
 
 
 
-The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
@@ -4919,7 +4919,7 @@ The instruction :math:`(\mathsf{table{.}init}~x_1~x_2)` is valid with the functi
 
 
 
-The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{elem{.}drop}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * The element type :math:`C{.}\mathsf{elems}{}[x]` exists.
@@ -4929,7 +4929,7 @@ The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the function type
 
 
 
-The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`\mathsf{memory{.}size}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -4937,7 +4937,7 @@ The instruction :math:`\mathsf{memory{.}size}` is valid with the function type :
 
 
 
-The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`\mathsf{memory{.}grow}` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -4945,7 +4945,7 @@ The instruction :math:`\mathsf{memory{.}grow}` is valid with the function type :
 
 
 
-The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`\mathsf{memory{.}fill}` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -4953,7 +4953,7 @@ The instruction :math:`\mathsf{memory{.}fill}` is valid with the function type :
 
 
 
-The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`\mathsf{memory{.}copy}` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -4961,7 +4961,7 @@ The instruction :math:`\mathsf{memory{.}copy}` is valid with the function type :
 
 
 
-The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{memory{.}init}~x)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -4973,7 +4973,7 @@ The instruction :math:`(\mathsf{memory{.}init}~x)` is valid with the function ty
 
 
 
-The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * The data type :math:`C{.}\mathsf{datas}{}[x]` exists.
@@ -4983,63 +4983,63 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the function type
 
 
 
-The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5064,7 +5064,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 
 
 
-The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5076,7 +5076,7 @@ The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\ma
 
 
 
-The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5086,7 +5086,7 @@ The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{me
 
 
 
-The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5098,22 +5098,22 @@ The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\m
 
 
 
-The instruction :math:`(\mathsf{select}~t)` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
+The instruction :math:`(\mathsf{select}~t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~\epsilon)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
+   * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
-   * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
-
-
+   * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+
+
+The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * :math:`{|{\mathit{nt}}_1|}` is equal to :math:`{|{\mathit{nt}}_2|}`.
@@ -5121,32 +5121,12 @@ The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
-
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
-
-
-
-
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
-
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
-
-
-
-
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5156,7 +5136,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~{\mathit{mema
 
 
 
-The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{n}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathsf{i}}{n}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5166,7 +5146,27 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+
+
+
+The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{n}~\rightarrow~\epsilon` if:
+
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+
+
+
+
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5176,7 +5176,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\maths
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{splat}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{splat}})~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5186,7 +5186,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{zero}})~{\mathit{memarg}})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{zero}})~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
@@ -5196,7 +5196,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 
 
-The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is valid with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -5215,9 +5215,9 @@ The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyl
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
@@ -5226,11 +5226,11 @@ The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyl
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{{t'}_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{t'}_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+      * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
@@ -5239,50 +5239,50 @@ The instruction sequence :math:`{{\mathit{in}}_{\mathit{u{\kern-0.1em\scriptstyl
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction sequence :math:`\epsilon` is valid with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+The instruction sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
 
-The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_3^\ast}` if:
+The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_3^\ast}` if:
 
 
-   * The instruction :math:`{\mathit{instr}}_1` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
-
-
-
-
-The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{{t'}_1^\ast}~\rightarrow~{{t'}_2^\ast}` if:
-
-
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-   * The value type sequence :math:`{{t'}_1^\ast}` matches the value type sequence :math:`{t_1^\ast}`.
-
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+   * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
 
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{t'}_1^\ast}~\rightarrow~{{t'}_2^\ast}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * The value type sequence :math:`{{t'}_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_1^\ast}`.
+
+   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
 
 
 
 
-The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^\ast}`.
 
 
 
@@ -5354,57 +5354,57 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-The type :math:`(\mathsf{type}~{\mathit{ft}})` is valid with the function type :math:`{\mathit{ft}}` if:
+The type :math:`(\mathsf{type}~{\mathit{ft}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}` if:
 
 
-   * The function type :math:`{\mathit{ft}}` is valid.
+   * The function type :math:`{\mathit{ft}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` is equal to :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^\ast}`.
+   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
 
 
 
 
-The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{gt}}` if:
+The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is valid.
+   * The global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
 
    * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`t`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The table :math:`(\mathsf{table}~{\mathit{tt}})` is valid with the table type :math:`{\mathit{tt}}` if:
+The table :math:`(\mathsf{table}~{\mathit{tt}})` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}` if:
 
 
-   * The table type :math:`{\mathit{tt}}` is valid.
-
-
-
-
-The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type :math:`{\mathit{mt}}` if:
-
-
-   * The memory type :math:`{\mathit{mt}}` is valid.
+   * The table type :math:`{\mathit{tt}}` is :ref:`valid <valid-val>`.
 
 
 
 
-:math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the reference type :math:`{\mathit{rt}}` if:
+The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}` if:
+
+
+   * The memory type :math:`{\mathit{mt}}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
@@ -5415,7 +5415,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -5429,45 +5429,45 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
 
 
-:math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the reference type :math:`{\mathit{rt}}` if:
+:math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-:math:`\mathsf{passive}` is valid with the reference type :math:`{\mathit{rt}}`.
+:math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-:math:`\mathsf{declare}` is valid with the reference type :math:`{\mathit{rt}}`.
+:math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the reference type :math:`{\mathit{rt}}` if:
+The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`:
 
-      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{rt}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
-   * :math:`{\mathit{elemmode}}` is valid with the reference type :math:`{\mathit{rt}}`.
+   * :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-:math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+:math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
@@ -5476,7 +5476,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -5487,32 +5487,32 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
 
 
-:math:`(\mathsf{active}~0~{\mathit{expr}})` is valid if:
+:math:`(\mathsf{active}~0~{\mathit{expr}})` is :ref:`valid <valid-val>` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-:math:`\mathsf{passive}` is valid.
+:math:`\mathsf{passive}` is :ref:`valid <valid-val>`.
 
 
 
 
-The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid if:
+The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` if:
 
 
-   * :math:`{\mathit{datamode}}` is valid.
+   * :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The start function :math:`(\mathsf{start}~x)` is valid if:
+The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -5522,15 +5522,15 @@ The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
 
-The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
+The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external type :math:`{\mathit{xt}}` is valid.
+   * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
@@ -5574,7 +5574,7 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
 
 
-The external index :math:`(\mathsf{func}~x)` is valid with the external type :math:`(\mathsf{func}~{\mathit{ft}})` if:
+The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{ft}})` if:
 
 
    * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -5584,7 +5584,7 @@ The external index :math:`(\mathsf{func}~x)` is valid with the external type :ma
 
 
 
-The external index :math:`(\mathsf{global}~x)` is valid with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
+The external index :math:`(\mathsf{global}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -5594,7 +5594,7 @@ The external index :math:`(\mathsf{global}~x)` is valid with the external type :
 
 
 
-The external index :math:`(\mathsf{table}~x)` is valid with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
+The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -5604,7 +5604,7 @@ The external index :math:`(\mathsf{table}~x)` is valid with the external type :m
 
 
 
-The external index :math:`(\mathsf{mem}~x)` is valid with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
+The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -5614,72 +5614,72 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 
 
 
-The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the external type :math:`{\mathit{xt}}` if:
+The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+   * The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
 
 
 
-The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid if:
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
    * :math:`{|{{\mathit{ft}'}^\ast}|}` is equal to :math:`{|{{\mathit{type}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
-      * The type :math:`{\mathit{type}}` is valid with the function type :math:`{\mathit{ft}'}`.
+      * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{ixt}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is valid with the global type :math:`{\mathit{gt}}`.
+      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
 
    * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
    * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is valid with the reference type :math:`{\mathit{rt}}`.
+      * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is valid.
+      * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
 
    * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
-      * The function :math:`{\mathit{func}}` is valid with the function type :math:`{\mathit{ft}}`.
+      * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
 
    * If :math:`{\mathit{start}}` is defined, then:
 
-      * The start function :math:`{\mathit{start}}` is valid.
+      * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
 
    * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}^\ast}|}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
-      * The export :math:`{\mathit{export}}` is valid with the external type :math:`{\mathit{xt}}`.
+      * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
    * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
 
@@ -5725,7 +5725,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5750,7 +5750,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5817,7 +5817,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -5834,7 +5834,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -5899,7 +5899,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5916,11 +5916,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5937,7 +5937,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5950,11 +5950,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5967,7 +5967,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt_1>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6001,7 +6001,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6014,11 +6014,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6031,15 +6031,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6052,7 +6052,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6065,7 +6065,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6082,11 +6082,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6103,7 +6103,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6122,11 +6122,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6139,11 +6139,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6158,7 +6158,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6173,11 +6173,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6198,11 +6198,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6236,7 +6236,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6275,7 +6275,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6288,7 +6288,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6301,11 +6301,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6318,11 +6318,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6343,7 +6343,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................................................................................................................................................................................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6480,7 +6480,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6565,7 +6565,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6593,7 +6593,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6601,7 +6601,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6636,15 +6636,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6701,15 +6701,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -6748,7 +6748,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6795,7 +6795,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6872,11 +6872,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6914,7 +6914,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6922,7 +6922,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6957,15 +6957,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7022,15 +7022,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7099,7 +7099,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7116,7 +7116,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -7152,11 +7152,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-nt_u2>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7195,11 +7195,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7218,11 +7218,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7249,7 +7249,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -12500,17 +12500,17 @@ Untranslated relation Expand: `%~~%`(deftype, comptype)
 
 
 
-The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` is valid.
+The number type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` is valid.
+The vector type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
@@ -12521,9 +12521,9 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is v
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{rec}~i)`.
@@ -12535,22 +12535,22 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is v
 
 
 
-The heap type :math:`{\mathit{absheaptype}}` is valid.
+The heap type :math:`{\mathit{absheaptype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The heap type :math:`{\mathit{typeidx}}` is valid if:
+The heap type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
-
-
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
 
 
-The heap type :math:`(\mathsf{rec}~i)` is valid if:
+
+
+The heap type :math:`(\mathsf{rec}~i)` is :ref:`valid <valid-val>` if:
 
 
    * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
@@ -12560,85 +12560,85 @@ The heap type :math:`(\mathsf{rec}~i)` is valid if:
 
 
 
-The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}})` is valid if:
+The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The heap type :math:`{\mathit{heaptype}}` is valid.
+   * The heap type :math:`{\mathit{heaptype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}`.
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` is valid.
+      * The number type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}`.
 
-      * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` is valid.
+      * The vector type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}`.
 
-      * The reference type :math:`{\mathit{reftype}}` is valid.
+      * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`{\mathit{numtype}}` is valid if:
+The value type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>` if:
 
 
-   * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` is valid.
-
-
-
-
-The :ref:`value type <syntax-valtype>` :math:`{\mathit{vectype}}` is valid if:
-
-
-   * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` is valid.
+   * The number type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`{\mathit{reftype}}` is valid if:
+The value type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>` if:
 
 
-   * The reference type :math:`{\mathit{reftype}}` is valid.
-
-
-
-
-The :ref:`value type <syntax-valtype>` :math:`\mathsf{bot}` is valid.
+   * The vector type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The result type :math:`{t^\ast}` is valid if:
+The value type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>` if:
+
+
+   * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The value type :math:`\mathsf{bot}` is :ref:`valid <valid-val>`.
+
+
+
+
+The result type :math:`{t^\ast}` is :ref:`valid <valid-val>` if:
 
 
    * For all :math:`t` in :math:`{t^\ast}`:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
+      * The value type :math:`t` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is valid if:
+The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is :ref:`valid <valid-val>` if:
 
 
-   * The result type :math:`{t_1^\ast}` is valid.
+   * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
 
-   * The result type :math:`{t_2^\ast}` is valid.
+   * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
 
    * :math:`{|{{{\mathit{lt}}}^\ast}|}` is equal to :math:`{|{x^\ast}|}`.
 
@@ -12653,64 +12653,64 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
 
 
-The packed type :math:`{\mathit{packtype}}` is valid.
+The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
       * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
+      * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
       * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{packtype}}`.
 
-      * The packed type :math:`{\mathit{packtype}}` is valid.
+      * The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The storage type :math:`{\mathit{valtype}}` is valid if:
+The storage type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
-
-
-
-
-The storage type :math:`{\mathit{packtype}}` is valid if:
-
-
-   * The packed type :math:`{\mathit{packtype}}` is valid.
+   * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The field type :math:`({\mathsf{mut}^?}~{\mathit{storagetype}})` is valid if:
+The storage type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>` if:
 
 
-   * The storage type :math:`{\mathit{storagetype}}` is valid.
-
-
-
-
-The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid if:
-
-
-   * The result type :math:`{t_1^\ast}` is valid.
-
-   * The result type :math:`{t_2^\ast}` is valid.
+   * The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The field type :math:`({\mathsf{mut}^?}~{\mathit{storagetype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The storage type :math:`{\mathit{storagetype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>` if:
+
+
+   * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
+
+   * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
@@ -12719,64 +12719,64 @@ The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
       * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`:
 
-         * The field type :math:`{\mathit{fieldtype}}` is valid.
+         * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
       * The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
-      * The field type :math:`{\mathit{fieldtype}}` is valid.
+      * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
-      * The function type :math:`{\mathit{functype}}` is valid.
+      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})` is valid if:
+The composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
    * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`:
 
-      * The field type :math:`{\mathit{fieldtype}}` is valid.
+      * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})` is valid if:
+The composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The field type :math:`{\mathit{fieldtype}}` is valid.
-
-
-
-
-The composite type :math:`(\mathsf{func}~{\mathit{functype}})` is valid if:
-
-
-   * The function type :math:`{\mathit{functype}}` is valid.
+   * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The packed type :math:`{\mathit{packtype}}` matches itself.
+The composite type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` matches itself.
+The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` itself.
 
 
 
 
-The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` if:
+The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` itself.
+
+
+
+
+The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2` if:
 
 
    * Either:
 
-      * The :ref:`defined type <syntax-deftype>` :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+      * The defined type :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
    * Or:
 
@@ -12784,32 +12784,32 @@ The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches th
 
       * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
 
-      * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the heap type :math:`{\mathit{deftype}}_2`.
+      * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` :ref:`matches <match>` the heap type :math:`{\mathit{deftype}}_2`.
 
 
 
 
-The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` if:
+The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+   * The defined type :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
 
 
 
-The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` if:
+The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2` if:
 
 
    * The sub type :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
    * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
 
-   * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` matches the heap type :math:`{\mathit{deftype}}_2`.
+   * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` :ref:`matches <match>` the heap type :math:`{\mathit{deftype}}_2`.
 
 
 
 
-The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
@@ -12824,11 +12824,11 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matc
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}_2`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` is valid.
+      * The heap type :math:`{\mathit{heaptype}'}` is :ref:`valid <valid-val>`.
 
-      * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
@@ -12855,46 +12855,46 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matc
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{struct}`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{array}`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{func}`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}_1`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{deftype}}_2`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
+      * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{rec}~i)`.
@@ -12912,21 +12912,21 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matc
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{nofunc}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{noextern}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
@@ -12936,96 +12936,96 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matc
 
 
 
-The heap type :math:`{\mathit{heaptype}}` matches itself.
+The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` itself.
 
 
 
 
-The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}}_2` if:
+The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2` if:
 
 
-   * The heap type :math:`{\mathit{heaptype}'}` is valid.
+   * The heap type :math:`{\mathit{heaptype}'}` is :ref:`valid <valid-val>`.
 
-   * The heap type :math:`{\mathit{heaptype}}_1` matches the heap type :math:`{\mathit{heaptype}'}`.
+   * The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}`.
 
-   * The heap type :math:`{\mathit{heaptype}'}` matches the heap type :math:`{\mathit{heaptype}}_2`.
+   * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
 
 
 
 
-The heap type :math:`\mathsf{eq}` matches the heap type :math:`\mathsf{any}`.
+The heap type :math:`\mathsf{eq}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
 
 
 
 
-The heap type :math:`\mathsf{i{\scriptstyle 31}}` matches the heap type :math:`\mathsf{eq}`.
+The heap type :math:`\mathsf{i{\scriptstyle 31}}` :ref:`matches <match>` the heap type :math:`\mathsf{eq}`.
 
 
 
 
-The heap type :math:`\mathsf{struct}` matches the heap type :math:`\mathsf{eq}`.
+The heap type :math:`\mathsf{struct}` :ref:`matches <match>` the heap type :math:`\mathsf{eq}`.
 
 
 
 
-The heap type :math:`\mathsf{array}` matches the heap type :math:`\mathsf{eq}`.
+The heap type :math:`\mathsf{array}` :ref:`matches <match>` the heap type :math:`\mathsf{eq}`.
 
 
 
 
-The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{struct}` if:
+The heap type :math:`{\mathit{deftype}}` :ref:`matches <match>` the heap type :math:`\mathsf{struct}` if:
 
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
 
 
 
-The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{array}` if:
+The heap type :math:`{\mathit{deftype}}` :ref:`matches <match>` the heap type :math:`\mathsf{array}` if:
 
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
 
 
 
-The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{func}` if:
+The heap type :math:`{\mathit{deftype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}` if:
 
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
 
-The heap type :math:`{\mathit{deftype}}_1` matches the heap type :math:`{\mathit{deftype}}_2` if:
+The heap type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{deftype}}_2` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
+   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
 
 
 
-The heap type :math:`{\mathit{typeidx}}` matches the heap type :math:`{\mathit{heaptype}}` if:
+The heap type :math:`{\mathit{typeidx}}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
 
 
 
 
-The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`{\mathit{typeidx}}` if:
+The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`{\mathit{typeidx}}` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The heap type :math:`{\mathit{heaptype}}` matches the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
 
 
 
 
-The heap type :math:`(\mathsf{rec}~i)` matches the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
+The heap type :math:`(\mathsf{rec}~i)` :ref:`matches <match>` the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
 
 
    * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
@@ -13037,39 +13037,39 @@ The heap type :math:`(\mathsf{rec}~i)` matches the type use :math:`{{\mathit{typ
 
 
 
-The heap type :math:`\mathsf{none}` matches the heap type :math:`{\mathit{heaptype}}` if:
+The heap type :math:`\mathsf{none}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{any}`.
-
-
-
-
-The heap type :math:`\mathsf{nofunc}` matches the heap type :math:`{\mathit{heaptype}}` if:
-
-
-   * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{func}`.
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
 
 
 
 
-The heap type :math:`\mathsf{noextern}` matches the heap type :math:`{\mathit{heaptype}}` if:
+The heap type :math:`\mathsf{nofunc}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`\mathsf{extern}`.
-
-
-
-
-The heap type :math:`\mathsf{bot}` matches the heap type :math:`{\mathit{heaptype}}`.
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
 
 
 
 
-The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{ht}}_1)` matches the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{ht}}_2)` if:
+The heap type :math:`\mathsf{noextern}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The heap type :math:`{\mathit{ht}}_1` matches the heap type :math:`{\mathit{ht}}_2`.
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+
+
+
+
+The heap type :math:`\mathsf{bot}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
+
+
+
+
+The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{ht}}_2)` if:
+
+
+   * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
@@ -13086,91 +13086,91 @@ The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1
 
 
 
-The reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)` matches the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_2)` if:
 
 
-   * The heap type :math:`{\mathit{ht}}_1` matches the heap type :math:`{\mathit{ht}}_2`.
-
-
-
-
-The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}_2)` if:
-
-
-   * The heap type :math:`{\mathit{ht}}_1` matches the heap type :math:`{\mathit{ht}}_2`.
+   * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
 
 
 
-The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` matches itself.
+The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}_2)` if:
+
+
+   * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` itself.
+
+
+
+
+The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_1`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_1`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{numtype}}_2`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{numtype}}_2`.
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_1` matches the :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_2`.
+      * The number type :math:`{\mathit{numtype}}_1` :ref:`matches <match>` the number type :math:`{\mathit{numtype}}_2`.
 
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_1`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_1`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{vectype}}_2`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{vectype}}_2`.
 
-      * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_1` matches the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_2`.
+      * The vector type :math:`{\mathit{vectype}}_1` :ref:`matches <match>` the vector type :math:`{\mathit{vectype}}_2`.
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_1`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_1`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{reftype}}_2`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{reftype}}_2`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
+      * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
    * Or:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}`.
-
-
-
-
-The :ref:`value type <syntax-valtype>` :math:`{\mathit{numtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{numtype}}_2` if:
-
-
-   * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_1` matches the :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_2`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`{\mathit{vectype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{vectype}}_2` if:
+The value type :math:`{\mathit{numtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{numtype}}_2` if:
 
 
-   * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_1` matches the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_2`.
-
-
-
-
-The :ref:`value type <syntax-valtype>` :math:`{\mathit{reftype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{reftype}}_2` if:
-
-
-   * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
+   * The number type :math:`{\mathit{numtype}}_1` :ref:`matches <match>` the number type :math:`{\mathit{numtype}}_2`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`\mathsf{bot}` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}`.
+The value type :math:`{\mathit{vectype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{vectype}}_2` if:
+
+
+   * The vector type :math:`{\mathit{vectype}}_1` :ref:`matches <match>` the vector type :math:`{\mathit{vectype}}_2`.
 
 
 
 
-The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The value type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{reftype}}_2` if:
+
+
+   * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
+
+
+
+
+The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}`.
+
+
+
+
+The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
@@ -13179,7 +13179,7 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` m
 
       * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}_2`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Or:
 
@@ -13187,31 +13187,31 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` m
 
       * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{packtype}}_2`.
 
-      * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
+      * The packed type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the packed type :math:`{\mathit{packtype}}_2`.
 
 
 
 
-The storage type :math:`{\mathit{valtype}}_1` matches the storage type :math:`{\mathit{valtype}}_2` if:
+The storage type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{valtype}}_2` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
-
-
-
-
-The storage type :math:`{\mathit{packtype}}_1` matches the storage type :math:`{\mathit{packtype}}_2` if:
-
-
-   * The packed type :math:`{\mathit{packtype}}_1` matches the packed type :math:`{\mathit{packtype}}_2`.
+   * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
 
 
 
-The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{zt}}_1)` matches the field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{zt}}_2)` if:
+The storage type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{packtype}}_2` if:
 
 
-   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
+   * The packed type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the packed type :math:`{\mathit{packtype}}_2`.
+
+
+
+
+The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{zt}}_2)` if:
+
+
+   * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
    * Either:
 
@@ -13225,52 +13225,52 @@ The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}
 
       * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{mut}`.
 
-      * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+      * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
 
 
 
-The field type :math:`(\epsilon~{\mathit{zt}}_1)` matches the field type :math:`(\epsilon~{\mathit{zt}}_2)` if:
+The field type :math:`(\epsilon~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`(\epsilon~{\mathit{zt}}_2)` if:
 
 
-   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
-
-
-
-
-The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` matches the field type :math:`(\mathsf{mut}~{\mathit{zt}}_2)` if:
-
-
-   * The storage type :math:`{\mathit{zt}}_1` matches the storage type :math:`{\mathit{zt}}_2`.
-
-   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+   * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
 
 
 
-The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math:`{t_2^\ast}` if:
+The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`(\mathsf{mut}~{\mathit{zt}}_2)` if:
+
+
+   * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
+
+   * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
+
+
+
+
+The value type sequence :math:`{t_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_2^\ast}` if:
 
 
    * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_1` matches the :ref:`value type <syntax-valtype>` :math:`t_2`.
+      * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
 
 
 
 
-The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` matches the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
+The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` :ref:`matches <match>` the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
 
 
-   * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
+   * The value type sequence :math:`{t_{21}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{11}^\ast}`.
 
-   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
-
-
+   * The value type sequence :math:`{t_{12}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{22}^\ast}`.
 
 
-The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+
+
+The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
@@ -13283,7 +13283,7 @@ The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
       * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
-         * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
+         * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
 
    * Or:
 
@@ -13291,47 +13291,47 @@ The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
       * The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
 
-      * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
+      * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
    * Or:
 
       * The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
       * The composite type :math:`{\mathit{ct}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
-      * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+      * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
 
 
 
-The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` matches the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
+The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
 
 
    * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
    * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
-      * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
+      * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
 
 
 
 
-The composite type :math:`(\mathsf{array}~{\mathit{yt}}_1)` matches the composite type :math:`(\mathsf{array}~{\mathit{yt}}_2)` if:
+The composite type :math:`(\mathsf{array}~{\mathit{yt}}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{array}~{\mathit{yt}}_2)` if:
 
 
-   * The field type :math:`{\mathit{yt}}_1` matches the field type :math:`{\mathit{yt}}_2`.
-
-
-
-
-The composite type :math:`(\mathsf{func}~{\mathit{ft}}_1)` matches the composite type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
-
-
-   * The function type :math:`{\mathit{ft}}_1` matches the function type :math:`{\mathit{ft}}_2`.
+   * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
 
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is valid with :math:`({\mathsf{ok}}{(x_0)})` if:
+The composite type :math:`(\mathsf{func}~{\mathit{ft}}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
+
+
+   * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
+
+
+
+
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x_0)})` if:
 
 
    * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
@@ -13346,22 +13346,22 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+      * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
 
       * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is equal to :math:`(\mathsf{sub}~\epsilon~{{x'}^\ast}~{\mathit{comptype}'})`.
 
-   * The composite type :math:`{\mathit{comptype}}` is valid.
+   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
 
-      * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
 
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is valid with :math:`({\mathsf{ok}}{(x, i)})` if:
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
@@ -13378,49 +13378,16 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
       * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is equal to :math:`(\mathsf{sub}~\epsilon~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
-   * The composite type :math:`{\mathit{comptype}}` is valid.
+   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
 
-      * The composite type :math:`{\mathit{comptype}}` matches the composite type :math:`{\mathit{comptype}'}`.
+      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, i)})` if:
-
-
-   * Either:
-
-      * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
-
-   * Or:
-
-      * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
-
-      * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x, i)})`.
-
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~\epsilon)` is valid with :math:`({\mathsf{ok}}{(x, i)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, i)})` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x, i)})`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
@@ -13431,32 +13398,65 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\sc
 
       * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~\epsilon)` is valid for :math:`({\mathsf{ok}}{(x)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x)})` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x + 1)})`.
+The recursive type :math:`(\mathsf{rec}~\epsilon)` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
 
 
 
 
-The :ref:`defined type <syntax-deftype>` :math:`({\mathit{rectype}} {.} i)` is valid if:
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is valid for :math:`({\mathsf{ok}}{(x)})`.
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * Either:
+
+      * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+
+   * Or:
+
+      * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
+
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~\epsilon)` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
+
+
+   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
    * The recursive type :math:`{\mathit{rectype}}` is equal to :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
@@ -13465,7 +13465,7 @@ The :ref:`defined type <syntax-deftype>` :math:`({\mathit{rectype}} {.} i)` is v
 
 
 
-The limits :math:`{}[~n~..~m~]` is valid within :math:`k` if:
+The limits :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` within :math:`k` if:
 
 
    * :math:`n` is less than or equal to :math:`m`.
@@ -13475,125 +13475,125 @@ The limits :math:`{}[~n~..~m~]` is valid within :math:`k` if:
 
 
 
-The global type :math:`({\mathsf{mut}^?}~t)` is valid if:
+The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
-
-
-
-
-The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is valid if:
-
-
-   * The limits :math:`{\mathit{limits}}` is valid within :math:`{2^{32}} - 1`.
-
-   * The reference type :math:`{\mathit{reftype}}` is valid.
+   * The value type :math:`t` is :ref:`valid <valid-val>`.
 
 
 
 
-The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is valid if:
+The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is valid within :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
 
-
-
-
-The tag type :math:`{\mathit{deftype}}` is valid if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is valid.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
+
+
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
+
+
+
+
+The tag type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
+
+
+The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is valid.
+      * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
-      * The global type :math:`{\mathit{globaltype}}` is valid.
+      * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
-      * The table type :math:`{\mathit{tabletype}}` is valid.
+      * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * The memory type :math:`{\mathit{memtype}}` is valid.
+      * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
-      * The tag type :math:`{\mathit{tagtype}}` is valid.
+      * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{deftype}})` is valid if:
+The external type :math:`(\mathsf{func}~{\mathit{deftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is valid.
+   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
-
-
-
-
-The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is valid if:
-
-
-   * The global type :math:`{\mathit{globaltype}}` is valid.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is valid if:
+The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The table type :math:`{\mathit{tabletype}}` is valid.
-
-
-
-
-The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is valid if:
-
-
-   * The memory type :math:`{\mathit{memtype}}` is valid.
+   * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The external type :math:`(\mathsf{tag}~{\mathit{tagtype}})` is valid if:
+The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The tag type :math:`{\mathit{tagtype}}` is valid.
+   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` matches the instruction type :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
+The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The value type sequence :math:`{t_{21}^\ast}` matches the value type sequence :math:`{t_{11}^\ast}`.
+   * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
-   * The value type sequence :math:`{t_{12}^\ast}` matches the value type sequence :math:`{t_{22}^\ast}`.
+
+
+
+The external type :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` :ref:`matches <match>` the instruction type :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
+
+
+   * The value type sequence :math:`{t_{21}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{11}^\ast}`.
+
+   * The value type sequence :math:`{t_{12}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{22}^\ast}`.
 
    * The local index sequence :math:`{x^\ast}` is equal to :math:`{x_2^\ast} \setminus {x_1^\ast}`.
 
@@ -13610,7 +13610,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
 
 
-The limits :math:`{}[~n_1~..~m_1~]` matches the limits :math:`{}[~n_2~..~m_2~]` if:
+The limits :math:`{}[~n_1~..~m_1~]` :ref:`matches <match>` the limits :math:`{}[~n_2~..~m_2~]` if:
 
 
    * :math:`n_1` is greater than or equal to :math:`n_2`.
@@ -13620,10 +13620,10 @@ The limits :math:`{}[~n_1~..~m_1~]` matches the limits :math:`{}[~n_2~..~m_2~]` 
 
 
 
-The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{valtype}}_1)` matches the global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{valtype}}_2)` if:
+The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{valtype}}_2)` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
+   * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
@@ -13637,60 +13637,60 @@ The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
       * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{mut}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
 
 
 
-The global type :math:`(\epsilon~{\mathit{valtype}}_1)` matches the global type :math:`(\epsilon~{\mathit{valtype}}_2)` if:
+The global type :math:`(\epsilon~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`(\epsilon~{\mathit{valtype}}_2)` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
-
-
-
-
-The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` matches the global type :math:`(\mathsf{mut}~{\mathit{valtype}}_2)` if:
-
-
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
-
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1`.
+   * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
 
 
 
-The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1)` matches the table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2)` if:
+The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`(\mathsf{mut}~{\mathit{valtype}}_2)` if:
 
 
-   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
+   * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
-   * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
-
-   * The reference type :math:`{\mathit{reftype}}_2` matches the reference type :math:`{\mathit{reftype}}_1`.
-
-
-
-
-The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` matches the memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page})` if:
-
-
-   * The limits :math:`{\mathit{limits}}_1` matches the limits :math:`{\mathit{limits}}_2`.
+   * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
 
 
 
-The tag type :math:`{\mathit{deftype}}_1` matches the tag type :math:`{\mathit{deftype}}_2` if:
+The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1)` :ref:`matches <match>` the table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
+   * The limits :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits :math:`{\mathit{limits}}_2`.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1`.
+   * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
+
+   * The reference type :math:`{\mathit{reftype}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_1`.
 
 
 
 
-The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` :ref:`matches <match>` the memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page})` if:
+
+
+   * The limits :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits :math:`{\mathit{limits}}_2`.
+
+
+
+
+The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{deftype}}_2` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
+
+   * The defined type :math:`{\mathit{deftype}}_2` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_1`.
+
+
+
+
+The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
@@ -13699,7 +13699,7 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
+      * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
    * Or:
 
@@ -13707,73 +13707,73 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
-      * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.
+      * The global type :math:`{\mathit{globaltype}}_1` :ref:`matches <match>` the global type :math:`{\mathit{globaltype}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
-      * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.
+      * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
-      * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.
+      * The memory type :math:`{\mathit{memtype}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{memtype}}_2`.
    * Or:
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
-      * The tag type :math:`{\mathit{tagtype}}_1` matches the tag type :math:`{\mathit{tagtype}}_2`.
+      * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{deftype}}_1)` matches the external type :math:`(\mathsf{func}~{\mathit{deftype}}_2)` if:
+The external type :math:`(\mathsf{func}~{\mathit{deftype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{func}~{\mathit{deftype}}_2)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
-
-
-
-
-The external type :math:`(\mathsf{global}~{\mathit{globaltype}}_1)` matches the external type :math:`(\mathsf{global}~{\mathit{globaltype}}_2)` if:
-
-
-   * The global type :math:`{\mathit{globaltype}}_1` matches the global type :math:`{\mathit{globaltype}}_2`.
+   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tabletype}}_1)` matches the external type :math:`(\mathsf{table}~{\mathit{tabletype}}_2)` if:
+The external type :math:`(\mathsf{global}~{\mathit{globaltype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{global}~{\mathit{globaltype}}_2)` if:
 
 
-   * The table type :math:`{\mathit{tabletype}}_1` matches the table type :math:`{\mathit{tabletype}}_2`.
-
-
-
-
-The external type :math:`(\mathsf{mem}~{\mathit{memtype}}_1)` matches the external type :math:`(\mathsf{mem}~{\mathit{memtype}}_2)` if:
-
-
-   * The memory type :math:`{\mathit{memtype}}_1` matches the memory type :math:`{\mathit{memtype}}_2`.
+   * The global type :math:`{\mathit{globaltype}}_1` :ref:`matches <match>` the global type :math:`{\mathit{globaltype}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` matches the external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)` if:
+The external type :math:`(\mathsf{table}~{\mathit{tabletype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{table}~{\mathit{tabletype}}_2)` if:
 
 
-   * The tag type :math:`{\mathit{tagtype}}_1` matches the tag type :math:`{\mathit{tagtype}}_2`.
+   * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
 
 
 
 
-The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid as the instruction type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The external type :math:`(\mathsf{mem}~{\mathit{memtype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{mem}~{\mathit{memtype}}_2)` if:
+
+
+   * The memory type :math:`{\mathit{memtype}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{memtype}}_2`.
+
+
+
+
+The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)` if:
+
+
+   * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
+
+
+
+
+The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
 
 
    * Either:
@@ -13786,7 +13786,7 @@ The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is 
 
       * If :math:`{\mathit{valtype}}` is defined, then:
 
-         * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
+         * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
@@ -13796,34 +13796,34 @@ The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is 
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-The block type :math:`{{\mathit{valtype}}^?}` is valid as the instruction type :math:`\epsilon~\rightarrow~{{\mathit{valtype}}^?}` if:
+
+
+The block type :math:`{{\mathit{valtype}}^?}` is :ref:`valid <valid-val>` as the instruction type :math:`\epsilon~\rightarrow~{{\mathit{valtype}}^?}` if:
 
 
    * If :math:`{\mathit{valtype}}` is defined, then:
 
-      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
+      * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The block type :math:`{\mathit{typeidx}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+
+
+The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
@@ -13834,9 +13834,9 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * Or:
 
@@ -13844,72 +13844,72 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_all}~l)`.
 
-      * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * The value type sequence :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
 
-The catch clause :math:`(\mathsf{catch}~x~l)` is valid if:
-
-
-   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
-
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
-
-   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
-
-
-
-
-The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is valid if:
+The catch clause :math:`(\mathsf{catch}~x~l)` is :ref:`valid <valid-val>` if:
 
 
    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
 
-The catch clause :math:`(\mathsf{catch\_all}~l)` is valid if:
+The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is :ref:`valid <valid-val>` if:
+
+
+   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+
+   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+
+   * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+
+
+
+
+The catch clause :math:`(\mathsf{catch\_all}~l)` is :ref:`valid <valid-val>` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`\epsilon` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The value type sequence :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
 
-The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is valid if:
+The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is :ref:`valid <valid-val>` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The value type sequence :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`t` is defaultable if:
+The value type :math:`t` is defaultable if:
 
 
    * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
@@ -13917,31 +13917,31 @@ The :ref:`value type <syntax-valtype>` :math:`t` is defaultable if:
 
 
 
-The instruction :math:`\mathsf{nop}` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon`.
+The instruction :math:`\mathsf{nop}` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
 
-The instruction :math:`\mathsf{unreachable}` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`\mathsf{unreachable}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
-
-
-
-
-The instruction :math:`\mathsf{drop}` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
-
-
-   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
+   * The value type :math:`t` is :ref:`valid <valid-val>`.
+
+
+
+
+The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+
+
+   * The value type :math:`t` is :ref:`valid <valid-val>`.
 
    * Either:
 
@@ -13951,74 +13951,74 @@ The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
+      * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
-
-
+      * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
-The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+The instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_1^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
-
-
-
-
-The instruction :math:`(\mathsf{br}~l)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
-
-
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
-
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
-
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{br\_if}~l)` is valid with the instruction type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+The instruction :math:`(\mathsf{br}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
-The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
+
+The instruction :math:`(\mathsf{br\_if}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
+
+
+   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+
+   * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
+
+
+
+
+The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` if:
 
 
    * For all :math:`l` in :math:`{l^\ast}`:
@@ -14027,30 +14027,30 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is valid with the ins
 
    * For all :math:`l` in :math:`{l^\ast}`:
 
-      * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-   * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
-
-
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
-The instruction :math:`(\mathsf{br\_on\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~\epsilon~{\mathit{ht}})` if:
+
+
+The instruction :math:`(\mathsf{br\_on\_null}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~\epsilon~{\mathit{ht}})` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}`.
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
+   * The heap type :math:`{\mathit{ht}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
+The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
@@ -14060,317 +14060,317 @@ The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is valid with the instruc
 
 
 
-The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{t'}` if:
+The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{t'}` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~{\mathit{rt}}`.
 
-   * The reference type :math:`{\mathit{rt}}_1` is valid.
+   * The reference type :math:`{\mathit{rt}}_1` is :ref:`valid <valid-val>`.
 
-   * The reference type :math:`{\mathit{rt}}_2` is valid.
+   * The reference type :math:`{\mathit{rt}}_2` is :ref:`valid <valid-val>`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
+   * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
    * Let :math:`{t'}` be the reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2`.
 
 
 
 
-The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is valid with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
+The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^\ast}~{\mathit{rt}}`.
 
-   * The reference type :math:`{\mathit{rt}}_1` is valid.
+   * The reference type :math:`{\mathit{rt}}_1` is :ref:`valid <valid-val>`.
 
-   * The reference type :math:`{\mathit{rt}}_2` is valid.
+   * The reference type :math:`{\mathit{rt}}_2` is :ref:`valid <valid-val>`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
-   * The reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}`.
-
-
-
-
-The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`(\mathsf{call}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruction type :math:`{t_1^\ast}~{\mathit{at}}~\rightarrow~{t_2^\ast}` if:
+
+
+The instruction :math:`(\mathsf{call\_ref}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+
+
+The instruction :math:`(\mathsf{call\_indirect}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\mathit{at}}~\rightarrow~{t_2^\ast}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
+   * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
-The instruction :math:`\mathsf{return}` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+The instruction :math:`\mathsf{return}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{t^\ast}`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
+The instruction :math:`(\mathsf{return\_call}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
-
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
-
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
-
-
-
-
-The instruction :math:`(\mathsf{return\_call\_ref}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
 
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
-
-
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
 
-The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~{\mathit{at}}~\rightarrow~{t_4^\ast}` if:
+
+
+The instruction :math:`(\mathsf{return\_call\_ref}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+   * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
+
+   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
+
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~{\mathit{at}}~\rightarrow~{t_4^\ast}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
+   * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` matches the value type sequence :math:`{{t'}_2^\ast}`.
+   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
 
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is valid.
-
-
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
 
-The instruction :math:`(\mathsf{throw}~x)` is valid with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+The instruction :math:`(\mathsf{throw}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
-
-
-
-
-The instruction :math:`\mathsf{throw\_ref}` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast}` if:
-
-
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction :math:`\mathsf{throw\_ref}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~\mathsf{exn})~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{bt}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+The instruction :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The block type :math:`{\mathit{bt}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
    * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`:
 
-      * The catch clause :math:`{\mathit{catch}}` is valid.
+      * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with the instruction type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with the instruction type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
 
-The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})` if:
+The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})` if:
 
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
+   * The heap type :math:`{\mathit{ht}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The instruction :math:`(\mathsf{ref{.}func}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
    * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
 
 
 
-The instruction :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+The instruction :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
 
 
 
 
-The instruction :math:`\mathsf{ref{.}is\_null}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
+The instruction :math:`\mathsf{ref{.}is\_null}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The heap type :math:`{\mathit{ht}}` is valid.
-
-
-
-
-The instruction :math:`\mathsf{ref{.}as\_non\_null}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{ht}})` if:
-
-
-   * The heap type :math:`{\mathit{ht}}` is valid.
+   * The heap type :math:`{\mathit{ht}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`\mathsf{ref{.}eq}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`\mathsf{ref{.}as\_non\_null}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{ht}})` if:
+
+
+   * The heap type :math:`{\mathit{ht}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is valid with the instruction type :math:`{\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
-
-
-   * The reference type :math:`{\mathit{rt}}` is valid.
-
-   * The reference type :math:`{\mathit{rt}'}` is valid.
-
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+The instruction :math:`\mathsf{ref{.}eq}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~(\mathsf{ref}~\mathsf{null}~\mathsf{eq})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is valid with the instruction type :math:`{\mathit{rt}'}~\rightarrow~{\mathit{rt}}` if:
+The instruction :math:`(\mathsf{ref{.}test}~{\mathit{rt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{rt}'}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The reference type :math:`{\mathit{rt}}` is valid.
+   * The reference type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
 
-   * The reference type :math:`{\mathit{rt}'}` is valid.
+   * The reference type :math:`{\mathit{rt}'}` is :ref:`valid <valid-val>`.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
-
-
-
-
-The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+   * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
 
 
 
-The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{ref{.}cast}~{\mathit{rt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{rt}'}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The reference type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The reference type :math:`{\mathit{rt}'}` is :ref:`valid <valid-val>`.
+
+   * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
+
+
+
+
+The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}})` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle 31}})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+
+
+
+
+The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * Let :math:`{t^\ast}` be the value type sequence :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
 
 
 
 
-The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
-      * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+      * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
 
-The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~t` if:
+The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~t` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -14378,85 +14378,85 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is equal to :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
 
-The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~t~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
    * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is equal to :math:`(\mathsf{mut}~{\mathit{zt}})`.
 
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
-
-
-
-
-The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
-
-   * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
-
-
+   * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
-The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+
+
+
+
+The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
 
    * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-   * The reference type :math:`C{.}\mathsf{elems}{}[y]` matches the reference type :math:`{\mathit{rt}}`.
+   * The reference type :math:`C{.}\mathsf{elems}{}[y]` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
+   * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
    * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -14465,87 +14465,87 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instr
 
 
 
-The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is equal to :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{array{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
-
-
-
-
-The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
-
-   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+The instruction :math:`\mathsf{array{.}len}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{array})~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{array{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_1]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_2]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
-
-   * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
+   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x_1]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x_2]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
+
+   * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
+
+
+
+
+The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-   * The element type :math:`C{.}\mathsf{elems}{}[y]` matches the storage type :math:`{\mathit{zt}}`.
+   * The element type :math:`C{.}\mathsf{elems}{}[y]` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}`.
 
 
 
 
-The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * The :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
+   * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
    * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -14554,7 +14554,7 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the inst
 
 
 
-The instruction :math:`\mathsf{extern{.}convert\_any}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
+The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
 
 
    * :math:`{\mathsf{null}}{{{}_{1}^?}}` is equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
@@ -14562,7 +14562,7 @@ The instruction :math:`\mathsf{extern{.}convert\_any}` is valid with the instruc
 
 
 
-The instruction :math:`\mathsf{any{.}convert\_extern}` is valid with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
+The instruction :math:`\mathsf{any{.}convert\_extern}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
 
 
    * :math:`{\mathsf{null}}{{{}_{1}^?}}` is equal to :math:`{\mathsf{null}}{{{}_{2}^?}}`.
@@ -14570,72 +14570,72 @@ The instruction :math:`\mathsf{any{.}convert\_extern}` is valid with the instruc
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is valid with the instruction type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vternop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vternop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}} {.} {\mathit{vswizzlop}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vswizzlop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * For all :math:`i` in :math:`{i^\ast}`:
@@ -14645,60 +14645,60 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid wit
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the instruction type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the instruction type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
-
-
-
-
-The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~t` if:
-
-
-   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
-
-   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~t` if:
 
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+
+   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is valid with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{sx}}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+
+
+
+
+The instruction :math:`(\mathsf{local{.}get}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
    * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
@@ -14708,7 +14708,7 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
+The instruction :math:`(\mathsf{local{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
 
 
    * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
@@ -14718,7 +14718,7 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
+The instruction :math:`(\mathsf{local{.}tee}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
 
 
    * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
@@ -14728,7 +14728,7 @@ The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~t` if:
+The instruction :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -14738,7 +14738,7 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is valid with the instruction 
 
 
 
-The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{global{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -14748,7 +14748,7 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is valid with the instruction 
 
 
 
-The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{rt}}` if:
+The instruction :math:`(\mathsf{table{.}get}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{rt}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -14758,7 +14758,7 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction type :math:`{\mathit{at}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -14768,7 +14768,7 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~{\mathit{at}}` if:
+The instruction :math:`(\mathsf{table{.}size}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~{\mathit{at}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -14778,7 +14778,7 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is valid with the instruction 
 
 
 
-The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction type :math:`{\mathit{rt}}~{\mathit{at}}~\rightarrow~{\mathit{at}}` if:
+The instruction :math:`(\mathsf{table{.}grow}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{rt}}~{\mathit{at}}~\rightarrow~{\mathit{at}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -14788,7 +14788,7 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is valid with the instruction 
 
 
 
-The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction type :math:`{\mathit{at}}~{\mathit{rt}}~{\mathit{at}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{rt}}~{\mathit{at}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -14798,7 +14798,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is valid with the instruction 
 
 
 
-The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
@@ -14809,14 +14809,14 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is valid with the instru
 
    * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is equal to :math:`({\mathit{at}}_2~{\mathit{lim}}_2~{\mathit{rt}}_2)`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
    * Let :math:`t` be the address type :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
 
 
 
 
-The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}init}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -14827,12 +14827,12 @@ The instruction :math:`(\mathsf{table{.}init}~x~y)` is valid with the instructio
 
    * The reference type :math:`C{.}\mathsf{elems}{}[y]` is equal to :math:`{\mathit{rt}}_2`.
 
-   * The reference type :math:`{\mathit{rt}}_2` matches the reference type :math:`{\mathit{rt}}_1`.
+   * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
 
 
 
-The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{elem{.}drop}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * The element type :math:`C{.}\mathsf{elems}{}[x]` exists.
@@ -14842,7 +14842,7 @@ The instruction :math:`(\mathsf{elem{.}drop}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`(\mathsf{memory{.}size}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~{\mathit{at}}` if:
+The instruction :math:`(\mathsf{memory{.}size}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~{\mathit{at}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14852,7 +14852,7 @@ The instruction :math:`(\mathsf{memory{.}size}~x)` is valid with the instruction
 
 
 
-The instruction :math:`(\mathsf{memory{.}grow}~x)` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{at}}` if:
+The instruction :math:`(\mathsf{memory{.}grow}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{at}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14862,7 +14862,7 @@ The instruction :math:`(\mathsf{memory{.}grow}~x)` is valid with the instruction
 
 
 
-The instruction :math:`(\mathsf{memory{.}fill}~x)` is valid with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~{\mathit{at}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{memory{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~{\mathit{at}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14872,7 +14872,7 @@ The instruction :math:`(\mathsf{memory{.}fill}~x)` is valid with the instruction
 
 
 
-The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` exists.
@@ -14888,7 +14888,7 @@ The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is valid with the instr
 
 
 
-The instruction :math:`(\mathsf{memory{.}init}~x~y)` is valid with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{memory{.}init}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14902,7 +14902,7 @@ The instruction :math:`(\mathsf{memory{.}init}~x~y)` is valid with the instructi
 
 
 
-The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
    * The data type :math:`C{.}\mathsf{datas}{}[x]` exists.
@@ -14912,7 +14912,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is valid with the instruction t
 
 
 
-The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14921,28 +14921,28 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
    * Either:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14951,28 +14951,28 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
    * Either:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15004,7 +15004,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15018,7 +15018,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15030,7 +15030,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15044,51 +15044,27 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
 
 
-The instruction :math:`(\mathsf{select}~t)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~t)` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
-
-
-
-
-The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
-
-
-   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
-
-   * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
-
-   * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
+   * The value type :math:`t` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{nt}}` if:
+The instruction :math:`(\mathsf{select}~\epsilon)` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The value type :math:`t` is :ref:`valid <valid-val>`.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
-
-
-
-
-The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
-
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
-
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
-
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15100,7 +15076,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{me
 
 
 
-The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~{\mathsf{i}}{N}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15112,7 +15088,31 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+
+
+
+The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathsf{i}}{N}~\rightarrow~\epsilon` if:
+
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+
+   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+
+
+
+
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15124,7 +15124,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15136,7 +15136,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15148,7 +15148,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}})` is valid with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15160,7 +15160,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is valid with the instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
@@ -15175,7 +15175,7 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
       * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
       * :math:`{|{{\mathit{init}}^\ast}|}` is equal to :math:`{|{t^\ast}|}`.
 
@@ -15189,40 +15189,40 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
          * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
-      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+      * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
       * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{it}'}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
 
-      * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
+      * The instruction type :math:`{\mathit{it}}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}'}`.
 
-      * The instruction type :math:`{\mathit{it}'}` is valid.
+      * The instruction type :math:`{\mathit{it}'}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
       * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-      * The result type :math:`{t^\ast}` is valid.
-
-
-
-
-The instruction sequence :math:`\epsilon` is valid with the instruction type :math:`\epsilon~\rightarrow~\epsilon`.
+      * The result type :math:`{t^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}` if:
+The instruction sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
-   * The instruction :math:`{\mathit{instr}}_1` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+
+
+The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}` if:
+
+
+   * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
    * :math:`{|{{\mathit{init}}^\ast}|}` is equal to :math:`{|{t^\ast}|}`.
 
@@ -15236,42 +15236,42 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
       * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
-   * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is valid with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+   * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
 
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}'}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}'}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{\mathit{it}}`.
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
 
-   * The instruction type :math:`{\mathit{it}}` matches the instruction type :math:`{\mathit{it}'}`.
+   * The instruction type :math:`{\mathit{it}}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}'}`.
 
-   * The instruction type :math:`{\mathit{it}'}` is valid.
-
-
-
-
-The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}` if:
-
-
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
-
-   * The result type :math:`{t^\ast}` is valid.
+   * The instruction type :math:`{\mathit{it}'}` is :ref:`valid <valid-val>`.
 
 
 
 
-The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :math:`{t^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+   * The result type :math:`{t^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The :ref:`value type <syntax-valtype>` :math:`t` is not defaultable if:
+The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}` if:
+
+
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~{t^\ast}`.
+
+
+
+
+The value type :math:`t` is not defaultable if:
 
 
    * The value :math:`{{\mathrm{default}}}_{t}` is absent.
@@ -15427,7 +15427,7 @@ The :ref:`value type <syntax-valtype>` :math:`t` is not defaultable if:
 
 
 
-The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}` if:
+The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}^\ast}` if:
 
 
    * :math:`{|C{.}\mathsf{types}|}` is equal to :math:`x`.
@@ -15436,110 +15436,110 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is valid with the
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is valid for :math:`({\mathsf{ok}}{(x)})`.
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
 
 
 
-The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~t)` if:
+The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~t)` if:
 
 
    * Either:
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{set}`.
 
-      * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is defined.
+      * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
 
    * Or:
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{unset}`.
 
-      * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is not defined.
+      * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
 
 
 
 
-The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}~t)` if:
+The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`(\mathsf{set}~t)` if:
 
 
-   * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is defined.
-
-
-
-
-The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}~t)` if:
-
-
-   * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is not defined.
+   * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
 
 
 
 
-The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` if:
+The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`(\mathsf{unset}~t)` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
+   * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+
+The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * :math:`{|{{{\mathit{lt}}}^\ast}|}` is equal to :math:`{|{{\mathit{local}}^\ast}|}`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`:
 
-      * The local :math:`{\mathit{local}}` is valid with the local type :math:`{{\mathit{lt}}}`.
+      * The local :math:`{\mathit{local}}` is :ref:`valid <valid-val>` with the local type :math:`{{\mathit{lt}}}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is valid with the result type :math:`{t_2^\ast}`.
-
-
+   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
 
 
-The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is valid with the global type :math:`{\mathit{globaltype}}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is valid.
+The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{globaltype}}` if:
+
+
+   * The global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
 
    * The global type :math:`{\mathit{globaltype}}` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`t`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid with the table type :math:`{\mathit{tabletype}}` if:
+The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tabletype}}` if:
 
 
-   * The table type :math:`{\mathit{tabletype}}` is valid.
+   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
 
    * The table type :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{rt}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with the memory type :math:`{\mathit{memtype}}` if:
+The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{memtype}}` if:
 
 
-   * The memory type :math:`{\mathit{memtype}}` is valid.
-
-
-
-
-The tag :math:`(\mathsf{tag}~x)` is valid with the tag type :math:`C{.}\mathsf{types}{}[x]` if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
 
 
 
-The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the element type :math:`{\mathit{rt}}` if:
+The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the tag type :math:`C{.}\mathsf{types}{}[x]` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
+
+
+The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
 
 
    * Either:
@@ -15550,9 +15550,9 @@ The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
 
-      * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+      * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -15566,49 +15566,49 @@ The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
 
 
-The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the element type :math:`{\mathit{rt}}` if:
+The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
 
-   * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
+   * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The element mode :math:`\mathsf{passive}` is valid with the element type :math:`{\mathit{rt}}`.
+The element mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
 
 
 
-The element mode :math:`\mathsf{declare}` is valid with the element type :math:`{\mathit{rt}}`.
+The element mode :math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
 
 
 
-The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is valid with the element type :math:`{\mathit{elemtype}}` if:
+The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{elemtype}}` if:
 
 
-   * The reference type :math:`{\mathit{elemtype}}` is valid.
+   * The reference type :math:`{\mathit{elemtype}}` is :ref:`valid <valid-val>`.
 
    * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`:
 
-      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{elemtype}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{elemtype}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
-   * The element mode :math:`{\mathit{elemmode}}` is valid with the element type :math:`{\mathit{elemtype}}`.
+   * The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{elemtype}}`.
 
 
 
 
-The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the data type :math:`\mathsf{ok}` if:
+The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
    * Either:
@@ -15619,7 +15619,7 @@ The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -15630,52 +15630,52 @@ The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
 
 
-The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the data type :math:`\mathsf{ok}` if:
+The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The data mode :math:`\mathsf{passive}` is valid with the data type :math:`\mathsf{ok}`.
+The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
 
 
 
 
-The data segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid with the data type :math:`\mathsf{ok}` if:
+The data segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
-   * The data mode :math:`{\mathit{datamode}}` is valid with the data type :math:`\mathsf{ok}`.
-
-
-
-
-The start function :math:`(\mathsf{start}~x)` is valid if:
-
-
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
+   * The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
 
 
 
 
-The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is valid with the external type :math:`{\mathit{xt}}` if:
+The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
-   * The external type :math:`{\mathit{xt}}` is valid.
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
 
 
 
 
-The external index :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
+
+
+   * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The external index :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
@@ -15684,9 +15684,9 @@ The external index :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
+      * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+      * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
    * Or:
 
@@ -15728,17 +15728,17 @@ The external index :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
 
 
-The external index :math:`(\mathsf{func}~x)` is valid with the external type :math:`(\mathsf{func}~{\mathit{dt}})` if:
+The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{dt}})` if:
 
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
-
-
+   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
 
-The external index :math:`(\mathsf{global}~x)` is valid with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
+
+
+The external index :math:`(\mathsf{global}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -15748,7 +15748,7 @@ The external index :math:`(\mathsf{global}~x)` is valid with the external type :
 
 
 
-The external index :math:`(\mathsf{table}~x)` is valid with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
+The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -15758,7 +15758,7 @@ The external index :math:`(\mathsf{table}~x)` is valid with the external type :m
 
 
 
-The external index :math:`(\mathsf{mem}~x)` is valid with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
+The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15768,7 +15768,7 @@ The external index :math:`(\mathsf{mem}~x)` is valid with the external type :mat
 
 
 
-The external index :math:`(\mathsf{tag}~x)` is valid with the external type :math:`(\mathsf{tag}~{\mathit{jt}})` if:
+The external index :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{jt}})` if:
 
 
    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
@@ -15778,15 +15778,15 @@ The external index :math:`(\mathsf{tag}~x)` is valid with the external type :mat
 
 
 
-The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
+The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
 
 
-   * The external index :math:`{\mathit{externidx}}` is valid with the external type :math:`{\mathit{xt}}`.
+   * The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
 
 
 
-The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
+The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
 
 
    * Either:
@@ -15801,33 +15801,33 @@ The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle
 
       * The global type sequence :math:`{{\mathit{gt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
-      * The global :math:`{\mathit{global}}_1` is valid with the global type :math:`{\mathit{gt}}_1`.
+      * The global :math:`{\mathit{global}}_1` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}_1`.
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the global type sequence :math:`{\mathit{gt}}_1` appended to the field :math:`\mathsf{globals}`.
 
-      * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+      * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
 
 
 
-The global sequence :math:`\epsilon` is valid with the global type sequence :math:`\epsilon`.
+The global sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the global type sequence :math:`\epsilon`.
 
 
 
 
-The global sequence :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}` if:
+The global sequence :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}` if:
 
 
-   * The global :math:`{\mathit{global}}_1` is valid with the global type :math:`{\mathit{gt}}_1`.
+   * The global :math:`{\mathit{global}}_1` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}_1`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the global type sequence :math:`{\mathit{gt}}_1` appended to the field :math:`\mathsf{globals}`.
 
-   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
 
 
 
-The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
+The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
 
 
    * Either:
@@ -15842,74 +15842,74 @@ The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scri
 
       * The defined type sequence :math:`{{\mathit{dt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
-      * The type definition :math:`{\mathit{type}}_1` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
+      * The type definition :math:`{\mathit{type}}_1` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}` appended to the field :math:`\mathsf{types}`.
 
-      * Under the context :math:`{C'}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
+      * Under the context :math:`{C'}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
 
 
 
 
-The type definition sequence :math:`\epsilon` is valid with the defined type sequence :math:`\epsilon`.
+The type definition sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the defined type sequence :math:`\epsilon`.
 
 
 
 
-The type definition sequence :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}` if:
+The type definition sequence :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}` if:
 
 
-   * The type definition :math:`{\mathit{type}}_1` is valid with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
+   * The type definition :math:`{\mathit{type}}_1` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
+   * Under the context :math:`{C'}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
 
 
 
 
-The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with the module type :math:`t` if:
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`t` if:
 
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is valid with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
+   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is valid with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
-   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is valid with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+   * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
    * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is valid with the table type :math:`{\mathit{tt}}`.
+      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is valid with the memory type :math:`{\mathit{mt}}`.
+      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
    * :math:`{|{{\mathit{jt}}^\ast}|}` is equal to :math:`{|{{\mathit{tag}}^\ast}|}`.
 
    * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is valid with the tag type :math:`{\mathit{jt}}`.
+      * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{jt}}`.
 
    * :math:`{|{{\mathit{dt}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
-      * The function :math:`{\mathit{func}}` is valid with the :ref:`defined type <syntax-deftype>` :math:`{\mathit{dt}}`.
+      * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}}`.
 
    * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
-      * The element segment :math:`{\mathit{elem}}` is valid with the element type :math:`{\mathit{rt}}`.
+      * The element segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
    * :math:`{|{{\mathit{data}}^\ast}|}` is equal to :math:`{|{{\mathit{ok}}^\ast}|}`.
 
@@ -15919,7 +15919,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * If :math:`{\mathit{start}}` is defined, then:
 
-      * The start function :math:`{\mathit{start}}` is valid.
+      * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
 
    * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{nm}}^\ast}|}`.
 
@@ -15927,7 +15927,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`:
 
-      * The export :math:`{\mathit{export}}` is valid with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
+      * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
    * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is equal to true.
 
@@ -15952,17 +15952,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 
-The number value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` is valid with the :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}`.
+The number value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
 
 
 
-The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is valid with the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vt}}`.
+The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
 
 
 
 
-The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
@@ -15971,7 +15971,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
 
-      * The heap type :math:`{\mathit{ht}'}` matches the heap type :math:`{\mathit{ht}}`.
+      * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
 
    * Or:
 
@@ -15986,7 +15986,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+      * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}array}~a)`.
@@ -15995,7 +15995,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+      * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~a)`.
@@ -16004,7 +16004,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
-      * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+      * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
@@ -16026,135 +16026,135 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The reference type :math:`{\mathit{rt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
 
-      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}'}`.
+      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
-      * The reference type :math:`{\mathit{rt}'}` matches the reference type :math:`{\mathit{rt}}`.
-
-
-
-
-The reference value :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with the reference type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})` if:
-
-
-   * The heap type :math:`{\mathit{ht}'}` matches the heap type :math:`{\mathit{ht}}`.
+      * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+The reference value :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})` if:
+
+
+   * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}struct}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The reference value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+
+
+
+
+The reference value :math:`(\mathsf{ref{.}struct}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
 
 
    * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}array}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The reference value :math:`(\mathsf{ref{.}array}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
 
 
    * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}func}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The reference value :math:`(\mathsf{ref{.}func}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
 
 
    * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
-   * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}exn}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+The reference value :math:`(\mathsf{ref{.}exn}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}host}~a)` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+The reference value :math:`(\mathsf{ref{.}host}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is valid with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
 
 
 
 
-The reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}` if:
+The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
-   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}'}`.
+   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
-   * The reference type :math:`{\mathit{rt}'}` matches the reference type :math:`{\mathit{rt}}`.
-
-
+   * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
-The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+
+
+The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
       * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{num}}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
-      * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}`.
+      * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
    * Or:
 
       * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vec}}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vt}}`.
 
-      * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vt}}`.
+      * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
    * Or:
 
       * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{ref}}`.
 
-      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
+      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
 
-      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}`.
-
-
-
-
-The value :math:`{\mathit{num}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{nt}}` if:
-
-
-   * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}`.
+      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The value :math:`{\mathit{vec}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{vt}}` if:
+The value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{nt}}` if:
 
 
-   * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vt}}`.
-
-
-
-
-The value :math:`{\mathit{ref}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{rt}}` if:
-
-
-   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}`.
+   * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
 
 
 
-The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{vt}}` if:
+
+
+   * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
+
+
+
+
+The value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}` if:
+
+
+   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
@@ -16209,14 +16209,14 @@ The external address :math:`{\mathit{xa}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{xt}}`.
 
-      * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is valid with the external type :math:`{\mathit{xt}'}`.
+      * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
-      * The external type :math:`{\mathit{xt}'}` matches the external type :math:`{\mathit{xt}}`.
-
-
+      * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
 
 
-The external address :math:`(\mathsf{func}~a)` is valid with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
+
+
+The external address :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
 
 
    * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
@@ -16226,7 +16226,7 @@ The external address :math:`(\mathsf{func}~a)` is valid with the external type :
 
 
 
-The external address :math:`(\mathsf{global}~a)` is valid with the external type :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})` if:
+The external address :math:`(\mathsf{global}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})` if:
 
 
    * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
@@ -16236,7 +16236,7 @@ The external address :math:`(\mathsf{global}~a)` is valid with the external type
 
 
 
-The external address :math:`(\mathsf{table}~a)` is valid with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
+The external address :math:`(\mathsf{table}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
 
 
    * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
@@ -16246,7 +16246,7 @@ The external address :math:`(\mathsf{table}~a)` is valid with the external type 
 
 
 
-The external address :math:`(\mathsf{mem}~a)` is valid with the external type :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})` if:
+The external address :math:`(\mathsf{mem}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})` if:
 
 
    * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
@@ -16256,7 +16256,7 @@ The external address :math:`(\mathsf{mem}~a)` is valid with the external type :m
 
 
 
-The external address :math:`(\mathsf{tag}~a)` is valid with the external type :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})` if:
+The external address :math:`(\mathsf{tag}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})` if:
 
 
    * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
@@ -16266,17 +16266,17 @@ The external address :math:`(\mathsf{tag}~a)` is valid with the external type :m
 
 
 
-The external address :math:`{\mathit{externaddr}}` is valid with the external type :math:`{\mathit{xt}}` if:
+The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
 
 
-   * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is valid with the external type :math:`{\mathit{xt}'}`.
+   * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
-   * The external type :math:`{\mathit{xt}'}` matches the external type :math:`{\mathit{xt}}`.
-
-
+   * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
 
 
-The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
+
+
+The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the function type :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
 
 
    * Either:
@@ -16306,21 +16306,21 @@ The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptst
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
-      * The block type :math:`{\mathit{blocktype}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-      * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
 
-The instruction sequence :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})` is valid with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction sequence :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction sequence :math:`(\mathsf{global{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
+The instruction sequence :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
    * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
@@ -16330,14 +16330,14 @@ The instruction sequence :math:`(\mathsf{global{.}get}~x)` is valid with the fun
 
 
 
-The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The block type :math:`{\mathit{blocktype}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is valid with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 :math:`\mathsf{unreachable}`
@@ -16369,7 +16369,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16394,7 +16394,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16469,7 +16469,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -16486,7 +16486,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16634,7 +16634,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16651,11 +16651,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16672,7 +16672,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16685,11 +16685,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_0` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16702,7 +16702,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-nt_1>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16719,7 +16719,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -16816,7 +16816,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -16871,7 +16871,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16886,11 +16886,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16905,15 +16905,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16928,7 +16928,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16941,7 +16941,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16958,11 +16958,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16979,15 +16979,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17004,7 +17004,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17017,11 +17017,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17034,11 +17034,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17051,7 +17051,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17064,11 +17064,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17081,11 +17081,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17113,7 +17113,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17152,7 +17152,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{N})`.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17165,7 +17165,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17178,11 +17178,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17195,15 +17195,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17216,11 +17216,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17233,7 +17233,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................................................................................
 
 
-1. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17825,7 +17825,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17850,11 +17850,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17877,11 +17877,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17912,7 +17912,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17972,7 +17972,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -17980,7 +17980,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18035,11 +18035,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
@@ -18047,7 +18047,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18164,15 +18164,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18229,15 +18229,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18328,7 +18328,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18358,7 +18358,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18366,7 +18366,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
@@ -18401,15 +18401,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}'}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at'>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_2` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at_2>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_1` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at_1>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18466,15 +18466,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18513,7 +18513,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18560,7 +18560,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18637,11 +18637,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18681,7 +18681,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18689,7 +18689,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
@@ -18724,15 +18724,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}'}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at'>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_2` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at_2>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}_1` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at_1>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18789,15 +18789,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18954,7 +18954,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19019,7 +19019,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19036,7 +19036,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19072,11 +19072,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-nt_u3>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19115,11 +19115,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19138,11 +19138,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`vector type <syntax-vectype>` :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19169,7 +19169,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of :ref:`number type <syntax-numtype>` :math:`{\mathit{at}}` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 

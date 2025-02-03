@@ -73,17 +73,40 @@ and is_bine expr = match expr.it with
   | _ -> false
 
 let (let*) = Option.bind
+  
+let find_section env link =
+  (* print_endline ("link: " ^ link); *)
+  let ans = Macro.find_section env.macro link in
+  (* print_endline ("ans: " ^ (if ans then "true" else "false")); *)
+  ans
 
-let type_with_link s =
-  (* HARDCODE: cross-reference for number type and vector type *)
-  let* link = match s with
-  | "value type" -> Some "syntax-valtype"
-  | "number type" -> Some "syntax-numtype"
-  | "vector type" -> Some "syntax-vectype"
-  | "defined type" -> Some "syntax-deftype"
-  | _ -> None
-  in
-  Some (sprintf ":ref:`%s <%s>`" s link)
+let inject_link s link = sprintf ":ref:`%s <%s>`" s link
+
+let try_inject_link env s link =
+  if find_section env link then Some (inject_link s link)
+  else None
+
+let type_with_link env e =
+  let typ, iter = match e.note.it with
+  | Il.Ast.IterT (typ, Il.Ast.Opt) -> typ, ""
+  | Il.Ast.IterT (typ, Il.Ast.List) -> typ, " sequence"
+  | _ -> e.note, "" in
+  let s = Prose_util.extract_desc typ ^ iter in
+  let typ_name = Il.Print.string_of_typ typ in
+  let* ref = try_inject_link env s ("syntax-" ^ typ_name) in
+  Some (ref ^ iter)
+
+let valid_link env e =
+  let s = Il.Print.string_of_typ e.note in
+  match try_inject_link env "valid" ("valid-" ^ s) with
+  | Some s -> s
+  | None -> inject_link "valid" "valid-val"
+
+let match_link env e =
+  let s = Il.Print.string_of_typ e.note in
+  match try_inject_link env "matches" ("match-" ^ s) with
+  | Some s -> s
+  | None -> inject_link "matches" "match"
 
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
@@ -512,10 +535,10 @@ and render_expr' env expr =
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsValidE e; _ }) ->
     let typ_name = Il.Print.string_of_typ_name e.note in
     let vref =
-      if Macro.find_section env.macro ("valid-" ^ typ_name) then
-        ":ref:`valid <valid-" ^ typ_name ^ ">`"
+      if find_section env ("valid-" ^ typ_name) then
+        inject_link "valid" ("valid-" ^ typ_name)
       else
-        ":ref:`valid <valid-val>`"
+        inject_link "valid" "valid-val"
     in
     let se = render_expr env e in
     sprintf "%s is not %s" se vref
@@ -660,23 +683,25 @@ and render_expr' env expr =
     sprintf "%s is %s" se st
   | Al.Ast.IsValidE e ->
     let typ_name = Il.Print.string_of_typ_name e.note in
-    let vref =
-      if Macro.find_section env.macro ("valid-" ^ typ_name) then
-        ":ref:`valid <valid-" ^ typ_name ^ ">`"
-      else
-        ":ref:`valid <valid-val>`"
+    let vref = match try_inject_link env "valid" ("valid-" ^ typ_name) with
+    | Some s -> s
+    | None -> inject_link "valid" "valid-val"
     in
     let se = render_expr env e in
     sprintf "%s is %s" se vref
   | Al.Ast.TopValueE (Some e) ->
-    let desc_hint = Prose_util.extract_desc e.note in
-    let desc_hint = if desc_hint = "" then "value type" else desc_hint in
     let value =
-      (match type_with_link desc_hint with
-      | Some vtref ->
+      (
+      match type_with_link env e with
+      | Some vtref when String.ends_with ~suffix:"type>`" vtref ->
         let se = render_expr env e in
         sprintf "a value of %s %s" vtref se
+      | Some vtref ->
+        let se = render_expr env e in
+        sprintf "a %s %s" vtref se
       | None ->
+        let desc_hint = Prose_util.extract_desc e.note in
+        let desc_hint = if desc_hint = "" then "value type" else desc_hint in
         let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
         let article =
           if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
@@ -730,7 +755,7 @@ let render_expr_with_type env e =
   if t = "" then
     render_expr env e
   else
-    let lt = match type_with_link t with
+    let lt = match type_with_link env e with
     | Some lt -> lt
     | None -> t
     in
@@ -777,16 +802,21 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
       sprintf "%s %s %s" (render_hd_expr env e1) cmpop rhs
     | IsValidS (c_opt, e, es, pphint) ->
       let prep = render_pp_hint pphint in
-      sprintf "%s%s is valid%s"
+      let vref = valid_link env e
+      in
+      sprintf "%s%s is %s%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_hd_expr env e)
+        vref
         (if es = [] then "" else prep ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
-      sprintf "%s matches itself"
+      sprintf "%s %s itself"
         (render_hd_expr env e1)
+        (match_link env e1)
     | MatchesS (e1, e2) ->
-      sprintf "%s matches %s"
+      sprintf "%s %s %s"
         (render_hd_expr env e1)
+        (match_link env e1)
         (render_expr_with_type env e2)
     | IsConstS (c_opt, e) ->
       sprintf "%s%s is constant"
@@ -995,11 +1025,9 @@ let rec render_instr env algoname index depth instr =
       (render_instrs env algoname (depth + 1) il2)
   | Al.Ast.AssertI c ->
     let lname = String.lowercase_ascii algoname in
-    let vref =
-      if Macro.find_section env.macro ("valid-" ^ lname) then
-        ":ref:`validation <valid-" ^ lname ^ ">`"
-      else
-        "validation"
+    let vref = match try_inject_link env "validation" ("valid-" ^ lname) with
+    | Some s -> s
+    | None -> "validation"
     in
     sprintf "%s Assert: Due to %s, %s." (render_order index depth)
     vref (render_expr env c)
