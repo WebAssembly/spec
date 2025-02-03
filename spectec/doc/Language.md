@@ -200,6 +200,9 @@ The previous type can be extended with new cases:
 ```
 syntax admininstr = instr | TRAP | LABEL `{ instr* } admininstr*
 ```
+A definition can extend multiple other types.
+Overlapping cases between them are merged together,
+and hence only allowed if they are syntactically identical.
 
 Note that extending a [recursive](#type-recursion) type does not affect its recursive references,
 that is, SpecTec does not provide "open" recursion.
@@ -282,7 +285,8 @@ Instead, the philosophy is that the conditions express additional invariants on 
 that have to be proved separately about a semantics defined in SpecTec,
 e.g., using a theorem prover.
 
-**Example:** An alternative way to specify a finite integer type would be this:
+**Example:**
+An alternative way to specify a finite integer type would be this:
 ```
 syntax int32 = int  -- if int >= $(-2^31) /\ int < $(+2^31)
 ``` 
@@ -298,7 +302,8 @@ Type definitions can be recursive.
 However, the semantic interpretation of such recursion is left to backends.
 SpecTec does not currently perform any checks to ensure that its own meta-level type checking terminates when recursive type expansion is involved.
 
-**Example:** Consider a type for representing the expressions of the lambda calculus:
+**Example:**
+Consider a type for representing the expressions of the lambda calculus:
 ```
 syntax exp = VAR text | LAMBDA text `( exp ) | APP exp exp
 ```
@@ -494,6 +499,10 @@ Postfix brackets can also be used to extract a *slice* of a list.
 In this case, the first arithmetic expression identifies the start offset of the slice to extract,
 while the second determines its length.
 
+**Example:**
+If `l` is the list `a b c d e f`,
+then `l[2 : 3]` would be the sublist `c d e`.
+
 Bracket notation can also be used to modify a list.
 In the first form, the path denotes a subcomponent of the list that is replaced with the right-hand side expression's value.
 In the second form, that value is appended to the existing one instead.
@@ -502,12 +511,24 @@ and may also identify record components.
 If the the initial component of the path is a record access,
 then the left-hand side expression must have a suitable record type instead of being a list.
 
-The last two operators return the length of a list,
+**Example:**
+If `l` was the list `a b c d e f`,
+then `l[[2] = x]` would be the list `a b x c d e f`,
+and `l[2 : 3] = x y z]` would be `a b x y z e f`.
+More interestingly, if `ll` was the list `a b (c d) e f`,
+then `ll[[2][0] = x]` would b `a b (x d) e f`
+and `ll[[2] =++ x y]` would be `a b (c d x y) e f`.
+
+The remaining two operators return the length of a list,
 and check for membership.
 With the latter operator,
 sequences can be used as sets.
 
 Lists can also be formed by [iterations](#iterations).
+
+The value of an expression using out-of-bounds indexing or slicing is undefined.
+Technically, this means that it cannot be [reduced](#reduction),
+even when both list and index have known values.
 
 
 #### Records
@@ -533,6 +554,11 @@ or compatible sequence types `t*`.
 The operation recursively composes the records,
 concatenating fields of sequence type.
 
+**Example:**
+If `r1` was the record `{P a b, Q eps, R {S c d}}`
+and `r2` was `{P e, Q f g, R {S h}}`,
+then `r1 ++ r2` would be `{P a b e, Q f g, R {S c d h}}`.
+
 The final form is a short-hand for the latter.
 It is equivalent to `exp ++ {atom exp*}`,
 but is rendered in the familiar style of context extension.
@@ -540,6 +566,12 @@ but is rendered in the familiar style of context extension.
 In addition to these expression forms,
 update `exp[path = exp]` can be applied to records
 if the path's initial projection is a record access.
+
+**Example:**
+If `sr` was the record `{P a b, Q c d}`,
+then `sr[.P[1] = x]` would become `{P a x, Q c d}`.
+Conversely, if `rs` is the record list `{P a, Q b} {P c, Q d}`,
+then `rs[[1].P = x]` would be the modified list `{P a, Q b} {P x, Q d}`.
 
 
 #### Constants and Function Invocations
@@ -551,6 +583,18 @@ exp ::= ...
 ```
 The argument list can be omitted if it is empty.
 This way, definitions can also be used to global constants.
+
+**Example:**
+Suppose a function `$f` was [declared](#functions) with type:
+```
+def $f(nat, bool) : nat
+```
+Then `$f(3, false)` would be an expression of type `nat`.
+Similarly, the declaration
+```
+def $c : nat
+```
+allows using `$c` as a constant of type `nat`.
 
 
 #### Notation
@@ -599,7 +643,8 @@ When a variable occurs as part of a larger expression under an iteration,
 then this can be read as *mapping* over that variable
 and corresponds to the use of overbars in formal notation.
 
-For example, given a list `x*`,
+**Example:**
+Given a list `x*`,
 the expression `{A x, B 1}*` denotes a list of records
 whose field `A` is drawn from the respective element of `x*`.
 The dimension of the expression must mach that of the variable.
@@ -607,47 +652,61 @@ The dimension of the expression must mach that of the variable.
 Multiple variables can occur in an iteration,
 which expresses *parallel iteration* over all the variables.
 For this to be well-formed, they must all have the same dimension.
-
 Moreover, an iteration must contain at least one variable to be well-formed.
 
 An iteration can also contain variables not participating in the iteration.
-For example, if `x*` is given and a scalar `y`,
+
+**Example:**
+If `x*` is given and a scalar `y`,
 then `{A x, B y}*` inserts the same `y` for each field `B` in the resulting list of records.
 
 Like overbars, iterations can nest freely,
 leading to variables of higher dimension.
-For example, `z**` is a list of lists,
-whereas `(z^3)*` (usually) implies that `z` is a list of triples.
 The nested dimensions of a variable form a *dimension vector*.
+
+**Example:**
+For example, `z**` is a list of lists, its dimension vector being `**`,
+whereas `(z^3)*` (usually) implies that `z` is a list of triples, expressed as dimensions `(^3)*`.
 
 SpecTec infers the dimension vector of each variable
 and checks that its is used with consistent dimensions for every occurrence.
 A variable can appear under nested iterations with different accumulated dimension vectors,
 as long as the _shortest_ (possibly empty) dimension vector is a _prefix_ of all others.
 That shortest common prefix is then inferred to be the actual dimension vector of the variable.
-For example, the expression
+
+**Example:**
+Te expression
 ```
 l = {A x, B y, C z}** /\ (x < 100)** /\ z <- y*
 ```
 is inferred with dimensions `x**`, `y*`, and scalar `z` and `l`.
 
 
-##### Type Inference
+##### Type Checking and Inference
 
-TODO
+SpecTec checks that all expressions and definitions are consistent.
+Among other things, this involves inferring and type-checking that:
 
-The frontend checks that all definitions are consistent. Among other things, this involves inferring and type-checking that:
-
-* all identifiers are declared,
 * all expressions are well-typed,
-* all rules and premises match the notation template of their respective relations,
+* all definitions and uses of [rules](#rules) match the notation type of their respective relations,
+* variable types and [dimensions](#iteration) are consistent,
 * no definiton or variant case is defined multiple times,
-* use of variables under iterators like `?` and `*` (multiplicity) is consistent,
 * there is no invalid recursion between definitions of different sort.
 
-The type system uses a simple form of bidrectional typing to resolve and disambiguate uses of free-form notation.
+The type system uses _bidrectional_ typing to resolve and disambiguate uses of free-form notation.
+As a result, expressions with custom notation can only be used in places where the expected type is known from the surrounding context.
+In some cases, SpecTec also uses _backtracking_ to find a valid typing,
+especially for bare [sequence](#sequences-and-lists) expressions.
 
-While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](EL.md)) representing the input into a more rigidly type _internal language_ ([IL](IL.md)) suitable for consumption by code-generating backends.
+As part of this process,
+SpecTec also attempts to infer the types of local variables,
+if their types are not [pre-declared](#variable-declarations).
+
+This approach to typing necessarily is incomplete,
+and SpecTec may sometimes reject scripts for which it fails to find a typing.
+Adding additional variable declarations often helps.
+
+*Note:* While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](EL.md)) representing the input into a more rigidly type _internal language_ ([IL](IL.md)) suitable for consumption by code-generating backends.
 This can be viewed as a form of desugaring.
 The IL is unambiguous and makes all relevant information explicit,
 such as recursion groups, depedency order, local variable binders and their types, uses of subtype injection, list construction, etc.
@@ -659,7 +718,7 @@ SpecTec does not by itself perform any computation on expressions.
 There is one exception:
 due to the presence of dependent types,
 i.e., expression arguments to type names,
-the SpecTec type checker sometimes has to *reduce* these expressions
+the SpecTec [type checker](#type-checking-and-inference) sometimes has to *reduce* these expressions
 in order to check the equivalence of types,
 or to simplify the use of a type name defining a type family.
 
@@ -669,27 +728,136 @@ then type checking may fail.
 
 ### Variable Declarations
 
-TODO
+Variable declarations allow to globally declare the type implicitly associated with each use of a meta-variable of that name:
+```
+def ::=
+  "var" varid ":" typ
+```
 
-Variable declarations allow to globally declare the type implicitly associated with each use of a meta-variable.
+After such a declaration,
+occurrences of that variable name forego [type inference](#type-checking-and-inference)
+and instead are immediately resolved to the declared type.
 
-SpecTec recognizes suffixes as in `x_1` or `x'`` as variations with the same type.
+Furthermore, SpecTec recognizes suffixes as in `x_1` or `x'`` as variations of the variable with the same type.
+
+**Example:**
+After declaring
+```
+var foo : nat
+```
+all of `foo`, `foo_1`, `foo_V`, `foo'`, and `foo''_2` will be taken to have type `nat`.
 
 In addition to explicit variable declarations,
 syntax definitions implicitly declare a variable of the same name as the type.
 
-Syntax and variable declarations can also change the status of an uppercase identifier from `atom` to `varid` when used as their declared name.
+**Example:**
+The syntax definition
+```
+syntax color = RED | GREEN | BLUE
+```
+acts as if
+```
+var color : color
+```
+had also been declared.
+
+Syntax and variable declarations also change the status of an uppercase identifier from `atom` to `varid` when used as their declared name.
+
+**Example:**
+Declaring
+```
+var C : context
+```
+causes `C` to be treated as a variable in the rest of the script.
+Similarly,
+```
+syntax N = nat
+```
+not just introduce `N` as a type synonym for `nat`,
+but also allows using `N` as a variable.
 
 
 ### Functions
 
-TODO
+Function definitions are given by a declaration of their type and then individual equational clauses:
+```
+def ::=
+  "def" "$" defid params ":" typ                   function declaration
+  "def" "$" defid args "=" exp ("--" premise)*     function clause
+```
 
-Function definitions are given by a declaration of their type and then individual equational clauses.
-The clauses express a (sequential) pattern match,
-with their left-hand side argument expression being the pattern and possible premises acting as pattern guards.
+The declaration must come first,
+and before any use of the function.
+The definitional clauses can follow later in the script.
+Separating declarations and definitions e.g. allows expressing mutual recursion.
 
-Like syntax, relations and functions are all interpreted as inductive definitions.
+**Example:**
+The following two functions are mutually recursive:
+```
+def $tik(nat) : bool
+def $tok(nat) : bool
+
+def $tik(0) = false
+def $tik(n) = $tok(n - 1)
+
+def $tok(0) = true
+def $tok(n) = $tik(n - 1)
+```
+
+The clauses of a function express a (sequential) pattern match.
+Their left-hand side argument expressions are interpreted as patterns
+and therefore restricted in shape.
+In addition, each clause can have [premises](#premises) acting as pattern guards.
+
+The value of a function application is determined by the pattern that is matched by the argument and whose clauses all evaluate to `true`.
+SpecTec assumes that the clauses of a function are *coherent*,
+i.e., in case of any possible overlap in their patterns,
+each choice does produce the same result.
+This is not checked, however,
+and the user must make sure that this property holds.
+
+*Note:* When [reducing](#reduction) a function application itself,
+The SpecTec frontend makes use of this assumption by picking the first clause that matches successfully,
+even if the argument expression cannot be reduced to determine if an earlier clause matches.
+
+**Example:**
+The following function definition,
+```
+def $f(nat) : nat
+def $f(0) = 0
+def $f(n) = 1
+```
+violates this assumption.
+The function should be reformulated as
+```
+def $f(nat) : nat
+def $f(n) = 0  -- if n = 0
+def $f(n) = 1  -- otherwise
+```
+to ensure that the clauses are disjoint.
+
+Like syntax, functions are interpreted as inductive definitions.
+This is an assumption that is not verified by the SpecTec frontend.
+
+The use of a [declared variable or type](#variable-declarations) in a pattern
+is only matched by values included in that type.
+This is relevant in the case of subtyping,
+as the names of subtypes can be used as cumulative patterns denoting all possible values.
+
+**Example:**
+Assume the following syntax definitions:
+```
+syntax inttype = I32 | I64
+syntax floattype = F32 | F64
+syntax numtype = inttype | floattype
+```
+Both `inttype` and `floattype` are (disjoint) subtypes of `numtype`.
+Then the following function can check for float types:
+```
+def $isfloat(numtype) : bool
+def $isfloat(inttype) = false
+def $isfloat(floattype) = true
+```
 
 
 ### Relations and Rules
