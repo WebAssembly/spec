@@ -274,7 +274,7 @@ The instruction :math:`(\mathsf{br}~l)` is valid with the function type :math:`{
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The number type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
 
 
 
@@ -284,7 +284,7 @@ The instruction :math:`(\mathsf{br\_if}~l)` is valid with the function type :mat
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The number type :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{labels}{}[l]` is equal to :math:`{t^?}`.
 
 
 
@@ -379,9 +379,9 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0
 The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -389,9 +389,9 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type
 The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -399,9 +399,9 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type
 The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-   * The number type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The number type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The :ref:`number type <syntax-numtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -449,21 +449,21 @@ The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{loa
 
    * Either:
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`t`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -477,21 +477,21 @@ The instruction :math:`({t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{sto
 
    * Either:
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`t`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The number type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`number type <syntax-numtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -687,7 +687,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 
    * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`t`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`number type <syntax-numtype>` :math:`t`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -715,7 +715,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is valid if:
 
    * The limits :math:`C{.}\mathsf{tables}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -737,7 +737,7 @@ The memory segment :math:`(\mathsf{data}~{\mathit{expr}}~{b^\ast})` is valid if:
 
    * The limits :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{lim}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the number type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`number type <syntax-numtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -4290,26 +4290,26 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is valid if:
 
 
 
-The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the value type :math:`t` if:
+The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the :ref:`value type <syntax-valtype>` :math:`t` if:
 
 
    * Either:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
 
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
 
 
 
 
-The value type :math:`t` matches itself.
+The :ref:`value type <syntax-valtype>` :math:`t` matches itself.
 
 
 
 
-The value type :math:`\mathsf{bot}` matches the value type :math:`t`.
+The :ref:`value type <syntax-valtype>` :math:`\mathsf{bot}` matches the :ref:`value type <syntax-valtype>` :math:`t`.
 
 
 
@@ -4321,7 +4321,7 @@ The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
 
-      * The value type :math:`t_1` matches the value type :math:`t_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_1` matches the :ref:`value type <syntax-valtype>` :math:`t_2`.
 
 
 
@@ -4497,9 +4497,9 @@ The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`t` matches the value type :math:`{t'}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
 
-      * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -4746,7 +4746,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid wit
 The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the function type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -4756,7 +4756,7 @@ The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -4766,7 +4766,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -4794,9 +4794,9 @@ The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mat
 The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -4804,9 +4804,9 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is valid with the function type
 The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -4814,9 +4814,9 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is valid with the function type
 The instruction :math:`(\mathsf{local{.}tee}~x)` is valid with the function type :math:`t~\rightarrow~t` if:
 
 
-   * The value type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The value type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
+   * The :ref:`value type <syntax-valtype>` :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`t`.
 
 
 
@@ -4990,21 +4990,21 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -5018,21 +5018,21 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -5106,9 +5106,9 @@ The instruction :math:`(\mathsf{select}~t)` is valid with the function type :mat
 The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The value type :math:`t` matches the value type :math:`{t'}`.
+   * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
 
-   * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
+   * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -5381,7 +5381,7 @@ The global :math:`(\mathsf{global}~{\mathit{gt}}~{\mathit{expr}})` is valid with
 
    * The global type :math:`{\mathit{gt}}` is equal to :math:`({\mathit{mut}}~t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`t`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -5415,7 +5415,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -5436,7 +5436,7 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is valid with the memory type
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`({\mathit{lim}}~{\mathit{rt}})`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -5458,7 +5458,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
    * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`:
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{rt}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -5476,7 +5476,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -5492,7 +5492,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -12500,12 +12500,12 @@ Untranslated relation Expand: `%~~%`(deftype, comptype)
 
 
 
-The number type :math:`{\mathit{numtype}}` is valid.
+The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` is valid.
 
 
 
 
-The vector type :math:`{\mathit{vectype}}` is valid.
+The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` is valid.
 
 
 
@@ -12521,9 +12521,9 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is v
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{rec}~i)`.
@@ -12543,9 +12543,9 @@ The heap type :math:`{\mathit{absheaptype}}` is valid.
 The heap type :math:`{\mathit{typeidx}}` is valid if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -12568,49 +12568,49 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}})` 
 
 
 
-The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
+The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid if:
 
 
    * Either:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}`.
 
-      * The number type :math:`{\mathit{numtype}}` is valid.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` is valid.
 
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}`.
 
-      * The vector type :math:`{\mathit{vectype}}` is valid.
+      * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` is valid.
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}`.
 
       * The reference type :math:`{\mathit{reftype}}` is valid.
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
 
 
 
 
-The value type :math:`{\mathit{numtype}}` is valid if:
+The :ref:`value type <syntax-valtype>` :math:`{\mathit{numtype}}` is valid if:
 
 
-   * The number type :math:`{\mathit{numtype}}` is valid.
-
-
-
-
-The value type :math:`{\mathit{vectype}}` is valid if:
-
-
-   * The vector type :math:`{\mathit{vectype}}` is valid.
+   * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` is valid.
 
 
 
 
-The value type :math:`{\mathit{reftype}}` is valid if:
+The :ref:`value type <syntax-valtype>` :math:`{\mathit{vectype}}` is valid if:
+
+
+   * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` is valid.
+
+
+
+
+The :ref:`value type <syntax-valtype>` :math:`{\mathit{reftype}}` is valid if:
 
 
    * The reference type :math:`{\mathit{reftype}}` is valid.
@@ -12618,7 +12618,7 @@ The value type :math:`{\mathit{reftype}}` is valid if:
 
 
 
-The value type :math:`\mathsf{bot}` is valid.
+The :ref:`value type <syntax-valtype>` :math:`\mathsf{bot}` is valid.
 
 
 
@@ -12628,7 +12628,7 @@ The result type :math:`{t^\ast}` is valid if:
 
    * For all :math:`t` in :math:`{t^\ast}`:
 
-      * The value type :math:`t` is valid.
+      * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
 
 
 
@@ -12665,7 +12665,7 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` i
 
       * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}`.
 
-      * The value type :math:`{\mathit{valtype}}` is valid.
+      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
 
    * Or:
 
@@ -12679,7 +12679,7 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` i
 The storage type :math:`{\mathit{valtype}}` is valid if:
 
 
-   * The value type :math:`{\mathit{valtype}}` is valid.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
 
 
 
@@ -12766,17 +12766,17 @@ The packed type :math:`{\mathit{packtype}}` matches itself.
 
 
 
-The number type :math:`{\mathit{numtype}}` matches itself.
+The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}` matches itself.
 
 
 
 
-The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
+The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` if:
 
 
    * Either:
 
-      * The defined type :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+      * The :ref:`defined type <syntax-deftype>` :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
    * Or:
 
@@ -12789,15 +12789,15 @@ The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\
 
 
 
-The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
+The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` if:
 
 
-   * The defined type :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
+   * The :ref:`defined type <syntax-deftype>` :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_1)` is equal to :math:`{{\mathrm{clos}}}_{C}({\mathit{deftype}}_2)`.
 
 
 
 
-The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2` if:
+The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` if:
 
 
    * The sub type :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
@@ -12855,46 +12855,46 @@ The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matc
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{struct}`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{array}`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{func}`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}_1`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{deftype}}_2`.
 
-      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+      * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+      * The heap type :math:`{\mathit{heaptype}}` matches the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
       * The heap type :math:`{\mathit{ht}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{rec}~i)`.
@@ -12976,7 +12976,7 @@ The heap type :math:`\mathsf{array}` matches the heap type :math:`\mathsf{eq}`.
 The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{struct}` if:
 
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
 
 
@@ -12984,7 +12984,7 @@ The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{st
 The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{array}` if:
 
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
 
 
@@ -12992,7 +12992,7 @@ The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{ar
 The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{func}` if:
 
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -13000,7 +13000,7 @@ The heap type :math:`{\mathit{deftype}}` matches the heap type :math:`\mathsf{fu
 The heap type :math:`{\mathit{deftype}}_1` matches the heap type :math:`{\mathit{deftype}}_2` if:
 
 
-   * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
 
 
 
@@ -13008,9 +13008,9 @@ The heap type :math:`{\mathit{deftype}}_1` matches the heap type :math:`{\mathit
 The heap type :math:`{\mathit{typeidx}}` matches the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` matches the heap type :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13018,9 +13018,9 @@ The heap type :math:`{\mathit{typeidx}}` matches the heap type :math:`{\mathit{h
 The heap type :math:`{\mathit{heaptype}}` matches the heap type :math:`{\mathit{typeidx}}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The heap type :math:`{\mathit{heaptype}}` matches the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+   * The heap type :math:`{\mathit{heaptype}}` matches the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
 
 
 
@@ -13102,62 +13102,62 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` matc
 
 
 
-The vector type :math:`{\mathit{vectype}}` matches itself.
+The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}` matches itself.
 
 
 
 
-The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` matches the :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
 
 
    * Either:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_1`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_1`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{numtype}}_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{numtype}}_2`.
 
-      * The number type :math:`{\mathit{numtype}}_1` matches the number type :math:`{\mathit{numtype}}_2`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_1` matches the :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_2`.
 
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_1`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_1`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{vectype}}_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{vectype}}_2`.
 
-      * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.
+      * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_1` matches the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_2`.
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_1`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_1`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{reftype}}_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{reftype}}_2`.
 
       * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
    * Or:
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}`.
-
-
-
-
-The value type :math:`{\mathit{numtype}}_1` matches the value type :math:`{\mathit{numtype}}_2` if:
-
-
-   * The number type :math:`{\mathit{numtype}}_1` matches the number type :math:`{\mathit{numtype}}_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}`.
 
 
 
 
-The value type :math:`{\mathit{vectype}}_1` matches the value type :math:`{\mathit{vectype}}_2` if:
+The :ref:`value type <syntax-valtype>` :math:`{\mathit{numtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{numtype}}_2` if:
 
 
-   * The vector type :math:`{\mathit{vectype}}_1` matches the vector type :math:`{\mathit{vectype}}_2`.
+   * The :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_1` matches the :ref:`number type <syntax-numtype>` :math:`{\mathit{numtype}}_2`.
 
 
 
 
-The value type :math:`{\mathit{reftype}}_1` matches the value type :math:`{\mathit{reftype}}_2` if:
+The :ref:`value type <syntax-valtype>` :math:`{\mathit{vectype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{vectype}}_2` if:
+
+
+   * The :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_1` matches the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vectype}}_2`.
+
+
+
+
+The :ref:`value type <syntax-valtype>` :math:`{\mathit{reftype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{reftype}}_2` if:
 
 
    * The reference type :math:`{\mathit{reftype}}_1` matches the reference type :math:`{\mathit{reftype}}_2`.
@@ -13165,7 +13165,7 @@ The value type :math:`{\mathit{reftype}}_1` matches the value type :math:`{\math
 
 
 
-The value type :math:`\mathsf{bot}` matches the value type :math:`{\mathit{valtype}}`.
+The :ref:`value type <syntax-valtype>` :math:`\mathsf{bot}` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}`.
 
 
 
@@ -13179,7 +13179,7 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` m
 
       * The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}_2`.
 
-      * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
 
    * Or:
 
@@ -13195,7 +13195,7 @@ The storage type :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` m
 The storage type :math:`{\mathit{valtype}}_1` matches the storage type :math:`{\mathit{valtype}}_2` if:
 
 
-   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
 
 
 
@@ -13255,7 +13255,7 @@ The value type sequence :math:`{t_1^\ast}` matches the value type sequence :math
 
    * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
 
-      * The value type :math:`t_1` matches the value type :math:`t_2`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_1` matches the :ref:`value type <syntax-valtype>` :math:`t_2`.
 
 
 
@@ -13346,7 +13346,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
 
@@ -13470,7 +13470,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for
 
 
 
-The defined type :math:`({\mathit{rectype}} {.} i)` is valid if:
+The :ref:`defined type <syntax-deftype>` :math:`({\mathit{rectype}} {.} i)` is valid if:
 
 
    * The recursive type :math:`{\mathit{rectype}}` is valid for :math:`({\mathsf{ok}}{(x)})`.
@@ -13495,7 +13495,7 @@ The limits :math:`{}[~n~..~m~]` is valid within :math:`k` if:
 The global type :math:`({\mathsf{mut}^?}~t)` is valid if:
 
 
-   * The value type :math:`t` is valid.
+   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
 
 
 
@@ -13521,9 +13521,9 @@ The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is
 The tag type :math:`{\mathit{deftype}}` is valid if:
 
 
-   * The defined type :math:`{\mathit{deftype}}` is valid.
+   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is valid.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -13535,9 +13535,9 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
 
-      * The defined type :math:`{\mathit{deftype}}` is valid.
+      * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is valid.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
    * Or:
 
@@ -13566,9 +13566,9 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 The external type :math:`(\mathsf{func}~{\mathit{deftype}})` is valid if:
 
 
-   * The defined type :math:`{\mathit{deftype}}` is valid.
+   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is valid.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -13640,7 +13640,7 @@ The limits :math:`{}[~n_1~..~m_1~]` matches the limits :math:`{}[~n_2~..~m_2~]` 
 The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{valtype}}_1)` matches the global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{valtype}}_2)` if:
 
 
-   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
@@ -13654,7 +13654,7 @@ The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
       * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{mut}`.
 
-      * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
+      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1`.
 
 
 
@@ -13662,7 +13662,7 @@ The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}
 The global type :math:`(\epsilon~{\mathit{valtype}}_1)` matches the global type :math:`(\epsilon~{\mathit{valtype}}_2)` if:
 
 
-   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
 
 
 
@@ -13670,9 +13670,9 @@ The global type :math:`(\epsilon~{\mathit{valtype}}_1)` matches the global type 
 The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` matches the global type :math:`(\mathsf{mut}~{\mathit{valtype}}_2)` if:
 
 
-   * The value type :math:`{\mathit{valtype}}_1` matches the value type :math:`{\mathit{valtype}}_2`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2`.
 
-   * The value type :math:`{\mathit{valtype}}_2` matches the value type :math:`{\mathit{valtype}}_1`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_2` matches the :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}_1`.
 
 
 
@@ -13700,9 +13700,9 @@ The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` 
 The tag type :math:`{\mathit{deftype}}_1` matches the tag type :math:`{\mathit{deftype}}_2` if:
 
 
-   * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
 
-   * The defined type :math:`{\mathit{deftype}}_2` matches the defined type :math:`{\mathit{deftype}}_1`.
+   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1`.
 
 
 
@@ -13716,7 +13716,7 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
-      * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+      * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
 
    * Or:
 
@@ -13753,7 +13753,7 @@ The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` 
 The external type :math:`(\mathsf{func}~{\mathit{deftype}}_1)` matches the external type :math:`(\mathsf{func}~{\mathit{deftype}}_2)` if:
 
 
-   * The defined type :math:`{\mathit{deftype}}_1` matches the defined type :math:`{\mathit{deftype}}_2`.
+   * The :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_1` matches the :ref:`defined type <syntax-deftype>` :math:`{\mathit{deftype}}_2`.
 
 
 
@@ -13803,7 +13803,7 @@ The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is 
 
       * If :math:`{\mathit{valtype}}` is defined, then:
 
-         * The value type :math:`{\mathit{valtype}}` is valid.
+         * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
 
    * Or:
 
@@ -13813,9 +13813,9 @@ The block type :math:`{\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is 
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -13825,7 +13825,7 @@ The block type :math:`{{\mathit{valtype}}^?}` is valid as the instruction type :
 
    * If :math:`{\mathit{valtype}}` is defined, then:
 
-      * The value type :math:`{\mathit{valtype}}` is valid.
+      * The :ref:`value type <syntax-valtype>` :math:`{\mathit{valtype}}` is valid.
 
 
 
@@ -13833,9 +13833,9 @@ The block type :math:`{{\mathit{valtype}}^?}` is valid as the instruction type :
 The block type :math:`{\mathit{typeidx}}` is valid as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -13851,7 +13851,7 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
       * The value type sequence :math:`{t^\ast}` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -13861,7 +13861,7 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
       * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` matches the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
@@ -13883,7 +13883,7 @@ The catch clause :math:`(\mathsf{catch}~x~l)` is valid if:
 
    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
@@ -13897,7 +13897,7 @@ The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is valid if:
 
    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
@@ -13926,7 +13926,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is valid if:
 
 
 
-The value type :math:`t` is defaultable if:
+The :ref:`value type <syntax-valtype>` :math:`t` is defaultable if:
 
 
    * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
@@ -13950,7 +13950,7 @@ The instruction :math:`\mathsf{unreachable}` is valid with the instruction type 
 The instruction :math:`\mathsf{drop}` is valid with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The value type :math:`t` is valid.
+   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
 
 
 
@@ -13958,7 +13958,7 @@ The instruction :math:`\mathsf{drop}` is valid with the instruction type :math:`
 The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The value type :math:`t` is valid.
+   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
 
    * Either:
 
@@ -13968,9 +13968,9 @@ The instruction :math:`(\mathsf{select}~{t_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
       * The value type sequence :math:`{t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`t` matches the value type :math:`{t'}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
 
-      * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -14118,9 +14118,9 @@ The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{r
 The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14128,9 +14128,9 @@ The instruction :math:`(\mathsf{call}~x)` is valid with the instruction type :ma
 The instruction :math:`(\mathsf{call\_ref}~x)` is valid with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14144,9 +14144,9 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is valid with the instruct
 
    * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14164,9 +14164,9 @@ The instruction :math:`\mathsf{return}` is valid with the instruction type :math
 The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
@@ -14180,9 +14180,9 @@ The instruction :math:`(\mathsf{return\_call}~x)` is valid with the instruction 
 The instruction :math:`(\mathsf{return\_call\_ref}~x)` is valid with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
@@ -14202,9 +14202,9 @@ The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is valid with the 
 
    * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
@@ -14220,7 +14220,7 @@ The instruction :math:`(\mathsf{throw}~x)` is valid with the instruction type :m
 
    * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is valid.
 
@@ -14292,9 +14292,9 @@ The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is valid with the in
 The instruction :math:`(\mathsf{ref{.}func}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
    * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
@@ -14359,9 +14359,9 @@ The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathi
 The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * Let :math:`{t^\ast}` be the value type sequence :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
 
@@ -14371,13 +14371,13 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is valid with the instruction 
 The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
-      * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+      * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -14385,9 +14385,9 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is valid with the ins
 The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~t` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
@@ -14395,7 +14395,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is equal to :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14403,15 +14403,15 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~t~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
 
    * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is equal to :math:`(\mathsf{mut}~{\mathit{zt}})`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14419,11 +14419,11 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is valid with the instructio
 The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14431,11 +14431,11 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is valid with the instruction t
 The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
+   * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
 
 
@@ -14443,11 +14443,11 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is valid with the inst
 The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14455,9 +14455,9 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is valid with the inst
 The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
 
    * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -14469,11 +14469,11 @@ The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is valid with the instr
 The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
    * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -14485,13 +14485,13 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is valid with the instr
 The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is equal to :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14499,11 +14499,11 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 The instruction :math:`(\mathsf{array{.}set}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14516,11 +14516,11 @@ The instruction :math:`\mathsf{array{.}len}` is valid with the instruction type 
 The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -14528,13 +14528,13 @@ The instruction :math:`(\mathsf{array{.}fill}~x)` is valid with the instruction 
 The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x_1]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_1]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x_2]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_2]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
 
    * The storage type :math:`{\mathit{zt}}_2` matches the storage type :math:`{\mathit{zt}}_1`.
 
@@ -14544,9 +14544,9 @@ The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is valid with the instru
 The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -14558,11 +14558,11 @@ The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is valid with the inst
 The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is valid with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
+   * The :ref:`value type <syntax-valtype>` :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is equal to :math:`{\mathit{vectype}}`.
 
    * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
 
@@ -14665,7 +14665,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is valid wit
 The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is valid with the instruction type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -14675,7 +14675,7 @@ The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -14685,7 +14685,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is valid with
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * Let :math:`t` be the :ref:`number type <syntax-numtype>` :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -14938,21 +14938,21 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{{\mathit{loadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -14968,21 +14968,21 @@ The instruction :math:`({{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{{\mathit{storeop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15064,7 +15064,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 The instruction :math:`(\mathsf{select}~t)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The value type :math:`t` is valid.
+   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
 
 
 
@@ -15072,11 +15072,11 @@ The instruction :math:`(\mathsf{select}~t)` is valid with the instruction type :
 The instruction :math:`(\mathsf{select}~\epsilon)` is valid with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The value type :math:`t` is valid.
+   * The :ref:`value type <syntax-valtype>` :math:`t` is valid.
 
-   * The value type :math:`t` matches the value type :math:`{t'}`.
+   * The :ref:`value type <syntax-valtype>` :math:`t` matches the :ref:`value type <syntax-valtype>` :math:`{t'}`.
 
-   * The value type :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
+   * The :ref:`value type <syntax-valtype>` :math:`{t'}` is equal to :math:`{\mathit{numtype}}` or :math:`{t'}` is equal to :math:`{\mathit{vectype}}`.
 
 
 
@@ -15288,7 +15288,7 @@ The expression :math:`{{\mathit{instr}}^\ast}` is valid with the result type :ma
 
 
 
-The value type :math:`t` is not defaultable if:
+The :ref:`value type <syntax-valtype>` :math:`t` is not defaultable if:
 
 
    * The value :math:`{{\mathrm{default}}}_{t}` is absent.
@@ -15465,13 +15465,13 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{set}`.
 
-      * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
+      * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is defined.
 
    * Or:
 
       * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{unset}`.
 
-      * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
+      * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is not defined.
 
 
 
@@ -15479,7 +15479,7 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`({\math
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{set}~t)` if:
 
 
-   * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
+   * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is defined.
 
 
 
@@ -15487,17 +15487,17 @@ The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\maths
 The local :math:`(\mathsf{local}~t)` is valid with the local type :math:`(\mathsf{unset}~t)` if:
 
 
-   * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
+   * A :ref:`default value <aux-default>` for the :ref:`value type <syntax-valtype>` :math:`t` is not defined.
 
 
 
 
-The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
+The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is valid with the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * :math:`{|{{{\mathit{lt}}}^\ast}|}` is equal to :math:`{|{{\mathit{local}}^\ast}|}`.
 
@@ -15517,7 +15517,7 @@ The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is va
 
    * The global type :math:`{\mathit{globaltype}}` is equal to :math:`({\mathsf{mut}^?}~t)`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`t`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`t`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -15531,7 +15531,7 @@ The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is valid
 
    * The table type :math:`{\mathit{tabletype}}` is equal to :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{rt}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{rt}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -15549,9 +15549,9 @@ The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is valid with the memory
 The tag :math:`(\mathsf{tag}~x)` is valid with the tag type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -15569,7 +15569,7 @@ The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
       * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -15592,7 +15592,7 @@ The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the e
 
    * The reference type :math:`{\mathit{rt}}` matches the reference type :math:`{\mathit{rt}'}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -15616,7 +15616,7 @@ The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\
 
    * For all :math:`{\mathit{expr}}` in :math:`{{\mathit{expr}}^\ast}`:
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`{\mathit{elemtype}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{elemtype}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -15636,7 +15636,7 @@ The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
-      * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -15654,7 +15654,7 @@ The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is valid with the data
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
 
-   * The expression :math:`{\mathit{expr}}` is valid with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is valid with the :ref:`value type <syntax-valtype>` :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -15677,9 +15677,9 @@ The data segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is valid w
 The start function :math:`(\mathsf{start}~x)` is valid if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
 
 
 
@@ -15701,9 +15701,9 @@ The external index :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 
       * The external type :math:`{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
 
-      * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-      * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+      * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
    * Or:
 
@@ -15748,9 +15748,9 @@ The external index :math:`{\mathit{xx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`
 The external index :math:`(\mathsf{func}~x)` is valid with the external type :math:`(\mathsf{func}~{\mathit{dt}})` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -15920,7 +15920,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
-      * The function :math:`{\mathit{func}}` is valid with the defined type :math:`{\mathit{dt}}`.
+      * The function :math:`{\mathit{func}}` is valid with the :ref:`defined type <syntax-deftype>` :math:`{\mathit{dt}}`.
 
    * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
@@ -15969,12 +15969,12 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 
-The number value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` is valid with the number type :math:`{\mathit{nt}}`.
+The number value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` is valid with the :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}`.
 
 
 
 
-The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is valid with the vector type :math:`{\mathit{vt}}`.
+The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is valid with the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vt}}`.
 
 
 
@@ -16003,7 +16003,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
-      * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+      * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}array}~a)`.
@@ -16012,7 +16012,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
-      * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+      * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~a)`.
@@ -16021,7 +16021,7 @@ The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid w
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
-      * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+      * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
       * The reference value :math:`r_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
@@ -16068,7 +16068,7 @@ The reference value :math:`(\mathsf{ref{.}struct}~a)` is valid with the referenc
 
    * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
-   * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -16078,7 +16078,7 @@ The reference value :math:`(\mathsf{ref{.}array}~a)` is valid with the reference
 
    * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
-   * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -16088,7 +16088,7 @@ The reference value :math:`(\mathsf{ref{.}func}~a)` is valid with the reference 
 
    * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
-   * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
+   * The :ref:`defined type <syntax-deftype>` :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
 
 
 
@@ -16118,52 +16118,52 @@ The reference value :math:`{\mathit{ref}}` is valid with the reference type :mat
 
 
 
-The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is valid with the :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
 
 
    * Either:
 
       * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{num}}`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
 
-      * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the number type :math:`{\mathit{nt}}`.
+      * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}`.
 
    * Or:
 
       * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vec}}`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vt}}`.
 
-      * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the vector type :math:`{\mathit{vt}}`.
+      * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vt}}`.
    * Or:
 
       * The value :math:`v_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{ref}}`.
 
-      * The value type :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
+      * The :ref:`value type <syntax-valtype>` :math:`t_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
 
       * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The value :math:`{\mathit{num}}` is valid with the value type :math:`{\mathit{nt}}` if:
+The value :math:`{\mathit{num}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{nt}}` if:
 
 
-   * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the number type :math:`{\mathit{nt}}`.
-
-
-
-
-The value :math:`{\mathit{vec}}` is valid with the value type :math:`{\mathit{vt}}` if:
-
-
-   * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the vector type :math:`{\mathit{vt}}`.
+   * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is valid with the :ref:`number type <syntax-numtype>` :math:`{\mathit{nt}}`.
 
 
 
 
-The value :math:`{\mathit{ref}}` is valid with the value type :math:`{\mathit{rt}}` if:
+The value :math:`{\mathit{vec}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{vt}}` if:
+
+
+   * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is valid with the :ref:`vector type <syntax-vectype>` :math:`{\mathit{vt}}`.
+
+
+
+
+The value :math:`{\mathit{ref}}` is valid with the :ref:`value type <syntax-valtype>` :math:`{\mathit{rt}}` if:
 
 
    * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is valid with the reference type :math:`{\mathit{rt}}`.

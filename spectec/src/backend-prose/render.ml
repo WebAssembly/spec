@@ -72,6 +72,19 @@ and is_bine expr = match expr.it with
   | Al.Ast.CvtE (e, _, _) -> is_bine e
   | _ -> false
 
+let (let*) = Option.bind
+
+let type_with_link s =
+  (* HARDCODE: cross-reference for number type and vector type *)
+  let* link = match s with
+  | "value type" -> Some "syntax-valtype"
+  | "number type" -> Some "syntax-numtype"
+  | "vector type" -> Some "syntax-vectype"
+  | "defined type" -> Some "syntax-deftype"
+  | _ -> None
+  in
+  Some (sprintf ":ref:`%s <%s>`" s link)
+
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
 let a2e a =
@@ -110,8 +123,6 @@ let render_type_desc f t =
   | desc -> desc
 
 (* Translation from Al exp to El exp *)
-
-let (let*) = Option.bind
 
 let al_to_el_unop = function
   | #Num.unop as op -> Some op
@@ -659,28 +670,13 @@ and render_expr' env expr =
     sprintf "%s is %s" se vref
   | Al.Ast.TopValueE (Some e) ->
     let desc_hint = Prose_util.extract_desc e.note in
-    (* HARDCODE: cross-reference for number type and vector type *)
+    let desc_hint = if desc_hint = "" then "value type" else desc_hint in
     let value =
-      (match desc_hint with
-      | "" ->
+      (match type_with_link desc_hint with
+      | Some vtref ->
         let se = render_expr env e in
-        let vtref =
-          ":ref:`value type <syntax-valtype>`"
-        in
         sprintf "a value of %s %s" vtref se
-      | "number type" ->
-        let se = render_expr env e in
-        let vtref =
-          ":ref:`number type <syntax-numtype>`"
-        in
-        sprintf "a value of %s %s" vtref se
-      | "vector type" ->
-        let se = render_expr env e in
-        let vtref =
-          ":ref:`vector type <syntax-vectype>`"
-        in
-        sprintf "a value of %s %s" vtref se
-      | _ ->
+      | None ->
         let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
         let article =
           if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
@@ -734,7 +730,11 @@ let render_expr_with_type env e =
   if t = "" then
     render_expr env e
   else
-    "the " ^ t ^ " " ^ s
+    let lt = match type_with_link t with
+    | Some lt -> lt
+    | None -> t
+    in
+    "the " ^ lt ^ " " ^ s
 
 
 (* Validation Statements *)
