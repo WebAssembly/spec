@@ -17,7 +17,7 @@ syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uNX") =
   0 | ... | $nat$(2^N-1)
 syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sNX") =
-  -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
+  -2^(N-1) | ... | -1 | 0 | +1 | ... | +2^(N-1)-1
 syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iNX") =
   uN(N)
 
