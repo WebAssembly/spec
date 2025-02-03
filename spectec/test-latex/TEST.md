@@ -4920,7 +4920,7 @@ $$
 C, \mathsf{recs}~{{\mathit{subtype}}^\ast} \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, 0)}
 }{
 C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{((x))}
-} \, {[\textsc{\scriptsize K{-}rect{-}\_rec2}]}
+} \, {[\textsc{\scriptsize K{-}rect{-}rec2}]}
 \qquad
 \end{array}
 $$

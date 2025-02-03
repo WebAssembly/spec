@@ -13434,6 +13434,13 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{st}}_{\mathit{u{\kern-0.1em\sc
       * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
       * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x + 1)})`.
+   * Or:
+
+      * The sub type sequence :math:`{{\mathit{st}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{subtype}}^\ast}`.
+
+      * Let :math:`{C'}` be the same context as :math:`C`, but with the sub type sequence :math:`{{\mathit{subtype}}^\ast}` prepended to the field :math:`\mathsf{recs}`.
+
+      * Under the context :math:`{C'}`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
 
@@ -13449,6 +13456,16 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
    * The sub type :math:`{\mathit{subtype}}_1` is valid with :math:`({\mathsf{ok}}{(x)})`.
 
    * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid for :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * Let :math:`{C'}` be the same context as :math:`C`, but with the sub type sequence :math:`{{\mathit{subtype}}^\ast}` prepended to the field :math:`\mathsf{recs}`.
+
+   * Under the context :math:`{C'}`, the recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is valid with :math:`({\mathsf{ok}}{(x, 0)})`.
 
 
 
@@ -25006,6 +25023,10 @@ Rectype_ok
     - st_u1* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x).
     - the recursive type (REC subtype*) is valid for (OK (x + 1)).
+  - Or:
+    - st_u1* is subtype*.
+    - the context C' is the context C with .RECS prepended by subtype*.
+    - Under the context C', (REC subtype*) is valid with (OK x 0).
 
 Rectype_ok/empty
 - the recursive type (REC []) is valid for (OK x).
@@ -25014,6 +25035,11 @@ Rectype_ok/cons
 - the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x) if:
   - the sub type subtype_1 is valid with (OK x).
   - the recursive type (REC subtype*) is valid for (OK (x + 1)).
+
+Rectype_ok/rec2
+- the recursive type (REC subtype*) is valid for (OK x) if:
+  - the context C' is the context C with .RECS prepended by subtype*.
+  - Under the context C', (REC subtype*) is valid with (OK x 0).
 
 Deftype_ok
 - the defined type (DEF rectype i) is valid if:

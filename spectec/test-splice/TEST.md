@@ -916,7 +916,7 @@ warning: rule `Packtype_ok` was never spliced
 warning: rule `Packtype_sub` was never spliced
 warning: rule `Rectype_ok/empty` was never spliced
 warning: rule `Rectype_ok/cons` was never spliced
-warning: rule `Rectype_ok/_rec2` was never spliced
+warning: rule `Rectype_ok/rec2` was never spliced
 warning: rule `Rectype_ok2/empty` was never spliced
 warning: rule `Rectype_ok2/cons` was never spliced
 warning: rule `Ref_type/null` was never spliced
@@ -1843,6 +1843,7 @@ warning: rule prose `Packtype_sub` was never spliced
 warning: rule prose `Rectype_ok` was never spliced
 warning: rule prose `Rectype_ok/cons` was never spliced
 warning: rule prose `Rectype_ok/empty` was never spliced
+warning: rule prose `Rectype_ok/rec2` was never spliced
 warning: rule prose `Rectype_ok2` was never spliced
 warning: rule prose `Rectype_ok2/cons` was never spliced
 warning: rule prose `Rectype_ok2/empty` was never spliced
