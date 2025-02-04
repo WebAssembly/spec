@@ -233,33 +233,33 @@ module AlContext = struct
   let add_instrs il = function
     | Al (name, args, il', env) :: t -> Al (name, args, il @ il', env) :: t
     | Enter (name, il', env) :: t -> Enter (name, il @ il', env) :: t
-    | _ -> failwith "Not in AL context"
+    | _ -> failwith "add_instrs: Not in AL context"
 
   let get_env = function
     | Al (_, _, _, env) :: _ -> env
     | Enter (_, _, env) :: _ -> env
-    | _ -> failwith "Not in AL context"
+    | _ -> failwith "get_env: Not in AL context"
 
   let set_env env = function
     | Al (name, args, il, _) :: t -> Al (name, args, il, env) :: t
     | Enter (name, il, _) :: t -> Enter (name, il, env) :: t
-    | _ -> failwith "Not in AL context"
+    | _ -> failwith "set_env: Not in AL context"
 
   let update_env k v = function
     | Al (name, args, il, env) :: t -> Al (name, args, il, Env.add k v env) :: t
     | Enter (name, il, env) :: t -> Enter (name, il, Env.add k v env) :: t
-    | _ -> failwith "Not in AL context"
+    | _ -> failwith "update_env: Not in AL context"
 
   let get_return_value = function
     | [ Return v ] -> Some v
     | [] -> None
-    | _ -> failwith "AL context not in return"
+    | _ -> failwith "get_return_value: AL context not in return"
 
   let rec decrease_depth = function
     | Wasm 1 :: t -> t
     | Wasm n :: t -> Wasm (n - 1) :: t
     | Al _ as mode :: t -> mode :: decrease_depth t
-    | _ -> failwith "Not in AL or Wasm context"
+    | _ -> failwith "decrease_depth: Not in AL or Wasm context"
 end
 
 
@@ -274,7 +274,7 @@ module WasmContext = struct
   let get_context () =
     match !context_stack with
     | h :: _ -> h
-    | _ -> failwith "Wasm context stack underflow"
+    | _ -> failwith "get_context: Wasm context stack underflow"
 
   let init_context () = context_stack := [top_level_context]
 
@@ -283,7 +283,7 @@ module WasmContext = struct
   let pop_context () =
     match !context_stack with
     | h :: t -> context_stack := t; h
-    | _ -> failwith "Wasm context stack underflow"
+    | _ -> failwith "pop_context: Wasm context stack underflow"
 
   (* Print *)
 
@@ -310,7 +310,7 @@ module WasmContext = struct
   let get_value_with_condition f =
     match List.find_opt (fun (v, _, _) -> f v) !context_stack with
     | Some (v, _, _) -> v
-    | None -> failwith "Wasm context stack underflow"
+    | None -> failwith "get_value_with_condition: Wasm context stack underflow"
 
   let get_top_context () =
     let ctx, _, _ = get_context () in
@@ -325,7 +325,7 @@ module WasmContext = struct
   let get_module_instance () =
     match get_current_context "FRAME_" with
     | CaseV (_, [_; mm]) -> mm
-    | _ -> failwith "Invalid frame"
+    | _ -> failwith "get_module_instance: Invalid frame"
 
   (* Value stack *)
 
@@ -351,14 +351,14 @@ module WasmContext = struct
       push_context (v_ctx, v :: vs, vs_instr)
     else
       string_of_value v
-      |> Printf.sprintf "%s is not a Wasm value"
+      |> Printf.sprintf "push_value: %s is not a Wasm value"
       |> failwith
 
   let pop_value () =
     let v_ctx, vs, vs_instr = pop_context () in
     match vs with
     | h :: t -> push_context (v_ctx, t, vs_instr); h
-    | _ -> failwith "Wasm value stack underflow"
+    | _ -> failwith "pop_value: Wasm value stack underflow"
 
   (* Instr stack *)
 
@@ -366,7 +366,7 @@ module WasmContext = struct
     let v_ctx, vs, vs_instr = pop_context () in
     match vs_instr with
     | h :: t -> push_context (v_ctx, vs, t); h
-    | _ -> failwith "Wasm instr stack underflow"
+    | _ -> failwith "pop_instr: Wasm instr stack underflow"
 end
 
 
