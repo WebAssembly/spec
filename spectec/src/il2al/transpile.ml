@@ -6,19 +6,11 @@ open Util
 open Util.Source
 open Util.Record
 open Xl
+open Il2al_util
 
 let for_interp = ref false
 
 (* Helpers *)
-
-let (@@) (g: instr -> instr list) (f: instr -> instr list) (i: instr): instr list =
-  f i |> List.map g |> List.flatten
-let composite (g: 'a -> 'a) (f: 'a -> 'a) (x: 'a): 'a = f x |> g
-let lift f x = [f x]
-
-let take n str =
-  let len = min n (String.length str) in
-  String.sub str 0 len ^ if len <= n then "" else "..."
 
 let rec neg cond =
   let cond' =
@@ -119,6 +111,11 @@ let atom_of_case e =
 
 (* AL -> AL transpilers *)
 
+(* Append `Else: Fail` block to the given blocks *)
+let append_fail_block blocks =
+  let fail_block = [otherwiseI [failI ()]] in
+  blocks @ [fail_block]
+
 (* Explictly insert nop into empty instr list to prevent the optimization *)
 let insert_nop instrs = match instrs with [] -> [ nopI () ] | _ -> instrs
 
@@ -157,11 +154,11 @@ let merge instrs1 instrs2 =
   let unified_tail =
     match tail2 with
     | [{ it = OtherwiseI else_body; _ }] ->
-      let visit_if, merged = insert_otherwise else_body tail1 in
-      if not visit_if then
+      let _visit_if, merged = insert_otherwise else_body tail1 in
+      (*if not visit_if then
         print_endline
           ("Warning: No corresponding if for"
-          ^ take 100 (Print.string_of_instrs instrs2));
+          ^ Print.string_of_instrs instrs2);*)
       merged
     | _ -> tail1 @ tail2
   in
@@ -231,7 +228,7 @@ let rec return_at_last = function
   | [] -> false
   | h :: t ->
     match h.it with
-    | TrapI | ReturnI _ -> true
+    | TrapI | ReturnI _ | FailI -> true
     | _ -> return_at_last t
 
 let early_return instr =
@@ -536,14 +533,18 @@ let reduce_comp expr =
 let loop_max = 100
 let loop_cnt = ref loop_max
 let rec enhance_readability instrs =
-  let pre_expr = simplify_record_concat |> composite if_not_defined |> composite reduce_comp in
+  let pre_expr = simplify_record_concat << if_not_defined << reduce_comp in
   let walk_expr walker expr = 
     let expr1 = pre_expr expr in
     Al.Walk.base_walker.walk_expr walker expr1
   in
   let post_instr =
-    unify_if_head @@ unify_if_tail @@ (lift swap_if) @@
-    early_return @@ (lift merge_three_branches) @@ remove_trivial_case_check
+    unify_if_head
+    <<@ unify_if_tail
+    <<@ early_return
+    <<@ (lift swap_if)
+    <<@ (lift merge_three_branches)
+    <<@ remove_trivial_case_check
   in
   let walk_instr walker instr = 
     let instr1 = Al.Walk.base_walker.walk_instr walker instr in
@@ -1118,7 +1119,7 @@ let remove_enter algo =
         let body = List.concat_map (walker.walk_instr walker) body in
         FuncA (name, params, body)
     | RuleA (name, anchor, params, body) ->
-        let pre_instr = enter_frame_to_push @@ (lift enter_label_to_push) @@ enter_handler_to_push in
+        let pre_instr = enter_frame_to_push <<@ (lift enter_label_to_push) <<@ enter_handler_to_push in
         let walk_instr walker instr = 
           let instr1 = pre_instr instr in
           List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1

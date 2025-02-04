@@ -976,17 +976,16 @@ let translate_helper helper =
     |> translate_args
     |> List.map (walker.walk_arg walker)
   in
-  let blocks = List.map (translate_helper_body name) clauses in
   let body =
-    Transpile.merge_blocks blocks
-    (* |> Transpile.insert_frame_binding *)
+    List.map (translate_helper_body name) clauses
+    |> (partial = Partial) --> Transpile.append_fail_block
+    |> Transpile.merge_blocks
     |> Transpile.handle_frame params
     |> List.concat_map (walker.walk_instr walker)
     |> Transpile.enhance_readability
-    |> (if partial = Partial then Fun.id else Transpile.ensure_return)
+    |> (partial <> Partial) --> Transpile.ensure_return
     |> Transpile.flatten_if in
-
-   FuncA (name, params, body) $ helper.at
+  FuncA (name, params, body) $ helper.at
 
 
 let extract_winstr r at =

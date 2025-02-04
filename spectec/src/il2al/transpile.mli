@@ -1,5 +1,6 @@
 open Al.Ast
 
+val append_fail_block : instr list list -> instr list list
 val for_interp : bool ref
 val insert_nop : instr list -> instr list
 val merge_blocks : instr list list -> instr list

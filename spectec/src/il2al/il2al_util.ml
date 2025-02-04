@@ -6,6 +6,15 @@ open Source
 
 let error at msg = Error.error at "prose translation" msg
 
+(* Helpers *)
+let apply_if c f x = if c then f x else x
+let compose_list f g x = f x |> List.map g |> List.flatten
+let lift f x = [f x]
+
+let (-->) = apply_if
+let (<<) = Fun.compose
+let (<<@) = compose_list
+
 (* TODO: combine this with Env *)
 let hintdefs : hintdef list ref = ref []
 

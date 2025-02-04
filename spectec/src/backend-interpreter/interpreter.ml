@@ -549,7 +549,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     (try
       ctx |> AlContext.add_instrs il1 |> run
     with
-    | Exception.MissingReturnValue _
+    | Exception.Fail
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
@@ -608,6 +608,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | TrapI -> raise Exception.Trap
   | ThrowI _ -> raise Exception.Throw
+  | FailI -> raise Exception.Fail
   | NopI -> ctx
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->

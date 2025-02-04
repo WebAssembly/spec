@@ -1639,6 +1639,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`64`.
 
+#. Fail.
+
 
 :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
 ......................................................................................
@@ -2355,6 +2357,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ti}'}`.
 
+#. Fail.
+
 
 :math:`{\mathrm{growmemory}}({\mathit{mi}}, n)`
 ...............................................
@@ -2369,6 +2373,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[~{i'}~..~j~],\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
+
+#. Fail.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{xv}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
@@ -3623,6 +3629,7 @@ size t_u1
   a. Return 32.
 4. If (t_u1 = F64), then:
   a. Return 64.
+5. Fail.
 
 funcsxt xt_u1*
 1. If (xt_u1* = []), then:
@@ -3961,6 +3968,7 @@ growtable ti n
 3. If (i' <= j), then:
   a. Let ti' be { TYPE: ([ i' .. j ]); REFS: ?(a)* :: ?()^n }.
   b. Return ti'.
+4. Fail.
 
 growmemory mi n
 1. Let { TYPE: ([ i .. j ]); BYTES: b* } be mi.
@@ -3968,6 +3976,7 @@ growmemory mi n
 3. If (i' <= j), then:
   a. Let mi' be { TYPE: ([ i' .. j ]); BYTES: b* :: 0^(n * (64 * $Ki())) }.
   b. Return mi'.
+4. Fail.
 
 funcs xv_u1*
 1. If (xv_u1* = []), then:
@@ -7471,6 +7480,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`128`.
 
+#. Fail.
+
 
 :math:`{|{\mathsf{i}}{n}|}`
 ...........................
@@ -9200,6 +9211,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ti}'}`.
 
+#. Fail.
+
 
 :math:`{\mathrm{growmemory}}({\mathit{mi}}, n)`
 ...............................................
@@ -9214,6 +9227,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[~{i'}~..~j~]~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
+
+#. Fail.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -11394,6 +11409,7 @@ size t_u1
   a. Return 64.
 5. If (t_u1 = V128), then:
   a. Return 128.
+6. Fail.
 
 isize Inn
 1. Return $size(Inn).
@@ -12218,6 +12234,7 @@ growtable ti n r
 3. If (i' <= j), then:
   a. Let ti' be { TYPE: (([ i' .. j ]) rt); REFS: r'* :: r^n }.
   b. Return ti'.
+4. Fail.
 
 growmemory mi n
 1. Let { TYPE: ([ i .. j ]) PAGE; BYTES: b* } be mi.
@@ -12225,6 +12242,7 @@ growmemory mi n
 3. If (i' <= j), then:
   a. Let mi' be { TYPE: ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
   b. Return mi'.
+4. Fail.
 
 blocktype z bt_u1
 1. If (bt_u1 = (_RESULT ?())), then:
@@ -17303,13 +17321,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the value :math:`{\mathit{ref}}` to the stack.
 
-#. If :math:`{\mathit{rt}}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
+#. If :math:`{\mathit{rt}}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Do nothing.
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 #. Else:
 
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+   a. Do nothing.
 
 
 :math:`\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
@@ -18083,9 +18101,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Do nothing.
 
-      #) Else if :math:`i_1 \leq i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is :math:`\mathsf{array}`, then:
+      #) Else:
 
-         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         a) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is :math:`\mathsf{array}`.
+
+         #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
          #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
@@ -18093,41 +18113,29 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+         #) If :math:`i_1 \leq i_2`, then:
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+            1. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-         #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
-
-      #) Else:
-
-         a) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is :math:`\mathsf{array}`, then:
-
-            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
-
-            #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
-
-            #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
             #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
+
+         #) Else:
+
+            1. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
 
             #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
@@ -18145,13 +18153,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-            #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
-
-   #. Else if :math:`n \neq 0`, then:
-
-      1) Do nothing.
+         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
 
 :math:`\mathsf{array{.}init\_elem}~x~y`
@@ -19695,6 +19699,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
+#. Fail.
+
 
 :math:`{\mathrm{unpack}}({\mathit{vectype}})`
 .............................................
@@ -19722,6 +19728,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    a. Let :math:`{\mathit{lanetype}}` be :math:`{\mathit{zt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
    #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
+
+#. Fail.
 
 
 :math:`{\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
@@ -23850,6 +23858,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{tableinst}'}`.
 
+#. Fail.
+
 
 :math:`{\mathrm{growmem}}({\mathit{meminst}}, n)`
 .................................................
@@ -23864,6 +23874,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~{i'}~..~j~]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{meminst}'}`.
+
+#. Fail.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -26955,10 +26967,10 @@ Step_read/br_on_cast l rt_1 rt_2
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
 5. Push the value ref to the stack.
-6. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
-  a. Do nothing.
-7. Else:
+6. If rt matches $inst_reftype(f.MODULE, rt_2), then:
   a. Execute the instruction (BR l).
+7. Else:
+  a. Do nothing.
 
 Step_read/br_on_cast_fail l rt_1 rt_2
 1. Let (FRAME_ _ { f }) be the current FRAME_ context.
@@ -27136,7 +27148,7 @@ Step_read/throw_ref
         2. Pop the current HANDLER_ context from the stack.
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
-6. Else if ((not the first non-value entry of the stack is a LABEL_ /\ not the first non-value entry of the stack is a FRAME_) /\ not the first non-value entry of the stack is a HANDLER_), then:
+6. Else if (not the first non-value entry of the stack is a LABEL_ /\ (not the first non-value entry of the stack is a FRAME_ /\ not the first non-value entry of the stack is a HANDLER_)), then:
   a. Throw the exception instr_u1 as a result.
 
 Step_read/try_table bt catch* instr*
@@ -27329,40 +27341,34 @@ Step_read/array.copy x_1 x_2
       a) Trap.
     5) If (n = 0), then:
       a) Do nothing.
-    6) Else if ((i_1 <= i_2) /\ $expanddt($type(z, x_2)) is ARRAY), then:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut zt_2) be arraytype_0.
-      c) Let sx? be $sx(zt_2).
-      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      e) Push the value (I32.CONST i_1) to the stack.
-      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      g) Push the value (I32.CONST i_2) to the stack.
-      h) Execute the instruction (ARRAY.GET sx? x_2).
-      i) Execute the instruction (ARRAY.SET x_1).
-      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      k) Push the value (I32.CONST (i_1 + 1)) to the stack.
-      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      m) Push the value (I32.CONST (i_2 + 1)) to the stack.
-      n) Push the value (I32.CONST (n - 1)) to the stack.
-      o) Execute the instruction (ARRAY.COPY x_1 x_2).
-    7) Else if $expanddt($type(z, x_2)) is ARRAY, then:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut zt_2) be arraytype_0.
-      c) Let sx? be $sx(zt_2).
-      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      e) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      g) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-      h) Execute the instruction (ARRAY.GET sx? x_2).
-      i) Execute the instruction (ARRAY.SET x_1).
-      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      k) Push the value (I32.CONST i_1) to the stack.
-      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      m) Push the value (I32.CONST i_2) to the stack.
-      n) Push the value (I32.CONST (n - 1)) to the stack.
-      o) Execute the instruction (ARRAY.COPY x_1 x_2).
-  c. Else if (n =/= 0), then:
-    1) Do nothing.
+    6) Else:
+      a) Assert: Due to validation, $expanddt($type(z, x_2)) is ARRAY.
+      b) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      c) Let (mut zt_2) be arraytype_0.
+      d) Let sx? be $sx(zt_2).
+      e) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      f) If (i_1 <= i_2), then:
+        1. Push the value (I32.CONST i_1) to the stack.
+        2. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        3. Push the value (I32.CONST i_2) to the stack.
+        4. Execute the instruction (ARRAY.GET sx? x_2).
+        5. Execute the instruction (ARRAY.SET x_1).
+        6. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        7. Push the value (I32.CONST (i_1 + 1)) to the stack.
+        8. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        9. Push the value (I32.CONST (i_2 + 1)) to the stack.
+      g) Else:
+        1. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+        2. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        3. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+        4. Execute the instruction (ARRAY.GET sx? x_2).
+        5. Execute the instruction (ARRAY.SET x_1).
+        6. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        7. Push the value (I32.CONST i_1) to the stack.
+        8. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        9. Push the value (I32.CONST i_2) to the stack.
+      h) Push the value (I32.CONST (n - 1)) to the stack.
+      i) Execute the instruction (ARRAY.COPY x_1 x_2).
 
 Step_read/array.init_elem x y
 1. Let z be the current state.
@@ -28094,6 +28100,7 @@ nunpack zt_u1
   b. Return numtype.
 2. If zt_u1 is packtype, then:
   a. Return I32.
+3. Fail.
 
 vunpack vectype
 1. Return vectype.
@@ -28107,6 +28114,7 @@ cunpack zt_u1
 3. If zt_u1 is lanetype, then:
   a. Let lanetype be zt_u1.
   b. Return $lunpack(lanetype).
+4. Fail.
 
 dim Lnn X N
 1. Return N.
@@ -30040,6 +30048,7 @@ growtable tableinst n r
   a. Let i' be (|r'*| + n).
   b. Let tableinst' be { TYPE: (at ([ i' .. j ]) rt); REFS: r'* :: r^n }.
   c. Return tableinst'.
+3. Fail.
 
 growmem meminst n
 1. Let { TYPE: at ([ i .. j ]) PAGE; BYTES: b* } be meminst.
@@ -30047,6 +30056,7 @@ growmem meminst n
   a. Let i' be ((|b*| / (64 * $Ki())) + n).
   b. Let meminst' be { TYPE: at ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
   c. Return meminst'.
+3. Fail.
 
 blocktype_ z bt_u1
 1. If bt_u1 is _IDX, then:
