@@ -700,7 +700,7 @@ and handle_iter_lhs lhs rhs free_ids =
         match iter with
         | Opt -> iter, Il.IterT (expr.note, Il.Opt) $ no_region
         | ListN (expr', None) when not (contains_ids free_ids expr') ->
-          List, Il.IterT (expr.note, Il.List) $ no_region
+          ListN (expr', None), Il.IterT (expr.note, Il.List) $ no_region
         | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
       IterE (expr, (iter', xes)) $$ lhs.at % typ
@@ -728,14 +728,7 @@ and handle_iter_lhs lhs rhs free_ids =
   (* Iter injection *)
 
   let walker = { Walk.base_walker with walk_expr } in
-  let instrs' = List.concat_map (walker.walk_instr walker) instrs in
-
-  (* Add ListN condition *)
-  match iter with
-  | ListN (expr, None) when not (contains_ids free_ids expr) ->
-    let at = over_region [ lhs.at; rhs.at ] in
-    assertI (BinE (`EqOp, lenE rhs ~note:expr.note, expr) $$ at % boolT) :: instrs'
-  | _ -> instrs'
+  List.concat_map (walker.walk_instr walker) instrs
 
 and handle_special_lhs lhs rhs free_ids =
   let at = over_region [ lhs.at; rhs.at ] in

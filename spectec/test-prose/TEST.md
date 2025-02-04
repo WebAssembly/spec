@@ -17862,9 +17862,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Trap.
 
-#. Assert: Due to validation, :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]|} = n`.
-
-#. Let :math:`{{\mathit{ref}}^\ast}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]`.
+#. Let :math:`{{\mathit{ref}}^{n}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]`.
 
 #. Push the values :math:`{{\mathit{ref}}^{n}}` to the stack.
 
@@ -17895,11 +17893,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Trap.
 
-#. Assert: Due to validation, the length of :math:`(X)` for which :math:`{\bigoplus}\, X` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]` is :math:`n`.
-
 #. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the result for which :math:`{\bigoplus}\, {{{\mathit{byte}}^\ast}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
 
-#. Let :math:`{c^\ast}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast}) = {{\mathit{byte}}^\ast})^\ast}`.
+#. Let :math:`{c^{n}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathit{zt}}}({c^{n}}) = {{\mathit{byte}}^\ast})^\ast}`.
 
 #. Push the values :math:`{{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)^{n}}` to the stack.
 
@@ -27225,10 +27221,9 @@ Step_read/array.new_elem x y
 5. Pop the value (I32.CONST i) from the stack.
 6. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-7. Assert: Due to validation, (|$elem(z, y).REFS[i : n]| = n).
-8. Let ref* be $elem(z, y).REFS[i : n].
-9. Push the values ref^n to the stack.
-10. Execute the instruction (ARRAY.NEW_FIXED x n).
+7. Let ref^n be $elem(z, y).REFS[i : n].
+8. Push the values ref^n to the stack.
+9. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_read/array.new_data x y
 1. Let z be the current state.
@@ -27241,11 +27236,10 @@ Step_read/array.new_data x y
 8. Let (mut zt) be arraytype_0.
 9. If ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)])| = n).
-11. Let byte** be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
-12. Let c* be $zbytes__1^-1(zt, byte*)*.
-13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
-14. Execute the instruction (ARRAY.NEW_FIXED x n).
+10. Let byte** be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
+11. Let c^n be $zbytes__1^-1(zt, byte*)*.
+12. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
+13. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_read/array.get sx? x
 1. Let z be the current state.
