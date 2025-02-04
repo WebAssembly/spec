@@ -456,7 +456,7 @@ $${rule-prose: Instr_ok/ref.i31}
 $${rule: Instr_ok/ref.i31}
 
 
-.. _valid-i31.get_sx:
+.. _valid-i31.get:
 
 :math:`\I31GET\K{\_}\sx`
 ........................

@@ -263,14 +263,14 @@ $${rule-prose: Step_pure/ref.i31}
 $${rule: {Step_pure/ref.i31}}
 
 
-.. _exec-i31.get_sx:
+.. _exec-i31.get:
 
 $${rule-prose: Step_pure/i31.get}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case". (4) Guarantees from validation can help simplify the prose.
    Below is the actual prose.
 
-1. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-i31.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
 
 2. Pop the value :math:`\reff` from the stack.
 
@@ -278,7 +278,7 @@ $${rule-prose: Step_pure/i31.get}
 
    a. Trap.
 
-4. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
+4. Assert: due to :ref:`validation <valid-i31.get>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
 
 5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
 

@@ -2487,7 +2487,7 @@ $$
 \mbox{(bit)} & {\mathit{bit}} & ::= & 0 ~|~ 1 \\
 \mbox{(byte)} & {\mathit{byte}} & ::= & \mathtt{0x00} ~|~ \ldots ~|~ \mathtt{0xFF} \\
 \mbox{(unsigned integer)} & {u}{N} & ::= & 0 ~|~ \ldots ~|~ {2^{N}} - 1 \\
-\mbox{(signed integer)} & {s}{N} & ::= & {-{2^{N - 1}}} ~|~ \ldots ~|~ {-1} ~|~ 0 ~|~ {+1} ~|~ \ldots ~|~ {2^{N - 1}} - 1 \\
+\mbox{(signed integer)} & {s}{N} & ::= & {-{2^{N - 1}}} ~|~ \ldots ~|~ {-1} ~|~ 0 ~|~ {+1} ~|~ \ldots ~|~ {+{2^{N - 1}}} - 1 \\
 \mbox{(integer)} & {i}{N} & ::= & {u}{N} \\
 & {\mathit{u{\kern-0.1em\scriptstyle 8}}} & ::= & {u}{8} \\
 & {\mathit{u{\kern-0.1em\scriptstyle 16}}} & ::= & {u}{16} \\
