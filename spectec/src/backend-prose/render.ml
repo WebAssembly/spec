@@ -19,11 +19,12 @@ type env =
     config : Config.config;
     render_latex: Backend_latex.Render.env;
     macro: Macro.env;
+    vars: Set.t;
   }
 
 let env config inputs outputs render_latex : env =
   let macro = Macro.env inputs outputs in
-  let env = { config; render_latex; macro; } in
+  let env = { config; render_latex; macro; vars=Set.empty } in
   env
 
 (* Helpers *)
@@ -589,19 +590,29 @@ and render_expr' env expr =
       )
     else error expr.at ("Not supported relation call: " ^ id);
   | Al.Ast.InvCallE (id, nl, al) ->
-    let e =
-      if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N" ~note:Al.Al_util.no_note
-      else if List.length nl = 1 then Al.Al_util.varE "fresh" ~note:Al.Al_util.no_note
+    let lhs_variable =
+      if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then
+        Al.Al_util.varE "N" ~note:Al.Al_util.no_note
       else
-        let el =
-          nl
-          |> List.filter_map (Option.map (fun x -> Al.Al_util.varE ("fresh_" ^ (string_of_int x)) ~note:Al.Al_util.no_note))
+        let params, _, _ = Il.Env.find_def !Al.Valid.il_env (id $ no_region) in
+        let gen_var n_opt =
+          let* n = n_opt in
+          let* param = List.nth_opt params n in
+          let* typ =
+            match param.it with
+            | ExpP (_, typ) -> Some typ
+            | _ -> None
+          in
+          typ
+          |> Il2al.Il2al_util.introduce_fresh_variable env.vars
+          |> Al.Al_util.varE ~note:typ
+          |> Option.some
         in
-        Al.Al_util.tupE el ~note:Al.Al_util.no_note
+        Al.Al_util.tupE (List.filter_map gen_var nl) ~note:Al.Al_util.no_note
     in
-    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
+    let elhs, erhs = al_invcalle_to_al_bine lhs_variable id nl al in
     sprintf "%s for which %s %s %s"
-      (render_expr env e)
+      (render_expr env lhs_variable)
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
@@ -1207,11 +1218,15 @@ let render_func_algo env fname params instrs =
 
 let render_def env = function
   | RuleD (_, concl, prems) ->
-      "\n" ^ render_rule env concl prems ^ "\n\n"
-  | AlgoD algo -> (match algo.it with
+    (* TODO: update env.vars *)
+    "\n" ^ render_rule env concl prems ^ "\n\n"
+  | AlgoD algo ->
+    let env = { env with vars = Il2al.Il2al_util.get_var_set_in_algo algo } in
+    (match algo.it with
     | Al.Ast.RuleA (name, _, params, instrs) ->
       "\n" ^ render_rule_algo env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->
-      "\n" ^ render_func_algo env name params instrs ^ "\n\n")
+      "\n" ^ render_func_algo env name params instrs ^ "\n\n"
+    )
 
 let render_prose env prose = List.map (render_def env) prose |> String.concat ""
