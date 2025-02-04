@@ -2,7 +2,6 @@ open Al
 open Ast
 open Walk
 open Al_util
-open Il2al_util
 open Util
 open Util.Source
 open Util.Record
@@ -117,22 +116,6 @@ let atom_of_case e =
   match e.it with
   | CaseE ((atom :: _) :: _, _) -> atom
   | _ -> Error.error e.at "prose transformation" "expected a CaseE"
-
-let rec uncat e =
-  match e.it with
-  | CatE (e1, e2) -> uncat e1 @ uncat e2
-  | _ -> [e]
-
-let seq2exec e =
-  match e.it with
-  | IterE (e', (Opt, _)) ->
-    ifI (
-      isDefinedE e ~at:e.at ~note:boolT,
-      [executeI e' ~at:e.at],
-      []
-    ) ~at:e.at
-  | ListE [e] -> executeI e ~at:e.at
-  | _ -> executeSeqI e ~at:e.at
 
 (* AL -> AL transpilers *)
 
@@ -1087,32 +1070,6 @@ let remove_exit algo =
 
 (* EnterI to PushI *)
 let remove_enter algo =
-  let enter_frame_to_push_then_pop instr =
-    match instr.it with
-    | EnterI (
-      ({ it = CaseE ([{ it = Atom.Atom "FRAME_"; _ }] :: _, [e_arity; _]); _ } as e_frame),
-      { it = CatE (instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }); _ },
-      il) ->
-        begin match e_arity.it with
-        | NumE (`Nat z) when Z.to_int z = 0 ->
-          pushI e_frame ~at:instr.at :: il @
-          (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
-            popI e_frame ~at:instr.at
-          ]
-        | _ ->
-          let var_name =
-            introduce_fresh_variable (get_var_set_in_algo algo) (iterT valT List) in
-          let e_tmp = iter_var var_name List valT in
-          pushI e_frame ~at:instr.at :: il @
-          (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
-            popAllI e_tmp ~at:instr.at;
-            popI e_frame ~at:instr.at;
-            pushI e_tmp ~at:instr.at;
-          ]
-        end
-    | _ -> [ instr ]
-  in
-
   let enter_frame_to_push instr =
     match instr.it with
     | EnterI (e_frame, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }, il) ->
@@ -1149,7 +1106,7 @@ let remove_enter algo =
 
   let remove_enter' = Source.map (function
     | FuncA (name, params, body) ->
-        let pre_instr = enter_frame_to_push_then_pop @@ (lift enter_label_to_push) in
+        let pre_instr = lift enter_label_to_push in
         let walk_instr walker instr = 
           let instr1 = pre_instr instr in
           List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1

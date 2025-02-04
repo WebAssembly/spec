@@ -560,18 +560,25 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
       fail_expr e "assertion fail"
   | PushI e ->
     (match eval_expr env e with
-    | CaseV ("FRAME_", _) as v -> WasmContext.push_context (v, [], [])
-    | ListV vs -> Array.iter WasmContext.push_value !vs
-    | v -> WasmContext.push_value v
-    );
-    ctx
+    | CaseV ("FRAME_", _) as v ->
+      WasmContext.push_context (v, [], []);
+      AlContext.increase_depth ctx
+    | ListV vs ->
+      Array.iter WasmContext.push_value !vs;
+      ctx
+    | v ->
+      WasmContext.push_value v;
+      ctx
+    )
   | PopI e ->
     (match e.it with
     | CaseE ([{it = Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
       (match WasmContext.pop_context () with
       | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
-        AlContext.set_env new_env ctx
+        ctx
+        |> AlContext.set_env new_env
+        |> AlContext.decrease_depth
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, (ListN (e_n, None), [name', e'])) when name = name' ->
@@ -607,11 +614,14 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     AlContext.return (eval_expr env e) :: AlContext.tl ctx
   | ExecuteI e ->
     let v = eval_expr env e in
+    AlContext.execute v :: ctx
+  | ExecuteSeqI e ->
+    let v = eval_expr env e in
     (match v with
     | ListV _ ->
       let ctx' = v |> unwrap_listv_to_list |> List.map AlContext.execute in
       ctx' @ ctx
-    | _ -> AlContext.execute v :: ctx
+    | _ -> failwith (sprintf "%s is not a sequence value" (string_of_value v))
     )
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
@@ -697,14 +707,14 @@ and step (ctx: AlContext.t) : AlContext.t =
   Debugger.run ctx;
 
   match ctx with
-  | Al (name, args, il, env) :: ctx ->
+  | Al (name, args, il, env, n) :: ctx ->
     (match il with
     | [] -> ctx
     | [ instr ]
-    when can_tail_call instr && not !Debugger.debug ->
+    when can_tail_call instr && n = 0 && not !Debugger.debug ->
       try_step_instr name ctx env instr
     | h :: t ->
-      let new_ctx = Al (name, args, t, env) :: ctx in
+      let new_ctx = Al (name, args, t, env, n) :: ctx in
       try_step_instr name new_ctx env h
     )
   | Wasm n :: ctx ->
@@ -755,7 +765,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
     |> List.fold_right2 assign_param params args
   in
 
-  AlContext.al (name, params, body, env)
+  AlContext.al (name, params, body, env, 0)
 
 and call_func (name: string) (args: value list) : value option =
   (* Function *)

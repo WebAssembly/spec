@@ -1028,7 +1028,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+   #. Execute the sequence :math:`{{\mathit{instr}'}^\ast}`.
 
 #. Else:
 
@@ -2765,7 +2765,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
 
-#. Execute the sequence :math:`{(\mathsf{call}~{x'})^?}`.
+#. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
+
+   a. Let :math:`{\mathit{instr}}_0` be :math:`{(\mathsf{call}~{x'})^?}`.
+
+   #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
@@ -2792,13 +2796,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
 
-#. Pop all values :math:`{{\mathit{val}}_0^\ast}` from the top of the stack.
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}_0^\ast}` to the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
@@ -2807,7 +2807,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................
 
 
-1. Execute the instruction :math:`{{\mathit{instr}}^\ast}`.
+1. Execute the sequence :math:`{{\mathit{instr}}^\ast}`.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
@@ -3336,7 +3336,7 @@ Step_pure/br n_u1
   c. Pop all values val'* from the top of the stack.
   d. Pop the current LABEL_ context from the stack.
   e. Push the values val^n to the stack.
-  f. Execute the instruction instr'*.
+  f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
   b. If (n_u1 >= 1), then:
@@ -4157,7 +4157,9 @@ instantiate s module externaddr*
 22. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
 23. Perform $initdata(s, moduleinst, i_D*, b**).
 24. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-25. Execute the sequence ((CALL x')?).
+25. If (CALL x')? is defined, then:
+  a. Let ?(instr_0) be (CALL x')?.
+  b. Execute the instruction instr_0.
 26. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
 27. Return f.MODULE.
 
@@ -4170,14 +4172,12 @@ invoke s fa val^n
 6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val_0* from the top of the stack.
+9. Pop the values val^k from the stack.
 10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-11. Push the values val_0* to the stack.
-12. Pop the values val^k from the stack.
-13. Return val^k.
+11. Return val^k.
 
 Eval_expr instr*
-1. Execute the instruction instr*.
+1. Execute the sequence instr*.
 2. Pop the value val from the stack.
 3. Return [val].
 
@@ -5796,7 +5796,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+   #. Execute the sequence :math:`{{\mathit{instr}'}^\ast}`.
 
 #. Else:
 
@@ -9711,7 +9711,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
 
-#. Execute the sequence :math:`{(\mathsf{call}~x)^?}`.
+#. If :math:`{(\mathsf{call}~x)^?}` is defined, then:
+
+   a. Let :math:`{\mathit{instr}}_0` be :math:`{(\mathsf{call}~x)^?}`.
+
+   #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
@@ -9738,13 +9742,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
 
-#. Pop all values :math:`{{\mathit{val}}_0^\ast}` from the top of the stack.
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}_0^\ast}` to the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
@@ -9753,7 +9753,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................
 
 
-1. Execute the instruction :math:`{{\mathit{instr}}^\ast}`.
+1. Execute the sequence :math:`{{\mathit{instr}}^\ast}`.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
@@ -10595,7 +10595,7 @@ Step_pure/br n_u1
   c. Pop all values val'* from the top of the stack.
   d. Pop the current LABEL_ context from the stack.
   e. Push the values val^n to the stack.
-  f. Execute the instruction instr'*.
+  f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
   b. If (n_u1 >= 1), then:
@@ -12460,9 +12460,11 @@ instantiate s module externaddr*
 20. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
 21. Let f be { MODULE: moduleinst }.
 22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-23. Execute the sequence (instr_E*).
-24. Execute the sequence (instr_D*).
-25. Execute the sequence ((CALL x)?).
+23. Execute the sequence instr_E*.
+24. Execute the sequence instr_D*.
+25. If (CALL x)? is defined, then:
+  a. Let ?(instr_0) be (CALL x)?.
+  b. Execute the instruction instr_0.
 26. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
 27. Return f.MODULE.
 
@@ -12475,14 +12477,12 @@ invoke s fa val^n
 6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val_0* from the top of the stack.
+9. Pop the values val^k from the stack.
 10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-11. Push the values val_0* to the stack.
-12. Pop the values val^k from the stack.
-13. Return val^k.
+11. Return val^k.
 
 Eval_expr instr*
-1. Execute the instruction instr*.
+1. Execute the sequence instr*.
 2. Pop the value val from the stack.
 3. Return [val].
 
@@ -16440,7 +16440,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-      #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+      #) Execute the sequence :math:`{{\mathit{instr}'}^\ast}`.
 
    #. Else:
 
@@ -24412,7 +24412,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
 
-#. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{s}}^?}`.
+#. If :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` is defined, then:
+
+   a. Let :math:`{\mathit{instr}}_0` be :math:`{{\mathit{instr}}_{\mathsf{s}}^?}`.
+
+   #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
 
@@ -24451,13 +24455,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the instruction :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
 
-#. Pop all values :math:`{{\mathit{val}}_0^\ast}` from the top of the stack.
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}_0^\ast}` to the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
@@ -24498,7 +24498,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................
 
 
-1. Execute the instruction :math:`{{\mathit{instr}}^\ast}`.
+1. Execute the sequence :math:`{{\mathit{instr}}^\ast}`.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
@@ -26549,7 +26549,7 @@ Step_pure/br l
     3) Pop all values val'* from the top of the stack.
     4) Pop the current LABEL_ context from the stack.
     5) Push the values val^n to the stack.
-    6) Execute the instruction instr'*.
+    6) Execute the sequence instr'*.
   c. Else:
     1) Pop all values val* from the top of the stack.
     2) If (l > 0), then:
@@ -30302,9 +30302,11 @@ instantiate s module externaddr*
 22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 23. Let f be { MODULE: moduleinst }.
 24. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
-25. Execute the sequence (instr_E*).
-26. Execute the sequence (instr_D*).
-27. Execute the sequence (instr_S?).
+25. Execute the sequence instr_E*.
+26. Execute the sequence instr_D*.
+27. If instr_S? is defined, then:
+  a. Let ?(instr_0) be instr_S?.
+  b. Execute the instruction instr_0.
 28. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
 29. Return f.MODULE.
 
@@ -30320,11 +30322,9 @@ invoke s funcaddr val*
 8. Push the values val* to the stack.
 9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
 10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-11. Pop all values val_0* from the top of the stack.
+11. Pop the values val^k from the stack.
 12. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-13. Push the values val_0* to the stack.
-14. Pop the values val^k from the stack.
-15. Return val^k.
+13. Return val^k.
 
 allocXs X Y s X_u1* Y_u1*
 1. If (X_u1* = []), then:
@@ -30342,7 +30342,7 @@ var X
 1. Return 0.
 
 Eval_expr instr*
-1. Execute the instruction instr*.
+1. Execute the sequence instr*.
 2. Pop the value val from the stack.
 3. Return [val].
 

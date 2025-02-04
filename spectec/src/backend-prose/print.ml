@@ -315,7 +315,7 @@ let rec string_of_instr' depth instr =
   | ExecuteI e ->
     sprintf "%s Execute the instruction %s." (make_index depth) (string_of_expr e)
   | ExecuteSeqI e ->
-    sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
+    sprintf "%s Execute the sequence %s." (make_index depth) (string_of_expr e)
   | PerformI (id, al) ->
     sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, al) $$ instr.at % (Il.Ast.VarT ("TODO" $ no_region, []) $ no_region)))
   | ExitI a ->

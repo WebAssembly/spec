@@ -57,7 +57,7 @@ let allow_command ctx =
       (state := StepInstr (name, n-1); false)
   | Continue n ->
     (match ctx with
-    | AlContext.Al (name, _, il, _) :: _
+    | AlContext.Al (name, _, il, _, _) :: _
     when is_bp name && is_entry name il ->
       if n = 1 then
         true
@@ -92,7 +92,7 @@ and handle_command ctx = function
     )
   | ("si" | "stepinstr") :: t ->
     (match ctx with
-    | (AlContext.Al (name, _, il, _) | AlContext.Enter (name, il, _)) :: _
+    | (AlContext.Al (name, _, il, _, _) | AlContext.Enter (name, il, _)) :: _
     when List.length il > 0 ->
       (match t with
       | n :: _ when Option.is_some (int_of_string_opt n) ->
@@ -132,7 +132,7 @@ and handle_command ctx = function
     do_debug ctx
   | "lookup" :: s :: _ ->
     (match ctx with
-    | (Al (_, _, _, env) | Enter (_, _, env)) :: _ ->
+    | (Al (_, _, _, env, _) | Enter (_, _, env)) :: _ ->
       lookup_env_opt s env
       |> Option.map string_of_value
       |> Option.iter print_endline;

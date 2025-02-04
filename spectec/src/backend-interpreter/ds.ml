@@ -181,7 +181,7 @@ end
 module AlContext = struct
   type mode =
     (* Al context *)
-    | Al of string * arg list * instr list * env
+    | Al of string * arg list * instr list * env * int
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
@@ -190,7 +190,7 @@ module AlContext = struct
     (* Return register *)
     | Return of value
 
-  let al (name, args, il, env) = Al (name, args, il, env)
+  let al (name, args, il, env, n) = Al (name, args, il, env, n)
   let wasm n = Wasm n
   let enter (name, il, env) = Enter (name, il, env)
   let execute v = Execute v
@@ -199,7 +199,7 @@ module AlContext = struct
   type t = mode list
 
   let string_of_context = function
-    | Al (s, args, il, _) ->
+    | Al (s, args, il, _, _) ->
       Printf.sprintf "Al %s (%s):%s"
         s
         (args |> List.map string_of_arg |> String.concat ", ")
@@ -224,29 +224,29 @@ module AlContext = struct
   let get_name ctx =
     match ctx with
     | [] -> ""
-    | Al (name, _, _, _) :: _ -> name
+    | Al (name, _, _, _, _) :: _ -> name
     | Wasm _ :: _ -> "Wasm"
     | Execute _ :: _ -> "Execute"
     | Enter _ :: _ -> "Enter"
     | Return _ :: _ -> "Return"
 
   let add_instrs il = function
-    | Al (name, args, il', env) :: t -> Al (name, args, il @ il', env) :: t
+    | Al (name, args, il', env, n) :: t -> Al (name, args, il @ il', env, n) :: t
     | Enter (name, il', env) :: t -> Enter (name, il @ il', env) :: t
     | _ -> failwith "add_instrs: Not in AL context"
 
   let get_env = function
-    | Al (_, _, _, env) :: _ -> env
+    | Al (_, _, _, env, _) :: _ -> env
     | Enter (_, _, env) :: _ -> env
     | _ -> failwith "get_env: Not in AL context"
 
   let set_env env = function
-    | Al (name, args, il, _) :: t -> Al (name, args, il, env) :: t
+    | Al (name, args, il, _, n) :: t -> Al (name, args, il, env, n) :: t
     | Enter (name, il, _) :: t -> Enter (name, il, env) :: t
     | _ -> failwith "set_env: Not in AL context"
 
   let update_env k v = function
-    | Al (name, args, il, env) :: t -> Al (name, args, il, Env.add k v env) :: t
+    | Al (name, args, il, env, n) :: t -> Al (name, args, il, Env.add k v env, n) :: t
     | Enter (name, il, env) :: t -> Enter (name, il, Env.add k v env) :: t
     | _ -> failwith "update_env: Not in AL context"
 
@@ -255,10 +255,16 @@ module AlContext = struct
     | [] -> None
     | _ -> failwith "get_return_value: AL context not in return"
 
+  let increase_depth = function
+    | Al (name, args, il, env, n) :: t -> Al (name, args, il, env, n+1) :: t
+    | _ -> failwith "increase_depth: Not in AL context"
+
   let rec decrease_depth = function
     | Wasm 1 :: t -> t
     | Wasm n :: t -> Wasm (n - 1) :: t
-    | Al _ as mode :: t -> mode :: decrease_depth t
+    | Al (name, args, il, env, n) :: t when n > 0 ->
+      Al (name, args, il, env, n-1) :: t
+    | Al (_, _, _, _, 0) as mode :: t -> mode :: decrease_depth t
     | _ -> failwith "decrease_depth: Not in AL or Wasm context"
 end
 

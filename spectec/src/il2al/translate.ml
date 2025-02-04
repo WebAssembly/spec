@@ -147,31 +147,6 @@ let is_wasm_instr e =
   (* TODO: use hint? *)
   Valid.sub_typ e.note instrT || Valid.sub_typ e.note admininstrT
 
-let split_vals (exp: Il.exp): Il.exp list * Il.exp list =
-  (* ASSUMPTION: exp is of the form v* i* *)
-  let rec spread_cat e =
-    match e.it with
-    | Il.CatE (e1, e2) -> spread_cat e1 @ spread_cat e2
-    | Il.ListE es -> List.map (fun e' -> {e' with it = Il.ListE [e']; note = e.note}) es
-    | _ -> [e]
-  in
-  let is_wasm_values e =
-    match e.it with
-    | Il.IterE (e, _) -> is_wasm_value e
-    | Il.ListE es -> List.for_all is_wasm_value es
-    | _ -> false
-  in
-
-  spread_cat exp
-  |> List.partition is_wasm_values
-
-let concat_exprs es =
-  match es with
-  | [] -> assert false
-  | hd :: tl -> List.fold_left (fun e1 e2 ->
-    catE (e1, e2) ~at:(over_region [e1.at; e2.at]) ~note:hd.note
-  ) hd tl
-
 (** Translation *)
 
 (* `Il.iter` -> `iter` *)
@@ -419,6 +394,7 @@ let rec translate_rhs exp =
     | _ -> translate_rhs rhs
     )
   (* Recursive case *)
+  | Il.LiftE inner_exp -> translate_rhs inner_exp
   | Il.SubE (inner_exp, _, _) -> translate_rhs inner_exp
   | Il.CatE (e1, e2) -> translate_rhs e1 @ translate_rhs e2
   | Il.ListE es -> List.concat_map translate_rhs es
@@ -437,7 +413,14 @@ let rec translate_rhs exp =
       let typ = Il.IterT (expr.note, Il.List) $ no_region in
       IterE (expr, (translate_iter iter, xes')) $$ exp.at % typ
     in
-    let walker = { Walk.base_walker with walk_expr } in
+    let walk_instr walker (instr: instr): instr list =
+      match instr.it with
+      | ExecuteI e ->
+        let res = walk_expr walker e in
+        if res = e then [ instr ] else [ executeSeqI res ]
+      | _ -> Walk.base_walker.walk_instr walker instr
+    in
+    let walker = { Walk.base_walker with walk_instr; walk_expr } in
 
     let instrs = translate_rhs inner_exp in
     List.concat_map (walker.walk_instr walker) instrs
@@ -951,15 +934,11 @@ let get_config_return_instrs name idset exp at =
   assert(is_config exp);
   let state, rhs = split_config exp in
   let store, f = split_state state in
-  let vals, instrs = split_vals rhs in
 
   let config =
     translate_exp store,
     translate_exp f,
-    (
-      List.concat_map translate_rhs vals,
-      List.map translate_exp instrs |> concat_exprs
-    )
+    translate_rhs rhs
   in
   (* HARDCODE: hardcoding required for config returning helper functions *)
   match name with
