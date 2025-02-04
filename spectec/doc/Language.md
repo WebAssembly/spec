@@ -2,6 +2,12 @@
 
 SpecTec is a typed notation language with a domain-specific _syntax_ and _type system_.
 
+In the BNF grammars shown in this document,
+we use `x?`, `x*`, `x+` to describe optional, sequences and non-empty sequences of symbols, respectively.
+Furthermore, a bit less standard,
+we write `x*sep` or `x+sep` to describe respective sequences of `x`'s that are separated by `sep`.
+
+
 ## Concepts
 
 ### Syntax Types
@@ -24,7 +30,7 @@ typ ::=
   "rat"                                rational numbers
   "real"                               real numbers
   "text"                               text strings
-  "(" list(typ, ",") ")"               tuples
+  "(" typ*"," ")"                      tuples
   typ iter                             iteration
   varid args                           type name with possible parameters
 
@@ -32,23 +38,22 @@ iter ::=
   "?"                                  optional
   "*"                                  list
 
-args ::= ("(" list(arg ",") ")")?
+args ::= ("(" arg*"," ")")?
 arg ::=
   exp
   "syntax"? typ
   "grammar" sym
   "def" defid
 ```
-The primitive types should be self-explanatory.
+The set of *primitive types* should be self-explanatory.
 
-Tuple types are expressed by a comma-separated list of types
-(`list(x, sep)` is a sequences of `x`'s separated by `sep`).
+*Tuple types* are expressed by a comma-separated list of types.
 
 *Iterated types* essentially describe options or lists of elements.
 Non-empty or fixed-length lists are not currently allowed in types,
 only in expressions.
 
-Named types can have *arguments* corresponding to the type's parameters.
+*Named types* can have *arguments* corresponding to the type's parameters.
 We discuss the various forms of parameterisation later,
 but the two relevant ones for types are either other types
 (indicated by the keyword `syntax`, that usually can be omitted),
@@ -71,14 +76,14 @@ def ::=
   "syntax" varid params "=" deftyp   syntax type definition
   "syntax" varid args "=" deftyp     syntax type case definition
 
-params ::= ("(" list(param ",") ")")?
+params ::= ("(" param*"," ")")?
 param ::=
   (varid ":") typ
   "syntax" synid
   "grammar" gramid ":" typ
   "def" "$" defid params ":" typ
 ```
-Type definitions can have parameters,
+Type definitions can have *parameters*,
 typically abstracting over another syntax type or a value of specific type.
 
 In the most general form,
@@ -119,26 +124,40 @@ We will see more useful examples of type families in a short while.)
 The right-hand side of a type definition can take one of several forms:
 ```
 deftyp ::=
-  typ                                       alias
-  contyp                                    constructor
-  list(casetyp, "|")                        variant
-  list(rangetyp, "|")                       range / enumeration
-  "{" list(fieldtyp, ",") "}"               record
+  typ                                      alias
+  contyp                                   constructor
+  "|"? casetyp*"|"                         variant
+  rangetyp*"|"                             range / enumeration
+  "{" fieldtyp*"," ","? "}"                record
 
-contyp   ::= nottyp premise*
-casetyp  ::= nottyp premise*
-fieldtyp ::= atom typ premise*
+contyp   ::= nottyp ("--" premise)*
+casetyp  ::= nottyp ("--" premise)*
+fieldtyp ::= atom typ ("--" premise)*
 rangetyp ::= exp | "..."
 
 nottyp ::=
   typ                                       plain type
-  atom                                      atom
+  atomid                                    atom
   atomop nottyp                             prefix atom
   nottyp atomop nottyp                      infix atom
   "`" atomop                                escaped infix atom
   "`" "(" nottyp ")"                        custom brackets
   "`" "[" nottyp "]"
   "`" "{" nottyp "}"
+
+atomid ::=
+  (upletter | "`" loletter | "_") (upletter | digit | "_" | "." | "'")*
+  "infinity"
+  "_|_" | "^|^"
+
+atomop ::=
+  ":" | ";" | "\" | <:"
+  "<<" | ">>"
+  "|-" | "-|"
+  ":=" | "~~"
+  "->" | "~>" | "~>*" | "=>"
+  "`." | ".." | "..."
+  "?" | "*"
 ```
 
 ##### Type Aliases
@@ -148,7 +167,7 @@ where the right-hand side consists of a simple type expression.
 (Syntactically, this is a special case of a constructor type
 consisting of just a plain type and no premises.)
 
-We already so a few examples above.
+We already saw a few examples above.
 
 
 ##### Constructor Types
@@ -163,7 +182,7 @@ In a first approximation,
 an atom is either an uppercase identifier,
 or one of various recognised *symbolic* atoms,
 such as `|-`, `:`, or `->`,
-or pairs of brackets escaped with `` ` ``.
+or pairs of maching brackets escaped with `` ` ``.
 Some symbolic atoms have infix operator status
 (with hard-coded "natural" precedences),
 affecting the way they are parsed;
@@ -211,17 +230,28 @@ that is, SpecTec does not provide "open" recursion.
 In the type `admininstr` above, blocks can only contain regular instructions,
 not administrative ones.
 
-Definitions of syntax variants can also be split into multiple _fragments_:
-a variant with dots "..." at the end can be extended further by later variant definitions of the same name.
+In addition to the basic grammar shown above,
+definitions of syntax variants can also be split into multiple _fragments_:
+```
+def ::=
+  "syntax" varid subid* "=" deftyp-frag        syntax fragment definition
+
+deftyp-frag ::=
+  "..."
+  ("..." "|")? casetyp*"|" ("|" "...")?        variant fragment
+```
+A variant with dots "..." at the end can be extended further by later variant definitions of the same name.
 This definition must start with dots, accordingly.
 A variant is completed by a fragment without trailing dots.
-Fragment names can be amended with a hierarchical sub-name of the form `x/y`,
+Each fragment must be named uniquely by amending the type name with a (possibly empty) list of hierarchical sub-identifiers of the form `x/y`,
 which can be used to refer to a fragment from splices.
+Currently, variant types defined in fragments cannot have parameters.
 
 **Example:**
 The instruction syntax above could be defined in two fragments:
 ```
-syntax instr/arith = DROP | CONST numtyp const | ...
+syntax instr/stack = DROP | ...
+syntax instr/arith = ... | CONST numtyp const | ...
 syntax instr/control = ... | BR labelidx | BLOCK instr*
 ```
 
@@ -252,7 +282,8 @@ Rather, the showing that side conditions are preserved is left to proofs in theo
 
 A *record type* defines special notation for forming record-like structures with named fields.
 The definition encloses a sequence of field declarations in braces.
-Each field's notation has to consist of a leading atom and the plain type of the field's contents.
+Each field's notation has to consist of a unique leading atom as its name
+and the plain type of the field's contents.
 
 **Example:**
 Record types are not that different from those in regular programming languages:
@@ -271,7 +302,7 @@ A premise expresses a side condition,
 that is, a constraint on the values of these types.
 ```
 premise ::=
-  "var" id ":" typ                                          local variable declaration
+  var" id ":" typ                                          local variable declaration
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
   relid ":" exp                                             relational premise
@@ -364,8 +395,15 @@ The first form of expression references a variable in scope:
 ```
 exp ::= ...
   varid                                meta variable
+
+varid ::= (loletter | "`" upletter | "`_") (loletter | digit | "_" | "'")*
+upletter ::= "A" | ... | "Z"
+loletter ::= "a" | ... | "z"
 ```
-Variables must either have a declared type,
+Variables are alpha-numeric identifiers starting with a lower-case letter.
+They can be upper-case when escaped with `` ` ``.
+
+Variables must either have a [declared type](#variable-declarations),
 or their type must otherwise be determined by context.
 
 
@@ -438,12 +476,13 @@ whose meanings are explained below.
 
 Using the escape `$(...)` inside an arithmetic expression inversely escapes back to regular expressions.
 
-Values can be converted explicitly between different numeric types,
+Numeric values can be *converted implicitly* to types of larger value range.
+All such safe numeric conversions are applied implicitly by SpecTec.
+
+Values can also be *converted explicitly* between different numeric types,
 using the form `$numtyp$(...)`.
 This is a partial operation,
 it is undefined when the operand value is not representable in the target type.
-(Conversely, all safe numeric conversions are applied implicitly by SpecTec,
-and do not need to be written out.)
 
 
 #### Tuples
@@ -451,7 +490,7 @@ and do not need to be written out.)
 Tuples can be formed as expected:
 ```
 exp ::= ...
-  "(" list(exp, ",") ")"               parentheses or tupling
+  "(" exp*"," ")"                      parentheses or tupling
 ```
 
 There are no expressions for accessing tuples.
@@ -536,7 +575,7 @@ even when both list and index have known values.
 Values of [record type](#record-types) can be formed and eliminated:
 ```
 exp ::= ...
-  "{" list(fieldexp, ",") "}"          record
+  "{" fieldexp*"," "}"                 record
   exp "." atom                         record access
   exp "++" exp                         record composition
   exp "," atom exp*                    record extension
@@ -599,21 +638,24 @@ allows using `$c` as a constant of type `nat`.
 
 #### Notation
 
-Type definitions introducing custom notation require expressions of analogous form:
+Type definitions introducing custom *notation* require expressions of analogous form:
 ```
 exp ::= ...
   exp exp                              sequencing
-  atom                                 atom
+  atomid                               atom
   atomop exp                           prefix atom
   exp atomop exp                       infix atom
-  "`" "(" list(exp, ",") ")"           bracket atoms
-  "`" "[" list(exp, ",") "]"
-  "`" "{" list(exp, ",") "}"
+  "`" "(" exp ")"                      bracket atoms
+  "`" "[" exp "]"
+  "`" "{" exp "}"
 ```
 Sequencing can be interpreted as both a list,
 as custom notation,
 or as a mixture of both.
-Custom notation can only occur where the expected type is known from the context.
+
+Custom notation,
+which includes the use of [atoms](#constructor-types),
+can only occur where the expected type is known from the context.
 
 
 #### Iteration
@@ -628,7 +670,7 @@ iter ::=
   "*"                                  list
   "+"                                  non-empty list (only in expressions)
   "^" arith                            list of specific length (only in expressions)
-  "^" "(" id "<" arith ")"             list of specific length with index (only in expressions)
+  "^" "(" varid "<" arith ")"          list of specific length with index (only in expressions)
 ```
 When applied to a single variable,
 an iteration essentially just denotes the *dimension* of that variable:
@@ -659,6 +701,17 @@ An iteration can also contain variables not participating in the iteration.
 **Example:**
 If `x*` is given and a scalar `y`,
 then `{A x, B y}*` inserts the same `y` for each field `B` in the resulting list of records.
+
+The final form of iterator introduces an additional iteration variable.
+Inside the iteration,
+`varid` ranges from `0` to the length of the sequence minus 1.
+
+**Example:**
+Assuming a variable `x^n`,
+the following example computes `$f(x, i)` for each `x` and its respective position `i` in the sequence:
+```
+$f(x, i)^(i<n)
+```
 
 Like overbars, iterations can nest freely,
 leading to variables of higher dimension.
@@ -706,6 +759,11 @@ This approach to typing necessarily is incomplete,
 and SpecTec may sometimes reject scripts for which it fails to find a typing.
 Adding additional variable declarations often helps.
 
+Furthermore, the type checker sometimes has to [reduce](#reduction) the arguments to [parameterised types](#type-definitions),
+as well as parameterised [type aliases](#type-aliases) themselves,
+in order to decide type equivalence.
+This may fail to terminate due to careless use of type or function recursion.
+
 *Note:* While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](EL.md)) representing the input into a more rigidly type _internal language_ ([IL](IL.md)) suitable for consumption by code-generating backends.
 This can be viewed as a form of desugaring.
 The IL is unambiguous and makes all relevant information explicit,
@@ -724,6 +782,9 @@ or to simplify the use of a type name defining a type family.
 
 If reduction does not yield a specific enough term to decide equivalence or reduce a family constructor where necessary,
 then type checking may fail.
+
+Reduction also includes the application of possibly recursive [functions](#functions),
+which is not guaranteed to terminate.
 
 
 ### Variable Declarations
@@ -836,9 +897,6 @@ def $f(n) = 1  -- otherwise
 ```
 to ensure that the clauses are disjoint.
 
-Like syntax, functions are interpreted as inductive definitions.
-This is an assumption that is not verified by the SpecTec frontend.
-
 The use of a [declared variable or type](#variable-declarations) in a pattern
 is only matched by values included in that type.
 This is relevant in the case of subtyping,
@@ -859,42 +917,244 @@ def $isfloat(inttype) = false
 def $isfloat(floattype) = true
 ```
 
+**Recursion.**
+Function definitions can be liberally *recursive*.
+As is the case with recursive [type definitions](#type-definitions),
+interpreting the precise semantics of such recursion is left to backends.
+SpecTec itself assumes that all recursive definitions are well-founded,
+but does not have any form of termination checker.
+It is recommended to define recursive functions such that they can be interpreted as inductive definitions.
+
+**Higher Order.**
+Functions can take other functions as parameters,
+giving rise to *higher-order* functions.
+Note, however, that functions are still second-class,
+that is, they can not be embedded as values.
+
+**Example:**
+The following defines a mapping function over lists of natural numbers:
+```
+def $map(def $f(nat) : nat, nat*) : nat*
+def $map($f, eps) = eps
+def $map($f, n n'*) = $f(n) $map($f, n'*)
+```
+(Note that such a map isn't typically needed,
+since it can be expressed more succinctly using [iteration](#iterations).)
+
+**Polymorphism.**
+Functions can also take syntax types as parameters,
+which allows expressing polymorphic functions.
+
+**Example:**
+The previous map function can be made polymorphic as follows:
+```
+def $map(syntax X, def $f(X) : X, X*) : X*
+def $map(syntax X, $f, eps) = eps
+def $map(syntax X, $f, x y*) = $f(x) $map(X, $f, y*)
+```
+
 
 ### Relations and Rules
 
-TODO
+While functions are used to algorithmically compute on a meta-level,
+*relations* are provided as a means for declaratively specifying semantics.
+
+```
+def ::=
+  "relation" relid ":" nottyp                   relation declaration
+  "rule" relid subid* ":" exp ("--" premise)*   rule
+```
 
 Relations are declared with a type that specifies their notation,
 which will typically consist of a sequence of syntax types separated by atoms.
+This can be used to mirror typical paper notation and drive Latex generation.
 
-Each corresponding rule then consists of an expression of the respective type,
+**Example:**
+A typical example for declaring a typing relation could look like this:
+```
+relation Type_exp: ctxt |- exp : typ
+```
+where `ctxt`, `exp`, and `typ` are user-defined types
+defining the abstract syntax of contexts, expressions, and types of the object language, respectively
+(not to be confused with the `exp` and `typ` of SpecTec's meta language,
+which occur in this document!).
+
+Essentially, a relation declaration represents the definition of a judgment form,
+and is then populated by *rules*.
+Each corresponding rule consists of a syntactic expression of the relation's respective type,
 possibly accompanied by a sequence of *premises*.
 
-In its basic form, a premise can either invoke another relation,
-in which case the name of that relation has to be given along with an expression of a suitable type,
-or it is a Boolean side condition.
+In its basic form, a premise can either be  a Boolean side condition,
+or invoke another relation,
+in which case the name of that relation has to be given along with an expression of a suitable type.
+The use of relational judgements as premises gives rise to inductive definitions of relations.
 
 A special premise is `otherwise`,
 which represents the negation of all premises previously used for the same left-hand side.
 Premises can also be iterated.
 
-All rules must be uniquely named,
-and these names can be hierarchical;
-the names have no semantic relevance, but allow referring to individual rules in splices.
+Each rule definition is headed by the name of the relation it refers to.
+Furthermore, all rules must be uniquely named by a hierarchical list of sub-identifiers;
+the empty list counts as a unique name itself,
+that is, sub-identifiers can be omitted if, e.g., a relation only has single rule.
+The sub-identifiers have no semantic relevance, but allow referring to individual rules in splices.
+
+**Example:**
+Rules for the above typing relation could take the following form,
+provided `exp` and `typ` are defined as suitable variant types:
+```
+rule Type_exp/var:
+  C |- VAR x : t
+  -- if (x, t) <- C
+
+rule Type_exp/lam:
+  C |- LAMBDA x `( e ) : t_1 -> t_2
+  -- Type_exp: C ++ (x, t_1) |- e : t_2
+
+rule Type_exp/app:
+  C |- APP e_1 e_2 : t
+  -- Type_exp: C |- e_1 : t_2 -> t
+  -- Type_exp: C |- e_2 : t_2
+```
+
+Other than checking their meta-level syntax and types,
+SpecTec does not interpret the definitions of relations and their rules in any way.
+*SpecTec is not a theorem prover*,
+it merely is a possible *frontend* for writing definitions
+from which scripts for actual theorem provers can be *generated*
+(among other backends).
+Any actual meta-theoretical continues to happen in such theorem provers.
 
 
 ### Grammars
 
-TODO
+To specify concrete syntax of a language,
+SpecTec allows the definition of *attribute grammars*:
 
-Grammars define an attribute grammar for parsing input into abstract syntax.
+```
+def ::=
+  "grammar" gramid params ":" typ "=" gram      grammar definition
+
+gram ::=
+  "|"? prod+"|"
+
+prod ::=
+  sym "=>" exp ("--" premise)*
+
+sym ::=
+  gramid args
+  text
+  num
+  "$" "(" arith ")"
+  "eps"
+  "(" sym ")"
+  sym iter
+  exp ":" sym
+  sym sym
+  sym "|" sym
+  sym "|" "..." "|" sym
+```
+
+Each grammar declaration specifies one non-terminal of concrete syntax,
+given by a list of *productions*.
+Each production in turn is defined by a left-hand side,
+which is the symbol sequence to parse,
+and a right-hand side that computes the attribute synthesised by this production.
+The type of this attribute has to be declared with the grammar.
+
+Possible symbols include basic terminal *tokens*,
+which are either text literals (for textual grammars),
+or numeric values (for binary grammars).
+The latter can be given either as literals,
+or as arithmetic expressions escaped by `$(...)`.
+
+Other non-terminals can be referenced by their grammar identifier.
+
+Providing a variant of EBNF,
+symbols and symbol sequences can also be iterated by one of the iterators `?`, `*`, or `+`.
+Furthermore, they may contain nested alternatives separated by `|`.
+A special form of alternation defines a numeric range using the notation `n | ... | m`;
+in that case, both limit symbols must be numeric tokens.
+
+Grammars can be parameterised.
+Accordingly, grammar identifiers may have corresponding arguments.
+
+Finally, a symbol may be prefixed by an *attribute pattern*.
+Such a pattern takes the form of an [expression](#expressions)
+that is interpreted as a pattern,
+in the same way as the left-hand side of [function clauses](#functions).
+This pattern is matched by the attribute synthesised by parsing the respective symbol.
+Any variables occurring in the pattern are instantiated accordingly and can be used on the right.
+However, bindings occurring inside a nested alternative are ignored.
+
+**Example:**
+Consider the following grammar for formulas over binary numbers
+```
+grammar digit : nat =
+  | "0" => 0
+  | "1" => 1
+
+grammar number : nat =
+  | d:digit => d
+  | n:number d:digit => $(2*n + d)
+
+grammar formula : nat =
+  | n:number => n
+  | n_1:formula "+" n_2:formula => $(n_1 + n_2)
+  | n_1:formula "*" n_2:formula => $(n_1 * n_2)
+```
+The synthesised attribute is the value of the expression.
+
+The attribute synthesised by a piece of grammar is defined as follows:
+* Non-terminals produce the attribute as specified by their definion.
+* Numeric tokens produce the respective natural number.
+* Textual tokens produce the respective text value.
+* Iterations produce the respective iteration of values.
+* All other forms produce the empty tuple value.
+
+Like with [variant types](#variant-types),
+the list of productions can be split into fragments.
+The individual fragments must be named uniquely using hierarchical sub-identifiers:
+```
+def ::=
+  "grammar" gramid subid* ":" typ "=" gram-frag     grammar fragment definition
+
+gram-frag ::=
+  "..."
+  ("..."? "|")? prod+"|" ("|" "...")?
+```
+Fragmented grammars are not currently allowed to have parameters.
 
 
 ### Hints
 
-TODO
+Hints are free-form annotations to SpecTec definitions of the following form:
+```
+hint ::=
+  "hint" "(" hintid exp ")"                                 hint
+```
+Hints are ignored by the SpecTec frontend,
+but passed on to individual backends,
+which may interpret the hint identifier and the accompanying expression in any way they see fit.
+For example, the [Latex backend](Latex.md) recognises `hint(show ...)` on various definitions to customise their appearance by rewriting occurrences of the respective phrase.
 
-Hints are free-form annotations that are interpreted by individual backends. For example, the [Latex backend](Latex.md) recognises `hint(show ...)` on various definitions to customise their appearance.
+Expressions inside hints are enriched with the following syntax:
+```
+exp ::= ...
+  hole                                 hole
+  exp "#" exp                          textual concatenation
+  "##" exp                             remove possible parentheses
+
+hole ::=
+  "%"                                  use next operand
+  "%"digit*                            use numbered operand
+  "%%"                                 use all operands
+  "!%"                                 empty expression
+  "%latex" "(" text* ")"               literal latex
+```
+These forms are not interpreted by the frontend,
+but can be used by backends to express additional behaviour,
+such as inserting argument or operand values.
 
 
 ## Syntax Summary
@@ -907,10 +1167,10 @@ Comments are either block (`(;...;)`) or line (`;;...\n`) comments.
 ### Item Lists
 
 ```
-list(x, sep) ::=
+x*sep ::=
   eps
   x
-  x sep list(x, sep)
+  x sep x*sep
 ```
 
 
@@ -936,18 +1196,13 @@ upid ::= (upletter | "`" loletter | "_") (upletter | digit | "_" | "." | "'")*
 loid ::= (loletter | "`" upletter | "`_") (loletter | digit | "_" | "'")*
 id ::= upid | loid
 
-atomid ::= upid
+atomid ::= upid | "infinity" | "_|_" | "^|^"
 varid ::= loid
 gramid ::= id
 defid ::= id
 relid ::= id
 ruleid ::= id
 subid ::= ("/" | "-") ruleid
-
-atom ::=
-  atomid
-  "infinity"
-  "_|_"
 
 atomop ::=
   "in" | :" | ";" | "\" | <:"
@@ -975,7 +1230,7 @@ typ ::=
   "text"                               text strings
   numtyp                               numbers
   typ iter                             iteration
-  "(" list(typ, ",") ")"               parentheses or tupling
+  "(" typ*"," ")"                      parentheses or tupling
 
 iter ::=
   "?"                                  optional
@@ -990,14 +1245,20 @@ iter ::=
 
 ```
 deftyp ::=
-  nottyp                                                              free notation
-  "{" list(atom typ hint* premise*, ",") "}"                          record
-  "..."? "|" list(varid | nottyp hint* premise*, "|") "|" "..."       variant
-  list1(arith | arith "|" "..." "|" arith, "|")                       range / enumeration
+  typ                                       alias
+  contyp                                    constructor
+  ("..."? "|")? casetyp+"|" ("|" "...")?    variant
+  rangetyp+"|"                              range / enumeration
+  "{" fieldtyp+"," ","? "}"                 record
+
+contyp   ::= nottyp hint* ("--" premise)*
+casetyp  ::= nottyp hint* ("--" premise)*
+fieldtyp ::= atom typ hint* ("--" premise)*
+rangetyp ::= exp | "..."
 
 nottyp ::=
   typ                                       plain type
-  atom                                      atom
+  atomid                                    atom
   atomop nottyp                             infix atom
   nottyp atomop nottyp                      infix atom
   nottyp nottyp                             sequencing
@@ -1031,25 +1292,25 @@ exp ::=
   exp "[" arith ":" arith "]"          list slicing
   exp "[" path "=" exp "]"             list update
   exp "[" path "=++" exp "]"           list extension
-  "{" list(atom exp, ",") "}"          record
+  "{" (atom exp)*"," "}"               record
   exp "." atom                         record access
   exp "," exp                          record extension
   exp "++" exp                         list and record composition
   exp "<-" exp                         list membership
   "|" exp "|"                          list length
   "||" gramid "||"                     expansion length
-  "(" list(exp, ",") ")"               parentheses or tupling
+  "(" exp*"," ")"                      parentheses or tupling
   "$" defid exp?                       function invocation
   atom                                 custom token
   atomop exp                           custom operator
   exp atomop exp
-  "`" "(" list(exp, ",") ")"           custom brackets
-  "`" "[" list(exp, ",") "]"
-  "`" "{" list(exp, ",") "}"
+  "`" "(" exp ")"                      custom brackets
+  "`" "[" exp "]"
+  "`" "{" exp "}"
   "$" "(" arith ")"                    escape to arithmetic syntax
   "$" numtyp "$" "(" arith ")"         numeric conversion
   hole                                 hole (for syntax rewrites in hints)
-  exp "#" exp                          token concatenation (for syntax rewrites in hints)
+  exp "#" exp                          textual concatenation (for syntax rewrites in hints)
   "##" exp                             remove possible parentheses (for syntax rewrites in hints)
 
 unop  ::= notop | "+" | "-"
@@ -1089,11 +1350,11 @@ hole ::=
 ```
 sym ::=
   gramid args
-  num
   text
-  "eps"
-  "(" list(sym, ",") ")"
+  num
   "$" "(" arith ")"
+  "eps"
+  "(" sym*"," ")"
   sym iter
   exp ":" sym
   sym sym
@@ -1103,29 +1364,22 @@ sym ::=
 prod ::=
   sym "=>" exp ("--" premise)*
 
-prod_list :
-  | (* empty *) { [], NoDots }
-  | DOTDOTDOT { [], Dots }
-  | prod { (Elem $1)::[], NoDots }
-  | prod BAR prod_list { let x, y = $3 in (Elem $1)::x, y }
-  | prod NL_BAR prod_list { let x, y = $3 in (Elem $1)::Nl::x, y }
-
 gram ::=
-  "..."? ("|" prod)+ ("|" "...")?
+  ("..."? "|")? prod+"|" ("|" "...")?
 ```
 
 
 ### Definitions
 
 ```
-args ::= ("(" list(arg ",") ")")?
+args ::= ("(" arg*"," ")")?
 arg ::=
   exp
   "syntax" typ
   "grammar" sym
   "def" defid
 
-params ::= ("(" list(param ",") ")")?
+params ::= ("(" param*"," ")")?
 param ::=
   (varid ":") typ
   "syntax" synid
@@ -1134,9 +1388,9 @@ param ::=
 
 def ::=
   "syntax" varid params hint*                               syntax declaration
-  "syntax" varid params subid* hint* "=" deftyp             syntax definition
-  "grammar" gramid params subid* ":" typ hint* "=" gram     grammar definition
-  "relation" relid hint* ":" typ                            relation declaration
+  "syntax" varid subid* params hint* "=" deftyp             syntax definition
+  "grammar" gramid subid* params ":" typ hint* "=" gram     grammar definition
+  "relation" relid hint* ":" nottyp                         relation declaration
   "rule" relid subid* hint* ":" exp ("--" premise)*  rule
   "var" varid ":" typ hint*                                 variable declaration
   "def" "$" defid params ":" typ hint*                      function declaration
