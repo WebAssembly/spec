@@ -78,7 +78,7 @@ def ::=
 
 params ::= ("(" param*"," ")")?
 param ::=
-  (varid ":") typ
+  (varid ":")? typ
   "syntax" synid
   "grammar" gramid ":" typ
   "def" "$" defid params ":" typ
@@ -261,7 +261,7 @@ Splitting a definition only has organisational purpose.
 
 ##### Range Types
 
-A *range type* is a special kind ov variant over cases of natural or integral numbers.
+A *range type* is a special kind of variant over cases of natural or integral numbers.
 It enumerates the values allowed,
 with the possiblity of specifiying subranges with `...`.
 
@@ -302,7 +302,7 @@ A premise expresses a side condition,
 that is, a constraint on the values of these types.
 ```
 premise ::=
-  var" id ":" typ                                          local variable declaration
+  var" id ":" typ                                           local variable declaration
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
   relid ":" exp                                             relational premise
@@ -423,7 +423,7 @@ text ::= """ utf8* """
 digit ::= "0" | ... | "9"
 hex ::= digit | "A" | ... | "F"
 ```
-These should come at no surprise.
+These should come as no surprise.
 
 
 #### Boolean Operators
@@ -552,7 +552,7 @@ then the left-hand side expression must have a suitable record type instead of b
 
 **Example:**
 If `l` was the list `a b c d e f`,
-then `l[[2] = x]` would be the list `a b x c d e f`,
+then `l[[2] = x]` would be the list `a b x d e f`,
 and `l[2 : 3] = x y z]` would be `a b x y z e f`.
 More interestingly, if `ll` was the list `a b (c d) e f`,
 then `ll[[2][0] = x]` would b `a b (x d) e f`
@@ -728,7 +728,7 @@ as long as the _shortest_ (possibly empty) dimension vector is a _prefix_ of all
 That shortest common prefix is then inferred to be the actual dimension vector of the variable.
 
 **Example:**
-Te expression
+The expression
 ```
 l = {A x, B y, C z}** /\ (x < 100)** /\ z <- y*
 ```
@@ -764,7 +764,7 @@ as well as parameterised [type aliases](#type-aliases) themselves,
 in order to decide type equivalence.
 This may fail to terminate due to careless use of type or function recursion.
 
-*Note:* While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](EL.md)) representing the input into a more rigidly type _internal language_ ([IL](IL.md)) suitable for consumption by code-generating backends.
+*Note:* While type-checking, the frontend _elaborates_ (lowers) the _external language_ ([EL](EL.md)) representing the input into a more rigidly typed _internal language_ ([IL](IL.md)) suitable for consumption by code-generating backends.
 This can be viewed as a form of desugaring.
 The IL is unambiguous and makes all relevant information explicit,
 such as recursion groups, depedency order, local variable binders and their types, uses of subtype injection, list construction, etc.
