@@ -131,8 +131,8 @@ let argspec = Arg.align (
     " Generate interpreter";
   "--debug", Arg.Unit (fun () -> Backend_interpreter.Debugger.debug := true),
     " Debug interpreter";
-  "--no-unified-vars", Arg.Unit (fun () -> Il2al.Unify.rename := true),
-    " Do not use unified variables in AL";
+  "--unified-vars", Arg.Unit (fun () -> Il2al.Unify.rename := false),
+    " Use unified variables (_u) in AL";
   "--latex-macros", Arg.Set latex_macros, " Splice Latex with macro invocations";
 
   "--print-el", Arg.Set print_el, " Print EL";

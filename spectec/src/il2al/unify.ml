@@ -11,7 +11,7 @@ open Def
 open Il2al_util
 
 
-let rename = ref false
+let rename = ref true
 
 (* Error *)
 
@@ -81,7 +81,7 @@ let extract_unified_idx id =
     None
 
 (* Rename unified ids to non-unified ones *)
-
+(* TODO: Rename t_u1 -> t if there is no t in the prose *)
 let rename_string _env s =
   match extract_unified_idx s with
   | Some (base_name, idx) -> base_name ^ "_" ^ (string_of_int idx)
