@@ -7,14 +7,17 @@ BUILDDIR = _build
 
 # Menu
 
-all:
+default:
 	@echo "Targets available:"
 	@echo "make rst      (run SpecTec)"
 	@echo "make html     (run SpecTec + Sphinx)"
 	@echo "make latex    (run SpecTec + Sphinx)"
 	@echo "make pdf      (run SpecTec + Sphinx + Latex)"
+	@echo "make all      (run everything)"
 	@echo "make out      (run everything and update output directory)"
 	@echo "make spectec  (build updir SpecTec)"
+
+all: rst html latex pdf
 
 
 # Building SpecTec itself
@@ -29,7 +32,7 @@ RSTFILE = $(NAME).rst
 
 rst: $(RSTFILE)
 
-$(RSTFILE).rst: $(NAME).rst.in $(NAME).watsup
+$(RSTFILE): $(NAME).rst.in $(NAME).watsup
 	$(SPECTEC) $(NAME).watsup --splice-sphinx -p $< -o $@
 
 
@@ -45,7 +48,7 @@ $(HTMLFILE): $(RSTFILE) conf.py
 
 latex: $(TEXFILE)
 
-$(TEXFILE): $(RESTFILE) conf.py
+$(TEXFILE): $(RSTFILE) conf.py
 	$(SPHINX) -b latex -d $(BUILDDIR)/doctrees . $(BUILDDIR)/latex
 
 
@@ -68,5 +71,5 @@ out: $(PDFFILE) $(HTMLFILE)
 # Clean-up
 
 clean:
-	rm $(NAME).rst
+	rm -f $(NAME).rst
 	rm -rf $(BUILDDIR)

@@ -50,9 +50,9 @@ latex: exe
 
 TESTDIRS = $(shell ls -d test-*)
 
-.PHONY: test testpromote $(TESTDIRS)
+.PHONY: test testpromote $(TESTDIRS) doc/example
 
-test: exe $(TESTDIRS)
+test: exe $(TESTDIRS) doc/example
 
 dunetest:
 	@echo "#### Running (dune runtest)"
@@ -66,6 +66,10 @@ $(TESTDIRS): test-%: exe
 	@(cd $@ && ((make test >$(LOG) 2>&1 && (grep warning $(LOG) || true)) || (cat $(LOG) && echo "####>" Failure running $@. See log above. && false)))
 	@echo "#### Running (cd $@; dune runtest)"
 	@(cd $@ && dune runtest)
+
+doc/example: exe
+	@echo "#### Running (cd $@; make all)"
+	@(cd $@ && make out clean >$(LOG) 2>&1 && rm -f $(LOG))
 
 
 # Spec
