@@ -4323,7 +4323,7 @@ The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:
 
 
 
-The value type sequence :math:`{t_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_2^\ast}` if:
+The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
 
 
    * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
@@ -4580,11 +4580,11 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid
 
    * For all :math:`l` in :math:`{l^\ast}`:
 
-      * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-   * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
 
 
@@ -5237,9 +5237,9 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The value type sequence :math:`{{t'}_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_1^\ast}`.
+      * The result type :math:`{{t'}_1^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
+      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
@@ -5273,9 +5273,9 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
 
    * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * The value type sequence :math:`{{t'}_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_1^\ast}`.
+   * The result type :math:`{{t'}_1^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
 
 
 
@@ -9848,7 +9848,7 @@ Valtype_sub/bot
 - the value type BOT matches t.
 
 Resulttype_sub
-- the value type sequence t_1* matches the value type sequence t_2* if:
+- the result type t_1* matches the result type t_2* if:
   - |t_1*| is |t_2*|.
   - For all t_1 in t_1* and t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
@@ -9980,7 +9980,7 @@ Instr_ok/br_table
   - For all l in l*:
     - the result type C.LABELS[l] exists.
   - For all l in l*:
-    - the value type sequence t* matches C.LABELS[l].
+    - the result type t* matches C.LABELS[l].
   - the result type C.LABELS[l'] exists.
   - t* matches C.LABELS[l'].
 
@@ -10322,8 +10322,8 @@ Instrs_ok
     - valtype_u1* is t'_1*.
     - valtype_u2* is t'_2*.
     - the instruction sequence instr* is valid with t_1* -> t_2*.
-    - the value type sequence t'_1* matches the value type sequence t_1*.
-    - the value type sequence t_2* matches the value type sequence t'_2*.
+    - the result type t'_1* matches the result type t_1*.
+    - the result type t_2* matches the result type t'_2*.
   - Or:
     - instr_u1* is instr*.
     - valtype_u1* is t* :: t_1*.
@@ -10341,8 +10341,8 @@ Instrs_ok/seq
 Instrs_ok/sub
 - the instruction sequence instr* is valid with the function type t'_1* -> t'_2* if:
   - instr* is valid with the function type t_1* -> t_2*.
-  - the value type sequence t'_1* matches the value type sequence t_1*.
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the result type t'_1* matches the result type t_1*.
+  - the result type t_2* matches the result type t'_2*.
 
 Instrs_ok/frame
 - the instruction sequence instr* is valid with the function type t* :: t_1* -> t* :: t_2* if:
@@ -13266,7 +13266,7 @@ The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` :ref:`matches <match>` the
 
 
 
-The value type sequence :math:`{t_1^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_2^\ast}` if:
+The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
 
 
    * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
@@ -13281,9 +13281,9 @@ The value type sequence :math:`{t_1^\ast}` :ref:`matches <match>` the value type
 The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` :ref:`matches <match>` the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
 
 
-   * The value type sequence :math:`{t_{21}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{11}^\ast}`.
+   * The result type :math:`{t_{21}^\ast}` :ref:`matches <match>` the result type :math:`{t_{11}^\ast}`.
 
-   * The value type sequence :math:`{t_{12}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{22}^\ast}`.
+   * The result type :math:`{t_{12}^\ast}` :ref:`matches <match>` the result type :math:`{t_{22}^\ast}`.
 
 
 
@@ -13609,9 +13609,9 @@ The external type :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <vali
 The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast}` :ref:`matches <match>` the instruction type :math:`{t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}` if:
 
 
-   * The value type sequence :math:`{t_{21}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{11}^\ast}`.
+   * The result type :math:`{t_{21}^\ast}` :ref:`matches <match>` the result type :math:`{t_{11}^\ast}`.
 
-   * The value type sequence :math:`{t_{12}^\ast}` :ref:`matches <match>` the value type sequence :math:`{t_{22}^\ast}`.
+   * The result type :math:`{t_{12}^\ast}` :ref:`matches <match>` the result type :math:`{t_{22}^\ast}`.
 
    * The local index sequence :math:`{x^\ast}` is equal to :math:`{x_2^\ast} \setminus {x_1^\ast}`.
 
@@ -13854,7 +13854,7 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * Or:
 
@@ -13864,17 +13864,17 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_all}~l)`.
 
-      * The value type sequence :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * The value type sequence :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -13888,7 +13888,7 @@ The catch clause :math:`(\mathsf{catch}~x~l)` is :ref:`valid <valid-val>` if:
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -13902,7 +13902,7 @@ The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is :ref:`valid <valid-val>` i
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -13912,7 +13912,7 @@ The catch clause :math:`(\mathsf{catch\_all}~l)` is :ref:`valid <valid-val>` if:
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -13922,7 +13922,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is :ref:`valid <valid-val>
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The value type sequence :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14045,11 +14045,11 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid
 
    * For all :math:`l` in :math:`{l^\ast}`:
 
-      * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
    * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-   * The value type sequence :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
    * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
@@ -14171,7 +14171,7 @@ The instruction :math:`(\mathsf{return\_call}~x)` is :ref:`valid <valid-val>` wi
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
 
    * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
@@ -14187,7 +14187,7 @@ The instruction :math:`(\mathsf{return\_call\_ref}~x)` is :ref:`valid <valid-val
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
 
    * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
@@ -14209,7 +14209,7 @@ The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is :ref:`valid <va
 
    * The result type :math:`C{.}\mathsf{return}` is equal to :math:`{{t'}_2^\ast}`.
 
-   * The value type sequence :math:`{t_2^\ast}` :ref:`matches <match>` the value type sequence :math:`{{t'}_2^\ast}`.
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
 
    * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
@@ -24920,15 +24920,15 @@ Fieldtype_sub/var
   - zt_2 matches zt_1.
 
 Resulttype_sub
-- the value type sequence t_1* matches the value type sequence t_2* if:
+- the result type t_1* matches the result type t_2* if:
   - |t_1*| is |t_2*|.
   - For all t_1 in t_1* and t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
 Functype_sub
 - the function type t_11* -> t_12* matches the function type t_21* -> t_22* if:
-  - the value type sequence t_21* matches the value type sequence t_11*.
-  - the value type sequence t_12* matches the value type sequence t_22*.
+  - the result type t_21* matches the result type t_11*.
+  - the result type t_12* matches the result type t_22*.
 
 Comptype_sub
 - the composite type comptype_u1 matches the composite type comptype_u2 if:
@@ -25094,8 +25094,8 @@ Externtype_ok/tag
 
 Instrtype_sub
 - the instruction type t_11* ->_ x_1* t_12* matches the instruction type t_21* ->_ x_2* t_22* if:
-  - the value type sequence t_21* matches the value type sequence t_11*.
-  - the value type sequence t_12* matches the value type sequence t_22*.
+  - the result type t_21* matches the result type t_11*.
+  - the result type t_12* matches the result type t_22*.
   - the local index sequence x* is $setminus_(localidx, x_2*, x_1*).
   - |t*| is |x*|.
   - For all x in x*:
@@ -25218,42 +25218,42 @@ Catch_ok
     - catch_u1 is (CATCH x l).
     - the tag type C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
-    - the value type sequence t* matches C.LABELS[l].
+    - the result type t* matches C.LABELS[l].
   - Or:
     - catch_u1 is (CATCH_REF x l).
     - C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> []).
-    - the value type sequence t* :: [(REF ?() EXN)] matches C.LABELS[l].
+    - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
   - Or:
     - catch_u1 is (CATCH_ALL l).
-    - the value type sequence [] matches C.LABELS[l].
+    - the result type [] matches C.LABELS[l].
   - Or:
     - catch_u1 is (CATCH_ALL_REF l).
-    - the value type sequence [(REF ?() EXN)] matches C.LABELS[l].
+    - the result type [(REF ?() EXN)] matches C.LABELS[l].
 
 Catch_ok/catch
 - the catch clause (CATCH x l) is valid if:
   - the tag type C.TAGS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
   - the result type C.LABELS[l] exists.
-  - the value type sequence t* matches C.LABELS[l].
+  - the result type t* matches C.LABELS[l].
 
 Catch_ok/catch_ref
 - the catch clause (CATCH_REF x l) is valid if:
   - the tag type C.TAGS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
   - the result type C.LABELS[l] exists.
-  - the value type sequence t* :: [(REF ?() EXN)] matches C.LABELS[l].
+  - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
 
 Catch_ok/catch_all
 - the catch clause (CATCH_ALL l) is valid if:
   - the result type C.LABELS[l] exists.
-  - the value type sequence [] matches C.LABELS[l].
+  - the result type [] matches C.LABELS[l].
 
 Catch_ok/catch_all_ref
 - the catch clause (CATCH_ALL_REF l) is valid if:
   - the result type C.LABELS[l] exists.
-  - the value type sequence [(REF ?() EXN)] matches C.LABELS[l].
+  - the result type [(REF ?() EXN)] matches C.LABELS[l].
 
 Defaultable
 - the value type t is defaultable if:
@@ -25315,7 +25315,7 @@ Instr_ok/br_table
   - For all l in l*:
     - the result type C.LABELS[l] exists.
   - For all l in l*:
-    - the value type sequence t* matches C.LABELS[l].
+    - the result type t* matches C.LABELS[l].
   - the result type C.LABELS[l'] exists.
   - t* matches C.LABELS[l'].
   - the instruction type t_1* -> t_2* is valid.
@@ -25378,7 +25378,7 @@ Instr_ok/return_call
   - the defined type C.FUNCS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the result type t_2* matches the result type t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_ref
@@ -25386,7 +25386,7 @@ Instr_ok/return_call_ref
   - the defined type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the result type t_2* matches the result type t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_indirect
@@ -25397,7 +25397,7 @@ Instr_ok/return_call_indirect
   - the defined type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the result type t_2* matches the result type t'_2*.
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/throw

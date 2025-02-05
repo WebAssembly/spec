@@ -5404,7 +5404,7 @@ $$
 
 \vspace{1ex}
 
-$\boxed{{\mathit{context}} \vdash {{\mathit{valtype}}^\ast} \leq {{\mathit{valtype}}^\ast}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{resulttype}} \leq {\mathit{resulttype}}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{instrtype}} \leq {\mathit{instrtype}}}$
 

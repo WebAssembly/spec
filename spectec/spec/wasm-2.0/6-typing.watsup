@@ -68,7 +68,7 @@ rule Externtype_ok/mem:
 ;; Value types
 
 relation Valtype_sub: |- valtype <: valtype       hint(show "S")
-relation Resulttype_sub: |- valtype* <: valtype*  hint(show "S-result")
+relation Resulttype_sub: |- resulttype <: resulttype  hint(show "S-result")
 
 rule Valtype_sub/refl:
   |- t <: t
