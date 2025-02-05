@@ -410,8 +410,8 @@ rule Valtype_sub/bot:
 
 ;; Result & instruction types
 
-relation Resulttype_sub: context |- resulttype <: resulttype   hint(name "S-result") hint(macro "%resulttypematch")
-relation Instrtype_sub: context |- instrtype <: instrtype  hint(name "S-instr")  hint(macro "%instrtypematch")
+relation Resulttype_sub: context |- resulttype <: resulttype  hint(name "S-result") hint(macro "%resulttypematch")
+relation Instrtype_sub: context |- instrtype <: instrtype     hint(name "S-instr")  hint(macro "%instrtypematch")
 
 rule Resulttype_sub:
   C |- t_1* <: t_2*
