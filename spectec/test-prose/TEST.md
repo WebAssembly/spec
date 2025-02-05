@@ -725,7 +725,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is :ref:`vali
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`x` in :math:`{x^\ast}`:
+   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` is equal to :math:`{\mathit{ft}}`.
 
@@ -859,37 +859,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{ft}'}^\ast}|}` is equal to :math:`{|{{\mathit{type}}^\ast}|}`.
 
-   * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
+   * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}`, and corresponding :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{ixt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
+   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
+   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, and corresponding :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
 
    * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
-   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
+   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
 
    * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
+   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * The table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
+   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * The memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
@@ -907,7 +907,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
+   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
@@ -3193,7 +3193,7 @@ Elem_ok
   - |ft*| is |x*|.
   - For all x in x*:
     - the function type C.FUNCS[x] exists.
-  - For all ft in ft* and x in x*:
+  - For all ft in ft*, and corresponding x in x*:
     - C.FUNCS[x] is ft.
 
 Data_ok
@@ -3261,22 +3261,22 @@ Export_ok
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid if:
   - |ft'*| is |type*|.
-  - For all ft' in ft'* and type in type*:
+  - For all ft' in ft'*, and corresponding type in type*:
     - the type type is valid with the function type ft'.
   - |import*| is |ixt*|.
-  - For all import in import* and ixt in ixt*:
+  - For all import in import*, and corresponding ixt in ixt*:
     - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
   - |global*| is |gt*|.
-  - For all global in global* and gt in gt*:
+  - For all global in global*, and corresponding gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
   - |ft*| is |func*|.
-  - For all ft in ft* and func in func*:
+  - For all ft in ft*, and corresponding func in func*:
     - the function func is valid with the function type ft.
   - |table*| is |tt*|.
-  - For all table in table* and tt in tt*:
+  - For all table in table*, and corresponding tt in tt*:
     - the table table is valid with the table type tt.
   - |mem*| is |mt*|.
-  - For all mem in mem* and mt in mt*:
+  - For all mem in mem*, and corresponding mt in mt*:
     - the memory mem is valid with the memory type mt.
   - For all elem in elem*:
     - the table segment elem is valid.
@@ -3285,7 +3285,7 @@ Module_ok
   - If start is defined, then:
     - the start function start is valid.
   - |export*| is |xt*|.
-  - For all export in export* and xt in xt*:
+  - For all export in export*, and corresponding xt in xt*:
     - the export export is valid with the external type xt.
   - |tt*| is less than or equal to 1.
   - |mt*| is less than or equal to 1.
@@ -4328,7 +4328,7 @@ The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:
 
    * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
 
-   * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
+   * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
 
       * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
 
@@ -5636,37 +5636,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{ft}'}^\ast}|}` is equal to :math:`{|{{\mathit{type}}^\ast}|}`.
 
-   * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}` and :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
+   * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}`, and corresponding :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{ixt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
+   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{|{{\mathit{global}}^\ast}|}` is equal to :math:`{|{{\mathit{gt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}` and :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
+   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, and corresponding :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
 
    * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
+   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
+   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
    * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
+   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
@@ -5676,7 +5676,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{ft}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
-   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
+   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
 
@@ -5686,7 +5686,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
+   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
@@ -9850,7 +9850,7 @@ Valtype_sub/bot
 Resulttype_sub
 - the result type t_1* matches the result type t_2* if:
   - |t_1*| is |t_2*|.
-  - For all t_1 in t_1* and t_2 in t_2*:
+  - For all t_1 in t_1*, and corresponding t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
 Limits_sub
@@ -10529,32 +10529,32 @@ Export_ok
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid if:
   - |ft'*| is |type*|.
-  - For all ft' in ft'* and type in type*:
+  - For all ft' in ft'*, and corresponding type in type*:
     - the type type is valid with the function type ft'.
   - |import*| is |ixt*|.
-  - For all import in import* and ixt in ixt*:
+  - For all import in import*, and corresponding ixt in ixt*:
     - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
   - |global*| is |gt*|.
-  - For all global in global* and gt in gt*:
+  - For all global in global*, and corresponding gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
   - |table*| is |tt*|.
-  - For all table in table* and tt in tt*:
+  - For all table in table*, and corresponding tt in tt*:
     - Under the context C', the table table is valid with the table type tt.
   - |mem*| is |mt*|.
-  - For all mem in mem* and mt in mt*:
+  - For all mem in mem*, and corresponding mt in mt*:
     - Under the context C', the memory mem is valid with the memory type mt.
   - |elem*| is |rt*|.
-  - For all elem in elem* and rt in rt*:
+  - For all elem in elem*, and corresponding rt in rt*:
     - Under the context C', the table segment elem is valid with the reference type rt.
   - For all data in data*:
     - Under the context C', the memory segment data is valid.
   - |ft*| is |func*|.
-  - For all ft in ft* and func in func*:
+  - For all ft in ft*, and corresponding func in func*:
     - the function func is valid with the function type ft.
   - If start is defined, then:
     - the start function start is valid.
   - |export*| is |xt*|.
-  - For all export in export* and xt in xt*:
+  - For all export in export*, and corresponding xt in xt*:
     - the export export is valid with the external type xt.
   - |mt*| is less than or equal to 1.
   - the context C is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt* :: gt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; ELEMS: rt*; DATAS: OK^n; RETURN: ?() }.
@@ -12664,7 +12664,7 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
       * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`x` in :math:`{x^\ast}`:
+   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
 
       * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`{{\mathit{lt}}}`.
 
@@ -13271,7 +13271,7 @@ The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:
 
    * :math:`{|{t_1^\ast}|}` is equal to :math:`{|{t_2^\ast}|}`.
 
-   * For all :math:`t_1` in :math:`{t_1^\ast}` and :math:`t_2` in :math:`{t_2^\ast}`:
+   * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
 
       * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
 
@@ -13299,7 +13299,7 @@ The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle
 
       * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
-      * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
+      * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
          * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
 
@@ -13326,7 +13326,7 @@ The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}
 
    * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
-   * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}` and :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
+   * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
       * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
 
@@ -13366,7 +13366,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
       * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`x` in :math:`{x^\ast}` and :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
 
       * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is equal to :math:`(\mathsf{sub}~\epsilon~{{x'}^\ast}~{\mathit{comptype}'})`.
 
@@ -13392,7 +13392,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
    * :math:`{|{{\mathit{comptype}'}^\ast}|}` is equal to :math:`{|{{{\mathit{typeuse}'}^\ast}^\ast}|}`.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
 
       * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is equal to :math:`(\mathsf{sub}~\epsilon~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
@@ -13621,7 +13621,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
       * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * For all :math:`t` in :math:`{t^\ast}` and :math:`x` in :math:`{x^\ast}`:
+   * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
 
       * The local type :math:`C{.}\mathsf{locals}{}[x]` is equal to :math:`(\mathsf{set}~t)`.
 
@@ -15203,7 +15203,7 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
 
          * The local type :math:`C{.}\mathsf{locals}{}[x_1]` exists.
 
-      * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`:
+      * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}`, and corresponding :math:`t` in :math:`{t^\ast}`, and corresponding :math:`x_1` in :math:`{x_1^\ast}`:
 
          * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
@@ -15250,7 +15250,7 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
       * The local type :math:`C{.}\mathsf{locals}{}[x_1]` exists.
 
-   * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}` and :math:`t` in :math:`{t^\ast}` and :math:`x_1` in :math:`{x_1^\ast}`:
+   * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}`, and corresponding :math:`t` in :math:`{t^\ast}`, and corresponding :math:`x_1` in :math:`{x_1^\ast}`:
 
       * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is equal to :math:`({\mathit{init}}~t)`.
 
@@ -15502,7 +15502,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
    * :math:`{|{{{\mathit{lt}}}^\ast}|}` is equal to :math:`{|{{\mathit{local}}^\ast}|}`.
 
-   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}` and :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`:
+   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`:
 
       * The local :math:`{\mathit{local}}` is :ref:`valid <valid-val>` with the local type :math:`{{\mathit{lt}}}`.
 
@@ -15893,7 +15893,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{import}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`.
 
-   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
+   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
@@ -15901,37 +15901,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{table}}^\ast}|}` is equal to :math:`{|{{\mathit{tt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}` and :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
+   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * :math:`{|{{\mathit{mem}}^\ast}|}` is equal to :math:`{|{{\mathit{mt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
+   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
    * :math:`{|{{\mathit{jt}}^\ast}|}` is equal to :math:`{|{{\mathit{tag}}^\ast}|}`.
 
-   * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
+   * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}`, and corresponding :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
 
       * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{jt}}`.
 
    * :math:`{|{{\mathit{dt}}^\ast}|}` is equal to :math:`{|{{\mathit{func}}^\ast}|}`.
 
-   * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
+   * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}}`.
 
    * :math:`{|{{\mathit{elem}}^\ast}|}` is equal to :math:`{|{{\mathit{rt}}^\ast}|}`.
 
-   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}` and :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
+   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
       * The element segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
    * :math:`{|{{\mathit{data}}^\ast}|}` is equal to :math:`{|{{\mathit{ok}}^\ast}|}`.
 
-   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}` and :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
+   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, and corresponding :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
       * The data segment :math:`{\mathit{data}}` is valid.
 
@@ -15943,7 +15943,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{|{{\mathit{export}}^\ast}|}` is equal to :math:`{|{{\mathit{xt}}_{\mathsf{e}}^\ast}|}`.
 
-   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}` and :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`:
+   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`:
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
@@ -24604,7 +24604,7 @@ Instrtype_ok
   - |lct*| is |x*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
-  - For all lct in lct* and x in x*:
+  - For all lct in lct*, and corresponding x in x*:
     - C.LOCALS[x] is lct.
 
 Packtype_ok
@@ -24922,7 +24922,7 @@ Fieldtype_sub/var
 Resulttype_sub
 - the result type t_1* matches the result type t_2* if:
   - |t_1*| is |t_2*|.
-  - For all t_1 in t_1* and t_2 in t_2*:
+  - For all t_1 in t_1*, and corresponding t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
 Functype_sub
@@ -24936,7 +24936,7 @@ Comptype_sub
     - comptype_u1 is (STRUCT yt_1* :: [yt'_1]).
     - comptype_u2 is (STRUCT yt_2*).
     - |yt_1*| is |yt_2*|.
-    - For all yt_1 in yt_1* and yt_2 in yt_2*:
+    - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
       - the field type yt_1 matches the field type yt_2.
   - Or:
     - comptype_u1 is (ARRAY yt_1).
@@ -24950,7 +24950,7 @@ Comptype_sub
 Comptype_sub/struct
 - the composite type (STRUCT yt_1* :: [yt'_1]) matches the composite type (STRUCT yt_2*) if:
   - |yt_1*| is |yt_2*|.
-  - For all yt_1 in yt_1* and yt_2 in yt_2*:
+  - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
     - the field type yt_1 matches the field type yt_2.
 
 Comptype_sub/array
@@ -24970,7 +24970,7 @@ Subtype_ok
   - |comptype'*| is |x'**|.
   - For all x in x*:
     - the defined type C.TYPES[x] exists.
-  - For all comptype' in comptype'* and x in x* and x'* in x'**:
+  - For all comptype' in comptype'*, and corresponding x in x*, and corresponding x'* in x'**:
     - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*:
@@ -24983,7 +24983,7 @@ Subtype_ok2
     - $before(typeuse, x, i) is true.
   - |comptype'*| is |typeuse*|.
   - |comptype'*| is |typeuse'**|.
-  - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**:
+  - For all comptype' in comptype'*, and corresponding typeuse in typeuse*, and corresponding typeuse'* in typeuse'**:
     - the sub type $unrollht(C, typeuse) is (SUB ?() typeuse'* comptype').
   - the composite type comptype is valid.
   - For all comptype' in comptype'*:
@@ -25100,7 +25100,7 @@ Instrtype_sub
   - |t*| is |x*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
-  - For all t in t* and x in x*:
+  - For all t in t*, and corresponding x in x*:
     - C.LOCALS[x] is (SET t).
 
 Limits_sub
@@ -25909,7 +25909,7 @@ Instrs_ok
     - |init*| is |x_1*|.
     - For all x_1 in x_1*:
       - the local type C.LOCALS[x_1] exists.
-    - For all init in init* and t in t* and x_1 in x_1*:
+    - For all init in init*, and corresponding t in t*, and corresponding x_1 in x_1*:
       - C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
@@ -25934,7 +25934,7 @@ Instrs_ok/seq
   - |init*| is |x_1*|.
   - For all x_1 in x_1*:
     - the local type C.LOCALS[x_1] exists.
-  - For all init in init* and t in t* and x_1 in x_1*:
+  - For all init in init*, and corresponding t in t*, and corresponding x_1 in x_1*:
     - C.LOCALS[x_1] is (init t).
   - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
 
@@ -26072,7 +26072,7 @@ Func_ok
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
   - |lct*| is |local*|.
-  - For all lct in lct* and local in local*:
+  - For all lct in lct*, and corresponding local in local*:
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
@@ -26272,32 +26272,32 @@ Module_ok
 - the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type t if:
   - Under the context { RETURN: ?() }, the type definition sequence type* is valid with the defined type sequence dt'*.
   - |import*| is |xt_I*|.
-  - For all import in import* and xt_I in xt_I*:
+  - For all import in import*, and corresponding xt_I in xt_I*:
     - Under the context { TYPES: dt'*; RETURN: ?() }, the import import is valid with the external type xt_I.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
   - |table*| is |tt*|.
-  - For all table in table* and tt in tt*:
+  - For all table in table*, and corresponding tt in tt*:
     - Under the context C', the table table is valid with the table type tt.
   - |mem*| is |mt*|.
-  - For all mem in mem* and mt in mt*:
+  - For all mem in mem*, and corresponding mt in mt*:
     - Under the context C', the memory mem is valid with the memory type mt.
   - |jt*| is |tag*|.
-  - For all jt in jt* and tag in tag*:
+  - For all jt in jt*, and corresponding tag in tag*:
     - Under the context C', the tag tag is valid with the tag type jt.
   - |dt*| is |func*|.
-  - For all dt in dt* and func in func*:
+  - For all dt in dt*, and corresponding func in func*:
     - the function func is valid with the defined type dt.
   - |elem*| is |rt*|.
-  - For all elem in elem* and rt in rt*:
+  - For all elem in elem*, and corresponding rt in rt*:
     - the element segment elem is valid with the element type rt.
   - |data*| is |ok*|.
-  - For all data in data* and ok in ok*:
+  - For all data in data*, and corresponding ok in ok*:
     - the data segment data is valid.
   - If start is defined, then:
     - the start function start is valid.
   - |export*| is |nm*|.
   - |export*| is |xt_E*|.
-  - For all export in export* and nm in nm* and xt_E in xt_E*:
+  - For all export in export*, and corresponding nm in nm*, and corresponding xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(name, nm*) is true.
   - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.

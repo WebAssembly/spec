@@ -858,7 +858,7 @@ and render_stmt env depth stmt =
         (render_block sl)
     | ForallS (iters, is) ->
       let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
-      let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
+      let render_iters env iters = List.map (render_iter env) iters |> String.concat ", and corresponding " in
       sprintf "for all %s:%s"
         (render_iters env iters)
         (render_block is)

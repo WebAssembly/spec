@@ -450,7 +450,7 @@ and raw_string_of_stmt stmt =
   | ForallS (iters, ss) ->
     let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
     sprintf "For all %s:%s"
-      (string_of_list string_of_iter "" " and " "" iters)
+      (string_of_list string_of_iter "" ", and corresponding " "" iters)
       (string_of_block ss)
   | EitherS sss ->
     string_of_list string_of_block "Either:" ("\n" ^ indent () ^ "Or:") "" sss
