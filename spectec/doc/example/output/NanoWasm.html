@@ -75,7 +75,7 @@ The remaining instructions access local and global variables.</p>
 \end{array}\end{split}\]</div>
 <section id="mathsf-nop">
 <h3><span class="math notranslate nohighlight">\(\mathsf{nop}\)</span><a class="headerlink" href="#mathsf-nop" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\(\mathsf{nop}\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~\epsilon\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\mathsf{nop}\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~\epsilon\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
@@ -87,7 +87,7 @@ C \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
 </section>
 <section id="mathsf-drop">
 <h3><span class="math notranslate nohighlight">\(\mathsf{drop}\)</span><a class="headerlink" href="#mathsf-drop" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\(\mathsf{drop}\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\mathsf{drop}\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
@@ -99,7 +99,7 @@ C \vdash \mathsf{drop} : t \rightarrow \epsilon
 </section>
 <section id="mathsf-select">
 <h3><span class="math notranslate nohighlight">\(\mathsf{select}\)</span><a class="headerlink" href="#mathsf-select" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\(\mathsf{select}\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\mathsf{select}\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
@@ -111,7 +111,7 @@ C \vdash \mathsf{select} : t~t~\mathsf{i{\scriptstyle 32}} \rightarrow t
 </section>
 <section id="mathsf-const">
 <span id="valid-val"></span><h3><span class="math notranslate nohighlight">\(\mathsf{const}\)</span><a class="headerlink" href="#mathsf-const" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\((t{.}\mathsf{const}~c)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span>.</p>
+<p><span class="math notranslate nohighlight">\((t{.}\mathsf{const}~c)\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
@@ -123,7 +123,7 @@ C \vdash t{.}\mathsf{const}~c : \epsilon \rightarrow t
 </section>
 <section id="mathsf-local-get">
 <h3><span class="math notranslate nohighlight">\(\mathsf{local{.}get}\)</span><a class="headerlink" href="#mathsf-local-get" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\((\mathsf{local{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span> if:</p>
+<p><span class="math notranslate nohighlight">\((\mathsf{local{.}get}~x)\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span> if:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{locals}{}[x]\)</span> exists.</p></li>
@@ -142,7 +142,7 @@ C \vdash \mathsf{local{.}get}~x : \epsilon \rightarrow t
 </section>
 <section id="mathsf-local-set">
 <h3><span class="math notranslate nohighlight">\(\mathsf{local{.}set}\)</span><a class="headerlink" href="#mathsf-local-set" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\((\mathsf{local{.}set}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
+<p><span class="math notranslate nohighlight">\((\mathsf{local{.}set}~x)\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{locals}{}[x]\)</span> exists.</p></li>
@@ -161,7 +161,7 @@ C \vdash \mathsf{local{.}set}~x : t \rightarrow \epsilon
 </section>
 <section id="mathsf-global-get">
 <h3><span class="math notranslate nohighlight">\(\mathsf{global{.}get}\)</span><a class="headerlink" href="#mathsf-global-get" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span> if:</p>
+<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span> if:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> exists.</p></li>
@@ -180,7 +180,7 @@ C \vdash \mathsf{global{.}get}~x : \epsilon \rightarrow t
 </section>
 <section id="mathsf-global-set">
 <h3><span class="math notranslate nohighlight">\(\mathsf{global{.}set}\)</span><a class="headerlink" href="#mathsf-global-set" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
+<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="output/NanoWasm.html#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> exists.</p></li>
@@ -251,7 +251,7 @@ C \vdash \mathsf{global{.}get}~x : t \rightarrow \epsilon
 <section id="id3">
 <h3><span class="math notranslate nohighlight">\(\mathsf{select}\)</span><a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Assert: Due to validation, a <a class="reference internal" href="#syntax-i32"><span class="std std-ref">value type</span></a> is on the top of the stack.</p></li>
+<li><p>Assert: Due to validation, a <a class="reference internal" href="output/NanoWasm.html#syntax-i32"><span class="std std-ref">value type</span></a> is on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\((\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)\)</span> from the stack.</p></li>
 <li><p>Assert: Due to validation, a value is on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\({\mathit{val}}_2\)</span> from the stack.</p></li>

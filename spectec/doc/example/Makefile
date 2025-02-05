@@ -13,6 +13,7 @@ all:
 	@echo "make html     (run SpecTec + Sphinx)"
 	@echo "make latex    (run SpecTec + Sphinx)"
 	@echo "make pdf      (run SpecTec + Sphinx + Latex)"
+	@echo "make out      (run everything and update output directory)"
 	@echo "make spectec  (build updir SpecTec)"
 
 
@@ -56,6 +57,12 @@ pdf: $(PDFFILE)
 
 $(PDFFILE): $(TEXFILE)
 	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf
+
+
+# Copying to output directory
+
+out: $(PDFFILE) $(HTMLFILE)
+	cp -rf $^ output
 
 
 # Clean-up
