@@ -620,4 +620,4 @@ then their formulas are laid out to align.
 **Note:**
 A complete version of the example with a Makefile for running Sphinx and producing both HTML and PDF from it can be found in the [example](example/) directory).
 The generated `.rst` file with can be seen [here](example/output/NanoWasm.rst),
-as well as the final output in [HTML](example/output/NanoWasm.html) or [PDF](example/output/NanoWasm.pdf) format.
+as well as the final output in [HTML](https:///example/output/NanoWasm.html) or [PDF](https:///example/output/NanoWasm.pdf) format.
