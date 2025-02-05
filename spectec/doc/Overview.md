@@ -123,7 +123,7 @@ some of which have additional parameters representing the instruction's "immedia
 They are defined by giving their SpecTec syntax type.
 
 These definitions closely reflect the abstract syntax given in Section 2 of the Wasm spec.
-And indeed, the Latex backend can generate that exact style definitions from it,
+And indeed, the Latex backend can generate that exact style of definitions from it,
 as we will see later.
 
 The `show` hint in the definition of the CONST instruction customises how this particular case is rendered in Latex to match the concrete instruction syntax;
@@ -203,7 +203,7 @@ The notation of a rule's body has to match the notation declared for the relatio
 
 The rule for `NOP` specifies that both input and output types of the instruction are empty
 — `eps` is a SpecTec keyword representing the empty sequence
-(rendered later as `ε`).
+(short for "epsilon" and rendered later as `ε`).
 
 The `DROP` instruction consumes a single value of arbitrary type.
 It is arbitrary because the meta-variable `t` is unrestricted by the rule,
@@ -270,7 +270,8 @@ with a semicolon as a symbolic atom separating their two components.
 
 We also define *values* as a syntactic subset of instructions,
 which are the ones that cannot be reduced any further:
-SpecTec automatically recognises that the type `val` defines a subtype of `instr`.
+SpecTec automatically recognises that the type `val` defines a subtype of `instr`
+because it contains a subset of its cases.
 Hence, values can be used in place of instructions,
 which we make use of below.
 
@@ -323,7 +324,7 @@ rule Step/pure:
     -- Step_pure: instr* ~> instr'*
 ```
 This rule expresses that a configuration can take step if it can take a pure step according to the second relation,
-whihc results in the state `z` remaining unchanged.
+which results in the state `z` remaining unchanged.
 The line starting with `--` is another premise,
 but unlike the Boolean side conditions we saw above,
 it inductively invokes another relation,
@@ -354,7 +355,8 @@ By naming the meta-variable for the preceding instruction `val`,
 it is constrained to be of type `val`,
 hence it only matches values.
 
-`SELECT` is defined by two cases with different side conditions inspecting the selector value `c`.
+`SELECT` is defined by two cases with different side conditions inspecting the selector value `c`;
+where `=/=` expresses inequality.
 The side condition `otherwise` is a short-hand negating all premises for all previous rules with a left-hand side of the same shape.
 In this case, it amounts to the condition `if c = 0`.
 The `SELECT` instruction pops two values from the stack,
@@ -431,7 +433,7 @@ followed by a sequence of value types of that length.
 (The definition of `Bu32` is a bit more involved
 so let us defer it for a moment.)
 Each value type in the sequence `Bvaltype^n` is bound to a `t`,
-and because `t` appears insider the iteration `^n`,
+and because `t` appears inside the iteration `^n`,
 we end up with a sequence of `t^n` value types that is ultimately produced by this grammar.
 
 Getting to instructions,
@@ -542,7 +544,7 @@ $${syntax: const instr}
 The instruction ${:NOP} does nothing,
 ${:DROP} removes an operand from the stack,
 ${:SELECT} picks one of two operands depending on a condition value.
-The instruction ${instr: CONST t c} pushed the constant ${:c} to the stack.
+The instruction ${instr: CONST t c} pushes the constant ${:c} to the stack.
 The remaining instructions access local and global variables.
 
 Validation
