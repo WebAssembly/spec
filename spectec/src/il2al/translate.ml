@@ -949,10 +949,11 @@ let get_config_return_instrs name idset exp at =
       (sprintf "Helper function that returns config requires hardcoding: %s" name)
 
 let translate_helper_body name clause =
-  let Il.DefD (_, _, exp, prems) = clause.it in
+  let Il.DefD (_, as_, exp, prems) = clause.it in
   let return_instrs =
     if is_config exp then
-      get_config_return_instrs name (Il.Free.free_clause clause).varid exp clause.at
+      let idset = Il.Free.(union (free_clause clause) (free_list free_arg as_)).varid in
+      get_config_return_instrs name idset exp clause.at
     else
       [ returnI (Some (translate_exp exp)) ~at:exp.at ]
   in

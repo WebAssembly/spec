@@ -200,7 +200,21 @@ let get_var_set_in_algo (algo: Al.Ast.algorithm) : Al.Free.IdSet.t =
     (get_vars_in_list get_vars_in_arg (params_of_algo algo))
     (get_vars_in_list get_vars_in_instr (body_of_algo algo))
 
-(* NOTE: It omits the iter postfix *)
+let rec remove_dimension (var: string) : string =
+  if
+    String.ends_with ~suffix:"*" var ||
+    String.ends_with ~suffix:"+" var ||
+    String.ends_with ~suffix:"?" var
+  then
+    String.length var - 1
+    |> String.sub var 0
+    |> remove_dimension
+  else if String.contains var '^' then
+    String.rindex var '^'
+    |> String.sub var 0
+    |> remove_dimension
+  else var
+
 let introduce_fresh_variable
     ?(prefix: string option)
     (idset: Al.Free.IdSet.t)
@@ -209,29 +223,19 @@ let introduce_fresh_variable
 
   let open Al.Free in
 
-  let prefix, postfix =
-    let rec get_fixs typ' =
+  let prefix =
+    let rec get_prefix typ' =
       match typ'.it with
-      | IterT (inner_typ, iter) ->
-        let prefix', postfix' = get_fixs inner_typ in
-        prefix', postfix' ^ Il.Print.string_of_iter iter
-      | _ ->
-        Option.value prefix ~default:(typ_to_var_name typ'), "" in
-    get_fixs typ in
+      | IterT (inner_typ, _) -> get_prefix inner_typ
+      | _ -> Option.value prefix ~default:(typ_to_var_name typ') in
+    get_prefix typ in
 
-  (* NOTE: Optimize idset *)
-  let idset = IdSet.filter (fun id -> String.starts_with ~prefix id) idset in
+  let idset =
+    idset
+    |> IdSet.filter (String.starts_with ~prefix)
+    |> IdSet.map remove_dimension in
 
-  if not (IdSet.mem (prefix^postfix) idset) then prefix
-  else
-    let get_nth_var (n: int) =
-      Printf.sprintf "%s_%s%s" prefix (string_of_int n) postfix in
+  let rec get_fresh_variable (var: string) : string =
+    if IdSet.mem var idset then get_fresh_variable (var^"'") else var in
 
-    let n =
-      let rec find_n (n: int) : int =
-        if IdSet.mem (get_nth_var n) idset then find_n (n+1) else n
-      in
-      find_n 0
-    in
-
-    Printf.sprintf "%s_%s" prefix (string_of_int n)
+  get_fresh_variable prefix

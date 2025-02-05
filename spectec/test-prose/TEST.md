@@ -2802,11 +2802,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
 
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+#. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
-#. Return :math:`{{\mathit{val}}^{k}}`.
+#. Return :math:`{{\mathit{val}'}^{k}}`.
 
 
 :math:`\mathsf{eval\_expr}~{{\mathit{instr}}^\ast}`
@@ -4181,9 +4181,9 @@ invoke s fa val^n
 6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
-9. Pop the values val^k from the stack.
+9. Pop the values val'^k from the stack.
 10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-11. Return val^k.
+11. Return val'^k.
 
 Eval_expr instr*
 1. Execute the sequence instr*.
@@ -9757,11 +9757,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
 
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+#. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
-#. Return :math:`{{\mathit{val}}^{k}}`.
+#. Return :math:`{{\mathit{val}'}^{k}}`.
 
 
 :math:`\mathsf{eval\_expr}~{{\mathit{instr}}^\ast}`
@@ -12495,9 +12495,9 @@ invoke s fa val^n
 6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
-9. Pop the values val^k from the stack.
+9. Pop the values val'^k from the stack.
 10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-11. Return val^k.
+11. Return val'^k.
 
 Eval_expr instr*
 1. Execute the sequence instr*.
@@ -24467,11 +24467,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the instruction :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
 
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+#. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
 #. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
 
-#. Return :math:`{{\mathit{val}}^{k}}`.
+#. Return :math:`{{\mathit{val}'}^{k}}`.
 
 
 :math:`{{{\mathrm{allocX}}^\ast}}{(s, {X_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}, {Y_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
@@ -30332,9 +30332,9 @@ invoke s funcaddr val*
 8. Push the values val* to the stack.
 9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
 10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-11. Pop the values val^k from the stack.
+11. Pop the values val'^k from the stack.
 12. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
-13. Return val^k.
+13. Return val'^k.
 
 allocXs X Y s X_u1* Y_u1*
 1. If (X_u1* = []), then:
