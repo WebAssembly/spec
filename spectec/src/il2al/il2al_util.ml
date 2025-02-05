@@ -8,12 +8,15 @@ let error at msg = Error.error at "prose translation" msg
 
 (* Helpers *)
 let apply_if c f x = if c then f x else x
-let compose_list f g x = f x |> List.map g |> List.flatten
+let compose g f x = g (f x)
+let compose_list g f x = f x |> List.map g |> List.flatten
 let lift f x = [f x]
 
 let (-->) = apply_if
-let (<<) = Fun.compose
+let (<<) = compose
+let (>>) f g = g << f
 let (<<@) = compose_list
+let (>>@) f g = g <<@ f
 
 (* TODO: combine this with Env *)
 let hintdefs : hintdef list ref = ref []

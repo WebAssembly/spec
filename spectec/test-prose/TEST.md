@@ -23850,15 +23850,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~i~..~j~]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be :math:`{\mathit{tableinst}}`.
 
-#. If :math:`{|{{r'}^\ast}|} + n \leq j`, then:
+#. If :math:`{|{{r'}^\ast}|} + n > j`, then:
 
-   a. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
+   a. Fail.
 
-   #. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~{i'}~..~j~]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+#. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-   #. Return :math:`{\mathit{tableinst}'}`.
+#. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~{i'}~..~j~]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
-#. Fail.
+#. Return :math:`{\mathit{tableinst}'}`.
 
 
 :math:`{\mathrm{growmem}}({\mathit{meminst}}, n)`
@@ -23867,15 +23867,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~i~..~j~]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be :math:`{\mathit{meminst}}`.
 
-#. If :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n \leq j`, then:
+#. If :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n > j`, then:
 
-   a. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
+   a. Fail.
 
-   #. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~{i'}~..~j~]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+#. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
-   #. Return :math:`{\mathit{meminst}'}`.
+#. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[~{i'}~..~j~]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
-#. Fail.
+#. Return :math:`{\mathit{meminst}'}`.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
@@ -30044,19 +30044,19 @@ add_exninst (s, f) exn*
 
 growtable tableinst n r
 1. Let { TYPE: (at ([ i .. j ]) rt); REFS: r'* } be tableinst.
-2. If ((|r'*| + n) <= j), then:
-  a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: (at ([ i' .. j ]) rt); REFS: r'* :: r^n }.
-  c. Return tableinst'.
-3. Fail.
+2. If ((|r'*| + n) > j), then:
+  a. Fail.
+3. Let i' be (|r'*| + n).
+4. Let tableinst' be { TYPE: (at ([ i' .. j ]) rt); REFS: r'* :: r^n }.
+5. Return tableinst'.
 
 growmem meminst n
 1. Let { TYPE: at ([ i .. j ]) PAGE; BYTES: b* } be meminst.
-2. If (((|b*| / (64 * $Ki())) + n) <= j), then:
-  a. Let i' be ((|b*| / (64 * $Ki())) + n).
-  b. Let meminst' be { TYPE: at ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
-  c. Return meminst'.
-3. Fail.
+2. If (((|b*| / (64 * $Ki())) + n) > j), then:
+  a. Fail.
+3. Let i' be ((|b*| / (64 * $Ki())) + n).
+4. Let meminst' be { TYPE: at ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
+5. Return meminst'.
 
 blocktype_ z bt_u1
 1. If bt_u1 is _IDX, then:

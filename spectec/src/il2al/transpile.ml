@@ -540,11 +540,11 @@ let rec enhance_readability instrs =
   in
   let post_instr =
     unify_if_head
-    <<@ unify_if_tail
-    <<@ early_return
-    <<@ (lift swap_if)
-    <<@ (lift merge_three_branches)
-    <<@ remove_trivial_case_check
+    >>@ unify_if_tail
+    >>@ lift swap_if
+    >>@ early_return
+    >>@ lift merge_three_branches
+    >>@ remove_trivial_case_check
   in
   let walk_instr walker instr = 
     let instr1 = Al.Walk.base_walker.walk_instr walker instr in
@@ -1119,7 +1119,7 @@ let remove_enter algo =
         let body = List.concat_map (walker.walk_instr walker) body in
         FuncA (name, params, body)
     | RuleA (name, anchor, params, body) ->
-        let pre_instr = enter_frame_to_push <<@ (lift enter_label_to_push) <<@ enter_handler_to_push in
+        let pre_instr = enter_frame_to_push >>@ (lift enter_label_to_push) >>@ enter_handler_to_push in
         let walk_instr walker instr = 
           let instr1 = pre_instr instr in
           List.concat_map (Al.Walk.base_walker.walk_instr walker) instr1
