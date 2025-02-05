@@ -354,8 +354,8 @@ By naming the meta-variable for the preceding instruction `val`,
 it is constrained to be of type `val`,
 hence it only matches values.
 
-`SELECT` is defined by two cases with different side conditions inspecting the selector value `c`.
-`=/=` is a built-in operator expressing inequality of natural numbers.
+`SELECT` is defined by two cases with different side conditions inspecting the selector value `c`;
+where `=/=` expresses inequality.
 The side condition `otherwise` is a short-hand negating all premises for all previous rules with a left-hand side of the same shape.
 In this case, it amounts to the condition `if c = 0`.
 The `SELECT` instruction pops two values from the stack,
