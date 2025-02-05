@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>NanoWasm &#8212; NanoWasm  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="nanowasm">
+<h1>NanoWasm<a class="headerlink" href="#nanowasm" title="Link to this heading">¶</a></h1>
+<p><em>NanoWasm</em> is a small language with simple types and instructions.</p>
+<section id="abstract-syntax">
+<h2>Abstract Syntax<a class="headerlink" href="#abstract-syntax" title="Link to this heading">¶</a></h2>
+<p>The <em>abstract syntax</em> of types is as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
+&amp; {\mathit{mut}} &amp; ::= &amp; \mathsf{mut} \\[0.8ex]
+&amp; {\mathit{valtype}} &amp; ::= &amp; \mathsf{i{\scriptstyle 32}} ~|~ \mathsf{i{\scriptstyle 64}} ~|~ \mathsf{f{\scriptstyle 32}} ~|~ \mathsf{f{\scriptstyle 64}} \\[0.8ex]
+&amp; {\mathit{functype}} &amp; ::= &amp; {{\mathit{valtype}}^\ast} \rightarrow {{\mathit{valtype}}^\ast} \\[0.8ex]
+&amp; {\mathit{globaltype}} &amp; ::= &amp; {{\mathit{mut}}^?}~{\mathit{valtype}} \\
+\end{array}\end{split}\]</div>
+<p>Instructions take the following form:</p>
+<div class="math notranslate nohighlight" id="syntax-i32">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
+&amp; {\mathit{const}} &amp; ::= &amp; 0 ~|~ 1 ~|~ 2 ~|~ \dots \\[0.8ex]
+&amp; {\mathit{instr}} &amp; ::= &amp; \mathsf{nop} \\
+&amp; &amp; | &amp; \mathsf{drop} \\
+&amp; &amp; | &amp; \mathsf{select} \\
+&amp; &amp; | &amp; {\mathit{valtype}}{.}\mathsf{const}~{\mathit{const}} \\
+&amp; &amp; | &amp; \mathsf{local{.}get}~{\mathit{localidx}} \\
+&amp; &amp; | &amp; \mathsf{local{.}set}~{\mathit{localidx}} \\
+&amp; &amp; | &amp; \mathsf{global{.}get}~{\mathit{globalidx}} \\
+&amp; &amp; | &amp; \mathsf{global{.}set}~{\mathit{globalidx}} \\
+\end{array}\end{split}\]</div>
+<p>The instruction <span class="math notranslate nohighlight">\(\mathsf{nop}\)</span> does nothing,
+<span class="math notranslate nohighlight">\(\mathsf{drop}\)</span> removes an operand from the stack,
+<span class="math notranslate nohighlight">\(\mathsf{select}\)</span> picks one of two operands depending on a condition value.
+The instruction <span class="math notranslate nohighlight">\(t{.}\mathsf{const}~c\)</span> pushed the constant <span class="math notranslate nohighlight">\(c\)</span> to the stack.
+The remaining instructions access local and global variables.</p>
+</section>
+<section id="validation">
+<h2>Validation<a class="headerlink" href="#validation" title="Link to this heading">¶</a></h2>
+<p>NanoWasm instructions are <em>type-checked</em> under a context that assigns types to indices:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
+&amp; {\mathit{context}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
+\mathsf{globals}~{{\mathit{globaltype}}^\ast} ,  \mathsf{locals}~{{\mathit{valtype}}^\ast} \} \\
+\end{array} \\
+\end{array}\end{split}\]</div>
+<section id="mathsf-nop">
+<h3><span class="math notranslate nohighlight">\(\mathsf{nop}\)</span><a class="headerlink" href="#mathsf-nop" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\mathsf{nop}\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~\epsilon\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+}{
+C \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-drop">
+<h3><span class="math notranslate nohighlight">\(\mathsf{drop}\)</span><a class="headerlink" href="#mathsf-drop" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\mathsf{drop}\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+}{
+C \vdash \mathsf{drop} : t \rightarrow \epsilon
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-select">
+<h3><span class="math notranslate nohighlight">\(\mathsf{select}\)</span><a class="headerlink" href="#mathsf-select" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\mathsf{select}\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+}{
+C \vdash \mathsf{select} : t~t~\mathsf{i{\scriptstyle 32}} \rightarrow t
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-const">
+<span id="valid-val"></span><h3><span class="math notranslate nohighlight">\(\mathsf{const}\)</span><a class="headerlink" href="#mathsf-const" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\((t{.}\mathsf{const}~c)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+}{
+C \vdash t{.}\mathsf{const}~c : \epsilon \rightarrow t
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-local-get">
+<h3><span class="math notranslate nohighlight">\(\mathsf{local{.}get}\)</span><a class="headerlink" href="#mathsf-local-get" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\((\mathsf{local{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span> if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{locals}{}[x]\)</span> exists.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{locals}{}[x]\)</span> is equal to <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C{.}\mathsf{locals}{}[x] = t
+}{
+C \vdash \mathsf{local{.}get}~x : \epsilon \rightarrow t
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-local-set">
+<h3><span class="math notranslate nohighlight">\(\mathsf{local{.}set}\)</span><a class="headerlink" href="#mathsf-local-set" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\((\mathsf{local{.}set}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{locals}{}[x]\)</span> exists.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{locals}{}[x]\)</span> is equal to <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C{.}\mathsf{locals}{}[x] = t
+}{
+C \vdash \mathsf{local{.}set}~x : t \rightarrow \epsilon
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-global-get">
+<h3><span class="math notranslate nohighlight">\(\mathsf{global{.}get}\)</span><a class="headerlink" href="#mathsf-global-get" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(\epsilon~\rightarrow~t\)</span> if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> exists.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> is equal to <span class="math notranslate nohighlight">\(({\mathsf{mut}^?}~t)\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C{.}\mathsf{globals}{}[x] = {\mathsf{mut}^?}~t
+}{
+C \vdash \mathsf{global{.}get}~x : \epsilon \rightarrow t
+}
+\qquad
+\end{array}\]</div>
+</section>
+<section id="mathsf-global-set">
+<h3><span class="math notranslate nohighlight">\(\mathsf{global{.}set}\)</span><a class="headerlink" href="#mathsf-global-set" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> exists.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> is equal to <span class="math notranslate nohighlight">\((\mathsf{mut}~t)\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C{.}\mathsf{globals}{}[x] = \mathsf{mut}~t
+}{
+C \vdash \mathsf{global{.}get}~x : t \rightarrow \epsilon
+}
+\qquad
+\end{array}\]</div>
+</section>
+</section>
+<section id="execution">
+<h2>Execution<a class="headerlink" href="#execution" title="Link to this heading">¶</a></h2>
+<p>NanoWasm execution requires a suitable definition of state and configuration:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
+&amp; {\mathit{addr}} &amp; ::= &amp; 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
+&amp; {\mathit{moduleinst}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
+\mathsf{globals}~{{\mathit{addr}}^\ast} \} \\
+\end{array} \\[0.8ex]
+&amp; {\mathit{val}} &amp; ::= &amp; \mathsf{const}~{\mathit{valtype}}~{\mathit{const}} \\[0.8ex]
+&amp; {\mathit{store}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
+\mathsf{globals}~{{\mathit{val}}^\ast} \} \\
+\end{array} \\
+&amp; {\mathit{frame}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
+\mathsf{locals}~{{\mathit{val}}^\ast} ,  \mathsf{module}~{\mathit{moduleinst}} \} \\
+\end{array} \\
+&amp; {\mathit{state}} &amp; ::= &amp; {\mathit{store}} ; {\mathit{frame}} \\
+&amp; {\mathit{config}} &amp; ::= &amp; {\mathit{state}} ; {{\mathit{instr}}^\ast} \\
+\end{array}\end{split}\]</div>
+<p>We define the following auxiliary functions for accessing and updating the state:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
+{\mathrm{local}}((s ; f), x) &amp; = &amp; f{.}\mathsf{locals}{}[x] \\
+{\mathrm{global}}((s ; f), x) &amp; = &amp; s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]] \\[0.8ex]
+{\mathrm{update}}_{\mathit{local}}((s ; f), x, v) &amp; = &amp; s ; f{}[{.}\mathsf{locals}{}[x] = v] \\
+{\mathrm{update}}_{\mathit{global}}((s ; f), x, v) &amp; = &amp; s{}[{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]] = v] ; f \\
+\end{array}\end{split}\]</div>
+<p>With that, execution is defined as follows:</p>
+<section id="id1">
+<h3><span class="math notranslate nohighlight">\(\mathsf{nop}\)</span><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Do nothing.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; \mathsf{nop} &amp; \hookrightarrow &amp; \epsilon \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="id2">
+<h3><span class="math notranslate nohighlight">\(\mathsf{drop}\)</span><a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Assert: Due to validation, a value is on the top of the stack.</p></li>
+<li><p>Pop the value <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> from the stack.</p></li>
+<li><p>Do nothing.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; {\mathit{val}}~\mathsf{drop} &amp; \hookrightarrow &amp; \epsilon \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="id3">
+<h3><span class="math notranslate nohighlight">\(\mathsf{select}\)</span><a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Assert: Due to validation, a <a class="reference internal" href="#syntax-i32"><span class="std std-ref">value type</span></a> is on the top of the stack.</p></li>
+<li><p>Pop the value <span class="math notranslate nohighlight">\((\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)\)</span> from the stack.</p></li>
+<li><p>Assert: Due to validation, a value is on the top of the stack.</p></li>
+<li><p>Pop the value <span class="math notranslate nohighlight">\({\mathit{val}}_2\)</span> from the stack.</p></li>
+<li><p>Assert: Due to validation, a value is on the top of the stack.</p></li>
+<li><p>Pop the value <span class="math notranslate nohighlight">\({\mathit{val}}_1\)</span> from the stack.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(c \neq 0\)</span>, then:</p>
+<ol class="loweralpha simple">
+<li><p>Push the value <span class="math notranslate nohighlight">\({\mathit{val}}_1\)</span> to the stack.</p></li>
+</ol>
+</li>
+<li><p>Else:</p>
+<ol class="loweralpha simple">
+<li><p>Push the value <span class="math notranslate nohighlight">\({\mathit{val}}_2\)</span> to the stack.</p></li>
+</ol>
+</li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; {\mathit{val}}_1~{\mathit{val}}_2~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~\mathsf{select} &amp; \hookrightarrow &amp; {\mathit{val}}_1 &amp; \quad \mbox{if}~ c \neq 0 \\[0.8ex]
+&amp; {\mathit{val}}_1~{\mathit{val}}_2~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~\mathsf{select} &amp; \hookrightarrow &amp; {\mathit{val}}_2 &amp; \quad \mbox{otherwise} \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="mathsf-local-get-x">
+<h3><span class="math notranslate nohighlight">\(\mathsf{local{.}get}~x\)</span><a class="headerlink" href="#mathsf-local-get-x" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Let <span class="math notranslate nohighlight">\(z\)</span> be the current state.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> be <span class="math notranslate nohighlight">\({\mathrm{local}}(z, x)\)</span>.</p></li>
+<li><p>Push the value <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> to the stack.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; z ; (\mathsf{local{.}get}~x) &amp; \hookrightarrow &amp; z ; {\mathit{val}} &amp; \quad \mbox{if}~ {\mathit{val}} = {\mathrm{local}}(z, x) \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="mathsf-local-set-x">
+<h3><span class="math notranslate nohighlight">\(\mathsf{local{.}set}~x\)</span><a class="headerlink" href="#mathsf-local-set-x" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Assert: Due to validation, a value is on the top of the stack.</p></li>
+<li><p>Pop the value <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> from the stack.</p></li>
+<li><p>Do nothing.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; z ; {\mathit{val}}~(\mathsf{local{.}set}~x) &amp; \hookrightarrow &amp; {z'} ; \epsilon &amp; \quad \mbox{if}~ {z'} = {\mathrm{update}}_{\mathit{local}}(z, x, {\mathit{val}}) \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="mathsf-global-get-x">
+<h3><span class="math notranslate nohighlight">\(\mathsf{global{.}get}~x\)</span><a class="headerlink" href="#mathsf-global-get-x" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Let <span class="math notranslate nohighlight">\(z\)</span> be the current state.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> be <span class="math notranslate nohighlight">\({\mathrm{global}}(z, x)\)</span>.</p></li>
+<li><p>Push the value <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> to the stack.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; z ; (\mathsf{global{.}get}~x) &amp; \hookrightarrow &amp; z ; {\mathit{val}} &amp; \quad \mbox{if}~ {\mathit{val}} = {\mathrm{global}}(z, x) \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="mathsf-global-set-x">
+<h3><span class="math notranslate nohighlight">\(\mathsf{global{.}set}~x\)</span><a class="headerlink" href="#mathsf-global-set-x" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Assert: Due to validation, a value is on the top of the stack.</p></li>
+<li><p>Pop the value <span class="math notranslate nohighlight">\({\mathit{val}}\)</span> from the stack.</p></li>
+<li><p>Do nothing.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; z ; {\mathit{val}}~(\mathsf{global{.}set}~x) &amp; \hookrightarrow &amp; {z'} ; \epsilon &amp; \quad \mbox{if}~ {z'} = {\mathrm{update}}_{\mathit{global}}(z, x, {\mathit{val}}) \\
+\end{array}\end{split}\]</div>
+</section>
+</section>
+<section id="binary-format">
+<h2>Binary Format<a class="headerlink" href="#binary-format" title="Link to this heading">¶</a></h2>
+<p>The following grammars define the binary representation of NanoWasm programs.</p>
+<p>First, constants are represented in LEB format:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
+&amp; {\mathtt{byte}} &amp; ::= &amp; b{:}\mathtt{0x00} ~|~ \ldots ~|~ b{:}\mathtt{0xFF} &amp; \quad\Rightarrow\quad{} &amp; b \\[0.8ex]
+&amp; {\mathtt{u}}(N) &amp; ::= &amp; n{:}{\mathtt{byte}} &amp; \quad\Rightarrow\quad{} &amp; n &amp; \quad \mbox{if}~ n &lt; {2^{7}} \land n &lt; {2^{N}} \\
+&amp; &amp; | &amp; n{:}{\mathtt{byte}}~~m{:}{\mathtt{u}}(N - 7) &amp; \quad\Rightarrow\quad{} &amp; {2^{7}} \cdot m + (n - {2^{7}}) &amp; \quad \mbox{if}~ n \geq {2^{7}} \land N &gt; 7 \\[0.8ex]
+&amp; {\mathtt{u32}} &amp; ::= &amp; n{:}{\mathtt{u}}(32) &amp; \quad\Rightarrow\quad{} &amp; n \\
+&amp; {\mathtt{u64}} &amp; ::= &amp; n{:}{\mathtt{u}}(64) &amp; \quad\Rightarrow\quad{} &amp; n \\[0.8ex]
+&amp; {\mathtt{f}}(N) &amp; ::= &amp; {b^\ast}{:}{{\mathtt{byte}}^{N / 8}} &amp; \quad\Rightarrow\quad{} &amp; {\mathrm{float}}(N, {b^\ast}) \\[0.8ex]
+&amp; {\mathtt{f32}} &amp; ::= &amp; p{:}{\mathtt{f}}(32) &amp; \quad\Rightarrow\quad{} &amp; p \\
+&amp; {\mathtt{f64}} &amp; ::= &amp; p{:}{\mathtt{f}}(64) &amp; \quad\Rightarrow\quad{} &amp; p \\
+\end{array}\end{split}\]</div>
+<p>Types are encoded as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
+&amp; {\mathtt{valtype}} &amp; ::= &amp; \mathtt{0x7F} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{i{\scriptstyle 32}} \\
+&amp; &amp; | &amp; \mathtt{0x7E} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{i{\scriptstyle 64}} \\
+&amp; &amp; | &amp; \mathtt{0x7D} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{f{\scriptstyle 32}} \\
+&amp; &amp; | &amp; \mathtt{0x7C} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{f{\scriptstyle 64}} \\[0.8ex]
+&amp; {\mathtt{mut}} &amp; ::= &amp; \mathtt{0x00} &amp; \quad\Rightarrow\quad{} &amp; \epsilon \\
+&amp; &amp; | &amp; \mathtt{0x01} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{mut} \\[0.8ex]
+&amp; {\mathtt{globaltype}} &amp; ::= &amp; t{:}{\mathtt{valtype}}~~{\mathit{mut}}{:}{\mathtt{mut}} &amp; \quad\Rightarrow\quad{} &amp; {\mathit{mut}}~t \\
+&amp; {\mathtt{resulttype}} &amp; ::= &amp; n{:}{\mathtt{u32}}~~{(t{:}{\mathtt{valtype}})^{n}} &amp; \quad\Rightarrow\quad{} &amp; {t^{n}} \\
+&amp; {\mathtt{functype}} &amp; ::= &amp; \mathtt{0x60}~~{t_1^\ast}{:}{\mathtt{resulttype}}~~{t_2^\ast}{:}{\mathtt{resulttype}} &amp; \quad\Rightarrow\quad{} &amp; {t_1^\ast} \rightarrow {t_2^\ast} \\
+\end{array}\end{split}\]</div>
+<p>Finally, instruction opcodes:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
+&amp; {\mathtt{globalidx}} &amp; ::= &amp; x{:}{\mathtt{u32}} &amp; \quad\Rightarrow\quad{} &amp; x \\
+&amp; {\mathtt{localidx}} &amp; ::= &amp; x{:}{\mathtt{u32}} &amp; \quad\Rightarrow\quad{} &amp; x \\[0.8ex]
+&amp; {\mathtt{instr}} &amp; ::= &amp; \mathtt{0x01} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{nop} \\
+&amp; &amp; | &amp; \mathtt{0x1A} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{drop} \\
+&amp; &amp; | &amp; \mathtt{0x1B} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{select} \\
+&amp; &amp; | &amp; \mathtt{0x20}~~x{:}{\mathtt{localidx}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{local{.}get}~x \\
+&amp; &amp; | &amp; \mathtt{0x21}~~x{:}{\mathtt{localidx}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{local{.}set}~x \\
+&amp; &amp; | &amp; \mathtt{0x23}~~x{:}{\mathtt{globalidx}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{global{.}get}~x \\
+&amp; &amp; | &amp; \mathtt{0x24}~~x{:}{\mathtt{globalidx}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{global{.}set}~x \\
+&amp; &amp; | &amp; \mathtt{0x41}~~n{:}{\mathtt{u32}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n \\
+&amp; &amp; | &amp; \mathtt{0x42}~~n{:}{\mathtt{u64}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~n \\
+&amp; &amp; | &amp; \mathtt{0x43}~~p{:}{\mathtt{f32}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~p \\
+&amp; &amp; | &amp; \mathtt{0x44}~~p{:}{\mathtt{f64}} &amp; \quad\Rightarrow\quad{} &amp; \mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~p \\
+\end{array}\end{split}\]</div>
+</section>
+</section>
+
+
+          </div>
+          
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/NanoWasm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
