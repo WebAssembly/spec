@@ -302,7 +302,7 @@ A premise expresses a side condition,
 that is, a constraint on the values of these types.
 ```
 premise ::=
-  var" id ":" typ                                           local variable declaration
+  "var" id ":" typ                                          local variable declaration
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
   relid ":" exp                                             relational premise
