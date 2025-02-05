@@ -37,43 +37,6 @@ let rec is_unified_exp e = match e.it with
   | _ -> false
 let imap : idxs ref = ref Map.empty
 
-let init_var m id t =
-  let typid = Al.Al_util.typ_to_var_name t in
-  let nid = id.it |> Str.global_replace (Str.regexp "[^a-zA-Z]") "" in
-  let len = String.length nid in
-  match Map.find_opt typid m with
-  (* Use the shortest non-empty name. Prioritize typid than others. *)
-  | Some (s, _) when String.length s < len -> m
-  | Some (s, _) when s = typid && String.length s = len -> m
-  | _ when len = 0 -> m
-  | _ -> Map.add typid (nid, 1) m
-
-let init_map_bind m bind =
-  match bind.it with
-  | ExpB (id, t) -> init_var m id t
-  | _ -> m
-
-let init_map_rule m rule =
-  match rule.it with
-  | RuleD (_, binds, _, _, _) -> List.fold_left init_map_bind m binds
-
-let init_map_clause m clause =
-  match clause.it with
-  | DefD (binds, _, _, _) -> List.fold_left init_map_bind m binds
-
-let init_map il =
-  let env' =
-    List.fold_left (fun m def ->
-      match def.it with
-      | RelD (_, _, _, rules) ->
-        List.fold_left init_map_rule m rules
-      | DecD (_, _, _, clauses) ->
-        List.fold_left init_map_clause m clauses
-      | _ -> m
-    ) Map.empty il
-  in
-  imap := env'
-
 let init_env frees = { idxs = !imap; frees }
 
 
@@ -546,7 +509,6 @@ let extract_helpers partial_funcs def =
   | _ -> None
 
 let unify (il: script) : rule_def list * helper_def list =
-  init_map il;
   let rule_defs =
     il
     |> List.concat_map extract_rules
