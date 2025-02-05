@@ -1,0 +1,135 @@
+NanoWasm
+========
+
+*NanoWasm* is a small language with simple types and instructions.
+
+
+Abstract Syntax
+---------------
+
+The *abstract syntax* of types is as follows:
+
+$${syntax: mut valtype functype globaltype}
+
+Instructions take the following form:
+
+.. _syntax-i32:
+
+$${syntax: const instr}
+
+The instruction ${:NOP} does nothing,
+${:DROP} removes an operand from the stack,
+${:SELECT} picks one of two operands depending on a condition value.
+The instruction ${instr: CONST t c} pushed the constant ${:c} to the stack.
+The remaining instructions access local and global variables.
+
+
+Validation
+----------
+
+NanoWasm instructions are *type-checked* under a context that assigns types to indices:
+
+$${syntax: context}
+
+${:NOP}
+...............................
+
+$${rule-prose: Instr_ok/nop}
+$${rule: Instr_ok/nop}
+
+${:DROP}
+...............................
+
+$${rule-prose: Instr_ok/drop}
+$${rule: Instr_ok/drop}
+
+${:SELECT}
+...............................
+
+$${rule-prose: Instr_ok/select}
+$${rule: Instr_ok/select}
+
+.. _valid-val:
+
+${:CONST}
+...............................
+
+$${rule-prose: Instr_ok/const}
+$${rule: Instr_ok/const}
+
+${:LOCAL.GET}
+...............................
+
+$${rule-prose: Instr_ok/local.get}
+$${rule: Instr_ok/local.get}
+
+${:LOCAL.SET}
+...............................
+
+$${rule-prose: Instr_ok/local.set}
+$${rule: Instr_ok/local.set}
+
+${:GLOBAL.GET}
+...............................
+
+$${rule-prose: Instr_ok/global.get}
+$${rule: Instr_ok/global.get}
+
+${:GLOBAL.SET}
+...............................
+
+$${rule-prose: Instr_ok/global.set}
+$${rule: Instr_ok/global.set}
+
+
+Execution
+---------
+
+NanoWasm execution requires a suitable definition of state and configuration:
+
+$${syntax: {addr moduleinst} val {store frame state config}}
+
+We define the following auxiliary functions for accessing and updating the state:
+
+$${definition: {local global} {update_local update_global}}
+
+With that, execution is defined as follows:
+
+$${rule-prose: Step_pure/nop}
+$${rule: Step_pure/nop}
+
+$${rule-prose: Step_pure/drop}
+$${rule: Step_pure/drop}
+
+$${rule-prose: Step_pure/select}
+$${rule: Step_pure/select-*}
+
+$${rule-prose: Step/local.get}
+$${rule: Step/local.get}
+
+$${rule-prose: Step/local.set}
+$${rule: Step/local.set}
+
+$${rule-prose: Step/global.get}
+$${rule: Step/global.get}
+
+$${rule-prose: Step/global.set}
+$${rule: Step/global.set}
+
+
+Binary Format
+-------------
+
+The following grammars define the binary representation of NanoWasm programs.
+
+First, constants are represented in LEB format:
+
+$${grammar: Bbyte Bu {Bu32 Bu64} Bf {Bf32 Bf64}}
+
+Types are encoded as follows:
+
+$${grammar: Bvaltype Bmut {Bglobaltype Bresulttype Bfunctype}}
+
+Finally, instruction opcodes:
+
+$${grammar: {Bglobalidx Blocalidx} Binstr}

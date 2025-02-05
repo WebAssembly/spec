@@ -287,8 +287,8 @@ def $global((s; f), x) = s.GLOBALS[f.MODULE.GLOBALS[x]]
 def $update_local(state, localidx, val) : state
 def $update_local((s; f), x, v) = s; f[.LOCALS[x] = v]
 
-def $udpate_global(state, globalidx, val) : state
-def $update_global((s; f), x, v) = s[.GLOBALS[f.MODULE.GLOBALS[x]].VALUE = v]; f
+def $update_global(state, globalidx, val) : state
+def $update_global((s; f), x, v) = s[.GLOBALS[f.MODULE.GLOBALS[x]] = v]; f
 ```
 Meta-definitions are distinguished from meta-variables by a preceding `$` in their name.
 They are given by first declaring their type,
@@ -381,10 +381,21 @@ rule Step/global.get:
     -- if val = $global(z, x)
 
 rule Step/global.get:
-    z; (GLOBAL.GET x)  ~>  z'; eps
+    z; val (GLOBAL.SET x)  ~>  z'; eps
     -- if z' = $update_global(z, x, val)
 ```
 Here we are invoking the auxiliary meta-functions previously defined to read and write the value of the respective variable in the state.
+
+Finally, to allow SpecTec to produce adequate output,
+we add the following hints to the script:
+```
+relation Step hint(tabular)
+relation Step_pure hint(tabular)
+```
+These instruct the Latex backend to render these relations in clausal form,
+rather than as inference rules.
+The backend would reject the use of `otherwise` conditions
+if this format wasn't selected.
 
 
 ##### Binary Format
@@ -400,7 +411,7 @@ grammar Bvaltype : valtype =
     | 0x7D => F32
     | 0x7C => F64
 
-grammar Bmut : mut =
+grammar Bmut : mut? =
     | 0x00 => eps
     | 0x01 => MUT
 
@@ -449,7 +460,6 @@ grammar Binstr : instr =
   | 0x1B => SELECT
   | 0x20 x:Blocalidx => LOCAL.GET x
   | 0x21 x:Blocalidx => LOCAL.SET x
-  | 0x22 x:Blocalidx => LOCAL.TEE x
   | 0x23 x:Bglobalidx => GLOBAL.GET x
   | 0x24 x:Bglobalidx => GLOBAL.SET x
   | 0x41 n:Bu32 => CONST I32 n
@@ -466,8 +476,8 @@ grammar Bu(N : nat) : nat =
   | n:Bbyte              => n                       -- if $(n < 2^7 /\ n < 2^N)
   | n:Bbyte m:Bu($(N-7)) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar Bu32 : u32 = n:Bu(32) => n
-grammar Bu64 : u64 = n:Bu(64) => n
+grammar Bu32 : const = n:Bu(32) => n
+grammar Bu64 : const = n:Bu(64) => n
 ```
 First, an auxiliary grammar for generic byte values is declared.
 The "`x | ... | y`" defines a numeric range,
@@ -498,11 +508,11 @@ and in the end, both parts of the result value are combined together to form the
 Finally, the grammar for floating point values is also parameterised over its bit-width,
 but is just a fixed-length sequence of bytes:
 ```
-grammar Bf(N) : nat =
+grammar Bf(N : nat) : nat =
   | b*:Bbyte^(N/8) => $float(N, b*)
 
-grammar Bf32 : f32 = p:Bf(32) => p
-grammar Bf64 : f64 = p:Bf(64) => p
+grammar Bf32 : const = p:Bf(32) => p
+grammar Bf64 : const = p:Bf(64) => p
 ```
 This assumes the presence of the meta-function `$float`,
 which would compute the float value represented by these bytes.
@@ -522,8 +532,13 @@ that contain *splices* of individual definitions.
 
 Such documents are assumed to be in reStructuredText,
 since that is the format that the Wasm spec is currently using.
-For example, given the above definition of NanoWasm,
-we can feed the following `.rst` file to SpecTec:
+
+For example, assuming the above definition of NanoWasm is collected in a file `NanoWasm.watsup`,
+then we can use the command
+```
+watsup NanoWasm.watsup --splice-sphinx -p NanoWasm.rst.in -o NanoWasm.rst
+```
+to feed the following `.rst.in` file to SpecTec and produce proper `.rst` output:
 ```
 NanoWasm
 ========
@@ -570,7 +585,7 @@ ${:SELECT}
 ..........
 
 $${rule-prose: Instr_ok/select}
-$${rule: Instr_ok/select-*}
+$${rule: Instr_ok/select}
 
 [...and so on...]
 ```
@@ -601,3 +616,6 @@ we insert both forms next to each other.
 
 When multiple (non-prose) definitions are spliced together,
 then their formulas are laid out to align.
+
+**Note:**
+A complete version of the example with a Makefile for running Sphinx and producing both HTML and PDF from it can be found in the [example](example/) directory).

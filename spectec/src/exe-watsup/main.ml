@@ -274,7 +274,7 @@ let () =
       (
         match !odsts with
         | [] -> odsts := List.map (Fun.const "") !pdsts
-        | [odst] when Sys.is_directory odst ->
+        | [odst] when Sys.file_exists odst && Sys.is_directory odst ->
           odsts := List.map (fun pdst -> Filename.concat odst pdst) !pdsts
         | _ when List.length !odsts = List.length !pdsts -> ()
         | _ ->
