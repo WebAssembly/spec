@@ -270,7 +270,8 @@ with a semicolon as a symbolic atom separating their two components.
 
 We also define *values* as a syntactic subset of instructions,
 which are the ones that cannot be reduced any further:
-SpecTec automatically recognises that the type `val` defines a subtype of `instr` because `CONST valtype const` was already defined to be an instance of `instr`.
+SpecTec automatically recognises that the type `val` defines a subtype of `instr`
+because it contains a subset of its cases.
 Hence, values can be used in place of instructions,
 which we make use of below.
 
