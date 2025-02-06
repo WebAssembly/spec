@@ -950,8 +950,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Do nothing.
-
 
 :math:`\mathsf{select}`
 .......................
@@ -3305,7 +3303,6 @@ Step_pure/nop
 Step_pure/drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. Do nothing.
 
 Step_pure/select
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -5726,8 +5723,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Do nothing.
 
 
 :math:`\mathsf{select}~{({t^\ast})^?}`
@@ -10573,7 +10568,6 @@ Step_pure/nop
 Step_pure/drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. Do nothing.
 
 Step_pure/select t*?
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -16379,8 +16373,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Do nothing.
 
 
 :math:`\mathsf{select}~{({t^\ast})^?}`
@@ -26524,7 +26516,6 @@ Step_pure/nop
 Step_pure/drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. Do nothing.
 
 Step_pure/select t*?
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
