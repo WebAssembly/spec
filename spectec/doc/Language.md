@@ -132,7 +132,7 @@ deftyp ::=
 
 contyp   ::= nottyp ("--" premise)*
 casetyp  ::= nottyp ("--" premise)*
-fieldtyp ::= atom typ ("--" premise)*
+fieldtyp ::= atomid typ ("--" premise)*
 rangetyp ::= exp | "..."
 
 nottyp ::=
@@ -187,6 +187,9 @@ Some symbolic atoms have infix operator status
 (with hard-coded "natural" precedences),
 affecting the way they are parsed;
 this status can be escaped with `` ` `` as well.
+Lowercase identifiers can also be used as atoms
+when escaped with `` ` ``
+(and vice versa).
 
 An expression of constructor type must use atoms and intermittent expressions in the exact same sequence that the type definition declares.
 
@@ -1128,11 +1131,25 @@ Fragmented grammars are not currently allowed to have parameters.
 
 ### Hints
 
-Hints are free-form annotations to SpecTec definitions of the following form:
+Hints are free-form annotations that can be associated with all previously given forms of definition:
 ```
+def ::= ...
+  "syntax" varid subid* atom? hint+
+  "grammar" gramid subid* hint*
+  "relation" relid hint+
+  "rule" relid subid* hint+
+  "var" varid hint+
+  "def" "$" defid hint+
+
 hint ::=
-  "hint" "(" hintid exp ")"                                 hint
+  "hint" "(" hintid exp ")"
 ```
+As short-hands,
+hints can also be placed inline,
+directly on most definition forms,
+instead of having them as a separate definion
+(see the [syntax summary](#syntax-summary) for details).
+
 Hints are ignored by the SpecTec frontend,
 but passed on to individual backends,
 which may interpret the hint identifier and the accompanying expression in any way they see fit.

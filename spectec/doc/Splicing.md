@@ -81,9 +81,11 @@ That causes them to be ignored,
 while also suppressing a warning when the [`-w` option](Usage.md#splicing-mode) was given.
 
 
+### Grouping
+
 Each splice may contain a list of identifiers, whose definitions will be arranged and aligned together in a single array in the case of math, with multiple definitions separated by (`0.8ex`) vertical space.
 
-In addition, definitions can be grouped together by using braces `{ name* }`, which removes the vertical space between them. In the case of typing rules, the rules are placed on a single line.
+In addition, a subset of the definitions can be grouped together by using internal braces `{ name* }`, which removes the vertical space between them. In the case of inference rules, the rules are placed side by side instead of vertically.
 
 In the case of `syntax` or `grammar`, grouping together multiple *fragments* of the same [variant type](Language.md#variant-types) or [grammar](Language.md#grammars) also _merges_ these fragments, removing trailing and leading dots in the middle.
 
