@@ -325,6 +325,7 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
+    | Al.Ast.CaseE _  when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT -> None
     | Al.Ast.CaseE (op, el) ->
       (* Current rules for omitting parenthesis around a CaseE:
         1) Has no argument
@@ -617,6 +618,39 @@ and render_expr' env expr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
+  | Al.Ast.CaseE (mixop, [ arity; arg ]) when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
+    let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
+    let control_frame_var = String.sub atom_name 0 1 in
+    let rendered_arity =
+      match arity.it with
+      | NumE (`Nat z) when z = Z.zero -> ""
+      | _ -> sprintf "whose arity is %s" (render_expr env arity) in
+    let rendered_arg =
+      (match atom_name with
+      | "LABEL_" ->
+        let continuation =
+          match arg.it with
+          | ListE [] -> "end"
+          | _ -> "start" in
+        sprintf "whose continuation is the %s of the block" continuation
+      | "FRAME_" -> ""
+      | "HANDLER_" ->
+        sprintf "whose catch handler is %s" (render_expr env arg)
+      | _ ->
+        expr
+        |> Al.Print.string_of_expr
+        |> sprintf "Rendering control frame %s failed: rendering control frame requires hardcoding"
+        |> failwith
+      )
+    in
+    let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
+    let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
+    sprintf "%s%s%s%s%s"
+      control_frame_var
+      space_opt
+      rendered_arity
+      and_opt
+      rendered_arg
   | Al.Ast.MemE (e1, {it = ListE es; _}) ->
     let se1 = render_expr env e1 in
     let se2 = render_list (render_expr env) "; " es in
@@ -673,9 +707,9 @@ and render_expr' env expr =
       let siter = render_expr env eiter in
       sprintf "for all %s in %s, %s" sids siter se)
   | Al.Ast.GetCurStateE -> "the current state"
-  | Al.Ast.GetCurContextE None -> "the current context"
+  | Al.Ast.GetCurContextE None -> "the topmost control frame"
   | Al.Ast.GetCurContextE (Some a) ->
-    sprintf "the current %s context" (render_atom env a)
+    sprintf "the topmost %s" (render_atom env a)
   | Al.Ast.ChooseE e ->
     let se = render_expr env e in
     sprintf "an element of %s" se
@@ -1047,6 +1081,17 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.PushI e ->
     sprintf "%s Push %s%s to the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
+  | Al.Ast.PopI ({ it = Al.Ast.CaseE (mixop, _); _ } as expr)
+  when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
+    let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
+    let control_frame_kind =
+      String.sub atom_name 0 (String.length atom_name - 1)
+      |> String.lowercase_ascii in
+    let control_frame_var = String.sub atom_name 0 1 in
+    sprintf "%s Pop the %s %s from the stack."
+      (render_order index depth)
+      control_frame_kind
+      control_frame_var
   | Al.Ast.PopI e ->
     sprintf "%s Pop %s%s from the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
@@ -1101,6 +1146,30 @@ let rec render_instr env algoname index depth instr =
     | _ -> error instr.at "Invalid arity for relation call";
     ) in
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) ce
+  (* NOTE: This assumes that the first argument of control frame is arity *)
+  | Al.Ast.LetI ({ it = Al.Ast.CaseE (mixop, arity :: _); _ } as lhs, rhs)
+  when Al.Valid.sub_typ lhs.note Al.Al_util.evalctxT ->
+    let control_frame_name =
+      mixop
+      |> List.concat_map (List.map Atom.to_string)
+      |> String.concat ""
+      |> fun s -> String.sub s 0 1 in
+    let rendered_arity = render_expr env arity in
+    let rendered_let =
+      sprintf "%s Let %s be %s."
+        (render_order index depth)
+        control_frame_name
+        (render_expr env rhs) in
+    if rendered_arity = "" then rendered_let
+    else
+      (* XXX: It could introduce dead assignment *)
+      let rendered_let_arity =
+        sprintf "\n\n%s%s Let %s be arity of %s"
+          (repeat indent depth)
+          (render_order index depth)
+          (render_expr env arity)
+          control_frame_name in
+      rendered_let ^ rendered_let_arity
   | Al.Ast.LetI (n, e) ->
     let rec find_eval_expr e = match e.it with
       | Al.Ast.CallE ("Eval_expr", [z; arg]) ->

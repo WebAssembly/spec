@@ -112,8 +112,8 @@ and string_of_expr expr =
     sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | GetCurStateE -> "the current state"
-  | GetCurContextE None -> "the current context"
-  | GetCurContextE (Some a) -> sprintf "the current %s context" (string_of_atom a)
+  | GetCurContextE None -> "the topmost control frame"
+  | GetCurContextE (Some a) -> sprintf "the topmost %s" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
   | LiftE e -> string_of_expr e
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)

@@ -1059,8 +1059,16 @@ let ensure_return il =
 let remove_exit algo =
   let exit_to_pop instr =
     match instr.it with
-    | ExitI ({ it = Atom.Atom id; _ }) when List.mem id context_names ->
-      popI (getCurContextE (Some (atom_of_name id "evalctx")) ~note:evalctxT) ~at:instr.at
+    | ExitI ({ it = Atom id; _ } as atom) when List.mem id context_names ->
+      (* HARDCODE: hardcode case expression for control frame structure *)
+      let unused_var = varE "_" ~note:no_note in
+      let control_frame_expr =
+        caseE (
+          [[atom]; [{ atom with it=Atom.LBrace}]; [{ atom with it=Atom.RBrace}]; []],
+          [ unused_var; unused_var ]
+        ) ~note:evalctxT
+      in
+      popI (control_frame_expr) ~at:instr.at
     | _ -> instr
   in
   let walk_instr walker instr =

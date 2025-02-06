@@ -1001,7 +1001,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Pop the current :math:`\mathsf{label}` context from the stack.
+#. Pop the label L from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -1012,7 +1012,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Let :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\})` be the current :math:`\mathsf{label}` context.
+#. Let L be the topmost :math:`\mathsf{label}`.
+
+#. Let :math:`n` be arity of L
 
 #. If :math:`n_1 = 0`, then:
 
@@ -1022,7 +1024,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{label}` context from the stack.
+   #. Pop the label L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -1036,7 +1038,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`l` be :math:`n_1 - 1`.
 
-      #) Pop the current :math:`\mathsf{label}` context from the stack.
+      #) Pop the label L from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -1081,7 +1083,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................
 
 
-1. Let :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
+
+#. Let :math:`n` be arity of F
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1091,7 +1095,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. Pop the current :math:`\mathsf{frame}` context from the stack.
+#. Pop the frame F from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -1102,7 +1106,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
+   a. Let F be the topmost :math:`\mathsf{frame}`.
+
+   #. Let :math:`n` be arity of F
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1110,7 +1116,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{frame}` context from the stack.
+   #. Pop the frame F from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -1118,7 +1124,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{label}` context from the stack.
+   #. Pop the label L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -1233,20 +1239,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{t^?}` is not defined, then:
 
-   a. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+   a. Enter :math:`{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 #. Let :math:`n` be :math:`1`.
 
 #. If :math:`{t^?} \neq \epsilon`, then:
 
-   a. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+   a. Enter :math:`{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
 ...................................................
 
 
-1. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{0}}{\{}~(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})~\})`.
+1. Enter :math:`{{\mathit{instr}}^\ast}` with label L whose continuation is the start of the block.
 
 
 :math:`\mathsf{call}~x`
@@ -1311,9 +1317,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
+#. Push the frame F whose arity is :math:`n` to the stack.
 
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+#. Enter :math:`{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{local{.}get}~x`
@@ -2741,23 +2747,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
+#. Pop the frame F from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
+#. Pop the frame F from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
@@ -2767,7 +2773,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
 
@@ -2775,7 +2781,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -2786,15 +2792,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~(s, f)~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
+#. Push the frame F whose arity is :math:`k` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -2802,7 +2808,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -3327,24 +3333,24 @@ Step_pure/if t? instr_1* instr_2*
 Step_pure/label
 1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-3. Pop the current LABEL_ context from the stack.
+3. Pop the label (LABEL_ _ { _ }) from the stack.
 4. Push the values val* to the stack.
 
 Step_pure/br n_1
 1. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-2. Let (LABEL_ n { instr'* }) be the current LABEL_ context.
+2. Let (LABEL_ n { instr'* }) be the topmost LABEL_.
 3. If (n_1 = 0), then:
   a. Assert: Due to validation, there are at least n values on the top of the stack.
   b. Pop the values val^n from the stack.
   c. Pop all values val'* from the top of the stack.
-  d. Pop the current LABEL_ context from the stack.
+  d. Pop the label (LABEL_ _ { _ }) from the stack.
   e. Push the values val^n to the stack.
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
   b. If (n_1 >= 1), then:
     1) Let l be (n_1 - 1).
-    2) Pop the current LABEL_ context from the stack.
+    2) Pop the label (LABEL_ _ { _ }) from the stack.
     3) Push the values val* to the stack.
     4) Execute the instruction (BR l).
 
@@ -3365,25 +3371,25 @@ Step_pure/br_table l* l'
   a. Execute the instruction (BR l').
 
 Step_pure/frame
-1. Let (FRAME_ n { f }) be the current FRAME_ context.
+1. Let (FRAME_ n { f }) be the topmost FRAME_.
 2. Assert: Due to validation, there are at least n values on the top of the stack.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
-6. Pop the current FRAME_ context from the stack.
+6. Pop the frame (FRAME_ _ { _ }) from the stack.
 7. Push the values val^n to the stack.
 
 Step_pure/return
 1. If the first non-value entry of the stack is a FRAME_, then:
-  a. Let (FRAME_ n { f }) be the current FRAME_ context.
+  a. Let (FRAME_ n { f }) be the topmost FRAME_.
   b. Assert: Due to validation, there are at least n values on the top of the stack.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the top of the stack.
-  e. Pop the current FRAME_ context from the stack.
+  e. Pop the frame (FRAME_ _ { _ }) from the stack.
   f. Push the values val^n to the stack.
 2. Else if the first non-value entry of the stack is a LABEL_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current LABEL_ context from the stack.
+  b. Pop the label (LABEL_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 
@@ -3474,7 +3480,7 @@ Step_read/call_addr a
 6. Assert: Due to validation, there are at least k values on the top of the stack.
 7. Pop the values val^k from the stack.
 8. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
-9. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
+9. Push the frame (FRAME_ n { f }) to the stack.
 10. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/local.get x
@@ -4149,37 +4155,37 @@ instantiate s module externaddr*
 8. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
 9. Let f_init be { MODULE: moduleinst_init }.
 10. Let z be (s, f_init).
-11. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+11. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 12. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
-13. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-14. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+13. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+14. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 15. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
-16. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-17. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+16. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+17. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 18. Let [val]* be $Eval_expr(z, expr_G)*.
-19. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
+19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 20. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
 21. Let f be { MODULE: moduleinst }.
 22. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
 23. Perform $initdata(s, moduleinst, i_D*, b**).
-24. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+24. Push the frame (FRAME_ 0 { f }) to the stack.
 25. If (CALL x')? is defined, then:
   a. Let ?(instr_0) be (CALL x')?.
   b. Execute the instruction instr_0.
-26. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+26. Pop the frame (FRAME_ 0 { f }) from the stack.
 27. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
-2. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { (s, f) }) to the stack.
+2. Push the frame (FRAME_ 0 { (s, f) }) to the stack.
 3. Let t_1^n -> t_2* be $funcinst((s, f))[fa].TYPE.
-4. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { _f }) from the stack.
+4. Pop the frame (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
-6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
+6. Push the frame (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
 9. Pop the values val'^k from the stack.
-10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
+10. Pop the frame (FRAME_ k { f }) from the stack.
 11. Return val'^k.
 
 Eval_expr instr*
@@ -5775,7 +5781,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Pop the current :math:`\mathsf{label}` context from the stack.
+#. Pop the label L from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -5786,7 +5792,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Let :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\})` be the current :math:`\mathsf{label}` context.
+#. Let L be the topmost :math:`\mathsf{label}`.
+
+#. Let :math:`n` be arity of L
 
 #. If :math:`n_1 = 0`, then:
 
@@ -5796,7 +5804,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{label}` context from the stack.
+   #. Pop the label L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -5810,7 +5818,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`l` be :math:`n_1 - 1`.
 
-      #) Pop the current :math:`\mathsf{label}` context from the stack.
+      #) Pop the label L from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -5855,7 +5863,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................
 
 
-1. Let :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
+
+#. Let :math:`n` be arity of F
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5865,7 +5875,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. Pop the current :math:`\mathsf{frame}` context from the stack.
+#. Pop the frame F from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -5876,7 +5886,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
+   a. Let F be the topmost :math:`\mathsf{frame}`.
+
+   #. Let :math:`n` be arity of F
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5884,7 +5896,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{frame}` context from the stack.
+   #. Pop the frame F from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -5892,7 +5904,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{label}` context from the stack.
+   #. Pop the label L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -6449,7 +6461,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
-#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
@@ -6464,7 +6476,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
-#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{k}}{\{}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})~\})`.
+#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label L whose arity is :math:`k` and whose continuation is the start of the block.
 
 
 :math:`\mathsf{call}~x`
@@ -6529,9 +6541,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` to the stack.
+#. Push the frame F whose arity is :math:`n` to the stack.
 
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+#. Enter :math:`{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{ref{.}func}~x`
@@ -9699,23 +9711,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
+#. Pop the frame F from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 
@@ -9727,7 +9739,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -9738,15 +9750,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~(s, f)~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
+#. Push the frame F whose arity is :math:`k` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -9754,7 +9766,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -10592,24 +10604,24 @@ Step_pure/if bt instr_1* instr_2*
 Step_pure/label
 1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-3. Pop the current LABEL_ context from the stack.
+3. Pop the label (LABEL_ _ { _ }) from the stack.
 4. Push the values val* to the stack.
 
 Step_pure/br n_1
 1. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-2. Let (LABEL_ n { instr'* }) be the current LABEL_ context.
+2. Let (LABEL_ n { instr'* }) be the topmost LABEL_.
 3. If (n_1 = 0), then:
   a. Assert: Due to validation, there are at least n values on the top of the stack.
   b. Pop the values val^n from the stack.
   c. Pop all values val'* from the top of the stack.
-  d. Pop the current LABEL_ context from the stack.
+  d. Pop the label (LABEL_ _ { _ }) from the stack.
   e. Push the values val^n to the stack.
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
   b. If (n_1 >= 1), then:
     1) Let l be (n_1 - 1).
-    2) Pop the current LABEL_ context from the stack.
+    2) Pop the label (LABEL_ _ { _ }) from the stack.
     3) Push the values val* to the stack.
     4) Execute the instruction (BR l).
 
@@ -10630,25 +10642,25 @@ Step_pure/br_table l* l'
   a. Execute the instruction (BR l').
 
 Step_pure/frame
-1. Let (FRAME_ n { f }) be the current FRAME_ context.
+1. Let (FRAME_ n { f }) be the topmost FRAME_.
 2. Assert: Due to validation, there are at least n values on the top of the stack.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
-6. Pop the current FRAME_ context from the stack.
+6. Pop the frame (FRAME_ _ { _ }) from the stack.
 7. Push the values val^n to the stack.
 
 Step_pure/return
 1. If the first non-value entry of the stack is a FRAME_, then:
-  a. Let (FRAME_ n { f }) be the current FRAME_ context.
+  a. Let (FRAME_ n { f }) be the topmost FRAME_.
   b. Assert: Due to validation, there are at least n values on the top of the stack.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the top of the stack.
-  e. Pop the current FRAME_ context from the stack.
+  e. Pop the frame (FRAME_ _ { _ }) from the stack.
   f. Push the values val^n to the stack.
 2. Else if the first non-value entry of the stack is a LABEL_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current LABEL_ context from the stack.
+  b. Pop the label (LABEL_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 
@@ -10951,7 +10963,7 @@ Step_read/call_addr a
 6. Assert: Due to validation, there are at least k values on the top of the stack.
 7. Pop the values val^k from the stack.
 8. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
-9. Push the :ref:`frame <syntax-frame>` (FRAME_ n { f }) to the stack.
+9. Push the frame (FRAME_ n { f }) to the stack.
 10. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.func x
@@ -12463,34 +12475,34 @@ instantiate s module externaddr*
 11. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
 12. Let f_init be { MODULE: moduleinst_init }.
 13. Let z be (s, f_init).
-14. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+14. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 15. Let [val]* be $Eval_expr(z, expr_G)*.
-16. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
-17. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+16. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+17. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 18. Let [ref]** be $Eval_expr(z, expr_E)**.
-19. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) from the stack.
+19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
 20. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
 21. Let f be { MODULE: moduleinst }.
-22. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+22. Push the frame (FRAME_ 0 { f }) to the stack.
 23. Execute the sequence instr_E*.
 24. Execute the sequence instr_D*.
 25. If (CALL x)? is defined, then:
   a. Let ?(instr_0) be (CALL x)?.
   b. Execute the instruction instr_0.
-26. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+26. Pop the frame (FRAME_ 0 { f }) from the stack.
 27. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
-2. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { (s, f) }) to the stack.
+2. Push the frame (FRAME_ 0 { (s, f) }) to the stack.
 3. Let t_1^n -> t_2* be $funcinst((s, f))[fa].TYPE.
-4. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { _f }) from the stack.
+4. Pop the frame (FRAME_ 0 { _f }) from the stack.
 5. Let k be |t_2*|.
-6. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
+6. Push the frame (FRAME_ k { f }) to the stack.
 7. Push the values val^n to the stack.
 8. Execute the instruction (CALL_ADDR fa).
 9. Pop the values val'^k from the stack.
-10. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
+10. Pop the frame (FRAME_ k { f }) from the stack.
 11. Return val'^k.
 
 Eval_expr instr*
@@ -16425,7 +16437,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Pop the current :math:`\mathsf{label}` context from the stack.
+#. Pop the label L from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -16436,7 +16448,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Let :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\})` be the current :math:`\mathsf{label}` context.
+   a. Let L be the topmost :math:`\mathsf{label}`.
+
+   #. Let :math:`n` be arity of L
 
    #. If :math:`l = 0`, then:
 
@@ -16446,7 +16460,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-      #) Pop the current :math:`\mathsf{label}` context from the stack.
+      #) Pop the label L from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -16458,7 +16472,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) If :math:`l > 0`, then:
 
-         a) Pop the current :math:`\mathsf{label}` context from the stack.
+         a) Pop the label L from the stack.
 
          #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -16468,7 +16482,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{handler}` context from the stack.
+   #. Pop the handler H from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -16571,7 +16585,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................
 
 
-1. Let :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
+
+#. Let :math:`n` be arity of F
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16581,7 +16597,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. Pop the current :math:`\mathsf{frame}` context from the stack.
+#. Pop the frame F from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -16592,7 +16608,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`({{\mathsf{frame}}_{n}}{\{}~f~\})` be the current :math:`\mathsf{frame}` context.
+   a. Let F be the topmost :math:`\mathsf{frame}`.
+
+   #. Let :math:`n` be arity of F
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16600,7 +16618,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{frame}` context from the stack.
+   #. Pop the frame F from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -16608,7 +16626,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{label}` context from the stack.
+   #. Pop the label L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -16620,7 +16638,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-      #) Pop the current :math:`\mathsf{handler}` context from the stack.
+      #) Pop the handler H from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -16635,7 +16653,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{handler}`.
 
-#. Pop the current :math:`\mathsf{handler}` context from the stack.
+#. Pop the handler H from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17279,7 +17297,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
 
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
@@ -17294,14 +17312,14 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
 
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{m}}{\{}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})~\})`.
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label L whose arity is :math:`m` and whose continuation is the start of the block.
 
 
 :math:`\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
 ...............................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
@@ -17326,7 +17344,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
@@ -17404,9 +17422,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-      #) Push the :ref:`frame <syntax-frame>` :math:`({{\mathsf{frame}}_{m}}{\{}~f~\})` to the stack.
+      #) Push the frame F whose arity is :math:`m` to the stack.
 
-      #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{m}}{\{}~\epsilon~\})`.
+      #) Enter :math:`{{\mathit{instr}}^\ast}` with label L whose arity is :math:`m` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -17436,7 +17454,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{label}` context from the stack.
+   #. Pop the label L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17446,7 +17464,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the current :math:`\mathsf{handler}` context from the stack.
+   #. Pop the handler H from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17464,7 +17482,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-         #) Pop the current :math:`\mathsf{frame}` context from the stack.
+         #) Pop the frame F from the stack.
 
          #) Trap.
 
@@ -17486,7 +17504,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-            #. Pop the current :math:`\mathsf{frame}` context from the stack.
+            #. Pop the frame F from the stack.
 
             #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -17523,7 +17541,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
-      1) Pop the current :math:`\mathsf{label}` context from the stack.
+      1) Pop the label L from the stack.
 
       #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17533,7 +17551,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-         a) Pop the current :math:`\mathsf{frame}` context from the stack.
+         a) Pop the frame F from the stack.
 
          #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17545,11 +17563,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Else:
 
-         a) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_1^\ast}~\})` be the current :math:`\mathsf{handler}` context.
+         a) Let H be the topmost :math:`\mathsf{handler}`.
+
+         #) Let :math:`n` be arity of H
 
          #) If :math:`{{\mathit{catch}}_1^\ast} = \epsilon`, then:
 
-            1. Pop the current :math:`\mathsf{handler}` context from the stack.
+            1. Pop the handler H from the stack.
 
             #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17563,7 +17583,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
 
-               #. Pop the current :math:`\mathsf{handler}` context from the stack.
+               #. Pop the handler H from the stack.
 
                #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -17571,9 +17591,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
 
-               #. Pop the current :math:`\mathsf{handler}` context from the stack.
+               #. Pop the handler H from the stack.
 
-               #. Push the :ref:`handler <syntax-handler>` :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+               #. Push the handler H whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}` to the stack.
 
                #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17583,7 +17603,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
 
-               #. Pop the current :math:`\mathsf{handler}` context from the stack.
+               #. Pop the handler H from the stack.
 
                #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17601,7 +17621,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
 
-                  1) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  1) Pop the handler H from the stack.
 
                   #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17611,9 +17631,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
 
-                  #) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  #) Pop the handler H from the stack.
 
-                  #) Push the :ref:`handler <syntax-handler>` :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the handler H whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17627,9 +17647,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
 
-                  #) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  #) Pop the handler H from the stack.
 
-                  #) Push the :ref:`handler <syntax-handler>` :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the handler H whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17639,9 +17659,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
 
-                  #) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  #) Pop the handler H from the stack.
 
-                  #) Push the :ref:`handler <syntax-handler>` :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the handler H whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17649,7 +17669,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Else:
 
-                  1) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  1) Pop the handler H from the stack.
 
                   #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17663,7 +17683,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
 
-                  #) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  #) Pop the handler H from the stack.
 
                   #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -17671,9 +17691,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
 
-                  #) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  #) Pop the handler H from the stack.
 
-                  #) Push the :ref:`handler <syntax-handler>` :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})` to the stack.
+                  #) Push the handler H whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}` to the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17683,7 +17703,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
 
-                  #) Pop the current :math:`\mathsf{handler}` context from the stack.
+                  #) Pop the handler H from the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17706,9 +17726,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
 
-#. Push the :ref:`handler <syntax-handler>` :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})` to the stack.
+#. Push the handler H whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}}^\ast}` to the stack.
 
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`({{\mathsf{label}}_{n}}{\{}~\epsilon~\})`.
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label L whose arity is :math:`n` and whose continuation is the end of the block.
 
 
 :math:`\mathsf{ref{.}null}~x`
@@ -17735,7 +17755,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
@@ -17758,7 +17778,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Let :math:`({\mathsf{frame}}_{}\,\{~f~\})` be the current :math:`\mathsf{frame}` context.
+1. Let F be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
@@ -24388,29 +24408,29 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`z` be :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~z{.}\mathsf{frame}~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` to the stack.
+#. Push the frame F to the stack.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 
@@ -24422,7 +24442,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{0}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -24451,7 +24471,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` to the stack.
+#. Push the frame F whose arity is :math:`k` to the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -24461,7 +24481,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :ref:`frame <syntax-frame>` :math:`({\mathsf{frame}}_{k}\,\{~f~\})` from the stack.
+#. Pop the frame F from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -26540,28 +26560,28 @@ Step_pure/if bt instr_1* instr_2*
 Step_pure/label
 1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
-3. Pop the current LABEL_ context from the stack.
+3. Pop the label (LABEL_ _ { _ }) from the stack.
 4. Push the values val* to the stack.
 
 Step_pure/br l
 1. If the first non-value entry of the stack is a LABEL_, then:
-  a. Let (LABEL_ n { instr'* }) be the current LABEL_ context.
+  a. Let (LABEL_ n { instr'* }) be the topmost LABEL_.
   b. If (l = 0), then:
     1) Assert: Due to validation, there are at least n values on the top of the stack.
     2) Pop the values val^n from the stack.
     3) Pop all values val'* from the top of the stack.
-    4) Pop the current LABEL_ context from the stack.
+    4) Pop the label (LABEL_ _ { _ }) from the stack.
     5) Push the values val^n to the stack.
     6) Execute the sequence instr'*.
   c. Else:
     1) Pop all values val* from the top of the stack.
     2) If (l > 0), then:
-      a) Pop the current LABEL_ context from the stack.
+      a) Pop the label (LABEL_ _ { _ }) from the stack.
       b) Push the values val* to the stack.
       c) Execute the instruction (BR (l - 1)).
 2. Else if the first non-value entry of the stack is a HANDLER_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current HANDLER_ context from the stack.
+  b. Pop the handler (HANDLER_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction (BR l).
 
@@ -26609,37 +26629,37 @@ Step_pure/return_call_indirect x yy
 3. Execute the instruction (RETURN_CALL_REF yy).
 
 Step_pure/frame
-1. Let (FRAME_ n { f }) be the current FRAME_ context.
+1. Let (FRAME_ n { f }) be the topmost FRAME_.
 2. Assert: Due to validation, there are at least n values on the top of the stack.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
-6. Pop the current FRAME_ context from the stack.
+6. Pop the frame (FRAME_ _ { _ }) from the stack.
 7. Push the values val^n to the stack.
 
 Step_pure/return
 1. If the first non-value entry of the stack is a FRAME_, then:
-  a. Let (FRAME_ n { f }) be the current FRAME_ context.
+  a. Let (FRAME_ n { f }) be the topmost FRAME_.
   b. Assert: Due to validation, there are at least n values on the top of the stack.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the top of the stack.
-  e. Pop the current FRAME_ context from the stack.
+  e. Pop the frame (FRAME_ _ { _ }) from the stack.
   f. Push the values val^n to the stack.
 2. Else if the first non-value entry of the stack is a LABEL_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current LABEL_ context from the stack.
+  b. Pop the label (LABEL_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 3. Else if the first non-value entry of the stack is a HANDLER_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current HANDLER_ context from the stack.
+  b. Pop the handler (HANDLER_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 
 Step_pure/handler
 1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
-3. Pop the current HANDLER_ context from the stack.
+3. Pop the handler (HANDLER_ _ { _ }) from the stack.
 4. Push the values val* to the stack.
 
 Step_pure/unop nt unop
@@ -26953,7 +26973,7 @@ Step_read/loop bt instr*
 5. Enter val^m :: instr* with label (LABEL_ m { [(LOOP bt instr*)] }).
 
 Step_read/br_on_cast l rt_1 rt_2
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
+1. Let (FRAME_ _ { f }) be the topmost FRAME_.
 2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
@@ -26964,7 +26984,7 @@ Step_read/br_on_cast l rt_1 rt_2
   a. Do nothing.
 
 Step_read/br_on_cast_fail l rt_1 rt_2
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
+1. Let (FRAME_ _ { f }) be the topmost FRAME_.
 2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
@@ -27001,7 +27021,7 @@ Step_read/call_ref yy
     8) Assert: Due to validation, there are at least n values on the top of the stack.
     9) Pop the values val^n from the stack.
     10) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
-    11) Push the :ref:`frame <syntax-frame>` (FRAME_ m { f }) to the stack.
+    11) Push the frame (FRAME_ m { f }) to the stack.
     12) Enter instr* with label (LABEL_ m { [] }).
 
 Step_read/return_call x
@@ -27016,12 +27036,12 @@ Step_read/return_call_ref yy
 1. Let z be the current state.
 2. If the first non-value entry of the stack is a LABEL_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current LABEL_ context from the stack.
+  b. Pop the label (LABEL_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 3. Else if the first non-value entry of the stack is a HANDLER_, then:
   a. Pop all values val* from the top of the stack.
-  b. Pop the current HANDLER_ context from the stack.
+  b. Pop the handler (HANDLER_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if the first non-value entry of the stack is a FRAME_, then:
@@ -27029,7 +27049,7 @@ Step_read/return_call_ref yy
   b. Pop the value instr_1 from the stack.
   c. If instr_1 is REF.NULL, then:
     1) Pop all values val* from the top of the stack.
-    2) Pop the current FRAME_ context from the stack.
+    2) Pop the frame (FRAME_ _ { _ }) from the stack.
     3) Trap.
   d. If instr_1 is REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_1.
@@ -27040,7 +27060,7 @@ Step_read/return_call_ref yy
       d) Assert: Due to validation, there are at least n values on the top of the stack.
       e) Pop the values val^n from the stack.
       f) Pop all values val'* from the top of the stack.
-      g) Pop the current FRAME_ context from the stack.
+      g) Pop the frame (FRAME_ _ { _ }) from the stack.
       h) Push the values val^n to the stack.
       i) Push the value (REF.FUNC_ADDR a) to the stack.
       j) Execute the instruction (CALL_REF yy).
@@ -27058,36 +27078,36 @@ Step_read/throw_ref
     1) Push the value (REF.EXN_ADDR a) to the stack.
     2) Execute the instruction THROW_REF.
   d. Else if the first non-value entry of the stack is a LABEL_, then:
-    1) Pop the current LABEL_ context from the stack.
+    1) Pop the label (LABEL_ _ { _ }) from the stack.
     2) Push the value (REF.EXN_ADDR a) to the stack.
     3) Execute the instruction THROW_REF.
   e. Else if the first non-value entry of the stack is a FRAME_, then:
-    1) Pop the current FRAME_ context from the stack.
+    1) Pop the frame (FRAME_ _ { _ }) from the stack.
     2) Push the value (REF.EXN_ADDR a) to the stack.
     3) Execute the instruction THROW_REF.
   f. Else if not the first non-value entry of the stack is a HANDLER_, then:
     1) Throw the exception instr_1 as a result.
   g. Else:
-    1) Let (HANDLER_ n { catch_1* }) be the current HANDLER_ context.
+    1) Let (HANDLER_ n { catch_1* }) be the topmost HANDLER_.
     2) If (catch_1* = []), then:
-      a) Pop the current HANDLER_ context from the stack.
+      a) Pop the handler (HANDLER_ _ { _ }) from the stack.
       b) Push the value (REF.EXN_ADDR a) to the stack.
       c) Execute the instruction THROW_REF.
     3) Else if (a >= |$exninst(z)|), then:
       a) Let [catch_0] :: catch'* be catch_1*.
       b) If catch_0 is CATCH_ALL, then:
         1. Let (CATCH_ALL l) be catch_0.
-        2. Pop the current HANDLER_ context from the stack.
+        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Execute the instruction (BR l).
       c) Else if catch_0 is not CATCH_ALL_REF, then:
         1. Let [catch] :: catch'* be catch_1*.
-        2. Pop the current HANDLER_ context from the stack.
-        3. Push the :ref:`handler <syntax-handler>` (HANDLER_ n { catch'* }) to the stack.
+        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
+        3. Push the handler (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
         5. Execute the instruction THROW_REF.
       d) Else:
         1. Let (CATCH_ALL_REF l) be catch_0.
-        2. Pop the current HANDLER_ context from the stack.
+        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
     4) Else:
@@ -27096,47 +27116,47 @@ Step_read/throw_ref
       c) If catch_0 is CATCH, then:
         1. Let (CATCH x l) be catch_0.
         2. If ((x < |$tagaddr(z)|) /\ ($exninst(z)[a].TAG = $tagaddr(z)[x])), then:
-          a. Pop the current HANDLER_ context from the stack.
+          a. Pop the handler (HANDLER_ _ { _ }) from the stack.
           b. Push the values val* to the stack.
           c. Execute the instruction (BR l).
         3. Else:
           a. Let [catch] :: catch'* be catch_1*.
-          b. Pop the current HANDLER_ context from the stack.
-          c. Push the :ref:`handler <syntax-handler>` (HANDLER_ n { catch'* }) to the stack.
+          b. Pop the handler (HANDLER_ _ { _ }) from the stack.
+          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
       d) Else if catch_0 is CATCH_REF, then:
         1. Let (CATCH_REF x l) be catch_0.
         2. If (x >= |$tagaddr(z)|), then:
           a. Let [catch] :: catch'* be catch_1*.
-          b. Pop the current HANDLER_ context from the stack.
-          c. Push the :ref:`handler <syntax-handler>` (HANDLER_ n { catch'* }) to the stack.
+          b. Pop the handler (HANDLER_ _ { _ }) from the stack.
+          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         3. Else if ($exninst(z)[a].TAG =/= $tagaddr(z)[x]), then:
           a. Let [catch] :: catch'* be catch_1*.
-          b. Pop the current HANDLER_ context from the stack.
-          c. Push the :ref:`handler <syntax-handler>` (HANDLER_ n { catch'* }) to the stack.
+          b. Pop the handler (HANDLER_ _ { _ }) from the stack.
+          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         4. Else:
-          a. Pop the current HANDLER_ context from the stack.
+          a. Pop the handler (HANDLER_ _ { _ }) from the stack.
           b. Push the values val* to the stack.
           c. Push the value (REF.EXN_ADDR a) to the stack.
           d. Execute the instruction (BR l).
       e) Else if catch_0 is CATCH_ALL, then:
         1. Let (CATCH_ALL l) be catch_0.
-        2. Pop the current HANDLER_ context from the stack.
+        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Execute the instruction (BR l).
       f) Else if catch_0 is not CATCH_ALL_REF, then:
         1. Let [catch] :: catch'* be catch_1*.
-        2. Pop the current HANDLER_ context from the stack.
-        3. Push the :ref:`handler <syntax-handler>` (HANDLER_ n { catch'* }) to the stack.
+        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
+        3. Push the handler (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
         5. Execute the instruction THROW_REF.
       g) Else:
         1. Let (CATCH_ALL_REF l) be catch_0.
-        2. Pop the current HANDLER_ context from the stack.
+        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
 6. Else if (not the first non-value entry of the stack is a LABEL_ /\ (not the first non-value entry of the stack is a FRAME_ /\ not the first non-value entry of the stack is a HANDLER_)), then:
@@ -27147,7 +27167,7 @@ Step_read/try_table bt catch* instr*
 2. Let t_1^m -> t_2^n be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
-5. Push the :ref:`handler <syntax-handler>` (HANDLER_ n { catch* }) to the stack.
+5. Push the handler (HANDLER_ n { catch* }) to the stack.
 6. Enter val^m :: instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.null (_IDX x)
@@ -27160,7 +27180,7 @@ Step_read/ref.func x
 3. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
 
 Step_read/ref.test rt
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
+1. Let (FRAME_ _ { f }) be the topmost FRAME_.
 2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt' be $Ref_type(ref).
@@ -27170,7 +27190,7 @@ Step_read/ref.test rt
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_read/ref.cast rt
-1. Let (FRAME_ _ { f }) be the current FRAME_ context.
+1. Let (FRAME_ _ { f }) be the topmost FRAME_.
 2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt' be $Ref_type(ref).
@@ -30291,24 +30311,24 @@ instantiate s module externaddr*
 10. Let (ELEM reftype expr_E* elemmode)* be elem*.
 11. Let instr_S? be (CALL x)?.
 12. Let z be (s, { MODULE: moduleinst_0 }).
-13. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { $frame(z) }) to the stack.
+13. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 14. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-15. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-16. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+15. Pop the frame (FRAME_ 0 { f }) from the stack.
+16. Push the frame (FRAME_ 0 { f }) to the stack.
 17. Let [ref_T]* be $Eval_expr(z, expr_T)*.
-18. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
-19. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+18. Pop the frame (FRAME_ 0 { f }) from the stack.
+19. Push the frame (FRAME_ 0 { f }) to the stack.
 20. Let [ref_E]** be $Eval_expr(z, expr_E)**.
-21. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+21. Pop the frame (FRAME_ 0 { f }) from the stack.
 22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
 23. Let f be { MODULE: moduleinst }.
-24. Push the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) to the stack.
+24. Push the frame (FRAME_ 0 { f }) to the stack.
 25. Execute the sequence instr_E*.
 26. Execute the sequence instr_D*.
 27. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
-28. Pop the :ref:`frame <syntax-frame>` (FRAME_ 0 { f }) from the stack.
+28. Pop the frame (FRAME_ 0 { f }) from the stack.
 29. Return f.MODULE.
 
 invoke s funcaddr val*
@@ -30319,12 +30339,12 @@ invoke s funcaddr val*
 5. If not $Val_type(val, t_1)*, then:
   a. Fail.
 6. Let k be |t_2*|.
-7. Push the :ref:`frame <syntax-frame>` (FRAME_ k { f }) to the stack.
+7. Push the frame (FRAME_ k { f }) to the stack.
 8. Push the values val* to the stack.
 9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
 10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
 11. Pop the values val'^k from the stack.
-12. Pop the :ref:`frame <syntax-frame>` (FRAME_ k { f }) from the stack.
+12. Pop the frame (FRAME_ k { f }) from the stack.
 13. Return val'^k.
 
 allocXs X Y s X_1* Y_1*

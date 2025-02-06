@@ -78,6 +78,6 @@ let string_of_stack_prefix expr =
     let evalctx_name = Xl.Mixop.name (List.nth mixop 0)
     |> fun s -> String.sub s 0 (String.length s - 1)
     |> String.lowercase_ascii in
-    Printf.sprintf "the :ref:`%s <syntax-%s>` " evalctx_name evalctx_name
+    Printf.sprintf "the %s " evalctx_name
   | IterE _ -> "the values "
   | _ -> "the value "

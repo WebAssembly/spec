@@ -80,6 +80,10 @@ let topValuesE ?(at = no) ~note e = TopValuesE e |> mk_expr at note
 let subE ?(at = no) ~note (id, ty) = SubE (id, ty) |> mk_expr at note
 let yetE ?(at = no) ~note s = YetE s |> mk_expr at note
 
+let expA ?(at = no) e = ExpA e $ at
+let typA ?(at = no) ty = TypA ty $ at
+let defA ?(at = no) id = DefA id $ at
+
 let mk_path at it = Util.Source.($) it at
 
 let idxP ?(at = no) e = IdxP e |> mk_path at
