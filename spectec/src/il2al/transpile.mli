@@ -17,3 +17,4 @@ val infer_assert : instr list -> instr list
 val ensure_return :  instr list -> instr list
 val remove_exit : algorithm -> algorithm
 val remove_enter : algorithm -> algorithm
+val prosify_control_frame : algorithm -> algorithm

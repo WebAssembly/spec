@@ -1210,6 +1210,8 @@ let rec render_instr env algoname index depth instr =
       (render_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->
     sprintf "%s Execute the instruction %s." (render_order index depth) (render_expr env e)
+  | Al.Ast.ExecuteSeqI ({ it = CallE ("__prose:_jump_to_the_cont", _); _}) ->
+    sprintf "%s Jump to the continuation of L." (render_order index depth)
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->

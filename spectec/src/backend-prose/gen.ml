@@ -674,6 +674,7 @@ let gen_execution_prose () =
         |> insert_state_binding
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter
+        |> Il2al.Transpile.prosify_control_frame
       in
       AlgoD algo) !Langs.al
 

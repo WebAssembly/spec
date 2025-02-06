@@ -1028,7 +1028,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Execute the sequence :math:`{{\mathit{instr}'}^\ast}`.
+   #. Jump to the continuation of L.
 
 #. Else:
 
@@ -5808,7 +5808,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Execute the sequence :math:`{{\mathit{instr}'}^\ast}`.
+   #. Jump to the continuation of L.
 
 #. Else:
 
@@ -16464,7 +16464,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-      #) Execute the sequence :math:`{{\mathit{instr}'}^\ast}`.
+      #) Jump to the continuation of L.
 
    #. Else:
 

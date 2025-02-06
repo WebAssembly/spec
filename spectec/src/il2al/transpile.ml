@@ -1146,3 +1146,20 @@ let remove_enter algo =
 
   let algo' = remove_enter' algo in
   if Eq.eq_algos algo algo' then algo else remove_enter' algo'
+
+let prosify_control_frame algo =
+  (* change wording from "execute instr*" to "jump to the continuation" *)
+
+  let cont_ref = ref (yetE "Null" ~note:no_note) in
+
+  let walk_instr walker instr =
+    match instr.it with
+    | LetI ({ it = CaseE ([{ it = Atom "LABEL_"; _ }] :: _, [ _; cont ]); _ }, _) ->
+      cont_ref := cont; [ instr ]
+    | ExecuteSeqI expr when Eq.eq_expr expr !cont_ref ->
+      [ { instr with it = ExecuteSeqI (callE ("__prose:_jump_to_the_cont", [expA expr]) ~note:no_note) } ]
+    | _ -> base_walker.walk_instr walker instr in
+
+  let walker = { base_walker with walk_instr } in
+
+  walker.walk_algo walker algo

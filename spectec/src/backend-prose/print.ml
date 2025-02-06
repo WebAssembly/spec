@@ -91,6 +91,8 @@ and string_of_expr expr =
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | TupE el -> "(" ^ string_of_exprs ", " el ^ ")"
+  | CallE (id, [a]) when String.starts_with ~prefix:"__prose" id ->
+    string_of_arg a
   | CallE (id, al) ->
     sprintf "$%s(%s)" id (string_of_args ", " al)
   | InvCallE (id, nl, al) ->
