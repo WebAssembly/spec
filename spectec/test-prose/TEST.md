@@ -29,12 +29,12 @@ The limits :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` with :math:`k` if:
 
 
 
-The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is :ref:`valid <valid-val>`.
+The function type :math:`{t_1^\ast}~\rightarrow~{t_2^?}` is always :ref:`valid <valid-val>`.
 
 
 
 
-The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>`.
+The global type :math:`({\mathsf{mut}^?}~t)` is always :ref:`valid <valid-val>`.
 
 
 
@@ -2835,10 +2835,10 @@ Limits_ok
   - m is less than or equal to k.
 
 Functype_ok
-- the function type t_1* -> t_2? is valid.
+- the function type t_1* -> t_2? is always valid.
 
 Globaltype_ok
-- the global type (MUT? t) is valid.
+- the global type (MUT? t) is always valid.
 
 Tabletype_ok
 - the table type limits is valid if:
@@ -4213,12 +4213,12 @@ The limits :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` with :math:`k` if:
 
 
 
-The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
+The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is always :ref:`valid <valid-val>`.
 
 
 
 
-The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>`.
+The global type :math:`({\mathsf{mut}^?}~t)` is always :ref:`valid <valid-val>`.
 
 
 
@@ -5508,7 +5508,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
 
 
-:math:`\mathsf{passive}` is :ref:`valid <valid-val>`.
+:math:`\mathsf{passive}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -9790,10 +9790,10 @@ Limits_ok
   - m is less than or equal to k.
 
 Functype_ok
-- the function type t_1* -> t_2* is valid.
+- the function type t_1* -> t_2* is always valid.
 
 Globaltype_ok
-- the global type (MUT? t) is valid.
+- the global type (MUT? t) is always valid.
 
 Tabletype_ok
 - the table type (limits reftype) is valid if:
@@ -10464,7 +10464,7 @@ Datamode_ok/active
   - expr is constant.
 
 Datamode_ok/passive
-- PASSIVE is valid.
+- PASSIVE is always valid.
 
 Data_ok
 - the memory segment (DATA b* datamode) is valid if:
@@ -12518,12 +12518,12 @@ Untranslated relation Expand: `%~~%`(deftype, comptype)
 
 
 
-The number type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>`.
+The number type :math:`{\mathit{numtype}}` is always :ref:`valid <valid-val>`.
 
 
 
 
-The vector type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>`.
+The vector type :math:`{\mathit{vectype}}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -12553,7 +12553,7 @@ The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
 
 
-The heap type :math:`{\mathit{absheaptype}}` is :ref:`valid <valid-val>`.
+The heap type :math:`{\mathit{absheaptype}}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -12636,7 +12636,7 @@ The value type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The value type :math:`\mathsf{bot}` is :ref:`valid <valid-val>`.
+The value type :math:`\mathsf{bot}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -12671,7 +12671,7 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
 
 
-The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
+The packed type :math:`{\mathit{packtype}}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -24528,10 +24528,10 @@ watsup 0.4 generator
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
 Numtype_ok
-- the number type numtype is valid.
+- the number type numtype is always valid.
 
 Vectype_ok
-- the vector type vectype is valid.
+- the vector type vectype is always valid.
 
 Heaptype_ok
 - the heap type heaptype_u1 is valid if:
@@ -24547,7 +24547,7 @@ Heaptype_ok
     - C.RECS[i] is st.
 
 Heaptype_ok/abs
-- the heap type absheaptype is valid.
+- the heap type absheaptype is always valid.
 
 Heaptype_ok/typeidx
 - the heap type (_IDX typeidx) is valid if:
@@ -24590,7 +24590,7 @@ Valtype_ok/ref
   - reftype is valid.
 
 Valtype_ok/bot
-- the value type BOT is valid.
+- the value type BOT is always valid.
 
 Resulttype_ok
 - the result type t* is valid if:
@@ -24608,7 +24608,7 @@ Instrtype_ok
     - C.LOCALS[x] is lct.
 
 Packtype_ok
-- the packed type packtype is valid.
+- the packed type packtype is always valid.
 
 Storagetype_ok
 - the storage type storagetype_u1 is valid if:

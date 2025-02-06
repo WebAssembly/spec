@@ -71,4 +71,7 @@ struct
     let cs = ref [] in
     for i = String.length s - 1 downto 0 do cs := s.[i] :: !cs done;
     !cs
+
+  let replace pattern replacement s =
+    Str.global_replace (Str.regexp_string pattern) replacement s
 end

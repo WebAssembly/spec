@@ -1,6 +1,7 @@
 open Al.Ast
 open Prose
 open Printf
+open Util
 open Util.Source
 open Xl
 
@@ -476,7 +477,8 @@ let string_of_def = function
 | RuleD (anchor, concl, []) ->
     anchor
     ^ "\n"
-    ^ string_of_stmt concl ^ "\n"
+    ^ (string_of_stmt concl |> Lib.String.replace "is valid." "is always valid.")
+    ^ "\n"
 | RuleD (anchor, concl, prems) ->
     init_render_type ();
     let concl_str = string_of_stmt concl in

@@ -20,11 +20,12 @@ type env =
     render_latex: Backend_latex.Render.env;
     macro: Macro.env;
     vars: Set.t;
+    uncond_concl: bool; (* Indicates if currently rendering an unconditional concl *)
   }
 
 let env config inputs outputs render_latex : env =
   let macro = Macro.env inputs outputs in
-  let env = { config; render_latex; macro; vars=Set.empty } in
+  let env = { config; render_latex; macro; vars=Set.empty; uncond_concl=false } in
   env
 
 (* Helpers *)
@@ -813,11 +814,12 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
       sprintf "%s %s %s" (render_hd_expr env e1) cmpop rhs
     | IsValidS (c_opt, e, es, pphint) ->
       let prep = render_pp_hint pphint in
-      let vref = valid_link env e
-      in
-      sprintf "%s%s is %s%s"
+      let vref = valid_link env e in
+      let always = env.uncond_concl && es = [] in
+      sprintf "%s%s is %s%s%s"
         (render_opt "under the context " (render_expr env) ", " c_opt)
         (render_hd_expr env e)
+        (if always then "always " else "")
         vref
         (if es = [] then "" else prep ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
@@ -1196,12 +1198,13 @@ let _render_pred env name params instrs =
 let render_rule env concl prems =
   init_typs ();
   match prems with
-  | [] -> render_stmt env 0 concl
+  | [] ->
+    render_stmt {env with uncond_concl = true} 0 concl
   | _ ->
-      let sconcl = render_stmt env 0 concl in
-      let sconcl = String.sub sconcl 0 (String.length sconcl - 1) in
-      let sprems = render_stmts env 1 prems in
-      sprintf "%s if:\n%s" sconcl sprems
+    let sconcl = render_stmt env 0 concl in
+    let sconcl = String.sub sconcl 0 (String.length sconcl - 1) in (*remove dot*)
+    let sprems = render_stmts env 1 prems in
+    sprintf "%s if:\n%s" sconcl sprems
 
 let render_rule_algo env name params instrs =
   let title = render_atom_title env name params in
