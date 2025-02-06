@@ -1,3 +1,3 @@
-## External Language
+# Internal Language
 
 TODO
