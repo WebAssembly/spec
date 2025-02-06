@@ -125,12 +125,12 @@ The limits :math:`{}[~n_{11}~..~n_{12}~]` :ref:`matches <match>` the limits :mat
 
 
 
-The function type :math:`{\mathit{ft}}` :ref:`matches <match>` itself.
+The function type :math:`{\mathit{ft}}` :ref:`matches <match>` only itself.
 
 
 
 
-The global type :math:`{\mathit{gt}}` :ref:`matches <match>` itself.
+The global type :math:`{\mathit{gt}}` :ref:`matches <match>` only itself.
 
 
 
@@ -2885,10 +2885,10 @@ Limits_sub
   - n_12 is less than or equal to n_22.
 
 Functype_sub
-- the function type ft matches itself.
+- the function type ft matches only itself.
 
 Globaltype_sub
-- the global type gt matches itself.
+- the global type gt matches only itself.
 
 Tabletype_sub
 - the table type lim_1 matches the table type lim_2 if:
@@ -4313,7 +4313,7 @@ The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
 
 
-The value type :math:`t` :ref:`matches <match>` itself.
+The value type :math:`t` :ref:`matches <match>` only itself.
 
 
 
@@ -4345,12 +4345,12 @@ The limits :math:`{}[~n_{11}~..~n_{12}~]` :ref:`matches <match>` the limits :mat
 
 
 
-The function type :math:`{\mathit{ft}}` :ref:`matches <match>` itself.
+The function type :math:`{\mathit{ft}}` :ref:`matches <match>` only itself.
 
 
 
 
-The global type :math:`{\mathit{gt}}` :ref:`matches <match>` itself.
+The global type :math:`{\mathit{gt}}` :ref:`matches <match>` only itself.
 
 
 
@@ -9842,7 +9842,7 @@ Valtype_sub
     - valtype_u1 is BOT.
 
 Valtype_sub/refl
-- t matches itself.
+- t matches only itself.
 
 Valtype_sub/bot
 - the value type BOT matches t.
@@ -9859,10 +9859,10 @@ Limits_sub
   - n_12 is less than or equal to n_22.
 
 Functype_sub
-- the function type ft matches itself.
+- the function type ft matches only itself.
 
 Globaltype_sub
-- the global type gt matches itself.
+- the global type gt matches only itself.
 
 Tabletype_sub
 - the table type (lim_1 rt) matches the table type (lim_2 rt) if:
@@ -12779,12 +12779,12 @@ The composite type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <v
 
 
 
-The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` itself.
+The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` only itself.
 
 
 
 
-The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` itself.
+The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` only itself.
 
 
 
@@ -12954,7 +12954,7 @@ The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
 
 
-The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` itself.
+The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` only itself.
 
 
 
@@ -13120,7 +13120,7 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref
 
 
 
-The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` itself.
+The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` only itself.
 
 
 
@@ -24663,10 +24663,10 @@ Comptype_ok/func
   - the function type functype is valid.
 
 Packtype_sub
-- the packed type packtype matches itself.
+- the packed type packtype matches only itself.
 
 Numtype_sub
-- the number type numtype matches itself.
+- the number type numtype matches only itself.
 
 Deftype_sub
 - the defined type deftype_1 matches the defined type deftype_2 if:
@@ -24759,7 +24759,7 @@ Heaptype_sub
     - heaptype_u2 is heaptype.
 
 Heaptype_sub/refl
-- heaptype matches itself.
+- heaptype matches only itself.
 
 Heaptype_sub/trans
 - the heap type heaptype_1 matches the heap type heaptype_2 if:
@@ -24845,7 +24845,7 @@ Reftype_sub/null
   - the heap type ht_1 matches the heap type ht_2.
 
 Vectype_sub
-- the vector type vectype matches itself.
+- the vector type vectype matches only itself.
 
 Valtype_sub
 - the value type valtype_u1 matches the value type valtype_u2 if:

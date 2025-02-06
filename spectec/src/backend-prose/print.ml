@@ -413,7 +413,7 @@ let rec raw_string_of_single_stmt stmt =
       (string_of_expr_with_type e)
       (string_of_nullable_list string_of_expr_with_type prep " and " "" es)
   | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
-    sprintf "%s matches itself"
+    sprintf "%s matches only itself"
       (string_of_expr_with_type e1)
   | MatchesS (e1, e2) ->
     sprintf "%s matches %s"

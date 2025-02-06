@@ -823,7 +823,7 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         vref
         (if es = [] then "" else prep ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
-      sprintf "%s %s itself"
+      sprintf "%s %s only itself"
         (render_hd_expr env e1)
         (match_link env e1)
     | MatchesS (e1, e2) ->
