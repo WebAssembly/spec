@@ -13477,7 +13477,7 @@ The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` 
 
 
 
-The limits :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` within :math:`k` if:
+The limits range :math:`{}[~n~..~m~]` is :ref:`valid <valid-val>` within :math:`k` if:
 
 
    * :math:`n` is less than or equal to :math:`m`.
@@ -13498,7 +13498,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
 
    * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
 
@@ -13508,7 +13508,7 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
 
 
 
@@ -13622,7 +13622,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
 
 
-The limits :math:`{}[~n_1~..~m_1~]` :ref:`matches <match>` the limits :math:`{}[~n_2~..~m_2~]` if:
+The limits range :math:`{}[~n_1~..~m_1~]` :ref:`matches <match>` the limits range :math:`{}[~n_2~..~m_2~]` if:
 
 
    * :math:`n_1` is greater than or equal to :math:`n_2`.
@@ -13675,7 +13675,7 @@ The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` :ref:`matches <match
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1)` :ref:`matches <match>` the table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2)` if:
 
 
-   * The limits :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits :math:`{\mathit{limits}}_2`.
+   * The limits range :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits range :math:`{\mathit{limits}}_2`.
 
    * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
 
@@ -13687,7 +13687,7 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` :ref:`matches <match>` the memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page})` if:
 
 
-   * The limits :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits :math:`{\mathit{limits}}_2`.
+   * The limits range :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits range :math:`{\mathit{limits}}_2`.
 
 
 
@@ -25022,7 +25022,7 @@ Deftype_ok
   - i is less than n.
 
 Limits_ok
-- the limits ([ n .. m ]) is valid within k if:
+- the limits range ([ n .. m ]) is valid within k if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
@@ -25032,12 +25032,12 @@ Globaltype_ok
 
 Tabletype_ok
 - the table type (addrtype limits reftype) is valid if:
-  - the limits limits is valid within ((2 ^ 32) - 1).
+  - the limits range limits is valid within ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
 Memtype_ok
 - the memory type addrtype limits PAGE is valid if:
-  - the limits limits is valid within (2 ^ 16).
+  - the limits range limits is valid within (2 ^ 16).
 
 Tagtype_ok
 - the tag type deftype is valid if:
@@ -25096,7 +25096,7 @@ Instrtype_sub
     - C.LOCALS[x] is (SET t).
 
 Limits_sub
-- the limits ([ n_1 .. m_1 ]) matches the limits ([ n_2 .. m_2 ]) if:
+- the limits range ([ n_1 .. m_1 ]) matches the limits range ([ n_2 .. m_2 ]) if:
   - n_1 is greater than or equal to n_2.
   - m_1 is less than or equal to m_2.
 
@@ -25122,13 +25122,13 @@ Globaltype_sub/var
 
 Tabletype_sub
 - the table type (addrtype limits_1 reftype_1) matches the table type (addrtype limits_2 reftype_2) if:
-  - the limits limits_1 matches the limits limits_2.
+  - the limits range limits_1 matches the limits range limits_2.
   - the reference type reftype_1 matches the reference type reftype_2.
   - reftype_2 matches reftype_1.
 
 Memtype_sub
 - the memory type addrtype limits_1 PAGE matches the memory type addrtype limits_2 PAGE if:
-  - the limits limits_1 matches the limits limits_2.
+  - the limits range limits_1 matches the limits range limits_2.
 
 Tagtype_sub
 - the tag type deftype_1 matches the tag type deftype_2 if:

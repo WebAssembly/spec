@@ -43,7 +43,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(limits)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {\mathit{u{\kern-0.1em\scriptstyle 64}}} ] \\[0.8ex]
+\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {\mathit{u{\kern-0.1em\scriptstyle 64}}} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(function type)} & {\mathit{functype}} & ::= & {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
