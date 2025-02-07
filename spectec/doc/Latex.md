@@ -142,7 +142,7 @@ Some aspects of rendering can be custimised by [hints](Language.md#hints).
 
 TODO: update & extend
 
-#### Display hints (`show`)
+#### Show hints (`show`)
 
 Hints of the form `hint(show <exp>)` are recognised on a number of constructs and change how the respective definition and all its uses are rendered:
 
