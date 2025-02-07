@@ -1,3 +1,3 @@
-# Generating Prose
+# Prose Generation
 
 TODO

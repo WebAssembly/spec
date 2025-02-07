@@ -1,4 +1,4 @@
-# Generating Latex
+# Latex Generation
 
 The SpecTec language is designed to look relatively similar to the math formulas that the Latex renderer ultimately generates,
 albeit written in plain ASCII.
@@ -19,7 +19,12 @@ The Latex render uses 4 different font families for rendering identifiers:
 
 * Function names are stripped of their leading `$` and rendered in serif (`mathsf`).
 
-* Grammar names and literals are rendered in type-writer (`mathtt`).
+* Grammar names (and grammar literals) are rendered in type-writer (`mathtt`),
+  after removing the first character from the name.
+  (This is a hack to allow multiple grammars for the same phrase to coexist in a script
+  without having to invent multiple names;
+  e.g., the Wasm spec uses `Bvaltype` vs `Tvaltype`
+  for binary and text format, respectively.)
 
 * Numbers are normally rendered in the default math font.
 
@@ -39,7 +44,10 @@ SpecTec interprets underscores as subscripting in a few places:
   (e.g., `t_i` vs `t_EX`),
   rendered in variable style or atom style (after lower-casing), accordingly.
 
-* Atoms are an exception, where *inner* underscores are just rendered as underscores (e.g., `ADD_SAT`).
+* This behaviour can be escaped by using a double underscore (`__`),
+  which will then render as a single underscore.
+
+* Atoms are an exception, where inner underscores are just rendered as underscores (e.g., `ADD_SAT`).
 
 * In an atom,
   a *trailing* underscore causes the consecutive expression in a sequence to be type-set as a subscript
@@ -50,11 +58,15 @@ SpecTec interprets underscores as subscripting in a few places:
   (e.g., `x ->_ y z`).
 
 * In a function identifier,
-  a trailing underscore causes the first argument to be set as a subscript
-  (e.g., `$f_(i, x, y)` becomes `f_i(x, y)` in Latex).
+  trailing underscores cause the leading arguments to be set as a subscript,
+  specifcally, as many arguments as trailing underscores
+  (e.g., `$f_(i, x, y)` becomes `f_i(x, y)` in Latex,
+  while `$f__(i, j, x)` becomes `f_{i, j}(x)`).
+
   To emulate multiple (comma-separated) subscripts,
-  use a tuple type as the first argument
+  a tuple type can also be used as the first argument
   (e.g., `$f_((i, j), x)` to produce `f_{i, j}(x)` in Latex).
+
   The outermost parentheses around the subscripted argument will be removed
   (e.g., the ones enclosing the tuple).
   Add an extra layer of parentheses to force them to appear
@@ -160,6 +172,8 @@ Hints of the form `hint(show <exp>)` are recognised on a number of constructs an
 
   def $size(valtype) : nat   hint(show |valtype|)
   ```
+
+  Hints on variant cases are inherited when the corresponding type is included by name in another variant type definition.
 
 * on a record field they control how the atom is rendered; the expression typically is some other atom,
 
