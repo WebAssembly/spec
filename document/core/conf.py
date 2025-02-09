@@ -297,6 +297,7 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
+   # enumitem package is used to allow deeper nesting of lists, than the default 4 levels.
    # Don't type-set cross references with emphasis.
    'preamble': r'''
       \renewcommand\sphinxcrossref[1]{#1}
