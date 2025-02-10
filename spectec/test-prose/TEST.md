@@ -2516,7 +2516,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
@@ -2524,7 +2524,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
 
    #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_1^\ast}`.
 
@@ -2617,7 +2617,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
+#. Assert: :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_1`.
 
@@ -2685,11 +2685,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{funcaddr}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{funcaddr}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{a^\ast}~{{{a'}^\ast}^\ast}` be :math:`{{\mathit{funcaddr}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`i~{{i'}^\ast}` be :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}`.
 
@@ -2708,11 +2708,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{byte}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{byte}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`i~{{i'}^\ast}` be :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}`.
 
@@ -9398,7 +9398,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
@@ -9406,7 +9406,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
 
    #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_1^\ast}`.
 
@@ -9498,11 +9498,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{reftype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{reftype}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{reftype}}_1^\ast}`.
 
@@ -9565,7 +9565,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
+#. Assert: :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_1`.
 
@@ -9653,7 +9653,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`(\mathsf{elem{.}drop}~i)`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`.
 
 #. Let :math:`(\mathsf{active}~x~{{\mathit{instr}}^\ast})` be :math:`{\mathit{elemmode}}_1`.
 
@@ -9670,7 +9670,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`.
 
 #. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_1`.
 
@@ -23951,9 +23951,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{deftype}}_1^\ast} = \epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{{\mathit{code}}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{{\mathit{code}}}_1^\ast} = \epsilon`.
 
-   #. Assert: Due to validation, :math:`{{\mathit{moduleinst}}_1^\ast} = \epsilon`.
+   #. Assert: :math:`{{\mathit{moduleinst}}_1^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
@@ -23961,11 +23961,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}_1^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{{\mathit{code}}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{{\mathit{code}}}_1^\ast}|} \geq 1`.
 
    #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}}_1^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{moduleinst}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{moduleinst}}_1^\ast}|} \geq 1`.
 
    #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}_1^\ast}`.
 
@@ -23995,7 +23995,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
@@ -24003,7 +24003,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
 
    #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_1^\ast}`.
 
@@ -24035,11 +24035,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}` be :math:`{{\mathit{ref}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{tabletype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{tabletype}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_1^\ast}`.
 
@@ -24131,11 +24131,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{elemtype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{elemtype}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{elemtype}}_1^\ast}`.
 
@@ -24167,11 +24167,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{byte}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{byte}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{datatype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{datatype}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{datatype}}_1^\ast}`.
 
@@ -24210,7 +24210,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}_1` is :math:`\mathsf{tag}`.
+#. Assert: :math:`{\mathit{externidx}}_1` is :math:`\mathsf{tag}`.
 
 #. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_1`.
 
@@ -24317,7 +24317,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`(\mathsf{elem{.}drop}~x)`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`.
 
 #. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be :math:`{\mathit{elemmode}}_1`.
 
@@ -24332,7 +24332,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`.
 
 #. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_1`.
 
@@ -24347,11 +24347,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{expr}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{expr}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{expr}}~{{\mathit{expr}'}^\ast}` be :math:`{{\mathit{expr}}_1^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{globaltype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{globaltype}}_1^\ast}|} \geq 1`.
 
 #. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
 
@@ -24451,7 +24451,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Assert: Due to validation, :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is :math:`\mathsf{func}`.
+1. Assert: :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is :math:`\mathsf{func}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
 

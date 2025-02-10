@@ -817,10 +817,10 @@ and handle_special_lhs lhs rhs free_ids =
     let length_s, bindings_s, suffix' = handle_list suffix in
     (* TODO: This condition should be injected by sideconditions pass *)
     let cond = match length_p, length_s with
-      | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs) ~note:boolT
+      | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs) ~at ~note:boolT
       | Some l, None
-      | None, Some l -> binE (`GeOp, lenE rhs ~note:l.note, l) ~note:boolT
-      | Some l1, Some l2 -> binE (`EqOp, lenE rhs ~note:l1.note, binE (`AddOp, l1, l2) ~note:natT) ~note:boolT
+      | None, Some l -> binE (`GeOp, lenE rhs ~note:l.note, l) ~at ~note:boolT
+      | Some l1, Some l2 -> binE (`EqOp, lenE rhs ~note:l1.note, binE (`AddOp, l1, l2) ~note:natT) ~at ~note:boolT
     in
     [
       ifI

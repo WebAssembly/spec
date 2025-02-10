@@ -998,7 +998,7 @@ let rec infer_assert instrs =
   if count_if instrs = 1 then
     let hd, tl = Lib.List.split_last instrs in
     match tl.it with
-    | IfI (c, il1, []) -> hd @ assertI c :: infer_assert il1
+    | IfI (c, il1, []) -> hd @ assertI c ~at:c.at :: infer_assert il1
     | _ -> instrs
   else instrs
 

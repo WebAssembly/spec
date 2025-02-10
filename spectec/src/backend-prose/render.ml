@@ -1071,13 +1071,18 @@ let rec render_instr env algoname index depth instr =
       (repeat indent depth ^ or_index)
       (render_instrs env algoname (depth + 1) il2)
   | Al.Ast.AssertI c ->
-    let lname = String.lowercase_ascii algoname in
-    let vref = match try_inject_link env "validation" ("valid-" ^ lname) with
-    | Some s -> s
-    | None -> "validation"
-    in
-    sprintf "%s Assert: Due to %s, %s." (render_order index depth)
-    vref (render_expr env c)
+    (* HARDCODE: omit "Due to validation" for assertions from 9-module.watsup *)
+    if String.ends_with ~suffix:"module.watsup" c.at.left.file then (
+      sprintf "%s Assert: %s." (render_order index depth) (render_expr env c)
+    ) else (
+      let lname = String.lowercase_ascii algoname in
+      let vref = match try_inject_link env "validation" ("valid-" ^ lname) with
+      | Some s -> s
+      | None -> "validation"
+      in
+      sprintf "%s Assert: Due to %s, %s." (render_order index depth)
+      vref (render_expr env c)
+    )
   | Al.Ast.PushI e ->
     sprintf "%s Push %s%s to the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
