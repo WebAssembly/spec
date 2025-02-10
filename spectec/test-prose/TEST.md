@@ -1014,7 +1014,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the topmost :math:`\mathsf{label}`.
 
-#. Let :math:`n` be arity of L
+#. Let :math:`n` be the arity of L
 
 #. If :math:`n_1 = 0`, then:
 
@@ -1085,7 +1085,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be arity of F
+#. Let :math:`n` be the arity of F
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1108,7 +1108,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let F be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be arity of F
+   #. Let :math:`n` be the arity of F
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5816,7 +5816,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the topmost :math:`\mathsf{label}`.
 
-#. Let :math:`n` be arity of L
+#. Let :math:`n` be the arity of L
 
 #. If :math:`n_1 = 0`, then:
 
@@ -5887,7 +5887,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be arity of F
+#. Let :math:`n` be the arity of F
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5910,7 +5910,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let F be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be arity of F
+   #. Let :math:`n` be the arity of F
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16490,7 +16490,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let L be the topmost :math:`\mathsf{label}`.
 
-   #. Let :math:`n` be arity of L
+   #. Let :math:`n` be the arity of L
 
    #. If :math:`l = 0`, then:
 
@@ -16627,7 +16627,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be arity of F
+#. Let :math:`n` be the arity of F
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -16650,7 +16650,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let F be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be arity of F
+   #. Let :math:`n` be the arity of F
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17613,7 +17613,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let H be the topmost :math:`\mathsf{handler}`.
 
-         #) Let :math:`n` be arity of H
+         #) Let :math:`n` be the arity of H
 
          #) Let :math:`{{\mathit{catch}}_1^\ast}` be the catch handler of H
 

@@ -1222,7 +1222,7 @@ let rec render_instr env algoname index depth instr =
       match render_expr env arity with
       | "" -> ""
       | s ->
-        sprintf "\n\n%s%s Let %s be arity of %s"
+        sprintf "\n\n%s%s Let %s be the arity of %s"
           (repeat indent depth)
           (render_order index depth)
           s
