@@ -938,6 +938,53 @@ and render_stmts env depth stmts =
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix = Prose_util.string_of_stack_prefix
 
+let render_control_frame_binding env expr =
+  let open Al in
+  match expr.it with
+  | Ast.CaseE (mixop, [ arity; arg ]) ->
+    let atom = mixop |> List.hd |> List.hd in
+    let atom_name = Atom.to_string atom in
+    let control_frame_var = String.sub atom_name 0 1 in
+    let control_frame_name, rendered_arg =
+      match atom_name with
+      | "LABEL_" ->
+        let continuation =
+          match arg.it with
+          | ListE [] -> "end"
+          | _ -> "start" in
+        sprintf "the %s" (render_atom env atom),
+          sprintf "whose continuation is the %s of the block" continuation
+      | "FRAME_" ->
+        sprintf "the %s %s" (render_atom env atom) (render_expr env arg),
+          ""
+      | "HANDLER_" ->
+        sprintf "the %s" (render_atom env atom),
+          sprintf "whose catch handler is %s" (render_expr env arg)
+      | _ ->
+        expr
+        |> Al.Print.string_of_expr
+        |> sprintf "Rendering control frame %s failed: rendering control frame requires hardcoding"
+        |> failwith
+    in
+    let rendered_arity =
+      match arity.it with
+      | NumE (`Nat z) when z = Z.zero -> ""
+      | _ -> sprintf "whose arity is %s" (render_expr env arity) in
+    let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
+    let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
+    sprintf "Let %s be %s%s%s%s%s."
+      control_frame_var
+      control_frame_name
+      space_opt
+      rendered_arity
+      and_opt
+      rendered_arg
+  | _ ->
+    expr
+    |> Print.string_of_expr
+    |> sprintf "Invalid control frame: %s"
+    |> failwith
+
 let rec render_instr env algoname index depth instr =
   match instr.it with
   | Al.Ast.IfI (c, il, []) ->
@@ -1083,22 +1130,31 @@ let rec render_instr env algoname index depth instr =
       sprintf "%s Assert: Due to %s, %s." (render_order index depth)
       vref (render_expr env c)
     )
+  | Al.Ast.PushI ({ it = Al.Ast.CaseE (mixop, _); _ } as expr)
+  when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
+    let atom = mixop |> List.hd |> List.hd in
+    sprintf "%s %s\n\n%s%s Push the %s %s."
+      (render_order index depth)
+      (render_control_frame_binding env expr)
+      (repeat indent depth)
+      (render_order index depth)
+      (render_atom env atom)
+      (String.sub (Atom.to_string atom) 0 1)
   | Al.Ast.PushI e ->
-    sprintf "%s Push %s%s to the stack." (render_order index depth)
+    sprintf "%s Push %s %s to the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopI ({ it = Al.Ast.CaseE (mixop, _); _ } as expr)
   when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
-    let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
-    let control_frame_kind =
-      String.sub atom_name 0 (String.length atom_name - 1)
-      |> String.lowercase_ascii in
+    let atom = mixop |> List.hd |> List.hd in
+    let atom_name = Atom.to_string atom in
+    let control_frame_kind = render_atom env atom in
     let control_frame_var = String.sub atom_name 0 1 in
     sprintf "%s Pop the %s %s from the stack."
       (render_order index depth)
       control_frame_kind
       control_frame_var
   | Al.Ast.PopI e ->
-    sprintf "%s Pop %s%s from the stack." (render_order index depth)
+    sprintf "%s Pop %s %s from the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
@@ -1152,29 +1208,36 @@ let rec render_instr env algoname index depth instr =
     ) in
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n) ce
   (* NOTE: This assumes that the first argument of control frame is arity *)
-  | Al.Ast.LetI ({ it = Al.Ast.CaseE (mixop, arity :: _); _ } as lhs, rhs)
+    | Al.Ast.LetI ({ it = Al.Ast.CaseE (mixop, [ arity; arg ] ); _ } as lhs, rhs)
   when Al.Valid.sub_typ lhs.note Al.Al_util.evalctxT ->
-    let control_frame_name =
-      mixop
-      |> List.concat_map (List.map Atom.to_string)
-      |> String.concat ""
-      |> fun s -> String.sub s 0 1 in
-    let rendered_arity = render_expr env arity in
+    let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
+    let control_frame_var = String.sub atom_name 0 1 in
     let rendered_let =
       sprintf "%s Let %s be %s."
         (render_order index depth)
-        control_frame_name
+        control_frame_var
         (render_expr env rhs) in
-    if rendered_arity = "" then rendered_let
-    else
-      (* XXX: It could introduce dead assignment *)
-      let rendered_let_arity =
+    (* XXX: It could introduce dead assignment *)
+    let rendered_arity =
+      match render_expr env arity with
+      | "" -> ""
+      | s ->
         sprintf "\n\n%s%s Let %s be arity of %s"
           (repeat indent depth)
           (render_order index depth)
-          (render_expr env arity)
-          control_frame_name in
-      rendered_let ^ rendered_let_arity
+          s
+          control_frame_var in
+    (* XXX: It could introduce dead assignment *)
+    let rendered_arg =
+      match atom_name with
+      | "HANDLER_" ->
+        sprintf "\n\n%s%s Let %s be the catch handler of %s"
+          (repeat indent depth)
+          (render_order index depth)
+          (render_expr env arg)
+          control_frame_var
+      | _ -> "" in
+      rendered_let ^ rendered_arity ^ rendered_arg
   | Al.Ast.LetI (n, e) ->
     let rec find_eval_expr e = match e.it with
       | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
@@ -1209,8 +1272,19 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.ReturnI e_opt ->
     sprintf "%s Return%s." (render_order index depth)
       (render_opt " " (render_expr env) "" e_opt)
-  | Al.Ast.EnterI (e1, e2, il) ->
-    sprintf "%s Enter %s with label %s.%s" (render_order index depth)
+  | Al.Ast.EnterI ({ it = Al.Ast.CaseE (mixop, _); _ } as e1, e2, il) ->
+    let atom = mixop |> List.hd |> List.hd in
+    sprintf "%s %s\n\n%s%s Enter %s with the %s %s.%s"
+      (render_order index depth)
+      (render_control_frame_binding env e1)
+      (repeat indent depth)
+      (render_order index depth)
+      (render_expr env e2)
+      (render_atom env atom)
+      (String.sub (Atom.to_string atom) 0 1)
+      (render_instrs env algoname (depth + 1) il)
+  | Al.Ast.EnterI (e1, (e2), il) ->
+    sprintf "%s enter %s with label %s.%s" (render_order index depth)
       (render_expr env e2) (render_expr env e1)
       (render_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->

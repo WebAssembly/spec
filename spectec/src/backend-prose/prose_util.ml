@@ -73,11 +73,11 @@ let string_of_stack_prefix expr =
   match expr.it with
   | GetCurContextE _
   | VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.frameT -> "the :ref:`frame <syntax-frame>` "
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.frameT -> "the :ref:`frame <syntax-frame>`"
   | CaseE (mixop, _) when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT ->
     let evalctx_name = Xl.Mixop.name (List.nth mixop 0)
     |> fun s -> String.sub s 0 (String.length s - 1)
     |> String.lowercase_ascii in
-    Printf.sprintf "the %s " evalctx_name
-  | IterE _ -> "the values "
-  | _ -> "the value "
+    Printf.sprintf "the %s" evalctx_name
+  | IterE _ -> "the values"
+  | _ -> "the value"

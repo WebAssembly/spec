@@ -294,10 +294,10 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il2)
   | AssertI e -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_expr e)
   | PushI e ->
-    sprintf "%s Push %s%s to the stack." (make_index depth)
+    sprintf "%s Push %s %s to the stack." (make_index depth)
       (string_of_stack_prefix e) (string_of_expr e)
   | PopI e ->
-    sprintf "%s Pop %s%s from the stack." (make_index depth)
+    sprintf "%s Pop %s %s from the stack." (make_index depth)
       (string_of_stack_prefix e) (string_of_expr e)
   | PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (make_index depth)
