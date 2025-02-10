@@ -150,71 +150,17 @@ In [inference rules](#rules) the layout can also be modified:
 
 ### Hints
 
-Some aspects of rendering can be custimised by [hints](Language.md#hints).
-
-TODO: update & extend
-
-#### Show hints (`show`)
-
-Hints of the form `hint(show <exp>)` are recognised on a number of constructs and change how the respective definition and all its uses are rendered:
-
-* On a syntax definition or variable declaration they control how the variable is printed;
-  in that case `<exp>` will typically be another variable name:
-  ```
-  syntax admininstr  hint(show instr) = ...
-  ```
-
-* On a variant case or function declaration they control how the case is rendered;
-  the expression will typically be a _pattern_ containing _holes_ `%`,
-  which are substituted by the arguments in order of appearance:
-  ```
-  syntax instr = | CONST valtype c  hint(show %.CONST %)
-
-  def $size(valtype) : nat   hint(show |valtype|)
-  ```
-
-  Hints on variant cases are inherited when the corresponding type is included by name in another variant type definition.
-
-* on a record field they control how the atom is rendered; the expression typically is some other atom,
-
-* on a relation declaration they control how the rule names are rendered; the expression must be a text literal:
-  ```
-  relation Instr_ok: context |- instr : functype   hint(show "T")
-  rule Instr_ok: C |- DROP : t -> eps
-
-  relation Step: instr* ~> instr*                  hint(show "S")
-  rule Step/drop: val DROP ~> eps
-  ```
-  After this, the splice `$${rule+: Instr_ok/nop}` will generate (in proper Latex)
-  ```
-  ------------------------ [T-drop]
-  C |- DROP : t -> eps
-  ```
-  Similarly, the splice `$${rule+: Step/nop}` will generate
-  ```
-  [S-nop]  val DROP ~> eps
-  ```
-
-Show hints for variant cases or function definition are expressions with two additional pieces of syntax:
-
-* _holes_ `%` are placeholders for the real arguments of the identifier at uses sites, substituted in order of appearance,
-
-  Arguments can also be placed out of order
-
-* _fuses_ `exp#exp` remove spacing between two expressions.
-
-For example, with
-```
-syntax instr = ...
-  | CONST numtype c    hint(show %.CONST %)
-  | EXTEND numtype n   hint(show %.EXTEND#%)
-```
-  the expressions `CONST f64 5` and `EXTEND i32 8` will be rendered as `f64.const 5` and `i32.extend8`, respectively (in proper Latex).
+Some aspects of rendering can be customised by [hints](Language.md#hints).
 
 
 #### Description hints (`desc`)
 
-Hints of the form `hint(desc <exp>)` are recognised on syntax definitions and define a description of the production. The expression must be a text literal. When rendering the respective syntax defininition with `syntax+`, this description will show up on the left. For example,
+Hints of the form `hint(desc "text")` are recognised on syntax definitions
+and define a description of the production.
+The expression must be a text literal.
+When rendering the respective syntax defininition with `syntax+`,
+this description will show up on the left.
+For example,
 ```
 syntax valtype hint(desc "value type") =
   | numtype
@@ -228,7 +174,295 @@ will render as
                         | reftype
 ```
 
+The description is also used in [prose](Prose.md) geenration.
+
+
+#### Name hints (`name`)
+
+Hints of the form `hint(name "text")` are recognised on relation declarations
+and control how the rule names are rendered.
+The expression must again be a text literal.
+```
+relation Instr_ok: context |- instr : functype   hint(name "T")
+rule Instr_ok: C |- DROP : t -> eps
+
+relation Step: instr* ~> instr*                  hint(name "S")
+rule Step/drop: val DROP ~> eps
+```
+After this, the [splice](Splicing.md) `$${rule+: Instr_ok/nop}` will generate (in proper Latex)
+```
+------------------------ [T-drop]
+C |- DROP : t -> eps
+```
+Similarly, the splice `$${rule+: Step/nop}` will generate
+```
+[S-nop]  val DROP ~> eps
+```
+
+
+#### Show hints (`show`)
+
+Hints of the form `hint(show <exp>)` are recognised on a number of constructs and change how the respective definition and all its uses are rendered:
+
+* For syntax definitions or variable declarations,
+  show hints control how the variable is printed;
+  in that case `<exp>` will typically be another variable name:
+  ```
+  syntax admininstr  hint(show instr) = ...
+  ```
+  If the syntax has parameters,
+  show hints also control how the arguments are displayed.
+
+  Instead of the standard form of an argument list,
+  they e.g. allow printing them as sub- or superscripts or in some other form:
+  ```
+  syntax u(N)  hint(show u#%)
+  ```
+  Here, `%` represents a *hole*,
+  which will be substituted by the actual argument,
+  while, the operator `#` represents textual concatenation;
+  see below for details.
+
+* For a variant case or a function declaration,
+  show hints control how the case is rendered;
+  the expression will typically contain holes `%`,
+  which are substituted by the arguments in order of appearance:
+  ```
+  syntax instr =
+    CONST valtype c  hint(show %.CONST %)
+
+  def $size(valtype) : nat   hint(show |%|)
+  ```
+
+  Hints on variant cases are inherited when the corresponding type is included by name in another variant type definition.
+
+* For a record field,
+  show hints control how the atom is rendered;
+  the expression typically is some other replacement atom.
+
+* For a relation declaration,
+  show hints control how its rules are rendered.
+
+
+##### Special Operators in Show Hints
+
+The expression of a show int can contain additional operators:
+
+Show hints for variant cases or function definition are expressions with two additional pieces of syntax:
+
+* *Fuses* `exp#exp` remove spacing between two expressions.
+
+* *Unwrap* `##exp` removes the outermost parentheses of exp, if present.
+
+* *Holes* `%`, `%i`, `%%` are placeholders for the arguments of a definition:
+
+  * `%0` stands for the name of the defined entity.
+
+  * `%i` stands for the i-th argument in order of appearance,
+    and starting with 1.
+
+  * `%` is a shorthand for the *next* argument that follows the previously used hole,
+    or `%1` if it is the first.
+
+  * `%%` stands for the expression [sequence](Language.md#sequences-and-lists) consisting of the *remaining* arguments,
+    starting with the one that would be `%`.
+
+  The list of arguments is defined as follows:
+
+  * For a syntax type, it is the list of type parameters;
+    `%0` is the name of the type.
+
+  * For a function, it is the list of function parameters;
+    `%0` is the name of the function.
+
+  * For a variant case, it is the sequence of types following the initial atom;
+    `%0` is the initial atom.
+    Exception: If there is no initial atom
+    (e.g., because the case is defined by an infix operator atom),
+    then `%0` is the initial element of the sequence.
+    Moreover, if the initial atom is an infix operator,
+    then a nested empty sequence is implicitly assumed to its left,
+    which becomes `%0`.
+
+  * For a relation, it works analoguously to variant cases.
+
+* *Empty Space* `!%` stands for zero-width space,
+  and is sometimes useful to provide an expression where one is required syntactically,
+  but nothing should be printed.
+
+* *Literal Latex* `%latex("text")` inserts the text as Latex source code unmodified.
+  **Use with care!**
+  This is considered a last resort that shoul dbe avoided if possible,
+  since it may not work with future rendering backends.
+
+**Example:**
+Consider the following hints:
+```
+syntax instr = ...
+  | CONST numtype c    hint(show %.CONST %)
+  | EXTEND numtype n   hint(show %.EXTEND#%)
+```
+With those, the expressions `CONST f64 5` and `EXTEND i32 8` will be rendered as `f64.const 5` and `i32.extend8`, respectively.
+
+
+#### Macro Hints (`macro`)
+
+Macro hints can be used to control the names of macros generated with the [`--latex-macros` ](Usage.md#splicing-mode) option,
+see the next section.
+
 
 ### Macros
 
-TODO
+By default, SpecTec generates plain Latex for any form of identifier,
+as described [above](#fonts).
+In order to allow generating cross-references or using other outside functionality,
+[splicing](Usage.md#splicing-mode) can be run with the `--latex-macros` option.
+In that mode, identifiers are instead rendered as Latex macro invocations `\name`.
+
+The macro names used are derived from the identifiers:
+
+* For syntax and variable identifiers,
+  the name of the macro is the identifier
+  after stripping possible suffixes like `_1`, `'`, or trailing underscores.
+
+* For function identifiers,
+  the name of the macro is the identifier
+  after stripping the initial `$` and any (inner or trailing) underscores.
+
+* For grammar identifiers,
+  the name of the macro is the identifier.
+
+* For alphanumeric atoms,
+  the name of the macro is the atom identifiers
+  after stripping it of any (inner or trailing) underscores and dots.
+
+* Symbolic operator atoms are always macrofied,
+  independently of the `--latex-macros` option.
+  The macro name simply is respective Latex operator macro.
+  An exception are punctuation atoms like commas or brackets,
+  or the escaped `?`, `+`, and `*` operators,
+  which do not require a macro in Latex.
+
+The generated macros have to be defined by the user
+and be included in the spliced input documents by suitable means
+(which depend on whether the target of splicing is Latex or Sphinx).
+
+
+**Example:**
+Consider the following definitions:
+```
+syntax instr = NOP | LOCAL.GET | CALL_INDIRECT
+
+def $f(nat, nat) : nat
+def $f(n_1, n_2) = n_1 + n_2
+```
+The default macro invocations produced for this
+will be `\instr`, `\NOP`, `\LOCALGET`, `\CALLINDIRECT`, `\f`, and `\n`.
+
+
+
+#### Macro Hints
+
+The default macro names can be overridden by macro hints.
+
+* `hint(macro "text")` choses an alternative macro name,
+  and is recognised for all definitions that bind identifiers.
+
+  The text in the hint defines the name of the macro to produce.
+  This text may contain a placeholder `%`,
+  which is substituted by the default macro name.
+  Hence, `hint(macro "%")` is equivalent to no hint,
+  but, e.g., `hint(macro "%suffix)` appends `suffix` to the name.
+
+* `hint(macro none)` selectively suppresses macro generation for an individual identifier,
+  and is likewise recognised for all definitions that bind identifiers.
+
+* `hint(macro "text1" "text2")` is avaliable for type definitions,
+  and choses alternative macro names for both the type identifier (`text1`)
+  and for all atoms in its definition (`text2`).
+  The latter typically uses `%` to adapt to each case.
+
+**Example:**
+Consider the following macro hint:
+```
+syntax comptype hint(macro "%" "T%") =
+  | STRUCT structtype
+  | ARRAY arraytype
+  | FUNC functype
+```
+It causes the declared identifiers to generate the macro names
+`\comptype`, `\TSTRUCT`, `\TARRAY`, and `\TFUNC`, respectively.
+This is equivalent to, but shorter than, the following option:
+```
+syntax comptype =
+  | STRUCT structtype hint(macro "TSTRUCT")
+  | ARRAY arraytype   hint(macro "TARRAY")
+  | FUNC functype     hint(macro "TFUNC")
+```
+
+Macro hints also apply to symbolic operator atoms.
+This way, such operators can alo be customised,
+for example, to produce cross-references.
+
+**Example:**
+Consider the following:
+```
+syntax functype = resulttype -> resulttype hint(macro "funcarrow")
+
+syntax limits = `[u64 .. u64] hint(macro "LIM%")
+```
+This will cause the arrow to generate the macro invocation `\funcarrow`
+instead of the standard `\rightarrow`.
+Similarly, the brackets will produce `\LIMlbrack` and `\LIMrbrack`.
+
+For operator atoms that do not have Latex command names
+(like the brackets for the `limits` type in the example),
+SpecTec defines default names as follows:
+
+* `..` — `\dotdot`
+* `...` — `\dots`
+* `,` — `\comma`
+* `:` — `\colon`
+* `;` — `\semicolon`
+* `<:` — `\sub`
+* `:>` — `\sup`
+* `:=` — `\assign`
+* ` ``?` — `\quest`
+* ` ``+` — `\plus`
+* ` ``*` — `\ast`
+* `++` — `\cat`
+* ` ``|` — `\bar`
+* `(/\)` — `\bigand`
+* `(\/)` — `\bigor`
+* `(+)` — `\bigadd`
+* `(*)` — `\bigmul`
+* `(++)` — `\bigcat`
+* ` ``(`, `)` — `\lparen`, `\rparen`
+* ` ``[`, `]` — `\lbrack`, `\rbrack`
+* ` ``{`, `}` — `\lbrace`, `\rbrace`
+
+
+#### Interaction with Show Hints
+
+Macrofication is performed *after* expanding possible [show hints](#show-hints-show).
+That means that the macros generated are derived from the identifiers and atoms occurring in the expansion.
+
+**Example:**
+Consider:
+```
+def $lunpack(lanetype) : numtype  hint(show $unpack(%))
+
+def $subst_all(deftype*, heaptype*) : deftype*  hint(show %#`[:=%])
+```
+This function sytnax will produce macro invocations for
+`\unpack`, `\lbrack`, `\assign`, and `\rbrack`, respectively.
+
+Macro hints likewise apply to the contents of the show hints.
+
+**Example:**
+Consider:
+```
+def $subst_all(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
+```
+This will generate macro invocations for
+`\lbracksubst`, `\assignsubst`, and `\rbracksubst`.
