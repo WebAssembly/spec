@@ -106,22 +106,6 @@ Growing :ref:`tables <syntax-tableinst>`
 
 $${definition-prose: growtable}
 
-.. todo:: generated prose is missing fail case; manual prose below
-
-1. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` to grow, :math:`n` the number of elements by which to grow it, and :math:`\reff` the initialization value.
-
-2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIREFS`.
-
-3. Let :math:`(\addrtype~\limits~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
-
-4. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
-
-5. If the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~\reftype)` is not :ref:`valid <valid-tabletype>`, then fail.
-
-6. Append :math:`\reff^n` to :math:`\tableinst.\TIREFS`.
-
-7. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~t)`.
-
 $${definition: growtable}
 
 
@@ -133,24 +117,6 @@ Growing :ref:`memories <syntax-meminst>`
 
 $${definition-prose: growmem}
 
-.. todo:: generated prose is missing fail case; manual prose below
-
-1. Let :math:`\meminst` be the :ref:`memory instance <syntax-meminst>` to grow and :math:`n` the number of :ref:`pages <page-size>` by which to grow it.
-
-2. Assert: The length of :math:`\meminst.\MIBYTES` is divisible by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
-
-3. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\meminst.\MIBYTES` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
-
-4. Let :math:`(\addrtype~\limits)` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
-
-5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
-
-6. If the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')` is not :ref:`valid <valid-memtype>`, then fail.
-
-7. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIBYTES`.
-
-8. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')`.
-
 $${definition: growmem}
 
 
@@ -160,7 +126,9 @@ $${definition: growmem}
 :ref:`Modules <syntax-moduleinst>`
 ..................................
 
-.. todo:: (0) Allocmodule is skipped due to an unexpected error
+$${definition-prose: allocmodule}
+
+.. todo:: Prose for Allocmodule was being skipped due to indentation error, which is fixed by now. Needs to check if the generated prose seems good.
 
 The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external addresses <syntax-externaddr>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` list of the module,
 a list of initialization :ref:`values <syntax-val>` for the module's :ref:`globals <syntax-global>`,
