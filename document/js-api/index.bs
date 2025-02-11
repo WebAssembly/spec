@@ -459,8 +459,10 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
         1. [=map/set|Set=] |builtinOrStringImports|[|importedStringModule|] to |exportsObject|
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
-        1. If |builtinOrStringImports| [=map/exist|contains=] |moduleName| and |builtinOrStringImports|[|moduleName|] [=map/exist|contains=] |componentName|,
-            1. Let |o| be |builtinOrStringImports|[|moduleName|]
+        1. If |builtinOrStringImports| [=map/exist|contains=] |moduleName|,
+            1. Let |o| be |builtinOrStringImports|[|moduleName|].
+            1. If |o| [=is not an Object=] of if |o| [=map/exist|does not contain=] |componentName|,
+                1. Set |o| to [=?=] [$Get$](|importObject|, |moduleName|).
         1. Else,
             1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If |o| [=is not an Object=], throw a {{TypeError}} exception.
