@@ -181,6 +181,19 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
     (* HARDCODE: Unifying CatE with non-CatE *)
     | CatE ({ it = IterE (_, (ListN _, _)); _ } as e1', _), _ -> overlap env e1 { e2 with it = CatE (e1', e2) }
     | _, CatE ({ it = IterE (_, (ListN _, _)); _ } as e2', _) -> overlap env { e1 with it = CatE (e2', e1) } e2
+    (* HARDCODE: Prevent vals overlapped into instr *)
+    | _ when Il2al_util.is_val e1 && Il2al_util.is_val e2 ->
+      let ty = overlap_typ env e1.note e2.note in
+      let valT = Al.Al_util.valT in
+      let ty = if Il.Eval.sub_typ !Al.Valid.il_env ty valT then ty else valT in
+      let id = gen_new_unified env ty in
+      let it =
+        match ty.it with
+        | IterT (ty1, iter) ->
+          IterE (VarE id $$ no_region % ty1, (iter, [(id, VarE id $$ no_region % ty)]))
+        | _ -> VarE id
+      in
+      { e1 with it; note = ty }
     | _ ->
       let ty = overlap_typ env e1.note e2.note in
       let id = gen_new_unified env ty in

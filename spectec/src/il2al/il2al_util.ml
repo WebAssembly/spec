@@ -242,3 +242,29 @@ let introduce_fresh_variable
     if IdSet.mem var idset then get_fresh_variable (var^"'") else var in
 
   get_fresh_variable prefix
+
+let val_mixops = ref []
+
+
+let is_val exp =
+  if (!val_mixops = []) then (
+    let id = "val" $ no_region in
+    match Il.Env.find_typ !Al.Valid.il_env id with
+    | _, [inst] -> (
+      match inst.it with
+      | InstD ([], [], { it = VariantT typcases; _ }) -> (
+        val_mixops := List.map (fun (mixop, _, _) -> mixop) typcases
+      )
+      | _ -> error no_region "syntax definition of val is wrong"
+    )
+    | _ -> error no_region "syntax definition of val is wrong"
+  );
+  match exp.it with
+  | CaseE (mixop, _) -> (
+    match List.find_opt (Il.Eq.eq_mixop mixop) !val_mixops with
+    | Some _ -> true
+    | None -> false
+    )
+  | VarE _ -> Il.Eval.sub_typ !Al.Valid.il_env exp.note Al.Al_util.valT
+  | SubE (_, t, _) -> Il.Eval.sub_typ !Al.Valid.il_env t Al.Al_util.valT
+  | _ -> false

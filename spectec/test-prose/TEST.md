@@ -5321,25 +5321,25 @@ The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with 
 
 
 
-:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
+:math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
@@ -10400,17 +10400,17 @@ Expr_ok
   - instr* is valid with the function type [] -> t*.
 
 Instr_const
-- the instruction instr_u1 is constant if:
+- the value val_u1 is constant if:
   - Either:
-    - instr_u1 is (nt.CONST c).
+    - val_u1 is (nt.CONST c).
   - Or:
-    - instr_u1 is (vt.CONST vc).
+    - val_u1 is (vt.CONST vc).
   - Or:
-    - instr_u1 is (REF.NULL rt).
+    - val_u1 is (REF.NULL rt).
   - Or:
-    - instr_u1 is (REF.FUNC x).
+    - val_u1 is (REF.FUNC x).
   - Or:
-    - instr_u1 is (GLOBAL.GET x).
+    - val_u1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
 
@@ -15343,56 +15343,56 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
+:math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct{.}new}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct{.}new}~x)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new}~x)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{any{.}convert\_extern}`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{any{.}convert\_extern}`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{extern{.}convert\_any}`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{extern{.}convert\_any}`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
 
@@ -16865,17 +16865,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................................
 
 
-1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{val}}_1`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{31, 32}^{{\mathit{sx}}}}}{(i)})` to the stack.
 
@@ -16901,17 +16901,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
 
-#. If :math:`{\mathit{instr}}_1` is address value, then:
+#. If :math:`{\mathit{val}}_1` is address value, then:
 
-   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{val}}_1`.
 
    #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
 
@@ -16920,17 +16920,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}extern}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}extern}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{val}}_1`.
 
    #. Push the value :math:`{\mathit{addrref}}` to the stack.
 
@@ -17432,17 +17432,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}func}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}func}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
@@ -17522,11 +17522,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-      1) Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+      1) Assert: Due to validation, a value is on the top of the stack.
 
-      #) Pop the value :math:`{\mathit{instr}}_1` from the stack.
+      #) Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-      #) If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+      #) If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
          a) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
@@ -17534,9 +17534,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Trap.
 
-      #) If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}func}`, then:
+      #) If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}func}`, then:
 
-         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_1`.
+         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{val}}_1`.
 
          #) If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
@@ -17567,17 +17567,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}exn}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}exn}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{val}}_1`.
 
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
@@ -17607,7 +17607,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Else if not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
-         a) Throw the exception :math:`{\mathit{instr}}_1` as a result.
+         a) Throw the exception :math:`{\mathit{val}}_1` as a result.
 
       #) Else:
 
@@ -17771,7 +17771,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else if not the first non-value entry of the stack is a :math:`\mathsf{label}` and not the first non-value entry of the stack is a :math:`\mathsf{frame}` and not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
-   a. Throw the exception :math:`{\mathit{instr}}_1` as a result.
+   a. Throw the exception :math:`{\mathit{val}}_1` as a result.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -17888,17 +17888,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}struct}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}struct}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`i < {|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{structs}|}`, then:
 
@@ -18006,17 +18006,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -18039,17 +18039,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}`, then:
 
@@ -18074,17 +18074,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a \geq {|z{.}\mathsf{arrays}|}`, then:
 
@@ -18133,37 +18133,37 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
 #. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_2` from the stack.
+#. Pop the value :math:`{\mathit{val}}_2` from the stack.
 
-#. If :math:`{\mathit{instr}}_2` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{instr}}_1` is reference value, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{instr}}_2` is reference value, then:
+#. If :math:`{\mathit{val}}_2` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}}_1` is reference value, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_2` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}}_2` is reference value, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_2`.
+   a. Trap.
 
-   #. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_2` is :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{val}}_2`.
+
+   #. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
       1) If :math:`a_1 < {|z{.}\mathsf{arrays}|}` and :math:`i_1 + n > {|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_1`.
+      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{val}}_1`.
 
       #) If :math:`a_2 \geq {|z{.}\mathsf{arrays}|}`, then:
 
@@ -18252,17 +18252,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -18317,17 +18317,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -18972,17 +18972,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}struct}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}struct}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}}_1`.
 
    #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{struct}`.
 
@@ -19034,17 +19034,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, an :ref:`instruction <syntax-instr>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -26044,37 +26044,37 @@ Nondefaultable
   - the value $default_(t) is ?().
 
 Instr_const
-- the instruction instr_u1 is constant if:
+- the value val_u1 is constant if:
   - Either:
-    - instr_u1 is (nt.CONST c_nt).
+    - val_u1 is (nt.CONST c_nt).
   - Or:
-    - instr_u1 is (vt.CONST c_vt).
+    - val_u1 is (vt.CONST c_vt).
   - Or:
-    - instr_u1 is (REF.NULL ht).
+    - val_u1 is (REF.NULL ht).
   - Or:
-    - instr_u1 is REF.I31.
+    - val_u1 is REF.I31.
   - Or:
-    - instr_u1 is (REF.FUNC x).
+    - val_u1 is (REF.FUNC x).
   - Or:
-    - instr_u1 is (STRUCT.NEW x).
+    - val_u1 is (STRUCT.NEW x).
   - Or:
-    - instr_u1 is (STRUCT.NEW_DEFAULT x).
+    - val_u1 is (STRUCT.NEW_DEFAULT x).
   - Or:
-    - instr_u1 is (ARRAY.NEW x).
+    - val_u1 is (ARRAY.NEW x).
   - Or:
-    - instr_u1 is (ARRAY.NEW_DEFAULT x).
+    - val_u1 is (ARRAY.NEW_DEFAULT x).
   - Or:
-    - instr_u1 is (ARRAY.NEW_FIXED x n).
+    - val_u1 is (ARRAY.NEW_FIXED x n).
   - Or:
-    - instr_u1 is ANY.CONVERT_EXTERN.
+    - val_u1 is ANY.CONVERT_EXTERN.
   - Or:
-    - instr_u1 is EXTERN.CONVERT_ANY.
+    - val_u1 is EXTERN.CONVERT_ANY.
   - Or:
-    - instr_u1 is (GLOBAL.GET x).
+    - val_u1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
   - Or:
-    - instr_u1 is (BINOP Inn binop).
+    - val_u1 is (BINOP Inn binop).
     - Inn is contained in [I32, I64].
     - binop is contained in [ADD, SUB, MUL].
 
@@ -26814,12 +26814,12 @@ Step_pure/ref.eq
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/i31.get sx
-1. Assert: Due to validation, a value of value type instr is on the top of the stack.
-2. Pop the value instr_1 from the stack.
-3. If instr_1 is REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val_1 from the stack.
+3. If val_1 is REF.NULL, then:
   a. Trap.
-4. If instr_1 is REF.I31_NUM, then:
-  a. Let (REF.I31_NUM i) be instr_1.
+4. If val_1 is REF.I31_NUM, then:
+  a. Let (REF.I31_NUM i) be val_1.
   b. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
 
 Step_pure/array.new x
@@ -26831,21 +26831,21 @@ Step_pure/array.new x
 6. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_pure/extern.convert_any
-1. Assert: Due to validation, a value of value type instr is on the top of the stack.
-2. Pop the value instr_1 from the stack.
-3. If instr_1 is REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val_1 from the stack.
+3. If val_1 is REF.NULL, then:
   a. Push the value (REF.NULL EXTERN) to the stack.
-4. If instr_1 is addrref, then:
-  a. Let addrref be instr_1.
+4. If val_1 is addrref, then:
+  a. Let addrref be val_1.
   b. Push the value (REF.EXTERN addrref) to the stack.
 
 Step_pure/any.convert_extern
-1. Assert: Due to validation, a value of value type instr is on the top of the stack.
-2. Pop the value instr_1 from the stack.
-3. If instr_1 is REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val_1 from the stack.
+3. If val_1 is REF.NULL, then:
   a. Push the value (REF.NULL ANY) to the stack.
-4. If instr_1 is REF.EXTERN, then:
-  a. Let (REF.EXTERN addrref) be instr_1.
+4. If val_1 is REF.EXTERN, then:
+  a. Let (REF.EXTERN addrref) be val_1.
   b. Push the value addrref to the stack.
 
 Step_pure/vvunop V128 vvunop
@@ -27078,12 +27078,12 @@ Step_read/call x
 
 Step_read/call_ref yy
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type instr is on the top of the stack.
-3. Pop the value instr_1 from the stack.
-4. If instr_1 is REF.NULL, then:
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val_1 from the stack.
+4. If val_1 is REF.NULL, then:
   a. Trap.
-5. If instr_1 is REF.FUNC_ADDR, then:
-  a. Let (REF.FUNC_ADDR a) be instr_1.
+5. If val_1 is REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be val_1.
   b. If (a < |$funcinst(z)|), then:
     1) Let fi be $funcinst(z)[a].
     2) Assert: Due to validation, fi.CODE is FUNC.
@@ -27119,14 +27119,14 @@ Step_read/return_call_ref yy
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if the first non-value entry of the stack is a FRAME_, then:
-  a. Assert: Due to validation, a value of value type instr is on the top of the stack.
-  b. Pop the value instr_1 from the stack.
-  c. If instr_1 is REF.NULL, then:
+  a. Assert: Due to validation, a value is on the top of the stack.
+  b. Pop the value val_1 from the stack.
+  c. If val_1 is REF.NULL, then:
     1) Pop all values val* from the top of the stack.
     2) Pop the frame (FRAME_ _ { _ }) from the stack.
     3) Trap.
-  d. If instr_1 is REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be instr_1.
+  d. If val_1 is REF.FUNC_ADDR, then:
+    1) Let (REF.FUNC_ADDR a) be val_1.
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is FUNC.
       b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
@@ -27141,12 +27141,12 @@ Step_read/return_call_ref yy
 
 Step_read/throw_ref
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type instr is on the top of the stack.
-3. Pop the value instr_1 from the stack.
-4. If instr_1 is REF.NULL, then:
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val_1 from the stack.
+4. If val_1 is REF.NULL, then:
   a. Trap.
-5. If instr_1 is REF.EXN_ADDR, then:
-  a. Let (REF.EXN_ADDR a) be instr_1.
+5. If val_1 is REF.EXN_ADDR, then:
+  a. Let (REF.EXN_ADDR a) be val_1.
   b. Pop all values val* from the top of the stack.
   c. If (val* =/= []), then:
     1) Push the value (REF.EXN_ADDR a) to the stack.
@@ -27160,7 +27160,7 @@ Step_read/throw_ref
     2) Push the value (REF.EXN_ADDR a) to the stack.
     3) Execute the instruction THROW_REF.
   f. Else if not the first non-value entry of the stack is a HANDLER_, then:
-    1) Throw the exception instr_1 as a result.
+    1) Throw the exception val_1 as a result.
   g. Else:
     1) Let (HANDLER_ n { catch_1* }) be the topmost HANDLER_.
     2) If (catch_1* = []), then:
@@ -27234,7 +27234,7 @@ Step_read/throw_ref
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
 6. Else if (not the first non-value entry of the stack is a LABEL_ /\ (not the first non-value entry of the stack is a FRAME_ /\ not the first non-value entry of the stack is a HANDLER_)), then:
-  a. Throw the exception instr_1 as a result.
+  a. Throw the exception val_1 as a result.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
@@ -27285,12 +27285,12 @@ Step_read/struct.new_default x
 
 Step_read/struct.get sx? x i
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type instr is on the top of the stack.
-3. Pop the value instr_1 from the stack.
-4. If instr_1 is REF.NULL, then:
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val_1 from the stack.
+4. If val_1 is REF.NULL, then:
   a. Trap.
-5. If instr_1 is REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be instr_1.
+5. If val_1 is REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be val_1.
   b. If ((i < |$structinst(z)[a].FIELDS|) /\ (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
     2) Let (STRUCT structtype_0) be $expanddt($type(z, x)).
@@ -27342,12 +27342,12 @@ Step_read/array.get sx? x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. Assert: Due to validation, a value of value type instr is on the top of the stack.
-5. Pop the value instr_1 from the stack.
-6. If instr_1 is REF.NULL, then:
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val_1 from the stack.
+6. If val_1 is REF.NULL, then:
   a. Trap.
-7. If instr_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_1.
+7. If val_1 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val_1.
   b. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If ((i < |$arrayinst(z)[a].FIELDS|) /\ (a < |$arrayinst(z)|)), then:
@@ -27358,12 +27358,12 @@ Step_read/array.get sx? x
 
 Step_read/array.len
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type instr is on the top of the stack.
-3. Pop the value instr_1 from the stack.
-4. If instr_1 is REF.NULL, then:
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val_1 from the stack.
+4. If val_1 is REF.NULL, then:
   a. Trap.
-5. If instr_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_1.
+5. If val_1 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val_1.
   b. If (a < |$arrayinst(z)|), then:
     1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
 
@@ -27375,12 +27375,12 @@ Step_read/array.fill x
 5. Pop the value val from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value of value type instr is on the top of the stack.
-9. Pop the value instr_1 from the stack.
-10. If instr_1 is REF.NULL, then:
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value val_1 from the stack.
+10. If val_1 is REF.NULL, then:
   a. Trap.
-11. If instr_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_1.
+11. If val_1 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val_1.
   b. If (a >= |$arrayinst(z)|), then:
     1) Do nothing.
   c. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
@@ -27404,22 +27404,22 @@ Step_read/array.copy x_1 x_2
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value of value type instr is on the top of the stack.
-7. Pop the value instr_1 from the stack.
+6. Assert: Due to validation, a value is on the top of the stack.
+7. Pop the value val_1 from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value of value type instr is on the top of the stack.
-11. Pop the value instr_2 from the stack.
-12. If (instr_2 is REF.NULL /\ instr_1 is ref), then:
+10. Assert: Due to validation, a value is on the top of the stack.
+11. Pop the value val_2 from the stack.
+12. If (val_2 is REF.NULL /\ val_1 is ref), then:
   a. Trap.
-13. If (instr_1 is REF.NULL /\ instr_2 is ref), then:
+13. If (val_1 is REF.NULL /\ val_2 is ref), then:
   a. Trap.
-14. If instr_2 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be instr_2.
-  b. If instr_1 is REF.ARRAY_ADDR, then:
+14. If val_2 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be val_2.
+  b. If val_1 is REF.ARRAY_ADDR, then:
     1) If ((a_1 < |$arrayinst(z)|) /\ ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be instr_1.
+    2) Let (REF.ARRAY_ADDR a_2) be val_1.
     3) If (a_2 >= |$arrayinst(z)|), then:
       a) Do nothing.
     4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
@@ -27463,12 +27463,12 @@ Step_read/array.init_elem x y
 5. Pop the value (I32.CONST j) from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value of value type instr is on the top of the stack.
-9. Pop the value instr_1 from the stack.
-10. If instr_1 is REF.NULL, then:
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value val_1 from the stack.
+10. If val_1 is REF.NULL, then:
   a. Trap.
-11. If instr_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_1.
+11. If val_1 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val_1.
   b. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If ((j + n) > |$elem(z, y).REFS|), then:
@@ -27495,12 +27495,12 @@ Step_read/array.init_data x y
 5. Pop the value (I32.CONST j) from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value of value type instr is on the top of the stack.
-9. Pop the value instr_1 from the stack.
-10. If instr_1 is REF.NULL, then:
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value val_1 from the stack.
+10. If val_1 is REF.NULL, then:
   a. Trap.
-11. If instr_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_1.
+11. If val_1 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val_1.
   b. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If $expanddt($type(z, x)) is ARRAY, then:
@@ -27814,12 +27814,12 @@ Step/struct.set x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. Assert: Due to validation, a value of value type instr is on the top of the stack.
-5. Pop the value instr_1 from the stack.
-6. If instr_1 is REF.NULL, then:
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val_1 from the stack.
+6. If val_1 is REF.NULL, then:
   a. Trap.
-7. If instr_1 is REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be instr_1.
+7. If val_1 is REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be val_1.
   b. Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
   c. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
   d. Let (mut zt)* be structtype_0.
@@ -27844,12 +27844,12 @@ Step/array.set x
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type instr is on the top of the stack.
-7. Pop the value instr_1 from the stack.
-8. If instr_1 is REF.NULL, then:
+6. Assert: Due to validation, a value is on the top of the stack.
+7. Pop the value val_1 from the stack.
+8. If val_1 is REF.NULL, then:
   a. Trap.
-9. If instr_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_1.
+9. If val_1 is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val_1.
   b. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
