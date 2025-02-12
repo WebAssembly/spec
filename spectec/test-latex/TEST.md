@@ -12327,7 +12327,7 @@ $$
 {{{\mathrm{allocX}}^\ast}}{(s, \epsilon, \epsilon)} & = & (s, \epsilon) \\
 {{{\mathrm{allocX}}^\ast}}{(s, X~{{X'}^\ast}, Y~{{Y'}^\ast})} & = & (s_2, a~{{a'}^\ast}) & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ (s_1, a) = {\mathrm{allocX}}(X, Y, s, X, Y) \\
+\mbox{if}~ (s_1, a) = {{\mathrm{allocX}}}{(s, X, Y)} \\
 {\land}~ (s_2, {{a'}^\ast}) = {{{\mathrm{allocX}}^\ast}}{(s_1, {{X'}^\ast}, {{Y'}^\ast})} \\
 \end{array} \\
 \end{array}
