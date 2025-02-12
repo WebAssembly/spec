@@ -446,13 +446,18 @@ and il_to_el_typ t =
 
 (* Operators *)
 
-let render_prose_cmpop = function
-  | `EqOp -> "is of the form"
-  | `NeOp -> "is not of the form"
+let render_arith_cmpop = function
+  | `EqOp -> "is equal to"
+  | `NeOp -> "is not equal to"
   | `LtOp -> "is less than"
   | `GtOp -> "is greater than"
   | `LeOp -> "is less than or equal to"
   | `GeOp -> "is greater than or equal to"
+
+let render_prose_cmpop = function
+  | `EqOp -> "is of the form"
+  | `NeOp -> "is not of the form"
+  | cmpop -> render_arith_cmpop cmpop
 
 let render_prose_cmpop_eps = function
   | `EqOp -> "is"
@@ -841,6 +846,10 @@ let render_pp_hint = function
 let rec render_single_stmt ?(with_type=true) env stmt  =
   let render_hd_expr = if with_type then render_expr_with_type else render_expr in
   match stmt with
+    | LetS (lhs, { it = LenE e; _ }) ->
+    sprintf "let %s be the length of %s."
+      (render_expr env lhs)
+      (render_expr env e)
     | LetS (e1, e2) ->
       sprintf "let %s be %s"
         (render_expr env e1)
@@ -848,6 +857,21 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
     | CondS e ->
       sprintf "%s"
         (render_expr env e)
+    | CmpS ({ it = LenE e1; _ }, cmpop, { it = LenE e2; _ }) ->
+      sprintf "The length of %s %s the length of %s"
+        (render_expr env e1)
+        (render_arith_cmpop cmpop)
+        (render_expr env e2)
+    | CmpS ({ it = LenE e1; _ }, cmpop, e2) ->
+      sprintf "The length of %s %s %s"
+        (render_expr env e1)
+        (render_arith_cmpop cmpop)
+        (render_expr env e2)
+    | CmpS (e1, cmpop, { it = LenE e2; _ }) ->
+      sprintf "%s %s the length of %s"
+        (render_expr env e1)
+        (render_arith_cmpop cmpop)
+        (render_expr env e2)
     | CmpS (e1, cmpop, e2) ->
       let cmpop, rhs =
         match e2.it with

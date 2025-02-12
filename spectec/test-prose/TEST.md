@@ -719,7 +719,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is :ref:`vali
 
    * :math:`{\mathit{expr}}` is constant.
 
-   * :math:`{|{{\mathit{ft}}^\ast}|}` is of the form :math:`{|{x^\ast}|}`.
+   * The length of :math:`{{\mathit{ft}}^\ast}` is equal to the length of :math:`{x^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -857,37 +857,37 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
-   * :math:`{|{{\mathit{ft}'}^\ast}|}` is of the form :math:`{|{{\mathit{type}}^\ast}|}`.
+   * The length of :math:`{{\mathit{ft}'}^\ast}` is equal to the length of :math:`{{\mathit{type}}^\ast}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}`, and corresponding :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
 
-   * :math:`{|{{\mathit{import}}^\ast}|}` is of the form :math:`{|{{\mathit{ixt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{import}}^\ast}` is equal to the length of :math:`{{\mathit{ixt}}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
-   * :math:`{|{{\mathit{global}}^\ast}|}` is of the form :math:`{|{{\mathit{gt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{global}}^\ast}` is equal to the length of :math:`{{\mathit{gt}}^\ast}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, and corresponding :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
 
-   * :math:`{|{{\mathit{ft}}^\ast}|}` is of the form :math:`{|{{\mathit{func}}^\ast}|}`.
+   * The length of :math:`{{\mathit{ft}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
 
-   * :math:`{|{{\mathit{table}}^\ast}|}` is of the form :math:`{|{{\mathit{tt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * The table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{{\mathit{mem}}^\ast}|}` is of the form :math:`{|{{\mathit{mt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
@@ -905,15 +905,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
 
-   * :math:`{|{{\mathit{export}}^\ast}|}` is of the form :math:`{|{{\mathit{xt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}^\ast}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
-   * :math:`{|{{\mathit{tt}}^\ast}|}` is less than or equal to :math:`1`.
+   * The length of :math:`{{\mathit{tt}}^\ast}` is less than or equal to :math:`1`.
 
-   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
+   * The length of :math:`{{\mathit{mt}}^\ast}` is less than or equal to :math:`1`.
 
    * The context :math:`C` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`.
 
@@ -4351,7 +4351,7 @@ The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:
 The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
 
 
-   * :math:`{|{t_1^\ast}|}` is of the form :math:`{|{t_2^\ast}|}`.
+   * The length of :math:`{t_1^\ast}` is equal to the length of :math:`{t_2^\ast}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
 
@@ -5659,37 +5659,37 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
-   * :math:`{|{{\mathit{ft}'}^\ast}|}` is of the form :math:`{|{{\mathit{type}}^\ast}|}`.
+   * The length of :math:`{{\mathit{ft}'}^\ast}` is equal to the length of :math:`{{\mathit{type}}^\ast}`.
 
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}`, and corresponding :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
 
-   * :math:`{|{{\mathit{import}}^\ast}|}` is of the form :math:`{|{{\mathit{ixt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{import}}^\ast}` is equal to the length of :math:`{{\mathit{ixt}}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
-   * :math:`{|{{\mathit{global}}^\ast}|}` is of the form :math:`{|{{\mathit{gt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{global}}^\ast}` is equal to the length of :math:`{{\mathit{gt}}^\ast}`.
 
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, and corresponding :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
 
-   * :math:`{|{{\mathit{table}}^\ast}|}` is of the form :math:`{|{{\mathit{tt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{{\mathit{mem}}^\ast}|}` is of the form :math:`{|{{\mathit{mt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
-   * :math:`{|{{\mathit{elem}}^\ast}|}` is of the form :math:`{|{{\mathit{rt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
@@ -5699,7 +5699,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
 
-   * :math:`{|{{\mathit{ft}}^\ast}|}` is of the form :math:`{|{{\mathit{func}}^\ast}|}`.
+   * The length of :math:`{{\mathit{ft}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
@@ -5709,13 +5709,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
 
-   * :math:`{|{{\mathit{export}}^\ast}|}` is of the form :math:`{|{{\mathit{xt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}^\ast}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
 
-   * :math:`{|{{\mathit{mt}}^\ast}|}` is less than or equal to :math:`1`.
+   * The length of :math:`{{\mathit{mt}}^\ast}` is less than or equal to :math:`1`.
 
    * The context :math:`C` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}},\; \mathsf{return}~\epsilon \}\end{array}`.
 
@@ -12704,7 +12704,7 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
    * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
 
-   * :math:`{|{{{\mathit{lt}}}^\ast}|}` is of the form :math:`{|{x^\ast}|}`.
+   * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{x^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -12846,7 +12846,7 @@ The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined
 
       * The sub type :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
-      * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
+      * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`i`.
 
       * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` :ref:`matches <match>` the heap type :math:`{\mathit{deftype}}_2`.
 
@@ -12866,7 +12866,7 @@ The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined
 
    * The sub type :math:`{\mathrm{unroll}}({\mathit{deftype}}_1)` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
-   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`i`.
+   * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`i`.
 
    * The type use :math:`{{\mathit{typeuse}}^\ast}{}[i]` :ref:`matches <match>` the heap type :math:`{\mathit{deftype}}_2`.
 
@@ -12965,7 +12965,7 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
-      * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
+      * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
       * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
@@ -13092,7 +13092,7 @@ The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :
 The heap type :math:`(\mathsf{rec}~i)` :ref:`matches <match>` the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
 
 
-   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
+   * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
    * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
@@ -13315,7 +13315,7 @@ The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` :ref:`matches <match>` the
 The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
 
 
-   * :math:`{|{t_1^\ast}|}` is of the form :math:`{|{t_2^\ast}|}`.
+   * The length of :math:`{t_1^\ast}` is equal to the length of :math:`{t_2^\ast}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
 
@@ -13343,7 +13343,7 @@ The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the compos
 
       * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
-      * :math:`{|{{\mathit{yt}}_1^\ast}|}` is of the form :math:`{|{{\mathit{yt}}_2^\ast}|}`.
+      * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
 
       * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
@@ -13370,7 +13370,7 @@ The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the compos
 The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
 
 
-   * :math:`{|{{\mathit{yt}}_1^\ast}|}` is of the form :math:`{|{{\mathit{yt}}_2^\ast}|}`.
+   * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
 
    * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
 
@@ -13398,15 +13398,15 @@ The composite type :math:`(\mathsf{func}~{\mathit{ft}}_1)` :ref:`matches <match>
 The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x_0)})` if:
 
 
-   * :math:`{|{x^\ast}|}` is less than or equal to :math:`1`.
+   * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
       * The index :math:`x` is less than :math:`x_0`.
 
-   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is of the form :math:`{|{x^\ast}|}`.
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{x^\ast}`.
 
-   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is of the form :math:`{|{{{x'}^\ast}^\ast}|}`.
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{x'}^\ast}^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -13428,15 +13428,15 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
-   * :math:`{|{{\mathit{typeuse}}^\ast}|}` is less than or equal to :math:`1`.
+   * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
 
       * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
 
-   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is of the form :math:`{|{{\mathit{typeuse}}^\ast}|}`.
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{\mathit{typeuse}}^\ast}`.
 
-   * :math:`{|{{\mathit{comptype}'}^\ast}|}` is of the form :math:`{|{{{\mathit{typeuse}'}^\ast}^\ast}|}`.
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
 
@@ -13661,7 +13661,7 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
    * The local index sequence :math:`{x^\ast}` is of the form :math:`{x_2^\ast} \setminus {x_1^\ast}`.
 
-   * :math:`{|{t^\ast}|}` is of the form :math:`{|{x^\ast}|}`.
+   * The length of :math:`{t^\ast}` is equal to the length of :math:`{x^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -14436,7 +14436,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
-   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
+   * The length of :math:`{{\mathit{yt}}^\ast}` is greater than :math:`i`.
 
    * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is of the form :math:`({\mathsf{mut}^?}~{\mathit{zt}})`.
 
@@ -14454,7 +14454,7 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` 
 
    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
-   * :math:`{|{{\mathit{yt}}^\ast}|}` is greater than :math:`i`.
+   * The length of :math:`{{\mathit{yt}}^\ast}` is greater than :math:`i`.
 
    * The field type :math:`{{\mathit{yt}}^\ast}{}[i]` is of the form :math:`(\mathsf{mut}~{\mathit{zt}})`.
 
@@ -15241,9 +15241,9 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-      * :math:`{|{{\mathit{init}}^\ast}|}` is of the form :math:`{|{t^\ast}|}`.
+      * The length of :math:`{{\mathit{init}}^\ast}` is equal to the length of :math:`{t^\ast}`.
 
-      * :math:`{|{{\mathit{init}}^\ast}|}` is of the form :math:`{|{x_1^\ast}|}`.
+      * The length of :math:`{{\mathit{init}}^\ast}` is equal to the length of :math:`{x_1^\ast}`.
 
       * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
@@ -15288,9 +15288,9 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
    * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-   * :math:`{|{{\mathit{init}}^\ast}|}` is of the form :math:`{|{t^\ast}|}`.
+   * The length of :math:`{{\mathit{init}}^\ast}` is equal to the length of :math:`{t^\ast}`.
 
-   * :math:`{|{{\mathit{init}}^\ast}|}` is of the form :math:`{|{x_1^\ast}|}`.
+   * The length of :math:`{{\mathit{init}}^\ast}` is equal to the length of :math:`{x_1^\ast}`.
 
    * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
@@ -15494,7 +15494,7 @@ The value type :math:`t` is not defaultable if:
 The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}^\ast}` if:
 
 
-   * :math:`{|C{.}\mathsf{types}|}` is of the form :math:`x`.
+   * The length of :math:`C{.}\mathsf{types}` is equal to :math:`x`.
 
    * The defined type sequence :math:`{{\mathit{dt}}^\ast}` is of the form :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`.
 
@@ -15546,7 +15546,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
    * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
-   * :math:`{|{{{\mathit{lt}}}^\ast}|}` is of the form :math:`{|{{\mathit{local}}^\ast}|}`.
+   * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{{\mathit{local}}^\ast}`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`:
 
@@ -15937,7 +15937,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
-   * :math:`{|{{\mathit{import}}^\ast}|}` is of the form :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`.
+   * The length of :math:`{{\mathit{import}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
@@ -15945,37 +15945,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
-   * :math:`{|{{\mathit{table}}^\ast}|}` is of the form :math:`{|{{\mathit{tt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
-   * :math:`{|{{\mathit{mem}}^\ast}|}` is of the form :math:`{|{{\mathit{mt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
-   * :math:`{|{{\mathit{jt}}^\ast}|}` is of the form :math:`{|{{\mathit{tag}}^\ast}|}`.
+   * The length of :math:`{{\mathit{jt}}^\ast}` is equal to the length of :math:`{{\mathit{tag}}^\ast}`.
 
    * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}`, and corresponding :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
 
       * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{jt}}`.
 
-   * :math:`{|{{\mathit{dt}}^\ast}|}` is of the form :math:`{|{{\mathit{func}}^\ast}|}`.
+   * The length of :math:`{{\mathit{dt}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}}`.
 
-   * :math:`{|{{\mathit{elem}}^\ast}|}` is of the form :math:`{|{{\mathit{rt}}^\ast}|}`.
+   * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
       * The element segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
-   * :math:`{|{{\mathit{data}}^\ast}|}` is of the form :math:`{|{{\mathit{ok}}^\ast}|}`.
+   * The length of :math:`{{\mathit{data}}^\ast}` is equal to the length of :math:`{{\mathit{ok}}^\ast}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, and corresponding :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
@@ -15985,9 +15985,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
 
-   * :math:`{|{{\mathit{export}}^\ast}|}` is of the form :math:`{|{{\mathit{nm}}^\ast}|}`.
+   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{nm}}^\ast}`.
 
-   * :math:`{|{{\mathit{export}}^\ast}|}` is of the form :math:`{|{{\mathit{xt}}_{\mathsf{e}}^\ast}|}`.
+   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`:
 
