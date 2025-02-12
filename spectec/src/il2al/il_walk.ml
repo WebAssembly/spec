@@ -107,3 +107,7 @@ and transform_rule_def t rd =
 and transform_helper_def t hd =
   { hd with it = match hd.it with
     | (id, cs, partial) -> (id, List.map (transform_clause t) cs, partial) }
+
+and transform_rule t r =
+  let RuleD (id, binds, mixop, exp, prems) = r.it in
+  RuleD (id, binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at

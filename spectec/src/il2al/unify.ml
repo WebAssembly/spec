@@ -120,6 +120,15 @@ let rename_helper_def (env, hd) =
     } in
   Il_walk.transform_helper_def transformer hd
 
+let rename_rule (env, r) =
+  if not !rename then r else
+  let transformer = { Il_walk.base_transformer with
+    transform_exp = rename_exp env;
+    transform_prem = rename_prem env;
+    transform_iterexp = rename_iterexp env;
+    } in
+  Il_walk.transform_rule transformer r
+
 let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
   match e1.it, e2.it with
@@ -300,8 +309,9 @@ let unify_rules env rules =
   let hd = List.hd concls in
   let tl = List.tl concls in
   let template = List.fold_left (overlap env) hd tl in
-  List.map (apply_template_to_rule template) rules
-  (* |> rename_rules *)
+  let unified_rules = List.map (apply_template_to_rule template) rules in
+  let env' = init_env (Free.free_rules rules).varid in
+  List.map (fun r -> rename_rule (env', r)) unified_rules
 
 
 (** 2. Reduction rules **)

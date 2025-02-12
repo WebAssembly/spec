@@ -55,28 +55,28 @@ The memory type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
 
-The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
       * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
       * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
@@ -151,36 +151,36 @@ The memory type :math:`{\mathit{lim}}_1` :ref:`matches <match>` the memory type 
 
 
 
-The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
       * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
       * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
       * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
@@ -360,18 +360,18 @@ The instruction :math:`(t {.} {\mathit{relop}}_t)` is :ref:`valid <valid-val>` w
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_1}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}_1` is equal to :math:`\mathsf{reinterpret}`.
 
       * :math:`{|{\mathit{nt}}_1|}` is equal to :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}}_1` is equal to :math:`{\mathit{cvtop}}`.
 
 
 
@@ -442,56 +442,56 @@ The instruction :math:`\mathsf{memory{.}grow}` is :ref:`valid <valid-val>` with 
 
 
 
-The instruction :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` if:
+The instruction :math:`({{\mathit{valtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_3` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`t`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is absent.
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}}_3` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}}_3` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{valtype}}_1{.}\mathsf{store}}{{{\mathit{sz}}_1^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_2~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`t`.
 
-      * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * The pack size :math:`{{\mathit{sz}}_1^?}` is absent.
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}}_2` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
+      * The pack size :math:`{{\mathit{sz}}_1^?}` is equal to :math:`M`.
 
-      * The number type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -551,35 +551,35 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The number type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`\epsilon`.
+      * The number type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -617,16 +617,16 @@ The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with 
 
 
 
-:math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
+:math:`{\mathit{instr}}_1` is constant if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(t{.}\mathsf{const}~c)`.
+      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(t{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
@@ -762,14 +762,14 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
 
 
-The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
 
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{func}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
@@ -777,27 +777,27 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{global}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{mem}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
@@ -2875,18 +2875,18 @@ Memtype_ok
   - limits is valid with (2 ^ 16).
 
 Externtype_ok
-- the external type externtype_u1 is valid if:
+- the external type externtype_1 is valid if:
   - Either:
-    - externtype_u1 is (FUNC functype).
+    - externtype_1 is (FUNC functype).
     - the function type functype is valid.
   - Or:
-    - externtype_u1 is (GLOBAL globaltype).
+    - externtype_1 is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype_u1 is (TABLE tabletype).
+    - externtype_1 is (TABLE tabletype).
     - the table type tabletype is valid.
   - Or:
-    - externtype_u1 is (MEM memtype).
+    - externtype_1 is (MEM memtype).
     - the memory type memtype is valid.
 
 Externtype_ok/func
@@ -2925,22 +2925,22 @@ Memtype_sub
   - lim_1 matches lim_2.
 
 Externtype_sub
-- the external type externtype_u1 matches the external type externtype_u2 if:
+- the external type externtype_1 matches the external type externtype_2 if:
   - Either:
-    - externtype_u1 is (FUNC ft_1).
-    - externtype_u2 is (FUNC ft_2).
+    - externtype_1 is (FUNC ft_1).
+    - externtype_2 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
   - Or:
-    - externtype_u1 is (GLOBAL gt_1).
-    - externtype_u2 is (GLOBAL gt_2).
+    - externtype_1 is (GLOBAL gt_1).
+    - externtype_2 is (GLOBAL gt_2).
     - the global type gt_1 matches the global type gt_2.
   - Or:
-    - externtype_u1 is (TABLE tt_1).
-    - externtype_u2 is (TABLE tt_2).
+    - externtype_1 is (TABLE tt_1).
+    - externtype_2 is (TABLE tt_2).
     - the table type tt_1 matches the table type tt_2.
   - Or:
-    - externtype_u1 is (MEM mt_1).
-    - externtype_u2 is (MEM mt_2).
+    - externtype_1 is (MEM mt_1).
+    - externtype_2 is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
 Externtype_sub/func
@@ -3035,12 +3035,12 @@ Instr_ok/relop
 - the instruction (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop_u1) is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop_1) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - cvtop_u1 is REINTERPRET.
+    - cvtop_1 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
-    - cvtop_u1 is cvtop.
+    - cvtop_1 is cvtop.
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
@@ -3076,31 +3076,31 @@ Instr_ok/memory.grow
   - the memory type C.MEMS[0] is mt.
 
 Instr_ok/load
-- the instruction (LOAD valtype_u1 loadop__u1? memarg) is valid with the function type [I32] -> [valtype_u3] if:
+- the instruction (LOAD valtype_1 loadop__1? memarg) is valid with the function type [I32] -> [valtype_3] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type valtype_u1 is t.
-    - loadop__u1? is ?().
-    - the number type valtype_u3 is t.
+    - the number type valtype_1 is t.
+    - loadop__1? is ?().
+    - the number type valtype_3 is t.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
-    - valtype_u1 is Inn.
-    - loadop__u1? is ?(M _ sx).
-    - valtype_u3 is Inn.
+    - valtype_1 is Inn.
+    - loadop__1? is ?(M _ sx).
+    - valtype_3 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE valtype_u1 sz_u1? memarg) is valid with the function type [I32, valtype_u2] -> [] if:
+- the instruction (STORE valtype_1 sz_1? memarg) is valid with the function type [I32, valtype_2] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type valtype_u1 is t.
-    - the pack size sz_u1? is ?().
-    - the number type valtype_u2 is t.
+    - the number type valtype_1 is t.
+    - the pack size sz_1? is ?().
+    - the number type valtype_2 is t.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
-    - valtype_u1 is Inn.
-    - sz_u1? is ?(M).
-    - valtype_u2 is Inn.
+    - valtype_1 is Inn.
+    - sz_1? is ?(M).
+    - valtype_2 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/cvtop-reinterpret
@@ -3131,21 +3131,21 @@ Instr_ok/store-pack
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instrs_ok
-- the instruction sequence instr_u1* is valid with the function type valtype_u1* -> valtype_u2* if:
+- the instruction sequence instr_1* is valid with the function type valtype_1* -> valtype_2* if:
   - Either:
-    - instr_u1* is [].
-    - the number type sequence valtype_u1* is [].
-    - the number type sequence valtype_u2* is [].
+    - instr_1* is [].
+    - the number type sequence valtype_1* is [].
+    - the number type sequence valtype_2* is [].
   - Or:
-    - instr_u1* is [instr_1] :: instr_2*.
-    - valtype_u1* is t_1*.
-    - valtype_u2* is t_3*.
+    - instr_1* is [instr_1] :: instr_2*.
+    - valtype_1* is t_1*.
+    - valtype_2* is t_3*.
     - the instruction instr_1 is valid with the function type t_1* -> t_2*.
     - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
-    - instr_u1* is instr*.
-    - valtype_u1* is t* :: t_1*.
-    - valtype_u2* is t* :: t_2*.
+    - instr_1* is instr*.
+    - valtype_1* is t* :: t_1*.
+    - valtype_2* is t* :: t_2*.
     - the instruction sequence instr* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
@@ -3165,11 +3165,11 @@ Expr_ok
   - instr* is valid with the function type [] -> t?.
 
 Instr_const
-- the instruction instr_u1 is constant if:
+- the instruction instr_1 is constant if:
   - Either:
-    - instr_u1 is (t.CONST c).
+    - instr_1 is (t.CONST c).
   - Or:
-    - instr_u1 is (GLOBAL.GET x).
+    - instr_1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
 
@@ -3238,25 +3238,25 @@ Import_ok
   - xt is valid.
 
 Externidx_ok
-- the external index externidx_u1 is valid with the external type externtype_u1 if:
+- the external index externidx_1 is valid with the external type externtype_1 if:
   - Either:
-    - externidx_u1 is (FUNC x).
-    - externtype_u1 is (FUNC ft).
+    - externidx_1 is (FUNC x).
+    - externtype_1 is (FUNC ft).
     - the function type C.FUNCS[x] exists.
     - C.FUNCS[x] is ft.
   - Or:
-    - externidx_u1 is (GLOBAL x).
-    - externtype_u1 is (GLOBAL gt).
+    - externidx_1 is (GLOBAL x).
+    - externtype_1 is (GLOBAL gt).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx_u1 is (TABLE x).
-    - externtype_u1 is (TABLE tt).
+    - externidx_1 is (TABLE x).
+    - externtype_1 is (TABLE tt).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
-    - externidx_u1 is (MEM x).
-    - externtype_u1 is (MEM mt).
+    - externidx_1 is (MEM x).
+    - externtype_1 is (MEM mt).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
 
@@ -4264,28 +4264,28 @@ The memory type :math:`{\mathit{limits}}~\mathsf{page}` is :ref:`valid <valid-va
 
 
 
-The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
       * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
       * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
@@ -4324,16 +4324,16 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 
 
 
-The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the value type :math:`t` if:
+The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`t` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`t`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`t`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`\mathsf{bot}`.
 
 
 
@@ -4396,36 +4396,36 @@ The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` :ref:`matches <match>` th
 
 
 
-The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
       * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
       * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
       * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
@@ -4464,24 +4464,24 @@ The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` :ref:`matches <match>` 
 
 
 
-The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The block type :math:`{\mathit{blocktype}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
 
 
    * Either:
 
-      * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{{\mathit{valtype}}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
    * Or:
 
-      * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
+      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_2^\ast}`.
 
       * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
@@ -4520,16 +4520,16 @@ The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the funct
 
 
 
-The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_1^?})` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * Either:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`t`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is equal to :math:`t`.
 
    * Or:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is absent.
 
       * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
@@ -4671,18 +4671,18 @@ The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :r
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_1}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}_1` is equal to :math:`\mathsf{reinterpret}`.
 
       * :math:`{|{\mathit{nt}}_1|}` is equal to :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}}_1` is equal to :math:`{\mathit{cvtop}}`.
 
 
 
@@ -5017,81 +5017,81 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_1` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{sz}}_1^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_1~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
-      * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * The pack size :math:`{{\mathit{sz}}_1^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * The pack size :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
+      * The pack size :math:`{{\mathit{sz}}_1^?}` is equal to :math:`M`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{n}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_1~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{\mathit{vloadop}}_1` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
    * Or:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{\mathit{vloadop}}_1` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
    * Or:
 
-      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{\mathit{vloadop}}_1` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -5230,35 +5230,35 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_3^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{t'}_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{{t'}_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{{t'}_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{{t'}_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -5267,11 +5267,11 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
       * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -5321,25 +5321,25 @@ The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with 
 
 
 
-:math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
+:math:`{\mathit{val}}_1` is constant if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
@@ -5438,12 +5438,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
 
 
-:math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+:math:`{\mathit{elemmode}}_1` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * :math:`{\mathit{elemmode}}_1` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -5455,10 +5455,10 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{passive}`.
+      * :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{passive}`.
    * Or:
 
-      * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{declare}`.
+      * :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{declare}`.
 
 
 
@@ -5501,12 +5501,12 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
 
 
-:math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+:math:`{\mathit{datamode}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~0~{\mathit{expr}})`.
+      * :math:`{\mathit{datamode}}_1` is equal to :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5516,7 +5516,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
    * Or:
 
-      * :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{passive}`.
+      * :math:`{\mathit{datamode}}_1` is equal to :math:`\mathsf{passive}`.
 
 
 
@@ -5564,14 +5564,14 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
 
 
-The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
 
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{func}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
@@ -5579,27 +5579,27 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{global}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{mem}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
@@ -9851,18 +9851,18 @@ Memtype_ok
   - the limits limits is valid with (2 ^ 16).
 
 Externtype_ok
-- the external type externtype_u1 is valid if:
+- the external type externtype_1 is valid if:
   - Either:
-    - externtype_u1 is (FUNC functype).
+    - externtype_1 is (FUNC functype).
     - the function type functype is valid.
   - Or:
-    - externtype_u1 is (GLOBAL globaltype).
+    - externtype_1 is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype_u1 is (TABLE tabletype).
+    - externtype_1 is (TABLE tabletype).
     - the table type tabletype is valid.
   - Or:
-    - externtype_u1 is (MEM memtype).
+    - externtype_1 is (MEM memtype).
     - the memory type memtype is valid.
 
 Externtype_ok/func
@@ -9882,11 +9882,11 @@ Externtype_ok/mem
   - the memory type memtype is valid.
 
 Valtype_sub
-- the value type valtype_u1 matches the value type t if:
+- the value type valtype_1 matches the value type t if:
   - Either:
-    - valtype_u1 is t.
+    - valtype_1 is t.
   - Or:
-    - valtype_u1 is BOT.
+    - valtype_1 is BOT.
 
 Valtype_sub/refl
 - t matches only itself.
@@ -9920,22 +9920,22 @@ Memtype_sub
   - the limits lim_1 matches the limits lim_2.
 
 Externtype_sub
-- the external type externtype_u1 matches the external type externtype_u2 if:
+- the external type externtype_1 matches the external type externtype_2 if:
   - Either:
-    - externtype_u1 is (FUNC ft_1).
-    - externtype_u2 is (FUNC ft_2).
+    - externtype_1 is (FUNC ft_1).
+    - externtype_2 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
   - Or:
-    - externtype_u1 is (GLOBAL gt_1).
-    - externtype_u2 is (GLOBAL gt_2).
+    - externtype_1 is (GLOBAL gt_1).
+    - externtype_2 is (GLOBAL gt_2).
     - the global type gt_1 matches the global type gt_2.
   - Or:
-    - externtype_u1 is (TABLE tt_1).
-    - externtype_u2 is (TABLE tt_2).
+    - externtype_1 is (TABLE tt_1).
+    - externtype_2 is (TABLE tt_2).
     - the table type tt_1 matches the table type tt_2.
   - Or:
-    - externtype_u1 is (MEM mt_1).
-    - externtype_u2 is (MEM mt_2).
+    - externtype_1 is (MEM mt_1).
+    - externtype_2 is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
 Externtype_sub/func
@@ -9955,15 +9955,15 @@ Externtype_sub/mem
   - the memory type mt_1 matches the memory type mt_2.
 
 Blocktype_ok
-- the block type blocktype_u1 is valid with the function type valtype_u1* -> valtype_u2* if:
+- the block type blocktype_1 is valid with the function type valtype_1* -> valtype_2* if:
   - Either:
-    - blocktype_u1 is (_RESULT valtype?).
-    - the value type sequence valtype_u1* is [].
-    - the value type sequence valtype_u2* is valtype?.
+    - blocktype_1 is (_RESULT valtype?).
+    - the value type sequence valtype_1* is [].
+    - the value type sequence valtype_2* is valtype?.
   - Or:
-    - blocktype_u1 is (_IDX typeidx).
-    - valtype_u1* is t_1*.
-    - valtype_u2* is t_2*.
+    - blocktype_1 is (_IDX typeidx).
+    - valtype_1* is t_1*.
+    - valtype_2* is t_2*.
     - the function type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is t_1* -> t_2*.
 
@@ -9985,11 +9985,11 @@ Instr_ok/drop
 - the instruction DROP is valid with the function type [t] -> [].
 
 Instr_ok/select
-- the instruction (SELECT valtype_u1?) is valid with the function type [t, t, I32] -> [t] if:
+- the instruction (SELECT valtype_1?) is valid with the function type [t, t, I32] -> [t] if:
   - Either:
-    - the value type sequence valtype_u1? is ?([t]).
+    - the value type sequence valtype_1? is ?([t]).
   - Or:
-    - valtype_u1? is ?().
+    - valtype_1? is ?().
     - the value type t matches the value type t'.
     - t' is numtype or t' is vectype.
 
@@ -10063,12 +10063,12 @@ Instr_ok/relop
 - the instruction (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop_u1) is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop_1) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - cvtop_u1 is REINTERPRET.
+    - cvtop_1 is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
-    - cvtop_u1 is cvtop.
+    - cvtop_1 is cvtop.
 
 Instr_ok/ref.null
 - the instruction (REF.NULL rt) is valid with the function type [] -> [rt].
@@ -10245,44 +10245,44 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instruction (LOAD numtype_u1 loadop__u1? memarg) is valid with the function type [I32] -> [valtype_u1] if:
+- the instruction (LOAD numtype_1 loadop__1? memarg) is valid with the function type [I32] -> [valtype_1] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type numtype_u1 is nt.
-    - loadop__u1? is ?().
-    - the value type valtype_u1 is nt.
+    - the number type numtype_1 is nt.
+    - loadop__1? is ?().
+    - the value type valtype_1 is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_u1 is Inn.
-    - loadop__u1? is ?(M _ sx).
-    - valtype_u1 is Inn.
+    - numtype_1 is Inn.
+    - loadop__1? is ?(M _ sx).
+    - valtype_1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE numtype_u1 sz_u1? memarg) is valid with the function type [I32, valtype_u1] -> [] if:
+- the instruction (STORE numtype_1 sz_1? memarg) is valid with the function type [I32, valtype_1] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type numtype_u1 is nt.
-    - the pack size sz_u1? is ?().
-    - the value type valtype_u1 is nt.
+    - the number type numtype_1 is nt.
+    - the pack size sz_1? is ?().
+    - the value type valtype_1 is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_u1 is Inn.
-    - sz_u1? is ?(M).
-    - valtype_u1 is Inn.
+    - numtype_1 is Inn.
+    - sz_1? is ?(M).
+    - valtype_1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 ?(vloadop_u1) memarg) is valid with the function type [I32] -> [V128] if:
+- the instruction (VLOAD V128 ?(vloadop_1) memarg) is valid with the function type [I32] -> [V128] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - vloadop_u1 is (SHAPE M X N _ sx).
+    - vloadop_1 is (SHAPE M X N _ sx).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
-    - vloadop_u1 is (SPLAT n).
+    - vloadop_1 is (SPLAT n).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - Or:
-    - vloadop_u1 is (ZERO n).
+    - vloadop_1 is (ZERO n).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
@@ -10353,28 +10353,28 @@ Instr_ok/vload-zero
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instrs_ok
-- the instruction sequence instr_u1* is valid with the function type valtype_u1* -> valtype_u2* if:
+- the instruction sequence instr_1* is valid with the function type valtype_1* -> valtype_2* if:
   - Either:
-    - instr_u1* is [].
-    - the value type sequence valtype_u1* is [].
-    - the value type sequence valtype_u2* is [].
+    - instr_1* is [].
+    - the value type sequence valtype_1* is [].
+    - the value type sequence valtype_2* is [].
   - Or:
-    - instr_u1* is [instr_1] :: instr_2*.
-    - valtype_u1* is t_1*.
-    - valtype_u2* is t_3*.
+    - instr_1* is [instr_1] :: instr_2*.
+    - valtype_1* is t_1*.
+    - valtype_2* is t_3*.
     - the instruction instr_1 is valid with the function type t_1* -> t_2*.
     - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
-    - instr_u1* is instr*.
-    - valtype_u1* is t'_1*.
-    - valtype_u2* is t'_2*.
+    - instr_1* is instr*.
+    - valtype_1* is t'_1*.
+    - valtype_2* is t'_2*.
     - the instruction sequence instr* is valid with t_1* -> t_2*.
     - the result type t'_1* matches the result type t_1*.
     - the result type t_2* matches the result type t'_2*.
   - Or:
-    - instr_u1* is instr*.
-    - valtype_u1* is t* :: t_1*.
-    - valtype_u2* is t* :: t_2*.
+    - instr_1* is instr*.
+    - valtype_1* is t* :: t_1*.
+    - valtype_2* is t* :: t_2*.
     - instr* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
@@ -10400,17 +10400,17 @@ Expr_ok
   - instr* is valid with the function type [] -> t*.
 
 Instr_const
-- the value val_u1 is constant if:
+- the value val_1 is constant if:
   - Either:
-    - val_u1 is (nt.CONST c).
+    - val_1 is (nt.CONST c).
   - Or:
-    - val_u1 is (vt.CONST vc).
+    - val_1 is (vt.CONST vc).
   - Or:
-    - val_u1 is (REF.NULL rt).
+    - val_1 is (REF.NULL rt).
   - Or:
-    - val_u1 is (REF.FUNC x).
+    - val_1 is (REF.FUNC x).
   - Or:
-    - val_u1 is (GLOBAL.GET x).
+    - val_1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
 
@@ -10462,17 +10462,17 @@ Mem_ok
   - mt is valid.
 
 Elemmode_ok
-- elemmode_u1 is valid with the reference type rt if:
+- elemmode_1 is valid with the reference type rt if:
   - Either:
-    - elemmode_u1 is (ACTIVE x expr).
+    - elemmode_1 is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is (lim rt).
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - elemmode_u1 is PASSIVE.
+    - elemmode_1 is PASSIVE.
   - Or:
-    - elemmode_u1 is DECLARE.
+    - elemmode_1 is DECLARE.
 
 Elemmode_ok/active
 - (ACTIVE x expr) is valid with the reference type rt if:
@@ -10495,14 +10495,14 @@ Elem_ok
   - elemmode is valid with rt.
 
 Datamode_ok
-- datamode_u1 is valid if:
+- datamode_1 is valid if:
   - Either:
-    - datamode_u1 is (ACTIVE 0 expr).
+    - datamode_1 is (ACTIVE 0 expr).
     - the memory type C.MEMS[0] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - datamode_u1 is PASSIVE.
+    - datamode_1 is PASSIVE.
 
 Datamode_ok/active
 - (ACTIVE 0 expr) is valid if:
@@ -10527,25 +10527,25 @@ Import_ok
   - xt is valid.
 
 Externidx_ok
-- the external index externidx_u1 is valid with the external type externtype_u1 if:
+- the external index externidx_1 is valid with the external type externtype_1 if:
   - Either:
-    - externidx_u1 is (FUNC x).
-    - externtype_u1 is (FUNC ft).
+    - externidx_1 is (FUNC x).
+    - externtype_1 is (FUNC ft).
     - the function type C.FUNCS[x] exists.
     - C.FUNCS[x] is ft.
   - Or:
-    - externidx_u1 is (GLOBAL x).
-    - externtype_u1 is (GLOBAL gt).
+    - externidx_1 is (GLOBAL x).
+    - externtype_1 is (GLOBAL gt).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx_u1 is (TABLE x).
-    - externtype_u1 is (TABLE tt).
+    - externidx_1 is (TABLE x).
+    - externtype_1 is (TABLE tt).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
-    - externidx_u1 is (MEM x).
-    - externtype_u1 is (MEM mt).
+    - externidx_1 is (MEM x).
+    - externtype_1 is (MEM mt).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
 
@@ -12574,23 +12574,23 @@ The vector type :math:`{\mathit{vectype}}` is always :ref:`valid <valid-val>`.
 
 
 
-The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The heap type :math:`{\mathit{heaptype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{absheaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{absheaptype}}`.
 
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{typeidx}}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{rec}~i)`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`(\mathsf{rec}~i)`.
 
       * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
@@ -12632,28 +12632,28 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}})` 
 
 
 
-The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The value type :math:`{\mathit{valtype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{numtype}}`.
 
       * The number type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{vectype}}`.
 
       * The vector type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{reftype}}`.
 
       * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`\mathsf{bot}`.
 
 
 
@@ -12722,18 +12722,18 @@ The packed type :math:`{\mathit{packtype}}` is always :ref:`valid <valid-val>`.
 
 
 
-The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The storage type :math:`{\mathit{storagetype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}`.
+      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{valtype}}`.
 
       * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{packtype}}`.
+      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{packtype}}`.
 
       * The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
 
@@ -12774,12 +12774,12 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <vali
 
 
 
-The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The composite type :math:`{\mathit{comptype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
       * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`:
 
@@ -12787,12 +12787,12 @@ The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle
 
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
       * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
       * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
@@ -12873,20 +12873,20 @@ The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined
 
 
 
-The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2` if:
 
 
    * Either:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
 
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}_1`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{heaptype}}_1`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}_2`.
 
       * The heap type :math:`{\mathit{heaptype}'}` is :ref:`valid <valid-val>`.
 
@@ -12895,75 +12895,75 @@ The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
       * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{eq}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{any}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{any}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{i{\scriptstyle 31}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{i{\scriptstyle 31}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{struct}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{struct}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{array}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{array}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{struct}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{struct}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{array}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{array}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{func}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{func}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{deftype}}_1`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}_1`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{deftype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{deftype}}_2`.
 
       * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{typeidx}}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{rec}~i)`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`(\mathsf{rec}~i)`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
       * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
 
@@ -12972,30 +12972,30 @@ The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
       * The sub type :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{none}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{none}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{nofunc}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{nofunc}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{noextern}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{noextern}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{bot}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13130,22 +13130,22 @@ The heap type :math:`\mathsf{bot}` :ref:`matches <match>` the heap type :math:`{
 
 
 
-The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_1~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_2~{\mathit{ht}}_2)` if:
 
 
    * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is absent.
+      * :math:`{{\mathsf{null}^?}}_1` is absent.
 
-      * :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is absent.
+      * :math:`{{\mathsf{null}^?}}_2` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{null}^?}`.
+      * :math:`{{\mathsf{null}^?}}_1` is equal to :math:`{\mathsf{null}^?}`.
 
-      * :math:`{{\mathsf{null}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{null}`.
+      * :math:`{{\mathsf{null}^?}}_2` is equal to :math:`\mathsf{null}`.
 
 
 
@@ -13171,36 +13171,36 @@ The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` only itself.
 
 
 
-The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{numtype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{numtype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{numtype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{numtype}}_2`.
 
       * The number type :math:`{\mathit{numtype}}_1` :ref:`matches <match>` the number type :math:`{\mathit{numtype}}_2`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vectype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{vectype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{vectype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{vectype}}_2`.
 
       * The vector type :math:`{\mathit{vectype}}_1` :ref:`matches <match>` the vector type :math:`{\mathit{vectype}}_2`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{reftype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{reftype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{reftype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{reftype}}_2`.
 
       * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`\mathsf{bot}`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}`.
+      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{valtype}}`.
 
 
 
@@ -13234,22 +13234,22 @@ The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:
 
 
 
-The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The storage type :math:`{\mathit{storagetype}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{storagetype}}_2` if:
 
 
    * Either:
 
-      * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{valtype}}_1`.
+      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{valtype}}_1`.
 
-      * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{valtype}}_2`.
+      * The storage type :math:`{\mathit{storagetype}}_2` is equal to :math:`{\mathit{valtype}}_2`.
 
       * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Or:
 
-      * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{packtype}}_1`.
+      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{packtype}}_1`.
 
-      * The storage type :math:`{\mathit{storagetype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`{\mathit{packtype}}_2`.
+      * The storage type :math:`{\mathit{storagetype}}_2` is equal to :math:`{\mathit{packtype}}_2`.
 
       * The packed type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the packed type :math:`{\mathit{packtype}}_2`.
 
@@ -13272,22 +13272,22 @@ The storage type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the storag
 
 
 
-The field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{zt}}_2)` if:
+The field type :math:`({{\mathsf{mut}^?}}_1~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}}_2~{\mathit{zt}}_2)` if:
 
 
    * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_1` is absent.
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_2` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_1` is equal to :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_2` is equal to :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -13334,14 +13334,14 @@ The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` :ref:`matches 
 
 
 
-The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The composite type :math:`{\mathit{comptype}}_1` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}}_2` if:
 
 
    * Either:
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}_2` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
       * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
@@ -13351,16 +13351,16 @@ The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle
 
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
+      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+      * The composite type :math:`{\mathit{comptype}}_2` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
 
       * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The composite type :math:`{\mathit{comptype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
@@ -13451,16 +13451,16 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_1^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
 
@@ -13484,16 +13484,16 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_1^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
 
@@ -13575,12 +13575,12 @@ The tag type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
 
       * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
@@ -13588,22 +13588,22 @@ The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyl
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
       * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
       * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
@@ -13684,22 +13684,22 @@ The limits range :math:`{}[~n_1~..~m_1~]` :ref:`matches <match>` the limits rang
 
 
 
-The global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\mathit{valtype}}_2)` if:
+The global type :math:`({{\mathsf{mut}^?}}_1~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}}_2~{\mathit{valtype}}_2)` if:
 
 
    * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_1` is absent.
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_2` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_1` is equal to :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_2` is equal to :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -13754,43 +13754,43 @@ The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :m
 
 
 
-The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` if:
+The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
       * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
       * The global type :math:`{\mathit{globaltype}}_1` :ref:`matches <match>` the global type :math:`{\mathit{globaltype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
       * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
       * The memory type :math:`{\mathit{memtype}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{memtype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
       * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
 
@@ -13837,16 +13837,16 @@ The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` :ref:`matches <mat
 
 
 
-The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` if:
+The block type :math:`{\mathit{blocktype}}_1` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
 
 
    * Either:
 
-      * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{{\mathit{valtype}}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
       * If :math:`{\mathit{valtype}}` is defined, then:
 
@@ -13854,11 +13854,11 @@ The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}
 
    * Or:
 
-      * The block type :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{typeidx}}`.
+      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast}` is equal to :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_2^\ast}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
@@ -13887,14 +13887,14 @@ The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` as the ins
 
 
 
-The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` if:
+The catch clause :math:`{\mathit{catch}}_1` is :ref:`valid <valid-val>` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * Either:
 
-      * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch}~x~l)`.
+      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch}~x~l)`.
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
@@ -13904,7 +13904,7 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
    * Or:
 
-      * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_ref}~x~l)`.
+      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch\_ref}~x~l)`.
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
@@ -13913,12 +13913,12 @@ The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
       * The result type :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
-      * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_all}~l)`.
+      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch\_all}~l)`.
 
       * The result type :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
-      * The catch clause :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
+      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
 
       * The result type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -14002,18 +14002,18 @@ The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the instr
 
 
 
-The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?})` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_1^?})` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The value type :math:`t` is :ref:`valid <valid-val>`.
 
    * Either:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`t`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is equal to :math:`t`.
 
    * Or:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is absent.
 
       * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
@@ -14976,7 +14976,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}_1` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14985,28 +14985,28 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}}{{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{storeop\_{\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}_1~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15015,28 +15015,28 @@ The instruction :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{storeop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`M`.
+      * :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is equal to :math:`M`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathsf{i}}{N}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_{\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15045,23 +15045,23 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
    * Either:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is absent.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
    * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
    * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
    * Or:
 
-      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 1}}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15224,20 +15224,20 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{instrtype}}_1` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
+      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
@@ -15256,9 +15256,9 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
       * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{it}'}`.
+      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`{\mathit{it}'}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
 
@@ -15267,9 +15267,9 @@ The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scripts
       * The instruction type :math:`{\mathit{it}'}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
@@ -15343,56 +15343,56 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is constant if:
+:math:`{\mathit{val}}_1` is constant if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct{.}new}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{struct{.}new}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{array{.}new}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{any{.}convert\_extern}`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`\mathsf{any{.}convert\_extern}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{extern{.}convert\_any}`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`\mathsf{extern{.}convert\_any}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
 
@@ -15505,18 +15505,18 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
 
 
-The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}~t)` if:
+The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}_1~t)` if:
 
 
    * Either:
 
-      * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{set}`.
+      * The initialization status :math:`{\mathit{init}}_1` is equal to :math:`\mathsf{set}`.
 
       * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
 
    * Or:
 
-      * The initialization status :math:`{\mathit{init}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{unset}`.
+      * The initialization status :math:`{\mathit{init}}_1` is equal to :math:`\mathsf{unset}`.
 
       * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
 
@@ -15603,12 +15603,12 @@ The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the tag type :
 
 
 
-The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
+The element mode :math:`{\mathit{elemmode}}_1` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * The element mode :math:`{\mathit{elemmode}}_1` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -15622,10 +15622,10 @@ The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1
 
    * Or:
 
-      * The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{passive}`.
+      * The element mode :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{passive}`.
    * Or:
 
-      * The element mode :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{declare}`.
+      * The element mode :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{declare}`.
 
 
 
@@ -15672,12 +15672,12 @@ The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\
 
 
 
-The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+The data mode :math:`{\mathit{datamode}}_1` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
    * Either:
 
-      * The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * The data mode :math:`{\mathit{datamode}}_1` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
@@ -15689,7 +15689,7 @@ The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}
 
    * Or:
 
-      * The data mode :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`\mathsf{passive}`.
+      * The data mode :math:`{\mathit{datamode}}_1` is equal to :math:`\mathsf{passive}`.
 
 
 
@@ -15739,14 +15739,14 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
 
 
-The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
 
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{func}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
 
       * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
@@ -15754,36 +15754,36 @@ The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyl
 
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{global}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{mem}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~x)`.
+      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{tag}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{jt}})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{jt}})`.
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
@@ -15850,20 +15850,20 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 
 
 
-The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
+The global sequence :math:`{{\mathit{global}}_1^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{globaltype}}_1^\ast}` if:
 
 
    * Either:
 
-      * The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The global sequence :math:`{{\mathit{global}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The global type sequence :math:`{{\mathit{globaltype}}_1^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The global sequence :math:`{{\mathit{global}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
+      * The global sequence :math:`{{\mathit{global}}_1^\ast}` is equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
 
-      * The global type sequence :math:`{{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
+      * The global type sequence :math:`{{\mathit{globaltype}}_1^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
       * The global :math:`{\mathit{global}}_1` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}_1`.
 
@@ -15891,20 +15891,20 @@ The global sequence :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}` is :ref
 
 
 
-The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` if:
+The type definition sequence :math:`{{\mathit{type}}_1^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{deftype}}_1^\ast}` if:
 
 
    * Either:
 
-      * The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The type definition sequence :math:`{{\mathit{type}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The defined type sequence :math:`{{\mathit{deftype}}_1^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The type definition sequence :math:`{{\mathit{type}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
+      * The type definition sequence :math:`{{\mathit{type}}_1^\ast}` is equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
 
-      * The defined type sequence :math:`{{\mathit{deftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
+      * The defined type sequence :math:`{{\mathit{deftype}}_1^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
       * The type definition :math:`{\mathit{type}}_1` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
@@ -16026,69 +16026,69 @@ The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is :ref:`valid <vali
 
 
 
-The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The reference value :math:`{\mathit{ref}}_1` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{reftype}}_1` if:
 
 
    * Either:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
 
       * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
 
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}struct}~a)`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}struct}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
 
       * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}array}~a)`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}array}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
 
       * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}func}~a)`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}func}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}host}~a)`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}host}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{ref}}`.
+      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`{\mathit{ref}}`.
 
-      * The reference type :math:`{\mathit{reftype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
+      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`{\mathit{rt}}`.
 
       * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
@@ -16165,29 +16165,29 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
 
 
 
-The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The value :math:`{\mathit{val}}_1` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{valtype}}_1` if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{num}}`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`{\mathit{num}}`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
 
       * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vec}}`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`{\mathit{vec}}`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{vt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{vt}}`.
 
       * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{ref}}`.
+      * The value :math:`{\mathit{val}}_1` is equal to :math:`{\mathit{ref}}`.
 
-      * The value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{rt}}`.
+      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{rt}}`.
 
       * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
@@ -16218,14 +16218,14 @@ The value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the value type
 
 
 
-The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if:
+The external address :math:`{\mathit{externaddr}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
 
 
    * Either:
 
-      * The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~a)`.
+      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{func}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
@@ -16233,45 +16233,45 @@ The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scripts
 
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~a)`.
+      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{global}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
 
       * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
 
       * The global instance :math:`s{.}\mathsf{globals}{}[a]` is equal to :math:`{\mathit{globalinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~a)`.
+      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{table}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
 
       * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
 
       * The table instance :math:`s{.}\mathsf{tables}{}[a]` is equal to :math:`{\mathit{tableinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~a)`.
+      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{mem}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
 
       * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
 
       * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is equal to :math:`{\mathit{meminst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~a)`.
+      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{tag}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
 
       * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
 
       * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is equal to :math:`{\mathit{taginst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{externaddr}}`.
+      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`{\mathit{externaddr}}`.
 
-      * The external type :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`{\mathit{xt}}`.
+      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`{\mathit{xt}}`.
 
       * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
@@ -16340,35 +16340,35 @@ The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` w
 
 
 
-The instruction sequence :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` if:
+The instruction sequence :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_3^\ast}` if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
+      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_3^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`t`.
+      * The value type sequence :math:`{{\mathit{valtype}}_3^\ast}` is equal to :math:`t`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
+      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast}` is equal to :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}_3^\ast}` is equal to :math:`{t_2^\ast}`.
 
       * The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -24620,15 +24620,15 @@ Vectype_ok
 - the vector type vectype is always valid.
 
 Heaptype_ok
-- the heap type heaptype_u1 is valid if:
+- the heap type heaptype_1 is valid if:
   - Either:
-    - heaptype_u1 is absheaptype.
+    - heaptype_1 is absheaptype.
   - Or:
-    - heaptype_u1 is (_IDX typeidx).
+    - heaptype_1 is (_IDX typeidx).
     - the defined type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is dt.
   - Or:
-    - heaptype_u1 is (REC i).
+    - heaptype_1 is (REC i).
     - the sub type C.RECS[i] exists.
     - C.RECS[i] is st.
 
@@ -24650,18 +24650,18 @@ Reftype_ok
   - the heap type heaptype is valid.
 
 Valtype_ok
-- the value type valtype_u1 is valid if:
+- the value type valtype_1 is valid if:
   - Either:
-    - valtype_u1 is numtype.
+    - valtype_1 is numtype.
     - the number type numtype is valid.
   - Or:
-    - valtype_u1 is vectype.
+    - valtype_1 is vectype.
     - the vector type vectype is valid.
   - Or:
-    - valtype_u1 is reftype.
+    - valtype_1 is reftype.
     - the reference type reftype is valid.
   - Or:
-    - valtype_u1 is BOT.
+    - valtype_1 is BOT.
 
 Valtype_ok/num
 - the value type numtype is valid if:
@@ -24697,12 +24697,12 @@ Packtype_ok
 - the packed type packtype is always valid.
 
 Storagetype_ok
-- the storage type storagetype_u1 is valid if:
+- the storage type storagetype_1 is valid if:
   - Either:
-    - storagetype_u1 is valtype.
+    - storagetype_1 is valtype.
     - the value type valtype is valid.
   - Or:
-    - storagetype_u1 is packtype.
+    - storagetype_1 is packtype.
     - the packed type packtype is valid.
 
 Storagetype_ok/val
@@ -24723,16 +24723,16 @@ Functype_ok
   - the result type t_2* is valid.
 
 Comptype_ok
-- the composite type comptype_u1 is valid if:
+- the composite type comptype_1 is valid if:
   - Either:
-    - comptype_u1 is (STRUCT fieldtype*).
+    - comptype_1 is (STRUCT fieldtype*).
     - For all fieldtype in fieldtype*:
       - the field type fieldtype is valid.
   - Or:
-    - comptype_u1 is (ARRAY fieldtype).
+    - comptype_1 is (ARRAY fieldtype).
     - fieldtype is valid.
   - Or:
-    - comptype_u1 is (FUNC functype).
+    - comptype_1 is (FUNC functype).
     - the function type functype is valid.
 
 Comptype_ok/struct
@@ -24774,75 +24774,75 @@ Deftype_sub/super
   - the type use typeuse*[i] matches deftype_2.
 
 Heaptype_sub
-- the heap type heaptype_u1 matches the heap type heaptype_u2 if:
+- the heap type heaptype_1 matches the heap type heaptype_2 if:
   - Either:
-    - heaptype_u1 is heaptype.
-    - heaptype_u2 is heaptype.
+    - heaptype_1 is heaptype.
+    - heaptype_2 is heaptype.
   - Or:
-    - heaptype_u1 is heaptype_1.
-    - heaptype_u2 is heaptype_2.
+    - heaptype_1 is heaptype_1.
+    - heaptype_2 is heaptype_2.
     - the heap type heaptype' is valid.
-    - the heap type heaptype_1 matches heaptype'.
-    - heaptype' matches the heap type heaptype_2.
+    - heaptype_1 matches heaptype'.
+    - heaptype' matches heaptype_2.
   - Or:
-    - heaptype_u1 is EQ.
-    - heaptype_u2 is ANY.
+    - heaptype_1 is EQ.
+    - heaptype_2 is ANY.
   - Or:
-    - heaptype_u1 is I31.
-    - heaptype_u2 is EQ.
+    - heaptype_1 is I31.
+    - heaptype_2 is EQ.
   - Or:
-    - heaptype_u1 is STRUCT.
-    - heaptype_u2 is EQ.
+    - heaptype_1 is STRUCT.
+    - heaptype_2 is EQ.
   - Or:
-    - heaptype_u1 is ARRAY.
-    - heaptype_u2 is EQ.
+    - heaptype_1 is ARRAY.
+    - heaptype_2 is EQ.
   - Or:
-    - heaptype_u1 is deftype.
-    - heaptype_u2 is STRUCT.
+    - heaptype_1 is deftype.
+    - heaptype_2 is STRUCT.
     - The :ref:`expansion <aux-expand-deftype>` of the defined type deftype is the composite type (STRUCT fieldtype*).
   - Or:
-    - heaptype_u1 is deftype.
-    - heaptype_u2 is ARRAY.
+    - heaptype_1 is deftype.
+    - heaptype_2 is ARRAY.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (ARRAY fieldtype).
   - Or:
-    - heaptype_u1 is deftype.
-    - heaptype_u2 is FUNC.
+    - heaptype_1 is deftype.
+    - heaptype_2 is FUNC.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
   - Or:
-    - heaptype_u1 is deftype_1.
-    - heaptype_u2 is deftype_2.
+    - heaptype_1 is deftype_1.
+    - heaptype_2 is deftype_2.
     - the defined type deftype_1 matches the defined type deftype_2.
   - Or:
-    - heaptype_u1 is (_IDX typeidx).
-    - heaptype_u2 is heaptype.
+    - heaptype_1 is (_IDX typeidx).
+    - heaptype_2 is heaptype.
     - the defined type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] matches the heap type heaptype.
   - Or:
-    - heaptype_u1 is heaptype.
-    - heaptype_u2 is (_IDX typeidx).
+    - heaptype_1 is heaptype.
+    - heaptype_2 is (_IDX typeidx).
     - C.TYPES[typeidx] exists.
     - heaptype matches C.TYPES[typeidx].
   - Or:
-    - heaptype_u1 is (REC i).
-    - heaptype_u2 is typeuse*[j].
+    - heaptype_1 is (REC i).
+    - heaptype_2 is typeuse*[j].
     - |typeuse*| is greater than j.
     - the sub type C.RECS[i] exists.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
-    - heaptype_u1 is NONE.
-    - heaptype_u2 is heaptype.
+    - heaptype_1 is NONE.
+    - heaptype_2 is heaptype.
     - heaptype matches the heap type ANY.
   - Or:
-    - heaptype_u1 is NOFUNC.
-    - heaptype_u2 is heaptype.
+    - heaptype_1 is NOFUNC.
+    - heaptype_2 is heaptype.
     - heaptype matches the heap type FUNC.
   - Or:
-    - heaptype_u1 is NOEXTERN.
-    - heaptype_u2 is heaptype.
+    - heaptype_1 is NOEXTERN.
+    - heaptype_2 is heaptype.
     - heaptype matches the heap type EXTERN.
   - Or:
-    - heaptype_u1 is BOT.
-    - heaptype_u2 is heaptype.
+    - heaptype_1 is BOT.
+    - heaptype_2 is heaptype.
 
 Heaptype_sub/refl
 - heaptype matches only itself.
@@ -24913,14 +24913,14 @@ Heaptype_sub/bot
 - the heap type BOT matches heaptype.
 
 Reftype_sub
-- the reference type (REF nul_u1 ht_1) matches the reference type (REF nul_u2 ht_2) if:
+- the reference type (REF nul_1 ht_1) matches the reference type (REF nul_2 ht_2) if:
   - the heap type ht_1 matches the heap type ht_2.
   - Either:
-    - nul_u1 is ?().
-    - nul_u2 is ?().
+    - nul_1 is ?().
+    - nul_2 is ?().
   - Or:
-    - nul_u1 is NULL?.
-    - nul_u2 is ?(NULL).
+    - nul_1 is NULL?.
+    - nul_2 is ?(NULL).
 
 Reftype_sub/nonnull
 - the reference type (REF ?() ht_1) matches the reference type (REF ?() ht_2) if:
@@ -24934,22 +24934,22 @@ Vectype_sub
 - the vector type vectype matches only itself.
 
 Valtype_sub
-- the value type valtype_u1 matches the value type valtype_u2 if:
+- the value type valtype_1 matches the value type valtype_2 if:
   - Either:
-    - valtype_u1 is numtype_1.
-    - valtype_u2 is numtype_2.
+    - valtype_1 is numtype_1.
+    - valtype_2 is numtype_2.
     - the number type numtype_1 matches the number type numtype_2.
   - Or:
-    - valtype_u1 is vectype_1.
-    - valtype_u2 is vectype_2.
+    - valtype_1 is vectype_1.
+    - valtype_2 is vectype_2.
     - the vector type vectype_1 matches the vector type vectype_2.
   - Or:
-    - valtype_u1 is reftype_1.
-    - valtype_u2 is reftype_2.
+    - valtype_1 is reftype_1.
+    - valtype_2 is reftype_2.
     - the reference type reftype_1 matches the reference type reftype_2.
   - Or:
-    - valtype_u1 is BOT.
-    - valtype_u2 is valtype.
+    - valtype_1 is BOT.
+    - valtype_2 is valtype.
 
 Valtype_sub/num
 - the value type numtype_1 matches the value type numtype_2 if:
@@ -24967,14 +24967,14 @@ Valtype_sub/bot
 - the value type BOT matches the value type valtype.
 
 Storagetype_sub
-- the storage type storagetype_u1 matches the storage type storagetype_u2 if:
+- the storage type storagetype_1 matches the storage type storagetype_2 if:
   - Either:
-    - storagetype_u1 is valtype_1.
-    - storagetype_u2 is valtype_2.
+    - storagetype_1 is valtype_1.
+    - storagetype_2 is valtype_2.
     - the value type valtype_1 matches the value type valtype_2.
   - Or:
-    - storagetype_u1 is packtype_1.
-    - storagetype_u2 is packtype_2.
+    - storagetype_1 is packtype_1.
+    - storagetype_2 is packtype_2.
     - the packed type packtype_1 matches the packed type packtype_2.
 
 Storagetype_sub/val
@@ -24986,14 +24986,14 @@ Storagetype_sub/pack
   - packtype_1 matches packtype_2.
 
 Fieldtype_sub
-- the field type (mut_u1 zt_1) matches the field type (mut_u2 zt_2) if:
+- the field type (mut_1 zt_1) matches the field type (mut_2 zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
-    - mut_u1 is ?().
-    - mut_u2 is ?().
+    - mut_1 is ?().
+    - mut_2 is ?().
   - Or:
-    - mut_u1 is ?(MUT).
-    - mut_u2 is ?(MUT).
+    - mut_1 is ?(MUT).
+    - mut_2 is ?(MUT).
     - zt_2 matches zt_1.
 
 Fieldtype_sub/const
@@ -25017,20 +25017,20 @@ Functype_sub
   - the result type t_12* matches the result type t_22*.
 
 Comptype_sub
-- the composite type comptype_u1 matches the composite type comptype_u2 if:
+- the composite type comptype_1 matches the composite type comptype_2 if:
   - Either:
-    - comptype_u1 is (STRUCT yt_1* :: [yt'_1]).
-    - comptype_u2 is (STRUCT yt_2*).
+    - comptype_1 is (STRUCT yt_1* :: [yt'_1]).
+    - comptype_2 is (STRUCT yt_2*).
     - |yt_1*| is |yt_2*|.
     - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
       - the field type yt_1 matches the field type yt_2.
   - Or:
-    - comptype_u1 is (ARRAY yt_1).
-    - comptype_u2 is (ARRAY yt_2).
+    - comptype_1 is (ARRAY yt_1).
+    - comptype_2 is (ARRAY yt_2).
     - yt_1 matches yt_2.
   - Or:
-    - comptype_u1 is (FUNC ft_1).
-    - comptype_u2 is (FUNC ft_2).
+    - comptype_1 is (FUNC ft_1).
+    - comptype_2 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
 
 Comptype_sub/struct
@@ -25076,11 +25076,11 @@ Subtype_ok2
     - comptype matches the composite type comptype'.
 
 Rectype_ok2
-- the recursive type (REC subtype_u1*) is valid with (OK x i) if:
+- the recursive type (REC subtype_1*) is valid with (OK x i) if:
   - Either:
-    - the sub type sequence subtype_u1* is [].
+    - the sub type sequence subtype_1* is [].
   - Or:
-    - subtype_u1* is [subtype_1] :: subtype*.
+    - subtype_1* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x i).
     - the recursive type (REC subtype*) is valid with (OK (x + 1) (i + 1)).
 
@@ -25093,11 +25093,11 @@ Rectype_ok2/cons
   - the recursive type (REC subtype*) is valid with (OK (x + 1) (i + 1)).
 
 Rectype_ok
-- the recursive type (REC subtype_u1*) is valid for (OK x) if:
+- the recursive type (REC subtype_1*) is valid for (OK x) if:
   - Either:
-    - the sub type sequence subtype_u1* is [].
+    - the sub type sequence subtype_1* is [].
   - Or:
-    - subtype_u1* is [subtype_1] :: subtype*.
+    - subtype_1* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x).
     - the recursive type (REC subtype*) is valid for (OK (x + 1)).
 
@@ -25139,22 +25139,22 @@ Tagtype_ok
   - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
 
 Externtype_ok
-- the external type externtype_u1 is valid if:
+- the external type externtype_1 is valid if:
   - Either:
-    - externtype_u1 is (FUNC deftype).
+    - externtype_1 is (FUNC deftype).
     - the defined type deftype is valid.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
   - Or:
-    - externtype_u1 is (GLOBAL globaltype).
+    - externtype_1 is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype_u1 is (TABLE tabletype).
+    - externtype_1 is (TABLE tabletype).
     - the table type tabletype is valid.
   - Or:
-    - externtype_u1 is (MEM memtype).
+    - externtype_1 is (MEM memtype).
     - the memory type memtype is valid.
   - Or:
-    - externtype_u1 is (TAG tagtype).
+    - externtype_1 is (TAG tagtype).
     - the tag type tagtype is valid.
 
 Externtype_ok/func
@@ -25195,14 +25195,14 @@ Limits_sub
   - m_1 is less than or equal to m_2.
 
 Globaltype_sub
-- the global type (mut_u1 valtype_1) matches the global type (mut_u2 valtype_2) if:
+- the global type (mut_1 valtype_1) matches the global type (mut_2 valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
-    - mut_u1 is ?().
-    - mut_u2 is ?().
+    - mut_1 is ?().
+    - mut_2 is ?().
   - Or:
-    - mut_u1 is ?(MUT).
-    - mut_u2 is ?(MUT).
+    - mut_1 is ?(MUT).
+    - mut_2 is ?(MUT).
     - valtype_2 matches valtype_1.
 
 Globaltype_sub/const
@@ -25230,26 +25230,26 @@ Tagtype_sub
   - deftype_2 matches deftype_1.
 
 Externtype_sub
-- the external type externtype_u1 matches the external type externtype_u2 if:
+- the external type externtype_1 matches the external type externtype_2 if:
   - Either:
-    - externtype_u1 is (FUNC deftype_1).
-    - externtype_u2 is (FUNC deftype_2).
+    - externtype_1 is (FUNC deftype_1).
+    - externtype_2 is (FUNC deftype_2).
     - the defined type deftype_1 matches the defined type deftype_2.
   - Or:
-    - externtype_u1 is (GLOBAL globaltype_1).
-    - externtype_u2 is (GLOBAL globaltype_2).
+    - externtype_1 is (GLOBAL globaltype_1).
+    - externtype_2 is (GLOBAL globaltype_2).
     - the global type globaltype_1 matches the global type globaltype_2.
   - Or:
-    - externtype_u1 is (TABLE tabletype_1).
-    - externtype_u2 is (TABLE tabletype_2).
+    - externtype_1 is (TABLE tabletype_1).
+    - externtype_2 is (TABLE tabletype_2).
     - the table type tabletype_1 matches the table type tabletype_2.
   - Or:
-    - externtype_u1 is (MEM memtype_1).
-    - externtype_u2 is (MEM memtype_2).
+    - externtype_1 is (MEM memtype_1).
+    - externtype_2 is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
   - Or:
-    - externtype_u1 is (TAG tagtype_1).
-    - externtype_u2 is (TAG tagtype_2).
+    - externtype_1 is (TAG tagtype_1).
+    - externtype_2 is (TAG tagtype_2).
     - the tag type tagtype_1 matches the tag type tagtype_2.
 
 Externtype_sub/func
@@ -25273,17 +25273,17 @@ Externtype_sub/tag
   - the tag type tagtype_1 matches the tag type tagtype_2.
 
 Blocktype_ok
-- the block type blocktype_u1 is valid as the instruction type valtype_u1* -> valtype_u2* if:
+- the block type blocktype_1 is valid as the instruction type valtype_1* -> valtype_2* if:
   - Either:
-    - blocktype_u1 is (_RESULT valtype?).
-    - the value type sequence valtype_u1* is [].
-    - the value type sequence valtype_u2* is valtype?.
+    - blocktype_1 is (_RESULT valtype?).
+    - the value type sequence valtype_1* is [].
+    - the value type sequence valtype_2* is valtype?.
     - If valtype is defined, then:
       - the value type valtype is valid.
   - Or:
-    - blocktype_u1 is (_IDX typeidx).
-    - valtype_u1* is t_1*.
-    - valtype_u2* is t_2*.
+    - blocktype_1 is (_IDX typeidx).
+    - valtype_1* is t_1*.
+    - valtype_2* is t_2*.
     - the defined type C.TYPES[typeidx] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
@@ -25298,23 +25298,23 @@ Blocktype_ok/typeidx
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Catch_ok
-- the catch clause catch_u1 is valid if:
+- the catch clause catch_1 is valid if:
   - the result type C.LABELS[l] exists.
   - Either:
-    - catch_u1 is (CATCH x l).
+    - catch_1 is (CATCH x l).
     - the tag type C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
     - the result type t* matches C.LABELS[l].
   - Or:
-    - catch_u1 is (CATCH_REF x l).
+    - catch_1 is (CATCH_REF x l).
     - C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> []).
     - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
   - Or:
-    - catch_u1 is (CATCH_ALL l).
+    - catch_1 is (CATCH_ALL l).
     - the result type [] matches C.LABELS[l].
   - Or:
-    - catch_u1 is (CATCH_ALL_REF l).
+    - catch_1 is (CATCH_ALL_REF l).
     - the result type [(REF ?() EXN)] matches C.LABELS[l].
 
 Catch_ok/catch
@@ -25357,12 +25357,12 @@ Instr_ok/drop
   - the value type t is valid.
 
 Instr_ok/select
-- the instruction (SELECT valtype_u1?) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT valtype_1?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - Either:
-    - the value type sequence valtype_u1? is ?([t]).
+    - the value type sequence valtype_1? is ?([t]).
   - Or:
-    - valtype_u1? is ?().
+    - valtype_1? is ?().
     - t matches the value type t'.
     - t' is numtype or t' is vectype.
 
@@ -25858,50 +25858,50 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instruction (LOAD numtype_u1 loadop__u1? x memarg) is valid with the instruction type [at] -> [valtype_u1] if:
+- the instruction (LOAD numtype_1 loadop__1? x memarg) is valid with the instruction type [at] -> [valtype_1] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - the number type numtype_u1 is nt.
-    - loadop__u1? is ?().
-    - the value type valtype_u1 is nt.
+    - the number type numtype_1 is nt.
+    - loadop__1? is ?().
+    - the value type valtype_1 is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_u1 is Inn.
-    - loadop__u1? is ?(M _ sx).
-    - valtype_u1 is Inn.
+    - numtype_1 is Inn.
+    - loadop__1? is ?(M _ sx).
+    - valtype_1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE numtype_u1 storeop__u1? x memarg) is valid with the instruction type [at, valtype_u1] -> [] if:
+- the instruction (STORE numtype_1 storeop__1? x memarg) is valid with the instruction type [at, valtype_1] -> [] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - the number type numtype_u1 is nt.
-    - storeop__u1? is ?().
-    - the value type valtype_u1 is nt.
+    - the number type numtype_1 is nt.
+    - storeop__1? is ?().
+    - the value type valtype_1 is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_u1 is Inn.
-    - storeop__u1? is ?(M).
-    - valtype_u1 is Inn.
+    - numtype_1 is Inn.
+    - storeop__1? is ?(M).
+    - valtype_1 is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 vloadop__u1? x memarg) is valid with the instruction type [at] -> [V128] if:
+- the instruction (VLOAD V128 vloadop__1? x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - vloadop__u1? is ?().
+    - vloadop__1? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
   - Or:
-    - vloadop__u1? is ?((SHAPE M X N _ sx)).
+    - vloadop__1? is ?((SHAPE M X N _ sx)).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
-    - vloadop__u1? is ?((SPLAT N)).
+    - vloadop__1? is ?((SPLAT N)).
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - Or:
-    - vloadop__u1? is ?((ZERO N)).
+    - vloadop__1? is ?((ZERO N)).
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload_lane
@@ -25983,13 +25983,13 @@ Instr_ok/vload-zero
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instrs_ok
-- the instruction sequence instr_u1* is valid with the instruction type instrtype_u1 if:
+- the instruction sequence instr_1* is valid with the instruction type instrtype_1 if:
   - Either:
-    - instr_u1* is [].
-    - instrtype_u1 is [] -> [].
+    - instr_1* is [].
+    - instrtype_1 is [] -> [].
   - Or:
-    - instr_u1* is [instr_1] :: instr_2*.
-    - instrtype_u1 is t_1* ->_ x_1* :: x_2* t_3*.
+    - instr_1* is [instr_1] :: instr_2*.
+    - instrtype_1 is t_1* ->_ x_1* :: x_2* t_3*.
     - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - |init*| is |t*|.
     - |init*| is |x_1*|.
@@ -25999,14 +25999,14 @@ Instrs_ok
       - C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
-    - instr_u1* is instr*.
-    - instrtype_u1 is it'.
+    - instr_1* is instr*.
+    - instrtype_1 is it'.
     - the instruction sequence instr* is valid with the instruction type it.
     - it matches the instruction type it'.
     - it' is valid.
   - Or:
-    - instr_u1* is instr*.
-    - instrtype_u1 is t* :: t_1* ->_ x* t* :: t_2*.
+    - instr_1* is instr*.
+    - instrtype_1 is t* :: t_1* ->_ x* t* :: t_2*.
     - instr* is valid with the instruction type t_1* ->_ x* t_2*.
     - the result type t* is valid.
 
@@ -26044,37 +26044,37 @@ Nondefaultable
   - the value $default_(t) is ?().
 
 Instr_const
-- the value val_u1 is constant if:
+- the value val_1 is constant if:
   - Either:
-    - val_u1 is (nt.CONST c_nt).
+    - val_1 is (nt.CONST c_nt).
   - Or:
-    - val_u1 is (vt.CONST c_vt).
+    - val_1 is (vt.CONST c_vt).
   - Or:
-    - val_u1 is (REF.NULL ht).
+    - val_1 is (REF.NULL ht).
   - Or:
-    - val_u1 is REF.I31.
+    - val_1 is REF.I31.
   - Or:
-    - val_u1 is (REF.FUNC x).
+    - val_1 is (REF.FUNC x).
   - Or:
-    - val_u1 is (STRUCT.NEW x).
+    - val_1 is (STRUCT.NEW x).
   - Or:
-    - val_u1 is (STRUCT.NEW_DEFAULT x).
+    - val_1 is (STRUCT.NEW_DEFAULT x).
   - Or:
-    - val_u1 is (ARRAY.NEW x).
+    - val_1 is (ARRAY.NEW x).
   - Or:
-    - val_u1 is (ARRAY.NEW_DEFAULT x).
+    - val_1 is (ARRAY.NEW_DEFAULT x).
   - Or:
-    - val_u1 is (ARRAY.NEW_FIXED x n).
+    - val_1 is (ARRAY.NEW_FIXED x n).
   - Or:
-    - val_u1 is ANY.CONVERT_EXTERN.
+    - val_1 is ANY.CONVERT_EXTERN.
   - Or:
-    - val_u1 is EXTERN.CONVERT_ANY.
+    - val_1 is EXTERN.CONVERT_ANY.
   - Or:
-    - val_u1 is (GLOBAL.GET x).
+    - val_1 is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
   - Or:
-    - val_u1 is (BINOP Inn binop).
+    - val_1 is (BINOP Inn binop).
     - Inn is contained in [I32, I64].
     - binop is contained in [ADD, SUB, MUL].
 
@@ -26137,12 +26137,12 @@ Type_ok
   - Under the context C', the recursive type rectype is valid for (OK x).
 
 Local_ok
-- the local (LOCAL t) is valid with the local type (init_u1 t) if:
+- the local (LOCAL t) is valid with the local type (init_1 t) if:
   - Either:
-    - the initialization status init_u1 is SET.
+    - the initialization status init_1 is SET.
     - A :ref:`default value <aux-default>` for the value type t is defined.
   - Or:
-    - init_u1 is UNSET.
+    - init_1 is UNSET.
     - A :ref:`default value <aux-default>` for t is not defined.
 
 Local_ok/set
@@ -26186,18 +26186,18 @@ Tag_ok
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype).
 
 Elemmode_ok
-- the element mode elemmode_u1 is valid with the element type rt if:
+- the element mode elemmode_1 is valid with the element type rt if:
   - Either:
-    - elemmode_u1 is (ACTIVE x expr).
+    - elemmode_1 is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is (at lim rt').
     - rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - elemmode_u1 is PASSIVE.
+    - elemmode_1 is PASSIVE.
   - Or:
-    - elemmode_u1 is DECLARE.
+    - elemmode_1 is DECLARE.
 
 Elemmode_ok/active
 - the element mode (ACTIVE x expr) is valid with the element type rt if:
@@ -26222,15 +26222,15 @@ Elem_ok
   - the element mode elemmode is valid with elemtype.
 
 Datamode_ok
-- the data mode datamode_u1 is valid with the data type OK if:
+- the data mode datamode_1 is valid with the data type OK if:
   - Either:
-    - datamode_u1 is (ACTIVE x expr).
+    - datamode_1 is (ACTIVE x expr).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - datamode_u1 is PASSIVE.
+    - datamode_1 is PASSIVE.
 
 Datamode_ok/active
 - the data mode (ACTIVE x expr) is valid with the data type OK if:
@@ -26256,30 +26256,30 @@ Import_ok
   - xt is valid.
 
 Externidx_ok
-- the external index externidx_u1 is valid with the external type externtype_u1 if:
+- the external index externidx_1 is valid with the external type externtype_1 if:
   - Either:
-    - externidx_u1 is (FUNC x).
-    - externtype_u1 is (FUNC dt).
+    - externidx_1 is (FUNC x).
+    - externtype_1 is (FUNC dt).
     - the defined type C.FUNCS[x] exists.
     - C.FUNCS[x] is dt.
   - Or:
-    - externidx_u1 is (GLOBAL x).
-    - externtype_u1 is (GLOBAL gt).
+    - externidx_1 is (GLOBAL x).
+    - externtype_1 is (GLOBAL gt).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx_u1 is (TABLE x).
-    - externtype_u1 is (TABLE tt).
+    - externidx_1 is (TABLE x).
+    - externtype_1 is (TABLE tt).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
-    - externidx_u1 is (MEM x).
-    - externtype_u1 is (MEM mt).
+    - externidx_1 is (MEM x).
+    - externtype_1 is (MEM mt).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
   - Or:
-    - externidx_u1 is (TAG x).
-    - externtype_u1 is (TAG jt).
+    - externidx_1 is (TAG x).
+    - externtype_1 is (TAG jt).
     - the tag type C.TAGS[x] exists.
     - C.TAGS[x] is jt.
 
@@ -26313,13 +26313,13 @@ Export_ok
   - the external index externidx is valid with xt.
 
 Globals_ok
-- the global sequence global_u1* is valid with the global type sequence globaltype_u1* if:
+- the global sequence global_1* is valid with the global type sequence globaltype_1* if:
   - Either:
-    - global_u1* is [].
-    - globaltype_u1* is [].
+    - global_1* is [].
+    - globaltype_1* is [].
   - Or:
-    - global_u1* is [global_1] :: global*.
-    - globaltype_u1* is [gt_1] :: gt*.
+    - global_1* is [global_1] :: global*.
+    - globaltype_1* is [gt_1] :: gt*.
     - the global global_1 is valid with the global type gt_1.
     - the context C' is the context C with .GLOBALS appended by [gt_1].
     - Under the context C', the global sequence global* is valid with the global type sequence gt*.
@@ -26334,13 +26334,13 @@ Globals_ok/cons
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
 
 Types_ok
-- the type definition sequence type_u1* is valid with the defined type sequence deftype_u1* if:
+- the type definition sequence type_1* is valid with the defined type sequence deftype_1* if:
   - Either:
-    - type_u1* is [].
-    - deftype_u1* is [].
+    - type_1* is [].
+    - deftype_1* is [].
   - Or:
-    - type_u1* is [type_1] :: type*.
-    - deftype_u1* is dt_1* :: dt*.
+    - type_1* is [type_1] :: type*.
+    - deftype_1* is dt_1* :: dt*.
     - the type definition type_1 is valid with the defined type sequence dt_1*.
     - the context C' is the context C with .TYPES appended by dt_1*.
     - Under the context C', the type definition sequence type* is valid with the defined type sequence dt*.
@@ -26403,41 +26403,41 @@ Vec_type
 - the vector value (vt.CONST c) is valid with the vector type vt.
 
 Ref_type
-- the reference value ref_u1 is valid with the reference type reftype_u1 if:
+- the reference value ref_1 is valid with the reference type reftype_1 if:
   - Either:
-    - ref_u1 is (REF.NULL ht).
-    - reftype_u1 is (REF ?(NULL) ht').
+    - ref_1 is (REF.NULL ht).
+    - reftype_1 is (REF ?(NULL) ht').
     - the heap type ht' matches the heap type ht.
   - Or:
-    - ref_u1 is (REF.I31_NUM i).
-    - reftype_u1 is (REF ?() I31).
+    - ref_1 is (REF.I31_NUM i).
+    - reftype_1 is (REF ?() I31).
   - Or:
-    - ref_u1 is (REF.STRUCT_ADDR a).
-    - reftype_u1 is (REF ?() dt).
+    - ref_1 is (REF.STRUCT_ADDR a).
+    - reftype_1 is (REF ?() dt).
     - the structure instance s.STRUCTS[a] exists.
     - the defined type s.STRUCTS[a].TYPE is dt.
   - Or:
-    - ref_u1 is (REF.ARRAY_ADDR a).
-    - reftype_u1 is (REF ?() dt).
+    - ref_1 is (REF.ARRAY_ADDR a).
+    - reftype_1 is (REF ?() dt).
     - the array instance s.ARRAYS[a] exists.
     - the defined type s.ARRAYS[a].TYPE is dt.
   - Or:
-    - ref_u1 is (REF.FUNC_ADDR a).
-    - reftype_u1 is (REF ?() dt).
+    - ref_1 is (REF.FUNC_ADDR a).
+    - reftype_1 is (REF ?() dt).
     - the function instance s.FUNCS[a] exists.
     - the defined type s.FUNCS[a].TYPE is dt.
   - Or:
-    - ref_u1 is (REF.EXN_ADDR a).
-    - reftype_u1 is (REF ?() EXN).
+    - ref_1 is (REF.EXN_ADDR a).
+    - reftype_1 is (REF ?() EXN).
   - Or:
-    - ref_u1 is (REF.HOST_ADDR a).
-    - reftype_u1 is (REF ?() ANY).
+    - ref_1 is (REF.HOST_ADDR a).
+    - reftype_1 is (REF ?() ANY).
   - Or:
-    - ref_u1 is (REF.EXTERN addrref).
-    - reftype_u1 is (REF ?() EXTERN).
+    - ref_1 is (REF.EXTERN addrref).
+    - reftype_1 is (REF ?() EXTERN).
   - Or:
-    - ref_u1 is ref.
-    - reftype_u1 is rt.
+    - ref_1 is ref.
+    - reftype_1 is rt.
     - Under the context s, the reference value ref is valid with the reference type rt'.
     - rt' matches the reference type rt.
 
@@ -26478,18 +26478,18 @@ Ref_type/sub
   - rt' matches rt.
 
 Val_type
-- the value val_u1 is valid with the value type valtype_u1 if:
+- the value val_1 is valid with the value type valtype_1 if:
   - Either:
-    - val_u1 is num.
-    - valtype_u1 is nt.
+    - val_1 is num.
+    - valtype_1 is nt.
     - Under the context s, the number value num is valid with the number type nt.
   - Or:
-    - val_u1 is vec.
-    - valtype_u1 is vt.
+    - val_1 is vec.
+    - valtype_1 is vt.
     - Under the context s, the vector value vec is valid with the vector type vt.
   - Or:
-    - val_u1 is ref.
-    - valtype_u1 is rt.
+    - val_1 is ref.
+    - valtype_1 is rt.
     - Under the context s, the reference value ref is valid with the reference type rt.
 
 Val_type/num
@@ -26505,35 +26505,35 @@ Val_type/ref
   - Under the context s, ref is valid with rt.
 
 Externaddr_type
-- the external address externaddr_u1 is valid with the external type externtype_u1 if:
+- the external address externaddr_1 is valid with the external type externtype_1 if:
   - Either:
-    - externaddr_u1 is (FUNC a).
-    - externtype_u1 is (FUNC funcinst.TYPE).
+    - externaddr_1 is (FUNC a).
+    - externtype_1 is (FUNC funcinst.TYPE).
     - the function instance s.FUNCS[a] exists.
     - s.FUNCS[a] is funcinst.
   - Or:
-    - externaddr_u1 is (GLOBAL a).
-    - externtype_u1 is (GLOBAL globalinst.TYPE).
+    - externaddr_1 is (GLOBAL a).
+    - externtype_1 is (GLOBAL globalinst.TYPE).
     - the global instance s.GLOBALS[a] exists.
     - s.GLOBALS[a] is globalinst.
   - Or:
-    - externaddr_u1 is (TABLE a).
-    - externtype_u1 is (TABLE tableinst.TYPE).
+    - externaddr_1 is (TABLE a).
+    - externtype_1 is (TABLE tableinst.TYPE).
     - the table instance s.TABLES[a] exists.
     - s.TABLES[a] is tableinst.
   - Or:
-    - externaddr_u1 is (MEM a).
-    - externtype_u1 is (MEM meminst.TYPE).
+    - externaddr_1 is (MEM a).
+    - externtype_1 is (MEM meminst.TYPE).
     - the memory instance s.MEMS[a] exists.
     - s.MEMS[a] is meminst.
   - Or:
-    - externaddr_u1 is (TAG a).
-    - externtype_u1 is (TAG taginst.TYPE).
+    - externaddr_1 is (TAG a).
+    - externtype_1 is (TAG taginst.TYPE).
     - the tag instance s.TAGS[a] exists.
     - s.TAGS[a] is taginst.
   - Or:
-    - externaddr_u1 is externaddr.
-    - externtype_u1 is xt.
+    - externaddr_1 is externaddr.
+    - externtype_1 is xt.
     - Under the context s, the external address externaddr is valid with the external type xt'.
     - xt' matches the external type xt.
 
@@ -26568,21 +26568,21 @@ Externaddr_type/sub
   - xt' matches xt.
 
 NotationTypingInstrScheme
-- the instruction sequence [instr_u1] is valid with the function type valtype_u1* -> valtype_u3* if:
+- the instruction sequence [instr_1] is valid with the function type valtype_1* -> valtype_3* if:
   - Either:
-    - the instruction instr_u1 is (BINOP I32 ADD).
-    - the value type sequence valtype_u1* is [I32, I32].
-    - the value type sequence valtype_u3* is [I32].
+    - the instruction instr_1 is (BINOP I32 ADD).
+    - the value type sequence valtype_1* is [I32, I32].
+    - the value type sequence valtype_3* is [I32].
   - Or:
-    - instr_u1 is (GLOBAL.GET x).
-    - valtype_u1* is [].
-    - valtype_u3* is [t].
+    - instr_1 is (GLOBAL.GET x).
+    - valtype_1* is [].
+    - valtype_3* is [t].
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (mut t).
   - Or:
-    - instr_u1 is (BLOCK blocktype instr*).
-    - valtype_u1* is t_1*.
-    - valtype_u3* is t_2*.
+    - instr_1 is (BLOCK blocktype instr*).
+    - valtype_1* is t_1*.
+    - valtype_3* is t_2*.
     - the block type blocktype is valid as the instruction type t_1* -> t_2*.
     - the context C' is the context C with .LABELS prepended by [t_2*].
     - Under the context C', the instruction sequence instr* is valid with t_1* -> t_2*.
