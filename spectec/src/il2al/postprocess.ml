@@ -22,7 +22,16 @@ let rec merge_pop_assert' instrs =
     | ({ it = AssertI ({ it = TopValueE None; _ } as e1); _ } as i1) ::
     ({ it = PopI e2; _ } as i2) :: il ->
       (match e2.it with
-      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_tl) ->
+      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_,
+        ({ it = CaseE (_, []); _ } as hd)::_tl) ->
+        let e1 = { e1 with it = TopValueE (Some hd) } in
+        let i1 = { i1 with it = AssertI e1 } in
+        merge_helper (i2 :: i1 :: acc) il
+      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST" as cons); _ }]::_ ,
+      { it = VarE _; _ }::_tl) ->
+        (* HARDCODE: name of type according to constructor *)
+        let vt = if cons = "CONST" then "num" else "vec" in
+        let hd = VarE vt $$ no_region % (Il.Ast.VarT (vt $ no_region, []) $ no_region) in
         let e1 = { e1 with it = TopValueE (Some hd) } in
         let i1 = { i1 with it = AssertI e1 } in
         merge_helper (i2 :: i1 :: acc) il
@@ -32,8 +41,14 @@ let rec merge_pop_assert' instrs =
           | Some i -> String.sub id 0 i
           | None -> id
         ) in
-        if id <> "val" then (
-          let te = VarE id $$ no_region % (Il.Ast.VarT (id $ no_region, []) $ no_region)  in
+        let id = (
+          match String.index_opt id '\'' with
+          | Some i -> String.sub id 0 i
+          | None -> id
+        ) in
+        if id <> "val" &&
+          Option.is_some (Il.Env.find_opt_typ !Al.Valid.il_env (id $ no_region)) then (
+          let te = VarE id $$ no_region % (Il.Ast.VarT (id $ no_region, []) $ no_region) in
           let e1 = { e1 with it = TopValueE (Some te) } in
           let i1 = { i1 with it = AssertI e1 } in
           merge_helper (i2 :: i1 :: acc) il

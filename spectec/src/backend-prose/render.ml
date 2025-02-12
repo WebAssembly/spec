@@ -756,9 +756,7 @@ and render_expr' env expr =
       | Some vtref when String.ends_with ~suffix:"type>`" vtref ->
         let se = render_expr env e in
         sprintf "a value of %s %s" vtref se
-      | Some vtref ->
-        let se = render_expr env e in
-        sprintf "a %s %s" vtref se
+      | Some vtref -> sprintf "a %s" vtref
       | None ->
         let desc_hint = Prose_util.extract_desc e.note in
         let desc_hint = if desc_hint = "" then "value type" else desc_hint in

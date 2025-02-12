@@ -1156,7 +1156,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-valtype_0>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1190,7 +1190,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-valtype_0>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1440,7 +1440,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-t''>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({t''}{.}\mathsf{const}~c)` from the stack.
 
@@ -3426,7 +3426,7 @@ Step_pure/unop t unop
 Step_pure/binop t binop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
 2. Pop the value (valtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+3. Assert: Due to validation, a value of value type num is on the top of the stack.
 4. Pop the value (valtype_0.CONST c_1) from the stack.
 5. If (|$binop_(t, binop, c_1, c_2)| <= 0), then:
   a. Trap.
@@ -3442,7 +3442,7 @@ Step_pure/testop t testop
 Step_pure/relop t relop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
 2. Pop the value (valtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+3. Assert: Due to validation, a value of value type num is on the top of the stack.
 4. Pop the value (valtype_0.CONST c_1) from the stack.
 5. Let c be $relop_(t, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
@@ -3555,7 +3555,7 @@ Step/global.set x
 
 Step/store t' sz? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type t'' is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (t''.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -5958,7 +5958,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -5992,7 +5992,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -7198,7 +7198,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-nt''>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}''}{.}\mathsf{const}~c)` from the stack.
 
@@ -10715,7 +10715,7 @@ Step_pure/unop nt unop
 Step_pure/binop nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+3. Assert: Due to validation, a value of value type num is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. If (|$binop_(nt, binop, c_1, c_2)| <= 0), then:
   a. Trap.
@@ -10731,7 +10731,7 @@ Step_pure/testop nt testop
 Step_pure/relop nt relop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+3. Assert: Due to validation, a value of value type num is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. Let c be $relop_(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
@@ -11306,7 +11306,7 @@ Step/elem.drop x
 
 Step/store nt' sz? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type nt'' is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (nt''.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -16723,7 +16723,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -16757,7 +16757,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-numtype_0>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17432,7 +17432,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
@@ -17522,7 +17522,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-      1) Assert: Due to validation, a :ref:`value type <syntax-val''>` is on the top of the stack.
+      1) Assert: Due to validation, a value is on the top of the stack.
 
       #) Pop the value :math:`{\mathit{val}''}` from the stack.
 
@@ -17567,7 +17567,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
@@ -18074,7 +18074,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
@@ -18141,7 +18141,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
@@ -18404,7 +18404,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18434,7 +18434,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18477,15 +18477,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at'>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at_2>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at_1>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18550,7 +18550,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18589,7 +18589,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18636,7 +18636,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18717,7 +18717,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18757,7 +18757,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18800,15 +18800,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at'>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at_2>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at_1>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -18873,7 +18873,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -18972,7 +18972,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
@@ -19034,7 +19034,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
+#. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
@@ -19095,7 +19095,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19112,7 +19112,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19148,11 +19148,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-nt'''>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}'''}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19195,7 +19195,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19218,7 +19218,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19245,7 +19245,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -26747,7 +26747,7 @@ Step_pure/unop nt unop
 Step_pure/binop nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+3. Assert: Due to validation, a value of value type num is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. If (|$binop_(nt, binop, c_1, c_2)| <= 0), then:
   a. Trap.
@@ -26763,7 +26763,7 @@ Step_pure/testop nt testop
 Step_pure/relop nt relop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+3. Assert: Due to validation, a value of value type num is on the top of the stack.
 4. Pop the value (numtype_0.CONST c_1) from the stack.
 5. Let c be $relop_(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
@@ -27078,7 +27078,7 @@ Step_read/call x
 
 Step_read/call_ref yy
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type val' is on the top of the stack.
+2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val' from the stack.
 4. If val' is REF.NULL, then:
   a. Trap.
@@ -27119,7 +27119,7 @@ Step_read/return_call_ref yy
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if the first non-value entry of the stack is a FRAME_, then:
-  a. Assert: Due to validation, a value of value type val'' is on the top of the stack.
+  a. Assert: Due to validation, a value is on the top of the stack.
   b. Pop the value val'' from the stack.
   c. If val'' is REF.NULL, then:
     1) Pop all values val* from the top of the stack.
@@ -27141,7 +27141,7 @@ Step_read/return_call_ref yy
 
 Step_read/throw_ref
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type val' is on the top of the stack.
+2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val' from the stack.
 4. If val' is REF.NULL, then:
   a. Trap.
@@ -27375,7 +27375,7 @@ Step_read/array.fill x
 5. Pop the value val from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value of value type val' is on the top of the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value val' from the stack.
 10. If val' is REF.NULL, then:
   a. Trap.
@@ -27408,7 +27408,7 @@ Step_read/array.copy x_1 x_2
 7. Pop the value val from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value of value type val' is on the top of the stack.
+10. Assert: Due to validation, a value is on the top of the stack.
 11. Pop the value val' from the stack.
 12. If (val' is REF.NULL /\ val is ref), then:
   a. Trap.
@@ -27537,7 +27537,7 @@ Step_read/global.get x
 
 Step_read/table.get x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
 4. If (i >= |$table(z, x).REFS|), then:
   a. Trap.
@@ -27551,7 +27551,7 @@ Step_read/table.size x
 
 Step_read/table.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
@@ -27572,11 +27572,11 @@ Step_read/table.fill x
 
 Step_read/table.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at' is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at'.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type at_2 is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at_2.CONST i_2) from the stack.
-6. Assert: Due to validation, a value of value type at_1 is on the top of the stack.
+6. Assert: Due to validation, a value of value type num is on the top of the stack.
 7. Pop the value (at_1.CONST i_1) from the stack.
 8. If ((i_1 + n) > |$table(z, x_1).REFS|), then:
   a. Trap.
@@ -27608,7 +27608,7 @@ Step_read/table.init x y
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value of value type at is on the top of the stack.
+6. Assert: Due to validation, a value of value type num is on the top of the stack.
 7. Pop the value (at.CONST i) from the stack.
 8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
@@ -27627,7 +27627,7 @@ Step_read/table.init x y
 
 Step_read/load nt' loadop_? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
 4. If loadop_? is not defined, then:
   a. Let nt be nt'.
@@ -27650,7 +27650,7 @@ Step_read/load nt' loadop_? x ao
 
 Step_read/vload V128 vloadop_? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
 4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) /\ vloadop_? is not defined), then:
   a. Trap.
@@ -27690,7 +27690,7 @@ Step_read/vload_lane V128 N x ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value of value type at is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -27709,7 +27709,7 @@ Step_read/memory.size x
 
 Step_read/memory.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
@@ -27730,11 +27730,11 @@ Step_read/memory.fill x
 
 Step_read/memory.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at' is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at'.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type at_2 is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at_2.CONST i_2) from the stack.
-6. Assert: Due to validation, a value of value type at_1 is on the top of the stack.
+6. Assert: Due to validation, a value of value type num is on the top of the stack.
 7. Pop the value (at_1.CONST i_1) from the stack.
 8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
   a. Trap.
@@ -27766,7 +27766,7 @@ Step_read/memory.init x y
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value of value type at is on the top of the stack.
+6. Assert: Due to validation, a value of value type num is on the top of the stack.
 7. Pop the value (at.CONST i) from the stack.
 8. If ((i + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -27814,7 +27814,7 @@ Step/struct.set x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. Assert: Due to validation, a value of value type val' is on the top of the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val' from the stack.
 6. If val' is REF.NULL, then:
   a. Trap.
@@ -27844,7 +27844,7 @@ Step/array.set x
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type val' is on the top of the stack.
+6. Assert: Due to validation, a value is on the top of the stack.
 7. Pop the value val' from the stack.
 8. If val' is REF.NULL, then:
   a. Trap.
@@ -27873,7 +27873,7 @@ Step/table.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type ref is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value of value type at is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
 6. If (i >= |$table(z, x).REFS|), then:
   a. Trap.
@@ -27881,7 +27881,7 @@ Step/table.set x
 
 Step/table.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type ref is on the top of the stack.
 5. Pop the value ref from the stack.
@@ -27898,9 +27898,9 @@ Step/elem.drop x
 
 Step/store nt' storeop_? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type nt''' is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (nt'''.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type at is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
 6. Let nt be nt'''.
 7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) /\ ((nt' = nt) /\ storeop_? is not defined)), then:
@@ -27921,7 +27921,7 @@ Step/vstore V128 x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type at is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -27932,7 +27932,7 @@ Step/vstore_lane V128 N x ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type at is on the top of the stack.
+4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
 6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
@@ -27945,7 +27945,7 @@ Step/vstore_lane V128 N x ao j
 
 Step/memory.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type at is on the top of the stack.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST n) from the stack.
 4. Either:
   a. Let mi be $growmem($mem(z, x), n).
