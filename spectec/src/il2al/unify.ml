@@ -40,8 +40,11 @@ let imap : idxs ref = ref Map.empty
 let init_env frees = { idxs = !imap; frees }
 
 
-let gen_new_unified env ty =
-  let var = introduce_fresh_variable env.frees ty in
+let gen_new_unified ?prefix env ty =
+  let var =
+    match prefix with
+    | Some prefix -> introduce_fresh_variable ~prefix env.frees ty
+    | _ -> introduce_fresh_variable env.frees ty in
   env.frees <- Set.add var env.frees;
   unified_prefix ^ var $ ty.at
 
@@ -167,6 +170,16 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
         | IterT (ty1, iter) ->
           IterE (VarE id $$ no_region % ty1, (iter, [(id, VarE id $$ no_region % ty)]))
         | _ -> VarE id
+      in
+      { e1 with it; note = ty }
+    | VarE id, _ | _, VarE id ->
+      let ty = overlap_typ env e1.note e2.note in
+      let id' = gen_new_unified ~prefix:(remove_dimension id.it) env ty in
+      let it =
+        match ty.it with
+        | IterT (ty1, iter) ->
+          IterE (VarE id' $$ no_region % ty1, (iter, [(id', VarE id' $$ no_region % ty)]))
+        | _ -> VarE id'
       in
       { e1 with it; note = ty }
     | _ ->
